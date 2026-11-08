@@ -1,0 +1,1016 @@
+
+
+/* ===== Visual Learning Engine: audio-driven synchronisation ===== */
+/* The audio element currentTime is the ONLY source of truth. No timers. */
+/* Beat timestamps are ESTIMATED (proportional allocation of narration */
+/* text against the real audio duration). Never claimed as precise. */
+var PA_STUDIO_DATA = {};
+var PA_STUDIOS = {};
+function studioInit(sampleId){
+  var data = PA_STUDIO_DATA[sampleId];
+  var root = document.getElementById('studio-' + sampleId);
+  if(!root || !data){ studioShowError(sampleId, 'This lesson player could not start: the lesson data is missing. Try reloading the page.'); return; }
+  var audio = document.getElementById('studio-audio-' + sampleId);
+  if(!audio){ studioShowError(sampleId, 'This lesson player could not start: the narration audio is missing. Try reloading the page.'); return; }
+  var st = {data: data, audio: audio, scene: 0, beat: -1, captions: true,
+            total: 0, starts: [], doneScenes: {}, seenStages: {}, endTimer: null,
+            wantAutoplay: true, visualTimer: null, visualT: 0, visualMode: false};
+  var t = 0;
+  data.scenes.forEach(function(s){ st.starts.push(t); t += s.duration_sec; });
+  st.total = t;
+  PA_STUDIOS[sampleId] = st;
+  /* Restore the persisted mute choice (set by the player mute button on
+     this or an earlier lesson) before the first scene loads, so a reload
+     or an auto-advance to the next lesson does not turn the sound back
+     on. studioLoadScene applies the global below. */
+  try {
+    var savedMute = sessionStorage.getItem('pa-sound-muted');
+    if(savedMute !== null && typeof soundMuted !== 'undefined') soundMuted = (savedMute === '1');
+  } catch(e){}
+  audio.addEventListener('timeupdate', function(){ studioRefresh(sampleId); });
+  audio.addEventListener('ended', function(){ studioSceneEnded(sampleId); });
+  audio.addEventListener('play', function(){ studioSetPlayLabel(sampleId); studioDisarmAutoplayRetry(sampleId); });
+  audio.addEventListener('pause', function(){ studioSetPlayLabel(sampleId); studioStopVisual(sampleId); });
+  /* First-play buffering: show a loading state until the audio can
+     actually play, so a slow connection does not look like a dead
+     player. 'waiting' covers stalls mid-lesson; 'playing' is the proof
+     sound started, so it hides the loading state and forces a caption
+     refresh from the real audio position. */
+  audio.addEventListener('waiting', function(){ studioShowLoading(sampleId, true); });
+  audio.addEventListener('canplay', function(){ studioShowLoading(sampleId, false); });
+  audio.addEventListener('playing', function(){ studioShowLoading(sampleId, false); studioRefresh(sampleId); });
+  /* After any seek completes, re-sync the display from the real audio
+     position, so a seek the browser applied late (or not at all) cannot
+     leave the timeline showing a stale time. */
+  audio.addEventListener('seeked', function(){ studioRefresh(sampleId); });
+  var slider = document.getElementById('studio-slider-' + sampleId);
+  if(slider){
+    slider.addEventListener('input', function(){
+      studioSeekVirtual(sampleId, parseFloat(slider.value));
+    });
+    /* Scrub state: while the reader drags the slider, timeupdate must not
+       fight the thumb. The old code used document.activeElement, but a
+       clicked slider keeps focus forever, so the slider froze at the
+       clicked value while playback advanced. A drag flag plus a blur on
+       release fixes both. */
+    var scrubStart = function(){ st.sliderScrubbing = true; };
+    var scrubEnd = function(){
+      st.sliderScrubbing = false;
+      try { slider.blur(); } catch(e){}
+      studioRefresh(sampleId);
+    };
+    slider.addEventListener('pointerdown', scrubStart);
+    slider.addEventListener('mousedown', scrubStart);
+    slider.addEventListener('touchstart', scrubStart, {passive: true});
+    slider.addEventListener('pointerup', scrubEnd);
+    slider.addEventListener('mouseup', scrubEnd);
+    slider.addEventListener('touchend', scrubEnd);
+    slider.addEventListener('change', scrubEnd);
+  }
+  /* Tapping the canvas toggles play/pause (standard video behaviour).
+     The old big play overlay is gone; the control-bar play button is the
+     main control, and a tap on the canvas itself also toggles. */
+  var canvas = root.querySelector('.studio-canvas');
+  if(canvas) canvas.addEventListener('click', function(ev){
+    var tgt = ev.target;
+    if(tgt && tgt.closest && tgt.closest('button, input, select, a')) return;
+    studioTogglePlay(sampleId);
+  });
+  /* Netflix-style controls (Nov 2026): the bar lives inside the video and
+     shows only on hover, on mouse move, or when paused. While playing it
+     hides after 3s of stillness; moving the mouse brings it back.
+     Touch devices have no hover: auto-hiding the bar after 3s leaves the
+     reader tapping once just to reveal the controls, so on coarse
+     pointers the bar stays visible and never auto-hides. */
+  var coarsePointer = false;
+  try { coarsePointer = !!(window.matchMedia && window.matchMedia('(pointer: coarse)').matches); } catch(e){}
+  st.coarsePointer = coarsePointer;
+  var player = root.querySelector('.player');
+  var hideTimer = null;
+  function showControls(){
+    if(!player) return;
+    player.classList.add('show-controls');
+    if(hideTimer){ clearTimeout(hideTimer); hideTimer = null; }
+    if(!coarsePointer && audio && !audio.paused){
+      hideTimer = setTimeout(function(){
+        if(player) player.classList.remove('show-controls');
+      }, 3000);
+    }
+  }
+  if(player){
+    player.addEventListener('mousemove', showControls);
+    player.addEventListener('mouseenter', showControls);
+    player.addEventListener('mouseleave', function(){
+      if(hideTimer){ clearTimeout(hideTimer); hideTimer = null; }
+      if(!coarsePointer && audio && !audio.paused) player.classList.remove('show-controls');
+    });
+    player.addEventListener('touchstart', showControls, {passive: true});
+  }
+  audio.addEventListener('play', showControls);
+  audio.addEventListener('pause', function(){
+    if(hideTimer){ clearTimeout(hideTimer); hideTimer = null; }
+    if(player) player.classList.add('show-controls');
+  });
+  showControls();
+  studioRenderMarkers(sampleId);
+  studioLoadScene(sampleId, 0, false);
+  studioSyncMuteButton(sampleId);
+  studioRestoreBookmark(sampleId);
+}
+/* Central playback attempt. fromUser=true shows a visible error when the
+   browser refuses playback (for example iOS Safari blocking autoplay);
+   fromUser=false (the open-page autoplay attempt) shows no error; the
+   user taps the control-bar play button. The old big play overlay was
+   removed (Nov 2026) because it overlapped the caption. */
+function studioPlayAudio(sampleId, fromUser){
+  var st = PA_STUDIOS[sampleId];
+  if(!st || !st.audio) return;
+  if(st.audio.readyState === 0){ try { st.audio.load(); } catch(e){} }
+  /* First-play buffering: show a loading state until the audio can
+     actually play. It hides on the 'playing' event. */
+  if(st.audio.readyState < 2) studioShowLoading(sampleId, true);
+  var p = st.audio.play();
+  if(p && p.catch){
+    p.catch(function(){
+      studioShowLoading(sampleId, false);
+      if(fromUser){
+        studioShowError(sampleId, 'Playback could not start. Tap Play again.');
+      } else {
+        /* iOS Safari blocks autoplay with sound before the first tap.
+           HOLD at beat 0: do not advance the visuals on their own
+           timeline, or the diagram runs ahead of the narration and the
+           reader taps Play to find the opening already skipped. The
+           sound is retried automatically on the first interaction
+           anywhere on the page (any tap, scroll touch or key press),
+           not only on the Play button, so the narration starts from 0
+           by itself as soon as the browser allows it. */
+        studioArmAutoplayRetry(sampleId);
+      }
+      studioShowPlayOverlay(sampleId, true);
+    });
+  }
+}
+/* Autoplay retry: when the browser blocks autoplay with sound, keep trying
+   to start the narration on the first interaction anywhere on the page.
+   The listener removes itself once the audio is playing, so it never
+   fires again. No tap on the Play button is required. */
+function studioArmAutoplayRetry(sampleId){
+  var st = PA_STUDIOS[sampleId];
+  if(!st || st.autoplayRetryArmed) return;
+  st.autoplayRetryArmed = true;
+  var retry = function(){
+    var s2 = PA_STUDIOS[sampleId];
+    if(!s2 || !s2.audio || !s2.audio.paused){
+      studioDisarmAutoplayRetry(sampleId);
+      return;
+    }
+    studioTryPlay(sampleId, false);
+    var s3 = PA_STUDIOS[sampleId];
+    if(s3 && s3.audio && !s3.audio.paused) studioDisarmAutoplayRetry(sampleId);
+  };
+  st.autoplayRetryHandler = retry;
+  st.autoplayRetryVisHandler = function(){
+    if(!document.hidden) retry();
+  };
+  document.addEventListener('pointerdown', retry, {passive: true});
+  document.addEventListener('keydown', retry);
+  document.addEventListener('touchstart', retry, {passive: true});
+  document.addEventListener('visibilitychange', st.autoplayRetryVisHandler);
+}
+function studioDisarmAutoplayRetry(sampleId){
+  var st = PA_STUDIOS[sampleId];
+  if(!st) return;
+  if(st.autoplayRetryHandler){
+    document.removeEventListener('pointerdown', st.autoplayRetryHandler);
+    document.removeEventListener('keydown', st.autoplayRetryHandler);
+    document.removeEventListener('touchstart', st.autoplayRetryHandler);
+    st.autoplayRetryHandler = null;
+  }
+  if(st.autoplayRetryVisHandler){
+    document.removeEventListener('visibilitychange', st.autoplayRetryVisHandler);
+    st.autoplayRetryVisHandler = null;
+  }
+  st.autoplayRetryArmed = false;
+}
+function studioStopVisual(sampleId){
+  var st = PA_STUDIOS[sampleId];
+  if(!st) return;
+  if(st.visualTimer){ clearInterval(st.visualTimer); st.visualTimer = null; }
+  st.visualMode = false;
+}
+function studioTryPlay(sampleId, fromUser){
+  var st = PA_STUDIOS[sampleId];
+  if(!st) return;
+  if(typeof pauseAllAudio === 'function') pauseAllAudio();
+  /* Start the narration from the audio position (0 after a blocked
+     autoplay). Never jump to a visual clock: the visuals no longer run
+     ahead of the audio, so there is nothing to catch up to. */
+  studioStopVisual(sampleId);
+  st.audio.muted = (typeof soundMuted !== 'undefined') ? soundMuted : st.audio.muted;
+  studioPlayAudio(sampleId, fromUser);
+}
+function studioShowError(sampleId, msg){
+  var e = document.getElementById('studio-error-' + sampleId);
+  if(e){ e.textContent = msg; e.style.display = 'block'; }
+}
+function studioShowLoading(sampleId, show){
+  var l = document.getElementById('studio-loading-' + sampleId);
+  if(l) l.style.display = show ? 'block' : 'none';
+}
+function studioHideError(sampleId){
+  var e = document.getElementById('studio-error-' + sampleId);
+  if(e) e.style.display = 'none';
+}
+function studioShowPlayOverlay(sampleId, show){
+  var o = document.getElementById('studio-overlay-' + sampleId);
+  if(o) o.style.display = show ? 'flex' : 'none';
+}
+function studioClearEndTimer(sampleId){
+  var st = PA_STUDIOS[sampleId];
+  if(st && st.endTimer){ clearTimeout(st.endTimer); st.endTimer = null; }
+}
+function studioHideUpNext(sampleId){
+  var u = document.getElementById('studio-upnext-' + sampleId);
+  if(u) u.style.display = 'none';
+}
+function studioShowUpNext(sampleId){
+  var u = document.getElementById('studio-upnext-' + sampleId);
+  if(u){
+    u.style.display = 'block';
+    u.scrollIntoView({behavior: 'smooth', block: 'nearest'});
+  }
+}
+function studioReplayLesson(sampleId){
+  var st = PA_STUDIOS[sampleId];
+  if(!st) return;
+  studioClearEndTimer(sampleId);
+  studioHideUpNext(sampleId);
+  studioLoadScene(sampleId, 0, true);
+}
+function studioRenderMarkers(sampleId){
+  var st = PA_STUDIOS[sampleId];
+  var wrap = document.getElementById('studio-markers-' + sampleId);
+  if(!wrap) return;
+  wrap.innerHTML = '';
+  st.starts.forEach(function(s, i){
+    if(i === 0) return;
+    var m = document.createElement('span');
+    m.className = 'studio-marker';
+    m.style.left = (s / st.total * 100) + '%';
+    m.title = 'Scene ' + (i + 1) + ': ' + st.data.scenes[i].title;
+    wrap.appendChild(m);
+  });
+}
+function studioLoadScene(sampleId, idx, autoplay){
+  var st = PA_STUDIOS[sampleId];
+  if(!st || idx < 0 || idx >= st.data.scenes.length) return;
+  studioStopVisual(sampleId);
+  var scene = st.data.scenes[idx];
+  st.scene = idx; st.beat = -1; st.seenStages = {};
+  studioClearEndTimer(sampleId);
+  studioHideUpNext(sampleId);
+  var audio = st.audio;
+  var wasPlaying = !audio.paused;
+  var setSrc = function(url){
+    audio.src = url;
+    audio.currentTime = 0;
+    /* The open-page autoplay attempt: studioInit sets wantAutoplay, and
+       this runs once the source is set, whether paAudioUrl answered
+       synchronously or not. A refusal here is expected on iOS Safari
+       before the first tap, so it shows the big play overlay, not an error. */
+    if(st.wantAutoplay){
+      st.wantAutoplay = false;
+      studioPlayAudio(sampleId, false);
+    } else if(autoplay || wasPlaying) {
+      studioPlayAudio(sampleId, true);
+    }
+  };
+  /* Signed audio URLs when auth is on (dormant: paAudioUrl falls back to
+     the public path while auth is off). */
+  if(typeof paAudioUrl === 'function'){ paAudioUrl(scene.audio, setSrc); }
+  else { setSrc(scene.audio); }
+  if(typeof soundMuted !== 'undefined') audio.muted = soundMuted;
+  var speed = document.getElementById('studio-speed-' + sampleId);
+  if(speed) audio.playbackRate = parseFloat(speed.value) || 1;
+  document.querySelectorAll('#studio-' + sampleId + ' .studio-scene-vis').forEach(function(el){
+    el.classList.remove('active');
+  });
+  var vis = document.getElementById('studio-vis-' + sampleId + '-' + idx);
+  if(vis) vis.classList.add('active');
+  var tag = document.getElementById('studio-tag-' + sampleId);
+  if(tag) tag.textContent = 'Scene ' + (idx + 1) + ' / ' + st.data.scenes.length;
+  var prog = document.getElementById('studio-prog-' + sampleId);
+  if(prog) prog.textContent = 'Scene ' + (idx + 1) + ' of ' + st.data.scenes.length;
+  var bar = document.getElementById('studio-bar-' + sampleId);
+  if(bar){
+    var done = Object.keys(st.doneScenes).length;
+    bar.style.width = Math.round(done / st.data.scenes.length * 100) + '%';
+  }
+  var concept = document.getElementById('studio-concept-' + sampleId);
+  if(concept) concept.textContent = scene.title;
+  var pts = document.getElementById('studio-points-' + sampleId);
+  if(pts){
+    pts.innerHTML = '';
+    studioPointLabels(scene).forEach(function(p){
+      var li = document.createElement('li'); li.textContent = p; pts.appendChild(li);
+    });
+  }
+  var terms = document.getElementById('studio-terms-' + sampleId);
+  if(terms){
+    terms.innerHTML = '';
+    (scene.terms || []).forEach(function(tm){
+      var p = document.createElement('p');
+      p.className = 'keyterm';
+      var b = document.createElement('b'); b.textContent = tm.term + ': ';
+      p.appendChild(b); p.appendChild(document.createTextNode(tm.def));
+      terms.appendChild(p);
+    });
+  }
+  var tr = document.getElementById('studio-transcript-' + sampleId);
+  if(tr) tr.textContent = scene.transcript || '';
+  var pr = document.getElementById('studio-paras-' + sampleId);
+  if(pr){
+    pr.innerHTML = '';
+    (scene.paragraphs || []).forEach(function(p){
+      var pe = document.createElement('p'); pe.className = 'transcript'; pe.textContent = p; pr.appendChild(pe);
+    });
+  }
+  var tp = document.getElementById('studio-transcript-full-' + sampleId);
+  if(tp){
+    tp.innerHTML = '';
+    st.data.scenes.forEach(function(s){
+      var h = document.createElement('h4'); h.textContent = s.title; tp.appendChild(h);
+      var p = document.createElement('p'); p.textContent = s.transcript || ''; tp.appendChild(p);
+      (s.paragraphs || []).forEach(function(pp){
+        var pe = document.createElement('p'); pe.textContent = pp; tp.appendChild(pe);
+      });
+    });
+  }
+  studioRefresh(sampleId, 0);
+  studioSyncStepButtons(sampleId);
+}
+function studioRefresh(sampleId, tOverride){
+  var st = PA_STUDIOS[sampleId];
+  if(!st || !st.audio) return;
+  var scene = st.data.scenes[st.scene];
+  if(!scene) return;
+  var t = (typeof tOverride === 'number') ? tOverride : st.audio.currentTime;
+  if(!isFinite(t) || t < 0) t = 0;
+  if(t > scene.duration_sec) t = scene.duration_sec;
+  var beatIdx = 0;
+  (scene.beats || []).forEach(function(b, i){
+    if(t >= b.t0) beatIdx = i;
+  });
+  if(beatIdx !== st.beat) studioApplyBeat(sampleId, beatIdx);
+  var V = st.starts[st.scene] + t;
+  var slider = document.getElementById('studio-slider-' + sampleId);
+  if(slider && !st.sliderScrubbing) slider.value = Math.round(V / st.total * 1000);
+  var tm = document.getElementById('studio-time-' + sampleId);
+  if(tm && typeof fmtTime === 'function') tm.textContent = fmtTime(V) + ' / ' + fmtTime(st.total);
+}
+function studioApplyBeat(sampleId, beatIdx){
+  var st = PA_STUDIOS[sampleId];
+  var scene = st.data.scenes[st.scene];
+  var beat = (scene.beats || [])[beatIdx];
+  if(!beat) return;
+  st.beat = beatIdx;
+  studioSyncStepButtons(sampleId);
+  /* Single-lesson page: the stage tag shows the step, not "Scene 1 of 1". */
+  var tag = document.getElementById('studio-tag-' + sampleId);
+  if(tag && st.data.scenes.length === 1){
+    var nb = (scene.beats || []).length;
+    if(nb > 1) tag.textContent = 'Step ' + (beatIdx + 1) + ' of ' + nb;
+  }
+  var root = document.getElementById('studio-' + sampleId);
+  var vis = document.getElementById('studio-vis-' + sampleId + '-' + st.scene);
+  if(vis){
+    /* Beat frames (Nov 2026): show only the frame for this beat, so the
+       visual changes in sync with the narration. */
+    vis.querySelectorAll('.beat-frame').forEach(function(fr){
+      var fi = parseInt(fr.getAttribute('data-frame'), 10);
+      if(fi === beatIdx) fr.classList.add('active');
+      else fr.classList.remove('active');
+    });
+    vis.querySelectorAll('[data-node]').forEach(function(el){ el.classList.remove('node-active'); });
+    vis.querySelectorAll('[data-conn]').forEach(function(el){ el.classList.remove('conn-active'); });
+    vis.querySelectorAll('[data-field]').forEach(function(el){ el.classList.remove('field-active'); });
+    try {
+      (beat.highlight_nodes || []).forEach(function(id){
+        vis.querySelectorAll('[data-node="' + id + '"]').forEach(function(el){ el.classList.add('node-active'); });
+      });
+      (beat.highlight_conns || []).forEach(function(id){
+        vis.querySelectorAll('[data-conn="' + id + '"]').forEach(function(el){ el.classList.add('conn-active'); });
+      });
+      (beat.highlight_fields || []).forEach(function(id){
+        vis.querySelectorAll('[data-field="' + id + '"]').forEach(function(el){ el.classList.add('field-active'); });
+      });
+    } catch(e){ if(window.console) console.error('studio highlight failed', sampleId, e); }
+    vis.querySelectorAll('[data-beat]').forEach(function(el){
+      /* Beat frames carry their own done/now/dim state per frame; the
+         generic beat-on/beat-off toggle would fight it, so skip any
+         element inside a .beat-frame. Other visuals still use it. */
+      if(el.closest && el.closest('.beat-frame')) return;
+      var k = parseInt(el.getAttribute('data-beat'), 10);
+      if(k <= beatIdx){ el.classList.add('beat-on'); el.classList.remove('beat-off'); }
+      else { el.classList.add('beat-off'); el.classList.remove('beat-on'); }
+    });
+    vis.querySelectorAll('[data-stage]').forEach(function(el){
+      var key = el.getAttribute('data-stage');
+      el.classList.remove('done', 'now');
+      if((beat.highlight_nodes || []).indexOf(key) !== -1) el.classList.add('now');
+      else if(st.seenStages[key]) el.classList.add('done');
+    });
+    (beat.highlight_nodes || []).forEach(function(id){ st.seenStages[id] = true; });
+    /* Payment dot: every layout (desktop and mobile SVG) has its own dot,
+       and each dot is placed in the top-right corner of its own node, clear
+       of the centred label text. The old code moved only the first dot to
+       the node centre, where it sat on top of the label. */
+    var dots = vis.querySelectorAll('[data-node="payment-dot"]');
+    var target = (beat.highlight_nodes || [])[0];
+    dots.forEach(function(dot){
+      if(!target) return;
+      try {
+        var svg = dot.closest ? dot.closest('svg') : null;
+        var node = svg ? svg.querySelector('[data-node="' + target + '"]')
+                       : vis.querySelector('[data-node="' + target + '"]');
+        if(node && node.getBBox){
+          var bb = node.getBBox();
+          dot.setAttribute('cx', bb.x + bb.width - 14);
+          dot.setAttribute('cy', bb.y + 14);
+        }
+      } catch(e){}
+    });
+  }
+  var cap = document.getElementById('studio-caption-' + sampleId);
+  if(cap){
+    cap.innerHTML = '';
+    var b = document.createElement('b'); b.textContent = beat.title + ': ';
+    cap.appendChild(b); cap.appendChild(document.createTextNode(beat.note || ''));
+    cap.style.display = st.captions ? 'block' : 'none';
+  }
+  var concept = document.getElementById('studio-concept-' + sampleId);
+  if(concept) concept.textContent = beat.title;
+}
+function studioSceneEnded(sampleId){
+  var st = PA_STUDIOS[sampleId];
+  var scene = st.data.scenes[st.scene];
+  st.doneScenes[scene.id] = true;
+  if(typeof lessonDone === 'function') lessonDone(scene.id);
+  var bar = document.getElementById('studio-bar-' + sampleId);
+  if(bar) bar.style.width = Math.round(Object.keys(st.doneScenes).length / st.data.scenes.length * 100) + '%';
+  if(st.scene + 1 < st.data.scenes.length){
+    studioLoadScene(sampleId, st.scene + 1, true);
+  } else {
+    studioSetPlayLabel(sampleId, false);
+    /* End of the lesson. Show the end state at once (the up-next prompt
+       with the next lesson), then auto-advance to the next lesson within
+       1 second. If this is the final lesson there is no next lesson, so
+       the end state simply stays visible. */
+    studioShowUpNext(sampleId);
+    studioClearEndTimer(sampleId);
+    st.endTimer = setTimeout(function(){
+      var nx = st.data.next_id;
+      if(nx && typeof goLessonAuto === 'function'){ goLessonAuto(nx); }
+      else if(nx && typeof goLesson === 'function'){ goLesson(nx); }
+    }, 1000);
+  }
+}
+function studioSeekVirtual(sampleId, permille){
+  var st = PA_STUDIOS[sampleId];
+  if(!st) return;
+  var V = permille / 1000 * st.total;
+  /* A non-finite seek (bad slider value or missing durations) must never
+     reset the display to 0:00; ignore it instead. */
+  if(!isFinite(V) || V < 0) return;
+  if(V >= st.total) V = st.total - 0.1;
+  var idx = 0;
+  st.starts.forEach(function(s, i){ if(V >= s) idx = i; });
+  var offset = V - st.starts[idx];
+  var audio = st.audio;
+  var apply = function(){
+    try { audio.currentTime = offset; } catch(e){}
+    studioRefresh(sampleId, offset);
+  };
+  if(idx !== st.scene){
+    var wasPlaying = !audio.paused;
+    studioLoadScene(sampleId, idx, false);
+    if(audio.readyState >= 1) apply();
+    else audio.addEventListener('loadedmetadata', apply, {once: true});
+    if(wasPlaying) studioPlayAudio(sampleId, true);
+  } else {
+    apply();
+  }
+}
+function studioSetPlayLabel(sampleId, playing){
+  var st = PA_STUDIOS[sampleId];
+  /* Derive the state from the audio element when the caller does not say:
+     a source change can fire a stray pause event after playback started,
+     and the label must always match what the reader hears. */
+  if(typeof playing === 'undefined' && st && st.audio) playing = !st.audio.paused;
+  var b = document.getElementById('studio-play-' + sampleId);
+  if(b){
+    var icPlay = b.querySelector('.ctrl-ic-play');
+    var icPause = b.querySelector('.ctrl-ic-pause');
+    if(icPlay) icPlay.style.display = playing ? 'none' : '';
+    if(icPause) icPause.style.display = playing ? '' : 'none';
+    b.setAttribute('aria-label', playing ? 'Pause lesson' : 'Play lesson');
+  }
+  /* The big play overlay is the video-player state: shown whenever the
+     narration is not playing, hidden while it plays. */
+  studioShowPlayOverlay(sampleId, !playing);
+  if(playing){
+    studioHideError(sampleId);
+    studioHideUpNext(sampleId);
+    /* Refresh the caption from the current beat, so a stale caption
+       from a blocked autoplay never survives into playback. */
+    if(st) studioApplyBeat(sampleId, st.beat < 0 ? 0 : st.beat);
+  }
+}
+function studioTogglePlay(sampleId){
+  var st = PA_STUDIOS[sampleId];
+  if(!st) return;
+  var a = st.audio;
+  if(a.paused){
+    studioClearEndTimer(sampleId);
+    studioTryPlay(sampleId, true);
+  } else {
+    a.pause();
+  }
+}
+function studioReplayScene(sampleId){
+  var st = PA_STUDIOS[sampleId];
+  if(!st) return;
+  studioClearEndTimer(sampleId);
+  studioHideUpNext(sampleId);
+  st.audio.currentTime = 0;
+  studioTryPlay(sampleId, true);
+  studioRefresh(sampleId, 0);
+}
+/* Step buttons: on a multi-scene sample they move between scenes (the
+   original behaviour); on a single-lesson page there is only one scene,
+   so they step between the beats of that lesson instead. */
+function studioPrevScene(sampleId){
+  var st = PA_STUDIOS[sampleId];
+  if(!st) return;
+  if(st.data.scenes.length > 1){
+    if(st.scene > 0) studioLoadScene(sampleId, st.scene - 1, true);
+  } else {
+    studioStepBeat(sampleId, -1);
+  }
+}
+function studioNextScene(sampleId){
+  var st = PA_STUDIOS[sampleId];
+  if(!st) return;
+  if(st.data.scenes.length > 1){
+    if(st.scene + 1 < st.data.scenes.length) studioLoadScene(sampleId, st.scene + 1, true);
+  } else {
+    studioStepBeat(sampleId, 1);
+  }
+}
+/* Seek the audio to the previous or next beat start, so the frame,
+   highlight and caption follow. A paused lesson stays paused; a playing
+   one keeps playing from the new position. */
+function studioStepBeat(sampleId, dir){
+  var st = PA_STUDIOS[sampleId];
+  if(!st) return;
+  var scene = st.data.scenes[st.scene];
+  if(!scene) return;
+  var beats = scene.beats || [];
+  if(!beats.length) return;
+  var cur = st.beat < 0 ? 0 : st.beat;
+  var target = cur + dir;
+  if(target < 0 || target >= beats.length) return;
+  var t = beats[target].t0 || 0;
+  studioClearEndTimer(sampleId);
+  studioHideUpNext(sampleId);
+  st.audio.currentTime = t + 0.01;
+  studioRefresh(sampleId, st.audio.currentTime);
+}
+function studioSyncStepButtons(sampleId){
+  var st = PA_STUDIOS[sampleId];
+  if(!st) return;
+  var prev = document.getElementById('studio-prevscene-' + sampleId);
+  var next = document.getElementById('studio-nextscene-' + sampleId);
+  if(!prev && !next) return;
+  var scene = st.data.scenes[st.scene];
+  if(st.data.scenes.length > 1){
+    if(prev) prev.disabled = st.scene === 0;
+    if(next) next.disabled = st.scene === st.data.scenes.length - 1;
+  } else {
+    var n = (scene && scene.beats ? scene.beats.length : 0);
+    var b = st.beat < 0 ? 0 : st.beat;
+    if(prev) prev.disabled = b === 0;
+    if(next) next.disabled = b >= n - 1;
+  }
+}
+/* Short step labels for "Key learning points": the beat titles, not the
+   narration sentences, so the list does not repeat the transcript. */
+function studioPointLabels(scene){
+  var beats = scene.beats || [];
+  if(beats.length){
+    return beats.map(function(b){
+      var t = (b.title || '').replace(/^\s+|\s+$/g, '');
+      return t || studioShortLabel(b.note || '');
+    });
+  }
+  return (scene.points || []).map(function(p){ return studioShortLabel(p); });
+}
+function studioShortLabel(text){
+  var t = String(text || '').replace(/\s+/g, ' ').replace(/^\s+|\s+$/g, '').replace(/[.?!]+$/, '');
+  var cut = t.split(/[,;:]/)[0];
+  var words = cut.split(' ').filter(function(w){ return w; });
+  if(words.length > 8) cut = words.slice(0, 8).join(' ');
+  return cut;
+}
+function studioSetSpeed(sampleId, v){
+  var st = PA_STUDIOS[sampleId];
+  if(st) st.audio.playbackRate = parseFloat(v) || 1;
+  var b = document.getElementById('studio-speedbtn-' + sampleId);
+  if(b) b.textContent = (parseFloat(v) || 1) + 'x';
+}
+/* Playback speed cycles 0.75x, 1x, 1.25x, 1.5x (Coursera-style "1x" button). */
+var PA_SPEEDS = [0.75, 1, 1.25, 1.5];
+function studioCycleSpeed(sampleId){
+  var st = PA_STUDIOS[sampleId];
+  if(!st) return;
+  var cur = st.audio.playbackRate || 1;
+  var i = PA_SPEEDS.indexOf(cur);
+  var nxt = PA_SPEEDS[(i + 1) % PA_SPEEDS.length];
+  studioSetSpeed(sampleId, nxt);
+}
+/* Skip forward or back by a number of seconds; the frame, highlight and
+   caption follow because the audio position is the source of truth. */
+function studioSkip(sampleId, secs){
+  var st = PA_STUDIOS[sampleId];
+  if(!st) return;
+  var a = st.audio;
+  var scene = st.data.scenes[st.scene];
+  var sceneDur = (scene && scene.duration_sec) || 0;
+  var dur = a.duration || st.total || 0;
+  var cap = dur;
+  if(sceneDur && (!cap || sceneDur < cap)) cap = sceneDur;
+  /* The audio position is the only clock: skip from where the narration
+     actually is, never from a visual timer. */
+  var cur = a.currentTime;
+  if(!isFinite(cur) || cur < 0) cur = 0;
+  var t = cur + secs;
+  if(t < 0) t = 0;
+  if(cap && t > cap) t = cap;
+  studioClearEndTimer(sampleId);
+  studioHideUpNext(sampleId);
+  try { a.currentTime = t; } catch(e){}
+  studioRefresh(sampleId, t);
+}
+/* Fullscreen the whole player (canvas plus control bar). */
+function studioFullscreen(sampleId){
+  var root = document.getElementById('studio-' + sampleId);
+  var player = root ? root.querySelector('.player') : null;
+  if(!player) return;
+  if(document.fullscreenElement){
+    document.exitFullscreen();
+  } else if(player.requestFullscreen){
+    player.requestFullscreen();
+  }
+}
+/* Settings popover (volume, captions, replay). One open at a time; a click
+   anywhere else closes it. */
+function studioToggleSettings(sampleId, ev){
+  if(ev) ev.stopPropagation();
+  var p = document.getElementById('studio-settings-' + sampleId);
+  if(!p) return;
+  var open = p.style.display === 'block';
+  studioCloseAllSettings();
+  p.style.display = open ? 'none' : 'block';
+}
+function studioCloseAllSettings(){
+  var pops = document.querySelectorAll('.ctrl-popover');
+  for(var i = 0; i < pops.length; i++){ pops[i].style.display = 'none'; }
+}
+document.addEventListener('click', function(){ studioCloseAllSettings(); });
+/* Open the (collapsed) transcript from the right tool rail. */
+function pfOpenTranscript(sampleId){
+  var d = document.getElementById('studio-transcript-details-' + sampleId);
+  if(d){ d.open = true; d.scrollIntoView({behavior:'smooth', block:'start'}); }
+}
+/* Like / dislike / flag under a lesson. Visual only; like and dislike are
+   mutually exclusive. */
+function pfFeedback(btn, kind){
+  if(!btn) return;
+  var row = btn.parentNode;
+  if(kind === 'like' || kind === 'dislike'){
+    var sibs = row ? row.querySelectorAll('.fb-btn') : [];
+    for(var i = 0; i < sibs.length; i++){
+      var k = sibs[i].getAttribute('data-kind');
+      if(k === 'like' || k === 'dislike'){
+        sibs[i].classList.remove('active');
+        sibs[i].setAttribute('aria-pressed', 'false');
+      }
+    }
+    btn.classList.add('active');
+    btn.setAttribute('aria-pressed', 'true');
+  } else {
+    var on = btn.classList.toggle('active');
+    btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+  }
+}
+/* Dive deeper card collapse (the chevron at its top right). */
+function pfToggleDive(btn){
+  var card = btn ? btn.closest('.dive-deeper') : null;
+  if(!card) return;
+  var collapsed = card.classList.toggle('collapsed');
+  btn.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+}
+/* Dive deeper buttons (post-audit): show the panel for simple, summary or
+   example; practice questions scrolls to the Check your understanding card. */
+function pfDive(sampleId, kind){
+  var card = document.getElementById('studio-' + sampleId);
+  if(!card) return;
+  var panel = document.getElementById('dive-panel-' + sampleId);
+  var btns = card.querySelectorAll('.dive-btn');
+  for(var i = 0; i < btns.length; i++){ btns[i].classList.remove('active'); }
+  if(kind === 'practice'){
+    var quiz = document.getElementById('pf-quiz-' + sampleId);
+    if(panel) panel.classList.remove('open');
+    if(quiz){
+      quiz.scrollIntoView({behavior:'smooth', block:'start'});
+      quiz.classList.add('fw-flash');
+      setTimeout(function(){ quiz.classList.remove('fw-flash'); }, 1800);
+    }
+    return;
+  }
+  var btn = card.querySelector('.dive-btn[data-kind="' + kind + '"]');
+  if(btn) btn.classList.add('active');
+  if(!panel) return;
+  var body = panel.querySelector('.dive-panel-body');
+  if(!body) return;
+  var data = null;
+  try { data = JSON.parse(document.getElementById('pf-dive-data-' + sampleId).textContent); } catch(e){}
+  if(!data) return;
+  var html = '';
+  if(kind === 'simple' && data.simple){
+    html = '<h3>In simple terms</h3><p>' + data.simple + '</p>';
+  } else if(kind === 'summary' && data.summary){
+    html = '<h3>Summary</h3><p>' + data.summary + '</p>';
+  } else if(kind === 'example' && data.example){
+    html = '<h3>Real-life example</h3><p>' + data.example + '</p>';
+  }
+  body.innerHTML = html;
+  panel.classList.add('open');
+}
+/* Check your understanding: one tap per option, immediate feedback. */
+function pfCheckAnswer(sampleId, btn){
+  var card = document.getElementById('pf-quiz-' + sampleId);
+  if(!card || !btn) return;
+  var opts = card.querySelectorAll('.quiz-opt');
+  var answer = parseInt(card.getAttribute('data-answer'), 10);
+  var chosen = parseInt(btn.getAttribute('data-idx'), 10);
+  var fb = document.getElementById('pf-quiz-fb-' + sampleId);
+  for(var i = 0; i < opts.length; i++){
+    opts[i].disabled = true;
+    if(i === answer) opts[i].classList.add('correct');
+    if(i === chosen && chosen !== answer) opts[i].classList.add('wrong');
+  }
+  if(fb){
+    var expl = '';
+    var why = '';
+    try {
+      var data = JSON.parse(document.getElementById('pf-quiz-data-' + sampleId).textContent);
+      expl = data.explanation || '';
+      why = data.why_wrong && data.why_wrong[chosen] ? data.why_wrong[chosen] : '';
+    } catch(e){}
+    /* The generic why_wrong ('This is not correct for this question.' +
+       a restatement of the explanation) adds nothing: it repeats the
+       answer. Show the 'why wrong' block only when it says something
+       specific, e.g. 'This describes a different concept...'. */
+    var whyUseful = false;
+    if(why){
+      var w = why.trim();
+      if(w.indexOf('This is not correct for this question') !== 0 && w !== 'This is the correct answer.'){
+        whyUseful = true;
+      }
+    }
+    var head = (chosen === answer)
+      ? '<b>Correct.</b> '
+      : '<b>Not quite.</b> ';
+    var html = head;
+    if(expl) html += '<h4 class="quiz-fb-h">Why this is the answer</h4><p>' + expl + '</p>';
+    if(whyUseful) html += '<h4 class="quiz-fb-h">Why your choice was wrong</h4><p>' + why + '</p>';
+    html += '<button type="button" class="studio-btn" onclick="pfDismissQuiz(this)">Got it, hide this</button>';
+    fb.innerHTML = html;
+    fb.classList.add('open');
+  }
+}
+/* Dismiss the quiz feedback once the reader has read it. The feedback
+   collapses to a small 'Show the explanation' link so it can be reopened. */
+function pfDismissQuiz(btn){
+  if(!btn) return;
+  var fb = btn.closest ? btn.closest('.quiz-feedback') : null;
+  if(!fb) return;
+  var card = fb.closest ? fb.closest('.fw-card') : null;
+  fb.style.display = 'none';
+  if(card && !card.querySelector('.pf-quiz-show')){
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'studio-btn pf-quiz-show';
+    b.textContent = 'Show the explanation';
+    b.onclick = function(){
+      fb.style.display = '';
+      b.remove();
+    };
+    card.appendChild(b);
+  }
+}
+/* Reveal the exercise answer. */
+function pfRevealExercise(sampleId){
+  var ans = document.getElementById('pf-ex-answer-' + sampleId);
+  if(!ans) return;
+  ans.classList.toggle('open');
+  var btn = document.getElementById('pf-ex-btn-' + sampleId);
+  if(btn) btn.textContent = ans.classList.contains('open') ? 'Hide the answer' : 'Show the answer';
+}
+/* Files panel (tool rail): toggle the lesson-files panel. */
+function pfToggleFiles(sampleId){
+  var p = document.getElementById('pf-files-' + sampleId);
+  if(!p) return;
+  p.style.display = (p.style.display === 'none' || p.style.display === '') ? 'block' : 'none';
+}
+/* Download the lesson transcript as a .txt file (built from the page text). */
+function pfDownloadTranscript(sampleId){
+  var t = document.getElementById('studio-transcript-' + sampleId);
+  var paras = document.getElementById('studio-paras-' + sampleId);
+  var text = '';
+  if(t) text += t.textContent + String.fromCharCode(10,10);
+  if(paras){
+    var ps = paras.querySelectorAll('p');
+    for(var i = 0; i < ps.length; i++){ text += ps[i].textContent + String.fromCharCode(10,10); }
+  }
+  if(!text) return;
+  var blob = new Blob([text], {type: 'text/plain'});
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = sampleId.replace('studio-', '') + '-transcript.txt';
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 500);
+}
+/* Save note: a small editor under the title, stored in localStorage per
+   lesson. No server, no account needed. */
+function pfToggleNote(sampleId){
+  var ed = document.getElementById('studio-note-editor-' + sampleId);
+  if(!ed) return;
+  var open = ed.style.display === 'block';
+  ed.style.display = open ? 'none' : 'block';
+  if(!open){
+    var ta = document.getElementById('studio-note-text-' + sampleId);
+    if(ta){
+      try { ta.value = localStorage.getItem('pa-note-' + sampleId) || ''; } catch(e){}
+      ta.focus();
+    }
+  }
+}
+function pfSaveNote(sampleId){
+  var ta = document.getElementById('studio-note-text-' + sampleId);
+  if(!ta) return;
+  try { localStorage.setItem('pa-note-' + sampleId, ta.value); } catch(e){}
+  var msg = document.getElementById('studio-note-saved-' + sampleId);
+  if(msg) msg.style.display = '';
+  var ed = document.getElementById('studio-note-editor-' + sampleId);
+  if(ed) ed.style.display = 'none';
+}
+function studioToggleCaptions(sampleId){
+  var st = PA_STUDIOS[sampleId];
+  if(!st) return;
+  st.captions = !st.captions;
+  var cap = document.getElementById('studio-caption-' + sampleId);
+  if(cap) cap.style.display = st.captions ? 'block' : 'none';
+  var b = document.getElementById('studio-captions-' + sampleId);
+  if(b) b.textContent = st.captions ? 'Captions: On' : 'Captions: Off';
+}
+function studioSetVolume(sampleId, v){
+  var st = PA_STUDIOS[sampleId];
+  if(st) st.audio.volume = parseFloat(v);
+}
+/* Keep the player mute button in step with the audio element. Called on
+   init (after restoring the persisted choice) and on every toggle. */
+function studioSyncMuteButton(sampleId){
+  var st = PA_STUDIOS[sampleId];
+  if(!st) return;
+  var muted = !!st.audio.muted;
+  var b = document.getElementById('studio-mute-' + sampleId);
+  if(!b) return;
+  var lab = b.querySelector('.studio-mute-label');
+  if(lab) lab.textContent = muted ? 'Unmute' : 'Mute';
+  b.setAttribute('aria-label', muted ? 'Unmute narration' : 'Mute narration');
+  b.classList.toggle('muted', muted);
+  var waves = b.querySelectorAll('.studio-mute-waves');
+  for(var i = 0; i < waves.length; i++){ waves[i].style.display = muted ? 'none' : ''; }
+  var x = b.querySelector('.studio-mute-x');
+  if(x) x.style.display = muted ? '' : 'none';
+}
+function studioToggleMute(sampleId){
+  var st = PA_STUDIOS[sampleId];
+  if(!st) return;
+  st.audio.muted = !st.audio.muted;
+  var muted = st.audio.muted;
+  /* Carry the choice across scenes and lessons: the player reloads its
+     audio on every scene change and navigation loads a new page, and both
+     used to reset the sound to On because studioLoadScene re-applied the
+     global (false) mute flag. Persist the choice and keep the global and
+     the header toggle in step. */
+  try {
+    if(typeof soundMuted !== 'undefined') soundMuted = muted;
+    sessionStorage.setItem('pa-sound-muted', muted ? '1' : '0');
+  } catch(e){}
+  var hb = document.getElementById('muteToggle');
+  if(hb) hb.textContent = muted ? 'Sound: Off' : 'Sound: On';
+  studioSyncMuteButton(sampleId);
+}
+function studioBookmark(sampleId){
+  var st = PA_STUDIOS[sampleId];
+  if(!st) return;
+  try {
+    localStorage.setItem('pa-studio-bookmark-' + sampleId, JSON.stringify({
+      scene: st.scene, time: st.audio.currentTime
+    }));
+    var b = document.getElementById('studio-bookmark-' + sampleId);
+    if(b) b.textContent = 'Bookmarked Scene ' + (st.scene + 1);
+  } catch(e){}
+}
+function studioRestoreBookmark(sampleId){
+  var btn = document.getElementById('studio-resume-' + sampleId);
+  if(!btn) return;
+  var raw = null;
+  try { raw = localStorage.getItem('pa-studio-bookmark-' + sampleId); } catch(e){}
+  if(!raw){ btn.style.display = 'none'; return; }
+  try {
+    var bm = JSON.parse(raw);
+    btn.style.display = 'inline-block';
+    btn.textContent = 'Resume: Scene ' + (bm.scene + 1);
+    btn.onclick = function(){
+      var st = PA_STUDIOS[sampleId];
+      studioLoadScene(sampleId, bm.scene, false);
+      var apply = function(){
+        try { st.audio.currentTime = bm.time || 0; } catch(e){}
+        studioRefresh(sampleId, bm.time || 0);
+      };
+      if(st.audio.readyState >= 1) apply();
+      else st.audio.addEventListener('loadedmetadata', apply, {once: true});
+      studioPlayAudio(sampleId, true);
+    };
+  } catch(e){ btn.style.display = 'none'; }
+}
+function studioMarkSceneDone(sampleId){
+  var st = PA_STUDIOS[sampleId];
+  if(!st) return;
+  var scene = st.data.scenes[st.scene];
+  st.doneScenes[scene.id] = true;
+  if(typeof lessonDone === 'function') lessonDone(scene.id);
+  var bar = document.getElementById('studio-bar-' + sampleId);
+  if(bar) bar.style.width = Math.round(Object.keys(st.doneScenes).length / st.data.scenes.length * 100) + '%';
+}
+/* Global previous / next lesson navigation (fixes the missing buttons). */
+function goLesson(sid){
+  var m = sid.match(/^(ch\d+)s(\d+)$/);
+  if(!m) return;
+  var chid = m[1], sidx = parseInt(m[2], 10) - 1;
+  if(typeof pauseAllAudio === 'function') pauseAllAudio();
+  var page = document.getElementById(chid);
+  if(!page) return;
+  if(!page.classList.contains('active')){
+    if(typeof openChapter === 'function') openChapter(chid);
+  }
+  var sampleId = null;
+  Object.keys(PA_STUDIO_DATA).forEach(function(k){
+    if(PA_STUDIO_DATA[k].chapter_id === chid) sampleId = k;
+  });
+  if(sampleId && PA_STUDIOS[sampleId]){
+    studioLoadScene(sampleId, sidx, true);
+    var st = document.getElementById('studio-' + sampleId);
+    if(st) st.scrollIntoView({behavior: 'smooth'});
+  } else {
+    var el = document.getElementById(sid);
+    if(el){
+      el.scrollIntoView({behavior: 'smooth'});
+      if(typeof playSectionAudio === 'function') playSectionAudio(sid);
+    }
+  }
+}
+/* Go to a lesson and autoplay its narration on arrival. Single-page
+   behaviour: open the lesson inside the page. The multi-page build
+   overrides this in nav.js to load lessons/<id>.html?autoplay=1. */
+function goLessonAuto(sid){
+  goLesson(sid);
+}
+function goChapterContents(chid){
+  var toc = document.getElementById('toc-' + chid);
+  if(toc) toc.scrollIntoView({behavior: 'smooth'});
+}
+/* Initialise every studio queued by the chapter pages above. This block
+   runs after the function definitions, so the queue is drained here.
+   Each init is guarded so one bad scene can never abort the rest. */
+(window.__PA_STUDIO_QUEUE || []).forEach(function(item){
+  PA_STUDIO_DATA[item[0]] = item[1];
+  try { studioInit(item[0]); }
+  catch(e){ if(window.console) console.error('studio init failed', item[0], e); }
+});
+

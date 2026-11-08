@@ -1,0 +1,206 @@
+/* PaymentForge insight components.
+ *
+ * Companion stylesheet for content/insight-components.js. Uses the
+ * pf-theme.css design tokens (royal blue primary, premium gold accents,
+ * deep executive navy). Components render on the light page surface by
+ * default. Add class "ic-dark" to a wrapper, or place components inside
+ * a .fw-card, for the dark framework-card context.
+ *
+ * No em dashes anywhere in this file.
+ */
+
+/* ---------- Base block ---------- */
+.ic-block{background:var(--pf-surface,#FFFFFF);border:1px solid var(--pf-line,#E2E8F0);border-radius:var(--pf-radius,12px);padding:18px 20px;margin:18px 0;box-shadow:var(--pf-shadow,0 1px 2px rgba(11,31,61,.06),0 4px 16px rgba(11,31,61,.06))}
+.ic-block p{color:var(--pf-ink-2,#1F2A44);font-size:15px;line-height:1.6;margin:8px 0}
+.ic-label{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--pf-royal-dark,#1E40AF);margin:0 0 8px}
+.ic-title{font-size:18px;color:var(--pf-navy,#0B1F3D);margin:4px 0 10px;line-height:1.3}
+.ic-question{font-size:16px;font-weight:600;color:var(--pf-navy,#0B1F3D);line-height:1.5}
+.ic-context{color:var(--pf-muted,#5B6B85);font-size:15px}
+.ic-note{color:var(--pf-muted,#5B6B85);font-size:14px;font-style:italic}
+.ic-meta{font-size:13px;color:var(--pf-muted,#5B6B85)}
+.ic-takeaway{background:var(--pf-gold-tint,#FBF6E3);border-left:3px solid var(--pf-gold,#C9A227);border-radius:0 8px 8px 0;padding:10px 14px}
+.ic-takeaway strong{color:var(--pf-navy,#0B1F3D)}
+.ic-answer-label{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--pf-success,#15803D);margin:12px 0 4px}
+.ic-list{margin:8px 0;padding-left:20px}
+.ic-list li{margin:6px 0;color:var(--pf-ink-2,#1F2A44);font-size:15px;line-height:1.6}
+
+/* ---------- Buttons ---------- */
+.ic-btn{display:inline-flex;align-items:center;gap:6px;border-radius:8px;padding:10px 18px;font-size:15px;font-weight:600;cursor:pointer;line-height:1.3;border:1px solid transparent}
+.ic-btn-primary{background:var(--pf-royal,#1D4ED8);color:#fff;border-color:var(--pf-royal,#1D4ED8)}
+.ic-btn-primary:hover{background:var(--pf-royal-dark,#1E40AF);color:#fff}
+.ic-btn-primary:disabled{opacity:.5;cursor:default}
+.ic-btn-secondary{background:#fff;color:var(--pf-royal-dark,#1E40AF);border-color:var(--pf-royal,#1D4ED8)}
+.ic-btn-secondary:hover{background:var(--pf-royal-tint,#E8EEFB)}
+.ic-btn-secondary:disabled{opacity:.5;cursor:default}
+
+/* ---------- Tap targets: 44px minimum on every interactive control ----------
+   Layout check: at 390px every button, option and reveal control must be
+   at least 44px tall. min-height with border-box keeps the total rendered
+   height at 44px without changing the visual padding. */
+.ic-btn,.ic-option,.ic-quiz-opt,.ic-flow-step-btn{min-height:44px;box-sizing:border-box}
+
+/* Disabled controls keep full-contrast text. Browsers grey out disabled
+   buttons by default, which turned answered options and the Play/Pause
+   buttons pale grey on white and made them barely readable. */
+.ic-option:disabled,.ic-quiz-opt:disabled,.ic-btn:disabled,.ic-flow-step-btn:disabled{opacity:1}
+.ic-option:disabled{color:var(--pf-ink-2,#1F2A44)}
+.ic-option:disabled .ic-option-label{color:var(--pf-navy,#0B1F3D)}
+.ic-option:disabled .ic-option-detail{color:var(--pf-muted,#5B6B85)}
+.ic-quiz-opt:disabled{color:var(--pf-ink-2,#1F2A44)}
+.ic-btn-primary:disabled{background:var(--pf-royal,#1D4ED8);color:#fff}
+.ic-btn-secondary:disabled{background:#fff;color:var(--pf-royal-dark,#1E40AF)}
+.ic-dark .ic-option:disabled,.fw-card .ic-block .ic-option:disabled{color:#E2E8F0}
+.ic-dark .ic-option:disabled .ic-option-label,.fw-card .ic-block .ic-option:disabled .ic-option-label{color:#fff}
+.ic-dark .ic-quiz-opt:disabled,.fw-card .ic-block .ic-quiz-opt:disabled{color:#E2E8F0}
+.ic-reveal{background:var(--pf-surface-2,#F8FAFC);border:1px solid var(--pf-line,#E2E8F0);border-radius:8px;padding:12px 14px;margin-top:12px}
+.ic-reveal[hidden]{display:none}
+
+/* ---------- 2. Decision branch ---------- */
+.ic-options{display:flex;flex-direction:column;gap:10px;margin:12px 0}
+.ic-option{display:block;width:100%;text-align:left;background:#fff;border:1px solid var(--pf-line-2,#CBD5E1);border-radius:8px;padding:12px 14px;cursor:pointer;font-size:15px;line-height:1.5;color:var(--pf-ink-2,#1F2A44)}
+.ic-option:hover{border-color:var(--pf-royal,#1D4ED8);background:var(--pf-royal-tint,#E8EEFB)}
+.ic-option:disabled{cursor:default}
+.ic-option-label{display:block;font-weight:600;color:var(--pf-navy,#0B1F3D)}
+.ic-option-detail{display:block;font-size:14px;color:var(--pf-muted,#5B6B85);margin-top:2px}
+.ic-option-correct{border-color:var(--pf-success,#15803D);background:var(--pf-success-bg,#F0FDF4)}
+.ic-option-wrong{border-color:var(--pf-error,#B42318);background:var(--pf-error-bg,#FEF3F2)}
+.ic-decision-result{background:var(--pf-surface-2,#F8FAFC);border:1px solid var(--pf-line,#E2E8F0);border-radius:8px;padding:12px 14px;margin-top:12px}
+.ic-decision-result[hidden]{display:none}
+.ic-branches{margin-top:12px}
+.ic-branches[hidden]{display:none}
+.ic-branch-list{margin:8px 0;padding-left:20px}
+.ic-branch-list li{margin:6px 0;color:var(--pf-ink-2,#1F2A44);font-size:15px;line-height:1.6}
+
+/* ---------- 3. Animated flow ---------- */
+.ic-flow-controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:10px 0 16px}
+.ic-flow-status{font-size:13px;color:var(--pf-muted,#5B6B85);font-variant-numeric:tabular-nums}
+.ic-flow-steps{list-style:none;margin:0;padding:0}
+.ic-flow-step{position:relative;margin:0}
+.ic-flow-step-btn{display:flex;align-items:flex-start;gap:12px;width:100%;text-align:left;background:transparent;border:1px solid transparent;border-radius:10px;padding:10px 12px;cursor:pointer}
+.ic-flow-step-btn:hover{background:var(--pf-surface-2,#F8FAFC)}
+.ic-flow-num{flex:0 0 auto;width:30px;height:30px;border-radius:50%;background:var(--pf-surface-2,#F8FAFC);border:2px solid var(--pf-line-2,#CBD5E1);color:var(--pf-muted,#5B6B85);font-size:14px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;line-height:1}
+.ic-flow-body{display:flex;flex-direction:column;gap:2px;min-width:0}
+.ic-flow-title{font-size:15px;font-weight:600;color:var(--pf-navy,#0B1F3D);line-height:1.4}
+.ic-flow-actor{font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--pf-royal-dark,#1E40AF)}
+.ic-flow-note{font-size:14px;color:var(--pf-muted,#5B6B85);line-height:1.5}
+.ic-flow-arrow{display:block;text-align:left;padding-left:26px;color:var(--pf-royal,#1D4ED8);font-size:16px;line-height:1.2}
+.ic-flow-step.ic-flow-now .ic-flow-num{background:var(--pf-royal,#1D4ED8);border-color:var(--pf-royal,#1D4ED8);color:#fff}
+.ic-flow-step.ic-flow-now .ic-flow-step-btn{background:var(--pf-royal-tint,#E8EEFB);border-color:var(--pf-royal,#1D4ED8)}
+.ic-flow-step.ic-flow-done .ic-flow-num{background:var(--pf-success-bg,#F0FDF4);border-color:var(--pf-success,#15803D);color:var(--pf-success,#15803D)}
+.ic-flow-step.ic-flow-done .ic-flow-title{color:var(--pf-muted,#5B6B85)}
+
+/* ---------- 4. Happy vs negative paths ---------- */
+.ic-path-cols{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.ic-path-col{border-radius:8px;padding:14px 16px}
+.ic-path-col h4{margin:0 0 8px;font-size:15px;color:var(--pf-navy,#0B1F3D)}
+.ic-path-happy{background:var(--pf-success-bg,#F0FDF4);border:1px solid #BBF7D0}
+.ic-path-negative{background:var(--pf-warn-bg,#FFFAEB);border:1px solid #FDE68A}
+.ic-path-list{margin:0;padding-left:20px}
+.ic-path-list li{margin:6px 0;color:var(--pf-ink-2,#1F2A44);font-size:15px;line-height:1.6}
+
+/* ---------- 5. Message viewer ---------- */
+.ic-msg-table{width:100%;border-collapse:collapse;margin:10px 0;font-size:14px}
+.ic-msg-table th{text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--pf-muted,#5B6B85);padding:8px 10px;border-bottom:2px solid var(--pf-line,#E2E8F0)}
+.ic-msg-table td{padding:9px 10px;border-bottom:1px solid var(--pf-line,#E2E8F0);color:var(--pf-ink-2,#1F2A44);vertical-align:top;line-height:1.5}
+.ic-msg-table code{background:var(--pf-surface-2,#F8FAFC);border:1px solid var(--pf-line,#E2E8F0);border-radius:4px;padding:1px 5px;font-size:13px;overflow-wrap:normal;word-break:keep-all;white-space:nowrap}
+.ic-msg-table td:first-child{white-space:nowrap}
+.ic-msg-table tr.ic-msg-hl{background:var(--pf-gold-tint,#FBF6E3)}
+.ic-msg-table tr.ic-msg-hl td:first-child{border-left:3px solid var(--pf-gold,#C9A227)}
+.ic-msg-tag{display:inline-block;font-size:11px;font-weight:700;color:var(--pf-gold-dark,#8A6D10);background:#FEF3C7;border-radius:10px;padding:1px 8px;margin-left:6px;white-space:nowrap}
+
+/* ---------- 6. Gherkin ---------- */
+.ic-code{background:var(--pf-code-bg,#0A1A33);color:var(--pf-code-ink,#E2E8F0);border-radius:8px;padding:14px 16px;font-size:14px;line-height:1.7;overflow-x:auto;white-space:pre-wrap;overflow-wrap:anywhere;margin:10px 0}
+.ic-gherkin-name{font-weight:600;color:var(--pf-navy,#0B1F3D);margin:10px 0 0}
+.ic-kw-given{color:#93C5FD;font-weight:700}
+.ic-kw-when{color:#FBBF24;font-weight:700}
+.ic-kw-then{color:#4ADE80;font-weight:700}
+
+/* ---------- 7. Knowledge check ---------- */
+.ic-quiz-q{border-top:1px solid var(--pf-line,#E2E8F0);padding:14px 0 4px;margin-top:12px}
+.ic-quiz-q:first-of-type{border-top:0;margin-top:0}
+.ic-quiz-question{font-size:15px;color:var(--pf-navy,#0B1F3D)}
+.ic-quiz-opt{display:block;width:100%;text-align:left;background:#fff;border:1px solid var(--pf-line-2,#CBD5E1);border-radius:8px;padding:10px 14px;margin:8px 0;font-size:15px;color:var(--pf-ink-2,#1F2A44);cursor:pointer;line-height:1.5}
+.ic-quiz-opt:hover{border-color:var(--pf-royal,#1D4ED8);background:var(--pf-royal-tint,#E8EEFB)}
+.ic-quiz-opt:disabled{cursor:default}
+.ic-quiz-opt.ic-quiz-correct{border-color:var(--pf-success,#15803D);background:var(--pf-success-bg,#F0FDF4);color:#14532D}
+.ic-quiz-opt.ic-quiz-wrong{border-color:var(--pf-error,#B42318);background:var(--pf-error-bg,#FEF3F2);color:#7F1D1D}
+.ic-quiz-feedback{margin-top:12px;font-size:15px;line-height:1.6;color:var(--pf-ink-2,#1F2A44)}
+.ic-quiz-feedback[hidden]{display:none}
+.ic-quiz-score{font-weight:700;color:var(--pf-navy,#0B1F3D);background:var(--pf-royal-tint,#E8EEFB);border-radius:8px;padding:10px 14px;margin-top:14px}
+.ic-quiz-score[hidden]{display:none}
+
+/* ---------- 8. Evidence label ---------- */
+.ic-evidence{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--pf-muted,#5B6B85);border:1px dashed var(--pf-line-2,#CBD5E1);border-radius:8px;padding:8px 12px;margin:12px 0}
+.ic-evidence strong{color:var(--pf-navy,#0B1F3D)}
+.ic-ev-mark{flex:0 0 auto;width:20px;height:20px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;line-height:1}
+.ic-ev-verified .ic-ev-mark{background:var(--pf-success-bg,#F0FDF4);color:var(--pf-success,#15803D);border:1px solid var(--pf-success,#15803D)}
+.ic-ev-reported .ic-ev-mark{background:var(--pf-warn-bg,#FFFAEB);color:var(--pf-warn,#B54708);border:1px solid var(--pf-warn,#B54708)}
+.ic-ev-derived .ic-ev-mark{background:var(--pf-royal-tint,#E8EEFB);color:var(--pf-royal-dark,#1E40AF);border:1px solid var(--pf-royal,#1D4ED8)}
+.ic-ev-practice .ic-ev-mark{background:var(--pf-surface-2,#F8FAFC);color:var(--pf-muted,#5B6B85);border:1px solid var(--pf-line-2,#CBD5E1)}
+.ic-ev-pending .ic-ev-mark{background:var(--pf-warn-bg,#FFFAEB);color:var(--pf-warn,#B54708);border:1px solid var(--pf-warn,#B54708)}
+
+/* ---------- Level composer ---------- */
+.ic-level-part{margin:16px 0}
+.ic-part-label{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--pf-royal-dark,#1E40AF);margin:0 0 6px}
+
+/* ---------- Dark context (inside .fw-card or .ic-dark) ---------- */
+.ic-dark .ic-block,.fw-card .ic-block{background:#0F172A;border-color:#1E3A5F;box-shadow:none}
+.ic-dark .ic-block p,.fw-card .ic-block p{color:#CBD5E1}
+.ic-dark .ic-title,.fw-card .ic-block .ic-title{color:#fff}
+.ic-dark .ic-question,.fw-card .ic-block .ic-question{color:#fff}
+.ic-dark .ic-label,.fw-card .ic-block .ic-label{color:#5EEAD4}
+.ic-dark .ic-part-label,.fw-card .ic-block .ic-part-label{color:#5EEAD4}
+.ic-dark .ic-context,.fw-card .ic-block .ic-context{color:#94A3B8}
+.ic-dark .ic-note,.fw-card .ic-block .ic-note{color:#94A3B8}
+.ic-dark .ic-meta,.fw-card .ic-block .ic-meta{color:#94A3B8}
+.ic-dark .ic-reveal,.fw-card .ic-block .ic-reveal{background:#082F49;border-color:#1E3A5F}
+.ic-dark .ic-option,.fw-card .ic-block .ic-option{background:#0F172A;border-color:#475569;color:#E2E8F0}
+.ic-dark .ic-option:hover,.fw-card .ic-block .ic-option:hover{border-color:#5EEAD4;background:#1E293B}
+.ic-dark .ic-option-label,.fw-card .ic-block .ic-option-label{color:#fff}
+.ic-dark .ic-option-detail,.fw-card .ic-block .ic-option-detail{color:#94A3B8}
+.ic-dark .ic-option-correct,.fw-card .ic-block .ic-option-correct{border-color:#22C55E;background:#14532D;color:#BBF7D0}
+.ic-dark .ic-option-wrong,.fw-card .ic-block .ic-option-wrong{border-color:#EF4444;background:#7F1D1D;color:#FECACA}
+.ic-dark .ic-decision-result,.fw-card .ic-block .ic-decision-result{background:#082F49;border-color:#1E3A5F}
+.ic-dark .ic-branch-list li,.fw-card .ic-block .ic-branch-list li{color:#CBD5E1}
+.ic-dark .ic-flow-step-btn:hover,.fw-card .ic-block .ic-flow-step-btn:hover{background:#1E293B}
+.ic-dark .ic-flow-num,.fw-card .ic-block .ic-flow-num{background:#1E293B;border-color:#475569;color:#94A3B8}
+.ic-dark .ic-flow-title,.fw-card .ic-block .ic-flow-title{color:#fff}
+.ic-dark .ic-flow-actor,.fw-card .ic-block .ic-flow-actor{color:#5EEAD4}
+.ic-dark .ic-flow-note,.fw-card .ic-block .ic-flow-note{color:#94A3B8}
+.ic-dark .ic-flow-step.ic-flow-now .ic-flow-step-btn,.fw-card .ic-block .ic-flow-step.ic-flow-now .ic-flow-step-btn{background:#0C2A44;border-color:#0EA5E9}
+.ic-dark .ic-flow-step.ic-flow-now .ic-flow-num,.fw-card .ic-block .ic-flow-step.ic-flow-now .ic-flow-num{background:#0EA5E9;border-color:#0EA5E9;color:#fff}
+.ic-dark .ic-path-col h4,.fw-card .ic-block .ic-path-col h4{color:#0B1F3D}
+.ic-dark .ic-msg-table th,.fw-card .ic-block .ic-msg-table th{color:#94A3B8;border-bottom-color:#1E3A5F}
+.ic-dark .ic-msg-table td,.fw-card .ic-block .ic-msg-table td{color:#CBD5E1;border-bottom-color:#1E3A5F}
+.ic-dark .ic-msg-table code,.fw-card .ic-block .ic-msg-table code{background:#1E293B;border-color:#334155;color:#E2E8F0}
+.ic-dark .ic-msg-table tr.ic-msg-hl,.fw-card .ic-block .ic-msg-table tr.ic-msg-hl{background:#292524}
+.ic-dark .ic-quiz-opt,.fw-card .ic-block .ic-quiz-opt{background:#0F172A;border-color:#475569;color:#E2E8F0}
+.ic-dark .ic-quiz-opt:hover,.fw-card .ic-block .ic-quiz-opt:hover{border-color:#5EEAD4;background:#1E293B}
+.ic-dark .ic-quiz-opt.ic-quiz-correct,.fw-card .ic-block .ic-quiz-opt.ic-quiz-correct{border-color:#22C55E;background:#14532D;color:#BBF7D0}
+.ic-dark .ic-quiz-opt.ic-quiz-wrong,.fw-card .ic-block .ic-quiz-opt.ic-quiz-wrong{border-color:#EF4444;background:#7F1D1D;color:#FECACA}
+.ic-dark .ic-quiz-question,.fw-card .ic-block .ic-quiz-question{color:#fff}
+.ic-dark .ic-quiz-feedback,.fw-card .ic-block .ic-quiz-feedback{color:#CBD5E1}
+.ic-dark .ic-quiz-score,.fw-card .ic-block .ic-quiz-score{background:#0C2A44;color:#fff}
+.ic-dark .ic-quiz-q,.fw-card .ic-block .ic-quiz-q{border-top-color:#1E3A5F}
+.ic-dark .ic-evidence,.fw-card .ic-block .ic-evidence{color:#94A3B8;border-color:#334155}
+.ic-dark .ic-evidence strong,.fw-card .ic-block .ic-evidence strong{color:#fff}
+.ic-dark .ic-gherkin-name,.fw-card .ic-block .ic-gherkin-name{color:#fff}
+.ic-dark .ic-list li,.fw-card .ic-block .ic-list li{color:#CBD5E1}
+.ic-dark .ic-path-list li,.fw-card .ic-block .ic-path-list li{color:#1F2A44}
+.ic-dark .ic-takeaway,.fw-card .ic-block .ic-takeaway{background:#292524;border-left-color:#C9A227}
+.ic-dark .ic-takeaway strong,.fw-card .ic-block .ic-takeaway strong{color:#fff}
+
+/* ---------- Mobile ---------- */
+@media (max-width: 760px){
+  .ic-block{padding:14px 16px;margin:14px 0}
+  .ic-path-cols{grid-template-columns:1fr}
+  .ic-msg-table{display:block;overflow-x:auto}
+  .ic-flow-controls{flex-direction:column;align-items:stretch}
+  .ic-flow-controls .ic-btn{width:100%;justify-content:center}
+  .ic-btn{padding:11px 16px}
+}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce){
+  .ic-block *{animation:none !important;transition:none !important;scroll-behavior:auto !important}
+}

@@ -1,0 +1,1008 @@
+/* ==========================================================================
+   PaymentForge design layer v2 - professional Coursera-style redesign
+   (6 Nov 2026)
+   --------------------------------------------------------------------------
+   DROP-IN REPLACEMENT for ~/workspace/paymentforge-v2/pf-theme.css.
+   build-multipage.py copies that file verbatim to dist/assets/pf-theme.css,
+   so replacing it there and rebuilding is the whole integration. No build
+   script change, no HTML change, no JS change is needed.
+
+   This file loads AFTER site.css and studio.css, so on equal specificity
+   these rules win. It commits the whole site to ONE coherent light theme.
+
+   WHY A FULL REWRITE WAS NEEDED
+   The old layer tried to flip a dark theme (site.css: navy background,
+   light text, dark cards) to light by overriding a handful of selectors.
+   Most components were never overridden, so the site was a patchwork:
+   light page background with dark chapter cards, dark simulator panels,
+   dark tables, dark FAQ, dark footer, plus white cards in other places.
+   Three rounds of contrast-bug patches in the old file were symptoms of
+   that incomplete flip. This layer restyles EVERY component to light, so
+   there is one theme, one palette, one type scale, one spacing rhythm.
+
+   DESIGN TOKENS - one palette, one scale, one system. No rogue colours.
+   PALETTE v3 (6 Nov 2026, colour revision): the minty teal + peachy amber
+   of v2 read as a generic startup palette. This version is royal blue +
+   premium gold on deep executive navy - the palette of a premium
+   professional academy (trust and learning in the blue, achievement and
+   value in the gold, authority in the navy). Royal blue is the single
+   accent (buttons, links, active states, progress, play). Gold is used
+   sparingly (the hero primary CTA, achievement highlights, small markers).
+   Navy is text, brand, and the hero. A deep professional green is used
+   only for success states. Layout, type scale, spacing, radius, and
+   shadows are unchanged from v2; this revision is colour only.
+   ========================================================================== */
+:root{
+  --pf-navy:#0B1F3D;
+  --pf-royal:#1D4ED8;
+  --pf-royal-dark:#1E40AF;
+  --pf-royal-tint:#E8EEFB;
+  --pf-royal-light:#93C5FD; /* light royal blue, for text on dark
+                              surfaces only (console/log). Never on light. */
+  --pf-gold:#C9A227;
+  --pf-gold-dark:#8A6D10;
+  --pf-gold-tint:#FBF6E3;
+  --pf-bg:#F5F7FA;
+  --pf-surface:#FFFFFF;
+  --pf-surface-2:#F8FAFC;
+  --pf-ink:#0B1F3D;
+  --pf-ink-2:#1F2A44;
+  --pf-muted:#5B6B85;
+  --pf-faint:#5B6B85; /* 8 Nov 2026: was #8A97AC, 2.75:1 on the page
+                        background, too faint to read for breadcrumbs and
+                        placeholders. Same value as --pf-muted now, about
+                        5.5:1 on #F5F7FA. */
+  --pf-line:#E2E8F0;
+  --pf-line-2:#CBD5E1;
+  --pf-success:#15803D;
+  --pf-success-bg:#F0FDF4;
+  --pf-error:#B42318;
+  --pf-error-bg:#FEF3F2;
+  --pf-warn:#B54708;
+  --pf-warn-bg:#FFFAEB;
+  --pf-code-bg:#0A1A33;
+  --pf-code-ink:#E2E8F0;
+  --pf-radius:12px;
+  --pf-radius-sm:8px;
+  --pf-shadow:0 1px 2px rgba(11,31,61,.06),0 4px 16px rgba(11,31,61,.06);
+  --pf-shadow-hover:0 2px 4px rgba(11,31,61,.08),0 8px 24px rgba(11,31,61,.10);
+}
+
+/* ============================ Base ============================ */
+body{background:var(--pf-bg);color:var(--pf-ink-2);font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased;padding-bottom:72px}
+main{display:block;max-width:1180px;margin:0 auto;padding:24px 20px 64px}
+.container{max-width:1180px}
+h1,h2,h3,h4{color:var(--pf-navy);line-height:1.25;letter-spacing:-.015em;font-weight:700}
+h1{font-size:30px;margin:0 0 12px}
+h2{font-size:23px;margin:28px 0 10px}
+h3{font-size:18px;margin:20px 0 8px}
+h4{font-size:16px;margin:16px 0 6px}
+p{margin-bottom:14px;color:var(--pf-ink-2)}
+ul,ol{margin:0 0 14px 1.4rem;color:var(--pf-ink-2)}
+li{margin-bottom:6px}
+a{color:var(--pf-royal);text-decoration:none}
+a:hover{text-decoration:underline}
+b,strong{color:var(--pf-navy)}
+:focus-visible{outline:2px solid var(--pf-royal);outline-offset:2px;border-radius:4px}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--pf-royal);outline-offset:2px}
+section[id],.studio,.chapter-page,h1,h2{scroll-margin-top:88px}
+
+/* Eyebrow labels: the single small-caps style used site-wide. */
+.eyebrow{color:var(--pf-royal-dark);font-weight:700;text-transform:uppercase;letter-spacing:.08em;font-size:12px;margin-bottom:8px}
+.section-intro{color:var(--pf-muted);max-width:72ch;margin-bottom:24px;font-size:16px}
+.section{padding:40px 0}
+.section-alt{background:var(--pf-surface-2)}
+.crumbs{color:var(--pf-faint);font-size:14px;margin:16px 0 8px}
+.crumbs a{color:var(--pf-royal)}
+
+/* ============================ Tables (light, one style) ============================ */
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15px;background:var(--pf-surface)}
+th,td{border:1px solid var(--pf-line);padding:10px 12px;text-align:left;vertical-align:top;color:var(--pf-ink-2)}
+th{background:var(--pf-surface-2);color:var(--pf-navy);font-weight:700}
+tr:hover td{background:var(--pf-surface-2)}
+td code, th code{color:var(--pf-royal-dark)}
+
+/* ============================ Code (one dark console style) ============================ */
+/* Code and XML panels are the ONE deliberate dark element on the light
+   page, like a terminal in documentation. A single deep navy, used
+   consistently, instead of three competing dark blues. */
+code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:var(--pf-royal-tint);padding:2px 6px;border-radius:6px;font-size:.88em;color:var(--pf-royal-dark)}
+pre{background:var(--pf-code-bg);padding:16px;border-radius:var(--pf-radius);overflow-x:auto;font-size:14px;line-height:1.55;margin:16px 0;color:var(--pf-code-ink);border:1px solid #223A5F}
+pre code{background:none;padding:0;color:#BFDBFE}
+.api-pre,.xml-panel{background:var(--pf-code-bg);border:1px solid #223A5F;border-radius:var(--pf-radius-sm);padding:14px;overflow-x:auto;font-size:13px;line-height:1.55;white-space:pre-wrap;overflow-wrap:anywhere;max-width:100%;box-sizing:border-box;color:var(--pf-code-ink);margin:12px 0}
+.xml-panel .field-active{background:#14532D;color:#BBF7D0;border-radius:4px;padding:0 2px}
+.xml-panel .tag{color:#93C5FD}
+.xml-panel span[data-field]{border-radius:3px}
+.xml-missing{color:#FCA5A5;background:rgba(248,113,113,.14);outline:1px dashed #F87171}
+.xml-caption{color:var(--pf-muted);font-size:13px;font-style:italic;margin:4px 0 10px}
+
+/* ============================ Forms ============================ */
+input,select,textarea{font-family:inherit;font-size:15px;color:var(--pf-ink);background:var(--pf-surface);border:1px solid var(--pf-line-2);border-radius:var(--pf-radius-sm);padding:9px 12px;max-width:100%}
+input:focus,select:focus,textarea:focus{border-color:var(--pf-royal);outline:2px solid var(--pf-royal);outline-offset:1px}
+input::placeholder{color:var(--pf-faint)}
+label{color:var(--pf-ink-2);font-size:15px}
+
+/* ============================ Buttons: ONE system ============================ */
+/* Every button on the site maps onto one of these four styles.
+   Primary = royal blue fill, white text (readable, distinctive).
+   Secondary = white, navy border, navy text.
+   Quiet = transparent, royal text.
+   Danger = muted red. All 8px radius, 600 weight, same padding. */
+.btn,.studio-btn,.simA-btn,.api-btn,.player-btn,.pa-test-intro button,.pa-test-run button,.pa-test-result button,.pa-review button,.diagram-controls button,.hero-cta button,.quiz button,.think button,.replay-btn,.page-nav a,.lesson-nav .studio-btn,.trace-btn,.explorer-tab,.trace-tab,.mode-tab,.quiz-opt,.simb-sm-event,.simA-node,.simb-hub-card,.simb-sm-state{
+  font-family:inherit;font-size:15px;font-weight:600;border-radius:var(--pf-radius-sm);padding:10px 18px;cursor:pointer;border:1px solid transparent;transition:background .15s,border-color .15s,box-shadow .15s,transform .12s;text-decoration:none;line-height:1.4;
+}
+/* Primary */
+.btn-teal,.studio-btn.primary,.hero-cta button,.pa-cta,.hero .pa-cta,.hero a.btn,.home-hero a.btn,.hero .cta{
+  background:var(--pf-royal);color:#FFFFFF;border-color:var(--pf-royal);
+}
+.btn-teal:hover,.studio-btn.primary:hover,.hero-cta button:hover,.pa-cta:hover,.hero .pa-cta:hover,.hero a.btn:hover,.home-hero a.btn:hover,.hero .cta:hover{
+  background:#1E40AF;color:#FFFFFF;text-decoration:none;box-shadow:var(--pf-shadow);
+}
+/* Secondary (the default for most buttons) */
+.btn,.studio-btn,.simA-btn,.api-btn,.player-btn,.pa-test-intro button,.pa-test-run button,.pa-test-result button,.pa-review button,.diagram-controls button,.quiz button,.think button,.replay-btn,.page-nav a,.trace-btn,.explorer-tab,.trace-tab,.mode-tab,.quiz-opt,.simb-hub-card,.simb-sm-state{
+  background:var(--pf-surface);color:var(--pf-navy);border-color:var(--pf-line-2);
+}
+.btn:hover,.studio-btn:hover,.simA-btn:hover,.api-btn:hover,.player-btn:hover,.pa-test-intro button:hover,.pa-test-run button:hover,.pa-test-result button:hover,.pa-review button:hover,.diagram-controls button:hover,.quiz button:hover,.think button:hover,.replay-btn:hover,.page-nav a:hover,.trace-btn:hover,.explorer-tab:hover,.trace-tab:hover,.mode-tab:hover,.quiz-opt:hover,.simb-hub-card:hover,.simb-sm-state:hover{
+  border-color:var(--pf-royal);color:var(--pf-royal-dark);text-decoration:none;box-shadow:var(--pf-shadow);
+}
+/* Ghost */
+.btn-ghost,.hero-cta button.hero-cta-secondary{background:transparent;color:var(--pf-royal);border-color:var(--pf-line-2)}
+.btn-ghost:hover,.hero-cta button.hero-cta-secondary:hover{border-color:var(--pf-royal);color:var(--pf-royal);background:var(--pf-surface-2);text-decoration:none}
+/* Gold CTA (hero primary only - used sparingly) */
+.hero .pa-cta,.hero a.btn,.home-hero a.btn,.hero .cta{background:var(--pf-gold);color:var(--pf-navy);border-color:var(--pf-gold)}
+.hero .pa-cta:hover,.hero a.btn:hover,.home-hero a.btn:hover,.hero .cta:hover{background:#B8912A;color:var(--pf-navy)}
+button:disabled,.studio-btn:disabled,.simA-btn:disabled,.simb-exc-btn:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
+button:disabled:hover,.studio-btn:disabled:hover{box-shadow:none;border-color:var(--pf-line-2);color:var(--pf-navy)}
+
+/* ============================ Header / topbar ============================ */
+/* Coursera-style: white, sticky, thin bottom border. The old navy header
+   made every page feel heavy before the content even started. */
+header{position:sticky;top:0;z-index:100;background:var(--pf-surface);border-bottom:1px solid var(--pf-line);box-shadow:0 1px 4px rgba(11,31,61,.05)}
+.topbar{background:var(--pf-surface);border-bottom:1px solid var(--pf-line);box-shadow:0 1px 4px rgba(11,31,61,.05)}
+.topbar-row,.header-inner{display:flex;align-items:center;gap:16px;padding:12px 20px;max-width:1180px;margin:0 auto;flex-wrap:wrap}
+.nav{display:flex;align-items:center;gap:16px;padding:12px 20px;max-width:1180px;margin:0 auto;flex-wrap:wrap}
+.brand,.logo{font-weight:800;font-size:18px;color:var(--pf-navy);white-space:nowrap;text-decoration:none;letter-spacing:-.02em}
+.brand span,.logo span{color:var(--pf-royal)}
+.topbar .brand,.topbar a{color:var(--pf-navy)}
+.topbar .brand span{color:var(--pf-royal)}
+.topnav,.header-inner nav,.nav-links{display:flex;gap:4px;margin-left:auto;font-size:14px;align-items:center;flex-wrap:wrap}
+.topnav a,.header-inner nav a,.nav-links a{color:var(--pf-ink-2);text-decoration:none;font-weight:600;padding:8px 12px;border-radius:var(--pf-radius-sm)}
+.topnav a:hover,.header-inner nav a:hover,.nav-links a:hover{color:var(--pf-royal-dark);background:var(--pf-royal-tint);text-decoration:none}
+.sound,.mute-btn,.header-inner .mute-btn{border:1px solid var(--pf-line-2);background:var(--pf-surface);color:var(--pf-ink-2);border-radius:var(--pf-radius-sm);padding:7px 12px;font-size:13px;cursor:pointer;font-weight:600}
+.sound:hover,.mute-btn:hover,.header-inner .mute-btn:hover{border-color:var(--pf-royal);color:var(--pf-royal-dark)}
+.voice-toggle{background:var(--pf-royal);color:#FFFFFF;border:none;padding:7px 14px;border-radius:999px;font-weight:700;cursor:pointer;font-size:13px}
+.voice-toggle.off{background:var(--pf-surface-2);color:var(--pf-muted);border:1px solid var(--pf-line-2)}
+.progress-wrap{position:static;height:4px;background:var(--pf-line)}
+.progress-bar{height:100%;background:var(--pf-royal);width:0%;transition:width .2s}
+
+/* ============================ Hero ============================ */
+/* One calm brand moment: solid deep navy, a thin royal rule at the base,
+   generous whitespace, one headline, one clear next step. The old
+   diagonal gradient plus decorative SVG plus three CTAs competed for
+   attention; this version has a single visual hierarchy. */
+.hero,.home-hero{background:var(--pf-navy);color:#fff;border-radius:0 0 16px 16px;border-bottom:4px solid var(--pf-royal);padding:56px 24px 44px;text-align:center}
+.hero h1,.home-hero h1{color:#fff;font-size:clamp(28px,4.5vw,40px);line-height:1.2;margin-bottom:12px}
+.hero h1 .hl{color:#93C5FD}
+.hero .tagline,.home-hero .tagline{color:#93C5FD;font-weight:700;letter-spacing:.06em;font-size:13px;text-transform:uppercase;margin-bottom:12px}
+.hero p,.home-hero p{color:#CBD5E1;font-size:17px;line-height:1.65}
+.hero p.lede{font-size:18px;color:#CBD5E1;max-width:680px;margin:0 auto 24px}
+.hero-cta,.cta-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:8px}
+.hero-cta .pa-cta-outline{background:transparent;border:2px solid var(--pf-royal);color:#fff}
+.hero-cta .pa-cta-outline:hover{background:var(--pf-royal);color:#FFFFFF;text-decoration:none}
+.hero-stats{display:flex;justify-content:center;gap:0;flex-wrap:wrap;margin:32px 0 8px}
+.hero-stats>div{text-align:center;padding:0 32px;border-left:1px solid rgba(255,255,255,.14)}
+.hero-stats>div:first-child{border-left:none}
+.hero-stats b{display:block;font-size:28px;color:#fff;line-height:1.2}
+.hero-stats span{font-size:14px;color:#94A3B8}
+.hero-paths{display:flex;gap:8px;justify-content:center;align-items:center;flex-wrap:wrap;margin:24px auto 0;max-width:900px}
+.hero-paths-label{color:#94A3B8;font-size:14px}
+.hero-paths a{color:#fff;border:1px solid rgba(255,255,255,.28);border-radius:999px;padding:6px 14px;font-size:14px;font-weight:600}
+.hero-paths a:hover{border-color:var(--pf-royal);color:#93C5FD;text-decoration:none}
+.hero svg{max-width:760px;margin:24px auto 0;display:block;opacity:.55}
+.hero svg line{stroke:#1E40AF}
+.hero-flow{max-width:900px;margin:24px auto 0;position:relative;height:90px}
+.flow-node{fill:#1E3252;stroke:var(--pf-royal);stroke-width:1.5}
+.flow-label{fill:#E2E8F0;font-size:11px;font-family:inherit}
+.flow-dot{fill:var(--pf-gold)}
+
+/* ============================ Cards: ONE card style ============================ */
+/* Every card on the site is now the same object: white, 1px light border,
+   12px radius, one subtle shadow, 20-24px padding. No coloured top bars,
+   no dark variants, no dashed borders. Titles are navy 17px semibold,
+   body is slate 15px. A small royal eyebrow label carries the category
+   instead of a coloured bar. */
+.card,.chapter-card,.link-card,.hp-card,.dash-card,.test-card,.stage-card,.lab-card,.scen-card,.track-card,.project-card,.career-card,.radar-card,.session-block,.bundle-card,.outcome-panel,.trace-step,.trace-detail,.quiz-q,.faq-item,.lesson-text,.pa-test-intro,.pa-test-run,.pa-test-result,.pa-review,.simA-panel,.simA-log,.simb-panel,.simb-acct-step,.simb-sm-log,.pay-method,.bundle-detail,.hp-dash-card{
+  background:var(--pf-surface);border:1px solid var(--pf-line);border-radius:var(--pf-radius);padding:20px 22px;margin:16px 0;color:var(--pf-ink-2);box-shadow:var(--pf-shadow);
+}
+.card h2,.chapter-card h3,.link-card b,.hp-card b,.dash-card b,.test-card h3,.stage-card h3,.lab-card h3,.scen-card h3,.track-card h3,.project-card h3,.career-card h3,.radar-card h3,.session-block h3,.bundle-card h3,.outcome-panel h2,.trace-step b,.quiz-q h3,.lesson-text h2,.simb-panel h3,.simb-acct-step h3,.simb-sm-log h3,.simA-panel h3,.simA-log h3,.bundle-detail h3,.pay-method h4{
+  color:var(--pf-navy);margin:0 0 8px;font-size:17px;line-height:1.35;
+}
+.card h3,.card p,.chapter-card p,.link-card span,.hp-card span,.dash-card span,.test-card p,.stage-card p,.lab-card p,.scen-card p,.track-card p,.project-card p,.career-card p,.radar-card p,.session-block p,.bundle-card p,.outcome-panel p,.trace-step p,.quiz-q p,.lesson-text p,.lesson-text ul,.simb-panel p,.simb-acct-step p,.pay-method p{
+  color:var(--pf-muted);font-size:15px;line-height:1.6;
+}
+.card ul,.lesson-text ul{color:var(--pf-ink-2)}
+.link-card,.hp-card,.chapter-card{display:block;text-decoration:none;transition:transform .12s,box-shadow .12s,border-color .12s}
+.link-card:hover,.hp-card:hover,.chapter-card:hover{transform:translateY(-2px);box-shadow:var(--pf-shadow-hover);border-color:var(--pf-royal);text-decoration:none}
+.link-card b,.hp-card b{display:block;font-size:17px;color:var(--pf-navy);margin-bottom:6px}
+.link-card span,.hp-card span{display:block;font-size:15px;line-height:1.6;color:var(--pf-muted)}
+.link-card::after,.hp-card::after,.link-card[href="diagnostic.html"]::after,.link-card[href="simulators.html"]::after,.link-card[href="projects.html"]::after{display:none}
+.chapter-card .ch-num,.bundle-tag{color:var(--pf-royal-dark);font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.chapter-card .meta,.bundle-meta{color:var(--pf-muted);font-size:14px;margin:6px 0}
+/* Bundle detail page: body text is dark ink, never washed out, and the
+   Buy / Back buttons sit in a flex row that stacks on a phone so they
+   can never overlap. */
+.bundle-detail p{color:var(--pf-ink-2)}
+.bundle-detail .bundle-tag{color:var(--pf-royal-dark)}
+.bundle-detail .bundle-meta{color:var(--pf-muted)}
+.bundle-actions{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0}
+.bundle-actions .studio-btn{white-space:nowrap}
+.bundle-included{columns:1}
+.bundle-included li{margin-bottom:6px}
+@media (max-width:640px){
+  .bundle-actions{flex-direction:column}
+  .bundle-actions .studio-btn{width:100%;text-align:center;white-space:normal}
+  .bundle-chapters{columns:1}
+}
+.chapter-card .tag,.bundle-flag,.bundle-owned,.lock-badge{display:inline-block;background:var(--pf-royal-tint);color:var(--pf-royal-dark);font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px;margin-right:6px}
+.chapter-card.locked{opacity:1;border-style:solid}
+.chapter-card .lock-badge{background:var(--pf-gold-tint);color:var(--pf-gold-dark)}
+.bundle-flag{position:absolute;top:14px;right:14px}
+.bundle-price{color:var(--pf-navy);font-size:24px;font-weight:700}
+.price-note{color:var(--pf-muted);font-size:13px;font-weight:400}
+.bundle-chapters{columns:2;column-gap:28px}
+.bundle-chapters li{margin-bottom:6px;break-inside:avoid}
+.bundle-map{margin-top:28px}
+.bundle-map table{font-size:14px}
+.pay-slot{background:var(--pf-surface-2);border:1px dashed var(--pf-gold);border-radius:var(--pf-radius-sm);padding:12px 14px;color:var(--pf-ink-2);font-size:14px}
+.chapter-grid,.link-card-grid,.hp-grid,.bundle-grid,.dash-grid,.hp-dash{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin:20px 0}
+.hp-grid{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.dash-grid{grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:14px 0}
+.hp-dash{grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin:16px 0}
+.hp-section{margin:40px 0}
+.hp-note,.dash-note{color:var(--pf-muted);font-size:14px}
+.intro-card{background:var(--pf-surface);border:1px solid var(--pf-line);border-radius:var(--pf-radius);box-shadow:var(--pf-shadow);padding:28px 32px;margin:32px 0}
+.intro-card p{color:var(--pf-ink-2);max-width:75ch}
+.intro-card b{color:var(--pf-navy)}
+.hp-dash-card{background:var(--pf-surface)}
+.hp-dash-card b{color:var(--pf-navy);font-size:22px}
+.hp-dash-card span{color:var(--pf-muted);font-size:14px}
+.hp-dash-card ul{margin:8px 0 0 18px;color:var(--pf-ink-2);font-size:14px}
+.dash-bar{background:var(--pf-line);border-radius:999px;height:8px;margin-top:10px;overflow:hidden}
+.dash-bar div{background:var(--pf-royal);height:100%;width:0%}
+
+/* ============================ Footer (light) ============================ */
+footer{background:var(--pf-surface);border-top:1px solid var(--pf-line);padding:40px 20px;margin-top:48px}
+footer p{max-width:1180px;margin:0 auto 8px;color:var(--pf-muted);font-size:14px}
+footer a{color:var(--pf-royal)}
+footer .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:32px}
+footer h4{color:var(--pf-navy);margin-bottom:8px;font-size:15px}
+footer p,footer a{color:var(--pf-muted);font-size:14px}
+
+/* ============================ Lesson layout ============================ */
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:28px;align-items:start}
+.layout>div{min-width:0}
+@media(max-width:960px){.layout{grid-template-columns:minmax(0,1fr)}}
+
+/* ============ Coursera-style lesson page (Nov 2026) ============ */
+/* Measured from the reference screenshot (1906x928): left sidebar 540px
+   (28.3%), centre 1152px (60.4%), right rail 156px (8.2%), 24px gaps,
+   16px page margins. Page #F2F5FA, cards white, blue #0056D2, green
+   check #197D12, current-lesson highlight #F0F6FF, text #1F1F1F,
+   secondary #5F6368, progress blue #3587FC. */
+.lesson-page{background:#F2F5FA}
+.lesson-page .crumbs{display:none}
+main:has(> .lesson-page){max-width:1906px;padding:0 0 64px}
+body:has(.lesson-page) .header-inner{max-width:1906px}
+.lesson-shell{display:grid;grid-template-columns:5.4fr 11.5fr 1.6fr;gap:24px;max-width:1906px;margin:0 auto;padding:24px 16px 48px;align-items:start}
+.lesson-shell>*{min-width:0}
+.lesson-page .lesson-nav{display:none}
+/* --- Left sidebar: course rail --- */
+.course-rail{position:sticky;top:76px;background:#fff;border:1px solid #E5E7EB;border-radius:12px;padding:24px 24px 16px;box-shadow:0 1px 2px rgba(16,24,40,.05)}
+.rail-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding-bottom:16px;border-bottom:1px solid #E5E7EB}
+.rail-head h2{margin:0;font-size:22px;line-height:1.3;font-weight:700;color:#1F1F1F}
+.rail-close{flex:0 0 auto;background:none;border:0;font-size:26px;line-height:1;color:#1F1F1F;cursor:pointer;padding:0 2px;text-decoration:none}
+.rail-close:hover{color:#0056D2}
+.goal-card{margin:16px 0;border:1px solid #E5E7EB;border-radius:12px;overflow:hidden}
+.goal-head{display:flex;align-items:center;gap:10px;background:#F2F5FA;padding:14px 16px}
+.goal-flag{width:32px;height:32px;border-radius:50%;background:#E5E7EB;color:#1F1F1F;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto}
+.goal-head b{font-size:16px;font-weight:700;color:#1F1F1F;flex:1 1 auto}
+.goal-chev{color:#1F1F1F;font-size:14px;flex:0 0 auto}
+.goal-body{margin:0;padding:16px;font-size:15px;line-height:1.5;color:#1F1F1F}
+.course-rail .lesson-list{list-style:none;margin:8px 0 0;padding:0;max-height:56vh;overflow-y:auto}
+.course-rail .lesson-list li{margin:0;border-radius:8px;background:#fff}
+.course-rail .lesson-list li a{display:flex;align-items:flex-start;gap:14px;padding:18px 12px;border-radius:8px;text-decoration:none;color:#1F1F1F}
+.course-rail .lesson-list li a:hover{background:#F2F5FA}
+.course-rail .lesson-list li.current{background:#F0F6FF}
+.course-rail .lesson-list li.current a:hover{background:transparent}
+.pf-check{flex:0 0 auto;width:26px;height:26px;border-radius:50%;border:2px solid #D1D5DB;background:#fff;display:inline-flex;align-items:center;justify-content:center;margin-top:2px}
+.pf-check svg{opacity:0;display:block}
+.course-rail .lesson-list li.done .pf-check{background:#197D12;border-color:#197D12}
+.course-rail .lesson-list li.done .pf-check svg{opacity:1}
+.li-text{flex:1 1 auto;min-width:0}
+.li-text .t{display:block;font-size:16px;font-weight:400;line-height:1.4;color:#1F1F1F;overflow-wrap:anywhere}
+.li-text .m{display:block;font-size:14px;line-height:1.4;color:#5F6368;margin-top:2px}
+.course-rail .lesson-list li.current .li-text .t{font-weight:700}
+/* --- Centre column: white card holding player, title, dive deeper --- */
+.lesson-main{min-width:0;background:#fff;border:1px solid #E5E7EB;border-radius:12px;padding:24px;box-shadow:0 1px 2px rgba(16,24,40,.05)}
+.lesson-main .studio{margin:0}
+.lesson-page .lesson-title-row h1{font-size:32px;line-height:1.25;font-weight:700;color:#1F1F1F}
+.lesson-page .player{border-radius:12px}
+/* --- Right tool rail --- */
+.tool-rail{position:sticky;top:76px;background:#fff;border:1px solid #E5E7EB;border-radius:12px;padding:36px 8px;display:flex;flex-direction:column;align-items:center;gap:48px}
+.rail-tool{display:flex;flex-direction:column;align-items:center;gap:8px;background:none;border:0;cursor:pointer;color:#1F1F1F;padding:4px 2px;width:100%}
+.rail-tool svg{color:#1F1F1F}
+.rail-tool span{font-size:14px;color:#5F6368}
+.rail-tool:hover span{color:#0056D2}
+/* --- Lesson page on phones: single column, player first, then title,
+   then the lesson list, then Dive deeper. The rail becomes a row. --- */
+@media(max-width:960px){
+  .lesson-shell{display:flex;flex-direction:column;gap:20px;padding:16px 16px 40px}
+  .lesson-main{display:contents}
+  .lesson-main .studio{display:contents}
+  .lesson-shell .player{order:1}
+  .lesson-shell .lesson-title-row{order:2}
+  .lesson-shell .lesson-meta-line{order:3}
+  .lesson-shell .lesson-note-saved{order:3}
+  .lesson-shell .note-editor{order:3}
+  .lesson-shell .course-rail{order:4;position:static}
+  .lesson-shell .dive-deeper{order:5;background:#fff;border:1px solid #E5E7EB}
+  .lesson-shell .lesson-feedback{order:6}
+  .lesson-shell .tool-rail{order:7;position:static;flex-direction:row;justify-content:center;gap:32px;padding:16px}
+  .lesson-shell .chips{order:8}
+  .lesson-shell .learn-card{order:9}
+  /* 7 Nov 2026: the framework cards (.fw-card: Exercise, Practice
+     question, What to remember) had NO order here, so they defaulted to
+     order 0 and rendered ABOVE the player (order 1) on phones. They now
+     sit after the What you will learn card, below the video. The studio
+     caption and error lines get the same treatment so nothing else can
+     jump above the player. */
+  .lesson-shell .fw-card{order:9}
+  .lesson-shell .studio-caption{order:1}
+  .lesson-shell .studio-error{order:1}
+  .lesson-shell .upnext{order:10}
+  .lesson-shell .transcript-card{order:11}
+  .lesson-shell .studio-note{order:12}
+  .lesson-page .lesson-title-row h1{font-size:26px}
+  .lesson-page .lesson-title-row{margin:20px 0 4px}
+}
+.chapter-layout{display:grid;grid-template-columns:220px 1fr;gap:32px;padding:32px 0;align-items:start}
+@media(max-width:768px){.chapter-layout{grid-template-columns:1fr}}
+.chapter-page{display:none}
+.chapter-page.active{display:block}
+.chapter-hero{background:var(--pf-surface-2);padding:40px 0 24px;border-bottom:1px solid var(--pf-line)}
+.chapter-hero h1{font-size:clamp(24px,4vw,32px)}
+.chapter-hero .meta{color:var(--pf-muted);margin-top:8px}
+.ch-sec{margin-bottom:32px;padding-bottom:28px;border-bottom:1px solid var(--pf-line)}
+.ch-sec h2{font-size:22px;margin-bottom:10px}
+.ch-sec h2 .sec-num{color:var(--pf-gold-dark);margin-right:8px}
+.chapter-meta{color:var(--pf-muted);font-size:14px;margin:6px 0 18px}
+.part-block{margin:32px 0}
+.part-block h2{color:var(--pf-navy);font-size:22px;margin-bottom:6px}
+.part-block p.part-desc{color:var(--pf-muted);margin-bottom:14px}
+
+/* ============================ Lesson player: a proper video player ============================ */
+/* The player is a dark video stage on a light page, exactly like Coursera:
+   the video area is dark, everything around it is light and calm.
+   THE KEY FIX: the canvas is a fixed 16:9 box on every lesson, so the
+   player is the same size on every page. The old canvas used
+   min-height:340px plus 160px of bottom padding, so its height depended
+   on the diagram content and varied page to page. */
+.studio{border-radius:var(--pf-radius);overflow:hidden;box-shadow:var(--pf-shadow);background:var(--pf-surface);margin:20px 0}
+.player{background:var(--pf-surface);border:1px solid var(--pf-line);border-radius:var(--pf-radius);overflow:hidden}
+.studio-canvas{position:relative;background:#0B1F3D;aspect-ratio:auto;min-height:0;height:auto;display:flex;align-items:center;justify-content:center;padding:18px 18px 100px 18px;min-width:0;overflow:hidden}
+.studio-scene-vis{display:none;flex:1;min-width:0}
+.studio-scene-vis.active{display:block}
+.studio-canvas svg.flow-mobile{display:none}
+/* Beat frames cross-fade (Nov 2026, blackout fix): all frames stack in one
+   grid cell and cross-fade by opacity, so the outgoing diagram is still
+   visible while the incoming one fades in. The old display:none swap
+   vanished the old frame instantly and faded the new one in from
+   transparent, which read as a blackout and a PPT slide change. Done steps
+   dim, the current step is bright blue, upcoming steps dim more. The
+   payment dot travels from the previous actor to the current one. */
+.beat-frames{display:grid;width:100%}
+.beat-frame{grid-area:1/1;opacity:0;visibility:hidden;transition:opacity .45s ease,visibility 0s linear .45s;pointer-events:none}
+.beat-frame.active{opacity:1;visibility:visible;transition:opacity .45s ease;pointer-events:auto}
+.beat-frame .bf-done{opacity:.75;transition:opacity .45s ease}
+.beat-frame .bf-dim{opacity:.5;transition:opacity .45s ease}
+.beat-frame .bf-now{opacity:1}
+.beat-frame .bf-now rect{transition:stroke .45s ease,fill .45s ease}
+.bf-paydot{animation:bf-dot-travel .9s ease-out .15s both}
+@keyframes bf-dot-travel{from{opacity:0;transform:translate(var(--dx,0px),var(--dy,0px))}to{opacity:1;transform:translate(0,0)}}
+.bf-paydot .bf-pulse{transform-box:fill-box;transform-origin:center;animation:bf-pulse 2.4s ease-out 1.1s infinite}
+@keyframes bf-pulse{0%{transform:scale(.6);opacity:.7}70%{transform:scale(2.4);opacity:0}100%{transform:scale(2.4);opacity:0}}
+.studio-canvas svg,.diagram svg,.visual-sample2 svg{width:100%;height:auto;display:block}
+/* The large play overlay was removed (Nov 2026): it sat at the bottom of
+   the canvas and overlapped the caption text. Play is now via the
+   control-bar play button only, matching Coursera. */
+.studio-caption{margin:0;color:var(--pf-ink-2);font-size:15px;background:var(--pf-surface);border-top:1px solid var(--pf-line);padding:12px 16px;min-height:48px}
+.studio-caption b{color:var(--pf-royal-dark)}
+/* Player controls live INSIDE the video (Nov 2026, Netflix-style): the bar
+   is overlaid at the bottom of the canvas and shows only on hover, on
+   mouse move, or when paused. It hides after 3s of stillness while
+   playing. The grey bar below the canvas is gone. */
+.playerbar{position:absolute;left:0;right:0;bottom:0;z-index:20;display:flex;flex-direction:column;gap:0;padding:22px 14px 8px;background:linear-gradient(to top,rgba(3,10,20,.93) 0%,rgba(3,10,20,.62) 55%,rgba(3,10,20,0) 100%);border-top:0;opacity:0;pointer-events:none;transition:opacity .3s ease}
+.player.show-controls .playerbar{opacity:1;pointer-events:auto}
+/* Touch devices have no hover: keep the control bar visible. The JS
+   auto-hide is also disabled on coarse pointers; this is the fallback
+   so the bar is usable even before the script runs. */
+@media (pointer: coarse){
+.playerbar{opacity:1;pointer-events:auto}
+}
+.playerbar .studio-btn{margin:0;padding:8px 14px}
+.studio-progress{position:relative;height:22px}
+.studio-progress input[type=range]{width:100%;accent-color:#3587FC;margin:0;display:block}
+.studio-markers{position:absolute;left:0;right:0;top:0;height:6px;pointer-events:none}
+.studio-marker{position:absolute;top:0;width:3px;height:6px;background:var(--pf-gold);border-radius:2px;transform:translateX(-50%)}
+.ctrl-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.ctrl-btn{background:transparent;border:0;color:#fff;width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;border-radius:8px;padding:0;flex:0 0 auto}
+.ctrl-btn:hover{background:rgba(255,255,255,.2)}
+.ctrl-btn:disabled{opacity:.45;cursor:not-allowed}
+.ctrl-btn:disabled:hover{background:transparent}
+.ctrl-btn svg{display:block}
+.ctrl-step{font-size:30px;line-height:1;color:#fff}
+.ctrl-speed{width:auto;padding:0 10px;font-size:16px;font-weight:700;color:#fff}
+.ctrl-time{color:#fff;font-size:16px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.studio-time{color:#fff;font-size:16px;white-space:nowrap}
+.player-stage{font-size:13px;color:#fff;white-space:nowrap}
+.playerbar-spacer{flex:1 1 auto}
+.ctrl-settings-wrap{position:relative;display:inline-flex}
+.ctrl-popover{position:absolute;bottom:54px;right:0;background:#0F172A;border:1px solid #1E3A5F;border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:10px;z-index:5;min-width:210px;box-shadow:0 8px 24px rgba(0,0,0,.35)}
+.ctrl-pop-row{display:flex;align-items:center;gap:8px;color:#E2E8F0;font-size:14px}
+.ctrl-popover .studio-btn{text-align:left}
+.studio-error{display:none;color:var(--pf-error);background:var(--pf-error-bg);border:1px solid #FECDC2;border-radius:var(--pf-radius-sm);padding:10px 14px;margin:0 16px 12px;font-size:14px}
+/* First-play buffering state (Nov 2026): shown until the narration can
+   actually play. Mirrored in visual_engine.py STUDIO_CSS; keep both in sync. */
+.studio-loading{display:none;color:var(--pf-royal-dark);background:var(--pf-royal-tint);border:1px solid #BFDBFE;border-radius:var(--pf-radius-sm);padding:10px 14px;margin:0 16px 12px;font-size:14px}
+.studio-note{color:var(--pf-muted);font-size:13px;margin-top:12px}
+/* Diagram highlight: palette royal, not the old light-teal/sky-blue. */
+.studio-canvas .node-active rect{stroke:var(--pf-royal) !important;stroke-width:3 !important}
+.studio-canvas path.conn-active,.studio-canvas line.conn-active,.studio-canvas .conn-active line,.studio-canvas .conn-active path{stroke:var(--pf-royal) !important;stroke-width:3 !important}
+.studio-canvas .beat-off{opacity:.55}
+.studio-canvas .beat-on{opacity:1}
+svg .active,svg .on,svg [data-active="1"]{filter:drop-shadow(0 0 6px rgba(29,78,216,.5));transition:filter .3s}
+@keyframes pf-flow{to{stroke-dashoffset:-24}}
+svg path[stroke-dasharray],svg line[stroke-dasharray]{animation:pf-flow 1.4s linear infinite}
+
+/* Lesson title and meta */
+.lesson-meta{margin:20px 0 4px}
+.lesson-meta h1{margin:0 0 6px;font-size:26px;color:var(--pf-navy)}
+.lesson-meta p{margin:0;color:var(--pf-muted);font-size:14px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.chip{font-size:12px;font-weight:600;border:1px solid var(--pf-line-2);border-radius:999px;padding:4px 12px;color:var(--pf-ink-2);background:var(--pf-surface-2)}
+.keyterm{margin:8px 0;font-size:14px;color:var(--pf-ink-2)}
+.keyterm b{color:var(--pf-royal-dark)}
+.transcript,.studio-transcript{color:var(--pf-ink-2);font-size:15px;line-height:1.7}
+.studio-transcript{margin-top:14px}
+.studio-transcript summary,.transcript summary{cursor:pointer;color:var(--pf-royal-dark);font-weight:700}
+.studio-transcript p,.transcript p{color:var(--pf-ink-2);font-size:15px}
+.studio-terms{font-size:14px;color:var(--pf-ink-2)}
+.transcript{background:var(--pf-surface-2);border:1px solid var(--pf-line);border-radius:var(--pf-radius-sm);padding:12px 16px;margin:8px 0 14px}
+
+/* End-of-lesson prompt: a clean white card, not a dark blue box. */
+.upnext{border:1px solid var(--pf-line);border-left:4px solid var(--pf-royal);border-radius:var(--pf-radius);box-shadow:var(--pf-shadow);background:var(--pf-surface);padding:20px 22px;margin:20px 0}
+.upnext .tag{display:inline-block;font-size:12px;font-weight:700;color:var(--pf-royal-dark);background:var(--pf-royal-tint);border-radius:6px;padding:3px 10px;margin-bottom:8px;text-transform:uppercase;letter-spacing:.06em}
+.upnext h2{margin:0 0 4px;font-size:19px;color:var(--pf-navy)}
+.upnext p{margin:0 0 14px;color:var(--pf-muted);font-size:14px}
+.upnext .row{display:flex;gap:10px;flex-wrap:wrap}
+.upnext .row .studio-btn{padding:8px 14px}
+.lesson-nav{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:20px 0}
+.lesson-nav .studio-btn{flex:0 0 auto;min-width:0;text-align:center;padding:8px 14px;font-size:14px}
+.lesson-nav .lesson-nav-mid{color:var(--pf-muted);font-size:13px;flex:0 0 auto}
+.page-nav{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:20px 0}
+.page-nav a{flex:1;min-width:170px;text-align:center}
+.page-nav a.disabled{opacity:.45;pointer-events:none}
+
+/* ============================ Course-content sidebar ============================ */
+.side{position:sticky;top:76px}
+.side .card{margin-top:0}
+.side h2{font-size:16px}
+.side .card{background:var(--pf-surface);border:1px solid var(--pf-line);border-radius:var(--pf-radius);box-shadow:var(--pf-shadow)}
+.side .lesson-list{list-style:none;margin:12px 0;padding:0;max-height:60vh;overflow-y:auto}
+.side .lesson-list li{border:1px solid transparent;border-radius:var(--pf-radius-sm);padding:0;margin:4px 0;background:transparent}
+.side .lesson-list li a{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:10px 12px;border-radius:var(--pf-radius-sm);text-decoration:none;color:var(--pf-navy)}
+.side .lesson-list li a .t{flex:1 1 auto;min-width:0;overflow-wrap:anywhere;line-height:1.4;font-size:14px;font-weight:600;color:var(--pf-ink-2)}
+.side .lesson-list li a .m{flex:0 0 auto;font-variant-numeric:tabular-nums;color:var(--pf-muted);font-size:13px;padding-top:2px;white-space:nowrap}
+.side .lesson-list li a .done{flex:0 0 auto;color:var(--pf-royal-dark);font-size:12px;font-weight:700}
+.side .lesson-list li a:hover{background:var(--pf-surface-2)}
+.side .lesson-list li.current{border-color:var(--pf-royal);background:var(--pf-royal-tint)}
+.side .lesson-list li.current a{background:transparent}
+.side .lesson-list li.current a .t{color:var(--pf-navy)}
+.side .lesson-list li.done{border-color:var(--pf-line)}
+.side .lesson-list li.done a .t::before{content:"\2713\00a0";color:var(--pf-royal)}
+.side .progress{height:8px;background:var(--pf-line);border-radius:999px;overflow:hidden;margin:8px 0 4px}
+.side .progress .fill,.side .progress i{display:block;height:100%;width:0%;background:var(--pf-royal);transition:width .5s ease}
+.progtext{font-size:12px;color:var(--pf-muted)}
+@media(min-width:961px){.side{position:sticky;top:76px}}
+@media(max-width:960px){.side{position:static}}
+
+/* Callouts, think boxes, diagrams */
+.callout{background:var(--pf-surface-2);border-left:4px solid var(--pf-royal);padding:14px 18px;border-radius:0 var(--pf-radius-sm) var(--pf-radius-sm) 0;margin:16px 0}
+.callout.warn{border-left-color:var(--pf-gold)}
+.callout b{color:var(--pf-navy)}
+.think{background:var(--pf-surface);border:1px dashed var(--pf-royal);border-radius:var(--pf-radius);padding:16px 18px;margin:16px 0}
+.think b{color:var(--pf-royal-dark)}
+.think .answer{display:none;margin-top:8px;color:var(--pf-muted)}
+.think .answer.show{display:block}
+.diagram{background:var(--pf-surface);border:1px solid var(--pf-line);border-radius:var(--pf-radius);padding:18px;margin:20px 0}
+.diagram h4{margin-top:0;color:var(--pf-navy)}
+.diagram-caption{color:var(--pf-muted);font-size:14px;font-style:italic;margin:6px 0 16px;text-align:center}
+.diagram-controls{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;align-items:center}
+.stage-info{background:var(--pf-surface-2);border-radius:var(--pf-radius-sm);padding:12px 16px;margin-top:12px;font-size:15px;min-height:48px}
+.stage-info b{color:var(--pf-royal-dark)}
+.diag-node{cursor:pointer}
+.diag-node rect{fill:var(--pf-surface-2);stroke:var(--pf-royal);stroke-width:1.5;rx:8}
+.diag-node.active rect{fill:var(--pf-royal);stroke:var(--pf-gold);stroke-width:2}
+.diag-node.active text{fill:#FFFFFF}
+.diag-node text{fill:var(--pf-ink);font-size:12px;font-weight:600}
+.diag-label{fill:var(--pf-muted);font-size:11px}
+.diag-bal{fill:var(--pf-gold-dark);font-size:12px;font-weight:700}
+.diag-path{stroke:var(--pf-line-2);stroke-width:2;fill:none}
+.diag-path.active{stroke:var(--pf-royal)}
+.diag-dot{fill:var(--pf-gold)}
+.diag-arrow{fill:var(--pf-royal)}
+/* Stage labels sit on the dark diagram canvas, so they stay light: the
+   earlier light-theme override set them to muted navy and royal-dark,
+   which is 3.1:1 and 1.9:1 on dark navy, nearly invisible. These values
+   match STUDIO_CSS, the layer that owns the canvas. */
+.stage-label{fill:#94A3B8;font-size:14px}
+.stage-label.done{fill:#34D399;font-weight:700}
+.stage-label.now{fill:#5EEAD4;font-weight:700}
+.session-block h3{color:var(--pf-navy)}
+.session-link{display:inline-block;background:var(--pf-surface);border:1px solid var(--pf-line-2);color:var(--pf-ink-2);border-radius:var(--pf-radius-sm);padding:6px 12px;margin:4px 6px 4px 0;text-decoration:none;font-size:14px}
+.session-link:hover{border-color:var(--pf-royal);color:var(--pf-royal-dark)}
+
+/* ============================ Simulators ============================ */
+/* Simulator panels are light cards, exactly like every other card.
+   Controls use the one button system. The ONLY dark element is the
+   system log, kept as a single consistent "console" so it reads as a
+   terminal rather than as a random dark panel. */
+.sim-bank{background:var(--pf-surface);border:1px solid var(--pf-line);border-radius:var(--pf-radius);padding:16px;text-align:center;box-shadow:var(--pf-shadow)}
+.sim-bank h4{margin:0 0 4px}
+.sim-bank .bal{font-size:26px;font-weight:800;color:var(--pf-navy)}
+.sim-bank .bal.neg{color:var(--pf-error)}
+.sim-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:16px 0}
+.sim-log,.simA-log,.simb-sm-log{background:var(--pf-code-bg);border:1px solid #223A5F;border-radius:var(--pf-radius);padding:14px 18px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:14px;max-height:220px;overflow-y:auto;line-height:1.6;color:var(--pf-code-ink);margin:12px 0}
+/* Headings inside the dark console stay light. (The card-heading rule
+   above sets h3 to navy; these dark panels need the light tint.) */
+.sim-log h3,.simA-log h3,.simb-sm-log h3{color:var(--pf-royal-light);margin:0 0 6px;font-size:15px}
+.sim-log div,.simA-log li,.simb-sm-log li{margin-bottom:4px}
+.sim-log .in{color:var(--pf-royal-light)}
+.sim-log .out{color:#FCA5A5}
+.sim-log .info{color:#94A3B8}
+.simA-controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:12px 0}
+.simA-label{color:var(--pf-muted);font-size:14px}
+.simA-label select,.simA-label input[type="number"]{background:var(--pf-surface);color:var(--pf-ink);border:1px solid var(--pf-line-2);border-radius:var(--pf-radius-sm);padding:6px 8px;font-size:14px;margin-left:4px}
+.simA-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin:14px 0}
+.simA-track{position:relative;height:10px;background:var(--pf-line);border-radius:999px;margin:22px 0 8px}
+.simA-track-fill{position:absolute;left:0;top:0;bottom:0;width:0%;background:var(--pf-royal);border-radius:999px}
+.simA-dot{position:absolute;top:50%;left:0%;width:22px;height:22px;margin:-11px 0 0 -11px;background:var(--pf-gold);border:2px solid var(--pf-surface);border-radius:50%;box-shadow:var(--pf-shadow)}
+.simA-stage-nodes{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
+.simA-node{background:var(--pf-surface);border:1px solid var(--pf-line-2);color:var(--pf-ink-2);border-radius:var(--pf-radius-sm);padding:6px 10px;cursor:pointer;font-size:13px}
+.simA-node.done{background:var(--pf-success-bg);border-color:var(--pf-royal);color:var(--pf-royal-dark)}
+.simA-node.active{background:var(--pf-royal);color:#FFFFFF;border-color:var(--pf-royal);font-weight:700}
+.simA-node.failed{background:var(--pf-error-bg);border-color:#FECDC2;color:var(--pf-error)}
+.simA-fail{background:var(--pf-error-bg);border:1px solid #FECDC2;border-radius:var(--pf-radius);padding:16px 20px;margin:12px 0;color:var(--pf-error)}
+.simA-fail h3{color:var(--pf-error);margin:0 0 8px}
+.simA-ok{background:var(--pf-success-bg);border:1px solid var(--pf-royal);border-radius:var(--pf-radius);padding:16px 20px;margin:12px 0;color:var(--pf-royal-dark)}
+.simA-chain{display:flex;gap:0;flex-wrap:wrap;align-items:stretch;margin:16px 0}
+.simA-box{background:var(--pf-surface);border:1px solid var(--pf-royal);border-radius:var(--pf-radius-sm);padding:12px 14px;min-width:150px;max-width:230px;color:var(--pf-ink-2)}
+.simA-box b{display:block;color:var(--pf-royal-dark);margin-bottom:4px}
+.simA-box .simA-amt{color:var(--pf-gold-dark);font-weight:700}
+.simA-arrow{align-self:center;color:var(--pf-royal);font-size:22px;font-weight:700;padding:0 8px}
+.simA-lane{background:var(--pf-surface);border:1px solid var(--pf-line);border-radius:var(--pf-radius);padding:14px 18px;margin:12px 0;color:var(--pf-ink-2);box-shadow:var(--pf-shadow)}
+.simA-lane h3{color:var(--pf-navy);margin:0 0 8px}
+.simA-table{width:100%;border-collapse:collapse;margin:12px 0;font-size:14px;background:var(--pf-surface)}
+.simA-table th,.simA-table td{border:1px solid var(--pf-line);padding:8px 10px;text-align:left;vertical-align:top}
+.simA-table th{background:var(--pf-surface-2);color:var(--pf-navy)}
+.simA-steps li{margin-bottom:10px;padding:10px 12px;border:1px solid var(--pf-line);border-radius:var(--pf-radius-sm);list-style:none;background:var(--pf-surface)}
+.simA-steps li.simA-current{border-color:var(--pf-royal);background:var(--pf-royal-tint);color:var(--pf-ink-2)}
+.simA-steps li.simA-done{border-color:var(--pf-royal)}
+.simA-steps li.simA-bad{border-color:#FECDC2;background:var(--pf-error-bg);color:var(--pf-error)}
+.simA-msg{background:var(--pf-surface-2);border:1px solid var(--pf-line);border-radius:var(--pf-radius-sm);padding:10px 14px;margin:8px 0;font-size:14px;color:var(--pf-ink-2)}
+.simA-msg b{color:var(--pf-royal-dark)}
+.simb-note{color:var(--pf-muted);font-size:14px}
+.simb-hub-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin:14px 0}
+.simb-hub-card{background:var(--pf-surface);border:1px solid var(--pf-line-2);color:var(--pf-ink-2);border-radius:var(--pf-radius-sm);padding:12px 14px;cursor:pointer;font-size:15px;text-align:left}
+.simb-hub-card:hover{border-color:var(--pf-royal)}
+.simb-hub-card.active{background:var(--pf-royal);color:#FFFFFF;border-color:var(--pf-royal)}
+.simb-hub-num{display:inline-block;background:var(--pf-surface-2);color:var(--pf-royal-dark);border-radius:50%;width:24px;height:24px;line-height:24px;text-align:center;font-size:13px;font-weight:700;margin-right:8px}
+.simb-hub-card.active .simb-hub-num{background:#FFFFFF;color:var(--pf-royal)}
+.simb-exc-btn{display:block;width:100%;margin:8px 0}
+.simb-exc-btn.simb-ok{background:var(--pf-success-bg);border-color:var(--pf-royal);color:var(--pf-royal-dark)}
+.simb-exc-btn.simb-bad{background:var(--pf-error-bg);border-color:#FECDC2;color:var(--pf-error)}
+.simb-ok{color:var(--pf-royal-dark);font-weight:700}
+.simb-bad{color:var(--pf-error);font-weight:700}
+.simb-xml-tree{background:var(--pf-code-bg);border:1px solid #223A5F;border-radius:var(--pf-radius-sm);padding:12px 16px;overflow-x:auto;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:14px;margin:12px 0;color:var(--pf-code-ink)}
+.simb-xml-children{margin-left:22px;border-left:1px solid #334155;padding-left:8px}
+.simb-xml-line{padding:2px 0;white-space:nowrap}
+.simb-xml-toggle{background:var(--pf-surface);border:1px solid var(--pf-royal);color:var(--pf-royal-dark);border-radius:4px;width:20px;height:20px;line-height:18px;cursor:pointer;font-size:13px;margin-right:6px;padding:0}
+.simb-xml-tag{color:#93C5FD;cursor:pointer}
+.simb-xml-tag:hover{text-decoration:underline}
+.simb-xml-leaf{color:var(--pf-code-ink);cursor:pointer}
+.simb-xml-leaf:hover{text-decoration:underline}
+.simb-xml-val{color:var(--pf-gold)}
+.simb-xml-close{color:#94A3B8}
+.simb-xml-sel{background:#223A5F;border-radius:4px;padding:0 4px}
+.simb-sm-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin:14px 0}
+.simb-sm-state{background:var(--pf-surface);border:1px solid var(--pf-line-2);color:var(--pf-ink-2);border-radius:var(--pf-radius-sm);padding:12px 14px;cursor:pointer;font-size:15px;text-align:left}
+.simb-sm-state:hover{border-color:var(--pf-royal)}
+.simb-sm-state.active{background:var(--pf-royal);color:#FFFFFF;border-color:var(--pf-royal);font-weight:700}
+.simb-sm-state.viewed{border-color:var(--pf-gold)}
+.simb-sm-terminal{border-style:dashed}
+.simb-sm-events{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.simb-sm-event{background:var(--pf-surface);border:1px solid var(--pf-royal);color:var(--pf-royal-dark);border-radius:var(--pf-radius-sm);padding:8px 14px;cursor:pointer;font-size:14px}
+.simb-sm-event:hover{background:var(--pf-royal);color:#FFFFFF}
+
+/* ============================ Explorer, trace, labs, tests, FAQ ============================ */
+.explorer-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.explorer-tab{background:var(--pf-surface);border:1px solid var(--pf-line-2);color:var(--pf-ink-2);border-radius:var(--pf-radius-sm);padding:6px 12px;cursor:pointer;font-size:14px}
+.explorer-tab.active{background:var(--pf-royal);color:#FFFFFF;border-color:var(--pf-royal);font-weight:700}
+.explorer-tab[hidden]{display:none}
+.explorer-table{width:100%;border-collapse:collapse;margin:12px 0;font-size:14px;background:var(--pf-surface)}
+.explorer-table th,.explorer-table td{border:1px solid var(--pf-line);padding:8px 10px;text-align:left;vertical-align:top}
+.explorer-table th{background:var(--pf-surface-2);color:var(--pf-navy)}
+.explorer-table code{color:var(--pf-gold-dark)}
+.explorer-search{margin:10px 0 4px;color:var(--pf-ink-2)}
+.explorer-search::placeholder{color:var(--pf-faint)}
+.explorer-count,.explorer-meta{color:var(--pf-muted);font-size:14px}
+.trace-tabs{display:flex;gap:10px;margin:16px 0;flex-wrap:wrap}
+.trace-tab{background:var(--pf-surface);color:var(--pf-ink-2);border:1px solid var(--pf-line-2);border-radius:var(--pf-radius-sm);padding:10px 18px;cursor:pointer;font-size:15px}
+.trace-tab.active{background:var(--pf-royal);color:#FFFFFF;border-color:var(--pf-royal);font-weight:700}
+.trace-steps{display:flex;flex-direction:column;gap:12px;margin:16px 0}
+.trace-stages{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0}
+.trace-btn{background:var(--pf-surface);border:1px solid var(--pf-line-2);color:var(--pf-ink-2);border-radius:var(--pf-radius-sm);padding:6px 10px;cursor:pointer;font-size:13px}
+.trace-btn.active{background:var(--pf-royal);color:#FFFFFF;border-color:var(--pf-royal);font-weight:700}
+.trace-progress{background:var(--pf-line);border-radius:999px;height:10px;margin:14px 0 4px;overflow:hidden}
+.trace-progress-fill{background:var(--pf-royal);height:100%;width:5%;transition:width .45s ease}
+.trace-counter{color:var(--pf-muted);font-size:14px}
+.map-table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px;background:var(--pf-surface)}
+.map-table th{background:var(--pf-surface-2);color:var(--pf-royal-dark);padding:10px 12px;text-align:left}
+.map-table td{padding:10px 12px;border-bottom:1px solid var(--pf-line);color:var(--pf-ink-2);vertical-align:top}
+.map-table tr:hover td{background:var(--pf-surface-2)}
+.map-table td:first-child{font-family:ui-monospace,Menlo,Consolas,monospace;color:var(--pf-gold-dark);white-space:nowrap}
+.faq-search{width:100%;padding:14px 18px;font-size:16px;border:1px solid var(--pf-line-2);border-radius:var(--pf-radius-sm);background:var(--pf-surface);color:var(--pf-ink);margin:16px 0}
+.faq-search::placeholder{color:var(--pf-faint)}
+.faq-cat{margin:28px 0}
+.faq-cat h3{color:var(--pf-navy);font-size:20px;margin-bottom:4px}
+.faq-cat p{color:var(--pf-muted);font-size:14px;margin-bottom:12px}
+.faq-item{background:var(--pf-surface);border:1px solid var(--pf-line);border-radius:var(--pf-radius);margin-bottom:10px;overflow:hidden;box-shadow:var(--pf-shadow)}
+.faq-item summary{padding:14px 18px;cursor:pointer;font-size:16px;color:var(--pf-navy);list-style:none;font-weight:600}
+.faq-item summary::-webkit-details-marker{display:none}
+.faq-item summary:hover{color:var(--pf-royal-dark)}
+.faq-item summary .faq-num{color:var(--pf-gold-dark);font-weight:700;margin-right:8px}
+.faq-answer{padding:0 18px 16px;color:var(--pf-ink-2);line-height:1.7}
+.faq-answer p{margin:8px 0}
+.faq-link{display:inline-block;margin-top:8px;color:var(--pf-royal);font-size:14px;text-decoration:none}
+.faq-link:hover{text-decoration:underline}
+.faq-hidden{display:none}
+.faq-filters{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:12px 0}
+.faq-filter-label{font-size:14px;font-weight:700;color:var(--pf-navy);margin-right:2px}
+.faq-filter-btn{padding:6px 14px;font-size:14px;font-weight:600;border:1px solid var(--pf-line-2);border-radius:999px;background:var(--pf-surface);color:var(--pf-navy);cursor:pointer}
+.faq-filter-btn:hover{border-color:var(--pf-royal);color:var(--pf-royal-dark)}
+.faq-filter-btn.active{background:var(--pf-royal);border-color:var(--pf-royal);color:#fff}
+.faq-diff{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:2px 9px;border-radius:999px;margin-left:10px;white-space:nowrap;vertical-align:2px}
+.faq-diff-beginner{background:#E3F0FF;color:#0B3D91}
+.faq-diff-intermediate{background:#FBF6E3;color:#7A5A00}
+.faq-diff-advanced{background:#FDEBD7;color:#7C2D12}
+.faq-diff-expert{background:#0B1F3D;color:#F5C542}
+.lab-steps li{margin-bottom:10px;list-style:none}
+.lab-steps{padding-left:0}
+.lab-step label{cursor:pointer;display:block;padding:10px 12px;border:1px solid var(--pf-line);border-radius:var(--pf-radius-sm);background:var(--pf-surface)}
+.lab-step label:hover{border-color:var(--pf-royal)}
+.lab-step input:checked + b{color:var(--pf-royal-dark)}
+.lab-step.done label{background:var(--pf-royal-tint);border-color:var(--pf-royal)}
+.lab-progress{background:var(--pf-line);border-radius:999px;height:8px;margin:12px 0 4px;overflow:hidden}
+.lab-progress-fill{background:var(--pf-royal);height:100%;width:0%;transition:width .3s ease}
+.lab-progress-text{color:var(--pf-muted);font-size:14px}
+.iso-progress-text{color:var(--pf-muted);font-size:14px}
+.iso-done-label{cursor:pointer;color:var(--pf-ink-2);font-size:14px}
+.iso-done-label input{accent-color:var(--pf-royal)}
+.api-status{color:var(--pf-warn);font-size:14px;min-height:20px;margin:8px 0}
+.api-status.ok{color:var(--pf-royal-dark)}
+.api-status.err{color:var(--pf-error)}
+.api-resp-ok{border-color:var(--pf-royal)}
+.api-resp-err{border-color:#FECDC2}
+.sim-step-hidden{display:none}
+.sim-step-count{color:var(--pf-muted);font-size:14px}
+
+/* Tests */
+.pa-test-intro h1,.pa-test-intro h2,.pa-test-intro h3,.pa-test-run h1,.pa-test-run h2,.pa-test-run h3,.pa-test-result h1,.pa-test-result h2,.pa-test-result h3,.pa-review h1,.pa-review h2,.pa-review h3{color:var(--pf-navy)}
+.pa-palette{margin:12px 0}
+.pa-palette button{min-width:40px}
+.pa-palette button[aria-pressed="true"],.pa-palette button.answered{border-color:var(--pf-gold);color:var(--pf-gold-dark)}
+.pa-confirm{background:var(--pf-gold-tint);border:1px solid var(--pf-gold);border-radius:var(--pf-radius-sm);padding:12px 14px;margin:12px 0;color:var(--pf-ink-2)}
+.pa-test-result .correct{color:var(--pf-royal-dark);font-weight:700}
+.pa-test-result .wrong{color:var(--pf-error);font-weight:700}
+.pa-timebar{background:var(--pf-line);border:1px solid var(--pf-line);border-radius:999px;height:10px;margin:6px 0 12px;overflow:hidden}
+.pa-timebar-fill{background:var(--pf-royal);height:100%;width:100%;transition:width .5s linear}
+.pa-palette button.current{background:var(--pf-royal);color:#FFFFFF;border-color:var(--pf-royal);font-weight:700}
+.pa-palette button.marked{border-color:var(--pf-gold);color:var(--pf-gold-dark)}
+.pa-palette button.marked.answered{border-color:var(--pf-gold);color:var(--pf-gold-dark);background:var(--pf-gold-tint)}
+.test-best{color:var(--pf-gold-dark);font-weight:700}
+.quiz{background:var(--pf-surface);border:1px solid var(--pf-line);border-radius:var(--pf-radius);padding:20px;margin:24px 0;box-shadow:var(--pf-shadow)}
+.quiz h3{margin-top:0;color:var(--pf-navy)}
+.quiz-q{margin-bottom:16px}
+.quiz-q p{font-weight:600;margin-bottom:8px;color:var(--pf-navy)}
+.quiz-q label{display:block;padding:10px 12px;border:1px solid var(--pf-line-2);border-radius:var(--pf-radius-sm);margin-bottom:8px;cursor:pointer;background:var(--pf-surface)}
+.quiz-q label:hover{border-color:var(--pf-royal)}
+.quiz-q label.correct{border-color:var(--pf-royal);background:var(--pf-success-bg)}
+.quiz-q label.wrong{border-color:#FECDC2;background:var(--pf-error-bg)}
+.quiz-q .expl{display:none;color:var(--pf-muted);font-size:14px;margin-top:6px}
+.quiz-q .expl.show{display:block}
+.quiz-ch{color:var(--pf-muted);font-size:13px}
+.quiz-opts{display:flex;flex-direction:column;gap:8px;margin:10px 0}
+.quiz-opt.correct{background:var(--pf-success-bg);border-color:var(--pf-royal);color:var(--pf-royal-dark)}
+.quiz-opt.wrong{background:var(--pf-error-bg);border-color:#FECDC2;color:var(--pf-error)}
+.quiz-expl{color:var(--pf-muted)}
+
+/* Feedback toasts */
+.pf-fb{padding:10px 14px;border-radius:var(--pf-radius-sm);margin-top:10px;font-weight:600;animation:pf-pop .25s ease}
+.pf-fb.ok{background:var(--pf-success-bg);color:var(--pf-royal-dark);border:1px solid var(--pf-royal)}
+.pf-fb.warn{background:var(--pf-gold-tint);color:var(--pf-gold-dark);border:1px solid var(--pf-gold)}
+.pf-fb.err{background:var(--pf-error-bg);color:var(--pf-error);border:1px solid #FECDC2}
+@keyframes pf-pop{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+button,.btn{transition:transform .12s,box-shadow .12s}
+
+/* Modes, tracks, outcomes */
+.tagline{color:var(--pf-royal-dark);font-size:20px;font-weight:700;letter-spacing:.02em;margin:6px 0}
+.mode-tabs{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0 6px}
+.mode-tab.active{background:var(--pf-royal);color:#FFFFFF;border-color:var(--pf-royal)}
+.mode-sub{color:var(--pf-muted);font-size:14px}
+.radar-reg{color:var(--pf-gold-dark);font-weight:700}
+.radar-meta{color:var(--pf-muted);font-size:13px}
+.template-line{color:var(--pf-muted);font-size:14px}
+.download-link{display:inline-block;background:var(--pf-surface);border:1px solid var(--pf-royal);color:var(--pf-royal-dark);border-radius:var(--pf-radius-sm);padding:8px 14px;text-decoration:none;font-size:14px;margin:6px 0}
+.download-link:hover{background:var(--pf-royal);color:#FFFFFF}
+.scen-verified{color:var(--pf-muted);font-size:13px;font-style:italic}
+.gloss-item{margin:6px 0}
+.player-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:10px 0 4px}
+.player-btn.done{background:var(--pf-success-bg);border-color:var(--pf-royal);color:var(--pf-royal-dark)}
+.player-progress{flex:1;min-width:140px;accent-color:var(--pf-royal)}
+.player-time{color:var(--pf-muted);font-size:13px;white-space:nowrap}
+.speed-label{color:var(--pf-muted);font-size:13px}
+.msg-row td{font-size:13px}
+.tree-node{cursor:pointer}
+.tree-node rect{fill:var(--pf-surface-2);stroke:var(--pf-royal);stroke-width:1.5}
+.tree-node.sel rect{fill:var(--pf-royal)}
+.tree-node.sel text{fill:#FFFFFF}
+.tree-node text{fill:var(--pf-ink);font-size:12px;font-weight:600}
+.tree-detail{background:var(--pf-surface-2);border-radius:var(--pf-radius-sm);padding:14px;font-size:15px;color:var(--pf-ink-2)}
+
+/* ============================ Auth (dormant), audio, TOC, misc ============================ */
+#authBox{margin-left:10px;font-size:13px;color:var(--pf-muted)}
+#authBox input{background:var(--pf-surface);color:var(--pf-ink);border:1px solid var(--pf-line-2);border-radius:var(--pf-radius-sm);padding:6px 8px;font-size:13px;width:170px}
+#authState{color:var(--pf-royal-dark);font-weight:700}
+.audio-box{display:flex;align-items:center;gap:10px;margin:12px 0;padding:10px 14px;background:var(--pf-surface);border:1px solid var(--pf-line);border-radius:var(--pf-radius-sm)}
+.audio-box audio{flex:1;min-width:0;height:36px}
+.audio-label{font-size:13px;color:var(--pf-royal-dark);white-space:nowrap;font-weight:600}
+.toc{position:static;background:var(--pf-surface);border:1px solid var(--pf-line);border-radius:var(--pf-radius);padding:16px 18px;margin-bottom:20px;box-shadow:var(--pf-shadow)}
+.toc h4{margin:0 0 8px;color:var(--pf-royal-dark);font-size:13px;text-transform:uppercase;letter-spacing:.06em}
+.toc b{color:var(--pf-royal-dark)}
+/* Chapter lesson list: each lesson is a real link and must look like
+   one. Royal blue, semibold, with a hover background and a right arrow,
+   so a learner can see at a glance that the rows are clickable. */
+.toc a{display:block;padding:8px 10px;color:var(--pf-royal-dark);font-size:15px;font-weight:600;border-radius:8px}
+.toc a:hover{color:var(--pf-royal-dark);background:var(--pf-royal-tint);text-decoration:none}
+.toc a::after{content:" \2192";color:var(--pf-royal)}
+.toc a.active{color:var(--pf-royal-dark);font-weight:700;background:var(--pf-royal-tint)}
+/* Chapter page: the Start Lesson 1 button is the primary next step,
+   big and full-width on a phone, so it is the obvious tap and nobody
+   mistakes the "Next chapter" link below it for the next lesson. */
+.chapter-start{display:inline-block;font-size:17px;padding:14px 22px}
+@media (max-width:640px){
+  .chapter-start{display:block;width:100%;text-align:center;box-sizing:border-box}
+}
+.toc ol{margin:8px 0 0;padding-left:20px;color:var(--pf-ink-2);font-size:14px}
+.toc li{margin:3px 0}
+.voice-controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px}
+.voice-controls select{background:var(--pf-surface);color:var(--pf-ink);border:1px solid var(--pf-line-2);border-radius:var(--pf-radius-sm);padding:6px;font-size:14px}
+
+/* Reveal animation (kept, subtle) */
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .5s,transform .5s}
+.reveal.visible{opacity:1;transform:none}
+/* Hero must never start invisible: the reveal fade made the headline unreadable (white on pale lavender) when the animation had not run. */
+.hero.reveal,.home-hero.reveal{opacity:1;transform:none}
+/* Pathway stats sit on a light section, not the dark hero, so the white numbers were invisible. */
+.section .hero-stats b{color:var(--pf-navy)}
+.section .hero-stats span{color:#475569}
+/* API playground panels: force a light panel with dark text, never dark-on-dark. */
+.api-assumptions,.api-catalogue{background:#FFFFFF;color:var(--pf-ink)}
+.api-assumptions h3,.api-catalogue h3{color:var(--pf-navy)}
+.api-assumptions p,.api-assumptions li,.api-catalogue p,.api-catalogue li{color:var(--pf-ink-2)}
+
+/* ============================ Floating helper (Forge) ============================ */
+/* The old 64px avatar with a big white bubble looked homemade and the
+   120px of bottom padding it forced on every page left a dead gap.
+   Now a small, clean circular help button; the bubble is a restrained
+   white card. Nothing else changes. */
+.forge-bar{position:fixed;bottom:16px;right:16px;z-index:200;display:flex;align-items:flex-end;gap:8px;max-width:320px}
+.forge-bubble{background:var(--pf-surface);color:var(--pf-ink-2);border:1px solid var(--pf-line);border-radius:12px 12px 4px 12px;padding:12px 16px;font-size:14px;line-height:1.55;box-shadow:var(--pf-shadow-hover);display:none}
+.forge-bubble.show{display:block}
+.forge-avatar{width:48px;height:48px;flex-shrink:0;cursor:pointer;border-radius:50%;box-shadow:var(--pf-shadow);border:2px solid var(--pf-surface)}
+
+/* ============================ Responsive ============================ */
+@media(max-width:960px){
+  .layout{grid-template-columns:minmax(0,1fr)}
+  .side{position:static}
+}
+@media(max-width:760px){
+  main{padding:16px 16px 48px}
+  .topbar-row,.header-inner{flex-wrap:wrap;gap:10px;padding:10px 16px}
+  .topnav,.header-inner nav,.nav-links{display:flex;order:3;flex-basis:100%;gap:4px 12px;flex-wrap:wrap;margin-left:0}
+  .topnav a,.header-inner nav a{padding:6px 8px;font-size:13px}
+  .hero,.home-hero{padding:40px 18px 32px}
+  .hero-stats{gap:0}
+  .hero-stats>div{padding:0 18px}
+  .hero-stats b{font-size:24px}
+  .hero svg{display:none}
+  .intro-card{padding:22px 20px}
+  .link-card-grid,.hp-grid,.chapter-grid,.bundle-grid{grid-template-columns:1fr}
+  .hp-grid{grid-template-columns:1fr}
+  .bundle-chapters{columns:1}
+  .chapter-layout{grid-template-columns:1fr}
+  .toc{position:static;margin-bottom:20px}
+  .sim-grid{grid-template-columns:1fr}
+  .forge-bar{max-width:280px}
+  .nav-links{font-size:13px;gap:8px}
+  .topnav{display:flex}
+  .lesson-meta h1{font-size:22px}
+  .lesson-nav .studio-btn{padding:7px 12px;font-size:13px}
+  .xml-panel{font-size:12px}
+  /* Mobile lesson diagram: show the vertical flow diagram and hide the
+     desktop one. Without these two rules the design layer's base rule
+     (.studio-canvas svg.flow-mobile{display:none}) hides BOTH diagrams
+     on phones, leaving a blank canvas. The canvas grows to fit the tall
+     vertical frame (aspect-ratio:auto), so nothing is clipped. */
+  .studio-canvas{aspect-ratio:auto}
+  .studio-canvas svg.flow-desktop{display:none}
+  .studio-canvas svg.flow-mobile{display:block}
+}
+@media(max-width:480px){
+  html,body{overflow-x:hidden}
+  .studio-canvas{aspect-ratio:auto}
+}
+@media(prefers-reduced-motion:reduce){
+  *{animation:none !important;transition:none !important;animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}
+}
+
+/* ============================ Detail panels (side-by-side, not below) ============================ */
+/* Added by the detail-panel worker (Nov 2026) and carried into this layer
+   so replacing pf-theme.css does not remove it. Rule: clicking an item
+   shows its detail BESIDE it (two-pane on desktop) or in a drawer /
+   bottom sheet (mobile), never below it behind a scroll.
+   Restyled here to the light theme: white drawer, navy title, light
+   close button. Behaviour and class names are unchanged. */
+.pf-two-pane{display:grid;grid-template-columns:300px minmax(0,1fr);gap:20px;align-items:start}
+.pf-two-pane.pf-wide-list{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr)}
+.pf-pane-list,.pf-pane-detail{min-width:0}
+.pf-pane-list .explorer-tabs{display:flex;flex-direction:column;align-items:stretch;gap:8px}
+.pf-pane-list .explorer-tab{text-align:left;justify-content:flex-start}
+.pf-pane-list .trace-stages{display:flex;flex-direction:column;gap:8px}
+.pf-pane-list .trace-btn{text-align:left}
+@media(min-width:961px){
+  .pf-pane-list{position:sticky;top:76px;max-height:calc(100vh - 92px);overflow-y:auto;padding-right:4px}
+  .pf-pane-detail{position:sticky;top:76px;max-height:calc(100vh - 92px);overflow-y:auto}
+}
+@media(max-width:960px){
+  .pf-two-pane,.pf-two-pane.pf-wide-list{grid-template-columns:minmax(0,1fr)}
+}
+.pf-drawer{position:fixed;top:0;right:0;height:100%;width:min(460px,94vw);background:var(--pf-surface);color:var(--pf-ink-2);box-shadow:-8px 0 32px rgba(11,31,61,.22);z-index:60;transform:translateX(105%);transition:transform .25s ease;display:flex;flex-direction:column;border-left:1px solid var(--pf-line)}
+.pf-drawer.open{transform:none}
+.pf-drawer-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 20px;background:var(--pf-surface);border-bottom:1px solid var(--pf-line);flex:0 0 auto}
+.pf-drawer-head h2{color:var(--pf-navy);margin:0;font-size:18px;line-height:1.3}
+.pf-drawer-close{background:var(--pf-surface);border:1px solid var(--pf-line-2);color:var(--pf-navy);border-radius:var(--pf-radius-sm);padding:6px 12px;cursor:pointer;font-weight:700;flex:0 0 auto}
+.pf-drawer-close:hover{border-color:var(--pf-royal);color:var(--pf-royal-dark)}
+.pf-drawer-body{padding:20px;overflow-y:auto;flex:1 1 auto;line-height:1.65}
+.pf-drawer-body pre{overflow-x:auto;max-width:100%}
+.pf-drawer-body table{max-width:100%}
+.pf-drawer-backdrop{position:fixed;inset:0;background:rgba(11,31,61,.45);z-index:55;opacity:0;pointer-events:none;transition:opacity .25s}
+.pf-drawer-backdrop.open{opacity:1;pointer-events:auto}
+@media(max-width:760px){
+  .pf-drawer{top:auto;bottom:0;left:0;right:0;width:100%;height:88vh;border-radius:16px 16px 0 0;border-left:none;border-top:1px solid var(--pf-line);transform:translateY(105%)}
+  .pf-drawer.open{transform:none}
+  body.pf-drawer-open{overflow:hidden}
+}
+
+/* ---------- Lesson framework (post-audit): mirrors STUDIO_CSS in
+   visual_engine.py. The design layer loads last, so these rules win on
+   equal specificity. The .fw-card prefix keeps the lesson quiz distinct
+   from the existing tests-page quiz, which also uses .quiz-opt. ---------- */
+.dive-panel{display:none;background:#fff;border:1px solid #D1D5DB;border-radius:10px;padding:16px 18px;margin-top:14px}
+.dive-panel.open{display:block}
+.dive-panel h3{margin:0 0 8px;font-size:16px;color:#1F1F1F}
+.dive-panel p{margin:8px 0;color:#1F1F1F;font-size:15px;line-height:1.55}
+.dive-btn.active{background:#0056D2;color:#fff;border-color:#0056D2}
+.fw-card{background:#0F172A;border:1px solid #1E3A5F;border-radius:12px;padding:16px 18px;margin:16px 0}
+.fw-card h2{margin:0 0 10px;font-size:17px;color:#fff}
+.fw-card h3{margin:14px 0 6px;font-size:15px;color:#fff}
+.fw-card p{color:#CBD5E1;font-size:15px;line-height:1.6}
+.fw-card b,.fw-card strong{color:#fff}
+.fw-card .fw-label{font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#5EEAD4}
+.fw-card .fw-steps{margin:8px 0;padding-left:20px}
+.fw-card .fw-steps li{margin:6px 0;color:#CBD5E1;font-size:15px;line-height:1.6}
+.fw-exercise-answer{display:none;background:#082F49;border:1px solid #1E3A5F;border-radius:8px;padding:12px 14px;margin-top:10px}
+.fw-exercise-answer.open{display:block}
+.fw-exercise-answer p{margin:6px 0}
+.fw-card .quiz-opt{display:block;width:100%;text-align:left;background:#0F172A;border:1px solid #475569;border-radius:8px;padding:10px 14px;margin:8px 0;font-size:15px;color:#E2E8F0;cursor:pointer;line-height:1.5}
+.fw-card .quiz-opt:hover{border-color:#5EEAD4;background:#1E293B}
+.fw-card .quiz-opt.correct{border-color:#22C55E;background:#14532D;color:#BBF7D0}
+.fw-card .quiz-opt.wrong{border-color:#EF4444;background:#7F1D1D;color:#FECACA}
+.fw-card .quiz-opt:disabled{cursor:default}
+.quiz-feedback{display:none;margin-top:12px;font-size:15px;line-height:1.6;color:#CBD5E1}
+.quiz-feedback.open{display:block}
+.quiz-feedback b{color:#fff}
+.quiz-feedback .quiz-fb-h{margin:14px 0 4px;font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#5EEAD4}
+.quiz-feedback p{margin:4px 0 10px}
+.quiz-feedback .studio-btn{margin-top:6px}
+.fw-tool-link{display:inline-flex;align-items:center;gap:8px;background:#0056D2;color:#fff;border-radius:8px;padding:10px 18px;font-size:15px;font-weight:600;text-decoration:none;margin-top:8px}
+.fw-tool-link:hover{background:#0046AC;color:#fff}
+.fw-flash{outline:3px solid #5EEAD4;outline-offset:4px}
+.fw-files-panel{background:#fff;border:1px solid #D1D5DB;border-radius:10px;padding:14px 16px;margin-top:10px}
+.fw-files-panel b{font-size:15px;color:#1F1F1F}
+.fw-files-panel p{margin:8px 0;font-size:14px}
+.fw-files-panel a{color:#0056D2}
+
+/* ---------- 390px phones (7 Nov 2026, Phase 9) ---------- */
+/* The smallest breakpoint was 480px, so layout at 390px relied entirely
+   on the 480px rules. These overrides keep the fixed-minimum-width
+   controls from forcing a 390px viewport wider than the screen. */
+@media (max-width:390px){
+  html,body{overflow-x:hidden}
+  .player-progress{min-width:0}
+  .page-nav a{min-width:0;flex:1 1 45%}
+  .simA-box{min-width:0}
+  .ctrl-popover{min-width:0;max-width:calc(100vw - 32px)}
+  #authBox input{width:140px;max-width:100%}
+}
+
+/* ============================ Legacy site.css carry-over ============================ */
+/* 7 Nov 2026: the old dark-theme site.css is no longer loaded (it set light
+   text on elements the new light theme renders on white cards, which made
+   text invisible site-wide: chapter titles, bundle list items, and more).
+   These are the only site.css rules still used by multipage pages, carried
+   here with light-theme colours so nothing is lost. */
+.api-fictional{background:#FEF3C7;border:1px solid #F59E0B;border-radius:8px;padding:12px 14px;color:#78350F}
+.lab-step-detail{margin:6px 0 0 12px;color:var(--pf-muted);font-size:14px}
+.diagram-controls button.secondary{background:var(--pf-surface-2);color:var(--pf-ink-2);border:1px solid var(--pf-line-2)}
+.sim-timeline li{margin-bottom:10px}
+.simb-xml-node{margin-left:0}
+
+/* Cinematic video hero (7 Nov 2026): full-width background video hero.
+   These rules live here in pf-theme.css (the loaded stylesheet) because
+   the old site.css that used to carry them is no longer loaded. The video
+   sits behind a dark navy overlay; the poster is also the section
+   background so the hero looks complete while the MP4 is missing. */
+.hero-video{position:relative;min-height:92vh;display:flex;align-items:center;justify-content:center;overflow:hidden;background-size:cover;background-position:center;background-color:#0B1B33}
+.hero-video-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
+.hero-overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,20,40,.82),rgba(7,20,40,.68) 55%,rgba(7,20,40,.88));z-index:1}
+.hero-inner{position:relative;z-index:2;max-width:860px;padding:64px 24px;text-align:center}
+.hero-inner h1{font-size:clamp(2rem,5vw,3.4rem);line-height:1.15;color:#fff;margin-bottom:16px}
+.hero-inner .tagline{font-size:1.25rem;color:#FBBF24;font-weight:700;margin-bottom:16px}
+.hero-inner p{color:#E2E8F0;font-size:1.1rem;line-height:1.65}
+.hero-trust{margin-top:20px;font-size:.95rem;color:#94A3B8}
+.hero-stats-bar{background:#0B1B33;border-top:1px solid #1E3A5F;border-bottom:1px solid #1E3A5F;padding:28px 0}
+.hero-stats-inner{max-width:1180px;margin:0 auto;display:flex;justify-content:center;gap:48px;flex-wrap:wrap;padding:0 20px}
+.hero-stats-inner>div{text-align:center}
+.hero-stats-inner b{display:block;font-size:32px;color:#FBBF24}
+.hero-stats-inner span{font-size:14px;color:#94A3B8}
+@media(max-width:640px){.hero-video{min-height:78vh}.hero-stats-inner{gap:28px}.hero-stats-inner b{font-size:26px}}
+
+/* Reusable video embed (8 Nov 2026): homepage hero and the six major
+   section pages once their MP4 files exist. Muted autoplay with playsinline
+   so the video starts on load on mobile; the mute button tap is the gesture
+   that turns sound on. No browser default controls, custom buttons only.
+   Royal blue buttons with a gold mute button, on deep navy, matching the
+   site palette. Buttons are at least 44px so they are easy to tap. */
+.pf-video-embed{position:relative;width:100%;overflow:hidden;background-color:#0B1B33}
+.pf-video-embed .pf-video{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:cover}
+.pf-video-embed .pf-video-poster{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:cover}
+.pf-video-hero{position:absolute;inset:0;height:100%}
+.pf-video-block{aspect-ratio:16/9;border-radius:12px}
+.pf-video-controls{position:absolute;right:16px;bottom:16px;z-index:3;display:flex;gap:8px}
+.pf-video-btn{min-width:44px;min-height:44px;padding:0 14px;border:1px solid rgba(255,255,255,.45);border-radius:999px;background:rgba(11,31,61,.72);color:#fff;font-size:14px;font-weight:700;cursor:pointer}
+.pf-video-btn:hover{background:#1D4ED8;border-color:#1D4ED8}
+.pf-video-btn:focus-visible{outline:2px solid #C9A227;outline-offset:2px}
+.pf-video-mute{background:rgba(201,162,39,.92);border-color:#C9A227;color:#0B1F3D}
+.pf-video-mute:hover{background:#C9A227}
+@media(max-width:640px){.pf-video-controls{right:12px;bottom:12px}}
