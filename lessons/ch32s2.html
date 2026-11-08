@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>Wallet Transactions: Load, Pay, Send and Withdraw | Payments Training Hub</title>
+<meta name="description" content="Loading money into a wallet is a pull from a funding source, and the most common sources are UPI, a debit card, net banking or a bank transfer. When a...">
+<link rel="canonical" href="https://www.paymentstraininghub.in/lessons/ch32s2.html">
+<meta property="og:url" content="https://www.paymentstraininghub.in/lessons/ch32s2.html">
+<meta property="og:title" content="Wallet Transactions: Load, Pay, Send and Withdraw | Payments Training Hub">
+<meta property="og:description" content="Loading money into a wallet is a pull from a funding source, and the most common sources are UPI, a debit card, net banking or a bank transfer. When a...">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.in/assets/hero/hero-poster.jpg">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.paymentstraininghub.in/index.html"}, {"@type": "ListItem", "position": 2, "name": "Digital Wallets and POS Systems", "item": "https://www.paymentstraininghub.in/chapters/ch32-digital-wallets-and-pos-systems.html"}, {"@type": "ListItem", "position": 3, "name": "Wallet Transactions: Load, Pay, Send and Withdraw", "item": "https://www.paymentstraininghub.in/lessons/ch32s2.html"}]}</script>
+<link rel="stylesheet" href="../assets/studio.css">
+<link rel="stylesheet" href="../assets/pf-theme.css">
+<link rel="stylesheet" href="../assets/insight-components.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="../index.html" class="brand">Payments <span>Training Hub</span></a><nav class="topnav"><a href="../index.html">Home</a> <a href="../courses.html">Courses</a> <a href="../practice.html">Practice</a> <a href="../simulators.html">Simulators</a> <a href="../labs.html">Labs</a> <a href="../explorer.html">Explorer</a> <a href="../tests.html">Tests</a></nav><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox" style="display:none"><span id="authState">Not signed in</span> <span id="authForm" style="display:none"><input id="authEmail" type="email" placeholder="Email for OTP" aria-label="Email for sign-in"> <button class="mute-btn" onclick="paAuthSendOtp()">Send code</button> <input id="authCode" type="text" placeholder="6-digit code" aria-label="One-time code" style="display:none"> <button class="mute-btn" id="authVerifyBtn" onclick="paAuthVerifyOtp()" style="display:none">Verify</button> <button class="mute-btn" onclick="paAuthGoogle()">Sign in with Google</button> </span><button class="mute-btn" id="authSignOutBtn" onclick="paAuthSignOut()" style="display:none">Sign out</button></span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<div class="lesson-page">
+<div class="lesson-shell">
+<aside class="course-rail">
+<div class="rail-head">
+<h2>Digital Wallets and POS Systems</h2>
+<a class="rail-close" href="../chapters/ch32-digital-wallets-and-pos-systems.html" aria-label="Close and go to chapter" title="Back to chapter">&times;</a>
+</div>
+<div class="goal-card">
+<div class="goal-head"><b>Today's goal &middot; <span id="side-progress-text">0 of 7 items</span></b><span class="goal-flag"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 21V4m0 1h11l-2.5 3.5L17 12H6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="goal-chev">&#94;</span></div>
+<p class="goal-body" id="side-goal-body">Complete 3 items today to stay at a good pace!</p>
+</div>
+<ul class="lesson-list"><li class="" data-lesson="ch32s1"><a href="ch32s1.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Digital Wallet Architecture: Where the Money Actually Sits</span><span class="m">Video &middot; 4 min</span></span></a></li>
+<li class="current" data-lesson="ch32s2"><a href="ch32s2.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Wallet Transactions: Load, Pay, Send and Withdraw</span><span class="m">Video &middot; 4 min</span></span></a></li>
+<li class="" data-lesson="ch32s3"><a href="ch32s3.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Wallet KYC: Minimum KYC, Full KYC and RBI PPI Rules</span><span class="m">Video &middot; 4 min</span></span></a></li>
+<li class="" data-lesson="ch32s4"><a href="ch32s4.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Wallet Security: Device Binding, PIN, Biometrics and Tokenization</span><span class="m">Video &middot; 4 min</span></span></a></li>
+<li class="" data-lesson="ch32s5"><a href="ch32s5.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">POS Systems Overview: Terminals, Taps and Swipes</span><span class="m">Video &middot; 4 min</span></span></a></li>
+<li class="" data-lesson="ch32s6"><a href="ch32s6.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Payment Acceptance at POS: Authorization, Settlement and Reconciliation</span><span class="m">Video &middot; 4 min</span></span></a></li>
+<li class="" data-lesson="ch32s7"><a href="ch32s7.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">QR Codes and Soundbox: Payments for Small Merchants</span><span class="m">Video &middot; 4 min</span></span></a></li></ul>
+</aside>
+<div class="lesson-main">
+<div class="studio" id="studio-studio-ch32s2">
+<div class="player">
+<div class="studio-canvas" id="studio-canvas-studio-ch32s2">
+<div class="ch-sec studio-scene-vis active" id="studio-vis-studio-ch32s2-0"><div class="beat-frames">
+<div class="beat-frame active" data-frame="0">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Wallet</tspan> <tspan fill="#FFFFFF">funding</tspan> <tspan fill="#FFFFFF">sources</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">STARTED</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Wallet funding sources</tspan><tspan fill="#CBD5E1"> - Loading money into a wallet is a pull from</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="0.55">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Paying</tspan><tspan fill="#CBD5E1"> - merchant is the most frequent wallet transaction</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="0.55">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">BA</tspan><tspan fill="#CBD5E1"> - authorisation, the confirmation message</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Sender balance falls by 2,500 rupees</tspan><tspan fill="#CBD5E1"> - receiver balance rises by the same</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">BA</tspan><tspan fill="#CBD5E1"> - fee structure, the cooling period after</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Withdrawal of 5,000 rupees debits</tspan><tspan fill="#CBD5E1"> - customer wallet and credits the payout</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="128" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Loading money into a wallet is a pull from a funding source, and the most common sources are</text>
+<text x="450" y="476" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">UPI, a debit card, net banking or a bank transfer.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 1 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 740" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="740" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Wallet</tspan> <tspan fill="#FFFFFF">funding</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">sources</tspan></text>
+<rect x="24" y="86" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="104" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">STARTED</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="120" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="139" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Wallet funding</text>
+<text x="180" y="157" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">sources</text>
+<text x="180" y="175" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Loading money into a wallet is a pull from</text>
+<text x="180" y="193" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="0.55">
+<rect x="24" y="212" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="231" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Paying</text>
+<text x="180" y="249" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">merchant is the most frequent wallet</text>
+<text x="180" y="267" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="0.55">
+<rect x="24" y="284" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="303" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">BA</text>
+<text x="180" y="321" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">authorisation, the confirmation message</text>
+<text x="180" y="339" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="24" y="356" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="375" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Sender balance falls</text>
+<text x="180" y="393" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">by 2,500 rupees</text>
+<text x="180" y="411" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">receiver balance rises by the same amount</text>
+<text x="180" y="429" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="24" y="448" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="467" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">BA</text>
+<text x="180" y="485" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">fee structure, the cooling period after</text>
+<text x="180" y="503" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="520" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="539" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Withdrawal of 5,000</text>
+<text x="180" y="557" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">rupees debits</text>
+<text x="180" y="575" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">customer wallet and credits the payout</text>
+<text x="180" y="593" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="620" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Loading money into a wallet is a pull from</text>
+<text x="180" y="639" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">a funding source, and the most common</text>
+<text x="180" y="658" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">sources are UPI, a debit card, net banking</text>
+<text x="180" y="677" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">or a bank transfer.</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="1">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Paying:</tspan> <tspan fill="#FFFFFF">most</tspan> <tspan fill="#FFFFFF">frequent</tspan> <tspan fill="#FFFFFF">wallet</tspan></text>
+<text x="48" y="126" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">transaction</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Wallet funding sources</tspan><tspan fill="#CBD5E1"> - Loading money into a wallet is a pull from</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Paying</tspan><tspan fill="#CBD5E1"> - merchant is the most frequent wallet transaction</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="0.55">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">BA</tspan><tspan fill="#CBD5E1"> - authorisation, the confirmation message</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Sender balance falls by 2,500 rupees</tspan><tspan fill="#CBD5E1"> - receiver balance rises by the same</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">BA</tspan><tspan fill="#CBD5E1"> - fee structure, the cooling period after</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Withdrawal of 5,000 rupees debits</tspan><tspan fill="#CBD5E1"> - customer wallet and credits the payout</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="257" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Paying a merchant is the most frequent wallet transaction, and it is a transfer inside the issuer</text>
+<text x="450" y="476" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">ledger when both the customer and the merchant hold wallets with the same issuer.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 2 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 787" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="787" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Paying:</tspan> <tspan fill="#FFFFFF">most</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">frequent</tspan> <tspan fill="#FFFFFF">wallet</tspan></text>
+<text x="24" y="96" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">transaction</tspan></text>
+<rect x="24" y="114" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="132" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="148" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="167" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Wallet funding</text>
+<text x="180" y="185" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">sources</text>
+<text x="180" y="203" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Loading money into a wallet is a pull from</text>
+<text x="180" y="221" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="240" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="259" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Paying</text>
+<text x="180" y="277" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">merchant is the most frequent wallet</text>
+<text x="180" y="295" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="0.55">
+<rect x="24" y="312" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="331" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">BA</text>
+<text x="180" y="349" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">authorisation, the confirmation message</text>
+<text x="180" y="367" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="24" y="384" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="403" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Sender balance falls</text>
+<text x="180" y="421" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">by 2,500 rupees</text>
+<text x="180" y="439" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">receiver balance rises by the same amount</text>
+<text x="180" y="457" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="24" y="476" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="495" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">BA</text>
+<text x="180" y="513" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">fee structure, the cooling period after</text>
+<text x="180" y="531" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="548" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="567" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Withdrawal of 5,000</text>
+<text x="180" y="585" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">rupees debits</text>
+<text x="180" y="603" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">customer wallet and credits the payout</text>
+<text x="180" y="621" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="648" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Paying a merchant is the most frequent</text>
+<text x="180" y="667" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">wallet transaction, and it is a transfer</text>
+<text x="180" y="686" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">inside the issuer ledger when both the</text>
+<text x="180" y="705" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">customer and the merchant hold wallets</text>
+<text x="180" y="724" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">with the same issuer.</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="2">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">BA</tspan> <tspan fill="#FFFFFF">should</tspan> <tspan fill="#FFFFFF">specify</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Wallet funding sources</tspan><tspan fill="#CBD5E1"> - Loading money into a wallet is a pull from</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Paying</tspan><tspan fill="#CBD5E1"> - merchant is the most frequent wallet transaction</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">BA</tspan><tspan fill="#CBD5E1"> - authorisation, the confirmation message</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Sender balance falls by 2,500 rupees</tspan><tspan fill="#CBD5E1"> - receiver balance rises by the same</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">BA</tspan><tspan fill="#CBD5E1"> - fee structure, the cooling period after</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Withdrawal of 5,000 rupees debits</tspan><tspan fill="#CBD5E1"> - customer wallet and credits the payout</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="386" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The BA should specify the authorisation, the confirmation message and the receipt fields for</text>
+<text x="450" y="476" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">each channel.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 3 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 693" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="693" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">BA</tspan> <tspan fill="#FFFFFF">should</tspan> <tspan fill="#FFFFFF">specify</tspan></text>
+<rect x="24" y="58" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="76" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="92" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="111" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Wallet funding</text>
+<text x="180" y="129" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">sources</text>
+<text x="180" y="147" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Loading money into a wallet is a pull from</text>
+<text x="180" y="165" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="184" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="203" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Paying</text>
+<text x="180" y="221" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">merchant is the most frequent wallet</text>
+<text x="180" y="239" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="1">
+<rect x="24" y="256" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="275" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">BA</text>
+<text x="180" y="293" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">authorisation, the confirmation message</text>
+<text x="180" y="311" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="24" y="328" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="347" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Sender balance falls</text>
+<text x="180" y="365" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">by 2,500 rupees</text>
+<text x="180" y="383" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">receiver balance rises by the same amount</text>
+<text x="180" y="401" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="24" y="420" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="439" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">BA</text>
+<text x="180" y="457" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">fee structure, the cooling period after</text>
+<text x="180" y="475" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="492" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="511" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Withdrawal of 5,000</text>
+<text x="180" y="529" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">rupees debits</text>
+<text x="180" y="547" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">customer wallet and credits the payout</text>
+<text x="180" y="565" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="592" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The BA should specify the authorisation,</text>
+<text x="180" y="611" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">the confirmation message and the</text>
+<text x="180" y="630" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">receipt fields for each channel.</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="3">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Sender</tspan> <tspan fill="#FFFFFF">balance</tspan> <tspan fill="#FFFFFF">falls</tspan> <tspan fill="#FFFFFF">by</tspan> <tspan fill="#FFFFFF">2,500</tspan> <tspan fill="#FFFFFF">rupees</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Wallet funding sources</tspan><tspan fill="#CBD5E1"> - Loading money into a wallet is a pull from</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Paying</tspan><tspan fill="#CBD5E1"> - merchant is the most frequent wallet transaction</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">BA</tspan><tspan fill="#CBD5E1"> - authorisation, the confirmation message</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Sender balance falls by 2,500 rupees</tspan><tspan fill="#CBD5E1"> - receiver balance rises by the same</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">BA</tspan><tspan fill="#CBD5E1"> - fee structure, the cooling period after</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Withdrawal of 5,000 rupees debits</tspan><tspan fill="#CBD5E1"> - customer wallet and credits the payout</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="514" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The sender balance falls by 2,500 rupees, the receiver balance rises by the same amount,</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 4 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 749" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="749" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Sender</tspan> <tspan fill="#FFFFFF">balance</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">falls</tspan> <tspan fill="#FFFFFF">by</tspan> <tspan fill="#FFFFFF">2,500</tspan></text>
+<text x="24" y="96" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">rupees</tspan></text>
+<rect x="24" y="114" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="132" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="148" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="167" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Wallet funding</text>
+<text x="180" y="185" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">sources</text>
+<text x="180" y="203" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Loading money into a wallet is a pull from</text>
+<text x="180" y="221" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="240" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="259" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Paying</text>
+<text x="180" y="277" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">merchant is the most frequent wallet</text>
+<text x="180" y="295" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="1">
+<rect x="24" y="312" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="331" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">BA</text>
+<text x="180" y="349" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">authorisation, the confirmation message</text>
+<text x="180" y="367" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="1">
+<rect x="24" y="384" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="403" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Sender balance falls</text>
+<text x="180" y="421" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">by 2,500 rupees</text>
+<text x="180" y="439" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">receiver balance rises by the same amount</text>
+<text x="180" y="457" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="24" y="476" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="495" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">BA</text>
+<text x="180" y="513" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">fee structure, the cooling period after</text>
+<text x="180" y="531" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="548" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="567" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Withdrawal of 5,000</text>
+<text x="180" y="585" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">rupees debits</text>
+<text x="180" y="603" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">customer wallet and credits the payout</text>
+<text x="180" y="621" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="648" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The sender balance falls by 2,500</text>
+<text x="180" y="667" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">rupees, the receiver balance rises by</text>
+<text x="180" y="686" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">the same amount,</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="4">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">BA</tspan> <tspan fill="#FFFFFF">must</tspan> <tspan fill="#FFFFFF">document</tspan> <tspan fill="#FFFFFF">the</tspan> <tspan fill="#FFFFFF">withdrawal</tspan></text>
+<text x="48" y="126" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">limits</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Wallet funding sources</tspan><tspan fill="#CBD5E1"> - Loading money into a wallet is a pull from</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Paying</tspan><tspan fill="#CBD5E1"> - merchant is the most frequent wallet transaction</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">BA</tspan><tspan fill="#CBD5E1"> - authorisation, the confirmation message</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Sender balance falls by 2,500 rupees</tspan><tspan fill="#CBD5E1"> - receiver balance rises by the same</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n4" data-beat="4">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">BA</tspan><tspan fill="#CBD5E1"> - fee structure, the cooling period after</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Withdrawal of 5,000 rupees debits</tspan><tspan fill="#CBD5E1"> - customer wallet and credits the payout</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="643" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">A BA must document the withdrawal limits, the fee structure, the cooling period after a load, and</text>
+<text x="450" y="476" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">the anti money laundering checks that apply to large withdrawals.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 5 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 768" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="768" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">BA</tspan> <tspan fill="#FFFFFF">must</tspan> <tspan fill="#FFFFFF">document</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">the</tspan> <tspan fill="#FFFFFF">withdrawal</tspan></text>
+<text x="24" y="96" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">limits</tspan></text>
+<rect x="24" y="114" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="132" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="148" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="167" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Wallet funding</text>
+<text x="180" y="185" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">sources</text>
+<text x="180" y="203" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Loading money into a wallet is a pull from</text>
+<text x="180" y="221" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="240" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="259" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Paying</text>
+<text x="180" y="277" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">merchant is the most frequent wallet</text>
+<text x="180" y="295" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="1">
+<rect x="24" y="312" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="331" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">BA</text>
+<text x="180" y="349" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">authorisation, the confirmation message</text>
+<text x="180" y="367" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="1">
+<rect x="24" y="384" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="403" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Sender balance falls</text>
+<text x="180" y="421" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">by 2,500 rupees</text>
+<text x="180" y="439" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">receiver balance rises by the same amount</text>
+<text x="180" y="457" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="1">
+<rect x="24" y="476" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="495" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">BA</text>
+<text x="180" y="513" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">fee structure, the cooling period after</text>
+<text x="180" y="531" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="548" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="567" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Withdrawal of 5,000</text>
+<text x="180" y="585" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">rupees debits</text>
+<text x="180" y="603" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">customer wallet and credits the payout</text>
+<text x="180" y="621" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="648" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">A BA must document the withdrawal limits,</text>
+<text x="180" y="667" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">the fee structure, the cooling period after a</text>
+<text x="180" y="686" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">load, and the anti money laundering</text>
+<text x="180" y="705" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">checks that apply to large withdrawals.</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="5">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Withdrawal</tspan> <tspan fill="#FFFFFF">of</tspan> <tspan fill="#FFFFFF">5,000</tspan> <tspan fill="#FFFFFF">rupees</tspan> <tspan fill="#FFFFFF">debits</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">COMPLETE</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Wallet funding sources</tspan><tspan fill="#CBD5E1"> - Loading money into a wallet is a pull from</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Paying</tspan><tspan fill="#CBD5E1"> - merchant is the most frequent wallet transaction</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">BA</tspan><tspan fill="#CBD5E1"> - authorisation, the confirmation message</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Sender balance falls by 2,500 rupees</tspan><tspan fill="#CBD5E1"> - receiver balance rises by the same</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n4" data-beat="4">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">BA</tspan><tspan fill="#CBD5E1"> - fee structure, the cooling period after</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n5" data-beat="5">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Withdrawal of 5,000 rupees debits</tspan><tspan fill="#CBD5E1"> - customer wallet and credits the payout</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">A withdrawal of 5,000 rupees debits the customer wallet and credits the payout clearing</text>
+<text x="450" y="476" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">account.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 6 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#45A4FF"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 749" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="749" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Withdrawal</tspan> <tspan fill="#FFFFFF">of</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">5,000</tspan> <tspan fill="#FFFFFF">rupees</tspan></text>
+<text x="24" y="96" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">debits</tspan></text>
+<rect x="24" y="114" width="312" height="26" rx="8" fill="#0C1626" stroke="#2DD4BF" stroke-width="1.5"/>
+<text x="180" y="132" text-anchor="middle" font-size="12" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">COMPLETE</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="148" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="167" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Wallet funding</text>
+<text x="180" y="185" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">sources</text>
+<text x="180" y="203" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Loading money into a wallet is a pull from</text>
+<text x="180" y="221" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="240" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="259" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Paying</text>
+<text x="180" y="277" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">merchant is the most frequent wallet</text>
+<text x="180" y="295" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="1">
+<rect x="24" y="312" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="331" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">BA</text>
+<text x="180" y="349" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">authorisation, the confirmation message</text>
+<text x="180" y="367" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="1">
+<rect x="24" y="384" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="403" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Sender balance falls</text>
+<text x="180" y="421" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">by 2,500 rupees</text>
+<text x="180" y="439" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">receiver balance rises by the same amount</text>
+<text x="180" y="457" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="1">
+<rect x="24" y="476" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="495" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">BA</text>
+<text x="180" y="513" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">fee structure, the cooling period after</text>
+<text x="180" y="531" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="1">
+<rect x="24" y="548" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="567" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Withdrawal of 5,000</text>
+<text x="180" y="585" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">rupees debits</text>
+<text x="180" y="603" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">customer wallet and credits the payout</text>
+<text x="180" y="621" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<text x="180" y="648" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">A withdrawal of 5,000 rupees debits the</text>
+<text x="180" y="667" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">customer wallet and credits the payout</text>
+<text x="180" y="686" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">clearing account.</text>
+</svg>
+</div>
+</div>
+<p class="xml-caption">Flow of the explanation in this lesson.</p></div>
+<div class="playerbar">
+<div class="studio-progress"><div class="studio-markers" id="studio-markers-studio-ch32s2"></div><input type="range" id="studio-slider-studio-ch32s2" min="0" max="1000" value="0" aria-label="Lesson timeline"></div>
+<div class="ctrl-row">
+<button class="ctrl-btn" id="studio-play-studio-ch32s2" onclick="studioTogglePlay('studio-ch32s2')" aria-label="Play lesson" title="Play lesson"><span class="ctrl-ic-play"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></span><span class="ctrl-ic-pause" style="display:none"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><rect x="6" y="5" width="4" height="14" fill="currentColor"/><rect x="14" y="5" width="4" height="14" fill="currentColor"/></svg></span></button>
+<button class="ctrl-btn studio-mute-btn" id="studio-mute-studio-ch32s2" onclick="studioToggleMute('studio-ch32s2')" aria-label="Mute narration" title="Mute / unmute narration"><svg class="studio-mute-icon" viewBox="0 0 24 24" width="28" height="28" fill="currentColor" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3z"/><path class="studio-mute-waves" d="M16 8.5a5 5 0 0 1 0 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><path class="studio-mute-waves" d="M18.5 6a9 9 0 0 1 0 12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><path class="studio-mute-x" d="M16 9.5l5 5M21 9.5l-5 5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" style="display:none"/></svg></button>
+<button class="ctrl-btn" onclick="studioSkip('studio-ch32s2', -10)" aria-label="Back 10 seconds" title="Back 10 seconds"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 5a7 7 0 1 1-6.32 4.06" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M5.5 3.5v5h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><text x="12" y="16.5" font-size="8" fill="currentColor" text-anchor="middle" font-weight="700">10</text></svg></button>
+<span class="studio-time ctrl-time" id="studio-time-studio-ch32s2">0:00 / 4:11</span>
+<button class="ctrl-btn" onclick="studioSkip('studio-ch32s2', 10)" aria-label="Forward 10 seconds" title="Forward 10 seconds"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 5a7 7 0 1 0 6.32 4.06" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M18.5 3.5v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><text x="12" y="16.5" font-size="8" fill="currentColor" text-anchor="middle" font-weight="700">10</text></svg></button>
+<span class="playerbar-spacer"></span>
+<span class="player-stage" id="studio-tag-studio-ch32s2">Step 1 of 6</span>
+<button class="ctrl-btn ctrl-step" id="studio-prevscene-studio-ch32s2" onclick="studioPrevScene('studio-ch32s2')" title="Previous step" aria-label="Previous step">&lsaquo;</button>
+<button class="ctrl-btn ctrl-step" id="studio-nextscene-studio-ch32s2" onclick="studioNextScene('studio-ch32s2')" title="Next step" aria-label="Next step">&rsaquo;</button>
+<button class="ctrl-btn ctrl-speed" id="studio-speedbtn-studio-ch32s2" onclick="studioCycleSpeed('studio-ch32s2')" title="Playback speed" aria-label="Playback speed">1x</button>
+<span class="ctrl-settings-wrap"><button class="ctrl-btn" onclick="studioToggleSettings('studio-ch32s2', event)" aria-label="Player settings" title="Settings"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5 5l2.1 2.1M16.9 16.9L19 19M19 5l-2.1 2.1M7.1 16.9L5 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button><span class="ctrl-popover" id="studio-settings-studio-ch32s2" style="display:none" onclick="event.stopPropagation()"><label class="ctrl-pop-row">Volume <input type="range" min="0" max="1" step="0.1" value="1" oninput="studioSetVolume('studio-ch32s2', this.value)" style="width:110px;accent-color:#3587FC"></label><button class="studio-btn" id="studio-captions-studio-ch32s2" onclick="studioToggleCaptions('studio-ch32s2')">Captions: On</button><button class="studio-btn" onclick="studioReplayScene('studio-ch32s2')">Replay scene</button></span></span>
+<button class="ctrl-btn" onclick="studioFullscreen('studio-ch32s2')" aria-label="Fullscreen" title="Fullscreen"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+</div>
+</div>
+</div>
+<p class="studio-caption" id="studio-caption-studio-ch32s2"></p>
+<p class="studio-loading" id="studio-loading-studio-ch32s2" style="display:none">Loading narration...</p>
+<p class="studio-error" id="studio-error-studio-ch32s2" role="alert" style="display:none"></p>
+<audio id="studio-audio-studio-ch32s2" preload="auto" src="../audio/ch32s2.mp3"></audio>
+</div>
+<div class="lesson-title-row">
+<h1>Wallet Transactions: Load, Pay, Send and Withdraw</h1>
+<button class="save-note" type="button" onclick="pfToggleNote('studio-ch32s2')" title="Save a note on this lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L8 19l-4 1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg> Save note</button>
+</div>
+<p class="lesson-meta-line">Digital Wallets and POS Systems, Lesson 2 of 7, Narration 4:11, D08 Cards and alternative payments</p>
+<p class="lesson-note-saved" id="studio-note-saved-studio-ch32s2" style="display:none">Note saved.</p>
+<div class="note-editor" id="studio-note-editor-studio-ch32s2" style="display:none"><textarea id="studio-note-text-studio-ch32s2" rows="3" placeholder="Write a note on this lesson..." aria-label="Lesson note"></textarea><div class="note-editor-row"><button class="studio-btn primary" onclick="pfSaveNote('studio-ch32s2')">Save note</button> <button class="studio-btn" onclick="pfToggleNote('studio-ch32s2')">Cancel</button></div></div>
+<div class="dive-deeper">
+<div class="dive-head"><button type="button" class="dive-toggle" onclick="pfToggleDive(this)" aria-expanded="true"><span class="dive-spark"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 2l2.2 6.8L21 11l-6.8 2.2L12 20l-2.2-6.8L3 11l6.8-2.2z" fill="currentColor"/></svg></span><span class="dive-title">Dive deeper on this topic</span><span class="dive-chev"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 14l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button></div>
+<div class="dive-btns"><button type="button" class="dive-btn" data-kind="practice" onclick="pfDive('studio-ch32s2', 'practice')">Give me practice questions</button><button type="button" class="dive-btn" data-kind="simple" onclick="pfDive('studio-ch32s2', 'simple')">Explain this topic in simple terms</button><button type="button" class="dive-btn" data-kind="summary" onclick="pfDive('studio-ch32s2', 'summary')">Give me a summary</button><button type="button" class="dive-btn" data-kind="example" onclick="pfDive('studio-ch32s2', 'example')">Give me real-life examples</button></div>
+<div class="dive-panel" id="dive-panel-studio-ch32s2"><div class="dive-panel-body"></div></div>
+<script type="application/json" id="pf-dive-data-studio-ch32s2">{"simple": "In plain words: loading money into a wallet is a pull from a funding source, and the most common sources are UPI, a debit card, net banking or a bank transfer. That is the whole idea in one sentence, and the rest of the lesson shows how it works in a real bank.", "summary": "Loading money into a wallet is a pull from a funding source, and the most common sources are UPI, a debit card, net banking or a bank transfer. Key points: Wallet funding sources; Paying: most frequent wallet transaction; BA should specify; Sender balance falls by 2,500 rupees; BA must document the withdrawal limits; Withdrawal of 5,000 rupees debits.", "example": "Loading money into a wallet is a pull from a funding source, and the most common sources are UPI, a debit card, net banking or a bank transfer. When a customer loads 1,000 rupees through UPI, the wallet system first collects the money from the customer bank account through the UPI rail, and only after the collection is confirmed does it credit the wallet ledger."}</script>
+</div>
+<div class="lesson-feedback">
+<div class="fb-icons"><button type="button" class="fb-btn" data-kind="like" onclick="pfFeedback(this,'like')" aria-label="Like this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M7 21H4a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1h3v11zm0 0h9.6a2 2 0 0 0 1.9-1.4l1.6-5A2 2 0 0 0 18.2 12H15V6.5A2.5 2.5 0 0 0 12.5 4L11 7.5 8.6 10H7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button><button type="button" class="fb-btn" data-kind="dislike" onclick="pfFeedback(this,'dislike')" aria-label="Dislike this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M17 3h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1h-3V3zm0 0H7.4a2 2 0 0 0-1.9 1.4l-1.6 5A2 2 0 0 0 5.8 12H9v5.5A2.5 2.5 0 0 0 11.5 20L13 16.5l2.4-2.5H17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button><button type="button" class="fb-btn" data-kind="flag" onclick="pfFeedback(this,'flag')" aria-label="Flag this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M6 21V4m0 1h11l-2.5 3.5L17 12H6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+<button type="button" class="go-next" onclick="goLesson('ch32s3')" title="Next: Wallet KYC: Minimum KYC, Full KYC and RBI PPI Rules">Go to next item &rarr;</button>
+</div>
+<div class="chips"><span class="chip">Reconciliation</span><span class="chip">Authorisation</span><span class="chip">Settlement</span></div>
+<div class="card learn-card">
+<h2>What you will learn</h2>
+<p class="transcript"><b>Your objective.</b> By the end of this lesson, you will be able to explain wallet transactions: load, pay, send and withdraw. Loading money into a wallet is a pull from a funding source, and the most common sources are UPI, a debit card, net banking or a bank transfer.</p>
+<p class="transcript"><b>Why it matters.</b> This matters because card payments are the highest-volume payments most banks process, and the four-party model decides who pays whom, when, and what happens when it goes wrong.</p>
+<p class="transcript">Chapter objective: Learner explains digital wallets and point-of-sale systems, including token provisioning, NFC, QR payments, and settlement, and designs a wallet payment flow for a retailer. Learner demonstrates this skill using realistic banking examples, explaining each step clearly and using correct terminology throughout.</p>
+<h3>Key learning points</h3>
+<ul id="studio-points-studio-ch32s2">
+<li>Wallet funding sources</li>
+<li>Paying: most frequent wallet transaction</li>
+<li>BA should specify</li>
+<li>Sender balance falls by 2,500 rupees</li>
+<li>BA must document the withdrawal limits</li>
+<li>Withdrawal of 5,000 rupees debits</li>
+</ul>
+<h3>Key terms</h3>
+<div id="studio-terms-studio-ch32s2">
+<p class="keyterm"><b>Reconciliation:</b> The process of comparing records from two sources, such as a bank statement and an internal ledger, to confirm they agree.</p>
+<p class="keyterm"><b>Authorisation:</b> Approval by the issuer for a card transaction to proceed, confirming the card is valid and funds or credit are available.</p>
+<p class="keyterm"><b>Settlement:</b> The final movement of funds between banks to discharge obligations created by cleared payments. Settlement is usually made in central bank money or through correspondent accounts.</p>
+</div>
+<p class="studio-note">Payment flow diagram showing Wallet Transactions: Load, Pay, Send and Withdraw.</p>
+</div>
+<div class="fw-card" id="pf-exercise-studio-ch32s2">
+<p class="fw-label">Practise this lesson</p>
+<h2>Exercise</h2>
+<p><b>Work out what the beneficiary receives for a 1,000 rupees payment under OUR, SHA and BEN.</b></p>
+<p>Use the charge arrangement rules in this lesson and the correspondent and beneficiary bank fees named in the lesson.</p>
+<ol class="fw-steps">
+<li><b>What to do.</b> Calculate the amount credited under each of the three arrangements and state who pays each fee.</li>
+</ol>
+<p><button class="studio-btn" id="pf-ex-btn-studio-ch32s2" onclick="pfRevealExercise('studio-ch32s2')">Show the answer</button></p>
+<div class="fw-exercise-answer" id="pf-ex-answer-studio-ch32s2">
+<p><b>Correct result.</b> Under OUR the sender pays all charges and the beneficiary receives the full amount. Under SHA the sender pays the sending charges and the beneficiary pays the receiving charges. Under BEN the beneficiary pays all charges and receives the amount less all fees.</p>
+<p><b>Why.</b> The charge arrangement decides who pays and how much arrives. A customer who was promised the full amount and receives less will complain, and the complaint lands on the analyst.</p>
+</div>
+</div>
+<div class="fw-card" id="pf-quiz-studio-ch32s2" data-answer="0">
+<p class="fw-label">Check your understanding</p>
+<h2>Practice question</h2>
+<p><b>A customer adds a card to a phone wallet and pays by tapping the phone. The merchant never sees the real card number. How does this work?</b></p>
+<button type="button" class="quiz-opt" data-idx="0" onclick="pfCheckAnswer('studio-ch32s2', this)">The wallet creates a device specific token for the card, and the merchant receives the token, not the real card number</button>
+<button type="button" class="quiz-opt" data-idx="1" onclick="pfCheckAnswer('studio-ch32s2', this)">The wallet emails the card number to the merchant in encrypted form</button>
+<button type="button" class="quiz-opt" data-idx="2" onclick="pfCheckAnswer('studio-ch32s2', this)">The phone pays from its own bank account and the card is not involved</button>
+<button type="button" class="quiz-opt" data-idx="3" onclick="pfCheckAnswer('studio-ch32s2', this)">The merchant looks up the card number from the card network</button>
+<div class="quiz-feedback" id="pf-quiz-fb-studio-ch32s2"></div>
+<script type="application/json" id="pf-quiz-data-studio-ch32s2">{"why_wrong": ["", "This is not correct for this question. A digital wallet tokenises the card: a device specific token stands in for the real card number at the point of sale.", "This is not correct for this question. A digital wallet tokenises the card: a device specific token stands in for the real card number at the point of sale.", "This is not correct for this question. A digital wallet tokenises the card: a device specific token stands in for the real card number at the point of sale."], "explanation": "A digital wallet tokenises the card: a device specific token stands in for the real card number at the point of sale. The merchant and the terminal handle the token, while the real number stays with the token service and the issuing bank. That is why the merchant never sees the card number."}</script>
+</div>
+<div class="fw-card">
+<p class="fw-label">Takeaway and next step</p>
+<h2>What to remember</h2>
+<p>A withdrawal of 10,000 rupees that is debited from the wallet but never reaches the bank account is a high severity defect, so the reconciliation must catch it within hours.</p>
+<p>Follow 1,000 rupees through every stage, from instruction to beneficiary credit, and note where it can stop.</p>
+<p><a class="fw-tool-link" href="../simulators/lifecycle.html">Open the Payment Lifecycle Simulator &rarr;</a></p>
+<p class="studio-note">Builds on "Digital Wallet Architecture: Where the Money Actually Sits".</p>
+</div>
+<section class="upnext" id="studio-upnext-studio-ch32s2" style="display:none" aria-label="Up next">
+<span class="tag">Up next</span>
+<h2>Up next: Wallet KYC: Minimum KYC, Full KYC and RBI PPI Rules</h2>
+<p>Lesson 3 of 7, Digital Wallets and POS Systems, Narration 4:07</p>
+<div class="row">
+<button class="studio-btn primary" onclick="goLessonAuto('ch32s3')">Next lesson &rarr;</button>
+<button class="studio-btn" onclick="goLesson('ch32s1')">&larr; Previous lesson</button>
+<button class="studio-btn" onclick="studioReplayLesson('studio-ch32s2')">Replay this lesson</button>
+</div>
+</section>
+<div class="lesson-nav">
+<button class="studio-btn" onclick="goLesson('ch32s1')" title="Previous lesson: Digital Wallet Architecture: Where the Money Actually Sits">&larr; Previous</button>
+<button class="studio-btn" onclick="goChapterContents('ch32')">Chapter contents</button>
+<button class="studio-btn primary" onclick="goLesson('ch32s3')" title="Next lesson: Wallet KYC: Minimum KYC, Full KYC and RBI PPI Rules">Next &rarr;</button>
+</div>
+<div class="card transcript-card">
+<h2>Transcript and full text</h2>
+<details class="studio-transcript" id="studio-transcript-details-studio-ch32s2"><summary>Show transcript</summary>
+<p class="transcript" id="studio-transcript-studio-ch32s2"> Loading money into a wallet is a pull from a funding source, and the most common sources are UPI, a debit card, net banking or a bank transfer. When a customer loads 1,000 rupees through UPI, the wallet system first collects the money from the customer bank account through the UPI rail, and only after the collection is confirmed does it credit the wallet ledger. This order is critical. Crediting the wallet before the funding is confirmed would create money that does not exist. If the UPI debit succeeds but the wallet credit fails, the system must either retry the credit with the same reference or reverse the UPI collection automatically. A BA must document the timeout window, the reversal logic and the customer message for each outcome, because a stuck load is one of the most common wallet complaints.  Paying a merchant is the most frequent wallet transaction, and it is a transfer inside the issuer ledger when both the customer and the merchant hold wallets with the same issuer. The customer scans a QR code or selects a merchant in the app, enters 350 rupees, confirms with a PIN, and the system debits the customer wallet and credits the merchant wallet in a single atomic posting. The merchant sees the credit immediately, and the money is available for settlement to the merchant bank account on the agreed cycle, often the next working day. If the merchant is on a different wallet system, the payment must travel through an interoperable rail such as UPI, and the settlement then follows that rail rather than the internal ledger. The BA should specify the authorisation, the confirmation message and the receipt fields for each channel.  Sending money to a friend, known as a peer to peer transfer, is similar to a merchant payment but carries different risk rules. In a full KYC wallet the customer can send money to another wallet holder instantly, and the ledger simply moves the balance from the sender wallet to the receiver wallet. In a minimum KYC wallet the regulator limits peer to peer transfers, so the product must block or restrict the feature based on KYC status. The system must also check the receiver wallet exists, apply daily and monthly limits, and screen the transaction against fraud and sanctions lists. A real example is a customer sending 2,500 rupees to a friend for a shared dinner bill. The sender balance falls by 2,500 rupees, the receiver balance rises by the same amount, and both customers receive a notification with the same transaction reference for easy dispute handling.  Withdrawing money from a wallet means converting the stored value back into bank money, and this is where open and semi-closed wallets differ sharply. An open loop wallet linked to a card network can withdraw cash at an ATM, subject to limits and fees, while a semi-closed wallet can usually only transfer the balance back to the linked bank account of the same customer. The withdrawal flow debits the customer wallet and credits a payout account, and the payout is then executed through IMPS, NEFT or the card network. A BA must document the withdrawal limits, the fee structure, the cooling period after a load, and the anti money laundering checks that apply to large withdrawals. A withdrawal of 10,000 rupees that is debited from the wallet but never reaches the bank account is a high severity defect, so the reconciliation must catch it within hours.  Double entry accounting is what makes all four transactions auditable, and a BA should be able to explain it with a simple example. Every wallet transaction touches at least two ledger accounts with equal debit and credit amounts, so the books always balance. A load of 1,000 rupees debits the pooled bank account and credits the customer wallet. A merchant payment of 500 rupees debits the customer wallet and credits the merchant wallet. A withdrawal of 5,000 rupees debits the customer wallet and credits the payout clearing account. At the end of the day the sum of all customer and merchant wallet balances must equal the balance in the pooled bank account minus the amounts already paid out. If the two sides differ by even one rupee, the reconciliation job raises an exception and finance must investigate before the next settlement cycle runs.</p>
+<div id="studio-paras-studio-ch32s2">
+<p class="transcript"> Loading money into a wallet is a pull from a funding source, and the most common sources are UPI, a debit card, net banking or a bank transfer. When a customer loads 1,000 rupees through UPI, the wallet system first collects the money from the customer bank account through the UPI rail, and only after the collection is confirmed does it credit the wallet ledger. This order is critical. Crediting the wallet before the funding is confirmed would create money that does not exist. If the UPI debit succeeds but the wallet credit fails, the system must either retry the credit with the same reference or reverse the UPI collection automatically. A BA must document the timeout window, the reversal logic and the customer message for each outcome, because a stuck load is one of the most common wallet complaints.</p>
+<p class="transcript"> Paying a merchant is the most frequent wallet transaction, and it is a transfer inside the issuer ledger when both the customer and the merchant hold wallets with the same issuer. The customer scans a QR code or selects a merchant in the app, enters 350 rupees, confirms with a PIN, and the system debits the customer wallet and credits the merchant wallet in a single atomic posting. The merchant sees the credit immediately, and the money is available for settlement to the merchant bank account on the agreed cycle, often the next working day. If the merchant is on a different wallet system, the payment must travel through an interoperable rail such as UPI, and the settlement then follows that rail rather than the internal ledger. The BA should specify the authorisation, the confirmation message and the receipt fields for each channel.</p>
+<p class="transcript"> Sending money to a friend, known as a peer to peer transfer, is similar to a merchant payment but carries different risk rules. In a full KYC wallet the customer can send money to another wallet holder instantly, and the ledger simply moves the balance from the sender wallet to the receiver wallet. In a minimum KYC wallet the regulator limits peer to peer transfers, so the product must block or restrict the feature based on KYC status. The system must also check the receiver wallet exists, apply daily and monthly limits, and screen the transaction against fraud and sanctions lists. A real example is a customer sending 2,500 rupees to a friend for a shared dinner bill. The sender balance falls by 2,500 rupees, the receiver balance rises by the same amount, and both customers receive a notification with the same transaction reference for easy dispute handling.</p>
+<p class="transcript"> Withdrawing money from a wallet means converting the stored value back into bank money, and this is where open and semi-closed wallets differ sharply. An open loop wallet linked to a card network can withdraw cash at an ATM, subject to limits and fees, while a semi-closed wallet can usually only transfer the balance back to the linked bank account of the same customer. The withdrawal flow debits the customer wallet and credits a payout account, and the payout is then executed through IMPS, NEFT or the card network. A BA must document the withdrawal limits, the fee structure, the cooling period after a load, and the anti money laundering checks that apply to large withdrawals. A withdrawal of 10,000 rupees that is debited from the wallet but never reaches the bank account is a high severity defect, so the reconciliation must catch it within hours.</p>
+<p class="transcript"> Double entry accounting is what makes all four transactions auditable, and a BA should be able to explain it with a simple example. Every wallet transaction touches at least two ledger accounts with equal debit and credit amounts, so the books always balance. A load of 1,000 rupees debits the pooled bank account and credits the customer wallet. A merchant payment of 500 rupees debits the customer wallet and credits the merchant wallet. A withdrawal of 5,000 rupees debits the customer wallet and credits the payout clearing account. At the end of the day the sum of all customer and merchant wallet balances must equal the balance in the pooled bank account minus the amounts already paid out. If the two sides differ by even one rupee, the reconciliation job raises an exception and finance must investigate before the next settlement cycle runs.</p>
+</div>
+</details>
+<details class="studio-transcript"><summary>Full lesson text (all scenes)</summary><div id="studio-transcript-full-studio-ch32s2"></div></details>
+<p><button class="studio-btn primary" id="done-ch32s2" onclick="studioMarkSceneDone('studio-ch32s2')">Mark lesson complete</button> <span class="studio-note">Completing a lesson updates your progress dashboard on the homepage.</span></p>
+</div>
+<p class="studio-note">Scene timestamps are estimated by allocating the narration text proportionally across the real audio length. The audio playback position is the source of truth: pause freezes the visual, seeking restores the correct scene, replay restarts the scene animation.</p>
+</div>
+<script>window.__PA_STUDIO_QUEUE = window.__PA_STUDIO_QUEUE || []; window.__PA_STUDIO_QUEUE.push(["studio-ch32s2", {"sample_id": "studio-ch32s2", "chapter_id": "ch32", "title": "Wallet Transactions: Load, Pay, Send and Withdraw", "domain": "D08 Cards and alternative payments", "objective": "Learner explains digital wallets and point-of-sale systems, including token provisioning, NFC, QR payments, and settlement, and designs a wallet payment flow for a retailer. Learner demonstrates this skill using realistic banking examples, explaining each step clearly and using correct terminology throughout.", "scenes": [{"id": "ch32s2", "section_id": "ch32s2", "title": "Wallet Transactions: Load, Pay, Send and Withdraw", "audio": "../audio/ch32s2.mp3", "duration_sec": 251.4, "points": ["Loading money into a wallet is a pull from a funding source, and the most common sources are UPI, a debit card, net banking or a bank transfer.", "Paying a merchant is the most frequent wallet transaction, and it is a transfer inside the issuer ledger when both the customer and the merchant hold wallets with the same issuer.", "Sending money to a friend, known as a peer to peer transfer, is similar to a merchant payment but carries different risk rules.", "Withdrawing money from a wallet means converting the stored value back into bank money, and this is where open and semi-closed wallets differ sharply.", "Double entry accounting is what makes all four transactions auditable, and a BA should be able to explain it with a simple example."], "terms": [{"term": "Reconciliation", "def": "The process of comparing records from two sources, such as a bank statement and an internal ledger, to confirm they agree."}, {"term": "Authorisation", "def": "Approval by the issuer for a card transaction to proceed, confirming the card is valid and funds or credit are available."}, {"term": "Settlement", "def": "The final movement of funds between banks to discharge obligations created by cleared payments. Settlement is usually made in central bank money or through correspondent accounts."}], "transcript": " Loading money into a wallet is a pull from a funding source, and the most common sources are UPI, a debit card, net banking or a bank transfer. When a customer loads 1,000 rupees through UPI, the wallet system first collects the money from the customer bank account through the UPI rail, and only after the collection is confirmed does it credit the wallet ledger. This order is critical. Crediting the wallet before the funding is confirmed would create money that does not exist. If the UPI debit succeeds but the wallet credit fails, the system must either retry the credit with the same reference or reverse the UPI collection automatically. A BA must document the timeout window, the reversal logic and the customer message for each outcome, because a stuck load is one of the most common wallet complaints.  Paying a merchant is the most frequent wallet transaction, and it is a transfer inside the issuer ledger when both the customer and the merchant hold wallets with the same issuer. The customer scans a QR code or selects a merchant in the app, enters 350 rupees, confirms with a PIN, and the system debits the customer wallet and credits the merchant wallet in a single atomic posting. The merchant sees the credit immediately, and the money is available for settlement to the merchant bank account on the agreed cycle, often the next working day. If the merchant is on a different wallet system, the payment must travel through an interoperable rail such as UPI, and the settlement then follows that rail rather than the internal ledger. The BA should specify the authorisation, the confirmation message and the receipt fields for each channel.  Sending money to a friend, known as a peer to peer transfer, is similar to a merchant payment but carries different risk rules. In a full KYC wallet the customer can send money to another wallet holder instantly, and the ledger simply moves the balance from the sender wallet to the receiver wallet. In a minimum KYC wallet the regulator limits peer to peer transfers, so the product must block or restrict the feature based on KYC status. The system must also check the receiver wallet exists, apply daily and monthly limits, and screen the transaction against fraud and sanctions lists. A real example is a customer sending 2,500 rupees to a friend for a shared dinner bill. The sender balance falls by 2,500 rupees, the receiver balance rises by the same amount, and both customers receive a notification with the same transaction reference for easy dispute handling.  Withdrawing money from a wallet means converting the stored value back into bank money, and this is where open and semi-closed wallets differ sharply. An open loop wallet linked to a card network can withdraw cash at an ATM, subject to limits and fees, while a semi-closed wallet can usually only transfer the balance back to the linked bank account of the same customer. The withdrawal flow debits the customer wallet and credits a payout account, and the payout is then executed through IMPS, NEFT or the card network. A BA must document the withdrawal limits, the fee structure, the cooling period after a load, and the anti money laundering checks that apply to large withdrawals. A withdrawal of 10,000 rupees that is debited from the wallet but never reaches the bank account is a high severity defect, so the reconciliation must catch it within hours.  Double entry accounting is what makes all four transactions auditable, and a BA should be able to explain it with a simple example. Every wallet transaction touches at least two ledger accounts with equal debit and credit amounts, so the books always balance. A load of 1,000 rupees debits the pooled bank account and credits the customer wallet. A merchant payment of 500 rupees debits the customer wallet and credits the merchant wallet. A withdrawal of 5,000 rupees debits the customer wallet and credits the payout clearing account. At the end of the day the sum of all customer and merchant wallet balances must equal the balance in the pooled bank account minus the amounts already paid out. If the two sides differ by even one rupee, the reconciliation job raises an exception and finance must investigate before the next settlement cycle runs.", "paragraphs": [" Loading money into a wallet is a pull from a funding source, and the most common sources are UPI, a debit card, net banking or a bank transfer. When a customer loads 1,000 rupees through UPI, the wallet system first collects the money from the customer bank account through the UPI rail, and only after the collection is confirmed does it credit the wallet ledger. This order is critical. Crediting the wallet before the funding is confirmed would create money that does not exist. If the UPI debit succeeds but the wallet credit fails, the system must either retry the credit with the same reference or reverse the UPI collection automatically. A BA must document the timeout window, the reversal logic and the customer message for each outcome, because a stuck load is one of the most common wallet complaints.", " Paying a merchant is the most frequent wallet transaction, and it is a transfer inside the issuer ledger when both the customer and the merchant hold wallets with the same issuer. The customer scans a QR code or selects a merchant in the app, enters 350 rupees, confirms with a PIN, and the system debits the customer wallet and credits the merchant wallet in a single atomic posting. The merchant sees the credit immediately, and the money is available for settlement to the merchant bank account on the agreed cycle, often the next working day. If the merchant is on a different wallet system, the payment must travel through an interoperable rail such as UPI, and the settlement then follows that rail rather than the internal ledger. The BA should specify the authorisation, the confirmation message and the receipt fields for each channel.", " Sending money to a friend, known as a peer to peer transfer, is similar to a merchant payment but carries different risk rules. In a full KYC wallet the customer can send money to another wallet holder instantly, and the ledger simply moves the balance from the sender wallet to the receiver wallet. In a minimum KYC wallet the regulator limits peer to peer transfers, so the product must block or restrict the feature based on KYC status. The system must also check the receiver wallet exists, apply daily and monthly limits, and screen the transaction against fraud and sanctions lists. A real example is a customer sending 2,500 rupees to a friend for a shared dinner bill. The sender balance falls by 2,500 rupees, the receiver balance rises by the same amount, and both customers receive a notification with the same transaction reference for easy dispute handling.", " Withdrawing money from a wallet means converting the stored value back into bank money, and this is where open and semi-closed wallets differ sharply. An open loop wallet linked to a card network can withdraw cash at an ATM, subject to limits and fees, while a semi-closed wallet can usually only transfer the balance back to the linked bank account of the same customer. The withdrawal flow debits the customer wallet and credits a payout account, and the payout is then executed through IMPS, NEFT or the card network. A BA must document the withdrawal limits, the fee structure, the cooling period after a load, and the anti money laundering checks that apply to large withdrawals. A withdrawal of 10,000 rupees that is debited from the wallet but never reaches the bank account is a high severity defect, so the reconciliation must catch it within hours.", " Double entry accounting is what makes all four transactions auditable, and a BA should be able to explain it with a simple example. Every wallet transaction touches at least two ledger accounts with equal debit and credit amounts, so the books always balance. A load of 1,000 rupees debits the pooled bank account and credits the customer wallet. A merchant payment of 500 rupees debits the customer wallet and credits the merchant wallet. A withdrawal of 5,000 rupees debits the customer wallet and credits the payout clearing account. At the end of the day the sum of all customer and merchant wallet balances must equal the balance in the pooled bank account minus the amounts already paid out. If the two sides differ by even one rupee, the reconciliation job raises an exception and finance must investigate before the next settlement cycle runs."], "accessibility": "Payment flow diagram showing Wallet Transactions: Load, Pay, Send and Withdraw.", "visual_type": "payment_flow", "visual_choice_reason": "default payment journey", "beats": [{"t0": 0.0, "t1": 48.2, "title": "Wallet funding sources", "note": "Loading money into a wallet is a pull from a funding source, and the most common sources are UPI, a debit card, net banking or a bank transfer.", "highlight_nodes": ["n0"], "highlight_conns": [], "highlight_fields": []}, {"t0": 48.2, "t1": 92.0, "title": "Paying: most frequent wallet transaction", "note": "Paying a merchant is the most frequent wallet transaction, and it is a transfer inside the issuer ledger when both the customer and the merchant hold wallets with the same issuer.", "highlight_nodes": ["n1"], "highlight_conns": ["c0"], "highlight_fields": []}, {"t0": 92.0, "t1": 138.4, "title": "BA should specify", "note": "The BA should specify the authorisation, the confirmation message and the receipt fields for each channel.", "highlight_nodes": ["n2"], "highlight_conns": ["c1"], "highlight_fields": []}, {"t0": 138.4, "t1": 180.8, "title": "Sender balance falls by 2,500 rupees", "note": "The sender balance falls by 2,500 rupees, the receiver balance rises by the same amount,", "highlight_nodes": ["n3"], "highlight_conns": ["c2"], "highlight_fields": []}, {"t0": 180.8, "t1": 226.9, "title": "BA must document the withdrawal limits", "note": "A BA must document the withdrawal limits, the fee structure, the cooling period after a load, and the anti money laundering checks that apply to large withdrawals.", "highlight_nodes": ["n4"], "highlight_conns": ["c3"], "highlight_fields": []}, {"t0": 226.9, "t1": 251.4, "title": "Withdrawal of 5,000 rupees debits", "note": "A withdrawal of 5,000 rupees debits the customer wallet and credits the payout clearing account.", "highlight_nodes": ["n5"], "highlight_conns": ["c4"], "highlight_fields": []}], "node_ids": ["n0", "n1", "n2", "n3", "n4", "n5"], "framework": {"objective": "By the end of this lesson, you will be able to explain wallet transactions: load, pay, send and withdraw. Loading money into a wallet is a pull from a funding source, and the most common sources are UPI, a debit card, net banking or a bank transfer.", "why_matters": "This matters because card payments are the highest-volume payments most banks process, and the four-party model decides who pays whom, when, and what happens when it goes wrong.", "technical_example": "When a customer loads 1,000 rupees through UPI, the wallet system first collects the money from the customer bank account through the UPI rail, and only after the collection is confirmed does it credit the wallet ledger.", "failure_recovery": "If the two sides differ by even one rupee, the reconciliation job raises an exception and finance must investigate before the next settlement cycle runs.", "exercise": {"task": "Work out what the beneficiary receives for a 1,000 rupees payment under OUR, SHA and BEN.", "info": "Use the charge arrangement rules in this lesson and the correspondent and beneficiary bank fees named in the lesson.", "action": "Calculate the amount credited under each of the three arrangements and state who pays each fee.", "correct": "Under OUR the sender pays all charges and the beneficiary receives the full amount. Under SHA the sender pays the sending charges and the beneficiary pays the receiving charges. Under BEN the beneficiary pays all charges and receives the amount less all fees.", "why": "The charge arrangement decides who pays and how much arrives. A customer who was promised the full amount and receives less will complain, and the complaint lands on the analyst."}, "assessment": {"question": "A customer adds a card to a phone wallet and pays by tapping the phone. The merchant never sees the real card number. How does this work?", "options": ["The wallet creates a device specific token for the card, and the merchant receives the token, not the real card number", "The wallet emails the card number to the merchant in encrypted form", "The phone pays from its own bank account and the card is not involved", "The merchant looks up the card number from the card network"], "answer": 0, "explanation": "A digital wallet tokenises the card: a device specific token stands in for the real card number at the point of sale. The merchant and the terminal handle the token, while the real number stays with the token service and the issuing bank. That is why the merchant never sees the card number.", "why_wrong": ["", "This is not correct for this question. A digital wallet tokenises the card: a device specific token stands in for the real card number at the point of sale.", "This is not correct for this question. A digital wallet tokenises the card: a device specific token stands in for the real card number at the point of sale.", "This is not correct for this question. A digital wallet tokenises the card: a device specific token stands in for the real card number at the point of sale."], "source": "test:ts-d06-07"}, "takeaway": "A withdrawal of 10,000 rupees that is debited from the wallet but never reaches the bank account is a high severity defect, so the reconciliation must catch it within hours.", "prereq": "ch32s1", "next": "ch32s3", "connection_note": "Builds on \"Digital Wallet Architecture: Where the Money Actually Sits\".", "tool": {"slug": "lifecycle", "label": "Payment Lifecycle Simulator", "url": "../simulators/lifecycle.html", "scenario": "Follow 1,000 rupees through every stage, from instruction to beneficiary credit, and note where it can stop."}, "simple": "In plain words: loading money into a wallet is a pull from a funding source, and the most common sources are UPI, a debit card, net banking or a bank transfer. That is the whole idea in one sentence, and the rest of the lesson shows how it works in a real bank.", "summary": "Loading money into a wallet is a pull from a funding source, and the most common sources are UPI, a debit card, net banking or a bank transfer. Key points: Wallet funding sources; Paying: most frequent wallet transaction; BA should specify; Sender balance falls by 2,500 rupees; BA must document the withdrawal limits; Withdrawal of 5,000 rupees debits.", "example": "Loading money into a wallet is a pull from a funding source, and the most common sources are UPI, a debit card, net banking or a bank transfer. When a customer loads 1,000 rupees through UPI, the wallet system first collects the money from the customer bank account through the UPI rail, and only after the collection is confirmed does it credit the wallet ledger."}}], "chapter_title": "Digital Wallets and POS Systems", "meta_line": "Digital Wallets and POS Systems, Lesson 2 of 7, Narration 4:11, D08 Cards and alternative payments", "next_id": "ch32s3", "next_title": "Wallet KYC: Minimum KYC, Full KYC and RBI PPI Rules"}]);</script>
+</div>
+<nav class="tool-rail" aria-label="Lesson tools">
+<button type="button" class="rail-tool" onclick="pfOpenTranscript('studio-ch32s2')" title="Open transcript"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M7 3h7l4 4v14H7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M14 3v4h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 12h5M10 15.5h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span>Transcript</span></button>
+<button type="button" class="rail-tool" onclick="pfToggleNote('studio-ch32s2')" title="Write a note on this lesson"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L8 19l-4 1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>Notes</span></button>
+<button type="button" class="rail-tool" onclick="pfToggleFiles('studio-ch32s2')" title="Download lesson files"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>Files</span></button>
+</nav>
+<div class="fw-files-panel" id="pf-files-studio-ch32s2" style="display:none"><b>Lesson files</b><p><a href="../audio/ch32s2.mp3" download>Download narration (MP3)</a></p><p><a href="#" onclick="pfDownloadTranscript('studio-ch32s2');return false">Download transcript (.txt)</a></p></div>
+</div>
+</div>
+</main>
+<footer><p>Payments Training Hub. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="../index.html">Home</a> &middot; <a href="../courses.html">Courses</a> &middot; <a href="../practice.html">Practice</a> &middot; <a href="../simulators.html">Simulators</a> &middot; <a href="../labs.html">Labs</a> &middot; <a href="../explorer.html">Explorer</a> &middot; <a href="../tests.html">Tests</a> &middot; <a href="../diagnostic.html">Diagnostic</a> &middot; <a href="../faq.html">Interview Ready Questions</a> &middot; <a href="../interview-prep.html">Interview Prep</a></p><p><a href="../about.html">About</a> &middot; <a href="../privacy.html">Privacy</a> &middot; <a href="../terms.html">Terms</a> &middot; <a href="../contact.html">Contact</a> &middot; <a href="../editorial-standards.html">Editorial Standards</a> &middot; <a href="../sources.html">Sources</a></p></footer>
+<script defer src="../assets/site.js"></script>
+<script defer src="../assets/bundles.js"></script>
+<script defer src="../assets/auth.js"></script>
+<script defer src="../assets/studio.js"></script>
+<script defer src="../assets/insight-components.js"></script>
+<script defer src="../assets/nav.js"></script>
+<script defer src="../assets/pf-enhance.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+if(window.PFInsight){PFInsight.init();}
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>ISO 8583 in depth: message types, data elements and the clearing message | Payments Training Hub</title>
+<meta name="description" content="ISO 8583 is the message standard for card transactions, and it is the language that the terminal, the acquirer, the scheme and the issuer use to talk...">
+<link rel="canonical" href="https://www.paymentstraininghub.in/lessons/ch31s8.html">
+<meta property="og:url" content="https://www.paymentstraininghub.in/lessons/ch31s8.html">
+<meta property="og:title" content="ISO 8583 in depth: message types, data elements and the clearing message | Payments Training Hub">
+<meta property="og:description" content="ISO 8583 is the message standard for card transactions, and it is the language that the terminal, the acquirer, the scheme and the issuer use to talk...">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.in/assets/hero/hero-poster.jpg">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.paymentstraininghub.in/index.html"}, {"@type": "ListItem", "position": 2, "name": "Card Networks: Visa and Mastercard", "item": "https://www.paymentstraininghub.in/chapters/ch31-card-networks-visa-and-mastercard.html"}, {"@type": "ListItem", "position": 3, "name": "ISO 8583 in depth: message types, data elements and the clearing message", "item": "https://www.paymentstraininghub.in/lessons/ch31s8.html"}]}</script>
+<link rel="stylesheet" href="../assets/studio.css">
+<link rel="stylesheet" href="../assets/pf-theme.css">
+<link rel="stylesheet" href="../assets/insight-components.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="../index.html" class="brand">Payments <span>Training Hub</span></a><nav class="topnav"><a href="../index.html">Home</a> <a href="../courses.html">Courses</a> <a href="../practice.html">Practice</a> <a href="../simulators.html">Simulators</a> <a href="../labs.html">Labs</a> <a href="../explorer.html">Explorer</a> <a href="../tests.html">Tests</a></nav><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox" style="display:none"><span id="authState">Not signed in</span> <span id="authForm" style="display:none"><input id="authEmail" type="email" placeholder="Email for OTP" aria-label="Email for sign-in"> <button class="mute-btn" onclick="paAuthSendOtp()">Send code</button> <input id="authCode" type="text" placeholder="6-digit code" aria-label="One-time code" style="display:none"> <button class="mute-btn" id="authVerifyBtn" onclick="paAuthVerifyOtp()" style="display:none">Verify</button> <button class="mute-btn" onclick="paAuthGoogle()">Sign in with Google</button> </span><button class="mute-btn" id="authSignOutBtn" onclick="paAuthSignOut()" style="display:none">Sign out</button></span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<div class="lesson-page">
+<div class="lesson-shell">
+<aside class="course-rail">
+<div class="rail-head">
+<h2>Card Networks: Visa and Mastercard</h2>
+<a class="rail-close" href="../chapters/ch31-card-networks-visa-and-mastercard.html" aria-label="Close and go to chapter" title="Back to chapter">&times;</a>
+</div>
+<div class="goal-card">
+<div class="goal-head"><b>Today's goal &middot; <span id="side-progress-text">0 of 8 items</span></b><span class="goal-flag"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 21V4m0 1h11l-2.5 3.5L17 12H6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="goal-chev">&#94;</span></div>
+<p class="goal-body" id="side-goal-body">Complete 3 items today to stay at a good pace!</p>
+</div>
+<ul class="lesson-list"><li class="" data-lesson="ch31s1"><a href="ch31s1.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Card Network Roles</span><span class="m">Video &middot; 4 min</span></span></a></li>
+<li class="" data-lesson="ch31s2"><a href="ch31s2.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Visa Message Flow</span><span class="m">Video &middot; 4 min</span></span></a></li>
+<li class="" data-lesson="ch31s3"><a href="ch31s3.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Mastercard Message Flow</span><span class="m">Video &middot; 4 min</span></span></a></li>
+<li class="" data-lesson="ch31s4"><a href="ch31s4.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Authorization, Capture, Clearing, Settlement in Detail</span><span class="m">Video &middot; 4 min</span></span></a></li>
+<li class="" data-lesson="ch31s5"><a href="ch31s5.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Interchange and Scheme Fees</span><span class="m">Video &middot; 4 min</span></span></a></li>
+<li class="" data-lesson="ch31s6"><a href="ch31s6.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">NFC and Contactless</span><span class="m">Video &middot; 4 min</span></span></a></li>
+<li class="" data-lesson="ch31s7"><a href="ch31s7.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Chargebacks in Depth</span><span class="m">Video &middot; 4 min</span></span></a></li>
+<li class="current" data-lesson="ch31s8"><a href="ch31s8.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">ISO 8583 in depth: message types, data elements and the clearing message</span><span class="m">Video &middot; 8 min</span></span></a></li></ul>
+</aside>
+<div class="lesson-main">
+<div class="studio" id="studio-studio-ch31s8">
+<div class="player">
+<div class="studio-canvas" id="studio-canvas-studio-ch31s8">
+<div class="ch-sec studio-scene-vis active" id="studio-vis-studio-ch31s8-0"><div class="beat-frames">
+<div class="beat-frame active" data-frame="0">
+<svg class="flow-desktop" viewBox="0 0 900 560" role="img" aria-label="Lesson visual">
+<defs><pattern id="bfd100" width="18" height="18" patternUnits="userSpaceOnUse"><path d="M18 0H0V18" fill="none" stroke="#182A44" stroke-width="1"/></pattern></defs>
+<rect x="0" y="0" width="900" height="560" fill="#0B1F3D"/>
+<rect x="0" y="0" width="900" height="560" fill="url(#bfd100)"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">ISO</tspan> <tspan fill="#FFFFFF">8583</tspan> <tspan fill="#FFFFFF">message</tspan> <tspan fill="#FFFFFF">standard</tspan></text>
+<path data-conn="c0" data-beat="0" d="M 212 210 L 408 210" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c0" data-beat="0" points="420,210 408,217 408,203" fill="#47DCDD"/>
+<path data-conn="c1" data-beat="1" d="M 480 210 L 676 210" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c1" data-beat="1" points="688,210 676,217 676,203" fill="#47DCDD"/>
+<path data-conn="c2" data-beat="2" d="M 718 284 L 718 286 L 718 286 L 718 308" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c2" data-beat="2" points="718,320 711,308 725,308" fill="#47DCDD"/>
+<path data-conn="c3" data-beat="3" d="M 688 350 L 492 350" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c3" data-beat="3" points="480,350 492,343 492,357" fill="#47DCDD"/>
+<path data-conn="c4" data-beat="4" d="M 420 350 L 224 350" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c4" data-beat="4" points="212,350 224,343 224,357" fill="#47DCDD"/>
+<g data-node="n0" class="bf-now" data-beat="0">
+<circle cx="182" cy="210" r="26" fill="#0A1826" stroke="#47DCDD" stroke-width="3"/>
+<circle cx="182" cy="210" r="6" fill="#47DCDD"/>
+<circle cx="156" cy="210" r="4" fill="#47DCDD"/>
+<circle cx="208" cy="210" r="4" fill="#45A4FF"/>
+<circle cx="182" cy="210" r="33" fill="none" stroke="#47DCDD" stroke-width="1" opacity="0.5"/>
+<text x="234" y="180" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="182" y="258" text-anchor="middle" font-size="13" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">ISO 8583 message</text>
+<text x="182" y="276" text-anchor="middle" font-size="13" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">standard</text>
+</g>
+<g data-node="n1" class="bf-dim" data-beat="1">
+<circle cx="450" cy="210" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="450" cy="210" r="6" fill="#45A4FF"/>
+<circle cx="424" cy="210" r="4" fill="#47DCDD"/>
+<circle cx="476" cy="210" r="4" fill="#45A4FF"/>
+<text x="450" y="258" text-anchor="middle" font-size="13" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">ISO 8583 business</text>
+<text x="450" y="276" text-anchor="middle" font-size="13" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">relevance</text>
+</g>
+<g data-node="n2" class="bf-dim" data-beat="2">
+<circle cx="718" cy="210" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="718" cy="210" r="6" fill="#45A4FF"/>
+<circle cx="692" cy="210" r="4" fill="#47DCDD"/>
+<circle cx="744" cy="210" r="4" fill="#45A4FF"/>
+<text x="718" y="258" text-anchor="middle" font-size="12" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">MTI 0200 financial</text>
+<text x="718" y="276" text-anchor="middle" font-size="12" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">transaction request</text>
+</g>
+<g data-node="n3" class="bf-dim" data-beat="3">
+<circle cx="718" cy="350" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="718" cy="350" r="6" fill="#45A4FF"/>
+<circle cx="692" cy="350" r="4" fill="#47DCDD"/>
+<circle cx="744" cy="350" r="4" fill="#45A4FF"/>
+<text x="718" y="398" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Response code</text>
+<text x="718" y="416" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">data element 39</text>
+</g>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<circle cx="450" cy="350" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="450" cy="350" r="6" fill="#45A4FF"/>
+<circle cx="424" cy="350" r="4" fill="#47DCDD"/>
+<circle cx="476" cy="350" r="4" fill="#45A4FF"/>
+<text x="450" y="398" text-anchor="middle" font-size="12" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Operational and</text>
+<text x="450" y="416" text-anchor="middle" font-size="12" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">accounting</text>
+<text x="450" y="434" text-anchor="middle" font-size="12" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">implications</text>
+</g>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<circle cx="182" cy="350" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="182" cy="350" r="6" fill="#45A4FF"/>
+<circle cx="156" cy="350" r="4" fill="#47DCDD"/>
+<circle cx="208" cy="350" r="4" fill="#45A4FF"/>
+<text x="182" y="398" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">EMV data</text>
+<text x="182" y="416" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">element 55 gap</text>
+</g>
+<rect x="48" y="432" width="804" height="84" rx="10" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<text x="68" y="456" font-size="11" fill="#47DCDD" font-family="ui-monospace,Menlo,Consolas,monospace">MESSAGE TRACE</text>
+<text x="68" y="478" font-size="13" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">ISO 8583 message standard</text>
+<text x="68" y="504" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">ISO 8583 is the message standard for card transactions, and it is the language that the terminal, the acquirer,</text>
+<text x="48" y="538" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 1 of 6</text>
+<circle cx="772" cy="534" r="4" fill="#47DCDD"/>
+<circle cx="788" cy="534" r="4" fill="#334155"/>
+<circle cx="804" cy="534" r="4" fill="#334155"/>
+<circle cx="820" cy="534" r="4" fill="#334155"/>
+<circle cx="836" cy="534" r="4" fill="#334155"/>
+<circle cx="852" cy="534" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 866" role="img" aria-label="Lesson visual, vertical layout">
+<defs><pattern id="bfd101" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="360" height="866" fill="#0B1F3D"/>
+<rect x="0" y="0" width="360" height="866" fill="url(#bfd101)"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">ISO</tspan> <tspan fill="#FFFFFF">8583</tspan> <tspan fill="#FFFFFF">message</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">standard</tspan></text>
+<g data-node="n0" class="bf-now" data-beat="0">
+<rect x="24" y="94" width="312" height="72" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="44" cy="114" r="11" fill="#1D4ED8"/>
+<text x="44" y="118" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="324" y="118" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="180" y="132" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">ISO 8583 message standard</text>
+</g>
+<line data-conn="c0" data-beat="0" x1="180" y1="169" x2="180" y2="177" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c0" data-beat="0" points="180,189 173,177 187,177" fill="#DBEAFE"/>
+<g data-node="n1" class="bf-dim" data-beat="1">
+<rect x="24" y="192" width="312" height="92" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="212" r="11" fill="#1E3A5F"/>
+<text x="44" y="216" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="180" y="230" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">ISO 8583 business</text>
+<text x="180" y="250" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">relevance</text>
+</g>
+<line data-conn="c1" data-beat="1" x1="180" y1="287" x2="180" y2="295" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c1" data-beat="1" points="180,307 173,295 187,295" fill="#DBEAFE"/>
+<g data-node="n2" class="bf-dim" data-beat="2">
+<rect x="24" y="310" width="312" height="92" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="330" r="11" fill="#1E3A5F"/>
+<text x="44" y="334" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="180" y="348" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">MTI 0200 financial</text>
+<text x="180" y="368" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">transaction request</text>
+</g>
+<line data-conn="c2" data-beat="2" x1="180" y1="405" x2="180" y2="413" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c2" data-beat="2" points="180,425 173,413 187,413" fill="#DBEAFE"/>
+<g data-node="n3" class="bf-dim" data-beat="3">
+<rect x="24" y="428" width="312" height="92" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="448" r="11" fill="#1E3A5F"/>
+<text x="44" y="452" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="180" y="466" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Response code data</text>
+<text x="180" y="486" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">element 39</text>
+</g>
+<line data-conn="c3" data-beat="3" x1="180" y1="523" x2="180" y2="531" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c3" data-beat="3" points="180,543 173,531 187,531" fill="#DBEAFE"/>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<rect x="24" y="546" width="312" height="92" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="566" r="11" fill="#1E3A5F"/>
+<text x="44" y="570" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="180" y="584" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Operational and accounting</text>
+<text x="180" y="604" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">implications</text>
+</g>
+<line data-conn="c4" data-beat="4" x1="180" y1="641" x2="180" y2="649" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c4" data-beat="4" points="180,661 173,649 187,649" fill="#DBEAFE"/>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="24" y="664" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="684" r="11" fill="#1E3A5F"/>
+<text x="44" y="688" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="180" y="702" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">EMV data element 55 gap</text>
+</g>
+<g class="bf-paydot" style="--dx:0px;--dy:0px"><circle class="bf-pulse" cx="180" cy="94" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="180" cy="94" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="180" y="756" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">ISO 8583 is the message standard for card</text>
+<text x="180" y="775" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">transactions, and it is the language that</text>
+<text x="180" y="794" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">the terminal, the acquirer, the scheme and</text>
+<text x="180" y="813" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">the issuer use to talk to each other.</text>
+<text x="24" y="854" font-size="12" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 1 of 6</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="1">
+<svg class="flow-desktop" viewBox="0 0 900 560" role="img" aria-label="Lesson visual">
+<defs><pattern id="bfd102" width="18" height="18" patternUnits="userSpaceOnUse"><path d="M18 0H0V18" fill="none" stroke="#182A44" stroke-width="1"/></pattern></defs>
+<rect x="0" y="0" width="900" height="560" fill="#0B1F3D"/>
+<rect x="0" y="0" width="900" height="560" fill="url(#bfd102)"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">ISO</tspan> <tspan fill="#FFFFFF">8583</tspan> <tspan fill="#FFFFFF">business</tspan> <tspan fill="#FFFFFF">relevance</tspan></text>
+<path data-conn="c0" data-beat="0" d="M 212 210 L 408 210" stroke="#47DCDD" stroke-width="3" fill="none"/><polygon data-conn="c0" data-beat="0" points="420,210 408,217 408,203" fill="#47DCDD"/>
+<path data-conn="c1" data-beat="1" d="M 480 210 L 676 210" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c1" data-beat="1" points="688,210 676,217 676,203" fill="#47DCDD"/>
+<path data-conn="c2" data-beat="2" d="M 718 284 L 718 286 L 718 286 L 718 308" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c2" data-beat="2" points="718,320 711,308 725,308" fill="#47DCDD"/>
+<path data-conn="c3" data-beat="3" d="M 688 350 L 492 350" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c3" data-beat="3" points="480,350 492,343 492,357" fill="#47DCDD"/>
+<path data-conn="c4" data-beat="4" d="M 420 350 L 224 350" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c4" data-beat="4" points="212,350 224,343 224,357" fill="#47DCDD"/>
+<g data-node="n0" class="bf-done" data-beat="0">
+<circle cx="182" cy="210" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="182" cy="210" r="6" fill="#45A4FF"/>
+<circle cx="156" cy="210" r="4" fill="#47DCDD"/>
+<circle cx="208" cy="210" r="4" fill="#45A4FF"/>
+<text x="182" y="258" text-anchor="middle" font-size="13" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">ISO 8583 message</text>
+<text x="182" y="276" text-anchor="middle" font-size="13" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">standard</text>
+</g>
+<g data-node="n1" class="bf-now" data-beat="1">
+<circle cx="450" cy="210" r="26" fill="#0A1826" stroke="#47DCDD" stroke-width="3"/>
+<circle cx="450" cy="210" r="6" fill="#47DCDD"/>
+<circle cx="424" cy="210" r="4" fill="#47DCDD"/>
+<circle cx="476" cy="210" r="4" fill="#45A4FF"/>
+<circle cx="450" cy="210" r="33" fill="none" stroke="#47DCDD" stroke-width="1" opacity="0.5"/>
+<text x="502" y="180" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="450" y="258" text-anchor="middle" font-size="13" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">ISO 8583 business</text>
+<text x="450" y="276" text-anchor="middle" font-size="13" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">relevance</text>
+</g>
+<g data-node="n2" class="bf-dim" data-beat="2">
+<circle cx="718" cy="210" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="718" cy="210" r="6" fill="#45A4FF"/>
+<circle cx="692" cy="210" r="4" fill="#47DCDD"/>
+<circle cx="744" cy="210" r="4" fill="#45A4FF"/>
+<text x="718" y="258" text-anchor="middle" font-size="12" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">MTI 0200 financial</text>
+<text x="718" y="276" text-anchor="middle" font-size="12" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">transaction request</text>
+</g>
+<g data-node="n3" class="bf-dim" data-beat="3">
+<circle cx="718" cy="350" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="718" cy="350" r="6" fill="#45A4FF"/>
+<circle cx="692" cy="350" r="4" fill="#47DCDD"/>
+<circle cx="744" cy="350" r="4" fill="#45A4FF"/>
+<text x="718" y="398" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Response code</text>
+<text x="718" y="416" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">data element 39</text>
+</g>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<circle cx="450" cy="350" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="450" cy="350" r="6" fill="#45A4FF"/>
+<circle cx="424" cy="350" r="4" fill="#47DCDD"/>
+<circle cx="476" cy="350" r="4" fill="#45A4FF"/>
+<text x="450" y="398" text-anchor="middle" font-size="12" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Operational and</text>
+<text x="450" y="416" text-anchor="middle" font-size="12" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">accounting</text>
+<text x="450" y="434" text-anchor="middle" font-size="12" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">implications</text>
+</g>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<circle cx="182" cy="350" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="182" cy="350" r="6" fill="#45A4FF"/>
+<circle cx="156" cy="350" r="4" fill="#47DCDD"/>
+<circle cx="208" cy="350" r="4" fill="#45A4FF"/>
+<text x="182" y="398" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">EMV data</text>
+<text x="182" y="416" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">element 55 gap</text>
+</g>
+<rect x="48" y="432" width="804" height="84" rx="10" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<text x="68" y="456" font-size="11" fill="#47DCDD" font-family="ui-monospace,Menlo,Consolas,monospace">MESSAGE TRACE</text>
+<text x="68" y="478" font-size="13" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">ISO 8583 message standard &gt; ISO 8583 business relevance</text>
+<text x="68" y="504" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The standard is a technical subject, but it is also a business subject, because the data elements are the</text>
+<text x="48" y="538" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 2 of 6</text>
+<circle cx="772" cy="534" r="4" fill="#334155"/>
+<circle cx="788" cy="534" r="4" fill="#47DCDD"/>
+<circle cx="804" cy="534" r="4" fill="#334155"/>
+<circle cx="820" cy="534" r="4" fill="#334155"/>
+<circle cx="836" cy="534" r="4" fill="#334155"/>
+<circle cx="852" cy="534" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 866" role="img" aria-label="Lesson visual, vertical layout">
+<defs><pattern id="bfd103" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="360" height="866" fill="#0B1F3D"/>
+<rect x="0" y="0" width="360" height="866" fill="url(#bfd103)"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">ISO</tspan> <tspan fill="#FFFFFF">8583</tspan> <tspan fill="#FFFFFF">business</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">relevance</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="24" y="94" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="114" r="11" fill="#1E3A5F"/>
+<text x="44" y="118" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="180" y="132" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">ISO 8583 message standard</text>
+</g>
+<line data-conn="c0" data-beat="0" x1="180" y1="169" x2="180" y2="177" stroke="#60A5FA" stroke-width="2"/>
+<polygon data-conn="c0" data-beat="0" points="180,189 173,177 187,177" fill="#DBEAFE"/>
+<g data-node="n1" class="bf-now" data-beat="1">
+<rect x="24" y="192" width="312" height="92" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="44" cy="212" r="11" fill="#1D4ED8"/>
+<text x="44" y="216" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="324" y="216" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="180" y="230" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">ISO 8583 business</text>
+<text x="180" y="250" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">relevance</text>
+</g>
+<line data-conn="c1" data-beat="1" x1="180" y1="287" x2="180" y2="295" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c1" data-beat="1" points="180,307 173,295 187,295" fill="#DBEAFE"/>
+<g data-node="n2" class="bf-dim" data-beat="2">
+<rect x="24" y="310" width="312" height="92" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="330" r="11" fill="#1E3A5F"/>
+<text x="44" y="334" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="180" y="348" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">MTI 0200 financial</text>
+<text x="180" y="368" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">transaction request</text>
+</g>
+<line data-conn="c2" data-beat="2" x1="180" y1="405" x2="180" y2="413" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c2" data-beat="2" points="180,425 173,413 187,413" fill="#DBEAFE"/>
+<g data-node="n3" class="bf-dim" data-beat="3">
+<rect x="24" y="428" width="312" height="92" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="448" r="11" fill="#1E3A5F"/>
+<text x="44" y="452" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="180" y="466" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Response code data</text>
+<text x="180" y="486" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">element 39</text>
+</g>
+<line data-conn="c3" data-beat="3" x1="180" y1="523" x2="180" y2="531" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c3" data-beat="3" points="180,543 173,531 187,531" fill="#DBEAFE"/>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<rect x="24" y="546" width="312" height="92" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="566" r="11" fill="#1E3A5F"/>
+<text x="44" y="570" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="180" y="584" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Operational and accounting</text>
+<text x="180" y="604" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">implications</text>
+</g>
+<line data-conn="c4" data-beat="4" x1="180" y1="641" x2="180" y2="649" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c4" data-beat="4" points="180,661 173,649 187,649" fill="#DBEAFE"/>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="24" y="664" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="684" r="11" fill="#1E3A5F"/>
+<text x="44" y="688" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="180" y="702" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">EMV data element 55 gap</text>
+</g>
+<g class="bf-paydot" style="--dx:0px;--dy:-52px"><circle class="bf-pulse" cx="180" cy="182" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="180" cy="182" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="180" y="756" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The standard is a technical subject, but it</text>
+<text x="180" y="775" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">is also a business subject, because the</text>
+<text x="180" y="794" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">data elements are the business facts of the</text>
+<text x="180" y="813" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">transaction.</text>
+<text x="24" y="854" font-size="12" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 2 of 6</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="2">
+<svg class="flow-desktop" viewBox="0 0 900 560" role="img" aria-label="Lesson visual">
+<defs><pattern id="bfd104" width="18" height="18" patternUnits="userSpaceOnUse"><path d="M18 0H0V18" fill="none" stroke="#182A44" stroke-width="1"/></pattern></defs>
+<rect x="0" y="0" width="900" height="560" fill="#0B1F3D"/>
+<rect x="0" y="0" width="900" height="560" fill="url(#bfd104)"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">MTI</tspan> <tspan fill="#FFFFFF">0200</tspan> <tspan fill="#FFFFFF">financial</tspan> <tspan fill="#FFFFFF">transaction</tspan></text>
+<text x="48" y="126" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">request</tspan></text>
+<path data-conn="c0" data-beat="0" d="M 212 210 L 408 210" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c0" data-beat="0" points="420,210 408,217 408,203" fill="#47DCDD"/>
+<path data-conn="c1" data-beat="1" d="M 480 210 L 676 210" stroke="#47DCDD" stroke-width="3" fill="none"/><polygon data-conn="c1" data-beat="1" points="688,210 676,217 676,203" fill="#47DCDD"/>
+<path data-conn="c2" data-beat="2" d="M 718 284 L 718 286 L 718 286 L 718 308" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c2" data-beat="2" points="718,320 711,308 725,308" fill="#47DCDD"/>
+<path data-conn="c3" data-beat="3" d="M 688 350 L 492 350" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c3" data-beat="3" points="480,350 492,343 492,357" fill="#47DCDD"/>
+<path data-conn="c4" data-beat="4" d="M 420 350 L 224 350" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c4" data-beat="4" points="212,350 224,343 224,357" fill="#47DCDD"/>
+<g data-node="n0" class="bf-done" data-beat="0">
+<circle cx="182" cy="210" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="182" cy="210" r="6" fill="#45A4FF"/>
+<circle cx="156" cy="210" r="4" fill="#47DCDD"/>
+<circle cx="208" cy="210" r="4" fill="#45A4FF"/>
+<text x="182" y="258" text-anchor="middle" font-size="13" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">ISO 8583 message</text>
+<text x="182" y="276" text-anchor="middle" font-size="13" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">standard</text>
+</g>
+<g data-node="n1" class="bf-done" data-beat="1">
+<circle cx="450" cy="210" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="450" cy="210" r="6" fill="#45A4FF"/>
+<circle cx="424" cy="210" r="4" fill="#47DCDD"/>
+<circle cx="476" cy="210" r="4" fill="#45A4FF"/>
+<text x="450" y="258" text-anchor="middle" font-size="13" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">ISO 8583 business</text>
+<text x="450" y="276" text-anchor="middle" font-size="13" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">relevance</text>
+</g>
+<g data-node="n2" class="bf-now" data-beat="2">
+<circle cx="718" cy="210" r="26" fill="#0A1826" stroke="#47DCDD" stroke-width="3"/>
+<circle cx="718" cy="210" r="6" fill="#47DCDD"/>
+<circle cx="692" cy="210" r="4" fill="#47DCDD"/>
+<circle cx="744" cy="210" r="4" fill="#45A4FF"/>
+<circle cx="718" cy="210" r="33" fill="none" stroke="#47DCDD" stroke-width="1" opacity="0.5"/>
+<text x="770" y="180" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="718" y="258" text-anchor="middle" font-size="12" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">MTI 0200 financial</text>
+<text x="718" y="276" text-anchor="middle" font-size="12" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">transaction request</text>
+</g>
+<g data-node="n3" class="bf-dim" data-beat="3">
+<circle cx="718" cy="350" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="718" cy="350" r="6" fill="#45A4FF"/>
+<circle cx="692" cy="350" r="4" fill="#47DCDD"/>
+<circle cx="744" cy="350" r="4" fill="#45A4FF"/>
+<text x="718" y="398" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Response code</text>
+<text x="718" y="416" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">data element 39</text>
+</g>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<circle cx="450" cy="350" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="450" cy="350" r="6" fill="#45A4FF"/>
+<circle cx="424" cy="350" r="4" fill="#47DCDD"/>
+<circle cx="476" cy="350" r="4" fill="#45A4FF"/>
+<text x="450" y="398" text-anchor="middle" font-size="12" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Operational and</text>
+<text x="450" y="416" text-anchor="middle" font-size="12" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">accounting</text>
+<text x="450" y="434" text-anchor="middle" font-size="12" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">implications</text>
+</g>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<circle cx="182" cy="350" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="182" cy="350" r="6" fill="#45A4FF"/>
+<circle cx="156" cy="350" r="4" fill="#47DCDD"/>
+<circle cx="208" cy="350" r="4" fill="#45A4FF"/>
+<text x="182" y="398" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">EMV data</text>
+<text x="182" y="416" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">element 55 gap</text>
+</g>
+<rect x="48" y="432" width="804" height="84" rx="10" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<text x="68" y="456" font-size="11" fill="#47DCDD" font-family="ui-monospace,Menlo,Consolas,monospace">MESSAGE TRACE</text>
+<text x="68" y="478" font-size="13" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">ISO 8583 message standard &gt; ISO 8583 business relevance &gt; MTI 0200 financial transaction request</text>
+<text x="68" y="504" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">An 0200 is a financial transaction request, used for transactions that are authorised and cleared in one step.</text>
+<text x="48" y="538" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 3 of 6</text>
+<circle cx="772" cy="534" r="4" fill="#334155"/>
+<circle cx="788" cy="534" r="4" fill="#334155"/>
+<circle cx="804" cy="534" r="4" fill="#47DCDD"/>
+<circle cx="820" cy="534" r="4" fill="#334155"/>
+<circle cx="836" cy="534" r="4" fill="#334155"/>
+<circle cx="852" cy="534" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 875" role="img" aria-label="Lesson visual, vertical layout">
+<defs><pattern id="bfd105" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="360" height="875" fill="#0B1F3D"/>
+<rect x="0" y="0" width="360" height="875" fill="url(#bfd105)"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">MTI</tspan> <tspan fill="#FFFFFF">0200</tspan> <tspan fill="#FFFFFF">financial</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">transaction</tspan></text>
+<text x="24" y="96" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">request</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="24" y="122" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="142" r="11" fill="#1E3A5F"/>
+<text x="44" y="146" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="180" y="160" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">ISO 8583 message standard</text>
+</g>
+<line data-conn="c0" data-beat="0" x1="180" y1="197" x2="180" y2="205" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c0" data-beat="0" points="180,217 173,205 187,205" fill="#DBEAFE"/>
+<g data-node="n1" class="bf-done" data-beat="1">
+<rect x="24" y="220" width="312" height="92" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="240" r="11" fill="#1E3A5F"/>
+<text x="44" y="244" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="180" y="258" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">ISO 8583 business</text>
+<text x="180" y="278" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">relevance</text>
+</g>
+<line data-conn="c1" data-beat="1" x1="180" y1="315" x2="180" y2="323" stroke="#60A5FA" stroke-width="2"/>
+<polygon data-conn="c1" data-beat="1" points="180,335 173,323 187,323" fill="#DBEAFE"/>
+<g data-node="n2" class="bf-now" data-beat="2">
+<rect x="24" y="338" width="312" height="92" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="44" cy="358" r="11" fill="#1D4ED8"/>
+<text x="44" y="362" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="324" y="362" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="180" y="376" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">MTI 0200 financial</text>
+<text x="180" y="396" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">transaction request</text>
+</g>
+<line data-conn="c2" data-beat="2" x1="180" y1="433" x2="180" y2="441" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c2" data-beat="2" points="180,453 173,441 187,441" fill="#DBEAFE"/>
+<g data-node="n3" class="bf-dim" data-beat="3">
+<rect x="24" y="456" width="312" height="92" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="476" r="11" fill="#1E3A5F"/>
+<text x="44" y="480" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="180" y="494" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Response code data</text>
+<text x="180" y="514" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">element 39</text>
+</g>
+<line data-conn="c3" data-beat="3" x1="180" y1="551" x2="180" y2="559" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c3" data-beat="3" points="180,571 173,559 187,559" fill="#DBEAFE"/>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<rect x="24" y="574" width="312" height="92" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="594" r="11" fill="#1E3A5F"/>
+<text x="44" y="598" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="180" y="612" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Operational and accounting</text>
+<text x="180" y="632" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">implications</text>
+</g>
+<line data-conn="c4" data-beat="4" x1="180" y1="669" x2="180" y2="677" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c4" data-beat="4" points="180,689 173,677 187,677" fill="#DBEAFE"/>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="24" y="692" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="712" r="11" fill="#1E3A5F"/>
+<text x="44" y="716" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="180" y="730" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">EMV data element 55 gap</text>
+</g>
+<g class="bf-paydot" style="--dx:0px;--dy:-62px"><circle class="bf-pulse" cx="180" cy="328" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="180" cy="328" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="180" y="784" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">An 0200 is a financial transaction</text>
+<text x="180" y="803" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">request, used for transactions that are</text>
+<text x="180" y="822" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">authorised and cleared in one step.</text>
+<text x="24" y="863" font-size="12" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 3 of 6</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="3">
+<svg class="flow-desktop" viewBox="0 0 900 560" role="img" aria-label="Lesson visual">
+<defs><pattern id="bfd106" width="18" height="18" patternUnits="userSpaceOnUse"><path d="M18 0H0V18" fill="none" stroke="#182A44" stroke-width="1"/></pattern></defs>
+<rect x="0" y="0" width="900" height="560" fill="#0B1F3D"/>
+<rect x="0" y="0" width="900" height="560" fill="url(#bfd106)"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Response</tspan> <tspan fill="#FFFFFF">code</tspan> <tspan fill="#FFFFFF">data</tspan> <tspan fill="#FFFFFF">element</tspan> <tspan fill="#FFFFFF">39</tspan></text>
+<path data-conn="c0" data-beat="0" d="M 212 210 L 408 210" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c0" data-beat="0" points="420,210 408,217 408,203" fill="#47DCDD"/>
+<path data-conn="c1" data-beat="1" d="M 480 210 L 676 210" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c1" data-beat="1" points="688,210 676,217 676,203" fill="#47DCDD"/>
+<path data-conn="c2" data-beat="2" d="M 718 284 L 718 286 L 718 286 L 718 308" stroke="#47DCDD" stroke-width="3" fill="none"/><polygon data-conn="c2" data-beat="2" points="718,320 711,308 725,308" fill="#47DCDD"/>
+<path data-conn="c3" data-beat="3" d="M 688 350 L 492 350" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c3" data-beat="3" points="480,350 492,343 492,357" fill="#47DCDD"/>
+<path data-conn="c4" data-beat="4" d="M 420 350 L 224 350" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c4" data-beat="4" points="212,350 224,343 224,357" fill="#47DCDD"/>
+<g data-node="n0" class="bf-done" data-beat="0">
+<circle cx="182" cy="210" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="182" cy="210" r="6" fill="#45A4FF"/>
+<circle cx="156" cy="210" r="4" fill="#47DCDD"/>
+<circle cx="208" cy="210" r="4" fill="#45A4FF"/>
+<text x="182" y="258" text-anchor="middle" font-size="13" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">ISO 8583 message</text>
+<text x="182" y="276" text-anchor="middle" font-size="13" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">standard</text>
+</g>
+<g data-node="n1" class="bf-done" data-beat="1">
+<circle cx="450" cy="210" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="450" cy="210" r="6" fill="#45A4FF"/>
+<circle cx="424" cy="210" r="4" fill="#47DCDD"/>
+<circle cx="476" cy="210" r="4" fill="#45A4FF"/>
+<text x="450" y="258" text-anchor="middle" font-size="13" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">ISO 8583 business</text>
+<text x="450" y="276" text-anchor="middle" font-size="13" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">relevance</text>
+</g>
+<g data-node="n2" class="bf-done" data-beat="2">
+<circle cx="718" cy="210" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="718" cy="210" r="6" fill="#45A4FF"/>
+<circle cx="692" cy="210" r="4" fill="#47DCDD"/>
+<circle cx="744" cy="210" r="4" fill="#45A4FF"/>
+<text x="718" y="258" text-anchor="middle" font-size="12" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">MTI 0200 financial</text>
+<text x="718" y="276" text-anchor="middle" font-size="12" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">transaction request</text>
+</g>
+<g data-node="n3" class="bf-now" data-beat="3">
+<circle cx="718" cy="350" r="26" fill="#0A1826" stroke="#47DCDD" stroke-width="3"/>
+<circle cx="718" cy="350" r="6" fill="#47DCDD"/>
+<circle cx="692" cy="350" r="4" fill="#47DCDD"/>
+<circle cx="744" cy="350" r="4" fill="#45A4FF"/>
+<circle cx="718" cy="350" r="33" fill="none" stroke="#47DCDD" stroke-width="1" opacity="0.5"/>
+<text x="770" y="320" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="718" y="398" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Response code</text>
+<text x="718" y="416" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">data element 39</text>
+</g>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<circle cx="450" cy="350" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="450" cy="350" r="6" fill="#45A4FF"/>
+<circle cx="424" cy="350" r="4" fill="#47DCDD"/>
+<circle cx="476" cy="350" r="4" fill="#45A4FF"/>
+<text x="450" y="398" text-anchor="middle" font-size="12" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Operational and</text>
+<text x="450" y="416" text-anchor="middle" font-size="12" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">accounting</text>
+<text x="450" y="434" text-anchor="middle" font-size="12" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">implications</text>
+</g>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<circle cx="182" cy="350" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="182" cy="350" r="6" fill="#45A4FF"/>
+<circle cx="156" cy="350" r="4" fill="#47DCDD"/>
+<circle cx="208" cy="350" r="4" fill="#45A4FF"/>
+<text x="182" y="398" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">EMV data</text>
+<text x="182" y="416" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">element 55 gap</text>
+</g>
+<rect x="48" y="432" width="804" height="84" rx="10" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<text x="68" y="456" font-size="11" fill="#47DCDD" font-family="ui-monospace,Menlo,Consolas,monospace">MESSAGE TRACE</text>
+<text x="68" y="478" font-size="13" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">ISO 8583 message standard &gt; ISO 8583 business relevance &gt; MTI 0200 financial transaction request</text>
+<text x="68" y="496" font-size="13" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">&gt; Response code data element 39</text>
+<text x="68" y="504" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The issuer returns an 0110 with data element 39</text>
+<text x="48" y="538" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 4 of 6</text>
+<circle cx="772" cy="534" r="4" fill="#334155"/>
+<circle cx="788" cy="534" r="4" fill="#334155"/>
+<circle cx="804" cy="534" r="4" fill="#334155"/>
+<circle cx="820" cy="534" r="4" fill="#47DCDD"/>
+<circle cx="836" cy="534" r="4" fill="#334155"/>
+<circle cx="852" cy="534" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 828" role="img" aria-label="Lesson visual, vertical layout">
+<defs><pattern id="bfd107" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="360" height="828" fill="#0B1F3D"/>
+<rect x="0" y="0" width="360" height="828" fill="url(#bfd107)"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Response</tspan> <tspan fill="#FFFFFF">code</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">data</tspan> <tspan fill="#FFFFFF">element</tspan> <tspan fill="#FFFFFF">39</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="24" y="94" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="114" r="11" fill="#1E3A5F"/>
+<text x="44" y="118" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="180" y="132" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">ISO 8583 message standard</text>
+</g>
+<line data-conn="c0" data-beat="0" x1="180" y1="169" x2="180" y2="177" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c0" data-beat="0" points="180,189 173,177 187,177" fill="#DBEAFE"/>
+<g data-node="n1" class="bf-done" data-beat="1">
+<rect x="24" y="192" width="312" height="92" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="212" r="11" fill="#1E3A5F"/>
+<text x="44" y="216" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="180" y="230" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">ISO 8583 business</text>
+<text x="180" y="250" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">relevance</text>
+</g>
+<line data-conn="c1" data-beat="1" x1="180" y1="287" x2="180" y2="295" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c1" data-beat="1" points="180,307 173,295 187,295" fill="#DBEAFE"/>
+<g data-node="n2" class="bf-done" data-beat="2">
+<rect x="24" y="310" width="312" height="92" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="330" r="11" fill="#1E3A5F"/>
+<text x="44" y="334" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="180" y="348" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">MTI 0200 financial</text>
+<text x="180" y="368" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">transaction request</text>
+</g>
+<line data-conn="c2" data-beat="2" x1="180" y1="405" x2="180" y2="413" stroke="#60A5FA" stroke-width="2"/>
+<polygon data-conn="c2" data-beat="2" points="180,425 173,413 187,413" fill="#DBEAFE"/>
+<g data-node="n3" class="bf-now" data-beat="3">
+<rect x="24" y="428" width="312" height="92" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="44" cy="448" r="11" fill="#1D4ED8"/>
+<text x="44" y="452" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="324" y="452" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="180" y="466" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Response code data</text>
+<text x="180" y="486" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">element 39</text>
+</g>
+<line data-conn="c3" data-beat="3" x1="180" y1="523" x2="180" y2="531" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c3" data-beat="3" points="180,543 173,531 187,531" fill="#DBEAFE"/>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<rect x="24" y="546" width="312" height="92" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="566" r="11" fill="#1E3A5F"/>
+<text x="44" y="570" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="180" y="584" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Operational and accounting</text>
+<text x="180" y="604" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">implications</text>
+</g>
+<line data-conn="c4" data-beat="4" x1="180" y1="641" x2="180" y2="649" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c4" data-beat="4" points="180,661 173,649 187,649" fill="#DBEAFE"/>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="24" y="664" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="684" r="11" fill="#1E3A5F"/>
+<text x="44" y="688" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="180" y="702" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">EMV data element 55 gap</text>
+</g>
+<g class="bf-paydot" style="--dx:0px;--dy:-62px"><circle class="bf-pulse" cx="180" cy="418" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="180" cy="418" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="180" y="756" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The issuer returns an 0110 with data</text>
+<text x="180" y="775" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">element 39</text>
+<text x="24" y="816" font-size="12" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 4 of 6</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="4">
+<svg class="flow-desktop" viewBox="0 0 900 560" role="img" aria-label="Lesson visual">
+<defs><pattern id="bfd108" width="18" height="18" patternUnits="userSpaceOnUse"><path d="M18 0H0V18" fill="none" stroke="#182A44" stroke-width="1"/></pattern></defs>
+<rect x="0" y="0" width="900" height="560" fill="#0B1F3D"/>
+<rect x="0" y="0" width="900" height="560" fill="url(#bfd108)"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Operational</tspan> <tspan fill="#FFFFFF">and</tspan> <tspan fill="#FFFFFF">accounting</tspan></text>
+<text x="48" y="126" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">implications</tspan></text>
+<path data-conn="c0" data-beat="0" d="M 212 210 L 408 210" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c0" data-beat="0" points="420,210 408,217 408,203" fill="#47DCDD"/>
+<path data-conn="c1" data-beat="1" d="M 480 210 L 676 210" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c1" data-beat="1" points="688,210 676,217 676,203" fill="#47DCDD"/>
+<path data-conn="c2" data-beat="2" d="M 718 284 L 718 286 L 718 286 L 718 308" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c2" data-beat="2" points="718,320 711,308 725,308" fill="#47DCDD"/>
+<path data-conn="c3" data-beat="3" d="M 688 350 L 492 350" stroke="#47DCDD" stroke-width="3" fill="none"/><polygon data-conn="c3" data-beat="3" points="480,350 492,343 492,357" fill="#47DCDD"/>
+<path data-conn="c4" data-beat="4" d="M 420 350 L 224 350" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c4" data-beat="4" points="212,350 224,343 224,357" fill="#47DCDD"/>
+<g data-node="n0" class="bf-done" data-beat="0">
+<circle cx="182" cy="210" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="182" cy="210" r="6" fill="#45A4FF"/>
+<circle cx="156" cy="210" r="4" fill="#47DCDD"/>
+<circle cx="208" cy="210" r="4" fill="#45A4FF"/>
+<text x="182" y="258" text-anchor="middle" font-size="13" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">ISO 8583 message</text>
+<text x="182" y="276" text-anchor="middle" font-size="13" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">standard</text>
+</g>
+<g data-node="n1" class="bf-done" data-beat="1">
+<circle cx="450" cy="210" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="450" cy="210" r="6" fill="#45A4FF"/>
+<circle cx="424" cy="210" r="4" fill="#47DCDD"/>
+<circle cx="476" cy="210" r="4" fill="#45A4FF"/>
+<text x="450" y="258" text-anchor="middle" font-size="13" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">ISO 8583 business</text>
+<text x="450" y="276" text-anchor="middle" font-size="13" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">relevance</text>
+</g>
+<g data-node="n2" class="bf-done" data-beat="2">
+<circle cx="718" cy="210" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="718" cy="210" r="6" fill="#45A4FF"/>
+<circle cx="692" cy="210" r="4" fill="#47DCDD"/>
+<circle cx="744" cy="210" r="4" fill="#45A4FF"/>
+<text x="718" y="258" text-anchor="middle" font-size="12" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">MTI 0200 financial</text>
+<text x="718" y="276" text-anchor="middle" font-size="12" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">transaction request</text>
+</g>
+<g data-node="n3" class="bf-done" data-beat="3">
+<circle cx="718" cy="350" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="718" cy="350" r="6" fill="#45A4FF"/>
+<circle cx="692" cy="350" r="4" fill="#47DCDD"/>
+<circle cx="744" cy="350" r="4" fill="#45A4FF"/>
+<text x="718" y="398" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Response code</text>
+<text x="718" y="416" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">data element 39</text>
+</g>
+<g data-node="n4" class="bf-now" data-beat="4">
+<circle cx="450" cy="350" r="26" fill="#0A1826" stroke="#47DCDD" stroke-width="3"/>
+<circle cx="450" cy="350" r="6" fill="#47DCDD"/>
+<circle cx="424" cy="350" r="4" fill="#47DCDD"/>
+<circle cx="476" cy="350" r="4" fill="#45A4FF"/>
+<circle cx="450" cy="350" r="33" fill="none" stroke="#47DCDD" stroke-width="1" opacity="0.5"/>
+<text x="502" y="320" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="450" y="398" text-anchor="middle" font-size="12" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Operational and</text>
+<text x="450" y="416" text-anchor="middle" font-size="12" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">accounting</text>
+<text x="450" y="434" text-anchor="middle" font-size="12" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">implications</text>
+</g>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<circle cx="182" cy="350" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="182" cy="350" r="6" fill="#45A4FF"/>
+<circle cx="156" cy="350" r="4" fill="#47DCDD"/>
+<circle cx="208" cy="350" r="4" fill="#45A4FF"/>
+<text x="182" y="398" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">EMV data</text>
+<text x="182" y="416" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">element 55 gap</text>
+</g>
+<rect x="48" y="432" width="804" height="84" rx="10" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<text x="68" y="456" font-size="11" fill="#47DCDD" font-family="ui-monospace,Menlo,Consolas,monospace">MESSAGE TRACE</text>
+<text x="68" y="478" font-size="13" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">ISO 8583 message standard &gt; ISO 8583 business relevance &gt; MTI 0200 financial transaction request</text>
+<text x="68" y="496" font-size="13" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">&gt; Response code data element 39 &gt; Operational and accounting implications</text>
+<text x="68" y="504" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The operational and accounting implications are that the operations team must monitor the message reject</text>
+<text x="48" y="538" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 5 of 6</text>
+<circle cx="772" cy="534" r="4" fill="#334155"/>
+<circle cx="788" cy="534" r="4" fill="#334155"/>
+<circle cx="804" cy="534" r="4" fill="#334155"/>
+<circle cx="820" cy="534" r="4" fill="#334155"/>
+<circle cx="836" cy="534" r="4" fill="#47DCDD"/>
+<circle cx="852" cy="534" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 875" role="img" aria-label="Lesson visual, vertical layout">
+<defs><pattern id="bfd109" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="360" height="875" fill="#0B1F3D"/>
+<rect x="0" y="0" width="360" height="875" fill="url(#bfd109)"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Operational</tspan> <tspan fill="#FFFFFF">and</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">accounting</tspan></text>
+<text x="24" y="96" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">implications</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="24" y="122" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="142" r="11" fill="#1E3A5F"/>
+<text x="44" y="146" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="180" y="160" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">ISO 8583 message standard</text>
+</g>
+<line data-conn="c0" data-beat="0" x1="180" y1="197" x2="180" y2="205" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c0" data-beat="0" points="180,217 173,205 187,205" fill="#DBEAFE"/>
+<g data-node="n1" class="bf-done" data-beat="1">
+<rect x="24" y="220" width="312" height="92" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="240" r="11" fill="#1E3A5F"/>
+<text x="44" y="244" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="180" y="258" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">ISO 8583 business</text>
+<text x="180" y="278" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">relevance</text>
+</g>
+<line data-conn="c1" data-beat="1" x1="180" y1="315" x2="180" y2="323" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c1" data-beat="1" points="180,335 173,323 187,323" fill="#DBEAFE"/>
+<g data-node="n2" class="bf-done" data-beat="2">
+<rect x="24" y="338" width="312" height="92" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="358" r="11" fill="#1E3A5F"/>
+<text x="44" y="362" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="180" y="376" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">MTI 0200 financial</text>
+<text x="180" y="396" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">transaction request</text>
+</g>
+<line data-conn="c2" data-beat="2" x1="180" y1="433" x2="180" y2="441" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c2" data-beat="2" points="180,453 173,441 187,441" fill="#DBEAFE"/>
+<g data-node="n3" class="bf-done" data-beat="3">
+<rect x="24" y="456" width="312" height="92" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="476" r="11" fill="#1E3A5F"/>
+<text x="44" y="480" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="180" y="494" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Response code data</text>
+<text x="180" y="514" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">element 39</text>
+</g>
+<line data-conn="c3" data-beat="3" x1="180" y1="551" x2="180" y2="559" stroke="#60A5FA" stroke-width="2"/>
+<polygon data-conn="c3" data-beat="3" points="180,571 173,559 187,559" fill="#DBEAFE"/>
+<g data-node="n4" class="bf-now" data-beat="4">
+<rect x="24" y="574" width="312" height="92" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="44" cy="594" r="11" fill="#1D4ED8"/>
+<text x="44" y="598" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="324" y="598" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="180" y="612" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Operational and accounting</text>
+<text x="180" y="632" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">implications</text>
+</g>
+<line data-conn="c4" data-beat="4" x1="180" y1="669" x2="180" y2="677" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c4" data-beat="4" points="180,689 173,677 187,677" fill="#DBEAFE"/>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="24" y="692" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="712" r="11" fill="#1E3A5F"/>
+<text x="44" y="716" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="180" y="730" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">EMV data element 55 gap</text>
+</g>
+<g class="bf-paydot" style="--dx:0px;--dy:-62px"><circle class="bf-pulse" cx="180" cy="564" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="180" cy="564" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="180" y="784" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The operational and accounting</text>
+<text x="180" y="803" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">implications are that the operations team</text>
+<text x="180" y="822" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">must monitor the message reject rate</text>
+<text x="24" y="863" font-size="12" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 5 of 6</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="5">
+<svg class="flow-desktop" viewBox="0 0 900 560" role="img" aria-label="Lesson visual">
+<defs><pattern id="bfd110" width="18" height="18" patternUnits="userSpaceOnUse"><path d="M18 0H0V18" fill="none" stroke="#182A44" stroke-width="1"/></pattern></defs>
+<rect x="0" y="0" width="900" height="560" fill="#0B1F3D"/>
+<rect x="0" y="0" width="900" height="560" fill="url(#bfd110)"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">EMV</tspan> <tspan fill="#FFFFFF">data</tspan> <tspan fill="#FFFFFF">element</tspan> <tspan fill="#FFFFFF">55</tspan> <tspan fill="#FFFFFF">gap</tspan></text>
+<path data-conn="c0" data-beat="0" d="M 212 210 L 408 210" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c0" data-beat="0" points="420,210 408,217 408,203" fill="#47DCDD"/>
+<path data-conn="c1" data-beat="1" d="M 480 210 L 676 210" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c1" data-beat="1" points="688,210 676,217 676,203" fill="#47DCDD"/>
+<path data-conn="c2" data-beat="2" d="M 718 284 L 718 286 L 718 286 L 718 308" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c2" data-beat="2" points="718,320 711,308 725,308" fill="#47DCDD"/>
+<path data-conn="c3" data-beat="3" d="M 688 350 L 492 350" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c3" data-beat="3" points="480,350 492,343 492,357" fill="#47DCDD"/>
+<path data-conn="c4" data-beat="4" d="M 420 350 L 224 350" stroke="#47DCDD" stroke-width="3" fill="none"/><polygon data-conn="c4" data-beat="4" points="212,350 224,343 224,357" fill="#47DCDD"/>
+<g data-node="n0" class="bf-done" data-beat="0">
+<circle cx="182" cy="210" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="182" cy="210" r="6" fill="#45A4FF"/>
+<circle cx="156" cy="210" r="4" fill="#47DCDD"/>
+<circle cx="208" cy="210" r="4" fill="#45A4FF"/>
+<text x="182" y="258" text-anchor="middle" font-size="13" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">ISO 8583 message</text>
+<text x="182" y="276" text-anchor="middle" font-size="13" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">standard</text>
+</g>
+<g data-node="n1" class="bf-done" data-beat="1">
+<circle cx="450" cy="210" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="450" cy="210" r="6" fill="#45A4FF"/>
+<circle cx="424" cy="210" r="4" fill="#47DCDD"/>
+<circle cx="476" cy="210" r="4" fill="#45A4FF"/>
+<text x="450" y="258" text-anchor="middle" font-size="13" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">ISO 8583 business</text>
+<text x="450" y="276" text-anchor="middle" font-size="13" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">relevance</text>
+</g>
+<g data-node="n2" class="bf-done" data-beat="2">
+<circle cx="718" cy="210" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="718" cy="210" r="6" fill="#45A4FF"/>
+<circle cx="692" cy="210" r="4" fill="#47DCDD"/>
+<circle cx="744" cy="210" r="4" fill="#45A4FF"/>
+<text x="718" y="258" text-anchor="middle" font-size="12" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">MTI 0200 financial</text>
+<text x="718" y="276" text-anchor="middle" font-size="12" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">transaction request</text>
+</g>
+<g data-node="n3" class="bf-done" data-beat="3">
+<circle cx="718" cy="350" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="718" cy="350" r="6" fill="#45A4FF"/>
+<circle cx="692" cy="350" r="4" fill="#47DCDD"/>
+<circle cx="744" cy="350" r="4" fill="#45A4FF"/>
+<text x="718" y="398" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Response code</text>
+<text x="718" y="416" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">data element 39</text>
+</g>
+<g data-node="n4" class="bf-done" data-beat="4">
+<circle cx="450" cy="350" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="450" cy="350" r="6" fill="#45A4FF"/>
+<circle cx="424" cy="350" r="4" fill="#47DCDD"/>
+<circle cx="476" cy="350" r="4" fill="#45A4FF"/>
+<text x="450" y="398" text-anchor="middle" font-size="12" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Operational and</text>
+<text x="450" y="416" text-anchor="middle" font-size="12" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">accounting</text>
+<text x="450" y="434" text-anchor="middle" font-size="12" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">implications</text>
+</g>
+<g data-node="n5" class="bf-now" data-beat="5">
+<circle cx="182" cy="350" r="26" fill="#0A1826" stroke="#47DCDD" stroke-width="3"/>
+<circle cx="182" cy="350" r="6" fill="#47DCDD"/>
+<circle cx="156" cy="350" r="4" fill="#47DCDD"/>
+<circle cx="208" cy="350" r="4" fill="#45A4FF"/>
+<circle cx="182" cy="350" r="33" fill="none" stroke="#47DCDD" stroke-width="1" opacity="0.5"/>
+<text x="234" y="320" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="182" y="398" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">EMV data</text>
+<text x="182" y="416" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">element 55 gap</text>
+</g>
+<rect x="48" y="432" width="804" height="84" rx="10" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<text x="68" y="456" font-size="11" fill="#47DCDD" font-family="ui-monospace,Menlo,Consolas,monospace">MESSAGE TRACE</text>
+<text x="68" y="478" font-size="13" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">ISO 8583 message standard &gt; ISO 8583 business relevance &gt; MTI 0200 financial transaction request &gt;</text>
+<text x="68" y="496" font-size="13" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Response code data element 39 &gt; Operational and accounting implications &gt; EMV data element 55 gap</text>
+<text x="68" y="504" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">A common gap is failing to specify data element 55, the EMV data, because it is a complex field with</text>
+<text x="48" y="538" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 6 of 6</text>
+<circle cx="772" cy="534" r="4" fill="#334155"/>
+<circle cx="788" cy="534" r="4" fill="#334155"/>
+<circle cx="804" cy="534" r="4" fill="#334155"/>
+<circle cx="820" cy="534" r="4" fill="#334155"/>
+<circle cx="836" cy="534" r="4" fill="#334155"/>
+<circle cx="852" cy="534" r="4" fill="#47DCDD"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 885" role="img" aria-label="Lesson visual, vertical layout">
+<defs><pattern id="bfd111" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="360" height="885" fill="#0B1F3D"/>
+<rect x="0" y="0" width="360" height="885" fill="url(#bfd111)"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">EMV</tspan> <tspan fill="#FFFFFF">data</tspan> <tspan fill="#FFFFFF">element</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">55</tspan> <tspan fill="#FFFFFF">gap</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="24" y="94" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="114" r="11" fill="#1E3A5F"/>
+<text x="44" y="118" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="180" y="132" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">ISO 8583 message standard</text>
+</g>
+<line data-conn="c0" data-beat="0" x1="180" y1="169" x2="180" y2="177" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c0" data-beat="0" points="180,189 173,177 187,177" fill="#DBEAFE"/>
+<g data-node="n1" class="bf-done" data-beat="1">
+<rect x="24" y="192" width="312" height="92" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="212" r="11" fill="#1E3A5F"/>
+<text x="44" y="216" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="180" y="230" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">ISO 8583 business</text>
+<text x="180" y="250" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">relevance</text>
+</g>
+<line data-conn="c1" data-beat="1" x1="180" y1="287" x2="180" y2="295" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c1" data-beat="1" points="180,307 173,295 187,295" fill="#DBEAFE"/>
+<g data-node="n2" class="bf-done" data-beat="2">
+<rect x="24" y="310" width="312" height="92" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="330" r="11" fill="#1E3A5F"/>
+<text x="44" y="334" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="180" y="348" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">MTI 0200 financial</text>
+<text x="180" y="368" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">transaction request</text>
+</g>
+<line data-conn="c2" data-beat="2" x1="180" y1="405" x2="180" y2="413" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c2" data-beat="2" points="180,425 173,413 187,413" fill="#DBEAFE"/>
+<g data-node="n3" class="bf-done" data-beat="3">
+<rect x="24" y="428" width="312" height="92" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="448" r="11" fill="#1E3A5F"/>
+<text x="44" y="452" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="180" y="466" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Response code data</text>
+<text x="180" y="486" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">element 39</text>
+</g>
+<line data-conn="c3" data-beat="3" x1="180" y1="523" x2="180" y2="531" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c3" data-beat="3" points="180,543 173,531 187,531" fill="#DBEAFE"/>
+<g data-node="n4" class="bf-done" data-beat="4">
+<rect x="24" y="546" width="312" height="92" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="566" r="11" fill="#1E3A5F"/>
+<text x="44" y="570" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="180" y="584" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Operational and accounting</text>
+<text x="180" y="604" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">implications</text>
+</g>
+<line data-conn="c4" data-beat="4" x1="180" y1="641" x2="180" y2="649" stroke="#60A5FA" stroke-width="2"/>
+<polygon data-conn="c4" data-beat="4" points="180,661 173,649 187,649" fill="#DBEAFE"/>
+<g data-node="n5" class="bf-now" data-beat="5">
+<rect x="24" y="664" width="312" height="72" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="44" cy="684" r="11" fill="#1D4ED8"/>
+<text x="44" y="688" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="324" y="688" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="180" y="702" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">EMV data element 55 gap</text>
+</g>
+<g class="bf-paydot" style="--dx:0px;--dy:-62px"><circle class="bf-pulse" cx="180" cy="654" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="180" cy="654" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="180" y="756" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">A common gap is failing to specify data</text>
+<text x="180" y="775" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">element 55, the EMV data, because it is a</text>
+<text x="180" y="794" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">complex field with sub-elements, and a</text>
+<text x="180" y="813" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">system that does not handle it correctly</text>
+<text x="180" y="832" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">will fail EMV transactions.</text>
+<text x="24" y="873" font-size="12" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 6 of 6</text>
+</svg>
+</div>
+</div>
+<p class="xml-caption">Flow of the explanation in this lesson.</p></div>
+<div class="playerbar">
+<div class="studio-progress"><div class="studio-markers" id="studio-markers-studio-ch31s8"></div><input type="range" id="studio-slider-studio-ch31s8" min="0" max="1000" value="0" aria-label="Lesson timeline"></div>
+<div class="ctrl-row">
+<button class="ctrl-btn" id="studio-play-studio-ch31s8" onclick="studioTogglePlay('studio-ch31s8')" aria-label="Play lesson" title="Play lesson"><span class="ctrl-ic-play"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></span><span class="ctrl-ic-pause" style="display:none"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><rect x="6" y="5" width="4" height="14" fill="currentColor"/><rect x="14" y="5" width="4" height="14" fill="currentColor"/></svg></span></button>
+<button class="ctrl-btn studio-mute-btn" id="studio-mute-studio-ch31s8" onclick="studioToggleMute('studio-ch31s8')" aria-label="Mute narration" title="Mute / unmute narration"><svg class="studio-mute-icon" viewBox="0 0 24 24" width="28" height="28" fill="currentColor" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3z"/><path class="studio-mute-waves" d="M16 8.5a5 5 0 0 1 0 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><path class="studio-mute-waves" d="M18.5 6a9 9 0 0 1 0 12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><path class="studio-mute-x" d="M16 9.5l5 5M21 9.5l-5 5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" style="display:none"/></svg></button>
+<button class="ctrl-btn" onclick="studioSkip('studio-ch31s8', -10)" aria-label="Back 10 seconds" title="Back 10 seconds"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 5a7 7 0 1 1-6.32 4.06" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M5.5 3.5v5h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><text x="12" y="16.5" font-size="8" fill="currentColor" text-anchor="middle" font-weight="700">10</text></svg></button>
+<span class="studio-time ctrl-time" id="studio-time-studio-ch31s8">0:00 / 7:54</span>
+<button class="ctrl-btn" onclick="studioSkip('studio-ch31s8', 10)" aria-label="Forward 10 seconds" title="Forward 10 seconds"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 5a7 7 0 1 0 6.32 4.06" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M18.5 3.5v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><text x="12" y="16.5" font-size="8" fill="currentColor" text-anchor="middle" font-weight="700">10</text></svg></button>
+<span class="playerbar-spacer"></span>
+<span class="player-stage" id="studio-tag-studio-ch31s8">Step 1 of 6</span>
+<button class="ctrl-btn ctrl-step" id="studio-prevscene-studio-ch31s8" onclick="studioPrevScene('studio-ch31s8')" title="Previous step" aria-label="Previous step">&lsaquo;</button>
+<button class="ctrl-btn ctrl-step" id="studio-nextscene-studio-ch31s8" onclick="studioNextScene('studio-ch31s8')" title="Next step" aria-label="Next step">&rsaquo;</button>
+<button class="ctrl-btn ctrl-speed" id="studio-speedbtn-studio-ch31s8" onclick="studioCycleSpeed('studio-ch31s8')" title="Playback speed" aria-label="Playback speed">1x</button>
+<span class="ctrl-settings-wrap"><button class="ctrl-btn" onclick="studioToggleSettings('studio-ch31s8', event)" aria-label="Player settings" title="Settings"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5 5l2.1 2.1M16.9 16.9L19 19M19 5l-2.1 2.1M7.1 16.9L5 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button><span class="ctrl-popover" id="studio-settings-studio-ch31s8" style="display:none" onclick="event.stopPropagation()"><label class="ctrl-pop-row">Volume <input type="range" min="0" max="1" step="0.1" value="1" oninput="studioSetVolume('studio-ch31s8', this.value)" style="width:110px;accent-color:#3587FC"></label><button class="studio-btn" id="studio-captions-studio-ch31s8" onclick="studioToggleCaptions('studio-ch31s8')">Captions: On</button><button class="studio-btn" onclick="studioReplayScene('studio-ch31s8')">Replay scene</button></span></span>
+<button class="ctrl-btn" onclick="studioFullscreen('studio-ch31s8')" aria-label="Fullscreen" title="Fullscreen"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+</div>
+</div>
+</div>
+<p class="studio-caption" id="studio-caption-studio-ch31s8"></p>
+<p class="studio-loading" id="studio-loading-studio-ch31s8" style="display:none">Loading narration...</p>
+<p class="studio-error" id="studio-error-studio-ch31s8" role="alert" style="display:none"></p>
+<audio id="studio-audio-studio-ch31s8" preload="auto" src="../audio/ch31s8.mp3"></audio>
+</div>
+<div class="lesson-title-row">
+<h1>ISO 8583 in depth: message types, data elements and the clearing message</h1>
+<button class="save-note" type="button" onclick="pfToggleNote('studio-ch31s8')" title="Save a note on this lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L8 19l-4 1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg> Save note</button>
+</div>
+<p class="lesson-meta-line">Card Networks: Visa and Mastercard, Lesson 8 of 8, Narration 7:54, D08 Cards and alternative payments</p>
+<p class="lesson-note-saved" id="studio-note-saved-studio-ch31s8" style="display:none">Note saved.</p>
+<div class="note-editor" id="studio-note-editor-studio-ch31s8" style="display:none"><textarea id="studio-note-text-studio-ch31s8" rows="3" placeholder="Write a note on this lesson..." aria-label="Lesson note"></textarea><div class="note-editor-row"><button class="studio-btn primary" onclick="pfSaveNote('studio-ch31s8')">Save note</button> <button class="studio-btn" onclick="pfToggleNote('studio-ch31s8')">Cancel</button></div></div>
+<div class="dive-deeper">
+<div class="dive-head"><button type="button" class="dive-toggle" onclick="pfToggleDive(this)" aria-expanded="true"><span class="dive-spark"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 2l2.2 6.8L21 11l-6.8 2.2L12 20l-2.2-6.8L3 11l6.8-2.2z" fill="currentColor"/></svg></span><span class="dive-title">Dive deeper on this topic</span><span class="dive-chev"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 14l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button></div>
+<div class="dive-btns"><button type="button" class="dive-btn" data-kind="practice" onclick="pfDive('studio-ch31s8', 'practice')">Give me practice questions</button><button type="button" class="dive-btn" data-kind="simple" onclick="pfDive('studio-ch31s8', 'simple')">Explain this topic in simple terms</button><button type="button" class="dive-btn" data-kind="summary" onclick="pfDive('studio-ch31s8', 'summary')">Give me a summary</button><button type="button" class="dive-btn" data-kind="example" onclick="pfDive('studio-ch31s8', 'example')">Give me real-life examples</button></div>
+<div class="dive-panel" id="dive-panel-studio-ch31s8"><div class="dive-panel-body"></div></div>
+<script type="application/json" id="pf-dive-data-studio-ch31s8">{"simple": "In plain words: iSO 8583 is the message standard for card transactions, and it is the language that the terminal, the acquirer, the scheme and the issuer use to talk to each other. That is the whole idea in one sentence, and the rest of the lesson shows how it works in a real bank.", "summary": "ISO 8583 is the message standard for card transactions, and it is the language that the terminal, the acquirer, the scheme and the issuer use to talk to each other. Key points: ISO 8583 message standard; Business value of ISO 8583; 0200: financial transaction request; Issuer response 0110 and data elements; Operational and accounting implications; Data element 55 specification gap.", "example": "A customer buys GBP 45.20 at a supermarket. The issuer returns an 0110 with data element 39, the response code, set to 00 for approval, and data element 38, the authorisation identification response, set to the approval code, for example 482913."}</script>
+</div>
+<div class="lesson-feedback">
+<div class="fb-icons"><button type="button" class="fb-btn" data-kind="like" onclick="pfFeedback(this,'like')" aria-label="Like this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M7 21H4a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1h3v11zm0 0h9.6a2 2 0 0 0 1.9-1.4l1.6-5A2 2 0 0 0 18.2 12H15V6.5A2.5 2.5 0 0 0 12.5 4L11 7.5 8.6 10H7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button><button type="button" class="fb-btn" data-kind="dislike" onclick="pfFeedback(this,'dislike')" aria-label="Dislike this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M17 3h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1h-3V3zm0 0H7.4a2 2 0 0 0-1.9 1.4l-1.6 5A2 2 0 0 0 5.8 12H9v5.5A2.5 2.5 0 0 0 11.5 20L13 16.5l2.4-2.5H17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button><button type="button" class="fb-btn" data-kind="flag" onclick="pfFeedback(this,'flag')" aria-label="Flag this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M6 21V4m0 1h11l-2.5 3.5L17 12H6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+<button type="button" class="go-next" onclick="goLesson('ch32s1')" title="Next: Digital Wallet Architecture: Where the Money Actually Sits">Go to next item &rarr;</button>
+</div>
+<div class="chips"><span class="chip">Reconciliation</span><span class="chip">Authorisation</span><span class="chip">Settlement</span></div>
+<div class="card learn-card">
+<h2>What you will learn</h2>
+<p class="transcript"><b>Your objective.</b> By the end of this lesson, you will be able to explain ISO 8583 in depth: message types, data elements and the clearing message. ISO 8583 is the message standard for card transactions, and it is the language that the terminal, the acquirer, the scheme and the issuer use to talk to each other.</p>
+<p class="transcript"><b>Why it matters.</b> For a business analyst, ISO 8583 is a message specification subject.</p>
+<p class="transcript">Chapter objective: Learner explains how Visa and Mastercard networks operate, including authorization, clearing, interchange, scheme fees, and settlement, and compares the two networks for a merchant. Learner applies this skill in realistic banking scenarios, with clear examples and correct terminology throughout.</p>
+<h3>Key learning points</h3>
+<ul id="studio-points-studio-ch31s8">
+<li>ISO 8583 message standard</li>
+<li>ISO 8583 business relevance</li>
+<li>MTI 0200 financial transaction request</li>
+<li>Response code data element 39</li>
+<li>Operational and accounting implications</li>
+<li>EMV data element 55 gap</li>
+</ul>
+<h3>Key terms</h3>
+<div id="studio-terms-studio-ch31s8">
+<p class="keyterm"><b>Reconciliation:</b> The process of comparing records from two sources, such as a bank statement and an internal ledger, to confirm they agree.</p>
+<p class="keyterm"><b>Authorisation:</b> Approval by the issuer for a card transaction to proceed, confirming the card is valid and funds or credit are available.</p>
+<p class="keyterm"><b>Settlement:</b> The final movement of funds between banks to discharge obligations created by cleared payments. Settlement is usually made in central bank money or through correspondent accounts.</p>
+</div>
+<p class="studio-note">Payment flow diagram showing ISO 8583 in depth: message types, data elements and the clearing message.</p>
+</div>
+<div class="fw-card" id="pf-exercise-studio-ch31s8">
+<p class="fw-label">Practise this lesson</p>
+<h2>Exercise</h2>
+<p><b>Read the ISO 8583 authorisation and clearing messages in this lesson and identify their key parts.</b></p>
+<p>Use the MTI table, the worked GBP 45.20 example, and the data element list in this lesson.</p>
+<ol class="fw-steps">
+<li><b>What to do.</b> For the 0100 authorisation request, name the data elements that carry the card number, the amount and the EMV data. Then name the MTI of the clearing message and the data element that carries the response code in the 0110.</li>
+</ol>
+<p><button class="studio-btn" id="pf-ex-btn-studio-ch31s8" onclick="pfRevealExercise('studio-ch31s8')">Show the answer</button></p>
+<div class="fw-exercise-answer" id="pf-ex-answer-studio-ch31s8">
+<p><b>Correct result.</b> The authorisation request is an 0100. Data element 2 carries the primary account number, data element 4 carries the amount as 000000004520, and data element 55 carries the EMV data with the ARQC and the transaction counter. The clearing message is an 0220. In the issuer's 0110 response, data element 39 carries the response code, set to 00 for approval, and data element 38 carries the approval code, for example 482913.</p>
+<p><b>Why.</b> The MTI tells you what the message is doing before you read a single data element, and the data elements are the business facts of the transaction. If you cannot name the MTI and the key data elements, you cannot investigate a failed transaction or write a requirement for a card system.</p>
+</div>
+</div>
+<div class="fw-card" id="pf-quiz-studio-ch31s8" data-answer="1">
+<p class="fw-label">Check your understanding</p>
+<h2>Practice question</h2>
+<p><b>A customer buys GBP 45.20 at a supermarket. The authorisation request is an 0100 with data element 4 set to 000000004520. The issuer approves and returns an 0110. Which data element in the 0110 carries the response code, and what value means approval?</b></p>
+<button type="button" class="quiz-opt" data-idx="0" onclick="pfCheckAnswer('studio-ch31s8', this)">Data element 38, set to 482913</button>
+<button type="button" class="quiz-opt" data-idx="1" onclick="pfCheckAnswer('studio-ch31s8', this)">Data element 39, set to 00</button>
+<button type="button" class="quiz-opt" data-idx="2" onclick="pfCheckAnswer('studio-ch31s8', this)">Data element 55, containing the ARQC</button>
+<button type="button" class="quiz-opt" data-idx="3" onclick="pfCheckAnswer('studio-ch31s8', this)">Data element 2, the primary account number</button>
+<div class="quiz-feedback" id="pf-quiz-fb-studio-ch31s8"></div>
+<script type="application/json" id="pf-quiz-data-studio-ch31s8">{"why_wrong": ["Data element 38 is the authorisation identification response, the approval code, not the response code.", "", "Data element 55 carries the EMV data, including the ARQC and the transaction counter, not the response code.", "Data element 2 is the primary account number, the card number, not the response code."], "explanation": "In the issuer's 0110 authorisation response, data element 39 is the response code and 00 means approval. Data element 38 carries the authorisation identification response, the approval code, for example 482913. Data element 55 carries the EMV data including the ARQC, and data element 2 carries the primary account number."}</script>
+</div>
+<div class="fw-card">
+<p class="fw-label">Takeaway and next step</p>
+<h2>What to remember</h2>
+<p>The MTI is always four digits, and the first digit is the version, which is 0 for ISO 8583:1987 and 2 for ISO 8583:2003, although most systems still use version 0.</p>
+<p>Open the message type from this lesson and inspect its fields, then find the field that carries the amount.</p>
+<p><a class="fw-tool-link" href="../simulators/message-explorer.html">Open the ISO 20022 Message Explorer &rarr;</a></p>
+<p class="studio-note">Builds on "Chargebacks in Depth".</p>
+</div>
+<section class="upnext" id="studio-upnext-studio-ch31s8" style="display:none" aria-label="Up next">
+<span class="tag">Up next</span>
+<h2>Up next: Digital Wallet Architecture: Where the Money Actually Sits</h2>
+<p>Lesson 1 of 7, Digital Wallets and POS Systems, Narration 4:00</p>
+<div class="row">
+<button class="studio-btn primary" onclick="goLessonAuto('ch32s1')">Next lesson &rarr;</button>
+<button class="studio-btn" onclick="goLesson('ch31s7')">&larr; Previous lesson</button>
+<button class="studio-btn" onclick="studioReplayLesson('studio-ch31s8')">Replay this lesson</button>
+</div>
+</section>
+<div class="lesson-nav">
+<button class="studio-btn" onclick="goLesson('ch31s7')" title="Previous lesson: Chargebacks in Depth">&larr; Previous</button>
+<button class="studio-btn" onclick="goChapterContents('ch31')">Chapter contents</button>
+<button class="studio-btn primary" onclick="goLesson('ch32s1')" title="Next lesson: Digital Wallet Architecture: Where the Money Actually Sits">Next &rarr;</button>
+</div>
+<div class="card transcript-card">
+<h2>Transcript and full text</h2>
+<details class="studio-transcript" id="studio-transcript-details-studio-ch31s8"><summary>Show transcript</summary>
+<p class="transcript" id="studio-transcript-studio-ch31s8">ISO 8583 is the message standard for card transactions, and it is the language that the terminal, the acquirer, the scheme and the issuer use to talk to each other. Every card authorisation, every clearing file, and every reversal is an ISO 8583 message, and a payments professional who works in cards must be able to read one. The standard defines the message types, the data elements, and the format, and it has been in use since 1987, with the current version published in 2003. Although ISO 20022 is replacing ISO 8583 in some areas, the card schemes still use ISO 8583 for authorisation and clearing, and it will remain in production for many years. Why ISO 8583 matters is that it is the only way to understand what actually happened in a card transaction. The authorisation request, the authorisation response, the clearing message, and the reversal are all ISO 8583 messages, and each one carries the data elements that tell you the card number, the amount, the merchant, the response code, and the EMV data. If you cannot read an ISO 8583 message, you cannot investigate a failed transaction, you cannot reconcile a clearing file, and you cannot write a requirement for a card system. The standard is a technical subject, but it is also a business subject, because the data elements are the business facts of the transaction. The parties are the terminal, the acquirer, the scheme, and the issuer. The terminal creates the authorisation request, which is an 0100 message, and sends it to the acquirer. The acquirer forwards it to the scheme, which routes it to the issuer. The issuer returns an 0110 authorisation response, which travels back through the scheme and the acquirer to the terminal. At the end of the day, the acquirer sends a 0220 clearing message for each transaction, which is the financial advice that moves the money. If a transaction is reversed, the acquirer sends a 0420 reversal message. Each message type has a four-digit code called the MTI, the Message Type Indicator, and the first two digits tell you the version and the class, while the last two tell you the function. In practice the MTI table is the starting point. An 0100 is an authorisation request from the acquirer to the issuer. An 0110 is the authorisation response from the issuer. An 0200 is a financial transaction request, used for transactions that are authorised and cleared in one step. An 0220 is a financial transaction advice, used for clearing, where the acquirer tells the issuer that a transaction has happened and the money should move. An 0420 is a reversal advice, used when a transaction must be undone. An 0800 is a network management request, used for sign-on, sign-off, and echo tests. The MTI is always four digits, and the first digit is the version, which is 0 for ISO 8583:1987 and 2 for ISO 8583:2003, although most systems still use version 0. A worked example shows a clearing message. A customer buys GBP 45.20 at a supermarket. The authorisation request is an 0100 with data element 2, the primary account number, set to the card number; data element 3, the processing code, set to 000000 for a purchase; data element 4, the transaction amount, set to 000000004520; data element 41, the card acceptor terminal identification, set to the terminal ID; data element 42, the card acceptor identification code, set to the merchant ID; and data element 55, the EMV data, containing the ARQC and the transaction counter. The issuer returns an 0110 with data element 39, the response code, set to 00 for approval, and data element 38, the authorisation identification response, set to the approval code, for example 482913. At the end of the day, the acquirer sends an 0220 clearing message with the same data elements, plus data element 55, and the issuer books the transaction to the cardholder account. What happens when the message is wrong is a rejection or a misbooking. If a data element is missing or malformed, the scheme or the issuer will reject the message with a response code, typically 30 for a format error or 91 for an issuer unavailable. If the MTI is wrong, for example an 0100 sent where an 0220 was expected, the receiver will reject it. If the EMV data in field 55 is missing or incorrect, the issuer cannot verify the ARQC and will decline the transaction. The operations team must be able to read the message and identify the faulty data element, because the scheme will not tell you what is wrong, it will only tell you that the message was rejected. A common error is to send the amount in the wrong format, for example as a decimal instead of an integer number of minor units, which causes the issuer to authorise the wrong amount. The operational and accounting implications are that the operations team must monitor the message reject rate, the finance team must reconcile the clearing messages to the settlement, and the technology team must maintain the message specification. On the ledger, the 0100 authorisation creates a hold on the cardholder account, the 0220 clearing message creates the actual debit, and the 0420 reversal removes the hold and reverses the debit. The accounting team must be able to match each clearing message to its authorisation, because a clearing message without an authorisation is an exception that must be investigated. The reconciliation team must also check that the total of the clearing messages equals the settlement amount from the scheme. For a business analyst, ISO 8583 is a message specification subject. You must specify the MTI for each transaction type, the data elements required for each message, the format of each data element, the response codes, and the error handling. You must also specify the test cases: a valid authorisation, a valid clearing message, a reversal, a message with a missing data element, and a message with an invalid response code. A common gap is failing to specify data element 55, the EMV data, because it is a complex field with sub-elements, and a system that does not handle it correctly will fail EMV transactions. Takeaway: ISO 8583 is the language of card transactions, and the MTI tells you what the message is doing before you read a single data element. Further reading: ISO 8583:2003 for the message standard; the Visa Core Rules for the message flows; the Mastercard rules for clearing. Last reviewed 7 November 2026.</p>
+<div id="studio-paras-studio-ch31s8">
+<p class="transcript">ISO 8583 is the message standard for card transactions, and it is the language that the terminal, the acquirer, the scheme and the issuer use to talk to each other. Every card authorisation, every clearing file, and every reversal is an ISO 8583 message, and a payments professional who works in cards must be able to read one. The standard defines the message types, the data elements, and the format, and it has been in use since 1987, with the current version published in 2003. Although ISO 20022 is replacing ISO 8583 in some areas, the card schemes still use ISO 8583 for authorisation and clearing, and it will remain in production for many years.</p>
+<p class="transcript">Why ISO 8583 matters is that it is the only way to understand what actually happened in a card transaction. The authorisation request, the authorisation response, the clearing message, and the reversal are all ISO 8583 messages, and each one carries the data elements that tell you the card number, the amount, the merchant, the response code, and the EMV data. If you cannot read an ISO 8583 message, you cannot investigate a failed transaction, you cannot reconcile a clearing file, and you cannot write a requirement for a card system. The standard is a technical subject, but it is also a business subject, because the data elements are the business facts of the transaction.</p>
+<p class="transcript">The parties are the terminal, the acquirer, the scheme, and the issuer. The terminal creates the authorisation request, which is an 0100 message, and sends it to the acquirer. The acquirer forwards it to the scheme, which routes it to the issuer. The issuer returns an 0110 authorisation response, which travels back through the scheme and the acquirer to the terminal. At the end of the day, the acquirer sends a 0220 clearing message for each transaction, which is the financial advice that moves the money. If a transaction is reversed, the acquirer sends a 0420 reversal message. Each message type has a four-digit code called the MTI, the Message Type Indicator, and the first two digits tell you the version and the class, while the last two tell you the function.</p>
+<p class="transcript">In practice the MTI table is the starting point. An 0100 is an authorisation request from the acquirer to the issuer. An 0110 is the authorisation response from the issuer. An 0200 is a financial transaction request, used for transactions that are authorised and cleared in one step. An 0220 is a financial transaction advice, used for clearing, where the acquirer tells the issuer that a transaction has happened and the money should move. An 0420 is a reversal advice, used when a transaction must be undone. An 0800 is a network management request, used for sign-on, sign-off, and echo tests. The MTI is always four digits, and the first digit is the version, which is 0 for ISO 8583:1987 and 2 for ISO 8583:2003, although most systems still use version 0.</p>
+<p class="transcript">A worked example shows a clearing message. A customer buys GBP 45.20 at a supermarket. The authorisation request is an 0100 with data element 2, the primary account number, set to the card number; data element 3, the processing code, set to 000000 for a purchase; data element 4, the transaction amount, set to 000000004520; data element 41, the card acceptor terminal identification, set to the terminal ID; data element 42, the card acceptor identification code, set to the merchant ID; and data element 55, the EMV data, containing the ARQC and the transaction counter.</p>
+<p class="transcript">The issuer returns an 0110 with data element 39, the response code, set to 00 for approval, and data element 38, the authorisation identification response, set to the approval code, for example 482913. At the end of the day, the acquirer sends an 0220 clearing message with the same data elements, plus data element 55, and the issuer books the transaction to the cardholder account.</p>
+<p class="transcript">What happens when the message is wrong is a rejection or a misbooking. If a data element is missing or malformed, the scheme or the issuer will reject the message with a response code, typically 30 for a format error or 91 for an issuer unavailable. If the MTI is wrong, for example an 0100 sent where an 0220 was expected, the receiver will reject it. If the EMV data in field 55 is missing or incorrect, the issuer cannot verify the ARQC and will decline the transaction.</p>
+<p class="transcript">The operations team must be able to read the message and identify the faulty data element, because the scheme will not tell you what is wrong, it will only tell you that the message was rejected. A common error is to send the amount in the wrong format, for example as a decimal instead of an integer number of minor units, which causes the issuer to authorise the wrong amount.</p>
+<p class="transcript">The operational and accounting implications are that the operations team must monitor the message reject rate, the finance team must reconcile the clearing messages to the settlement, and the technology team must maintain the message specification. On the ledger, the 0100 authorisation creates a hold on the cardholder account, the 0220 clearing message creates the actual debit, and the 0420 reversal removes the hold and reverses the debit. The accounting team must be able to match each clearing message to its authorisation, because a clearing message without an authorisation is an exception that must be investigated. The reconciliation team must also check that the total of the clearing messages equals the settlement amount from the scheme.</p>
+<p class="transcript">For a business analyst, ISO 8583 is a message specification subject. You must specify the MTI for each transaction type, the data elements required for each message, the format of each data element, the response codes, and the error handling. You must also specify the test cases: a valid authorisation, a valid clearing message, a reversal, a message with a missing data element, and a message with an invalid response code. A common gap is failing to specify data element 55, the EMV data, because it is a complex field with sub-elements, and a system that does not handle it correctly will fail EMV transactions.</p>
+<p class="transcript">Takeaway: ISO 8583 is the language of card transactions, and the MTI tells you what the message is doing before you read a single data element. Further reading: ISO 8583:2003 for the message standard; the Visa Core Rules for the message flows; the Mastercard rules for clearing. Last reviewed 7 November 2026.</p>
+</div>
+</details>
+<details class="studio-transcript"><summary>Full lesson text (all scenes)</summary><div id="studio-transcript-full-studio-ch31s8"></div></details>
+<p><button class="studio-btn primary" id="done-ch31s8" onclick="studioMarkSceneDone('studio-ch31s8')">Mark lesson complete</button> <span class="studio-note">Completing a lesson updates your progress dashboard on the homepage.</span></p>
+</div>
+<p class="studio-note">Scene timestamps are estimated by allocating the narration text proportionally across the real audio length. The audio playback position is the source of truth: pause freezes the visual, seeking restores the correct scene, replay restarts the scene animation.</p>
+</div>
+<script>window.__PA_STUDIO_QUEUE = window.__PA_STUDIO_QUEUE || []; window.__PA_STUDIO_QUEUE.push(["studio-ch31s8", {"sample_id": "studio-ch31s8", "chapter_id": "ch31", "title": "ISO 8583 in depth: message types, data elements and the clearing message", "domain": "D08 Cards and alternative payments", "objective": "Learner explains how Visa and Mastercard networks operate, including authorization, clearing, interchange, scheme fees, and settlement, and compares the two networks for a merchant. Learner applies this skill in realistic banking scenarios, with clear examples and correct terminology throughout.", "scenes": [{"id": "ch31s8", "section_id": "ch31s8", "title": "ISO 8583 in depth: message types, data elements and the clearing message", "audio": "../audio/ch31s8.mp3", "duration_sec": 474.0, "points": ["ISO 8583 is the message standard for card transactions, and it is the language that the terminal, the acquirer, the scheme and the issuer use to talk to each other.", "Why ISO 8583 matters is that it is the only way to understand what actually happened in a card transaction.", "The parties are the terminal, the acquirer, the scheme, and the issuer.", "In practice the MTI table is the starting point.", "A worked example shows a clearing message."], "terms": [{"term": "Reconciliation", "def": "The process of comparing records from two sources, such as a bank statement and an internal ledger, to confirm they agree."}, {"term": "Authorisation", "def": "Approval by the issuer for a card transaction to proceed, confirming the card is valid and funds or credit are available."}, {"term": "Settlement", "def": "The final movement of funds between banks to discharge obligations created by cleared payments. Settlement is usually made in central bank money or through correspondent accounts."}], "transcript": "ISO 8583 is the message standard for card transactions, and it is the language that the terminal, the acquirer, the scheme and the issuer use to talk to each other. Every card authorisation, every clearing file, and every reversal is an ISO 8583 message, and a payments professional who works in cards must be able to read one. The standard defines the message types, the data elements, and the format, and it has been in use since 1987, with the current version published in 2003. Although ISO 20022 is replacing ISO 8583 in some areas, the card schemes still use ISO 8583 for authorisation and clearing, and it will remain in production for many years. Why ISO 8583 matters is that it is the only way to understand what actually happened in a card transaction. The authorisation request, the authorisation response, the clearing message, and the reversal are all ISO 8583 messages, and each one carries the data elements that tell you the card number, the amount, the merchant, the response code, and the EMV data. If you cannot read an ISO 8583 message, you cannot investigate a failed transaction, you cannot reconcile a clearing file, and you cannot write a requirement for a card system. The standard is a technical subject, but it is also a business subject, because the data elements are the business facts of the transaction. The parties are the terminal, the acquirer, the scheme, and the issuer. The terminal creates the authorisation request, which is an 0100 message, and sends it to the acquirer. The acquirer forwards it to the scheme, which routes it to the issuer. The issuer returns an 0110 authorisation response, which travels back through the scheme and the acquirer to the terminal. At the end of the day, the acquirer sends a 0220 clearing message for each transaction, which is the financial advice that moves the money. If a transaction is reversed, the acquirer sends a 0420 reversal message. Each message type has a four-digit code called the MTI, the Message Type Indicator, and the first two digits tell you the version and the class, while the last two tell you the function. In practice the MTI table is the starting point. An 0100 is an authorisation request from the acquirer to the issuer. An 0110 is the authorisation response from the issuer. An 0200 is a financial transaction request, used for transactions that are authorised and cleared in one step. An 0220 is a financial transaction advice, used for clearing, where the acquirer tells the issuer that a transaction has happened and the money should move. An 0420 is a reversal advice, used when a transaction must be undone. An 0800 is a network management request, used for sign-on, sign-off, and echo tests. The MTI is always four digits, and the first digit is the version, which is 0 for ISO 8583:1987 and 2 for ISO 8583:2003, although most systems still use version 0. A worked example shows a clearing message. A customer buys GBP 45.20 at a supermarket. The authorisation request is an 0100 with data element 2, the primary account number, set to the card number; data element 3, the processing code, set to 000000 for a purchase; data element 4, the transaction amount, set to 000000004520; data element 41, the card acceptor terminal identification, set to the terminal ID; data element 42, the card acceptor identification code, set to the merchant ID; and data element 55, the EMV data, containing the ARQC and the transaction counter. The issuer returns an 0110 with data element 39, the response code, set to 00 for approval, and data element 38, the authorisation identification response, set to the approval code, for example 482913. At the end of the day, the acquirer sends an 0220 clearing message with the same data elements, plus data element 55, and the issuer books the transaction to the cardholder account. What happens when the message is wrong is a rejection or a misbooking. If a data element is missing or malformed, the scheme or the issuer will reject the message with a response code, typically 30 for a format error or 91 for an issuer unavailable. If the MTI is wrong, for example an 0100 sent where an 0220 was expected, the receiver will reject it. If the EMV data in field 55 is missing or incorrect, the issuer cannot verify the ARQC and will decline the transaction. The operations team must be able to read the message and identify the faulty data element, because the scheme will not tell you what is wrong, it will only tell you that the message was rejected. A common error is to send the amount in the wrong format, for example as a decimal instead of an integer number of minor units, which causes the issuer to authorise the wrong amount. The operational and accounting implications are that the operations team must monitor the message reject rate, the finance team must reconcile the clearing messages to the settlement, and the technology team must maintain the message specification. On the ledger, the 0100 authorisation creates a hold on the cardholder account, the 0220 clearing message creates the actual debit, and the 0420 reversal removes the hold and reverses the debit. The accounting team must be able to match each clearing message to its authorisation, because a clearing message without an authorisation is an exception that must be investigated. The reconciliation team must also check that the total of the clearing messages equals the settlement amount from the scheme. For a business analyst, ISO 8583 is a message specification subject. You must specify the MTI for each transaction type, the data elements required for each message, the format of each data element, the response codes, and the error handling. You must also specify the test cases: a valid authorisation, a valid clearing message, a reversal, a message with a missing data element, and a message with an invalid response code. A common gap is failing to specify data element 55, the EMV data, because it is a complex field with sub-elements, and a system that does not handle it correctly will fail EMV transactions. Takeaway: ISO 8583 is the language of card transactions, and the MTI tells you what the message is doing before you read a single data element. Further reading: ISO 8583:2003 for the message standard; the Visa Core Rules for the message flows; the Mastercard rules for clearing. Last reviewed 7 November 2026.", "paragraphs": ["ISO 8583 is the message standard for card transactions, and it is the language that the terminal, the acquirer, the scheme and the issuer use to talk to each other. Every card authorisation, every clearing file, and every reversal is an ISO 8583 message, and a payments professional who works in cards must be able to read one. The standard defines the message types, the data elements, and the format, and it has been in use since 1987, with the current version published in 2003. Although ISO 20022 is replacing ISO 8583 in some areas, the card schemes still use ISO 8583 for authorisation and clearing, and it will remain in production for many years.", "Why ISO 8583 matters is that it is the only way to understand what actually happened in a card transaction. The authorisation request, the authorisation response, the clearing message, and the reversal are all ISO 8583 messages, and each one carries the data elements that tell you the card number, the amount, the merchant, the response code, and the EMV data. If you cannot read an ISO 8583 message, you cannot investigate a failed transaction, you cannot reconcile a clearing file, and you cannot write a requirement for a card system. The standard is a technical subject, but it is also a business subject, because the data elements are the business facts of the transaction.", "The parties are the terminal, the acquirer, the scheme, and the issuer. The terminal creates the authorisation request, which is an 0100 message, and sends it to the acquirer. The acquirer forwards it to the scheme, which routes it to the issuer. The issuer returns an 0110 authorisation response, which travels back through the scheme and the acquirer to the terminal. At the end of the day, the acquirer sends a 0220 clearing message for each transaction, which is the financial advice that moves the money. If a transaction is reversed, the acquirer sends a 0420 reversal message. Each message type has a four-digit code called the MTI, the Message Type Indicator, and the first two digits tell you the version and the class, while the last two tell you the function.", "In practice the MTI table is the starting point. An 0100 is an authorisation request from the acquirer to the issuer. An 0110 is the authorisation response from the issuer. An 0200 is a financial transaction request, used for transactions that are authorised and cleared in one step. An 0220 is a financial transaction advice, used for clearing, where the acquirer tells the issuer that a transaction has happened and the money should move. An 0420 is a reversal advice, used when a transaction must be undone. An 0800 is a network management request, used for sign-on, sign-off, and echo tests. The MTI is always four digits, and the first digit is the version, which is 0 for ISO 8583:1987 and 2 for ISO 8583:2003, although most systems still use version 0.", "A worked example shows a clearing message. A customer buys GBP 45.20 at a supermarket. The authorisation request is an 0100 with data element 2, the primary account number, set to the card number; data element 3, the processing code, set to 000000 for a purchase; data element 4, the transaction amount, set to 000000004520; data element 41, the card acceptor terminal identification, set to the terminal ID; data element 42, the card acceptor identification code, set to the merchant ID; and data element 55, the EMV data, containing the ARQC and the transaction counter.", "The issuer returns an 0110 with data element 39, the response code, set to 00 for approval, and data element 38, the authorisation identification response, set to the approval code, for example 482913. At the end of the day, the acquirer sends an 0220 clearing message with the same data elements, plus data element 55, and the issuer books the transaction to the cardholder account.", "What happens when the message is wrong is a rejection or a misbooking. If a data element is missing or malformed, the scheme or the issuer will reject the message with a response code, typically 30 for a format error or 91 for an issuer unavailable. If the MTI is wrong, for example an 0100 sent where an 0220 was expected, the receiver will reject it. If the EMV data in field 55 is missing or incorrect, the issuer cannot verify the ARQC and will decline the transaction.", "The operations team must be able to read the message and identify the faulty data element, because the scheme will not tell you what is wrong, it will only tell you that the message was rejected. A common error is to send the amount in the wrong format, for example as a decimal instead of an integer number of minor units, which causes the issuer to authorise the wrong amount.", "The operational and accounting implications are that the operations team must monitor the message reject rate, the finance team must reconcile the clearing messages to the settlement, and the technology team must maintain the message specification. On the ledger, the 0100 authorisation creates a hold on the cardholder account, the 0220 clearing message creates the actual debit, and the 0420 reversal removes the hold and reverses the debit. The accounting team must be able to match each clearing message to its authorisation, because a clearing message without an authorisation is an exception that must be investigated. The reconciliation team must also check that the total of the clearing messages equals the settlement amount from the scheme.", "For a business analyst, ISO 8583 is a message specification subject. You must specify the MTI for each transaction type, the data elements required for each message, the format of each data element, the response codes, and the error handling. You must also specify the test cases: a valid authorisation, a valid clearing message, a reversal, a message with a missing data element, and a message with an invalid response code. A common gap is failing to specify data element 55, the EMV data, because it is a complex field with sub-elements, and a system that does not handle it correctly will fail EMV transactions.", "Takeaway: ISO 8583 is the language of card transactions, and the MTI tells you what the message is doing before you read a single data element. Further reading: ISO 8583:2003 for the message standard; the Visa Core Rules for the message flows; the Mastercard rules for clearing. Last reviewed 7 November 2026."], "accessibility": "Payment flow diagram showing ISO 8583 in depth: message types, data elements and the clearing message.", "visual_type": "payment_flow", "visual_choice_reason": "card payments chapter", "beats": [{"t0": 0.0, "t1": 89.2, "title": "ISO 8583 message standard", "note": "ISO 8583 is the message standard for card transactions, and it is the language that the terminal, the acquirer, the scheme and the issuer use to talk to each other.", "highlight_nodes": ["n0"], "highlight_conns": [], "highlight_fields": []}, {"t0": 89.2, "t1": 169.9, "title": "ISO 8583 business relevance", "note": "The standard is a technical subject, but it is also a business subject, because the data elements are the business facts of the transaction.", "highlight_nodes": ["n1"], "highlight_conns": ["c0"], "highlight_fields": []}, {"t0": 169.9, "t1": 256.5, "title": "MTI 0200 financial transaction request", "note": "An 0200 is a financial transaction request, used for transactions that are authorised and cleared in one step.", "highlight_nodes": ["n2"], "highlight_conns": ["c1"], "highlight_fields": []}, {"t0": 256.5, "t1": 348.9, "title": "Response code data element 39", "note": "The issuer returns an 0110 with data element 39", "highlight_nodes": ["n3"], "highlight_conns": ["c2"], "highlight_fields": []}, {"t0": 348.9, "t1": 436.8, "title": "Operational and accounting implications", "note": "The operational and accounting implications are that the operations team must monitor the message reject rate", "highlight_nodes": ["n4"], "highlight_conns": ["c3"], "highlight_fields": []}, {"t0": 436.8, "t1": 474.0, "title": "EMV data element 55 gap", "note": "A common gap is failing to specify data element 55, the EMV data, because it is a complex field with sub-elements, and a system that does not handle it correctly will fail EMV transactions.", "highlight_nodes": ["n5"], "highlight_conns": ["c4"], "highlight_fields": []}], "node_ids": ["n0", "n1", "n2", "n3", "n4", "n5"], "framework": {"objective": "By the end of this lesson, you will be able to explain ISO 8583 in depth: message types, data elements and the clearing message. ISO 8583 is the message standard for card transactions, and it is the language that the terminal, the acquirer, the scheme and the issuer use to talk to each other.", "why_matters": "For a business analyst, ISO 8583 is a message specification subject.", "technical_example": "ISO 8583 is the message standard for card transactions, and it is the language that the terminal, the acquirer, the scheme and the issuer use to talk to each other.", "failure_recovery": "If you cannot read an ISO 8583 message, you cannot investigate a failed transaction, you cannot reconcile a clearing file, and you cannot write a requirement for a card system. If the EMV data in field 55 is missing or incorrect, the issuer cannot verify the ARQC and will decline the transaction.", "exercise": {"task": "Read the ISO 8583 authorisation and clearing messages in this lesson and identify their key parts.", "info": "Use the MTI table, the worked GBP 45.20 example, and the data element list in this lesson.", "action": "For the 0100 authorisation request, name the data elements that carry the card number, the amount and the EMV data. Then name the MTI of the clearing message and the data element that carries the response code in the 0110.", "correct": "The authorisation request is an 0100. Data element 2 carries the primary account number, data element 4 carries the amount as 000000004520, and data element 55 carries the EMV data with the ARQC and the transaction counter. The clearing message is an 0220. In the issuer's 0110 response, data element 39 carries the response code, set to 00 for approval, and data element 38 carries the approval code, for example 482913.", "why": "The MTI tells you what the message is doing before you read a single data element, and the data elements are the business facts of the transaction. If you cannot name the MTI and the key data elements, you cannot investigate a failed transaction or write a requirement for a card system."}, "assessment": {"question": "A customer buys GBP 45.20 at a supermarket. The authorisation request is an 0100 with data element 4 set to 000000004520. The issuer approves and returns an 0110. Which data element in the 0110 carries the response code, and what value means approval?", "options": ["Data element 38, set to 482913", "Data element 39, set to 00", "Data element 55, containing the ARQC", "Data element 2, the primary account number"], "answer": 1, "explanation": "In the issuer's 0110 authorisation response, data element 39 is the response code and 00 means approval. Data element 38 carries the authorisation identification response, the approval code, for example 482913. Data element 55 carries the EMV data including the ARQC, and data element 2 carries the primary account number.", "why_wrong": ["Data element 38 is the authorisation identification response, the approval code, not the response code.", "", "Data element 55 carries the EMV data, including the ARQC and the transaction counter, not the response code.", "Data element 2 is the primary account number, the card number, not the response code."], "source": "generated:ch31s8"}, "takeaway": "The MTI is always four digits, and the first digit is the version, which is 0 for ISO 8583:1987 and 2 for ISO 8583:2003, although most systems still use version 0.", "prereq": "ch31s7", "next": "ch32s1", "connection_note": "Builds on \"Chargebacks in Depth\".", "tool": {"slug": "message-explorer", "label": "ISO 20022 Message Explorer", "url": "../simulators/message-explorer.html", "scenario": "Open the message type from this lesson and inspect its fields, then find the field that carries the amount."}, "simple": "In plain words: iSO 8583 is the message standard for card transactions, and it is the language that the terminal, the acquirer, the scheme and the issuer use to talk to each other. That is the whole idea in one sentence, and the rest of the lesson shows how it works in a real bank.", "summary": "ISO 8583 is the message standard for card transactions, and it is the language that the terminal, the acquirer, the scheme and the issuer use to talk to each other. Key points: ISO 8583 message standard; Business value of ISO 8583; 0200: financial transaction request; Issuer response 0110 and data elements; Operational and accounting implications; Data element 55 specification gap.", "example": "A customer buys GBP 45.20 at a supermarket. The issuer returns an 0110 with data element 39, the response code, set to 00 for approval, and data element 38, the authorisation identification response, set to the approval code, for example 482913."}}], "chapter_title": "Card Networks: Visa and Mastercard", "meta_line": "Card Networks: Visa and Mastercard, Lesson 8 of 8, Narration 7:54, D08 Cards and alternative payments", "next_id": "ch32s1", "next_title": "Digital Wallet Architecture: Where the Money Actually Sits"}]);</script>
+</div>
+<nav class="tool-rail" aria-label="Lesson tools">
+<button type="button" class="rail-tool" onclick="pfOpenTranscript('studio-ch31s8')" title="Open transcript"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M7 3h7l4 4v14H7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M14 3v4h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 12h5M10 15.5h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span>Transcript</span></button>
+<button type="button" class="rail-tool" onclick="pfToggleNote('studio-ch31s8')" title="Write a note on this lesson"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L8 19l-4 1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>Notes</span></button>
+<button type="button" class="rail-tool" onclick="pfToggleFiles('studio-ch31s8')" title="Download lesson files"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>Files</span></button>
+</nav>
+<div class="fw-files-panel" id="pf-files-studio-ch31s8" style="display:none"><b>Lesson files</b><p><a href="../audio/ch31s8.mp3" download>Download narration (MP3)</a></p><p><a href="#" onclick="pfDownloadTranscript('studio-ch31s8');return false">Download transcript (.txt)</a></p></div>
+</div>
+</div>
+</main>
+<footer><p>Payments Training Hub. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="../index.html">Home</a> &middot; <a href="../courses.html">Courses</a> &middot; <a href="../practice.html">Practice</a> &middot; <a href="../simulators.html">Simulators</a> &middot; <a href="../labs.html">Labs</a> &middot; <a href="../explorer.html">Explorer</a> &middot; <a href="../tests.html">Tests</a> &middot; <a href="../diagnostic.html">Diagnostic</a> &middot; <a href="../faq.html">Interview Ready Questions</a> &middot; <a href="../interview-prep.html">Interview Prep</a></p><p><a href="../about.html">About</a> &middot; <a href="../privacy.html">Privacy</a> &middot; <a href="../terms.html">Terms</a> &middot; <a href="../contact.html">Contact</a> &middot; <a href="../editorial-standards.html">Editorial Standards</a> &middot; <a href="../sources.html">Sources</a></p></footer>
+<script defer src="../assets/site.js"></script>
+<script defer src="../assets/bundles.js"></script>
+<script defer src="../assets/auth.js"></script>
+<script defer src="../assets/studio.js"></script>
+<script defer src="../assets/insight-components.js"></script>
+<script defer src="../assets/nav.js"></script>
+<script defer src="../assets/pf-enhance.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+if(window.PFInsight){PFInsight.init();}
+});
+</script>
+</body>
+</html>
