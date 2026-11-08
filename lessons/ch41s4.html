@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>Investigations, Duplicate Payments, Timeouts and Pending Payments | Payments Training Hub</title>
+<meta name="description" content="An investigation begins when a customer reports that a payment has not arrived, or when reconciliation shows a payment with no matching settlement, and...">
+<link rel="canonical" href="https://www.paymentstraininghub.in/lessons/ch41s4.html">
+<meta property="og:url" content="https://www.paymentstraininghub.in/lessons/ch41s4.html">
+<meta property="og:title" content="Investigations, Duplicate Payments, Timeouts and Pending Payments | Payments Training Hub">
+<meta property="og:description" content="An investigation begins when a customer reports that a payment has not arrived, or when reconciliation shows a payment with no matching settlement, and...">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.in/assets/hero/hero-poster.jpg">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.paymentstraininghub.in/index.html"}, {"@type": "ListItem", "position": 2, "name": "Payment Exceptions and Investigations", "item": "https://www.paymentstraininghub.in/chapters/ch41-payment-exceptions-and-investigations.html"}, {"@type": "ListItem", "position": 3, "name": "Investigations, Duplicate Payments, Timeouts and Pending Payments", "item": "https://www.paymentstraininghub.in/lessons/ch41s4.html"}]}</script>
+<link rel="stylesheet" href="../assets/studio.css">
+<link rel="stylesheet" href="../assets/pf-theme.css">
+<link rel="stylesheet" href="../assets/insight-components.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="../index.html" class="brand">Payments <span>Training Hub</span></a><nav class="topnav"><a href="../index.html">Home</a> <a href="../courses.html">Courses</a> <a href="../practice.html">Practice</a> <a href="../simulators.html">Simulators</a> <a href="../labs.html">Labs</a> <a href="../explorer.html">Explorer</a> <a href="../tests.html">Tests</a></nav><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox" style="display:none"><span id="authState">Not signed in</span> <span id="authForm" style="display:none"><input id="authEmail" type="email" placeholder="Email for OTP" aria-label="Email for sign-in"> <button class="mute-btn" onclick="paAuthSendOtp()">Send code</button> <input id="authCode" type="text" placeholder="6-digit code" aria-label="One-time code" style="display:none"> <button class="mute-btn" id="authVerifyBtn" onclick="paAuthVerifyOtp()" style="display:none">Verify</button> <button class="mute-btn" onclick="paAuthGoogle()">Sign in with Google</button> </span><button class="mute-btn" id="authSignOutBtn" onclick="paAuthSignOut()" style="display:none">Sign out</button></span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<div class="lesson-page">
+<div class="lesson-shell">
+<aside class="course-rail">
+<div class="rail-head">
+<h2>Payment Exceptions and Investigations</h2>
+<a class="rail-close" href="../chapters/ch41-payment-exceptions-and-investigations.html" aria-label="Close and go to chapter" title="Back to chapter">&times;</a>
+</div>
+<div class="goal-card">
+<div class="goal-head"><b>Today's goal &middot; <span id="side-progress-text">0 of 7 items</span></b><span class="goal-flag"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 21V4m0 1h11l-2.5 3.5L17 12H6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="goal-chev">&#94;</span></div>
+<p class="goal-body" id="side-goal-body">Complete 3 items today to stay at a good pace!</p>
+</div>
+<ul class="lesson-list"><li class="" data-lesson="ch41s1"><a href="ch41s1.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">The Exception Landscape: What Can Go Wrong</span><span class="m">Video &middot; 3 min</span></span></a></li>
+<li class="" data-lesson="ch41s2"><a href="ch41s2.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Technical Rejection vs Business Rejection</span><span class="m">Video &middot; 3 min</span></span></a></li>
+<li class="" data-lesson="ch41s3"><a href="ch41s3.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Payment Repair, Return, Recall and Cancellation</span><span class="m">Video &middot; 3 min</span></span></a></li>
+<li class="current" data-lesson="ch41s4"><a href="ch41s4.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Investigations, Duplicate Payments, Timeouts and Pending Payments</span><span class="m">Video &middot; 4 min</span></span></a></li>
+<li class="" data-lesson="ch41s5"><a href="ch41s5.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Unknown Payment Status, Failed Beneficiary Credit and Clearing System Outage</span><span class="m">Video &middot; 4 min</span></span></a></li>
+<li class="" data-lesson="ch41s6"><a href="ch41s6.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">ISO 20022 Messages and Reason Codes for Exceptions (pacs.002, pacs.004, camt.056, camt.029, pain.002 with real reason codes)</span><span class="m">Video &middot; 4 min</span></span></a></li>
+<li class="" data-lesson="ch41s7"><a href="ch41s7.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Exercise: Trace One Payment Through Every Possible Failure Scenario (one USD cross-border payment traced through reject, return, recall, duplicate, timeout and outage, with what happens at each step)</span><span class="m">Video &middot; 4 min</span></span></a></li></ul>
+</aside>
+<div class="lesson-main">
+<div class="studio" id="studio-studio-ch41s4">
+<div class="player">
+<div class="studio-canvas" id="studio-canvas-studio-ch41s4">
+<div class="ch-sec studio-scene-vis active" id="studio-vis-studio-ch41s4-0"><div class="beat-frames">
+<div class="beat-frame active" data-frame="0">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Investigation</tspan> <tspan fill="#FFFFFF">begins</tspan> <tspan fill="#FFFFFF">with</tspan> <tspan fill="#FFFFFF">customer</tspan></text>
+<text x="48" y="126" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">report</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">STARTED</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Investigation</tspan><tspan fill="#CBD5E1"> - when a customer reports that a payment has</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="0.55">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Investigation</tspan><tspan fill="#CBD5E1"> - obtain the missing information</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="0.55">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Timeout</tspan><tspan fill="#CBD5E1"> - Prevention matters more than cure</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Status</tspan><tspan fill="#CBD5E1"> - formal step, not an informal guess.</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Pending</tspan><tspan fill="#CBD5E1"> - not reviewed daily will grow silently</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Pending payment</tspan><tspan fill="#CBD5E1"> - must show the settlement reference.</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="128" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">An investigation begins when a customer reports that a payment has not arrived</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 1 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 689" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="689" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Investigation</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">begins</tspan> <tspan fill="#FFFFFF">with</tspan></text>
+<text x="24" y="96" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">customer</tspan> <tspan fill="#FFFFFF">report</tspan></text>
+<rect x="24" y="114" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="132" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">STARTED</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="148" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="167" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Investigation</text>
+<text x="180" y="185" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">when a customer reports that a payment has</text>
+<text x="180" y="203" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="0.55">
+<rect x="24" y="220" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="239" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Investigation</text>
+<text x="180" y="257" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">obtain the missing information</text>
+<text x="180" y="275" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="0.55">
+<rect x="24" y="292" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="311" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Timeout</text>
+<text x="180" y="329" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Prevention matters more than cure</text>
+<text x="180" y="347" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="24" y="364" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="383" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Status</text>
+<text x="180" y="401" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">formal step, not an informal guess.</text>
+<text x="180" y="419" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="24" y="436" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="455" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Pending</text>
+<text x="180" y="473" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">not reviewed daily will grow silently</text>
+<text x="180" y="491" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="508" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="527" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Pending payment</text>
+<text x="180" y="545" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">must show the settlement reference.</text>
+<text x="180" y="563" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="588" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">An investigation begins when a</text>
+<text x="180" y="607" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">customer reports that a payment has</text>
+<text x="180" y="626" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">not arrived</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="1">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Investigation</tspan> <tspan fill="#FFFFFF">must</tspan> <tspan fill="#FFFFFF">find</tspan> <tspan fill="#FFFFFF">that</tspan> <tspan fill="#FFFFFF">hold</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Investigation</tspan><tspan fill="#CBD5E1"> - when a customer reports that a payment has</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Investigation</tspan><tspan fill="#CBD5E1"> - obtain the missing information</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="0.55">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Timeout</tspan><tspan fill="#CBD5E1"> - Prevention matters more than cure</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Status</tspan><tspan fill="#CBD5E1"> - formal step, not an informal guess.</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Pending</tspan><tspan fill="#CBD5E1"> - not reviewed daily will grow silently</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Pending payment</tspan><tspan fill="#CBD5E1"> - must show the settlement reference.</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="257" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The investigation must find that hold, obtain the missing information, and get the payment</text>
+<text x="450" y="476" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">released.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 2 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 661" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="661" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Investigation</tspan> <tspan fill="#FFFFFF">must</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">find</tspan> <tspan fill="#FFFFFF">that</tspan> <tspan fill="#FFFFFF">hold</tspan></text>
+<rect x="24" y="86" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="104" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="120" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="139" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Investigation</text>
+<text x="180" y="157" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">when a customer reports that a payment has</text>
+<text x="180" y="175" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="192" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="211" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Investigation</text>
+<text x="180" y="229" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">obtain the missing information</text>
+<text x="180" y="247" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="0.55">
+<rect x="24" y="264" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="283" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Timeout</text>
+<text x="180" y="301" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Prevention matters more than cure</text>
+<text x="180" y="319" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="24" y="336" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="355" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Status</text>
+<text x="180" y="373" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">formal step, not an informal guess.</text>
+<text x="180" y="391" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="24" y="408" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="427" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Pending</text>
+<text x="180" y="445" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">not reviewed daily will grow silently</text>
+<text x="180" y="463" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="480" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="499" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Pending payment</text>
+<text x="180" y="517" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">must show the settlement reference.</text>
+<text x="180" y="535" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="560" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The investigation must find that hold,</text>
+<text x="180" y="579" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">obtain the missing information, and get</text>
+<text x="180" y="598" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">the payment released.</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="2">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Timeout:</tspan> <tspan fill="#FFFFFF">no</tspan> <tspan fill="#FFFFFF">acknowledgement</tspan> <tspan fill="#FFFFFF">in</tspan></text>
+<text x="48" y="126" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">expected</tspan> <tspan fill="#FFFFFF">time</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Investigation</tspan><tspan fill="#CBD5E1"> - when a customer reports that a payment has</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Investigation</tspan><tspan fill="#CBD5E1"> - obtain the missing information</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Timeout</tspan><tspan fill="#CBD5E1"> - Prevention matters more than cure</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Status</tspan><tspan fill="#CBD5E1"> - formal step, not an informal guess.</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Pending</tspan><tspan fill="#CBD5E1"> - not reviewed daily will grow silently</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Pending payment</tspan><tspan fill="#CBD5E1"> - must show the settlement reference.</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="386" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Prevention matters more than cure, which is why duplicate detection checks run before a</text>
+<text x="450" y="476" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">payment is sent.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 3 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 689" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="689" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Timeout:</tspan> <tspan fill="#FFFFFF">no</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">acknowledgement</tspan></text>
+<text x="24" y="96" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">in</tspan> <tspan fill="#FFFFFF">expected</tspan> <tspan fill="#FFFFFF">time</tspan></text>
+<rect x="24" y="114" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="132" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="148" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="167" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Investigation</text>
+<text x="180" y="185" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">when a customer reports that a payment has</text>
+<text x="180" y="203" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="220" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="239" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Investigation</text>
+<text x="180" y="257" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">obtain the missing information</text>
+<text x="180" y="275" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="1">
+<rect x="24" y="292" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="311" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Timeout</text>
+<text x="180" y="329" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Prevention matters more than cure</text>
+<text x="180" y="347" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="24" y="364" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="383" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Status</text>
+<text x="180" y="401" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">formal step, not an informal guess.</text>
+<text x="180" y="419" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="24" y="436" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="455" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Pending</text>
+<text x="180" y="473" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">not reviewed daily will grow silently</text>
+<text x="180" y="491" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="508" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="527" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Pending payment</text>
+<text x="180" y="545" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">must show the settlement reference.</text>
+<text x="180" y="563" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="588" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Prevention matters more than cure,</text>
+<text x="180" y="607" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">which is why duplicate detection checks</text>
+<text x="180" y="626" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">run before a payment is sent.</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="3">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Status</tspan> <tspan fill="#FFFFFF">check</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Investigation</tspan><tspan fill="#CBD5E1"> - when a customer reports that a payment has</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Investigation</tspan><tspan fill="#CBD5E1"> - obtain the missing information</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Timeout</tspan><tspan fill="#CBD5E1"> - Prevention matters more than cure</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Status</tspan><tspan fill="#CBD5E1"> - formal step, not an informal guess.</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Pending</tspan><tspan fill="#CBD5E1"> - not reviewed daily will grow silently</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Pending payment</tspan><tspan fill="#CBD5E1"> - must show the settlement reference.</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="514" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">That status check is a formal step, not an informal guess.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 4 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 614" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="614" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Status</tspan> <tspan fill="#FFFFFF">check</tspan></text>
+<rect x="24" y="58" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="76" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="92" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="111" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Investigation</text>
+<text x="180" y="129" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">when a customer reports that a payment has</text>
+<text x="180" y="147" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="164" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="183" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Investigation</text>
+<text x="180" y="201" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">obtain the missing information</text>
+<text x="180" y="219" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="1">
+<rect x="24" y="236" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="255" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Timeout</text>
+<text x="180" y="273" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Prevention matters more than cure</text>
+<text x="180" y="291" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="1">
+<rect x="24" y="308" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="327" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Status</text>
+<text x="180" y="345" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">formal step, not an informal guess.</text>
+<text x="180" y="363" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="24" y="380" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="399" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Pending</text>
+<text x="180" y="417" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">not reviewed daily will grow silently</text>
+<text x="180" y="435" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="452" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="471" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Pending payment</text>
+<text x="180" y="489" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">must show the settlement reference.</text>
+<text x="180" y="507" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="532" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">That status check is a formal step, not</text>
+<text x="180" y="551" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">an informal guess.</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="4">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Pending</tspan> <tspan fill="#FFFFFF">list</tspan> <tspan fill="#FFFFFF">that</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Investigation</tspan><tspan fill="#CBD5E1"> - when a customer reports that a payment has</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Investigation</tspan><tspan fill="#CBD5E1"> - obtain the missing information</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Timeout</tspan><tspan fill="#CBD5E1"> - Prevention matters more than cure</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Status</tspan><tspan fill="#CBD5E1"> - formal step, not an informal guess.</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n4" data-beat="4">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Pending</tspan><tspan fill="#CBD5E1"> - not reviewed daily will grow silently</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Pending payment</tspan><tspan fill="#CBD5E1"> - must show the settlement reference.</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="643" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">A pending list that is not reviewed daily will grow silently, and customers will discover the delay</text>
+<text x="450" y="476" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">before the bank does.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 5 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 633" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="633" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Pending</tspan> <tspan fill="#FFFFFF">list</tspan> <tspan fill="#FFFFFF">that</tspan></text>
+<rect x="24" y="58" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="76" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="92" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="111" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Investigation</text>
+<text x="180" y="129" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">when a customer reports that a payment has</text>
+<text x="180" y="147" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="164" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="183" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Investigation</text>
+<text x="180" y="201" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">obtain the missing information</text>
+<text x="180" y="219" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="1">
+<rect x="24" y="236" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="255" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Timeout</text>
+<text x="180" y="273" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Prevention matters more than cure</text>
+<text x="180" y="291" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="1">
+<rect x="24" y="308" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="327" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Status</text>
+<text x="180" y="345" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">formal step, not an informal guess.</text>
+<text x="180" y="363" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="1">
+<rect x="24" y="380" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="399" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Pending</text>
+<text x="180" y="417" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">not reviewed daily will grow silently</text>
+<text x="180" y="435" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="452" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="471" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Pending payment</text>
+<text x="180" y="489" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">must show the settlement reference.</text>
+<text x="180" y="507" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="532" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">A pending list that is not reviewed daily</text>
+<text x="180" y="551" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">will grow silently, and customers will</text>
+<text x="180" y="570" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">discover the delay before the bank does.</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="5">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Pending</tspan> <tspan fill="#FFFFFF">payment</tspan> <tspan fill="#FFFFFF">that</tspan> <tspan fill="#FFFFFF">settles</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">COMPLETE</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Investigation</tspan><tspan fill="#CBD5E1"> - when a customer reports that a payment has</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Investigation</tspan><tspan fill="#CBD5E1"> - obtain the missing information</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Timeout</tspan><tspan fill="#CBD5E1"> - Prevention matters more than cure</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Status</tspan><tspan fill="#CBD5E1"> - formal step, not an informal guess.</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n4" data-beat="4">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Pending</tspan><tspan fill="#CBD5E1"> - not reviewed daily will grow silently</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n5" data-beat="5">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Pending payment</tspan><tspan fill="#CBD5E1"> - must show the settlement reference.</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">A pending payment that settles must show the settlement reference.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 6 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#45A4FF"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 642" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="642" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Pending</tspan> <tspan fill="#FFFFFF">payment</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">that</tspan> <tspan fill="#FFFFFF">settles</tspan></text>
+<rect x="24" y="86" width="312" height="26" rx="8" fill="#0C1626" stroke="#2DD4BF" stroke-width="1.5"/>
+<text x="180" y="104" text-anchor="middle" font-size="12" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">COMPLETE</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="120" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="139" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Investigation</text>
+<text x="180" y="157" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">when a customer reports that a payment has</text>
+<text x="180" y="175" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="192" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="211" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Investigation</text>
+<text x="180" y="229" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">obtain the missing information</text>
+<text x="180" y="247" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="1">
+<rect x="24" y="264" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="283" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Timeout</text>
+<text x="180" y="301" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Prevention matters more than cure</text>
+<text x="180" y="319" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="1">
+<rect x="24" y="336" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="355" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Status</text>
+<text x="180" y="373" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">formal step, not an informal guess.</text>
+<text x="180" y="391" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="1">
+<rect x="24" y="408" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="427" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Pending</text>
+<text x="180" y="445" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">not reviewed daily will grow silently</text>
+<text x="180" y="463" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="1">
+<rect x="24" y="480" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="499" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Pending payment</text>
+<text x="180" y="517" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">must show the settlement reference.</text>
+<text x="180" y="535" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<text x="180" y="560" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">A pending payment that settles must</text>
+<text x="180" y="579" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">show the settlement reference.</text>
+</svg>
+</div>
+</div>
+<p class="xml-caption">Exception workflow, step by step.</p></div>
+<div class="playerbar">
+<div class="studio-progress"><div class="studio-markers" id="studio-markers-studio-ch41s4"></div><input type="range" id="studio-slider-studio-ch41s4" min="0" max="1000" value="0" aria-label="Lesson timeline"></div>
+<div class="ctrl-row">
+<button class="ctrl-btn" id="studio-play-studio-ch41s4" onclick="studioTogglePlay('studio-ch41s4')" aria-label="Play lesson" title="Play lesson"><span class="ctrl-ic-play"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></span><span class="ctrl-ic-pause" style="display:none"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><rect x="6" y="5" width="4" height="14" fill="currentColor"/><rect x="14" y="5" width="4" height="14" fill="currentColor"/></svg></span></button>
+<button class="ctrl-btn studio-mute-btn" id="studio-mute-studio-ch41s4" onclick="studioToggleMute('studio-ch41s4')" aria-label="Mute narration" title="Mute / unmute narration"><svg class="studio-mute-icon" viewBox="0 0 24 24" width="28" height="28" fill="currentColor" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3z"/><path class="studio-mute-waves" d="M16 8.5a5 5 0 0 1 0 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><path class="studio-mute-waves" d="M18.5 6a9 9 0 0 1 0 12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><path class="studio-mute-x" d="M16 9.5l5 5M21 9.5l-5 5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" style="display:none"/></svg></button>
+<button class="ctrl-btn" onclick="studioSkip('studio-ch41s4', -10)" aria-label="Back 10 seconds" title="Back 10 seconds"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 5a7 7 0 1 1-6.32 4.06" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M5.5 3.5v5h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><text x="12" y="16.5" font-size="8" fill="currentColor" text-anchor="middle" font-weight="700">10</text></svg></button>
+<span class="studio-time ctrl-time" id="studio-time-studio-ch41s4">0:00 / 3:32</span>
+<button class="ctrl-btn" onclick="studioSkip('studio-ch41s4', 10)" aria-label="Forward 10 seconds" title="Forward 10 seconds"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 5a7 7 0 1 0 6.32 4.06" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M18.5 3.5v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><text x="12" y="16.5" font-size="8" fill="currentColor" text-anchor="middle" font-weight="700">10</text></svg></button>
+<span class="playerbar-spacer"></span>
+<span class="player-stage" id="studio-tag-studio-ch41s4">Step 1 of 6</span>
+<button class="ctrl-btn ctrl-step" id="studio-prevscene-studio-ch41s4" onclick="studioPrevScene('studio-ch41s4')" title="Previous step" aria-label="Previous step">&lsaquo;</button>
+<button class="ctrl-btn ctrl-step" id="studio-nextscene-studio-ch41s4" onclick="studioNextScene('studio-ch41s4')" title="Next step" aria-label="Next step">&rsaquo;</button>
+<button class="ctrl-btn ctrl-speed" id="studio-speedbtn-studio-ch41s4" onclick="studioCycleSpeed('studio-ch41s4')" title="Playback speed" aria-label="Playback speed">1x</button>
+<span class="ctrl-settings-wrap"><button class="ctrl-btn" onclick="studioToggleSettings('studio-ch41s4', event)" aria-label="Player settings" title="Settings"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5 5l2.1 2.1M16.9 16.9L19 19M19 5l-2.1 2.1M7.1 16.9L5 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button><span class="ctrl-popover" id="studio-settings-studio-ch41s4" style="display:none" onclick="event.stopPropagation()"><label class="ctrl-pop-row">Volume <input type="range" min="0" max="1" step="0.1" value="1" oninput="studioSetVolume('studio-ch41s4', this.value)" style="width:110px;accent-color:#3587FC"></label><button class="studio-btn" id="studio-captions-studio-ch41s4" onclick="studioToggleCaptions('studio-ch41s4')">Captions: On</button><button class="studio-btn" onclick="studioReplayScene('studio-ch41s4')">Replay scene</button></span></span>
+<button class="ctrl-btn" onclick="studioFullscreen('studio-ch41s4')" aria-label="Fullscreen" title="Fullscreen"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+</div>
+</div>
+</div>
+<p class="studio-caption" id="studio-caption-studio-ch41s4"></p>
+<p class="studio-loading" id="studio-loading-studio-ch41s4" style="display:none">Loading narration...</p>
+<p class="studio-error" id="studio-error-studio-ch41s4" role="alert" style="display:none"></p>
+<audio id="studio-audio-studio-ch41s4" preload="auto" src="../audio/ch41s4.mp3"></audio>
+</div>
+<div class="lesson-title-row">
+<h1>Investigations, Duplicate Payments, Timeouts and Pending Payments</h1>
+<button class="save-note" type="button" onclick="pfToggleNote('studio-ch41s4')" title="Save a note on this lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L8 19l-4 1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg> Save note</button>
+</div>
+<p class="lesson-meta-line">Payment Exceptions and Investigations, Lesson 4 of 7, Narration 3:32, D11 Operations, exceptions and reconciliation</p>
+<p class="lesson-note-saved" id="studio-note-saved-studio-ch41s4" style="display:none">Note saved.</p>
+<div class="note-editor" id="studio-note-editor-studio-ch41s4" style="display:none"><textarea id="studio-note-text-studio-ch41s4" rows="3" placeholder="Write a note on this lesson..." aria-label="Lesson note"></textarea><div class="note-editor-row"><button class="studio-btn primary" onclick="pfSaveNote('studio-ch41s4')">Save note</button> <button class="studio-btn" onclick="pfToggleNote('studio-ch41s4')">Cancel</button></div></div>
+<div class="dive-deeper">
+<div class="dive-head"><button type="button" class="dive-toggle" onclick="pfToggleDive(this)" aria-expanded="true"><span class="dive-spark"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 2l2.2 6.8L21 11l-6.8 2.2L12 20l-2.2-6.8L3 11l6.8-2.2z" fill="currentColor"/></svg></span><span class="dive-title">Dive deeper on this topic</span><span class="dive-chev"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 14l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button></div>
+<div class="dive-btns"><button type="button" class="dive-btn" data-kind="practice" onclick="pfDive('studio-ch41s4', 'practice')">Give me practice questions</button><button type="button" class="dive-btn" data-kind="simple" onclick="pfDive('studio-ch41s4', 'simple')">Explain this topic in simple terms</button><button type="button" class="dive-btn" data-kind="summary" onclick="pfDive('studio-ch41s4', 'summary')">Give me a summary</button><button type="button" class="dive-btn" data-kind="example" onclick="pfDive('studio-ch41s4', 'example')">Give me real-life examples</button></div>
+<div class="dive-panel" id="dive-panel-studio-ch41s4"><div class="dive-panel-body"></div></div>
+<script type="application/json" id="pf-dive-data-studio-ch41s4">{"simple": "In plain words: an investigation begins when a customer reports that a payment has not arrived, or when reconciliation shows a payment with no matching settlement, and the analyst must reconstruct the payment journey from the available. That is the whole idea in one sentence, and the rest of the lesson shows how it works in a real bank.", "summary": "An investigation begins when a customer reports that a payment has not arrived, or when reconciliation shows a payment with no matching settlement, and the analyst must reconstruct the payment journey from the available evidence. Key points: Investigation begins with customer report; Duplicate payments; Timeout: no acknowledgement in expected time; Pending payment; Closing discipline for all four types.", "example": "An investigation begins when a customer reports that a payment has not arrived, or when reconciliation shows a payment with no matching settlement, and the analyst must reconstruct the payment journey from the available evidence. For example, a USD 120,000 payment to a supplier in Hong Kong that has not arrived after three days may have been held by an intermediary bank for additional information."}</script>
+</div>
+<div class="lesson-feedback">
+<div class="fb-icons"><button type="button" class="fb-btn" data-kind="like" onclick="pfFeedback(this,'like')" aria-label="Like this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M7 21H4a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1h3v11zm0 0h9.6a2 2 0 0 0 1.9-1.4l1.6-5A2 2 0 0 0 18.2 12H15V6.5A2.5 2.5 0 0 0 12.5 4L11 7.5 8.6 10H7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button><button type="button" class="fb-btn" data-kind="dislike" onclick="pfFeedback(this,'dislike')" aria-label="Dislike this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M17 3h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1h-3V3zm0 0H7.4a2 2 0 0 0-1.9 1.4l-1.6 5A2 2 0 0 0 5.8 12H9v5.5A2.5 2.5 0 0 0 11.5 20L13 16.5l2.4-2.5H17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button><button type="button" class="fb-btn" data-kind="flag" onclick="pfFeedback(this,'flag')" aria-label="Flag this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M6 21V4m0 1h11l-2.5 3.5L17 12H6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+<button type="button" class="go-next" onclick="goLesson('ch41s5')" title="Next: Unknown Payment Status, Failed Beneficiary Credit and Clearing System Outage">Go to next item &rarr;</button>
+</div>
+<div class="chips"><span class="chip">Sanctions screening</span><span class="chip">Reconciliation</span><span class="chip">Settlement</span></div>
+<div class="card learn-card">
+<h2>What you will learn</h2>
+<p class="transcript"><b>Your objective.</b> By the end of this lesson, you will be able to explain investigations, duplicate payments, timeouts and pending payments. An investigation begins when a customer reports that a payment has not arrived, or when reconciliation shows a payment with no matching settlement, and the analyst must reconstruct the payment journey from the available.</p>
+<p class="transcript"><b>Why it matters.</b> An investigation begins when a customer reports that a payment has not arrived, or when reconciliation shows a payment with no matching settlement, and the analyst must reconstruct the payment journey from the available evidence.</p>
+<p class="transcript">Chapter objective: Learner investigates payment exceptions, including non-receipt, wrong amount, duplicate, and delayed payments, and runs a structured investigation from first report to resolution. Learner demonstrates this skill using realistic banking examples, explaining each step clearly and using correct terminology throughout.</p>
+<h3>Key learning points</h3>
+<ul id="studio-points-studio-ch41s4">
+<li>Investigation begins with customer report</li>
+<li>Investigation must find that hold</li>
+<li>Timeout: no acknowledgement in expected time</li>
+<li>Status check</li>
+<li>Pending list that</li>
+<li>Pending payment that settles</li>
+</ul>
+<h3>Key terms</h3>
+<div id="studio-terms-studio-ch41s4">
+<p class="keyterm"><b>Sanctions screening:</b> Checking payment parties, countries and references against sanctions lists published by governments and international bodies.</p>
+<p class="keyterm"><b>Reconciliation:</b> The process of comparing records from two sources, such as a bank statement and an internal ledger, to confirm they agree.</p>
+<p class="keyterm"><b>Settlement:</b> The final movement of funds between banks to discharge obligations created by cleared payments. Settlement is usually made in central bank money or through correspondent accounts.</p>
+</div>
+<p class="studio-note">Exception investigation workflow showing Investigations, Duplicate Payments, Timeouts and Pending Payments.</p>
+</div>
+<div class="fw-card" id="pf-exercise-studio-ch41s4">
+<p class="fw-label">Practise this lesson</p>
+<h2>Exercise</h2>
+<p><b>Handle the exception described in this lesson the way the lesson prescribes.</b></p>
+<p>Use the exception type, the reason code and the recovery path in this lesson.</p>
+<ol class="fw-steps">
+<li><b>What to do.</b> State what happened, what the correct action is, what must not be done, and what the post-incident review should capture.</li>
+</ol>
+<p><button class="studio-btn" id="pf-ex-btn-studio-ch41s4" onclick="pfRevealExercise('studio-ch41s4')">Show the answer</button></p>
+<div class="fw-exercise-answer" id="pf-ex-answer-studio-ch41s4">
+<p><b>Correct result.</b> The correct action is the one the lesson prescribes for this exception type, with the right reason code and the right message. The payment must not be resent without checking whether it already settled, because that creates a duplicate.</p>
+<p><b>Why.</b> An exception handled wrongly is worse than the exception itself. A duplicate payment is a loss, and an unlearned exception will happen again.</p>
+</div>
+</div>
+<div class="fw-card" id="pf-quiz-studio-ch41s4" data-answer="1">
+<p class="fw-label">Check your understanding</p>
+<h2>Practice question</h2>
+<p><b>A beneficiary bank returns a payment because the account is closed. The sending bank receives a pacs.004. What must the sending bank do next?</b></p>
+<button type="button" class="quiz-opt" data-idx="0" onclick="pfCheckAnswer('studio-ch41s4', this)">Ignore the return because the payment already left</button>
+<button type="button" class="quiz-opt" data-idx="1" onclick="pfCheckAnswer('studio-ch41s4', this)">Credit the funds back to the original sender account, reconcile the return against the original payment, and tell the sender why it came back</button>
+<button type="button" class="quiz-opt" data-idx="2" onclick="pfCheckAnswer('studio-ch41s4', this)">Send the payment again to the same closed account</button>
+<button type="button" class="quiz-opt" data-idx="3" onclick="pfCheckAnswer('studio-ch41s4', this)">Keep the returned funds in a suspense account forever</button>
+<div class="quiz-feedback" id="pf-quiz-fb-studio-ch41s4"></div>
+<script type="application/json" id="pf-quiz-data-studio-ch41s4">{"why_wrong": ["This is not correct for this question. A pacs.004 return brings the funds back, and the sending bank must credit them to the original sender, match the return to the original payment in reconciliation, and explain the reason.", "", "This is not correct for this question. A pacs.004 return brings the funds back, and the sending bank must credit them to the original sender, match the return to the original payment in reconciliation, and explain the reason.", "This is not correct for this question. A pacs.004 return brings the funds back, and the sending bank must credit them to the original sender, match the return to the original payment in reconciliation, and explain the reason."], "explanation": "A pacs.004 return brings the funds back, and the sending bank must credit them to the original sender, match the return to the original payment in reconciliation, and explain the reason. Resending to a closed account would fail again, and leaving the funds in suspense hides them from the customer."}</script>
+</div>
+<div class="fw-card">
+<p class="fw-label">Takeaway and next step</p>
+<h2>What to remember</h2>
+<p>That standard turns investigations from open-ended worry into accountable work.</p>
+<p>Reconcile the payment in this lesson against its statement and find the break.</p>
+<p><a class="fw-tool-link" href="../simulators/accounting.html">Open the Accounting and Reconciliation Lab &rarr;</a></p>
+<p class="studio-note">Builds on "Payment Repair, Return, Recall and Cancellation".</p>
+</div>
+<section class="upnext" id="studio-upnext-studio-ch41s4" style="display:none" aria-label="Up next">
+<span class="tag">Up next</span>
+<h2>Up next: Unknown Payment Status, Failed Beneficiary Credit and Clearing System Outage</h2>
+<p>Lesson 5 of 7, Payment Exceptions and Investigations, Narration 3:34</p>
+<div class="row">
+<button class="studio-btn primary" onclick="goLessonAuto('ch41s5')">Next lesson &rarr;</button>
+<button class="studio-btn" onclick="goLesson('ch41s3')">&larr; Previous lesson</button>
+<button class="studio-btn" onclick="studioReplayLesson('studio-ch41s4')">Replay this lesson</button>
+</div>
+</section>
+<div class="lesson-nav">
+<button class="studio-btn" onclick="goLesson('ch41s3')" title="Previous lesson: Payment Repair, Return, Recall and Cancellation">&larr; Previous</button>
+<button class="studio-btn" onclick="goChapterContents('ch41')">Chapter contents</button>
+<button class="studio-btn primary" onclick="goLesson('ch41s5')" title="Next lesson: Unknown Payment Status, Failed Beneficiary Credit and Clearing System Outage">Next &rarr;</button>
+</div>
+<div class="card transcript-card">
+<h2>Transcript and full text</h2>
+<details class="studio-transcript" id="studio-transcript-details-studio-ch41s4"><summary>Show transcript</summary>
+<p class="transcript" id="studio-transcript-studio-ch41s4">An investigation begins when a customer reports that a payment has not arrived, or when reconciliation shows a payment with no matching settlement, and the analyst must reconstruct the payment journey from the available evidence. The analyst starts with the internal payment record, checks the pacs.008 that was sent, looks for a pacs.002 acknowledgement, checks the nostro statement for the debit, and contacts the correspondent or beneficiary bank if the trail stops. For example, a USD 120,000 payment to a supplier in Hong Kong that has not arrived after three days may have been held by an intermediary bank for additional information. The investigation must find that hold, obtain the missing information, and get the payment released. Duplicate payments are investigated differently, because the question is not where the money went but how to get the second payment back. The analyst must first prove that a duplicate exists, by showing two settlement debits for one customer instruction, with the same amount, currency, beneficiary, and value date. Once the duplicate is proven, the bank contacts the beneficiary bank, explains the error, and requests a return of the duplicate amount through a pacs.004 message. If the beneficiary has already spent the money, recovery becomes a commercial negotiation rather than a technical return, and the bank may need to involve its legal team. Prevention matters more than cure, which is why duplicate detection checks run before a payment is sent. A timeout happens when a system sends a payment and does not receive an acknowledgement within the expected time, so the sender does not know whether the payment succeeded. This is common when a clearing system is slow, when a network link fails, or when a correspondent bank's system is temporarily unavailable. The worst response to a timeout is to resend the payment immediately, because the first attempt may have succeeded and the resend would create a duplicate. The correct response is to check the payment status through the clearing system or the correspondent bank, confirm whether the original payment was processed, and only then decide whether to resend. That status check is a formal step, not an informal guess. A pending payment is one that has been accepted for processing but has not yet reached a final state of settled or rejected, and it can remain pending for hours or even days. A payment may be pending because it is waiting for a future value date, because it is held for sanctions screening, because it is waiting for funds in the customer account, or because the beneficiary bank has asked for more information. The analyst must know why each pending payment is pending, how long it has been pending, and what action will move it forward. A pending list that is not reviewed daily will grow silently, and customers will discover the delay before the bank does. The closing discipline for all four types is the same. Every investigation must end with a written conclusion, a customer notification, and a ledger entry that proves the outcome. An investigation that ends with a phone call and no record is not closed, because the next analyst who looks at the payment will have to start again. A duplicate that is recovered must show the return credit on the customer account. A timeout that is resolved must show whether the original payment succeeded or was safely resent. A pending payment that settles must show the settlement reference. That standard turns investigations from open-ended worry into accountable work.</p>
+<div id="studio-paras-studio-ch41s4">
+<p class="transcript">An investigation begins when a customer reports that a payment has not arrived, or when reconciliation shows a payment with no matching settlement, and the analyst must reconstruct the payment journey from the available evidence. The analyst starts with the internal payment record, checks the pacs.008 that was sent, looks for a pacs.002 acknowledgement, checks the nostro statement for the debit, and contacts the correspondent or beneficiary bank if the trail stops. For example, a USD 120,000 payment to a supplier in Hong Kong that has not arrived after three days may have been held by an intermediary bank for additional information. The investigation must find that hold, obtain the missing information, and get the payment released.</p>
+<p class="transcript">Duplicate payments are investigated differently, because the question is not where the money went but how to get the second payment back. The analyst must first prove that a duplicate exists, by showing two settlement debits for one customer instruction, with the same amount, currency, beneficiary, and value date. Once the duplicate is proven, the bank contacts the beneficiary bank, explains the error, and requests a return of the duplicate amount through a pacs.004 message. If the beneficiary has already spent the money, recovery becomes a commercial negotiation rather than a technical return, and the bank may need to involve its legal team. Prevention matters more than cure, which is why duplicate detection checks run before a payment is sent.</p>
+<p class="transcript">A timeout happens when a system sends a payment and does not receive an acknowledgement within the expected time, so the sender does not know whether the payment succeeded. This is common when a clearing system is slow, when a network link fails, or when a correspondent bank's system is temporarily unavailable. The worst response to a timeout is to resend the payment immediately, because the first attempt may have succeeded and the resend would create a duplicate. The correct response is to check the payment status through the clearing system or the correspondent bank, confirm whether the original payment was processed, and only then decide whether to resend. That status check is a formal step, not an informal guess.</p>
+<p class="transcript">A pending payment is one that has been accepted for processing but has not yet reached a final state of settled or rejected, and it can remain pending for hours or even days. A payment may be pending because it is waiting for a future value date, because it is held for sanctions screening, because it is waiting for funds in the customer account, or because the beneficiary bank has asked for more information. The analyst must know why each pending payment is pending, how long it has been pending, and what action will move it forward. A pending list that is not reviewed daily will grow silently, and customers will discover the delay before the bank does.</p>
+<p class="transcript">The closing discipline for all four types is the same. Every investigation must end with a written conclusion, a customer notification, and a ledger entry that proves the outcome. An investigation that ends with a phone call and no record is not closed, because the next analyst who looks at the payment will have to start again. A duplicate that is recovered must show the return credit on the customer account. A timeout that is resolved must show whether the original payment succeeded or was safely resent. A pending payment that settles must show the settlement reference. That standard turns investigations from open-ended worry into accountable work.</p>
+</div>
+</details>
+<details class="studio-transcript"><summary>Full lesson text (all scenes)</summary><div id="studio-transcript-full-studio-ch41s4"></div></details>
+<p><button class="studio-btn primary" id="done-ch41s4" onclick="studioMarkSceneDone('studio-ch41s4')">Mark lesson complete</button> <span class="studio-note">Completing a lesson updates your progress dashboard on the homepage.</span></p>
+</div>
+<p class="studio-note">Scene timestamps are estimated by allocating the narration text proportionally across the real audio length. The audio playback position is the source of truth: pause freezes the visual, seeking restores the correct scene, replay restarts the scene animation.</p>
+</div>
+<script>window.__PA_STUDIO_QUEUE = window.__PA_STUDIO_QUEUE || []; window.__PA_STUDIO_QUEUE.push(["studio-ch41s4", {"sample_id": "studio-ch41s4", "chapter_id": "ch41", "title": "Investigations, Duplicate Payments, Timeouts and Pending Payments", "domain": "D11 Operations, exceptions and reconciliation", "objective": "Learner investigates payment exceptions, including non-receipt, wrong amount, duplicate, and delayed payments, and runs a structured investigation from first report to resolution. Learner demonstrates this skill using realistic banking examples, explaining each step clearly and using correct terminology throughout.", "scenes": [{"id": "ch41s4", "section_id": "ch41s4", "title": "Investigations, Duplicate Payments, Timeouts and Pending Payments", "audio": "../audio/ch41s4.mp3", "duration_sec": 212.4, "points": ["An investigation begins when a customer reports that a payment has not arrived, or when reconciliation shows a payment with no matching settlement, and the analyst must reconstruct the payment journey from the available...", "Duplicate payments are investigated differently, because the question is not where the money went but how to get the second payment back.", "A timeout happens when a system sends a payment and does not receive an acknowledgement within the expected time, so the sender does not know whether the payment succeeded.", "A pending payment is one that has been accepted for processing but has not yet reached a final state of settled or rejected, and it can remain pending for hours or even days.", "The closing discipline for all four types is the same."], "terms": [{"term": "Sanctions screening", "def": "Checking payment parties, countries and references against sanctions lists published by governments and international bodies."}, {"term": "Reconciliation", "def": "The process of comparing records from two sources, such as a bank statement and an internal ledger, to confirm they agree."}, {"term": "Settlement", "def": "The final movement of funds between banks to discharge obligations created by cleared payments. Settlement is usually made in central bank money or through correspondent accounts."}], "transcript": "An investigation begins when a customer reports that a payment has not arrived, or when reconciliation shows a payment with no matching settlement, and the analyst must reconstruct the payment journey from the available evidence. The analyst starts with the internal payment record, checks the pacs.008 that was sent, looks for a pacs.002 acknowledgement, checks the nostro statement for the debit, and contacts the correspondent or beneficiary bank if the trail stops. For example, a USD 120,000 payment to a supplier in Hong Kong that has not arrived after three days may have been held by an intermediary bank for additional information. The investigation must find that hold, obtain the missing information, and get the payment released. Duplicate payments are investigated differently, because the question is not where the money went but how to get the second payment back. The analyst must first prove that a duplicate exists, by showing two settlement debits for one customer instruction, with the same amount, currency, beneficiary, and value date. Once the duplicate is proven, the bank contacts the beneficiary bank, explains the error, and requests a return of the duplicate amount through a pacs.004 message. If the beneficiary has already spent the money, recovery becomes a commercial negotiation rather than a technical return, and the bank may need to involve its legal team. Prevention matters more than cure, which is why duplicate detection checks run before a payment is sent. A timeout happens when a system sends a payment and does not receive an acknowledgement within the expected time, so the sender does not know whether the payment succeeded. This is common when a clearing system is slow, when a network link fails, or when a correspondent bank's system is temporarily unavailable. The worst response to a timeout is to resend the payment immediately, because the first attempt may have succeeded and the resend would create a duplicate. The correct response is to check the payment status through the clearing system or the correspondent bank, confirm whether the original payment was processed, and only then decide whether to resend. That status check is a formal step, not an informal guess. A pending payment is one that has been accepted for processing but has not yet reached a final state of settled or rejected, and it can remain pending for hours or even days. A payment may be pending because it is waiting for a future value date, because it is held for sanctions screening, because it is waiting for funds in the customer account, or because the beneficiary bank has asked for more information. The analyst must know why each pending payment is pending, how long it has been pending, and what action will move it forward. A pending list that is not reviewed daily will grow silently, and customers will discover the delay before the bank does. The closing discipline for all four types is the same. Every investigation must end with a written conclusion, a customer notification, and a ledger entry that proves the outcome. An investigation that ends with a phone call and no record is not closed, because the next analyst who looks at the payment will have to start again. A duplicate that is recovered must show the return credit on the customer account. A timeout that is resolved must show whether the original payment succeeded or was safely resent. A pending payment that settles must show the settlement reference. That standard turns investigations from open-ended worry into accountable work.", "paragraphs": ["An investigation begins when a customer reports that a payment has not arrived, or when reconciliation shows a payment with no matching settlement, and the analyst must reconstruct the payment journey from the available evidence. The analyst starts with the internal payment record, checks the pacs.008 that was sent, looks for a pacs.002 acknowledgement, checks the nostro statement for the debit, and contacts the correspondent or beneficiary bank if the trail stops. For example, a USD 120,000 payment to a supplier in Hong Kong that has not arrived after three days may have been held by an intermediary bank for additional information. The investigation must find that hold, obtain the missing information, and get the payment released.", "Duplicate payments are investigated differently, because the question is not where the money went but how to get the second payment back. The analyst must first prove that a duplicate exists, by showing two settlement debits for one customer instruction, with the same amount, currency, beneficiary, and value date. Once the duplicate is proven, the bank contacts the beneficiary bank, explains the error, and requests a return of the duplicate amount through a pacs.004 message. If the beneficiary has already spent the money, recovery becomes a commercial negotiation rather than a technical return, and the bank may need to involve its legal team. Prevention matters more than cure, which is why duplicate detection checks run before a payment is sent.", "A timeout happens when a system sends a payment and does not receive an acknowledgement within the expected time, so the sender does not know whether the payment succeeded. This is common when a clearing system is slow, when a network link fails, or when a correspondent bank's system is temporarily unavailable. The worst response to a timeout is to resend the payment immediately, because the first attempt may have succeeded and the resend would create a duplicate. The correct response is to check the payment status through the clearing system or the correspondent bank, confirm whether the original payment was processed, and only then decide whether to resend. That status check is a formal step, not an informal guess.", "A pending payment is one that has been accepted for processing but has not yet reached a final state of settled or rejected, and it can remain pending for hours or even days. A payment may be pending because it is waiting for a future value date, because it is held for sanctions screening, because it is waiting for funds in the customer account, or because the beneficiary bank has asked for more information. The analyst must know why each pending payment is pending, how long it has been pending, and what action will move it forward. A pending list that is not reviewed daily will grow silently, and customers will discover the delay before the bank does.", "The closing discipline for all four types is the same. Every investigation must end with a written conclusion, a customer notification, and a ledger entry that proves the outcome. An investigation that ends with a phone call and no record is not closed, because the next analyst who looks at the payment will have to start again. A duplicate that is recovered must show the return credit on the customer account. A timeout that is resolved must show whether the original payment succeeded or was safely resent. A pending payment that settles must show the settlement reference. That standard turns investigations from open-ended worry into accountable work."], "accessibility": "Exception investigation workflow showing Investigations, Duplicate Payments, Timeouts and Pending Payments.", "visual_type": "exception_workflow", "visual_choice_reason": "exceptions chapter", "beats": [{"t0": 0.0, "t1": 38.5, "title": "Investigation begins with customer report", "note": "An investigation begins when a customer reports that a payment has not arrived", "highlight_nodes": ["n0"], "highlight_conns": [], "highlight_fields": []}, {"t0": 38.5, "t1": 83.6, "title": "Investigation must find that hold", "note": "The investigation must find that hold, obtain the missing information, and get the payment released.", "highlight_nodes": ["n1"], "highlight_conns": ["c0"], "highlight_fields": []}, {"t0": 83.6, "t1": 130.0, "title": "Timeout: no acknowledgement in expected time", "note": "Prevention matters more than cure, which is why duplicate detection checks run before a payment is sent.", "highlight_nodes": ["n2"], "highlight_conns": ["c1"], "highlight_fields": []}, {"t0": 130.0, "t1": 165.9, "title": "Status check", "note": "That status check is a formal step, not an informal guess.", "highlight_nodes": ["n3"], "highlight_conns": ["c2"], "highlight_fields": []}, {"t0": 165.9, "t1": 203.7, "title": "Pending list that", "note": "A pending list that is not reviewed daily will grow silently, and customers will discover the delay before the bank does.", "highlight_nodes": ["n4"], "highlight_conns": ["c3"], "highlight_fields": []}, {"t0": 203.7, "t1": 212.4, "title": "Pending payment that settles", "note": "A pending payment that settles must show the settlement reference.", "highlight_nodes": ["n5"], "highlight_conns": ["c4"], "highlight_fields": []}], "framework": {"objective": "By the end of this lesson, you will be able to explain investigations, duplicate payments, timeouts and pending payments. An investigation begins when a customer reports that a payment has not arrived, or when reconciliation shows a payment with no matching settlement, and the analyst must reconstruct the payment journey from the available.", "why_matters": "An investigation begins when a customer reports that a payment has not arrived, or when reconciliation shows a payment with no matching settlement, and the analyst must reconstruct the payment journey from the available evidence.", "technical_example": "The analyst starts with the internal payment record, checks the pacs.008 that was sent, looks for a pacs.002 acknowledgement, checks the nostro statement for the debit, and contacts the correspondent or beneficiary bank if the trail stops.", "failure_recovery": "The worst response to a timeout is to resend the payment immediately, because the first attempt may have succeeded and the resend would create a duplicate. The correct response is to check the payment status through the clearing system or the correspondent bank, confirm whether the original payment was processed, and only then decide whether to resend.", "exercise": {"task": "Handle the exception described in this lesson the way the lesson prescribes.", "info": "Use the exception type, the reason code and the recovery path in this lesson.", "action": "State what happened, what the correct action is, what must not be done, and what the post-incident review should capture.", "correct": "The correct action is the one the lesson prescribes for this exception type, with the right reason code and the right message. The payment must not be resent without checking whether it already settled, because that creates a duplicate.", "why": "An exception handled wrongly is worse than the exception itself. A duplicate payment is a loss, and an unlearned exception will happen again."}, "assessment": {"question": "A beneficiary bank returns a payment because the account is closed. The sending bank receives a pacs.004. What must the sending bank do next?", "options": ["Ignore the return because the payment already left", "Credit the funds back to the original sender account, reconcile the return against the original payment, and tell the sender why it came back", "Send the payment again to the same closed account", "Keep the returned funds in a suspense account forever"], "answer": 1, "explanation": "A pacs.004 return brings the funds back, and the sending bank must credit them to the original sender, match the return to the original payment in reconciliation, and explain the reason. Resending to a closed account would fail again, and leaving the funds in suspense hides them from the customer.", "why_wrong": ["This is not correct for this question. A pacs.004 return brings the funds back, and the sending bank must credit them to the original sender, match the return to the original payment in reconciliation, and explain the reason.", "", "This is not correct for this question. A pacs.004 return brings the funds back, and the sending bank must credit them to the original sender, match the return to the original payment in reconciliation, and explain the reason.", "This is not correct for this question. A pacs.004 return brings the funds back, and the sending bank must credit them to the original sender, match the return to the original payment in reconciliation, and explain the reason."], "source": "test:ts-d10-07"}, "takeaway": "That standard turns investigations from open-ended worry into accountable work.", "prereq": "ch41s3", "next": "ch41s5", "connection_note": "Builds on \"Payment Repair, Return, Recall and Cancellation\".", "tool": {"slug": "accounting", "label": "Accounting and Reconciliation Lab", "url": "../simulators/accounting.html", "scenario": "Reconcile the payment in this lesson against its statement and find the break."}, "simple": "In plain words: an investigation begins when a customer reports that a payment has not arrived, or when reconciliation shows a payment with no matching settlement, and the analyst must reconstruct the payment journey from the available. That is the whole idea in one sentence, and the rest of the lesson shows how it works in a real bank.", "summary": "An investigation begins when a customer reports that a payment has not arrived, or when reconciliation shows a payment with no matching settlement, and the analyst must reconstruct the payment journey from the available evidence. Key points: Investigation begins with customer report; Duplicate payments; Timeout: no acknowledgement in expected time; Pending payment; Closing discipline for all four types.", "example": "An investigation begins when a customer reports that a payment has not arrived, or when reconciliation shows a payment with no matching settlement, and the analyst must reconstruct the payment journey from the available evidence. For example, a USD 120,000 payment to a supplier in Hong Kong that has not arrived after three days may have been held by an intermediary bank for additional information."}}], "chapter_title": "Payment Exceptions and Investigations", "meta_line": "Payment Exceptions and Investigations, Lesson 4 of 7, Narration 3:32, D11 Operations, exceptions and reconciliation", "next_id": "ch41s5", "next_title": "Unknown Payment Status, Failed Beneficiary Credit and Clearing System Outage"}]);</script>
+</div>
+<nav class="tool-rail" aria-label="Lesson tools">
+<button type="button" class="rail-tool" onclick="pfOpenTranscript('studio-ch41s4')" title="Open transcript"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M7 3h7l4 4v14H7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M14 3v4h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 12h5M10 15.5h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span>Transcript</span></button>
+<button type="button" class="rail-tool" onclick="pfToggleNote('studio-ch41s4')" title="Write a note on this lesson"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L8 19l-4 1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>Notes</span></button>
+<button type="button" class="rail-tool" onclick="pfToggleFiles('studio-ch41s4')" title="Download lesson files"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>Files</span></button>
+</nav>
+<div class="fw-files-panel" id="pf-files-studio-ch41s4" style="display:none"><b>Lesson files</b><p><a href="../audio/ch41s4.mp3" download>Download narration (MP3)</a></p><p><a href="#" onclick="pfDownloadTranscript('studio-ch41s4');return false">Download transcript (.txt)</a></p></div>
+</div>
+</div>
+</main>
+<footer><p>Payments Training Hub. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="../index.html">Home</a> &middot; <a href="../courses.html">Courses</a> &middot; <a href="../practice.html">Practice</a> &middot; <a href="../simulators.html">Simulators</a> &middot; <a href="../labs.html">Labs</a> &middot; <a href="../explorer.html">Explorer</a> &middot; <a href="../tests.html">Tests</a> &middot; <a href="../diagnostic.html">Diagnostic</a> &middot; <a href="../faq.html">Interview Ready Questions</a> &middot; <a href="../interview-prep.html">Interview Prep</a></p><p><a href="../about.html">About</a> &middot; <a href="../privacy.html">Privacy</a> &middot; <a href="../terms.html">Terms</a> &middot; <a href="../contact.html">Contact</a> &middot; <a href="../editorial-standards.html">Editorial Standards</a> &middot; <a href="../sources.html">Sources</a></p></footer>
+<script defer src="../assets/site.js"></script>
+<script defer src="../assets/bundles.js"></script>
+<script defer src="../assets/auth.js"></script>
+<script defer src="../assets/studio.js"></script>
+<script defer src="../assets/insight-components.js"></script>
+<script defer src="../assets/nav.js"></script>
+<script defer src="../assets/pf-enhance.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+if(window.PFInsight){PFInsight.init();}
+});
+</script>
+</body>
+</html>
