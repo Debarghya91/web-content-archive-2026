@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>Exercise: Design the Integration for a New Payment Rail (choose patterns | Payments Training Hub</title>
+<meta name="description" content="Start with the scenario and the constraints, because they decide which patterns are possible. Your bank, a mid-sized bank in Spain, is joining a new...">
+<link rel="canonical" href="https://www.paymentstraininghub.in/lessons/ch47s7.html">
+<meta property="og:url" content="https://www.paymentstraininghub.in/lessons/ch47s7.html">
+<meta property="og:title" content="Exercise: Design the Integration for a New Payment Rail (choose patterns | Payments Training Hub">
+<meta property="og:description" content="Start with the scenario and the constraints, because they decide which patterns are possible. Your bank, a mid-sized bank in Spain, is joining a new...">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.in/assets/hero/hero-poster.jpg">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.paymentstraininghub.in/index.html"}, {"@type": "ListItem", "position": 2, "name": "Banking Integration Patterns", "item": "https://www.paymentstraininghub.in/chapters/ch47-banking-integration-patterns.html"}, {"@type": "ListItem", "position": 3, "name": "Exercise: Design the Integration for a New Payment Rail (choose patterns, draw the integration map, define contracts and failure handling)", "item": "https://www.paymentstraininghub.in/lessons/ch47s7.html"}]}</script>
+<link rel="stylesheet" href="../assets/studio.css">
+<link rel="stylesheet" href="../assets/pf-theme.css">
+<link rel="stylesheet" href="../assets/insight-components.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="../index.html" class="brand">Payments <span>Training Hub</span></a><nav class="topnav"><a href="../index.html">Home</a> <a href="../courses.html">Courses</a> <a href="../practice.html">Practice</a> <a href="../simulators.html">Simulators</a> <a href="../labs.html">Labs</a> <a href="../explorer.html">Explorer</a> <a href="../tests.html">Tests</a></nav><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox" style="display:none"><span id="authState">Not signed in</span> <span id="authForm" style="display:none"><input id="authEmail" type="email" placeholder="Email for OTP" aria-label="Email for sign-in"> <button class="mute-btn" onclick="paAuthSendOtp()">Send code</button> <input id="authCode" type="text" placeholder="6-digit code" aria-label="One-time code" style="display:none"> <button class="mute-btn" id="authVerifyBtn" onclick="paAuthVerifyOtp()" style="display:none">Verify</button> <button class="mute-btn" onclick="paAuthGoogle()">Sign in with Google</button> </span><button class="mute-btn" id="authSignOutBtn" onclick="paAuthSignOut()" style="display:none">Sign out</button></span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<div class="lesson-page">
+<div class="lesson-shell">
+<aside class="course-rail">
+<div class="rail-head">
+<h2>Banking Integration Patterns</h2>
+<a class="rail-close" href="../chapters/ch47-banking-integration-patterns.html" aria-label="Close and go to chapter" title="Back to chapter">&times;</a>
+</div>
+<div class="goal-card">
+<div class="goal-head"><b>Today's goal &middot; <span id="side-progress-text">0 of 9 items</span></b><span class="goal-flag"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 21V4m0 1h11l-2.5 3.5L17 12H6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="goal-chev">&#94;</span></div>
+<p class="goal-body" id="side-goal-body">Complete 3 items today to stay at a good pace!</p>
+</div>
+<ul class="lesson-list"><li class="" data-lesson="ch47s1"><a href="ch47s1.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">The Integration Landscape Inside a Bank</span><span class="m">Video &middot; 3 min</span></span></a></li>
+<li class="" data-lesson="ch47s2"><a href="ch47s2.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Core Banking Integration Patterns</span><span class="m">Video &middot; 3 min</span></span></a></li>
+<li class="" data-lesson="ch47s3"><a href="ch47s3.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Ledger, General Ledger and Accounting Integration</span><span class="m">Video &middot; 3 min</span></span></a></li>
+<li class="" data-lesson="ch47s4"><a href="ch47s4.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Gateway, Aggregator and Third-Party Service Integration</span><span class="m">Video &middot; 3 min</span></span></a></li>
+<li class="" data-lesson="ch47s5"><a href="ch47s5.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">APIs, Messaging Queues, Files and Event Streaming</span><span class="m">Video &middot; 3 min</span></span></a></li>
+<li class="" data-lesson="ch47s6"><a href="ch47s6.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Partner Onboarding, Certification and Change Management</span><span class="m">Video &middot; 3 min</span></span></a></li>
+<li class="current" data-lesson="ch47s7"><a href="ch47s7.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Exercise: Design the Integration for a New Payment Rail (choose patterns, draw the integration map, define contracts and failure handling)</span><span class="m">Video &middot; 4 min</span></span></a></li>
+<li class="" data-lesson="ch47s8"><a href="ch47s8.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">OpenAPI contracts: designing a payment API contract</span><span class="m">Video &middot; 4 min</span></span></a></li>
+<li class="" data-lesson="ch47s9"><a href="ch47s9.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Event-driven payments and Kafka: topics, partitions, ordering and replay</span><span class="m">Video &middot; 3 min</span></span></a></li></ul>
+</aside>
+<div class="lesson-main">
+<div class="studio" id="studio-studio-ch47s7">
+<div class="player">
+<div class="studio-canvas" id="studio-canvas-studio-ch47s7">
+<div class="ch-sec studio-scene-vis active" id="studio-vis-studio-ch47s7-0"><div class="beat-frames">
+<div class="beat-frame active" data-frame="0">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Start</tspan> <tspan fill="#FFFFFF">with</tspan> <tspan fill="#FFFFFF">the</tspan> <tspan fill="#FFFFFF">scenario</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">STARTED</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Start with the scenario</tspan><tspan fill="#CBD5E1"> - constraints, because they decide which</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="0.55">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Draw the integration map next</tspan><tspan fill="#CBD5E1"> - showing every system</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="0.55">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Choose the pattern</tspan><tspan fill="#CBD5E1"> - write down why you chose it.</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Contract</tspan><tspan fill="#CBD5E1"> - Define the contract for each interface</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Contract</tspan><tspan fill="#CBD5E1"> - leaves the error codes undefined will cause</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Certification plan</tspan><tspan fill="#CBD5E1"> - Add a certification plan with at least ten</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="128" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Start with the scenario and the constraints, because they decide which patterns are possible.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 1 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 701" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="701" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Start</tspan> <tspan fill="#FFFFFF">with</tspan> <tspan fill="#FFFFFF">the</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">scenario</tspan></text>
+<rect x="24" y="86" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="104" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">STARTED</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="120" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="139" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Start with the</text>
+<text x="180" y="157" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">scenario</text>
+<text x="180" y="175" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">constraints, because they decide which</text>
+<text x="180" y="193" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="0.55">
+<rect x="24" y="212" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="231" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Draw the integration</text>
+<text x="180" y="249" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">map next</text>
+<text x="180" y="267" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">showing every system</text>
+<text x="180" y="285" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="0.55">
+<rect x="24" y="304" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="323" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Choose the pattern</text>
+<text x="180" y="341" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">write down why you chose it.</text>
+<text x="180" y="359" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="24" y="376" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="395" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Contract</text>
+<text x="180" y="413" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Define the contract for each interface</text>
+<text x="180" y="431" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="24" y="448" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="467" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Contract</text>
+<text x="180" y="485" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">leaves the error codes undefined will cause</text>
+<text x="180" y="503" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="520" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="539" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Certification plan</text>
+<text x="180" y="557" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Add a certification plan with at least ten</text>
+<text x="180" y="575" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="600" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Start with the scenario and the</text>
+<text x="180" y="619" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">constraints, because they decide which</text>
+<text x="180" y="638" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">patterns are possible.</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="1">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Draw</tspan> <tspan fill="#FFFFFF">the</tspan> <tspan fill="#FFFFFF">integration</tspan> <tspan fill="#FFFFFF">map</tspan> <tspan fill="#FFFFFF">next</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Start with the scenario</tspan><tspan fill="#CBD5E1"> - constraints, because they decide which</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Draw the integration map next</tspan><tspan fill="#CBD5E1"> - showing every system</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="0.55">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Choose the pattern</tspan><tspan fill="#CBD5E1"> - write down why you chose it.</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Contract</tspan><tspan fill="#CBD5E1"> - Define the contract for each interface</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Contract</tspan><tspan fill="#CBD5E1"> - leaves the error codes undefined will cause</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Certification plan</tspan><tspan fill="#CBD5E1"> - Add a certification plan with at least ten</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="257" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Draw the integration map next, showing every system, every connection, and the direction of</text>
+<text x="450" y="476" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">each flow.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 2 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 729" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="729" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Draw</tspan> <tspan fill="#FFFFFF">the</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">integration</tspan> <tspan fill="#FFFFFF">map</tspan></text>
+<text x="24" y="96" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">next</tspan></text>
+<rect x="24" y="114" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="132" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="148" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="167" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Start with the</text>
+<text x="180" y="185" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">scenario</text>
+<text x="180" y="203" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">constraints, because they decide which</text>
+<text x="180" y="221" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="240" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="259" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Draw the integration</text>
+<text x="180" y="277" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">map next</text>
+<text x="180" y="295" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">showing every system</text>
+<text x="180" y="313" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="0.55">
+<rect x="24" y="332" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="351" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Choose the pattern</text>
+<text x="180" y="369" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">write down why you chose it.</text>
+<text x="180" y="387" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="24" y="404" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="423" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Contract</text>
+<text x="180" y="441" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Define the contract for each interface</text>
+<text x="180" y="459" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="24" y="476" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="495" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Contract</text>
+<text x="180" y="513" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">leaves the error codes undefined will cause</text>
+<text x="180" y="531" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="548" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="567" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Certification plan</text>
+<text x="180" y="585" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Add a certification plan with at least ten</text>
+<text x="180" y="603" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="628" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Draw the integration map next, showing</text>
+<text x="180" y="647" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">every system, every connection, and</text>
+<text x="180" y="666" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">the direction of each flow.</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="2">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Choose</tspan> <tspan fill="#FFFFFF">the</tspan> <tspan fill="#FFFFFF">pattern</tspan> <tspan fill="#FFFFFF">for</tspan> <tspan fill="#FFFFFF">each</tspan></text>
+<text x="48" y="126" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">connection</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Start with the scenario</tspan><tspan fill="#CBD5E1"> - constraints, because they decide which</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Draw the integration map next</tspan><tspan fill="#CBD5E1"> - showing every system</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Choose the pattern</tspan><tspan fill="#CBD5E1"> - write down why you chose it.</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Contract</tspan><tspan fill="#CBD5E1"> - Define the contract for each interface</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Contract</tspan><tspan fill="#CBD5E1"> - leaves the error codes undefined will cause</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Certification plan</tspan><tspan fill="#CBD5E1"> - Add a certification plan with at least ten</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="386" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Choose the pattern for each connection and write down why you chose it.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 3 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 710" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="710" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Choose</tspan> <tspan fill="#FFFFFF">the</tspan> <tspan fill="#FFFFFF">pattern</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">for</tspan> <tspan fill="#FFFFFF">each</tspan></text>
+<text x="24" y="96" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">connection</tspan></text>
+<rect x="24" y="114" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="132" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="148" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="167" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Start with the</text>
+<text x="180" y="185" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">scenario</text>
+<text x="180" y="203" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">constraints, because they decide which</text>
+<text x="180" y="221" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="240" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="259" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Draw the integration</text>
+<text x="180" y="277" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">map next</text>
+<text x="180" y="295" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">showing every system</text>
+<text x="180" y="313" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="1">
+<rect x="24" y="332" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="351" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Choose the pattern</text>
+<text x="180" y="369" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">write down why you chose it.</text>
+<text x="180" y="387" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="24" y="404" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="423" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Contract</text>
+<text x="180" y="441" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Define the contract for each interface</text>
+<text x="180" y="459" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="24" y="476" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="495" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Contract</text>
+<text x="180" y="513" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">leaves the error codes undefined will cause</text>
+<text x="180" y="531" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="548" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="567" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Certification plan</text>
+<text x="180" y="585" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Add a certification plan with at least ten</text>
+<text x="180" y="603" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="628" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Choose the pattern for each connection</text>
+<text x="180" y="647" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">and write down why you chose it.</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="3">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Contract</tspan> <tspan fill="#FFFFFF">for</tspan> <tspan fill="#FFFFFF">each</tspan> <tspan fill="#FFFFFF">interface</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Start with the scenario</tspan><tspan fill="#CBD5E1"> - constraints, because they decide which</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Draw the integration map next</tspan><tspan fill="#CBD5E1"> - showing every system</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Choose the pattern</tspan><tspan fill="#CBD5E1"> - write down why you chose it.</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Contract</tspan><tspan fill="#CBD5E1"> - Define the contract for each interface</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Contract</tspan><tspan fill="#CBD5E1"> - leaves the error codes undefined will cause</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Certification plan</tspan><tspan fill="#CBD5E1"> - Add a certification plan with at least ten</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="514" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Define the contract for each interface, with enough detail for a developer to build it without</text>
+<text x="450" y="476" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">guessing.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 4 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 701" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="701" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Contract</tspan> <tspan fill="#FFFFFF">for</tspan> <tspan fill="#FFFFFF">each</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">interface</tspan></text>
+<rect x="24" y="86" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="104" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="120" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="139" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Start with the</text>
+<text x="180" y="157" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">scenario</text>
+<text x="180" y="175" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">constraints, because they decide which</text>
+<text x="180" y="193" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="212" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="231" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Draw the integration</text>
+<text x="180" y="249" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">map next</text>
+<text x="180" y="267" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">showing every system</text>
+<text x="180" y="285" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="1">
+<rect x="24" y="304" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="323" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Choose the pattern</text>
+<text x="180" y="341" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">write down why you chose it.</text>
+<text x="180" y="359" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="1">
+<rect x="24" y="376" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="395" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Contract</text>
+<text x="180" y="413" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Define the contract for each interface</text>
+<text x="180" y="431" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="24" y="448" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="467" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Contract</text>
+<text x="180" y="485" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">leaves the error codes undefined will cause</text>
+<text x="180" y="503" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="520" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="539" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Certification plan</text>
+<text x="180" y="557" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Add a certification plan with at least ten</text>
+<text x="180" y="575" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="600" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Define the contract for each interface,</text>
+<text x="180" y="619" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">with enough detail for a developer to</text>
+<text x="180" y="638" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">build it without guessing.</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="4">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Contract:</tspan> <tspan fill="#FFFFFF">too</tspan> <tspan fill="#FFFFFF">late</tspan> <tspan fill="#FFFFFF">to</tspan> <tspan fill="#FFFFFF">fix</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Start with the scenario</tspan><tspan fill="#CBD5E1"> - constraints, because they decide which</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Draw the integration map next</tspan><tspan fill="#CBD5E1"> - showing every system</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Choose the pattern</tspan><tspan fill="#CBD5E1"> - write down why you chose it.</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Contract</tspan><tspan fill="#CBD5E1"> - Define the contract for each interface</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n4" data-beat="4">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Contract</tspan><tspan fill="#CBD5E1"> - leaves the error codes undefined will cause</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Certification plan</tspan><tspan fill="#CBD5E1"> - Add a certification plan with at least ten</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="643" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">A contract that leaves the error codes undefined will cause arguments during testing, when it is</text>
+<text x="450" y="476" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">too late to fix them cheaply.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 5 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 720" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="720" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Contract:</tspan> <tspan fill="#FFFFFF">too</tspan> <tspan fill="#FFFFFF">late</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">to</tspan> <tspan fill="#FFFFFF">fix</tspan></text>
+<rect x="24" y="86" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="104" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="120" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="139" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Start with the</text>
+<text x="180" y="157" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">scenario</text>
+<text x="180" y="175" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">constraints, because they decide which</text>
+<text x="180" y="193" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="212" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="231" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Draw the integration</text>
+<text x="180" y="249" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">map next</text>
+<text x="180" y="267" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">showing every system</text>
+<text x="180" y="285" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="1">
+<rect x="24" y="304" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="323" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Choose the pattern</text>
+<text x="180" y="341" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">write down why you chose it.</text>
+<text x="180" y="359" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="1">
+<rect x="24" y="376" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="395" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Contract</text>
+<text x="180" y="413" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Define the contract for each interface</text>
+<text x="180" y="431" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="1">
+<rect x="24" y="448" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="467" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Contract</text>
+<text x="180" y="485" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">leaves the error codes undefined will cause</text>
+<text x="180" y="503" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="520" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="539" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Certification plan</text>
+<text x="180" y="557" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Add a certification plan with at least ten</text>
+<text x="180" y="575" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="600" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">A contract that leaves the error codes</text>
+<text x="180" y="619" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">undefined will cause arguments during</text>
+<text x="180" y="638" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">testing, when it is too late to fix them</text>
+<text x="180" y="657" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">cheaply.</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="5">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Certification</tspan> <tspan fill="#FFFFFF">plan</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">COMPLETE</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Start with the scenario</tspan><tspan fill="#CBD5E1"> - constraints, because they decide which</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Draw the integration map next</tspan><tspan fill="#CBD5E1"> - showing every system</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Choose the pattern</tspan><tspan fill="#CBD5E1"> - write down why you chose it.</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Contract</tspan><tspan fill="#CBD5E1"> - Define the contract for each interface</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n4" data-beat="4">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Contract</tspan><tspan fill="#CBD5E1"> - leaves the error codes undefined will cause</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n5" data-beat="5">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Certification plan</tspan><tspan fill="#CBD5E1"> - Add a certification plan with at least ten</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Add a certification plan with at least ten test cases, a limited go-live with ten payments of EUR</text>
+<text x="450" y="476" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">50, and a rollback trigger.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 6 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#45A4FF"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 692" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="692" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Certification</tspan> <tspan fill="#FFFFFF">plan</tspan></text>
+<rect x="24" y="58" width="312" height="26" rx="8" fill="#0C1626" stroke="#2DD4BF" stroke-width="1.5"/>
+<text x="180" y="76" text-anchor="middle" font-size="12" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">COMPLETE</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="92" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="111" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Start with the</text>
+<text x="180" y="129" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">scenario</text>
+<text x="180" y="147" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">constraints, because they decide which</text>
+<text x="180" y="165" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="184" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="203" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Draw the integration</text>
+<text x="180" y="221" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">map next</text>
+<text x="180" y="239" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">showing every system</text>
+<text x="180" y="257" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="1">
+<rect x="24" y="276" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="295" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Choose the pattern</text>
+<text x="180" y="313" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">write down why you chose it.</text>
+<text x="180" y="331" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="1">
+<rect x="24" y="348" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="367" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Contract</text>
+<text x="180" y="385" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Define the contract for each interface</text>
+<text x="180" y="403" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="1">
+<rect x="24" y="420" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="439" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Contract</text>
+<text x="180" y="457" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">leaves the error codes undefined will cause</text>
+<text x="180" y="475" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="1">
+<rect x="24" y="492" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="511" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Certification plan</text>
+<text x="180" y="529" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Add a certification plan with at least ten</text>
+<text x="180" y="547" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<text x="180" y="572" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Add a certification plan with at least ten</text>
+<text x="180" y="591" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">test cases, a limited go-live with ten</text>
+<text x="180" y="610" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">payments of EUR 50, and a rollback</text>
+<text x="180" y="629" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">trigger.</text>
+</svg>
+</div>
+</div>
+<p class="xml-caption">Flow of the explanation in this lesson.</p></div>
+<div class="playerbar">
+<div class="studio-progress"><div class="studio-markers" id="studio-markers-studio-ch47s7"></div><input type="range" id="studio-slider-studio-ch47s7" min="0" max="1000" value="0" aria-label="Lesson timeline"></div>
+<div class="ctrl-row">
+<button class="ctrl-btn" id="studio-play-studio-ch47s7" onclick="studioTogglePlay('studio-ch47s7')" aria-label="Play lesson" title="Play lesson"><span class="ctrl-ic-play"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></span><span class="ctrl-ic-pause" style="display:none"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><rect x="6" y="5" width="4" height="14" fill="currentColor"/><rect x="14" y="5" width="4" height="14" fill="currentColor"/></svg></span></button>
+<button class="ctrl-btn studio-mute-btn" id="studio-mute-studio-ch47s7" onclick="studioToggleMute('studio-ch47s7')" aria-label="Mute narration" title="Mute / unmute narration"><svg class="studio-mute-icon" viewBox="0 0 24 24" width="28" height="28" fill="currentColor" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3z"/><path class="studio-mute-waves" d="M16 8.5a5 5 0 0 1 0 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><path class="studio-mute-waves" d="M18.5 6a9 9 0 0 1 0 12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><path class="studio-mute-x" d="M16 9.5l5 5M21 9.5l-5 5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" style="display:none"/></svg></button>
+<button class="ctrl-btn" onclick="studioSkip('studio-ch47s7', -10)" aria-label="Back 10 seconds" title="Back 10 seconds"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 5a7 7 0 1 1-6.32 4.06" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M5.5 3.5v5h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><text x="12" y="16.5" font-size="8" fill="currentColor" text-anchor="middle" font-weight="700">10</text></svg></button>
+<span class="studio-time ctrl-time" id="studio-time-studio-ch47s7">0:00 / 3:35</span>
+<button class="ctrl-btn" onclick="studioSkip('studio-ch47s7', 10)" aria-label="Forward 10 seconds" title="Forward 10 seconds"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 5a7 7 0 1 0 6.32 4.06" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M18.5 3.5v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><text x="12" y="16.5" font-size="8" fill="currentColor" text-anchor="middle" font-weight="700">10</text></svg></button>
+<span class="playerbar-spacer"></span>
+<span class="player-stage" id="studio-tag-studio-ch47s7">Step 1 of 6</span>
+<button class="ctrl-btn ctrl-step" id="studio-prevscene-studio-ch47s7" onclick="studioPrevScene('studio-ch47s7')" title="Previous step" aria-label="Previous step">&lsaquo;</button>
+<button class="ctrl-btn ctrl-step" id="studio-nextscene-studio-ch47s7" onclick="studioNextScene('studio-ch47s7')" title="Next step" aria-label="Next step">&rsaquo;</button>
+<button class="ctrl-btn ctrl-speed" id="studio-speedbtn-studio-ch47s7" onclick="studioCycleSpeed('studio-ch47s7')" title="Playback speed" aria-label="Playback speed">1x</button>
+<span class="ctrl-settings-wrap"><button class="ctrl-btn" onclick="studioToggleSettings('studio-ch47s7', event)" aria-label="Player settings" title="Settings"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5 5l2.1 2.1M16.9 16.9L19 19M19 5l-2.1 2.1M7.1 16.9L5 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button><span class="ctrl-popover" id="studio-settings-studio-ch47s7" style="display:none" onclick="event.stopPropagation()"><label class="ctrl-pop-row">Volume <input type="range" min="0" max="1" step="0.1" value="1" oninput="studioSetVolume('studio-ch47s7', this.value)" style="width:110px;accent-color:#3587FC"></label><button class="studio-btn" id="studio-captions-studio-ch47s7" onclick="studioToggleCaptions('studio-ch47s7')">Captions: On</button><button class="studio-btn" onclick="studioReplayScene('studio-ch47s7')">Replay scene</button></span></span>
+<button class="ctrl-btn" onclick="studioFullscreen('studio-ch47s7')" aria-label="Fullscreen" title="Fullscreen"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+</div>
+</div>
+</div>
+<p class="studio-caption" id="studio-caption-studio-ch47s7"></p>
+<p class="studio-loading" id="studio-loading-studio-ch47s7" style="display:none">Loading narration...</p>
+<p class="studio-error" id="studio-error-studio-ch47s7" role="alert" style="display:none"></p>
+<audio id="studio-audio-studio-ch47s7" preload="auto" src="../audio/ch47s7.mp3"></audio>
+</div>
+<div class="lesson-title-row">
+<h1>Exercise: Design the Integration for a New Payment Rail (choose patterns, draw the integration map, define contracts and failure handling)</h1>
+<button class="save-note" type="button" onclick="pfToggleNote('studio-ch47s7')" title="Save a note on this lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L8 19l-4 1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg> Save note</button>
+</div>
+<p class="lesson-meta-line">Banking Integration Patterns, Lesson 7 of 9, Narration 3:35, D10 APIs and integration</p>
+<p class="lesson-note-saved" id="studio-note-saved-studio-ch47s7" style="display:none">Note saved.</p>
+<div class="note-editor" id="studio-note-editor-studio-ch47s7" style="display:none"><textarea id="studio-note-text-studio-ch47s7" rows="3" placeholder="Write a note on this lesson..." aria-label="Lesson note"></textarea><div class="note-editor-row"><button class="studio-btn primary" onclick="pfSaveNote('studio-ch47s7')">Save note</button> <button class="studio-btn" onclick="pfToggleNote('studio-ch47s7')">Cancel</button></div></div>
+<div class="dive-deeper">
+<div class="dive-head"><button type="button" class="dive-toggle" onclick="pfToggleDive(this)" aria-expanded="true"><span class="dive-spark"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 2l2.2 6.8L21 11l-6.8 2.2L12 20l-2.2-6.8L3 11l6.8-2.2z" fill="currentColor"/></svg></span><span class="dive-title">Dive deeper on this topic</span><span class="dive-chev"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 14l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button></div>
+<div class="dive-btns"><button type="button" class="dive-btn" data-kind="practice" onclick="pfDive('studio-ch47s7', 'practice')">Give me practice questions</button><button type="button" class="dive-btn" data-kind="simple" onclick="pfDive('studio-ch47s7', 'simple')">Explain this topic in simple terms</button><button type="button" class="dive-btn" data-kind="summary" onclick="pfDive('studio-ch47s7', 'summary')">Give me a summary</button><button type="button" class="dive-btn" data-kind="example" onclick="pfDive('studio-ch47s7', 'example')">Give me real-life examples</button></div>
+<div class="dive-panel" id="dive-panel-studio-ch47s7"><div class="dive-panel-body"></div></div>
+<script type="application/json" id="pf-dive-data-studio-ch47s7">{"simple": "In plain words: start with the scenario and the constraints, because they decide which patterns are possible. That is the whole idea in one sentence, and the rest of the lesson shows how it works in a real bank.", "summary": "Start with the scenario and the constraints, because they decide which patterns are possible. Key points: Start with the scenario; Draw the integration map next; Choose the pattern for each connection; Contract for each interface; Contract: too late to fix; Certification plan.", "example": "The bank expects 200,000 payments a day, with an average value of EUR 180, and a peak of 40 payments per second at lunchtime. A good map fits on one page, and a colleague who has never seen the project should be able to trace a EUR 500 payment from start to finish without asking a question."}</script>
+</div>
+<div class="lesson-feedback">
+<div class="fb-icons"><button type="button" class="fb-btn" data-kind="like" onclick="pfFeedback(this,'like')" aria-label="Like this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M7 21H4a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1h3v11zm0 0h9.6a2 2 0 0 0 1.9-1.4l1.6-5A2 2 0 0 0 18.2 12H15V6.5A2.5 2.5 0 0 0 12.5 4L11 7.5 8.6 10H7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button><button type="button" class="fb-btn" data-kind="dislike" onclick="pfFeedback(this,'dislike')" aria-label="Dislike this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M17 3h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1h-3V3zm0 0H7.4a2 2 0 0 0-1.9 1.4l-1.6 5A2 2 0 0 0 5.8 12H9v5.5A2.5 2.5 0 0 0 11.5 20L13 16.5l2.4-2.5H17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button><button type="button" class="fb-btn" data-kind="flag" onclick="pfFeedback(this,'flag')" aria-label="Flag this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M6 21V4m0 1h11l-2.5 3.5L17 12H6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+<button type="button" class="go-next" onclick="goLesson('ch47s8')" title="Next: OpenAPI contracts: designing a payment API contract">Go to next item &rarr;</button>
+</div>
+<div class="chips"><span class="chip">Suspense account</span><span class="chip">Reconciliation</span><span class="chip">Payment hub</span></div>
+<div class="card learn-card">
+<h2>What you will learn</h2>
+<p class="transcript"><b>Your objective.</b> By the end of this lesson, you will be able to explain exercise: design the integration for a new payment rail (choose patterns, draw the integration map, define contracts and failure handling). Start with the scenario and the constraints, because they decide which patterns are possible.</p>
+<p class="transcript"><b>Why it matters.</b> This matters because APIs and integrations are how systems talk to each other. A badly specified API is a failed payment, a duplicate, or a security hole.</p>
+<p class="transcript">Chapter objective: Learner explains banking integration patterns, including file transfer, messaging, APIs, and event streaming, and selects the right pattern for a given payment integration need. Learner demonstrates this skill using realistic banking examples, explaining each step clearly and using correct terminology throughout.</p>
+<h3>Key learning points</h3>
+<ul id="studio-points-studio-ch47s7">
+<li>Start with the scenario</li>
+<li>Draw the integration map next</li>
+<li>Choose the pattern for each connection</li>
+<li>Contract for each interface</li>
+<li>Contract: too late to fix</li>
+<li>Certification plan</li>
+</ul>
+<h3>Key terms</h3>
+<div id="studio-terms-studio-ch47s7">
+<p class="keyterm"><b>Suspense account:</b> A temporary account used to hold funds or entries that cannot yet be posted to their final account. Banks use suspense accounts for unidentified receipts, pending investigations and items awaiting...</p>
+<p class="keyterm"><b>Reconciliation:</b> The process of comparing records from two sources, such as a bank statement and an internal ledger, to confirm they agree.</p>
+<p class="keyterm"><b>Payment hub:</b> A central system in a bank that receives payment instructions from all channels, validates them, applies screening and routing rules, and sends them to the correct clearing system or correspondent.</p>
+</div>
+<p class="studio-note">Banking architecture diagram showing Exercise: Design the Integration for a New Payment Rail (choose patterns, draw the integration map, define contracts and failure handling).</p>
+</div>
+<section class="ic-lesson-section" id="pf-insights-studio-ch47s7">
+<h2>Insights and practice scenarios</h2>
+<p class="studio-note">Worked insights and practice scenarios for this lesson. Each one is a reusable PaymentForge case, so the same case may appear in more than one lesson.</p>
+<div data-ic-type="level" data-record-id="INS-025"><script type="application/json">{"level": 3, "meta": {"domain": "APIs & Integration", "topic": "Gathering requirements for a third-party payment gateway", "depth": 3, "difficulty": "advanced", "insightId": "INS-025"}, "evidence": "public-post", "recordId": "INS-025", "problem": "Northgate Retail sells online and in store, and wants to add a third-party payment gateway so customers can pay by card and by instant payment at checkout. The product team has a short list of gateway providers, but the requirements are still a set of general wishes: fast, secure, easy to integrate. Nobody has yet defined which payment methods are in scope, what the API must guarantee, how failures and refunds work, or how Northgate will reconcile gateway settlements against its own orders.\n\nWithout clear requirements, the team risks choosing a gateway that cannot support refunds, that reports success before the payment is complete, or that leaves finance unable to match settlements to orders. The business analyst must turn the general wishes into a testable set of requirements covering capabilities, contracts, error handling, security, retries and reconciliation before any provider is selected.", "solution": "Start from the customer and finance outcomes, not from the provider brochure. List the payment methods, currencies, channels and customer journeys in scope, and for each one define the expected flow: authorisation, capture, refund, partial refund, void, chargeback handling and settlement timing. State what each API response guarantees, distinguishing receipt, validation, acceptance and completion, so a success response is never misread.\n\nDefine the contract in detail: request and response fields, mandatory and optional data, validation rules, error codes and their meaning, timeout values, retry rules with idempotency keys, webhook events and their delivery guarantees, and the status enquiry API for uncertain payments. Require that a retry with the same idempotency key returns the original payment reference and never creates a second charge. Require that the gateway supports duplicate detection and that Northgate can query the status of any payment by its own order reference and the gateway reference.\n\nCover security and operations as requirements, not as assumptions: authentication, key management, data protection, PCI scope, logging and monitoring, service levels, support hours, incident handling and exit terms. Define reconciliation from the start: settlement files, their format and timing, the identifiers that link a settlement line to an order, fee treatment, and the process for unmatched items. Write acceptance criteria for every requirement so each one can be tested before go-live, and score providers against the same criteria.", "decision": {"question": "Northgate Retail must define requirements for a third-party payment gateway before selecting a provider. Which approach gives the team a sound basis for selection?", "context": "", "options": [{"label": "A", "detail": "Choose the cheapest provider and define requirements during integration.", "correct": false}, {"label": "B", "detail": "Require only that the gateway supports card payments, and add the rest later.", "correct": false}, {"label": "C", "detail": "Define payment methods, API contracts, error handling, security, idempotency, retries, webhooks, refunds and reconciliation requirements up front, with acceptance criteria for each.", "correct": true}, {"label": "D", "detail": "Ask the provider to define Northgate's requirements.", "correct": false}]}, "decisionRationale": "Option C is correct because selection and integration both depend on knowing what the gateway must do, what its responses guarantee, and how money and data are reconciled. Option A commits to a provider before knowing whether it fits. Option D hands Northgate's business needs to a seller. Option B leaves refunds, instant payments and reconciliation undefined until they become problems.", "flow": {"steps": [{"title": "Documents payment methods, journeys, refunds and settlement needs with product and finance", "actor": "Business analyst", "note": "Requirements workshop"}, {"title": "Defines the API contract, error codes, timeouts, retries and webhook events", "actor": "Business analyst", "note": "Requirements specification"}, {"title": "Defines security, service levels, support and reconciliation requirements", "actor": "Business analyst", "note": "Requirements specification"}, {"title": "Scores gateway providers against the same acceptance criteria", "actor": "Northgate Retail", "note": "Vendor evaluation"}, {"title": "Provides sandbox access, API documentation and settlement file samples", "actor": "Gateway provider", "note": "Provider sandbox"}, {"title": "Builds the integration and tests happy paths, failures, retries and refunds", "actor": "Engineering", "note": "Test environment"}, {"title": "Reconciles test settlements against orders using the agreed identifiers", "actor": "Finance", "note": "Reconciliation"}, {"title": "Signs off against acceptance criteria and plans the production rollout", "actor": "Northgate Retail", "note": "Go-live checklist"}]}, "happy": ["The requirements are agreed before selection, the chosen gateway meets them, and integration tests pass for payment, refund, retry and reconciliation. In production, each order maps to one gateway payment, settlements reconcile to orders automatically, and a retried checkout returns the original payment reference instead of a duplicate charge."], "negative": [{"title": "API success but order not created", "detail": "The gateway returns success but Northgate's order record is not created. Trace the correlation ID across gateway, service and order system. Confirm the payment state through the status enquiry API before retrying, and reconcile financial effects first."}, {"title": "Duplicate charge on retry", "detail": "A slow checkout response leads the customer to submit again and two charges are created. Require idempotency keys scoped to the order. A retry with the same key must return the original payment reference and never create a second charge."}, {"title": "Settlement cannot be matched", "detail": "Settlement lines arrive without the order reference finance needs. Require the settlement file to carry the order reference, gateway reference, gross amount, fees and value date. Unmatched lines go to a finance worklist, never to an automatic write-off."}, {"title": "Cut-off missed", "detail": "A payment is accepted too late for same-day settlement and the business expects the funds that day. Define cut-off times per rail and currency in the requirements, and show the expected settlement date to the business at the point of sale."}], "technical": ["Define a canonical order-to-payment model with stable identifiers: order ID, idempotency key, gateway payment reference, end-to-end ID where applicable, and settlement line reference. Persist the idempotency key, payload hash, original payment reference and outcome, and define retention. Require webhook signatures and replay protection, and make webhook consumers idempotent so a duplicate delivery cannot create a duplicate order. Specify field validation, decimal precision, currency handling and timezone rules. Require structured error codes with a mapping to customer-facing messages, and require a status enquiry API so any uncertain payment can be resolved without guessing. Log every gateway request and response with correlation IDs, masked card data, and retention rules."], "messages": [{"message": "pain.001", "title": "Payment initiation from Northgate to the gateway or bank, where applicable.", "fields": [{"tag": "Instruction ID", "name": "Instruction ID", "relevant": true}, {"tag": "End-to-end ID", "name": "End-to-end ID", "relevant": true}, {"tag": "Debtor and creditor details", "name": "Debtor and creditor details", "relevant": true}, {"tag": "Instructed amount and currency", "name": "Instructed amount and currency", "relevant": true}]}, {"message": "pacs.008", "title": "Customer payment message for the underlying transfer where the gateway routes through a bank rail.", "fields": [{"tag": "Instruction ID and end-to-end ID", "name": "Instruction ID and end-to-end ID", "relevant": true}, {"tag": "Debtor agent and creditor agent", "name": "Debtor agent and creditor agent", "relevant": true}, {"tag": "Settlement amount and currency", "name": "Settlement amount and currency", "relevant": true}]}, {"message": "pacs.002", "title": "Payment status report confirming acceptance or rejection.", "fields": [{"tag": "Original instruction ID", "name": "Original instruction ID", "relevant": true}, {"tag": "Status code", "name": "Status code", "relevant": true}, {"tag": "Reason code where rejected", "name": "Reason code where rejected", "relevant": true}]}, {"message": "Gateway webhook event", "title": "Asynchronous notification from the gateway about a payment state change.", "fields": [{"tag": "Event ID and event type", "name": "Event ID and event type", "relevant": true}, {"tag": "Gateway payment reference", "name": "Gateway payment reference", "relevant": true}, {"tag": "Order ID", "name": "Order ID", "relevant": true}, {"tag": "New payment status and timestamp", "name": "New payment status and timestamp", "relevant": true}, {"tag": "Signature for verification", "name": "Signature for verification", "relevant": true}]}], "accounting": ["Each order must map to exactly one payment, and each settlement line must map to an order. Finance reconciles gateway settlements daily against orders, gross amounts, fees and value dates, and unmatched or short-settled items go to a worklist with an owner and an ageing rule. Refunds are posted as separate controlled transactions linked to the original payment, never as an edit to the original sale. Duplicate charges are refunded once with a clear reason and audit trail, and the incident is recorded so the retry control can be fixed. Settlement timing, fees and cut-off times are agreed in the contract so cash forecasting is based on written terms, not on assumptions."], "gherkin": {"scenarios": [{"given": "an already accepted instruction", "when": "the identical request is retried with the same idempotency key", "then": "the platform returns the original payment reference and does not create a second debit."}, {"given": "the gateway accepted a request but the order record is absent", "when": "the team traces the payment", "then": "the same correlation ID is followed across each integration boundary and the failed transition is identified."}, {"given": "a settlement line arrives", "when": "reconciliation runs", "then": "the line is matched to its order by reference and amount, or it is placed on the finance worklist for investigation."}]}, "check": {"questions": [{"question": "Why must requirements be defined before a gateway provider is selected?", "options": ["Because selection depends on knowing which payment methods, guarantees, refunds and reconciliation the gateway must support.", "So the cheapest provider can be chosen.", "Because integration is faster without requirements.", "Because providers will not talk to Northgate otherwise."], "answer": 0, "explanation": "Without requirements, the team cannot tell whether a provider fits, and gaps only appear during integration or in production."}, {"question": "What must a retry with the same idempotency key do?", "options": ["Delete the first payment.", "Create a second payment.", "Ignore the retry.", "Return the original payment reference without creating a second charge."], "answer": 3, "explanation": "Idempotency exists so a technical retry is safe. A second charge from the same key is a defect."}, {"question": "What does a gateway success response guarantee?", "options": ["That the order was created.", "That the beneficiary was credited.", "That settlement has happened.", "Only what the contract says it guarantees, which may be receipt or acceptance rather than completion."], "answer": 1, "explanation": "The contract must state whether success means receipt, validation, acceptance or completion. Each means something different."}, {"question": "Which identifiers must a settlement file carry?", "options": ["The order reference, gateway reference, gross amount, fees and value date.", "Only the gateway name.", "Only the date.", "Only the total amount."], "answer": 0, "explanation": "Finance can only reconcile settlements to orders when the file carries the linking references and the amounts that explain the net settlement."}]}}</script></div>
+</section>
+<div class="fw-card" id="pf-exercise-studio-ch47s7">
+<p class="fw-label">Practise this lesson</p>
+<h2>Exercise</h2>
+<p><b>Write the request and the expected response for the API call described in this lesson.</b></p>
+<p>Use the API resources, operations and fields named in this lesson.</p>
+<ol class="fw-steps">
+<li><b>What to do.</b> Write the JSON request with the required fields, the success response, and one error response with its error code.</li>
+</ol>
+<p><button class="studio-btn" id="pf-ex-btn-studio-ch47s7" onclick="pfRevealExercise('studio-ch47s7')">Show the answer</button></p>
+<div class="fw-exercise-answer" id="pf-ex-answer-studio-ch47s7">
+<p><b>Correct result.</b> A correct request has all mandatory fields, a valid idempotency key, and the right resource and operation. The success response confirms acceptance, and the error response names the field or rule that failed.</p>
+<p><b>Why.</b> An API contract is a promise between two systems. If the request is wrong, the API must reject it cleanly, not fail silently.</p>
+</div>
+</div>
+<div class="fw-card" id="pf-quiz-studio-ch47s7" data-answer="1">
+<p class="fw-label">Check your understanding</p>
+<h2>Practice question</h2>
+<p><b>Which of the following best describes exercise: design the integration for a new payment rail (choose patterns, draw the integration map, define contracts and failure handling)?</b></p>
+<button type="button" class="quiz-opt" data-idx="0" onclick="pfCheckAnswer('studio-ch47s7', this)">A typical large bank runs several hundred applications, and a single payment can touch twenty of them before it completes</button>
+<button type="button" class="quiz-opt" data-idx="1" onclick="pfCheckAnswer('studio-ch47s7', this)">Start with the scenario and the constraints, because they decide which patterns are possible</button>
+<button type="button" class="quiz-opt" data-idx="2" onclick="pfCheckAnswer('studio-ch47s7', this)">The landscape falls into layers, and each layer has a different job</button>
+<button type="button" class="quiz-opt" data-idx="3" onclick="pfCheckAnswer('studio-ch47s7', this)">Legacy systems shape the landscape more than any new design, because they hold the accounts and the history</button>
+<div class="quiz-feedback" id="pf-quiz-fb-studio-ch47s7"></div>
+<script type="application/json" id="pf-quiz-data-studio-ch47s7">{"why_wrong": ["This describes a different concept from this chapter, not exercise: design the integration for a new payment rail (choose patterns, draw the integration map, define contracts and failure handling).", "", "This describes a different concept from this chapter, not exercise: design the integration for a new payment rail (choose patterns, draw the integration map, define contracts and failure handling).", "This describes a different concept from this chapter, not exercise: design the integration for a new payment rail (choose patterns, draw the integration map, define contracts and failure handling)."], "explanation": "Start with the scenario and the constraints, because they decide which patterns are possible. This is the core idea of the lesson."}</script>
+</div>
+<div class="fw-card">
+<p class="fw-label">Takeaway and next step</p>
+<h2>What to remember</h2>
+<p>A good map fits on one page, and a colleague who has never seen the project should be able to trace a EUR 500 payment from start to finish without asking a question.</p>
+<p>Call the API described in this lesson with a valid request, then with a missing field, and compare the responses.</p>
+<p><a class="fw-tool-link" href="../simulators/api-playground.html">Open the API Playground &rarr;</a></p>
+<p class="studio-note">Builds on "Partner Onboarding, Certification and Change Management".</p>
+</div>
+<section class="upnext" id="studio-upnext-studio-ch47s7" style="display:none" aria-label="Up next">
+<span class="tag">Up next</span>
+<h2>Up next: OpenAPI contracts: designing a payment API contract</h2>
+<p>Lesson 8 of 9, Banking Integration Patterns, Narration 3:34</p>
+<div class="row">
+<button class="studio-btn primary" onclick="goLessonAuto('ch47s8')">Next lesson &rarr;</button>
+<button class="studio-btn" onclick="goLesson('ch47s6')">&larr; Previous lesson</button>
+<button class="studio-btn" onclick="studioReplayLesson('studio-ch47s7')">Replay this lesson</button>
+</div>
+</section>
+<div class="lesson-nav">
+<button class="studio-btn" onclick="goLesson('ch47s6')" title="Previous lesson: Partner Onboarding, Certification and Change Management">&larr; Previous</button>
+<button class="studio-btn" onclick="goChapterContents('ch47')">Chapter contents</button>
+<button class="studio-btn primary" onclick="goLesson('ch47s8')" title="Next lesson: OpenAPI contracts: designing a payment API contract">Next &rarr;</button>
+</div>
+<div class="card transcript-card">
+<h2>Transcript and full text</h2>
+<details class="studio-transcript" id="studio-transcript-details-studio-ch47s7"><summary>Show transcript</summary>
+<p class="transcript" id="studio-transcript-studio-ch47s7">Start with the scenario and the constraints, because they decide which patterns are possible. Your bank, a mid-sized bank in Spain, is joining a new instant payment rail that settles in euros within ten seconds, twenty-four hours a day. The bank expects 200,000 payments a day, with an average value of EUR 180, and a peak of 40 payments per second at lunchtime. The core banking system is fifteen years old and exposes a synchronous service for balance checks, but only a nightly file interface for bulk posting. The sanctions provider offers a real-time API, and the scheme requires ISO 20022 messages. List every system you must connect, and note the constraint on each one before you draw anything. Draw the integration map next, showing every system, every connection, and the direction of each flow. Place the channels on the left, the payment hub in the centre, the core banking system, the sanctions service, the fraud service, the ledger, and the scheme on the right. Draw the customer payment as a line from the mobile app through the hub to the scheme, and draw the settlement as a line from the scheme back to the ledger. Label each line with its transport, such as API, queue, or file, and with its format, such as JSON or pacs.008. A good map fits on one page, and a colleague who has never seen the project should be able to trace a EUR 500 payment from start to finish without asking a question. Choose the pattern for each connection and write down why you chose it. Use a synchronous API between the channel and the hub, because the customer waits for an answer. Use a synchronous call from the hub to the sanctions API, because screening must complete before the payment proceeds. Use asynchronous messaging between the hub and the core banking system for the debit, with a response queue that returns the result, because the core system cannot always answer in under a second. Use a file interface for the end-of-day ledger summary, because finance needs a complete and auditable record. Use event streaming for status updates, so the mobile app, the notification service, and the warehouse all learn about a settled payment at the same time. Define the contract for each interface, with enough detail for a developer to build it without guessing. For the hub to scheme interface, specify the pacs.008 message, the required fields, the character set, the timeout of five seconds, and the error codes for an invalid account, an amount above the limit, and a duplicate instruction. For the sanctions API, specify the request fields, the response time of under 200 milliseconds, and the behaviour when the service is unavailable. For the core banking queue, specify the message format, the retry policy, and the dead letter queue that holds messages that fail three times. A contract that leaves the error codes undefined will cause arguments during testing, when it is too late to fix them cheaply. Finish with failure handling, certification, and the go-live plan, and test your design against a real failure. Describe what happens if the sanctions service is down for thirty minutes, if the scheme rejects a payment after the core debit has succeeded, and if the ledger file arrives with a total that does not match the hub total. Define the reconciliation job that compares the hub, the core system, and the scheme every fifteen minutes, and the suspense account that holds unmatched items. Add a certification plan with at least ten test cases, a limited go-live with ten payments of EUR 50, and a rollback trigger. Present your map, your contracts, and your failure table, and ask a colleague to find the connection you missed.</p>
+<div id="studio-paras-studio-ch47s7">
+<p class="transcript">Start with the scenario and the constraints, because they decide which patterns are possible. Your bank, a mid-sized bank in Spain, is joining a new instant payment rail that settles in euros within ten seconds, twenty-four hours a day. The bank expects 200,000 payments a day, with an average value of EUR 180, and a peak of 40 payments per second at lunchtime. The core banking system is fifteen years old and exposes a synchronous service for balance checks, but only a nightly file interface for bulk posting. The sanctions provider offers a real-time API, and the scheme requires ISO 20022 messages. List every system you must connect, and note the constraint on each one before you draw anything.</p>
+<p class="transcript">Draw the integration map next, showing every system, every connection, and the direction of each flow. Place the channels on the left, the payment hub in the centre, the core banking system, the sanctions service, the fraud service, the ledger, and the scheme on the right. Draw the customer payment as a line from the mobile app through the hub to the scheme, and draw the settlement as a line from the scheme back to the ledger. Label each line with its transport, such as API, queue, or file, and with its format, such as JSON or pacs.008. A good map fits on one page, and a colleague who has never seen the project should be able to trace a EUR 500 payment from start to finish without asking a question.</p>
+<p class="transcript">Choose the pattern for each connection and write down why you chose it. Use a synchronous API between the channel and the hub, because the customer waits for an answer. Use a synchronous call from the hub to the sanctions API, because screening must complete before the payment proceeds. Use asynchronous messaging between the hub and the core banking system for the debit, with a response queue that returns the result, because the core system cannot always answer in under a second. Use a file interface for the end-of-day ledger summary, because finance needs a complete and auditable record. Use event streaming for status updates, so the mobile app, the notification service, and the warehouse all learn about a settled payment at the same time.</p>
+<p class="transcript">Define the contract for each interface, with enough detail for a developer to build it without guessing. For the hub to scheme interface, specify the pacs.008 message, the required fields, the character set, the timeout of five seconds, and the error codes for an invalid account, an amount above the limit, and a duplicate instruction. For the sanctions API, specify the request fields, the response time of under 200 milliseconds, and the behaviour when the service is unavailable. For the core banking queue, specify the message format, the retry policy, and the dead letter queue that holds messages that fail three times. A contract that leaves the error codes undefined will cause arguments during testing, when it is too late to fix them cheaply.</p>
+<p class="transcript">Finish with failure handling, certification, and the go-live plan, and test your design against a real failure. Describe what happens if the sanctions service is down for thirty minutes, if the scheme rejects a payment after the core debit has succeeded, and if the ledger file arrives with a total that does not match the hub total. Define the reconciliation job that compares the hub, the core system, and the scheme every fifteen minutes, and the suspense account that holds unmatched items. Add a certification plan with at least ten test cases, a limited go-live with ten payments of EUR 50, and a rollback trigger. Present your map, your contracts, and your failure table, and ask a colleague to find the connection you missed.</p>
+</div>
+</details>
+<details class="studio-transcript"><summary>Full lesson text (all scenes)</summary><div id="studio-transcript-full-studio-ch47s7"></div></details>
+<p><button class="studio-btn primary" id="done-ch47s7" onclick="studioMarkSceneDone('studio-ch47s7')">Mark lesson complete</button> <span class="studio-note">Completing a lesson updates your progress dashboard on the homepage.</span></p>
+</div>
+<p class="studio-note">Scene timestamps are estimated by allocating the narration text proportionally across the real audio length. The audio playback position is the source of truth: pause freezes the visual, seeking restores the correct scene, replay restarts the scene animation.</p>
+</div>
+<script>window.__PA_STUDIO_QUEUE = window.__PA_STUDIO_QUEUE || []; window.__PA_STUDIO_QUEUE.push(["studio-ch47s7", {"sample_id": "studio-ch47s7", "chapter_id": "ch47", "title": "Exercise: Design the Integration for a New Payment Rail (choose patterns, draw the integration map, define contracts and failure handling)", "domain": "D10 APIs and integration", "objective": "Learner explains banking integration patterns, including file transfer, messaging, APIs, and event streaming, and selects the right pattern for a given payment integration need. Learner demonstrates this skill using realistic banking examples, explaining each step clearly and using correct terminology throughout.", "scenes": [{"id": "ch47s7", "section_id": "ch47s7", "title": "Exercise: Design the Integration for a New Payment Rail (choose patterns, draw the integration map, define contracts and failure handling)", "audio": "../audio/ch47s7.mp3", "duration_sec": 215.9, "points": ["Start with the scenario and the constraints, because they decide which patterns are possible.", "Draw the integration map next, showing every system, every connection, and the direction of each flow.", "Choose the pattern for each connection and write down why you chose it.", "Define the contract for each interface, with enough detail for a developer to build it without guessing.", "Finish with failure handling, certification, and the go-live plan, and test your design against a real failure."], "terms": [{"term": "Suspense account", "def": "A temporary account used to hold funds or entries that cannot yet be posted to their final account. Banks use suspense accounts for unidentified receipts, pending investigations and items awaiting..."}, {"term": "Reconciliation", "def": "The process of comparing records from two sources, such as a bank statement and an internal ledger, to confirm they agree."}, {"term": "Payment hub", "def": "A central system in a bank that receives payment instructions from all channels, validates them, applies screening and routing rules, and sends them to the correct clearing system or correspondent."}], "transcript": "Start with the scenario and the constraints, because they decide which patterns are possible. Your bank, a mid-sized bank in Spain, is joining a new instant payment rail that settles in euros within ten seconds, twenty-four hours a day. The bank expects 200,000 payments a day, with an average value of EUR 180, and a peak of 40 payments per second at lunchtime. The core banking system is fifteen years old and exposes a synchronous service for balance checks, but only a nightly file interface for bulk posting. The sanctions provider offers a real-time API, and the scheme requires ISO 20022 messages. List every system you must connect, and note the constraint on each one before you draw anything. Draw the integration map next, showing every system, every connection, and the direction of each flow. Place the channels on the left, the payment hub in the centre, the core banking system, the sanctions service, the fraud service, the ledger, and the scheme on the right. Draw the customer payment as a line from the mobile app through the hub to the scheme, and draw the settlement as a line from the scheme back to the ledger. Label each line with its transport, such as API, queue, or file, and with its format, such as JSON or pacs.008. A good map fits on one page, and a colleague who has never seen the project should be able to trace a EUR 500 payment from start to finish without asking a question. Choose the pattern for each connection and write down why you chose it. Use a synchronous API between the channel and the hub, because the customer waits for an answer. Use a synchronous call from the hub to the sanctions API, because screening must complete before the payment proceeds. Use asynchronous messaging between the hub and the core banking system for the debit, with a response queue that returns the result, because the core system cannot always answer in under a second. Use a file interface for the end-of-day ledger summary, because finance needs a complete and auditable record. Use event streaming for status updates, so the mobile app, the notification service, and the warehouse all learn about a settled payment at the same time. Define the contract for each interface, with enough detail for a developer to build it without guessing. For the hub to scheme interface, specify the pacs.008 message, the required fields, the character set, the timeout of five seconds, and the error codes for an invalid account, an amount above the limit, and a duplicate instruction. For the sanctions API, specify the request fields, the response time of under 200 milliseconds, and the behaviour when the service is unavailable. For the core banking queue, specify the message format, the retry policy, and the dead letter queue that holds messages that fail three times. A contract that leaves the error codes undefined will cause arguments during testing, when it is too late to fix them cheaply. Finish with failure handling, certification, and the go-live plan, and test your design against a real failure. Describe what happens if the sanctions service is down for thirty minutes, if the scheme rejects a payment after the core debit has succeeded, and if the ledger file arrives with a total that does not match the hub total. Define the reconciliation job that compares the hub, the core system, and the scheme every fifteen minutes, and the suspense account that holds unmatched items. Add a certification plan with at least ten test cases, a limited go-live with ten payments of EUR 50, and a rollback trigger. Present your map, your contracts, and your failure table, and ask a colleague to find the connection you missed.", "paragraphs": ["Start with the scenario and the constraints, because they decide which patterns are possible. Your bank, a mid-sized bank in Spain, is joining a new instant payment rail that settles in euros within ten seconds, twenty-four hours a day. The bank expects 200,000 payments a day, with an average value of EUR 180, and a peak of 40 payments per second at lunchtime. The core banking system is fifteen years old and exposes a synchronous service for balance checks, but only a nightly file interface for bulk posting. The sanctions provider offers a real-time API, and the scheme requires ISO 20022 messages. List every system you must connect, and note the constraint on each one before you draw anything.", "Draw the integration map next, showing every system, every connection, and the direction of each flow. Place the channels on the left, the payment hub in the centre, the core banking system, the sanctions service, the fraud service, the ledger, and the scheme on the right. Draw the customer payment as a line from the mobile app through the hub to the scheme, and draw the settlement as a line from the scheme back to the ledger. Label each line with its transport, such as API, queue, or file, and with its format, such as JSON or pacs.008. A good map fits on one page, and a colleague who has never seen the project should be able to trace a EUR 500 payment from start to finish without asking a question.", "Choose the pattern for each connection and write down why you chose it. Use a synchronous API between the channel and the hub, because the customer waits for an answer. Use a synchronous call from the hub to the sanctions API, because screening must complete before the payment proceeds. Use asynchronous messaging between the hub and the core banking system for the debit, with a response queue that returns the result, because the core system cannot always answer in under a second. Use a file interface for the end-of-day ledger summary, because finance needs a complete and auditable record. Use event streaming for status updates, so the mobile app, the notification service, and the warehouse all learn about a settled payment at the same time.", "Define the contract for each interface, with enough detail for a developer to build it without guessing. For the hub to scheme interface, specify the pacs.008 message, the required fields, the character set, the timeout of five seconds, and the error codes for an invalid account, an amount above the limit, and a duplicate instruction. For the sanctions API, specify the request fields, the response time of under 200 milliseconds, and the behaviour when the service is unavailable. For the core banking queue, specify the message format, the retry policy, and the dead letter queue that holds messages that fail three times. A contract that leaves the error codes undefined will cause arguments during testing, when it is too late to fix them cheaply.", "Finish with failure handling, certification, and the go-live plan, and test your design against a real failure. Describe what happens if the sanctions service is down for thirty minutes, if the scheme rejects a payment after the core debit has succeeded, and if the ledger file arrives with a total that does not match the hub total. Define the reconciliation job that compares the hub, the core system, and the scheme every fifteen minutes, and the suspense account that holds unmatched items. Add a certification plan with at least ten test cases, a limited go-live with ten payments of EUR 50, and a rollback trigger. Present your map, your contracts, and your failure table, and ask a colleague to find the connection you missed."], "accessibility": "Banking architecture diagram showing Exercise: Design the Integration for a New Payment Rail (choose patterns, draw the integration map, define contracts and failure handling).", "visual_type": "architecture", "visual_choice_reason": "architecture chapter", "beats": [{"t0": 0.0, "t1": 41.5, "title": "Start with the scenario", "note": "Start with the scenario and the constraints, because they decide which patterns are possible.", "highlight_nodes": ["n0"], "highlight_conns": [], "highlight_fields": []}, {"t0": 41.5, "t1": 83.4, "title": "Draw the integration map next", "note": "Draw the integration map next, showing every system, every connection, and the direction of each flow.", "highlight_nodes": ["n1"], "highlight_conns": ["c0"], "highlight_fields": []}, {"t0": 83.4, "t1": 127.8, "title": "Choose the pattern for each connection", "note": "Choose the pattern for each connection and write down why you chose it.", "highlight_nodes": ["n2"], "highlight_conns": ["c1"], "highlight_fields": []}, {"t0": 127.8, "t1": 164.9, "title": "Contract for each interface", "note": "Define the contract for each interface, with enough detail for a developer to build it without guessing.", "highlight_nodes": ["n3"], "highlight_conns": ["c2"], "highlight_fields": []}, {"t0": 164.9, "t1": 201.7, "title": "Contract: too late to fix", "note": "A contract that leaves the error codes undefined will cause arguments during testing, when it is too late to fix them cheaply.", "highlight_nodes": ["n4"], "highlight_conns": ["c3"], "highlight_fields": []}, {"t0": 201.7, "t1": 215.9, "title": "Certification plan", "note": "Add a certification plan with at least ten test cases, a limited go-live with ten payments of EUR 50, and a rollback trigger.", "highlight_nodes": ["n5"], "highlight_conns": ["c4"], "highlight_fields": []}], "framework": {"objective": "By the end of this lesson, you will be able to explain exercise: design the integration for a new payment rail (choose patterns, draw the integration map, define contracts and failure handling). Start with the scenario and the constraints, because they decide which patterns are possible.", "why_matters": "This matters because APIs and integrations are how systems talk to each other. A badly specified API is a failed payment, a duplicate, or a security hole.", "technical_example": "The sanctions provider offers a real-time API, and the scheme requires ISO 20022 messages.", "failure_recovery": "For the hub to scheme interface, specify the pacs.008 message, the required fields, the character set, the timeout of five seconds, and the error codes for an invalid account, an amount above the limit, and a duplicate instruction. A contract that leaves the error codes undefined will cause arguments during testing, when it is too late to fix them cheaply.", "exercise": {"task": "Write the request and the expected response for the API call described in this lesson.", "info": "Use the API resources, operations and fields named in this lesson.", "action": "Write the JSON request with the required fields, the success response, and one error response with its error code.", "correct": "A correct request has all mandatory fields, a valid idempotency key, and the right resource and operation. The success response confirms acceptance, and the error response names the field or rule that failed.", "why": "An API contract is a promise between two systems. If the request is wrong, the API must reject it cleanly, not fail silently."}, "assessment": {"question": "Which of the following best describes exercise: design the integration for a new payment rail (choose patterns, draw the integration map, define contracts and failure handling)?", "options": ["A typical large bank runs several hundred applications, and a single payment can touch twenty of them before it completes", "Start with the scenario and the constraints, because they decide which patterns are possible", "The landscape falls into layers, and each layer has a different job", "Legacy systems shape the landscape more than any new design, because they hold the accounts and the history"], "answer": 1, "explanation": "Start with the scenario and the constraints, because they decide which patterns are possible. This is the core idea of the lesson.", "why_wrong": ["This describes a different concept from this chapter, not exercise: design the integration for a new payment rail (choose patterns, draw the integration map, define contracts and failure handling).", "", "This describes a different concept from this chapter, not exercise: design the integration for a new payment rail (choose patterns, draw the integration map, define contracts and failure handling).", "This describes a different concept from this chapter, not exercise: design the integration for a new payment rail (choose patterns, draw the integration map, define contracts and failure handling)."], "source": "generated:ch47s7"}, "takeaway": "A good map fits on one page, and a colleague who has never seen the project should be able to trace a EUR 500 payment from start to finish without asking a question.", "prereq": "ch47s6", "next": "ch47s8", "connection_note": "Builds on \"Partner Onboarding, Certification and Change Management\".", "tool": {"slug": "api-playground", "label": "API Playground", "url": "../simulators/api-playground.html", "scenario": "Call the API described in this lesson with a valid request, then with a missing field, and compare the responses."}, "simple": "In plain words: start with the scenario and the constraints, because they decide which patterns are possible. That is the whole idea in one sentence, and the rest of the lesson shows how it works in a real bank.", "summary": "Start with the scenario and the constraints, because they decide which patterns are possible. Key points: Start with the scenario; Draw the integration map next; Choose the pattern for each connection; Contract for each interface; Contract: too late to fix; Certification plan.", "example": "The bank expects 200,000 payments a day, with an average value of EUR 180, and a peak of 40 payments per second at lunchtime. A good map fits on one page, and a colleague who has never seen the project should be able to trace a EUR 500 payment from start to finish without asking a question."}}], "chapter_title": "Banking Integration Patterns", "meta_line": "Banking Integration Patterns, Lesson 7 of 9, Narration 3:35, D10 APIs and integration", "next_id": "ch47s8", "next_title": "OpenAPI contracts: designing a payment API contract"}]);</script>
+</div>
+<nav class="tool-rail" aria-label="Lesson tools">
+<button type="button" class="rail-tool" onclick="pfOpenTranscript('studio-ch47s7')" title="Open transcript"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M7 3h7l4 4v14H7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M14 3v4h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 12h5M10 15.5h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span>Transcript</span></button>
+<button type="button" class="rail-tool" onclick="pfToggleNote('studio-ch47s7')" title="Write a note on this lesson"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L8 19l-4 1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>Notes</span></button>
+<button type="button" class="rail-tool" onclick="pfToggleFiles('studio-ch47s7')" title="Download lesson files"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>Files</span></button>
+</nav>
+<div class="fw-files-panel" id="pf-files-studio-ch47s7" style="display:none"><b>Lesson files</b><p><a href="../audio/ch47s7.mp3" download>Download narration (MP3)</a></p><p><a href="#" onclick="pfDownloadTranscript('studio-ch47s7');return false">Download transcript (.txt)</a></p></div>
+</div>
+</div>
+</main>
+<footer><p>Payments Training Hub. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="../index.html">Home</a> &middot; <a href="../courses.html">Courses</a> &middot; <a href="../practice.html">Practice</a> &middot; <a href="../simulators.html">Simulators</a> &middot; <a href="../labs.html">Labs</a> &middot; <a href="../explorer.html">Explorer</a> &middot; <a href="../tests.html">Tests</a> &middot; <a href="../diagnostic.html">Diagnostic</a> &middot; <a href="../faq.html">Interview Ready Questions</a> &middot; <a href="../interview-prep.html">Interview Prep</a></p><p><a href="../about.html">About</a> &middot; <a href="../privacy.html">Privacy</a> &middot; <a href="../terms.html">Terms</a> &middot; <a href="../contact.html">Contact</a> &middot; <a href="../editorial-standards.html">Editorial Standards</a> &middot; <a href="../sources.html">Sources</a></p></footer>
+<script defer src="../assets/site.js"></script>
+<script defer src="../assets/bundles.js"></script>
+<script defer src="../assets/auth.js"></script>
+<script defer src="../assets/studio.js"></script>
+<script defer src="../assets/insight-components.js"></script>
+<script defer src="../assets/nav.js"></script>
+<script defer src="../assets/pf-enhance.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+if(window.PFInsight){PFInsight.init();}
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>OpenAPI contracts: designing a payment API contract | Payments Training Hub</title>
+<meta name="description" content="Before a developer writes a single line of code, a bank publishes a contract for its payment API. That contract is written in the OpenAPI...">
+<link rel="canonical" href="https://www.paymentstraininghub.in/lessons/ch47s8.html">
+<meta property="og:url" content="https://www.paymentstraininghub.in/lessons/ch47s8.html">
+<meta property="og:title" content="OpenAPI contracts: designing a payment API contract | Payments Training Hub">
+<meta property="og:description" content="Before a developer writes a single line of code, a bank publishes a contract for its payment API. That contract is written in the OpenAPI...">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.in/assets/hero/hero-poster.jpg">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.paymentstraininghub.in/index.html"}, {"@type": "ListItem", "position": 2, "name": "Banking Integration Patterns", "item": "https://www.paymentstraininghub.in/chapters/ch47-banking-integration-patterns.html"}, {"@type": "ListItem", "position": 3, "name": "OpenAPI contracts: designing a payment API contract", "item": "https://www.paymentstraininghub.in/lessons/ch47s8.html"}]}</script>
+<link rel="stylesheet" href="../assets/studio.css">
+<link rel="stylesheet" href="../assets/pf-theme.css">
+<link rel="stylesheet" href="../assets/insight-components.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="../index.html" class="brand">Payments <span>Training Hub</span></a><nav class="topnav"><a href="../index.html">Home</a> <a href="../courses.html">Courses</a> <a href="../practice.html">Practice</a> <a href="../simulators.html">Simulators</a> <a href="../labs.html">Labs</a> <a href="../explorer.html">Explorer</a> <a href="../tests.html">Tests</a></nav><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox" style="display:none"><span id="authState">Not signed in</span> <span id="authForm" style="display:none"><input id="authEmail" type="email" placeholder="Email for OTP" aria-label="Email for sign-in"> <button class="mute-btn" onclick="paAuthSendOtp()">Send code</button> <input id="authCode" type="text" placeholder="6-digit code" aria-label="One-time code" style="display:none"> <button class="mute-btn" id="authVerifyBtn" onclick="paAuthVerifyOtp()" style="display:none">Verify</button> <button class="mute-btn" onclick="paAuthGoogle()">Sign in with Google</button> </span><button class="mute-btn" id="authSignOutBtn" onclick="paAuthSignOut()" style="display:none">Sign out</button></span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<div class="lesson-page">
+<div class="lesson-shell">
+<aside class="course-rail">
+<div class="rail-head">
+<h2>Banking Integration Patterns</h2>
+<a class="rail-close" href="../chapters/ch47-banking-integration-patterns.html" aria-label="Close and go to chapter" title="Back to chapter">&times;</a>
+</div>
+<div class="goal-card">
+<div class="goal-head"><b>Today's goal &middot; <span id="side-progress-text">0 of 9 items</span></b><span class="goal-flag"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 21V4m0 1h11l-2.5 3.5L17 12H6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="goal-chev">&#94;</span></div>
+<p class="goal-body" id="side-goal-body">Complete 3 items today to stay at a good pace!</p>
+</div>
+<ul class="lesson-list"><li class="" data-lesson="ch47s1"><a href="ch47s1.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">The Integration Landscape Inside a Bank</span><span class="m">Video &middot; 3 min</span></span></a></li>
+<li class="" data-lesson="ch47s2"><a href="ch47s2.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Core Banking Integration Patterns</span><span class="m">Video &middot; 3 min</span></span></a></li>
+<li class="" data-lesson="ch47s3"><a href="ch47s3.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Ledger, General Ledger and Accounting Integration</span><span class="m">Video &middot; 3 min</span></span></a></li>
+<li class="" data-lesson="ch47s4"><a href="ch47s4.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Gateway, Aggregator and Third-Party Service Integration</span><span class="m">Video &middot; 3 min</span></span></a></li>
+<li class="" data-lesson="ch47s5"><a href="ch47s5.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">APIs, Messaging Queues, Files and Event Streaming</span><span class="m">Video &middot; 3 min</span></span></a></li>
+<li class="" data-lesson="ch47s6"><a href="ch47s6.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Partner Onboarding, Certification and Change Management</span><span class="m">Video &middot; 3 min</span></span></a></li>
+<li class="" data-lesson="ch47s7"><a href="ch47s7.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Exercise: Design the Integration for a New Payment Rail (choose patterns, draw the integration map, define contracts and failure handling)</span><span class="m">Video &middot; 4 min</span></span></a></li>
+<li class="current" data-lesson="ch47s8"><a href="ch47s8.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">OpenAPI contracts: designing a payment API contract</span><span class="m">Video &middot; 4 min</span></span></a></li>
+<li class="" data-lesson="ch47s9"><a href="ch47s9.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Event-driven payments and Kafka: topics, partitions, ordering and replay</span><span class="m">Video &middot; 3 min</span></span></a></li></ul>
+</aside>
+<div class="lesson-main">
+<div class="studio" id="studio-studio-ch47s8">
+<div class="player">
+<div class="studio-canvas" id="studio-canvas-studio-ch47s8">
+<div class="ch-sec studio-scene-vis active" id="studio-vis-studio-ch47s8-0"><div class="beat-frames">
+<div class="beat-frame active" data-frame="0">
+<svg class="flow-desktop" viewBox="0 0 900 560" role="img" aria-label="Lesson visual">
+<defs><pattern id="bfd154" width="18" height="18" patternUnits="userSpaceOnUse"><path d="M18 0H0V18" fill="none" stroke="#182A44" stroke-width="1"/></pattern></defs>
+<rect x="0" y="0" width="900" height="560" fill="#0B1F3D"/>
+<rect x="0" y="0" width="900" height="560" fill="url(#bfd154)"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">OpenAPI</tspan> <tspan fill="#FFFFFF">contract:</tspan> <tspan fill="#FFFFFF">the</tspan> <tspan fill="#FFFFFF">single</tspan> <tspan fill="#FFFFFF">source</tspan></text>
+<text x="48" y="126" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">of</tspan> <tspan fill="#FFFFFF">truth</tspan></text>
+<path data-conn="c0" data-beat="0" d="M 212 210 L 408 210" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c0" data-beat="0" points="420,210 408,217 408,203" fill="#47DCDD"/>
+<path data-conn="c1" data-beat="1" d="M 480 210 L 676 210" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c1" data-beat="1" points="688,210 676,217 676,203" fill="#47DCDD"/>
+<path data-conn="c2" data-beat="2" d="M 718 266 L 718 280 L 718 280 L 718 308" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c2" data-beat="2" points="718,320 711,308 725,308" fill="#47DCDD"/>
+<path data-conn="c3" data-beat="3" d="M 688 350 L 492 350" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c3" data-beat="3" points="480,350 492,343 492,357" fill="#47DCDD"/>
+<path data-conn="c4" data-beat="4" d="M 420 350 L 224 350" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c4" data-beat="4" points="212,350 224,343 224,357" fill="#47DCDD"/>
+<g data-node="n0" class="bf-now" data-beat="0">
+<circle cx="182" cy="210" r="26" fill="#0A1826" stroke="#47DCDD" stroke-width="3"/>
+<circle cx="182" cy="210" r="6" fill="#47DCDD"/>
+<circle cx="156" cy="210" r="4" fill="#47DCDD"/>
+<circle cx="208" cy="210" r="4" fill="#45A4FF"/>
+<circle cx="182" cy="210" r="33" fill="none" stroke="#47DCDD" stroke-width="1" opacity="0.5"/>
+<text x="234" y="180" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="182" y="258" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">OpenAPI</text>
+<text x="182" y="276" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">contract</text>
+</g>
+<g data-node="n1" class="bf-dim" data-beat="1">
+<circle cx="450" cy="210" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="450" cy="210" r="6" fill="#45A4FF"/>
+<circle cx="424" cy="210" r="4" fill="#47DCDD"/>
+<circle cx="476" cy="210" r="4" fill="#45A4FF"/>
+<text x="450" y="258" text-anchor="middle" font-size="13" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Five parts of an</text>
+<text x="450" y="276" text-anchor="middle" font-size="13" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">OpenAPI contract</text>
+</g>
+<g data-node="n2" class="bf-dim" data-beat="2">
+<circle cx="718" cy="210" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="718" cy="210" r="6" fill="#45A4FF"/>
+<circle cx="692" cy="210" r="4" fill="#47DCDD"/>
+<circle cx="744" cy="210" r="4" fill="#45A4FF"/>
+<text x="718" y="258" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Error responses</text>
+</g>
+<g data-node="n3" class="bf-dim" data-beat="3">
+<circle cx="718" cy="350" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="718" cy="350" r="6" fill="#45A4FF"/>
+<circle cx="692" cy="350" r="4" fill="#47DCDD"/>
+<circle cx="744" cy="350" r="4" fill="#45A4FF"/>
+<text x="718" y="398" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">API error status</text>
+<text x="718" y="416" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">meanings</text>
+</g>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<circle cx="450" cy="350" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="450" cy="350" r="6" fill="#45A4FF"/>
+<circle cx="424" cy="350" r="4" fill="#47DCDD"/>
+<circle cx="476" cy="350" r="4" fill="#45A4FF"/>
+<text x="450" y="398" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Retry after a</text>
+<text x="450" y="416" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">timeout</text>
+</g>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<circle cx="182" cy="350" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="182" cy="350" r="6" fill="#45A4FF"/>
+<circle cx="156" cy="350" r="4" fill="#47DCDD"/>
+<circle cx="208" cy="350" r="4" fill="#45A4FF"/>
+<text x="182" y="398" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">BA review and</text>
+<text x="182" y="416" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">versioning</text>
+</g>
+<rect x="48" y="432" width="804" height="84" rx="10" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<text x="68" y="456" font-size="11" fill="#47DCDD" font-family="ui-monospace,Menlo,Consolas,monospace">MESSAGE TRACE</text>
+<text x="68" y="478" font-size="13" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">OpenAPI contract</text>
+<text x="68" y="504" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Before a developer writes a single line of code, a bank publishes a contract for its payment API.</text>
+<text x="48" y="538" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 1 of 6</text>
+<circle cx="772" cy="534" r="4" fill="#47DCDD"/>
+<circle cx="788" cy="534" r="4" fill="#334155"/>
+<circle cx="804" cy="534" r="4" fill="#334155"/>
+<circle cx="820" cy="534" r="4" fill="#334155"/>
+<circle cx="836" cy="534" r="4" fill="#334155"/>
+<circle cx="852" cy="534" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 815" role="img" aria-label="Lesson visual, vertical layout">
+<defs><pattern id="bfd155" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="360" height="815" fill="#0B1F3D"/>
+<rect x="0" y="0" width="360" height="815" fill="url(#bfd155)"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">OpenAPI</tspan> <tspan fill="#FFFFFF">contract:</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">the</tspan> <tspan fill="#FFFFFF">single</tspan> <tspan fill="#FFFFFF">source</tspan></text>
+<text x="24" y="96" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">of</tspan> <tspan fill="#FFFFFF">truth</tspan></text>
+<g data-node="n0" class="bf-now" data-beat="0">
+<rect x="24" y="122" width="312" height="72" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="44" cy="142" r="11" fill="#1D4ED8"/>
+<text x="44" y="146" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="324" y="146" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="180" y="160" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">OpenAPI contract</text>
+</g>
+<line data-conn="c0" data-beat="0" x1="180" y1="197" x2="180" y2="205" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c0" data-beat="0" points="180,217 173,205 187,205" fill="#DBEAFE"/>
+<g data-node="n1" class="bf-dim" data-beat="1">
+<rect x="24" y="220" width="312" height="92" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="240" r="11" fill="#1E3A5F"/>
+<text x="44" y="244" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="180" y="258" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Five parts of an OpenAPI</text>
+<text x="180" y="278" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">contract</text>
+</g>
+<line data-conn="c1" data-beat="1" x1="180" y1="315" x2="180" y2="323" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c1" data-beat="1" points="180,335 173,323 187,323" fill="#DBEAFE"/>
+<g data-node="n2" class="bf-dim" data-beat="2">
+<rect x="24" y="338" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="358" r="11" fill="#1E3A5F"/>
+<text x="44" y="362" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="180" y="376" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Error responses</text>
+</g>
+<line data-conn="c2" data-beat="2" x1="180" y1="413" x2="180" y2="421" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c2" data-beat="2" points="180,433 173,421 187,421" fill="#DBEAFE"/>
+<g data-node="n3" class="bf-dim" data-beat="3">
+<rect x="24" y="436" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="456" r="11" fill="#1E3A5F"/>
+<text x="44" y="460" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="180" y="474" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">API error status meanings</text>
+</g>
+<line data-conn="c3" data-beat="3" x1="180" y1="511" x2="180" y2="519" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c3" data-beat="3" points="180,531 173,519 187,519" fill="#DBEAFE"/>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<rect x="24" y="534" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="554" r="11" fill="#1E3A5F"/>
+<text x="44" y="558" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="180" y="572" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Retry after a timeout</text>
+</g>
+<line data-conn="c4" data-beat="4" x1="180" y1="609" x2="180" y2="617" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c4" data-beat="4" points="180,629 173,617 187,617" fill="#DBEAFE"/>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="24" y="632" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="652" r="11" fill="#1E3A5F"/>
+<text x="44" y="656" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="180" y="670" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">BA review and versioning</text>
+</g>
+<g class="bf-paydot" style="--dx:0px;--dy:0px"><circle class="bf-pulse" cx="180" cy="122" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="180" cy="122" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="180" y="724" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Before a developer writes a single line</text>
+<text x="180" y="743" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">of code, a bank publishes a contract for</text>
+<text x="180" y="762" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">its payment API.</text>
+<text x="24" y="803" font-size="12" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 1 of 6</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="1">
+<svg class="flow-desktop" viewBox="0 0 900 560" role="img" aria-label="Lesson visual">
+<defs><pattern id="bfd156" width="18" height="18" patternUnits="userSpaceOnUse"><path d="M18 0H0V18" fill="none" stroke="#182A44" stroke-width="1"/></pattern></defs>
+<rect x="0" y="0" width="900" height="560" fill="#0B1F3D"/>
+<rect x="0" y="0" width="900" height="560" fill="url(#bfd156)"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Five</tspan> <tspan fill="#FFFFFF">parts</tspan> <tspan fill="#FFFFFF">of</tspan> <tspan fill="#FFFFFF">an</tspan> <tspan fill="#FFFFFF">OpenAPI</tspan> <tspan fill="#FFFFFF">contract</tspan></text>
+<path data-conn="c0" data-beat="0" d="M 212 210 L 408 210" stroke="#47DCDD" stroke-width="3" fill="none"/><polygon data-conn="c0" data-beat="0" points="420,210 408,217 408,203" fill="#47DCDD"/>
+<path data-conn="c1" data-beat="1" d="M 480 210 L 676 210" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c1" data-beat="1" points="688,210 676,217 676,203" fill="#47DCDD"/>
+<path data-conn="c2" data-beat="2" d="M 718 266 L 718 280 L 718 280 L 718 308" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c2" data-beat="2" points="718,320 711,308 725,308" fill="#47DCDD"/>
+<path data-conn="c3" data-beat="3" d="M 688 350 L 492 350" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c3" data-beat="3" points="480,350 492,343 492,357" fill="#47DCDD"/>
+<path data-conn="c4" data-beat="4" d="M 420 350 L 224 350" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c4" data-beat="4" points="212,350 224,343 224,357" fill="#47DCDD"/>
+<g data-node="n0" class="bf-done" data-beat="0">
+<circle cx="182" cy="210" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="182" cy="210" r="6" fill="#45A4FF"/>
+<circle cx="156" cy="210" r="4" fill="#47DCDD"/>
+<circle cx="208" cy="210" r="4" fill="#45A4FF"/>
+<text x="182" y="258" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">OpenAPI</text>
+<text x="182" y="276" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">contract</text>
+</g>
+<g data-node="n1" class="bf-now" data-beat="1">
+<circle cx="450" cy="210" r="26" fill="#0A1826" stroke="#47DCDD" stroke-width="3"/>
+<circle cx="450" cy="210" r="6" fill="#47DCDD"/>
+<circle cx="424" cy="210" r="4" fill="#47DCDD"/>
+<circle cx="476" cy="210" r="4" fill="#45A4FF"/>
+<circle cx="450" cy="210" r="33" fill="none" stroke="#47DCDD" stroke-width="1" opacity="0.5"/>
+<text x="502" y="180" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="450" y="258" text-anchor="middle" font-size="13" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Five parts of an</text>
+<text x="450" y="276" text-anchor="middle" font-size="13" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">OpenAPI contract</text>
+</g>
+<g data-node="n2" class="bf-dim" data-beat="2">
+<circle cx="718" cy="210" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="718" cy="210" r="6" fill="#45A4FF"/>
+<circle cx="692" cy="210" r="4" fill="#47DCDD"/>
+<circle cx="744" cy="210" r="4" fill="#45A4FF"/>
+<text x="718" y="258" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Error responses</text>
+</g>
+<g data-node="n3" class="bf-dim" data-beat="3">
+<circle cx="718" cy="350" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="718" cy="350" r="6" fill="#45A4FF"/>
+<circle cx="692" cy="350" r="4" fill="#47DCDD"/>
+<circle cx="744" cy="350" r="4" fill="#45A4FF"/>
+<text x="718" y="398" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">API error status</text>
+<text x="718" y="416" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">meanings</text>
+</g>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<circle cx="450" cy="350" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="450" cy="350" r="6" fill="#45A4FF"/>
+<circle cx="424" cy="350" r="4" fill="#47DCDD"/>
+<circle cx="476" cy="350" r="4" fill="#45A4FF"/>
+<text x="450" y="398" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Retry after a</text>
+<text x="450" y="416" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">timeout</text>
+</g>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<circle cx="182" cy="350" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="182" cy="350" r="6" fill="#45A4FF"/>
+<circle cx="156" cy="350" r="4" fill="#47DCDD"/>
+<circle cx="208" cy="350" r="4" fill="#45A4FF"/>
+<text x="182" y="398" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">BA review and</text>
+<text x="182" y="416" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">versioning</text>
+</g>
+<rect x="48" y="432" width="804" height="84" rx="10" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<text x="68" y="456" font-size="11" fill="#47DCDD" font-family="ui-monospace,Menlo,Consolas,monospace">MESSAGE TRACE</text>
+<text x="68" y="478" font-size="13" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">OpenAPI contract &gt; Five parts of an OpenAPI contract</text>
+<text x="68" y="504" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">An OpenAPI contract has five parts.</text>
+<text x="48" y="538" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 2 of 6</text>
+<circle cx="772" cy="534" r="4" fill="#334155"/>
+<circle cx="788" cy="534" r="4" fill="#47DCDD"/>
+<circle cx="804" cy="534" r="4" fill="#334155"/>
+<circle cx="820" cy="534" r="4" fill="#334155"/>
+<circle cx="836" cy="534" r="4" fill="#334155"/>
+<circle cx="852" cy="534" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 749" role="img" aria-label="Lesson visual, vertical layout">
+<defs><pattern id="bfd157" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="360" height="749" fill="#0B1F3D"/>
+<rect x="0" y="0" width="360" height="749" fill="url(#bfd157)"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Five</tspan> <tspan fill="#FFFFFF">parts</tspan> <tspan fill="#FFFFFF">of</tspan> <tspan fill="#FFFFFF">an</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">OpenAPI</tspan> <tspan fill="#FFFFFF">contract</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="24" y="94" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="114" r="11" fill="#1E3A5F"/>
+<text x="44" y="118" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="180" y="132" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">OpenAPI contract</text>
+</g>
+<line data-conn="c0" data-beat="0" x1="180" y1="169" x2="180" y2="177" stroke="#60A5FA" stroke-width="2"/>
+<polygon data-conn="c0" data-beat="0" points="180,189 173,177 187,177" fill="#DBEAFE"/>
+<g data-node="n1" class="bf-now" data-beat="1">
+<rect x="24" y="192" width="312" height="92" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="44" cy="212" r="11" fill="#1D4ED8"/>
+<text x="44" y="216" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="324" y="216" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="180" y="230" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Five parts of an OpenAPI</text>
+<text x="180" y="250" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">contract</text>
+</g>
+<line data-conn="c1" data-beat="1" x1="180" y1="287" x2="180" y2="295" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c1" data-beat="1" points="180,307 173,295 187,295" fill="#DBEAFE"/>
+<g data-node="n2" class="bf-dim" data-beat="2">
+<rect x="24" y="310" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="330" r="11" fill="#1E3A5F"/>
+<text x="44" y="334" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="180" y="348" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Error responses</text>
+</g>
+<line data-conn="c2" data-beat="2" x1="180" y1="385" x2="180" y2="393" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c2" data-beat="2" points="180,405 173,393 187,393" fill="#DBEAFE"/>
+<g data-node="n3" class="bf-dim" data-beat="3">
+<rect x="24" y="408" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="428" r="11" fill="#1E3A5F"/>
+<text x="44" y="432" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="180" y="446" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">API error status meanings</text>
+</g>
+<line data-conn="c3" data-beat="3" x1="180" y1="483" x2="180" y2="491" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c3" data-beat="3" points="180,503 173,491 187,491" fill="#DBEAFE"/>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<rect x="24" y="506" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="526" r="11" fill="#1E3A5F"/>
+<text x="44" y="530" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="180" y="544" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Retry after a timeout</text>
+</g>
+<line data-conn="c4" data-beat="4" x1="180" y1="581" x2="180" y2="589" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c4" data-beat="4" points="180,601 173,589 187,589" fill="#DBEAFE"/>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="24" y="604" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="624" r="11" fill="#1E3A5F"/>
+<text x="44" y="628" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="180" y="642" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">BA review and versioning</text>
+</g>
+<g class="bf-paydot" style="--dx:0px;--dy:-52px"><circle class="bf-pulse" cx="180" cy="182" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="180" cy="182" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="180" y="696" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">An OpenAPI contract has five parts.</text>
+<text x="24" y="737" font-size="12" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 2 of 6</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="2">
+<svg class="flow-desktop" viewBox="0 0 900 560" role="img" aria-label="Lesson visual">
+<defs><pattern id="bfd158" width="18" height="18" patternUnits="userSpaceOnUse"><path d="M18 0H0V18" fill="none" stroke="#182A44" stroke-width="1"/></pattern></defs>
+<rect x="0" y="0" width="900" height="560" fill="#0B1F3D"/>
+<rect x="0" y="0" width="900" height="560" fill="url(#bfd158)"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Error</tspan> <tspan fill="#FFFFFF">responses:</tspan> <tspan fill="#FFFFFF">400,</tspan> <tspan fill="#FFFFFF">401,</tspan> <tspan fill="#FFFFFF">404,</tspan> <tspan fill="#FFFFFF">409</tspan></text>
+<text x="48" y="126" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">and</tspan> <tspan fill="#FFFFFF">500</tspan></text>
+<path data-conn="c0" data-beat="0" d="M 212 210 L 408 210" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c0" data-beat="0" points="420,210 408,217 408,203" fill="#47DCDD"/>
+<path data-conn="c1" data-beat="1" d="M 480 210 L 676 210" stroke="#47DCDD" stroke-width="3" fill="none"/><polygon data-conn="c1" data-beat="1" points="688,210 676,217 676,203" fill="#47DCDD"/>
+<path data-conn="c2" data-beat="2" d="M 718 266 L 718 280 L 718 280 L 718 308" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c2" data-beat="2" points="718,320 711,308 725,308" fill="#47DCDD"/>
+<path data-conn="c3" data-beat="3" d="M 688 350 L 492 350" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c3" data-beat="3" points="480,350 492,343 492,357" fill="#47DCDD"/>
+<path data-conn="c4" data-beat="4" d="M 420 350 L 224 350" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c4" data-beat="4" points="212,350 224,343 224,357" fill="#47DCDD"/>
+<g data-node="n0" class="bf-done" data-beat="0">
+<circle cx="182" cy="210" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="182" cy="210" r="6" fill="#45A4FF"/>
+<circle cx="156" cy="210" r="4" fill="#47DCDD"/>
+<circle cx="208" cy="210" r="4" fill="#45A4FF"/>
+<text x="182" y="258" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">OpenAPI</text>
+<text x="182" y="276" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">contract</text>
+</g>
+<g data-node="n1" class="bf-done" data-beat="1">
+<circle cx="450" cy="210" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="450" cy="210" r="6" fill="#45A4FF"/>
+<circle cx="424" cy="210" r="4" fill="#47DCDD"/>
+<circle cx="476" cy="210" r="4" fill="#45A4FF"/>
+<text x="450" y="258" text-anchor="middle" font-size="13" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Five parts of an</text>
+<text x="450" y="276" text-anchor="middle" font-size="13" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">OpenAPI contract</text>
+</g>
+<g data-node="n2" class="bf-now" data-beat="2">
+<circle cx="718" cy="210" r="26" fill="#0A1826" stroke="#47DCDD" stroke-width="3"/>
+<circle cx="718" cy="210" r="6" fill="#47DCDD"/>
+<circle cx="692" cy="210" r="4" fill="#47DCDD"/>
+<circle cx="744" cy="210" r="4" fill="#45A4FF"/>
+<circle cx="718" cy="210" r="33" fill="none" stroke="#47DCDD" stroke-width="1" opacity="0.5"/>
+<text x="770" y="180" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="718" y="258" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Error responses</text>
+</g>
+<g data-node="n3" class="bf-dim" data-beat="3">
+<circle cx="718" cy="350" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="718" cy="350" r="6" fill="#45A4FF"/>
+<circle cx="692" cy="350" r="4" fill="#47DCDD"/>
+<circle cx="744" cy="350" r="4" fill="#45A4FF"/>
+<text x="718" y="398" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">API error status</text>
+<text x="718" y="416" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">meanings</text>
+</g>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<circle cx="450" cy="350" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="450" cy="350" r="6" fill="#45A4FF"/>
+<circle cx="424" cy="350" r="4" fill="#47DCDD"/>
+<circle cx="476" cy="350" r="4" fill="#45A4FF"/>
+<text x="450" y="398" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Retry after a</text>
+<text x="450" y="416" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">timeout</text>
+</g>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<circle cx="182" cy="350" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="182" cy="350" r="6" fill="#45A4FF"/>
+<circle cx="156" cy="350" r="4" fill="#47DCDD"/>
+<circle cx="208" cy="350" r="4" fill="#45A4FF"/>
+<text x="182" y="398" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">BA review and</text>
+<text x="182" y="416" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">versioning</text>
+</g>
+<rect x="48" y="432" width="804" height="84" rx="10" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<text x="68" y="456" font-size="11" fill="#47DCDD" font-family="ui-monospace,Menlo,Consolas,monospace">MESSAGE TRACE</text>
+<text x="68" y="478" font-size="13" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">OpenAPI contract &gt; Five parts of an OpenAPI contract &gt; Error responses</text>
+<text x="68" y="504" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">And the responses list every status code the API can return, with the error format for each one.</text>
+<text x="48" y="538" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 3 of 6</text>
+<circle cx="772" cy="534" r="4" fill="#334155"/>
+<circle cx="788" cy="534" r="4" fill="#334155"/>
+<circle cx="804" cy="534" r="4" fill="#47DCDD"/>
+<circle cx="820" cy="534" r="4" fill="#334155"/>
+<circle cx="836" cy="534" r="4" fill="#334155"/>
+<circle cx="852" cy="534" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 815" role="img" aria-label="Lesson visual, vertical layout">
+<defs><pattern id="bfd159" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="360" height="815" fill="#0B1F3D"/>
+<rect x="0" y="0" width="360" height="815" fill="url(#bfd159)"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Error</tspan> <tspan fill="#FFFFFF">responses:</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">400,</tspan> <tspan fill="#FFFFFF">401,</tspan> <tspan fill="#FFFFFF">404,</tspan> <tspan fill="#FFFFFF">409</tspan></text>
+<text x="24" y="96" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">and</tspan> <tspan fill="#FFFFFF">500</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="24" y="122" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="142" r="11" fill="#1E3A5F"/>
+<text x="44" y="146" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="180" y="160" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">OpenAPI contract</text>
+</g>
+<line data-conn="c0" data-beat="0" x1="180" y1="197" x2="180" y2="205" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c0" data-beat="0" points="180,217 173,205 187,205" fill="#DBEAFE"/>
+<g data-node="n1" class="bf-done" data-beat="1">
+<rect x="24" y="220" width="312" height="92" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="240" r="11" fill="#1E3A5F"/>
+<text x="44" y="244" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="180" y="258" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Five parts of an OpenAPI</text>
+<text x="180" y="278" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">contract</text>
+</g>
+<line data-conn="c1" data-beat="1" x1="180" y1="315" x2="180" y2="323" stroke="#60A5FA" stroke-width="2"/>
+<polygon data-conn="c1" data-beat="1" points="180,335 173,323 187,323" fill="#DBEAFE"/>
+<g data-node="n2" class="bf-now" data-beat="2">
+<rect x="24" y="338" width="312" height="72" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="44" cy="358" r="11" fill="#1D4ED8"/>
+<text x="44" y="362" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="324" y="362" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="180" y="376" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Error responses</text>
+</g>
+<line data-conn="c2" data-beat="2" x1="180" y1="413" x2="180" y2="421" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c2" data-beat="2" points="180,433 173,421 187,421" fill="#DBEAFE"/>
+<g data-node="n3" class="bf-dim" data-beat="3">
+<rect x="24" y="436" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="456" r="11" fill="#1E3A5F"/>
+<text x="44" y="460" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="180" y="474" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">API error status meanings</text>
+</g>
+<line data-conn="c3" data-beat="3" x1="180" y1="511" x2="180" y2="519" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c3" data-beat="3" points="180,531 173,519 187,519" fill="#DBEAFE"/>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<rect x="24" y="534" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="554" r="11" fill="#1E3A5F"/>
+<text x="44" y="558" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="180" y="572" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Retry after a timeout</text>
+</g>
+<line data-conn="c4" data-beat="4" x1="180" y1="609" x2="180" y2="617" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c4" data-beat="4" points="180,629 173,617 187,617" fill="#DBEAFE"/>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="24" y="632" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="652" r="11" fill="#1E3A5F"/>
+<text x="44" y="656" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="180" y="670" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">BA review and versioning</text>
+</g>
+<g class="bf-paydot" style="--dx:0px;--dy:-62px"><circle class="bf-pulse" cx="180" cy="328" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="180" cy="328" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="180" y="724" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">And the responses list every status</text>
+<text x="180" y="743" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">code the API can return, with the error</text>
+<text x="180" y="762" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">format for each one.</text>
+<text x="24" y="803" font-size="12" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 3 of 6</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="3">
+<svg class="flow-desktop" viewBox="0 0 900 560" role="img" aria-label="Lesson visual">
+<defs><pattern id="bfd160" width="18" height="18" patternUnits="userSpaceOnUse"><path d="M18 0H0V18" fill="none" stroke="#182A44" stroke-width="1"/></pattern></defs>
+<rect x="0" y="0" width="900" height="560" fill="#0B1F3D"/>
+<rect x="0" y="0" width="900" height="560" fill="url(#bfd160)"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">API</tspan> <tspan fill="#FFFFFF">error</tspan> <tspan fill="#FFFFFF">status</tspan> <tspan fill="#FFFFFF">meanings</tspan></text>
+<path data-conn="c0" data-beat="0" d="M 212 210 L 408 210" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c0" data-beat="0" points="420,210 408,217 408,203" fill="#47DCDD"/>
+<path data-conn="c1" data-beat="1" d="M 480 210 L 676 210" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c1" data-beat="1" points="688,210 676,217 676,203" fill="#47DCDD"/>
+<path data-conn="c2" data-beat="2" d="M 718 266 L 718 280 L 718 280 L 718 308" stroke="#47DCDD" stroke-width="3" fill="none"/><polygon data-conn="c2" data-beat="2" points="718,320 711,308 725,308" fill="#47DCDD"/>
+<path data-conn="c3" data-beat="3" d="M 688 350 L 492 350" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c3" data-beat="3" points="480,350 492,343 492,357" fill="#47DCDD"/>
+<path data-conn="c4" data-beat="4" d="M 420 350 L 224 350" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c4" data-beat="4" points="212,350 224,343 224,357" fill="#47DCDD"/>
+<g data-node="n0" class="bf-done" data-beat="0">
+<circle cx="182" cy="210" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="182" cy="210" r="6" fill="#45A4FF"/>
+<circle cx="156" cy="210" r="4" fill="#47DCDD"/>
+<circle cx="208" cy="210" r="4" fill="#45A4FF"/>
+<text x="182" y="258" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">OpenAPI</text>
+<text x="182" y="276" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">contract</text>
+</g>
+<g data-node="n1" class="bf-done" data-beat="1">
+<circle cx="450" cy="210" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="450" cy="210" r="6" fill="#45A4FF"/>
+<circle cx="424" cy="210" r="4" fill="#47DCDD"/>
+<circle cx="476" cy="210" r="4" fill="#45A4FF"/>
+<text x="450" y="258" text-anchor="middle" font-size="13" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Five parts of an</text>
+<text x="450" y="276" text-anchor="middle" font-size="13" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">OpenAPI contract</text>
+</g>
+<g data-node="n2" class="bf-done" data-beat="2">
+<circle cx="718" cy="210" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="718" cy="210" r="6" fill="#45A4FF"/>
+<circle cx="692" cy="210" r="4" fill="#47DCDD"/>
+<circle cx="744" cy="210" r="4" fill="#45A4FF"/>
+<text x="718" y="258" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Error responses</text>
+</g>
+<g data-node="n3" class="bf-now" data-beat="3">
+<circle cx="718" cy="350" r="26" fill="#0A1826" stroke="#47DCDD" stroke-width="3"/>
+<circle cx="718" cy="350" r="6" fill="#47DCDD"/>
+<circle cx="692" cy="350" r="4" fill="#47DCDD"/>
+<circle cx="744" cy="350" r="4" fill="#45A4FF"/>
+<circle cx="718" cy="350" r="33" fill="none" stroke="#47DCDD" stroke-width="1" opacity="0.5"/>
+<text x="770" y="320" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="718" y="398" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">API error status</text>
+<text x="718" y="416" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">meanings</text>
+</g>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<circle cx="450" cy="350" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="450" cy="350" r="6" fill="#45A4FF"/>
+<circle cx="424" cy="350" r="4" fill="#47DCDD"/>
+<circle cx="476" cy="350" r="4" fill="#45A4FF"/>
+<text x="450" y="398" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Retry after a</text>
+<text x="450" y="416" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">timeout</text>
+</g>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<circle cx="182" cy="350" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="182" cy="350" r="6" fill="#45A4FF"/>
+<circle cx="156" cy="350" r="4" fill="#47DCDD"/>
+<circle cx="208" cy="350" r="4" fill="#45A4FF"/>
+<text x="182" y="398" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">BA review and</text>
+<text x="182" y="416" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">versioning</text>
+</g>
+<rect x="48" y="432" width="804" height="84" rx="10" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<text x="68" y="456" font-size="11" fill="#47DCDD" font-family="ui-monospace,Menlo,Consolas,monospace">MESSAGE TRACE</text>
+<text x="68" y="478" font-size="13" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">OpenAPI contract &gt; Five parts of an OpenAPI contract &gt; Error responses &gt; API error status meanings</text>
+<text x="68" y="504" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">A 500 internal error means the server failed.</text>
+<text x="48" y="538" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 4 of 6</text>
+<circle cx="772" cy="534" r="4" fill="#334155"/>
+<circle cx="788" cy="534" r="4" fill="#334155"/>
+<circle cx="804" cy="534" r="4" fill="#334155"/>
+<circle cx="820" cy="534" r="4" fill="#47DCDD"/>
+<circle cx="836" cy="534" r="4" fill="#334155"/>
+<circle cx="852" cy="534" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 768" role="img" aria-label="Lesson visual, vertical layout">
+<defs><pattern id="bfd161" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="360" height="768" fill="#0B1F3D"/>
+<rect x="0" y="0" width="360" height="768" fill="url(#bfd161)"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">API</tspan> <tspan fill="#FFFFFF">error</tspan> <tspan fill="#FFFFFF">status</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">meanings</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="24" y="94" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="114" r="11" fill="#1E3A5F"/>
+<text x="44" y="118" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="180" y="132" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">OpenAPI contract</text>
+</g>
+<line data-conn="c0" data-beat="0" x1="180" y1="169" x2="180" y2="177" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c0" data-beat="0" points="180,189 173,177 187,177" fill="#DBEAFE"/>
+<g data-node="n1" class="bf-done" data-beat="1">
+<rect x="24" y="192" width="312" height="92" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="212" r="11" fill="#1E3A5F"/>
+<text x="44" y="216" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="180" y="230" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Five parts of an OpenAPI</text>
+<text x="180" y="250" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">contract</text>
+</g>
+<line data-conn="c1" data-beat="1" x1="180" y1="287" x2="180" y2="295" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c1" data-beat="1" points="180,307 173,295 187,295" fill="#DBEAFE"/>
+<g data-node="n2" class="bf-done" data-beat="2">
+<rect x="24" y="310" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="330" r="11" fill="#1E3A5F"/>
+<text x="44" y="334" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="180" y="348" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Error responses</text>
+</g>
+<line data-conn="c2" data-beat="2" x1="180" y1="385" x2="180" y2="393" stroke="#60A5FA" stroke-width="2"/>
+<polygon data-conn="c2" data-beat="2" points="180,405 173,393 187,393" fill="#DBEAFE"/>
+<g data-node="n3" class="bf-now" data-beat="3">
+<rect x="24" y="408" width="312" height="72" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="44" cy="428" r="11" fill="#1D4ED8"/>
+<text x="44" y="432" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="324" y="432" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="180" y="446" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">API error status meanings</text>
+</g>
+<line data-conn="c3" data-beat="3" x1="180" y1="483" x2="180" y2="491" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c3" data-beat="3" points="180,503 173,491 187,491" fill="#DBEAFE"/>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<rect x="24" y="506" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="526" r="11" fill="#1E3A5F"/>
+<text x="44" y="530" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="180" y="544" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Retry after a timeout</text>
+</g>
+<line data-conn="c4" data-beat="4" x1="180" y1="581" x2="180" y2="589" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c4" data-beat="4" points="180,601 173,589 187,589" fill="#DBEAFE"/>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="24" y="604" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="624" r="11" fill="#1E3A5F"/>
+<text x="44" y="628" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="180" y="642" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">BA review and versioning</text>
+</g>
+<g class="bf-paydot" style="--dx:0px;--dy:-52px"><circle class="bf-pulse" cx="180" cy="398" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="180" cy="398" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="180" y="696" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">A 500 internal error means the server</text>
+<text x="180" y="715" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">failed.</text>
+<text x="24" y="756" font-size="12" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 4 of 6</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="4">
+<svg class="flow-desktop" viewBox="0 0 900 560" role="img" aria-label="Lesson visual">
+<defs><pattern id="bfd162" width="18" height="18" patternUnits="userSpaceOnUse"><path d="M18 0H0V18" fill="none" stroke="#182A44" stroke-width="1"/></pattern></defs>
+<rect x="0" y="0" width="900" height="560" fill="#0B1F3D"/>
+<rect x="0" y="0" width="900" height="560" fill="url(#bfd162)"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Retry</tspan> <tspan fill="#FFFFFF">after</tspan> <tspan fill="#FFFFFF">a</tspan> <tspan fill="#FFFFFF">timeout:</tspan> <tspan fill="#FFFFFF">no</tspan> <tspan fill="#FFFFFF">duplicate</tspan></text>
+<text x="48" y="126" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">payment</tspan></text>
+<path data-conn="c0" data-beat="0" d="M 212 210 L 408 210" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c0" data-beat="0" points="420,210 408,217 408,203" fill="#47DCDD"/>
+<path data-conn="c1" data-beat="1" d="M 480 210 L 676 210" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c1" data-beat="1" points="688,210 676,217 676,203" fill="#47DCDD"/>
+<path data-conn="c2" data-beat="2" d="M 718 266 L 718 280 L 718 280 L 718 308" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c2" data-beat="2" points="718,320 711,308 725,308" fill="#47DCDD"/>
+<path data-conn="c3" data-beat="3" d="M 688 350 L 492 350" stroke="#47DCDD" stroke-width="3" fill="none"/><polygon data-conn="c3" data-beat="3" points="480,350 492,343 492,357" fill="#47DCDD"/>
+<path data-conn="c4" data-beat="4" d="M 420 350 L 224 350" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c4" data-beat="4" points="212,350 224,343 224,357" fill="#47DCDD"/>
+<g data-node="n0" class="bf-done" data-beat="0">
+<circle cx="182" cy="210" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="182" cy="210" r="6" fill="#45A4FF"/>
+<circle cx="156" cy="210" r="4" fill="#47DCDD"/>
+<circle cx="208" cy="210" r="4" fill="#45A4FF"/>
+<text x="182" y="258" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">OpenAPI</text>
+<text x="182" y="276" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">contract</text>
+</g>
+<g data-node="n1" class="bf-done" data-beat="1">
+<circle cx="450" cy="210" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="450" cy="210" r="6" fill="#45A4FF"/>
+<circle cx="424" cy="210" r="4" fill="#47DCDD"/>
+<circle cx="476" cy="210" r="4" fill="#45A4FF"/>
+<text x="450" y="258" text-anchor="middle" font-size="13" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Five parts of an</text>
+<text x="450" y="276" text-anchor="middle" font-size="13" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">OpenAPI contract</text>
+</g>
+<g data-node="n2" class="bf-done" data-beat="2">
+<circle cx="718" cy="210" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="718" cy="210" r="6" fill="#45A4FF"/>
+<circle cx="692" cy="210" r="4" fill="#47DCDD"/>
+<circle cx="744" cy="210" r="4" fill="#45A4FF"/>
+<text x="718" y="258" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Error responses</text>
+</g>
+<g data-node="n3" class="bf-done" data-beat="3">
+<circle cx="718" cy="350" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="718" cy="350" r="6" fill="#45A4FF"/>
+<circle cx="692" cy="350" r="4" fill="#47DCDD"/>
+<circle cx="744" cy="350" r="4" fill="#45A4FF"/>
+<text x="718" y="398" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">API error status</text>
+<text x="718" y="416" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">meanings</text>
+</g>
+<g data-node="n4" class="bf-now" data-beat="4">
+<circle cx="450" cy="350" r="26" fill="#0A1826" stroke="#47DCDD" stroke-width="3"/>
+<circle cx="450" cy="350" r="6" fill="#47DCDD"/>
+<circle cx="424" cy="350" r="4" fill="#47DCDD"/>
+<circle cx="476" cy="350" r="4" fill="#45A4FF"/>
+<circle cx="450" cy="350" r="33" fill="none" stroke="#47DCDD" stroke-width="1" opacity="0.5"/>
+<text x="502" y="320" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="450" y="398" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Retry after a</text>
+<text x="450" y="416" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">timeout</text>
+</g>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<circle cx="182" cy="350" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="182" cy="350" r="6" fill="#45A4FF"/>
+<circle cx="156" cy="350" r="4" fill="#47DCDD"/>
+<circle cx="208" cy="350" r="4" fill="#45A4FF"/>
+<text x="182" y="398" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">BA review and</text>
+<text x="182" y="416" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">versioning</text>
+</g>
+<rect x="48" y="432" width="804" height="84" rx="10" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<text x="68" y="456" font-size="11" fill="#47DCDD" font-family="ui-monospace,Menlo,Consolas,monospace">MESSAGE TRACE</text>
+<text x="68" y="478" font-size="13" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">OpenAPI contract &gt; Five parts of an OpenAPI contract &gt; Error responses &gt; API error status meanings</text>
+<text x="68" y="496" font-size="13" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">&gt; Retry after a timeout</text>
+<text x="68" y="504" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Without that, a retry after a timeout becomes a duplicate payment, and the customer is debited twice.</text>
+<text x="48" y="538" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 5 of 6</text>
+<circle cx="772" cy="534" r="4" fill="#334155"/>
+<circle cx="788" cy="534" r="4" fill="#334155"/>
+<circle cx="804" cy="534" r="4" fill="#334155"/>
+<circle cx="820" cy="534" r="4" fill="#334155"/>
+<circle cx="836" cy="534" r="4" fill="#47DCDD"/>
+<circle cx="852" cy="534" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 815" role="img" aria-label="Lesson visual, vertical layout">
+<defs><pattern id="bfd163" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="360" height="815" fill="#0B1F3D"/>
+<rect x="0" y="0" width="360" height="815" fill="url(#bfd163)"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Retry</tspan> <tspan fill="#FFFFFF">after</tspan> <tspan fill="#FFFFFF">a</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">timeout:</tspan> <tspan fill="#FFFFFF">no</tspan></text>
+<text x="24" y="96" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">duplicate</tspan> <tspan fill="#FFFFFF">payment</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="24" y="122" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="142" r="11" fill="#1E3A5F"/>
+<text x="44" y="146" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="180" y="160" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">OpenAPI contract</text>
+</g>
+<line data-conn="c0" data-beat="0" x1="180" y1="197" x2="180" y2="205" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c0" data-beat="0" points="180,217 173,205 187,205" fill="#DBEAFE"/>
+<g data-node="n1" class="bf-done" data-beat="1">
+<rect x="24" y="220" width="312" height="92" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="240" r="11" fill="#1E3A5F"/>
+<text x="44" y="244" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="180" y="258" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Five parts of an OpenAPI</text>
+<text x="180" y="278" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">contract</text>
+</g>
+<line data-conn="c1" data-beat="1" x1="180" y1="315" x2="180" y2="323" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c1" data-beat="1" points="180,335 173,323 187,323" fill="#DBEAFE"/>
+<g data-node="n2" class="bf-done" data-beat="2">
+<rect x="24" y="338" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="358" r="11" fill="#1E3A5F"/>
+<text x="44" y="362" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="180" y="376" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Error responses</text>
+</g>
+<line data-conn="c2" data-beat="2" x1="180" y1="413" x2="180" y2="421" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c2" data-beat="2" points="180,433 173,421 187,421" fill="#DBEAFE"/>
+<g data-node="n3" class="bf-done" data-beat="3">
+<rect x="24" y="436" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="456" r="11" fill="#1E3A5F"/>
+<text x="44" y="460" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="180" y="474" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">API error status meanings</text>
+</g>
+<line data-conn="c3" data-beat="3" x1="180" y1="511" x2="180" y2="519" stroke="#60A5FA" stroke-width="2"/>
+<polygon data-conn="c3" data-beat="3" points="180,531 173,519 187,519" fill="#DBEAFE"/>
+<g data-node="n4" class="bf-now" data-beat="4">
+<rect x="24" y="534" width="312" height="72" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="44" cy="554" r="11" fill="#1D4ED8"/>
+<text x="44" y="558" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="324" y="558" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="180" y="572" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Retry after a timeout</text>
+</g>
+<line data-conn="c4" data-beat="4" x1="180" y1="609" x2="180" y2="617" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c4" data-beat="4" points="180,629 173,617 187,617" fill="#DBEAFE"/>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="24" y="632" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="652" r="11" fill="#1E3A5F"/>
+<text x="44" y="656" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="180" y="670" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">BA review and versioning</text>
+</g>
+<g class="bf-paydot" style="--dx:0px;--dy:-52px"><circle class="bf-pulse" cx="180" cy="524" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="180" cy="524" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="180" y="724" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Without that, a retry after a timeout</text>
+<text x="180" y="743" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">becomes a duplicate payment, and the</text>
+<text x="180" y="762" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">customer is debited twice.</text>
+<text x="24" y="803" font-size="12" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 5 of 6</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="5">
+<svg class="flow-desktop" viewBox="0 0 900 560" role="img" aria-label="Lesson visual">
+<defs><pattern id="bfd164" width="18" height="18" patternUnits="userSpaceOnUse"><path d="M18 0H0V18" fill="none" stroke="#182A44" stroke-width="1"/></pattern></defs>
+<rect x="0" y="0" width="900" height="560" fill="#0B1F3D"/>
+<rect x="0" y="0" width="900" height="560" fill="url(#bfd164)"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">BA</tspan> <tspan fill="#FFFFFF">review</tspan> <tspan fill="#FFFFFF">and</tspan> <tspan fill="#FFFFFF">versioning</tspan> <tspan fill="#FFFFFF">of</tspan> <tspan fill="#FFFFFF">the</tspan></text>
+<text x="48" y="126" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">contract</tspan></text>
+<path data-conn="c0" data-beat="0" d="M 212 210 L 408 210" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c0" data-beat="0" points="420,210 408,217 408,203" fill="#47DCDD"/>
+<path data-conn="c1" data-beat="1" d="M 480 210 L 676 210" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c1" data-beat="1" points="688,210 676,217 676,203" fill="#47DCDD"/>
+<path data-conn="c2" data-beat="2" d="M 718 266 L 718 280 L 718 280 L 718 308" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c2" data-beat="2" points="718,320 711,308 725,308" fill="#47DCDD"/>
+<path data-conn="c3" data-beat="3" d="M 688 350 L 492 350" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c3" data-beat="3" points="480,350 492,343 492,357" fill="#47DCDD"/>
+<path data-conn="c4" data-beat="4" d="M 420 350 L 224 350" stroke="#47DCDD" stroke-width="3" fill="none"/><polygon data-conn="c4" data-beat="4" points="212,350 224,343 224,357" fill="#47DCDD"/>
+<g data-node="n0" class="bf-done" data-beat="0">
+<circle cx="182" cy="210" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="182" cy="210" r="6" fill="#45A4FF"/>
+<circle cx="156" cy="210" r="4" fill="#47DCDD"/>
+<circle cx="208" cy="210" r="4" fill="#45A4FF"/>
+<text x="182" y="258" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">OpenAPI</text>
+<text x="182" y="276" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">contract</text>
+</g>
+<g data-node="n1" class="bf-done" data-beat="1">
+<circle cx="450" cy="210" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="450" cy="210" r="6" fill="#45A4FF"/>
+<circle cx="424" cy="210" r="4" fill="#47DCDD"/>
+<circle cx="476" cy="210" r="4" fill="#45A4FF"/>
+<text x="450" y="258" text-anchor="middle" font-size="13" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Five parts of an</text>
+<text x="450" y="276" text-anchor="middle" font-size="13" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">OpenAPI contract</text>
+</g>
+<g data-node="n2" class="bf-done" data-beat="2">
+<circle cx="718" cy="210" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="718" cy="210" r="6" fill="#45A4FF"/>
+<circle cx="692" cy="210" r="4" fill="#47DCDD"/>
+<circle cx="744" cy="210" r="4" fill="#45A4FF"/>
+<text x="718" y="258" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Error responses</text>
+</g>
+<g data-node="n3" class="bf-done" data-beat="3">
+<circle cx="718" cy="350" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="718" cy="350" r="6" fill="#45A4FF"/>
+<circle cx="692" cy="350" r="4" fill="#47DCDD"/>
+<circle cx="744" cy="350" r="4" fill="#45A4FF"/>
+<text x="718" y="398" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">API error status</text>
+<text x="718" y="416" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">meanings</text>
+</g>
+<g data-node="n4" class="bf-done" data-beat="4">
+<circle cx="450" cy="350" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="450" cy="350" r="6" fill="#45A4FF"/>
+<circle cx="424" cy="350" r="4" fill="#47DCDD"/>
+<circle cx="476" cy="350" r="4" fill="#45A4FF"/>
+<text x="450" y="398" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Retry after a</text>
+<text x="450" y="416" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">timeout</text>
+</g>
+<g data-node="n5" class="bf-now" data-beat="5">
+<circle cx="182" cy="350" r="26" fill="#0A1826" stroke="#47DCDD" stroke-width="3"/>
+<circle cx="182" cy="350" r="6" fill="#47DCDD"/>
+<circle cx="156" cy="350" r="4" fill="#47DCDD"/>
+<circle cx="208" cy="350" r="4" fill="#45A4FF"/>
+<circle cx="182" cy="350" r="33" fill="none" stroke="#47DCDD" stroke-width="1" opacity="0.5"/>
+<text x="234" y="320" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="182" y="398" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">BA review and</text>
+<text x="182" y="416" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">versioning</text>
+</g>
+<rect x="48" y="432" width="804" height="84" rx="10" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<text x="68" y="456" font-size="11" fill="#47DCDD" font-family="ui-monospace,Menlo,Consolas,monospace">MESSAGE TRACE</text>
+<text x="68" y="478" font-size="13" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">OpenAPI contract &gt; Five parts of an OpenAPI contract &gt; Error responses &gt; API error status meanings</text>
+<text x="68" y="496" font-size="13" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">&gt; Retry after a timeout &gt; BA review and versioning</text>
+<text x="68" y="504" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The BA reviews the contract with the developer, the tester and the security team, and signs it off before any</text>
+<text x="48" y="538" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 6 of 6</text>
+<circle cx="772" cy="534" r="4" fill="#334155"/>
+<circle cx="788" cy="534" r="4" fill="#334155"/>
+<circle cx="804" cy="534" r="4" fill="#334155"/>
+<circle cx="820" cy="534" r="4" fill="#334155"/>
+<circle cx="836" cy="534" r="4" fill="#334155"/>
+<circle cx="852" cy="534" r="4" fill="#47DCDD"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 834" role="img" aria-label="Lesson visual, vertical layout">
+<defs><pattern id="bfd165" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="360" height="834" fill="#0B1F3D"/>
+<rect x="0" y="0" width="360" height="834" fill="url(#bfd165)"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">BA</tspan> <tspan fill="#FFFFFF">review</tspan> <tspan fill="#FFFFFF">and</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">versioning</tspan> <tspan fill="#FFFFFF">of</tspan> <tspan fill="#FFFFFF">the</tspan></text>
+<text x="24" y="96" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">contract</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="24" y="122" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="142" r="11" fill="#1E3A5F"/>
+<text x="44" y="146" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="180" y="160" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">OpenAPI contract</text>
+</g>
+<line data-conn="c0" data-beat="0" x1="180" y1="197" x2="180" y2="205" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c0" data-beat="0" points="180,217 173,205 187,205" fill="#DBEAFE"/>
+<g data-node="n1" class="bf-done" data-beat="1">
+<rect x="24" y="220" width="312" height="92" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="240" r="11" fill="#1E3A5F"/>
+<text x="44" y="244" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="180" y="258" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Five parts of an OpenAPI</text>
+<text x="180" y="278" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">contract</text>
+</g>
+<line data-conn="c1" data-beat="1" x1="180" y1="315" x2="180" y2="323" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c1" data-beat="1" points="180,335 173,323 187,323" fill="#DBEAFE"/>
+<g data-node="n2" class="bf-done" data-beat="2">
+<rect x="24" y="338" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="358" r="11" fill="#1E3A5F"/>
+<text x="44" y="362" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="180" y="376" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Error responses</text>
+</g>
+<line data-conn="c2" data-beat="2" x1="180" y1="413" x2="180" y2="421" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c2" data-beat="2" points="180,433 173,421 187,421" fill="#DBEAFE"/>
+<g data-node="n3" class="bf-done" data-beat="3">
+<rect x="24" y="436" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="456" r="11" fill="#1E3A5F"/>
+<text x="44" y="460" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="180" y="474" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">API error status meanings</text>
+</g>
+<line data-conn="c3" data-beat="3" x1="180" y1="511" x2="180" y2="519" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c3" data-beat="3" points="180,531 173,519 187,519" fill="#DBEAFE"/>
+<g data-node="n4" class="bf-done" data-beat="4">
+<rect x="24" y="534" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="554" r="11" fill="#1E3A5F"/>
+<text x="44" y="558" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="180" y="572" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Retry after a timeout</text>
+</g>
+<line data-conn="c4" data-beat="4" x1="180" y1="609" x2="180" y2="617" stroke="#60A5FA" stroke-width="2"/>
+<polygon data-conn="c4" data-beat="4" points="180,629 173,617 187,617" fill="#DBEAFE"/>
+<g data-node="n5" class="bf-now" data-beat="5">
+<rect x="24" y="632" width="312" height="72" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="44" cy="652" r="11" fill="#1D4ED8"/>
+<text x="44" y="656" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="324" y="656" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="180" y="670" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">BA review and versioning</text>
+</g>
+<g class="bf-paydot" style="--dx:0px;--dy:-52px"><circle class="bf-pulse" cx="180" cy="622" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="180" cy="622" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="180" y="724" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The BA reviews the contract with the</text>
+<text x="180" y="743" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">developer, the tester and the security</text>
+<text x="180" y="762" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">team, and signs it off before any code is</text>
+<text x="180" y="781" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">written.</text>
+<text x="24" y="822" font-size="12" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 6 of 6</text>
+</svg>
+</div>
+</div>
+<p class="xml-caption">Flow of the explanation in this lesson.</p></div>
+<div class="playerbar">
+<div class="studio-progress"><div class="studio-markers" id="studio-markers-studio-ch47s8"></div><input type="range" id="studio-slider-studio-ch47s8" min="0" max="1000" value="0" aria-label="Lesson timeline"></div>
+<div class="ctrl-row">
+<button class="ctrl-btn" id="studio-play-studio-ch47s8" onclick="studioTogglePlay('studio-ch47s8')" aria-label="Play lesson" title="Play lesson"><span class="ctrl-ic-play"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></span><span class="ctrl-ic-pause" style="display:none"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><rect x="6" y="5" width="4" height="14" fill="currentColor"/><rect x="14" y="5" width="4" height="14" fill="currentColor"/></svg></span></button>
+<button class="ctrl-btn studio-mute-btn" id="studio-mute-studio-ch47s8" onclick="studioToggleMute('studio-ch47s8')" aria-label="Mute narration" title="Mute / unmute narration"><svg class="studio-mute-icon" viewBox="0 0 24 24" width="28" height="28" fill="currentColor" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3z"/><path class="studio-mute-waves" d="M16 8.5a5 5 0 0 1 0 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><path class="studio-mute-waves" d="M18.5 6a9 9 0 0 1 0 12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><path class="studio-mute-x" d="M16 9.5l5 5M21 9.5l-5 5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" style="display:none"/></svg></button>
+<button class="ctrl-btn" onclick="studioSkip('studio-ch47s8', -10)" aria-label="Back 10 seconds" title="Back 10 seconds"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 5a7 7 0 1 1-6.32 4.06" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M5.5 3.5v5h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><text x="12" y="16.5" font-size="8" fill="currentColor" text-anchor="middle" font-weight="700">10</text></svg></button>
+<span class="studio-time ctrl-time" id="studio-time-studio-ch47s8">0:00 / 3:34</span>
+<button class="ctrl-btn" onclick="studioSkip('studio-ch47s8', 10)" aria-label="Forward 10 seconds" title="Forward 10 seconds"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 5a7 7 0 1 0 6.32 4.06" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M18.5 3.5v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><text x="12" y="16.5" font-size="8" fill="currentColor" text-anchor="middle" font-weight="700">10</text></svg></button>
+<span class="playerbar-spacer"></span>
+<span class="player-stage" id="studio-tag-studio-ch47s8">Step 1 of 6</span>
+<button class="ctrl-btn ctrl-step" id="studio-prevscene-studio-ch47s8" onclick="studioPrevScene('studio-ch47s8')" title="Previous step" aria-label="Previous step">&lsaquo;</button>
+<button class="ctrl-btn ctrl-step" id="studio-nextscene-studio-ch47s8" onclick="studioNextScene('studio-ch47s8')" title="Next step" aria-label="Next step">&rsaquo;</button>
+<button class="ctrl-btn ctrl-speed" id="studio-speedbtn-studio-ch47s8" onclick="studioCycleSpeed('studio-ch47s8')" title="Playback speed" aria-label="Playback speed">1x</button>
+<span class="ctrl-settings-wrap"><button class="ctrl-btn" onclick="studioToggleSettings('studio-ch47s8', event)" aria-label="Player settings" title="Settings"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5 5l2.1 2.1M16.9 16.9L19 19M19 5l-2.1 2.1M7.1 16.9L5 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button><span class="ctrl-popover" id="studio-settings-studio-ch47s8" style="display:none" onclick="event.stopPropagation()"><label class="ctrl-pop-row">Volume <input type="range" min="0" max="1" step="0.1" value="1" oninput="studioSetVolume('studio-ch47s8', this.value)" style="width:110px;accent-color:#3587FC"></label><button class="studio-btn" id="studio-captions-studio-ch47s8" onclick="studioToggleCaptions('studio-ch47s8')">Captions: On</button><button class="studio-btn" onclick="studioReplayScene('studio-ch47s8')">Replay scene</button></span></span>
+<button class="ctrl-btn" onclick="studioFullscreen('studio-ch47s8')" aria-label="Fullscreen" title="Fullscreen"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+</div>
+</div>
+</div>
+<p class="studio-caption" id="studio-caption-studio-ch47s8"></p>
+<p class="studio-loading" id="studio-loading-studio-ch47s8" style="display:none">Loading narration...</p>
+<p class="studio-error" id="studio-error-studio-ch47s8" role="alert" style="display:none"></p>
+<audio id="studio-audio-studio-ch47s8" preload="auto" src="../audio/ch47s8.mp3"></audio>
+</div>
+<div class="lesson-title-row">
+<h1>OpenAPI contracts: designing a payment API contract</h1>
+<button class="save-note" type="button" onclick="pfToggleNote('studio-ch47s8')" title="Save a note on this lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L8 19l-4 1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg> Save note</button>
+</div>
+<p class="lesson-meta-line">Banking Integration Patterns, Lesson 8 of 9, Narration 3:34, D10 APIs and integration</p>
+<p class="lesson-note-saved" id="studio-note-saved-studio-ch47s8" style="display:none">Note saved.</p>
+<div class="note-editor" id="studio-note-editor-studio-ch47s8" style="display:none"><textarea id="studio-note-text-studio-ch47s8" rows="3" placeholder="Write a note on this lesson..." aria-label="Lesson note"></textarea><div class="note-editor-row"><button class="studio-btn primary" onclick="pfSaveNote('studio-ch47s8')">Save note</button> <button class="studio-btn" onclick="pfToggleNote('studio-ch47s8')">Cancel</button></div></div>
+<div class="dive-deeper">
+<div class="dive-head"><button type="button" class="dive-toggle" onclick="pfToggleDive(this)" aria-expanded="true"><span class="dive-spark"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 2l2.2 6.8L21 11l-6.8 2.2L12 20l-2.2-6.8L3 11l6.8-2.2z" fill="currentColor"/></svg></span><span class="dive-title">Dive deeper on this topic</span><span class="dive-chev"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 14l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button></div>
+<div class="dive-btns"><button type="button" class="dive-btn" data-kind="practice" onclick="pfDive('studio-ch47s8', 'practice')">Give me practice questions</button><button type="button" class="dive-btn" data-kind="simple" onclick="pfDive('studio-ch47s8', 'simple')">Explain this topic in simple terms</button><button type="button" class="dive-btn" data-kind="summary" onclick="pfDive('studio-ch47s8', 'summary')">Give me a summary</button><button type="button" class="dive-btn" data-kind="example" onclick="pfDive('studio-ch47s8', 'example')">Give me real-life examples</button></div>
+<div class="dive-panel" id="dive-panel-studio-ch47s8"><div class="dive-panel-body"></div></div>
+<script type="application/json" id="pf-dive-data-studio-ch47s8">{"simple": "In plain words: before a developer writes a single line of code, a bank publishes a contract for its payment API. That is the whole idea in one sentence, and the rest of the lesson shows how it works in a real bank.", "summary": "Before a developer writes a single line of code, a bank publishes a contract for its payment API. Key points: OpenAPI contract: the single source of truth; Five parts of an OpenAPI contract; Error responses: 400, 401, 404, 409 and 500; API error status meanings; Retry after a timeout: no duplicate payment; BA review and versioning of the contract.", "example": "Before a developer writes a single line of code, a bank publishes a contract for its payment API. The paths list every endpoint, for example POST /payments for creating a payment and GET /payments/{id} for checking its status."}</script>
+</div>
+<div class="lesson-feedback">
+<div class="fb-icons"><button type="button" class="fb-btn" data-kind="like" onclick="pfFeedback(this,'like')" aria-label="Like this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M7 21H4a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1h3v11zm0 0h9.6a2 2 0 0 0 1.9-1.4l1.6-5A2 2 0 0 0 18.2 12H15V6.5A2.5 2.5 0 0 0 12.5 4L11 7.5 8.6 10H7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button><button type="button" class="fb-btn" data-kind="dislike" onclick="pfFeedback(this,'dislike')" aria-label="Dislike this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M17 3h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1h-3V3zm0 0H7.4a2 2 0 0 0-1.9 1.4l-1.6 5A2 2 0 0 0 5.8 12H9v5.5A2.5 2.5 0 0 0 11.5 20L13 16.5l2.4-2.5H17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button><button type="button" class="fb-btn" data-kind="flag" onclick="pfFeedback(this,'flag')" aria-label="Flag this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M6 21V4m0 1h11l-2.5 3.5L17 12H6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+<button type="button" class="go-next" onclick="goLesson('ch47s9')" title="Next: Event-driven payments and Kafka: topics, partitions, ordering and replay">Go to next item &rarr;</button>
+</div>
+<div class="chips"><span class="chip">Idempotency</span><span class="chip">Return</span><span class="chip">Retry</span></div>
+<div class="card learn-card">
+<h2>What you will learn</h2>
+<p class="transcript"><b>Your objective.</b> By the end of this lesson, you will be able to explain openapi contracts: designing a payment API contract. Before a developer writes a single line of code, a bank publishes a contract for its payment API.</p>
+<p class="transcript"><b>Why it matters.</b> For a business analyst, writing an OpenAPI contract is a requirements exercise, not a coding exercise.</p>
+<p class="transcript">Chapter objective: Learner explains banking integration patterns, including file transfer, messaging, APIs, and event streaming, and selects the right pattern for a given payment integration need. Learner demonstrates this skill using realistic banking examples, explaining each step clearly and using correct terminology throughout.</p>
+<h3>Key learning points</h3>
+<ul id="studio-points-studio-ch47s8">
+<li>OpenAPI contract: the single source of truth</li>
+<li>Five parts of an OpenAPI contract</li>
+<li>Error responses: 400, 401, 404, 409 and 500</li>
+<li>API error status meanings</li>
+<li>Retry after a timeout: no duplicate payment</li>
+<li>BA review and versioning of the contract</li>
+</ul>
+<h3>Key terms</h3>
+<div id="studio-terms-studio-ch47s8">
+<p class="keyterm"><b>Idempotency:</b> The property that repeating the same request has the same effect as sending it once. In payments, an idempotency key lets a client safely retry a request after a timeout without creating a duplicate...</p>
+<p class="keyterm"><b>Return:</b> A payment that is sent back to the sender after settlement because it cannot be credited to the beneficiary.</p>
+<p class="keyterm"><b>Retry:</b> Repeating a failed request or message delivery after a delay, usually with a limit on attempts and a back off period.</p>
+</div>
+<p class="studio-note">Banking architecture diagram showing OpenAPI contracts: designing a payment API contract.</p>
+</div>
+<section class="ic-lesson-section" id="pf-insights-studio-ch47s8">
+<h2>Insights and practice scenarios</h2>
+<p class="studio-note">Worked insights and practice scenarios for this lesson. Each one is a reusable PaymentForge case, so the same case may appear in more than one lesson.</p>
+<div data-ic-type="level" data-record-id="INS-030"><script type="application/json">{"level": 3, "meta": {"domain": "APIs & Integration", "topic": "Banking API integration walkthrough", "depth": 3, "difficulty": "advanced", "insightId": "INS-030"}, "evidence": "public-post", "recordId": "INS-030", "problem": "Northgate Retail wants to connect its checkout directly to Meridian Bank's payment API so orders can be paid without leaving the Northgate site. The engineering team has the API documentation, but the business analyst must explain how the integration actually works end to end: how the client authenticates, what the request and response mean, how Northgate learns the final payment outcome, how failures are recovered, and how the integration is monitored.\n\nThe danger is a shallow walkthrough that only covers the happy path. In production, the API will return success while a downstream step fails, a field will differ between the screen, the payload and the database, and a future schema change will break a consumer that nobody knew existed. The walkthrough must cover the contract, authentication, payload, asynchronous status, monitoring and recovery, with evidence at each step.", "solution": "Walk through the integration in layers, and make each layer testable. Start with the contract: the OpenAPI definition, the endpoints, the request and response schemas, mandatory and optional fields, validation rules and error codes. State plainly what each response means, so a 202 means the request was accepted for processing, not that the payment completed, and a 200 on a status enquiry means the status was returned, not that the payment succeeded.\n\nNext, cover authentication and security: how the client proves its identity, how keys or tokens are issued and rotated, what scopes limit access, and how sensitive data is protected in transit and in logs. Then cover the payload: field definitions, decimal precision, currency and timezone rules, and the mapping from the Northgate order to the bank payment, with a named owner for each field.\n\nThen cover asynchronous status: webhooks or events that report the final outcome, their delivery guarantees, signature verification, retry policy and the status enquiry API that resolves any uncertain payment. Make webhook consumers idempotent so a duplicate delivery cannot create a duplicate order. Cover monitoring and recovery: dashboards, alerts, dead-letter queues, correlation ID tracing, and the runbook for each failure type. Finally, cover change: versioning, deprecation periods, consumer inventory and contract tests, so a breaking field rename is caught before it reaches production.", "decision": {"question": "Northgate is integrating with Meridian Bank's payment API. The API returns a success response for a payment, but the order record is not created in Northgate's system. What should the team do first?", "context": "", "options": [{"label": "A", "detail": "Restart the Northgate order service.", "correct": false}, {"label": "B", "detail": "Assume the payment failed and submit it again.", "correct": false}, {"label": "C", "detail": "Tell the customer the payment failed.", "correct": false}, {"label": "D", "detail": "Check what the response contract promises, then trace the correlation ID across the gateway, payment service, event bus and database to find the failed transition, and reconcile the financial effect before retrying.", "correct": true}]}, "decisionRationale": "Option D is correct because the response may only promise receipt or acceptance, and the failure may sit in a downstream consumer, a webhook or a database write. Tracing the same correlation ID finds the real break. Option B risks a duplicate payment. Option C states a conclusion the evidence does not support. Option A acts before the cause is known.", "flow": {"steps": [{"title": "Authenticates to the bank API and receives a scoped token", "actor": "Northgate client", "note": "API gateway"}, {"title": "Submits a payment request with the order ID, idempotency key and payment details", "actor": "Northgate client", "note": "API gateway"}, {"title": "Validates the request, persists the instruction and returns an acceptance response with a payment reference", "actor": "Payment service", "note": "Payment service"}, {"title": "Processes the payment and publishes a status event", "actor": "Payment service", "note": "Event bus"}, {"title": "Sends a signed webhook or status event to Northgate when the outcome is known", "actor": "Bank", "note": "Webhook service"}, {"title": "Verifies the webhook signature and updates the order idempotently", "actor": "Northgate", "note": "Order service"}, {"title": "Queries the status enquiry API for any payment whose outcome is still uncertain", "actor": "Northgate", "note": "Status enquiry API"}, {"title": "Monitors dashboards, dead-letter queues and reconciliation, and acts on alerts", "actor": "Operations", "note": "Monitoring and reconciliation"}]}, "happy": ["Northgate authenticates, submits the payment with an idempotency key, and receives an acceptance response with a payment reference. The payment completes, the signed webhook arrives, the order is created exactly once, and the status enquiry API confirms the same outcome. Reconciliation matches the payment to the order and to settlement."], "negative": [{"title": "API success but downstream incomplete", "detail": "The API returns success but the order record is never created. Trace the correlation ID across gateway, service, event bus and database. Check webhook delivery, retries and dead-letter queues, and reconcile the financial effect before retrying."}, {"title": "Data differs across layers", "detail": "The screen shows one value, the API payload carries another, and the database holds a third. Trace one record by its stable identifier through UI, payload, transformation, service logs and database write. Compare field by field to find the first point of divergence."}, {"title": "Breaking schema change", "detail": "A new API version renames a field that an existing consumer still expects. Use explicit versioning and a compatibility policy. Keep the old field during an agreed deprecation period, run contract tests, and assess consumer impact before release."}, {"title": "Webhook lost or duplicated", "detail": "A status webhook never arrives, or arrives twice. Never rely on webhooks alone. Use the status enquiry API to resolve uncertain payments, and make webhook consumers idempotent so a duplicate delivery has no second effect."}], "technical": ["Keep a consumer inventory and a schema registry so every consumer of every field is known. Use explicit API versioning, prefer additive changes, and run contract tests on every release. Persist the idempotency key, payload hash, payment reference and outcome for every request, with a defined retention period. Sign webhooks, verify signatures, and make consumers idempotent by event ID. Log requests and responses with correlation IDs and masked sensitive data. Define field lineage from the user interface through the API payload, transformation, service and database, so a value difference can be traced to its first divergence. Use decimal precision rules that match the currency, and record timezones explicitly on every timestamp."], "messages": [{"message": "Payment initiation request", "title": "Northgate request to the bank payment API.", "fields": [{"tag": "Order ID", "name": "Order ID", "relevant": true}, {"tag": "Idempotency key", "name": "Idempotency key", "relevant": true}, {"tag": "Debtor and creditor details", "name": "Debtor and creditor details", "relevant": true}, {"tag": "Amount, currency and value date", "name": "Amount, currency and value date", "relevant": true}, {"tag": "End-to-end ID", "name": "End-to-end ID", "relevant": true}]}, {"message": "Payment status webhook", "title": "Asynchronous notification of the payment outcome.", "fields": [{"tag": "Event ID and event type", "name": "Event ID and event type", "relevant": true}, {"tag": "Payment reference", "name": "Payment reference", "relevant": true}, {"tag": "Order ID", "name": "Order ID", "relevant": true}, {"tag": "New status and timestamp", "name": "New status and timestamp", "relevant": true}, {"tag": "Signature for verification", "name": "Signature for verification", "relevant": true}]}, {"message": "pacs.008", "title": "Customer payment message for the underlying transfer where the API routes through a bank rail.", "fields": [{"tag": "Instruction ID and end-to-end ID", "name": "Instruction ID and end-to-end ID", "relevant": true}, {"tag": "Debtor agent and creditor agent", "name": "Debtor agent and creditor agent", "relevant": true}, {"tag": "Settlement amount and currency", "name": "Settlement amount and currency", "relevant": true}]}, {"message": "pacs.002", "title": "Payment status report confirming acceptance or rejection.", "fields": [{"tag": "Original instruction ID", "name": "Original instruction ID", "relevant": true}, {"tag": "Status code", "name": "Status code", "relevant": true}, {"tag": "Reason code where rejected", "name": "Reason code where rejected", "relevant": true}]}], "accounting": ["Each order must map to exactly one payment, and each payment must map to exactly one order. Finance reconciles API payments against orders and settlements daily, and unmatched items go to a worklist with an owner. A duplicate webhook or a retried request must never create a second order or a second debit. Failed webhooks sit in a dead-letter queue with an age and an owner, and aged items escalate. API downtime or degraded service is handled under the agreed service level, with a customer message and a recovery plan that resolves uncertain payments through status enquiry rather than blind retry."], "gherkin": {"scenarios": [{"given": "the API accepted a request but the downstream record is absent", "when": "the team traces the payment", "then": "the same correlation ID is followed across each integration boundary and the failed transition is identified."}, {"given": "a field differs across UI, API and database", "when": "the team traces the same record ID layer by layer", "then": "the first point of divergence is evidenced and assigned for correction."}, {"given": "a breaking schema change is proposed", "when": "compatibility assessment identifies active consumers", "then": "migration and versioning are agreed before release."}]}, "check": {"questions": [{"question": "What does an HTTP 202 response from a payment API normally mean?", "options": ["The payment completed.", "The order was created.", "The request was accepted for processing, and the final outcome must be confirmed separately.", "The beneficiary was credited."], "answer": 2, "explanation": "202 means acceptance, not completion. The outcome arrives through a webhook, event or status enquiry."}, {"question": "A webhook arrives twice for the same payment. What should happen?", "options": ["Refund the payment.", "Process it idempotently so the second delivery has no additional effect.", "Ignore both deliveries.", "Create the order twice."], "answer": 1, "explanation": "Webhook consumers must be idempotent by event ID so duplicate delivery is harmless."}, {"question": "The screen, the API payload and the database show three different values for one field. How do you find the cause?", "options": ["Restart the API.", "Trace the same record ID layer by layer and compare values to find the first point of divergence.", "Change the database to match the screen.", "Guess which one is right."], "answer": 1, "explanation": "Field lineage tracing finds where the value first changed, whether in mapping, transformation, caching or a stale read."}, {"question": "How should a breaking API field rename be managed?", "options": ["Rename it and tell consumers afterwards.", "Rename it only in the documentation.", "Use versioning, keep the old field during an agreed deprecation period, assess consumer impact and run contract tests.", "Never rename a field."], "answer": 2, "explanation": "Versioning and a deprecation window protect existing consumers, and contract tests catch breaks before release."}]}}</script></div>
+<div data-ic-type="level" data-record-id="INS-059"><script type="application/json">{"level": 3, "meta": {"domain": "APIs & Integration", "topic": "Defining request and response expectations", "depth": 3, "difficulty": "advanced", "insightId": "INS-059"}, "evidence": "public-post", "recordId": "INS-059", "problem": "Crestline Bank is publishing a Payment API for corporate customers and retail partners, and the first draft of the contract is a list of fields with no rules. It does not say which fields are required and which are optional, what happens when a field is missing, which error code means what, whether a success response means the payment completed, or how a caller should safely retry. Two early consumers have already built against the draft and made opposite assumptions: one treats an acceptance response as proof the money moved, the other polls for a status that never arrives. The bank's reporting team has also asked for a field the API draft marks optional, and nobody has decided whether the bank will require it, derive it, or handle its absence.\n\nThe learner must write a contract that a consumer can build against without guessing. That means specifying required and optional fields, validation rules, error semantics, status semantics, correlation and idempotency, and the difference between scheme-level optionality and the bank's own product requirements. The scheme facts anchor the content: instant euro payments must complete within 10 seconds with no scheme-level maximum since the 2025 rulebook change, and Verification of Payee is mandatory for instant euro payments from 9 October 2025. The contract must also survive change: a future field rename or rulebook update must not silently break the consumers who built against version one.", "solution": "Define every field with its name, type, cardinality, validation rule and error code, and state explicitly which fields are required, which are optional, and which are conditionally mandatory by rail, destination or product. Where a field is optional under the message schema but the bank's reporting or product needs it, say so in the contract: state the source the bank will use, the derivation rule if one exists, and the exception path when no trusted value is available, and never invent a value to satisfy reporting. Define the response contract in the same precision: which response means receipt, which means validation passed, which means acceptance, and which means completion, with the status enquiry path for every case where completion is not yet known. Specify idempotency: the key, its scope, its retention, and what the API returns for a retry with the same key and for a retry with the same key and a changed payload. Specify correlation: the ID the caller supplies, the ID the bank returns, and where each appears in logs, events and status reports.\n\nDefine the error catalogue with one meaning per code, the retry policy per error, and the rate limits with their headers and behaviour. Then govern change: version the contract explicitly, prefer additive evolution, give a deprecation period for any breaking change, assess consumer impact before release, and run contract tests against every known consumer. When a scheme rulebook update changes a mandatory field or a deadline, run the rule impact analysis across channels, the canonical model, validation, mapping and operations, and apply the new rule from its effective date with versioned configuration.", "decision": {"question": "Crestline Bank is publishing a Payment API. The draft lists fields but no rules: nothing says which fields are required, what errors mean, whether success means completion, or how to retry safely. Two consumers have already built opposite assumptions. You are the business analyst asked to define the contract.", "context": "", "options": [{"label": "A", "detail": "Mark every field required, since that is the safest way to get complete data.", "correct": false}, {"label": "B", "detail": "Rename fields freely in each release and promise that a success response means the money has moved, since consumers can adapt and want certainty.", "correct": false}, {"label": "C", "detail": "Specify required and optional fields, validation, error semantics, status semantics, correlation and idempotency, and distinguish scheme optionality from the bank's own product requirements.", "correct": true}, {"label": "D", "detail": "Publish the field list as the contract and let consumers ask questions when they get stuck.", "correct": false}]}, "decisionRationale": "Option C is correct because a usable contract must answer every question a consumer needs to build against it, and must separate what the scheme allows from what the bank requires. Option D leaves consumers guessing. Option A forces callers to supply data they may not have. Option B breaks existing consumers without warning and misstates what a success response guarantees.", "flow": {"steps": [{"title": "Draft field definitions with cardinality, validation and error codes", "actor": "Business Analyst", "note": "API contract"}, {"title": "Define response and status semantics with the status enquiry path", "actor": "Business Analyst", "note": "API contract"}, {"title": "Define the canonical model so distinct source fields keep their meaning", "actor": "Payments Architect", "note": "Architecture repository"}, {"title": "Confirm which optional fields reporting needs and the exception path", "actor": "Reporting Lead", "note": "Data requirements"}, {"title": "Define idempotency, correlation and retry behaviour", "actor": "Integration Engineer", "note": "API contract"}, {"title": "Publish version one with the deprecation and change policy", "actor": "Business Analyst", "note": "API catalogue"}, {"title": "Run contract tests against every known consumer", "actor": "Test Lead", "note": "Test evidence"}]}, "happy": ["Consumers build against a contract that answers every integration question without guessing: required, optional and conditionally mandatory fields are explicit, errors have one meaning each, success means what the contract says it means, retries are safe, and version one consumers keep working through the agreed migration window when the contract evolves."], "negative": [{"title": "Optional field required by reporting", "detail": "A field is optional in the message schema but a report needs it. State the trusted source or derivation, or follow the defined exception path; never invent a value."}, {"title": "Canonical model loses source semantics", "detail": "Two channels send similar fields with different meanings and the model collapses them. Preserve the distinction in the canonical model with provenance and scheme-specific extensions."}, {"title": "Breaking field rename proposed", "detail": "A new API version renames a field an active consumer uses. Run the consumer impact assessment, provide a deprecation period and migration plan, and keep version one working until the window ends."}, {"title": "Scheme rule changes mandatory data", "detail": "A rulebook update changes a required field or deadline. Run rule impact analysis and apply the versioned rule from its effective date with parallel testing."}], "technical": ["Version the contract, the field dictionary and the error catalogue together, and keep a consumer inventory so a breaking change can be assessed against every known caller. Store the canonical model with field ownership, cardinality, transformation rules and lineage, and keep the mapping from each source field to the canonical field with its provenance. Log requests and responses with the correlation ID and the idempotency key, and keep contract test results per consumer and per version as release evidence."], "messages": [{"message": "pain.001", "title": "Payment instruction submitted through the API", "fields": [{"tag": "Instruction identification and end-to-end identification", "name": "Instruction identification and end-to-end identification", "relevant": true}, {"tag": "Debtor and creditor account details", "name": "Debtor and creditor account details", "relevant": true}, {"tag": "Amount and currency", "name": "Amount and currency", "relevant": true}, {"tag": "Idempotency key and correlation ID", "name": "Idempotency key and correlation ID", "relevant": true}]}, {"message": "pacs.008", "title": "Credit transfer created from an accepted instruction, including instant payments within the 10-second limit", "fields": [{"tag": "Interbank settlement amount and currency with no scheme-level maximum", "name": "Interbank settlement amount and currency with no scheme-level maximum", "relevant": true}, {"tag": "Creditor agent and account", "name": "Creditor agent and account", "relevant": true}, {"tag": "Verification of Payee result", "name": "Verification of Payee result", "relevant": true}, {"tag": "Instruction reference for reconciliation", "name": "Instruction reference for reconciliation", "relevant": true}]}, {"message": "pacs.002", "title": "Payment status report that gives the authoritative outcome", "fields": [{"tag": "Original instruction reference", "name": "Original instruction reference", "relevant": true}, {"tag": "Status code and reason code", "name": "Status code and reason code", "relevant": true}, {"tag": "Timestamp of each status transition", "name": "Timestamp of each status transition", "relevant": true}]}], "accounting": ["A contract that misstates what success means creates real financial harm: a consumer that treats acceptance as completion will fulfil orders for payments that later fail, and a consumer that retries blindly will duplicate debits. The contract must therefore make the financial states explicit, and operations must reconcile API submissions against the ledger on the correlation ID and the payment reference, with a worklist for submissions whose outcome is unknown. Rate limits and error handling must be monitored as operational controls, and any consumer that repeatedly breaches the contract must be contacted before it is throttled, so a business problem is not mistaken for a technical one."], "gherkin": {"scenarios": [{"given": "a field is optional in the message schema but mandatory for the bank's product,", "when": "the contract is written,", "then": "the bank's requirement, its source and its exception path are stated explicitly."}, {"given": "two source fields with different business meaning,", "when": "mapped to the canonical model,", "then": "their semantics remain distinguishable."}, {"given": "a breaking schema change is proposed,", "when": "compatibility assessment identifies active consumers,", "then": "migration and versioning are agreed before release."}]}, "check": {"questions": [{"question": "Can a field be optional in ISO 20022 but mandatory for the bank's product?", "options": ["Only if the customer agrees", "No, scheme optionality always wins", "Yes, the bank may require it for its product or reporting, with a stated source and exception path", "Only for direct debits"], "answer": 2, "explanation": "Scheme optionality and product requirements are different layers; the bank must state its own requirement, its source and what happens when no trusted value exists."}, {"question": "What must a contract state about a success response?", "options": ["Nothing, success is obvious", "That the order should be created", "That the money has moved", "Exactly what it promises: receipt, validation, acceptance or completion, and how to confirm completion"], "answer": 3, "explanation": "Success at the transport level is not completion, so the contract must say what each response means and how completion is confirmed."}, {"question": "How should a breaking field rename be handled?", "options": ["Never rename anything", "Assess consumer impact, provide a deprecation period and a migration plan", "Rename it silently", "Rename it and tell consumers afterwards"], "answer": 1, "explanation": "Breaking changes need a consumer impact assessment, a deprecation period and a migration plan, with the old version working until the window ends."}, {"question": "What is the maximum execution time for an instant euro payment under the current rules?", "options": ["10 seconds", "60 seconds", "5 minutes", "One business day"], "answer": 0, "explanation": "The maximum execution time for an instant euro payment is 10 seconds under Regulation (EU) 2024/886."}]}}</script></div>
+</section>
+<div class="fw-card" id="pf-exercise-studio-ch47s8">
+<p class="fw-label">Practise this lesson</p>
+<h2>Exercise</h2>
+<p><b>Write the request and the expected response for the API call described in this lesson.</b></p>
+<p>Use the API resources, operations and fields named in this lesson.</p>
+<ol class="fw-steps">
+<li><b>What to do.</b> Write the JSON request with the required fields, the success response, and one error response with its error code.</li>
+</ol>
+<p><button class="studio-btn" id="pf-ex-btn-studio-ch47s8" onclick="pfRevealExercise('studio-ch47s8')">Show the answer</button></p>
+<div class="fw-exercise-answer" id="pf-ex-answer-studio-ch47s8">
+<p><b>Correct result.</b> A correct request has all mandatory fields, a valid idempotency key, and the right resource and operation. The success response confirms acceptance, and the error response names the field or rule that failed.</p>
+<p><b>Why.</b> An API contract is a promise between two systems. If the request is wrong, the API must reject it cleanly, not fail silently.</p>
+</div>
+</div>
+<div class="fw-card" id="pf-quiz-studio-ch47s8" data-answer="1">
+<p class="fw-label">Check your understanding</p>
+<h2>Practice question</h2>
+<p><b>A channel system sends a payment instruction to the hub, the request times out, and the channel retries with the same idempotency key. What should the hub do?</b></p>
+<button type="button" class="quiz-opt" data-idx="0" onclick="pfCheckAnswer('studio-ch47s8', this)">Process the payment again, because a retry is a new payment</button>
+<button type="button" class="quiz-opt" data-idx="1" onclick="pfCheckAnswer('studio-ch47s8', this)">Return the stored result of the first request without processing the payment again, because the idempotency key identifies it as the same request</button>
+<button type="button" class="quiz-opt" data-idx="2" onclick="pfCheckAnswer('studio-ch47s8', this)">Reject the retry with an error, because retries are not allowed</button>
+<button type="button" class="quiz-opt" data-idx="3" onclick="pfCheckAnswer('studio-ch47s8', this)">Process the payment again and reverse the first one</button>
+<div class="quiz-feedback" id="pf-quiz-fb-studio-ch47s8"></div>
+<script type="application/json" id="pf-quiz-data-studio-ch47s8">{"why_wrong": ["This is not correct for this question. An idempotency key identifies a request.", "", "This is not correct for this question. An idempotency key identifies a request.", "This is not correct for this question. An idempotency key identifies a request."], "explanation": "An idempotency key identifies a request. When the same key arrives again, the hub must return the stored result of the first request without processing the payment a second time. That is the whole point of idempotency: a retry after a timeout must not create a duplicate payment."}</script>
+</div>
+<div class="fw-card">
+<p class="fw-label">Takeaway and next step</p>
+<h2>What to remember</h2>
+<p>The contract states the header name, whether it is required, and how long the key is stored.</p>
+<p>Call the API described in this lesson with a valid request, then with a missing field, and compare the responses.</p>
+<p><a class="fw-tool-link" href="../simulators/api-playground.html">Open the API Playground &rarr;</a></p>
+<p class="studio-note">Builds on "Exercise: Design the Integration for a New Payment Rail (choose patterns, draw the integration map, define contracts and failure handling)".</p>
+</div>
+<section class="upnext" id="studio-upnext-studio-ch47s8" style="display:none" aria-label="Up next">
+<span class="tag">Up next</span>
+<h2>Up next: Event-driven payments and Kafka: topics, partitions, ordering and replay</h2>
+<p>Lesson 9 of 9, Banking Integration Patterns, Narration 3:22</p>
+<div class="row">
+<button class="studio-btn primary" onclick="goLessonAuto('ch47s9')">Next lesson &rarr;</button>
+<button class="studio-btn" onclick="goLesson('ch47s7')">&larr; Previous lesson</button>
+<button class="studio-btn" onclick="studioReplayLesson('studio-ch47s8')">Replay this lesson</button>
+</div>
+</section>
+<div class="lesson-nav">
+<button class="studio-btn" onclick="goLesson('ch47s7')" title="Previous lesson: Exercise: Design the Integration for a New Payment Rail (choose patterns, draw the integration map, define contracts and failure handling)">&larr; Previous</button>
+<button class="studio-btn" onclick="goChapterContents('ch47')">Chapter contents</button>
+<button class="studio-btn primary" onclick="goLesson('ch47s9')" title="Next lesson: Event-driven payments and Kafka: topics, partitions, ordering and replay">Next &rarr;</button>
+</div>
+<div class="card transcript-card">
+<h2>Transcript and full text</h2>
+<details class="studio-transcript" id="studio-transcript-details-studio-ch47s8"><summary>Show transcript</summary>
+<p class="transcript" id="studio-transcript-studio-ch47s8">Before a developer writes a single line of code, a bank publishes a contract for its payment API. That contract is written in the OpenAPI Specification, a machine readable format that describes exactly what the API accepts, what it returns, and what can go wrong. It is usually a YAML or JSON file, and it is the single source of truth for the API. A developer reads it to build a client. A tester reads it to write test cases. A business analyst reads it to check that the API does what the business needs. If the contract is wrong, every system built on it will be wrong too. An OpenAPI contract has five parts. The paths list every endpoint, for example POST /payments for creating a payment and GET /payments/{id} for checking its status. The operations describe what each endpoint does, including the request body and the response body. The schemas define every field, its type, whether it is required, and its constraints, for example that the instructed amount must be a number with at least two decimal places and a minimum value of 0.01. The security section states how the caller authenticates, for example with an OAuth2 token or with mutual TLS. And the responses list every status code the API can return, with the error format for each one. The contract must state the error responses explicitly, because error handling is where most API integrations fail. A 400 bad request means the request was invalid, for example a missing mandatory field, and the response must name the missing field. A 401 unauthorised means the caller is not authenticated. A 404 not found means the payment identifier does not exist. A 409 conflict means the request conflicts with the current state, for example trying to cancel a payment that has already settled. A 500 internal error means the server failed. A developer who only reads the happy path will build a client that breaks on the first error, so the contract must make the errors as clear as the success. The contract must also state the idempotency rule. When a client sends a payment request, it includes an idempotency key in a header, for example Idempotency-Key: 7f3a9c2e. If the request times out and the client retries with the same key, the API must return the stored result of the first request instead of creating a second payment. The contract states the header name, whether it is required, and how long the key is stored. Without that, a retry after a timeout becomes a duplicate payment, and the customer is debited twice. Idempotency is not a feature the developer adds later; it is part of the contract from the start. For a business analyst, writing an OpenAPI contract is a requirements exercise, not a coding exercise. The BA starts from the business need, for example a corporate client must be able to initiate a payment and check its status. The BA then defines the fields the client must send, the fields the API must return, the validation rules, the error cases, and the security. The BA reviews the contract with the developer, the tester and the security team, and signs it off before any code is written. The contract is then versioned, because a change to a required field or a response format is a breaking change that affects every client. A good contract is clear, complete, and stable, and it is the difference between an API that works and an API that generates support tickets.</p>
+<div id="studio-paras-studio-ch47s8">
+<p class="transcript">Before a developer writes a single line of code, a bank publishes a contract for its payment API. That contract is written in the OpenAPI Specification, a machine readable format that describes exactly what the API accepts, what it returns, and what can go wrong. It is usually a YAML or JSON file, and it is the single source of truth for the API. A developer reads it to build a client. A tester reads it to write test cases. A business analyst reads it to check that the API does what the business needs. If the contract is wrong, every system built on it will be wrong too.</p>
+<p class="transcript">An OpenAPI contract has five parts. The paths list every endpoint, for example POST /payments for creating a payment and GET /payments/{id} for checking its status. The operations describe what each endpoint does, including the request body and the response body. The schemas define every field, its type, whether it is required, and its constraints, for example that the instructed amount must be a number with at least two decimal places and a minimum value of 0.01. The security section states how the caller authenticates, for example with an OAuth2 token or with mutual TLS. And the responses list every status code the API can return, with the error format for each one.</p>
+<p class="transcript">The contract must state the error responses explicitly, because error handling is where most API integrations fail. A 400 bad request means the request was invalid, for example a missing mandatory field, and the response must name the missing field. A 401 unauthorised means the caller is not authenticated. A 404 not found means the payment identifier does not exist. A 409 conflict means the request conflicts with the current state, for example trying to cancel a payment that has already settled. A 500 internal error means the server failed. A developer who only reads the happy path will build a client that breaks on the first error, so the contract must make the errors as clear as the success.</p>
+<p class="transcript">The contract must also state the idempotency rule. When a client sends a payment request, it includes an idempotency key in a header, for example Idempotency-Key: 7f3a9c2e. If the request times out and the client retries with the same key, the API must return the stored result of the first request instead of creating a second payment. The contract states the header name, whether it is required, and how long the key is stored. Without that, a retry after a timeout becomes a duplicate payment, and the customer is debited twice. Idempotency is not a feature the developer adds later; it is part of the contract from the start.</p>
+<p class="transcript">For a business analyst, writing an OpenAPI contract is a requirements exercise, not a coding exercise. The BA starts from the business need, for example a corporate client must be able to initiate a payment and check its status. The BA then defines the fields the client must send, the fields the API must return, the validation rules, the error cases, and the security. The BA reviews the contract with the developer, the tester and the security team, and signs it off before any code is written. The contract is then versioned, because a change to a required field or a response format is a breaking change that affects every client. A good contract is clear, complete, and stable, and it is the difference between an API that works and an API that generates support tickets.</p>
+</div>
+</details>
+<details class="studio-transcript"><summary>Full lesson text (all scenes)</summary><div id="studio-transcript-full-studio-ch47s8"></div></details>
+<p><button class="studio-btn primary" id="done-ch47s8" onclick="studioMarkSceneDone('studio-ch47s8')">Mark lesson complete</button> <span class="studio-note">Completing a lesson updates your progress dashboard on the homepage.</span></p>
+</div>
+<p class="studio-note">Scene timestamps are estimated by allocating the narration text proportionally across the real audio length. The audio playback position is the source of truth: pause freezes the visual, seeking restores the correct scene, replay restarts the scene animation.</p>
+</div>
+<script>window.__PA_STUDIO_QUEUE = window.__PA_STUDIO_QUEUE || []; window.__PA_STUDIO_QUEUE.push(["studio-ch47s8", {"sample_id": "studio-ch47s8", "chapter_id": "ch47", "title": "OpenAPI contracts: designing a payment API contract", "domain": "D10 APIs and integration", "objective": "Learner explains banking integration patterns, including file transfer, messaging, APIs, and event streaming, and selects the right pattern for a given payment integration need. Learner demonstrates this skill using realistic banking examples, explaining each step clearly and using correct terminology throughout.", "scenes": [{"id": "ch47s8", "section_id": "ch47s8", "title": "OpenAPI contracts: designing a payment API contract", "audio": "../audio/ch47s8.mp3", "duration_sec": 214.4, "points": ["Before a developer writes a single line of code, a bank publishes a contract for its payment API.", "An OpenAPI contract has five parts.", "The contract must state the error responses explicitly, because error handling is where most API integrations fail.", "The contract must also state the idempotency rule.", "For a business analyst, writing an OpenAPI contract is a requirements exercise, not a coding exercise."], "terms": [{"term": "Idempotency", "def": "The property that repeating the same request has the same effect as sending it once. In payments, an idempotency key lets a client safely retry a request after a timeout without creating a duplicate..."}, {"term": "Return", "def": "A payment that is sent back to the sender after settlement because it cannot be credited to the beneficiary."}, {"term": "Retry", "def": "Repeating a failed request or message delivery after a delay, usually with a limit on attempts and a back off period."}], "transcript": "Before a developer writes a single line of code, a bank publishes a contract for its payment API. That contract is written in the OpenAPI Specification, a machine readable format that describes exactly what the API accepts, what it returns, and what can go wrong. It is usually a YAML or JSON file, and it is the single source of truth for the API. A developer reads it to build a client. A tester reads it to write test cases. A business analyst reads it to check that the API does what the business needs. If the contract is wrong, every system built on it will be wrong too. An OpenAPI contract has five parts. The paths list every endpoint, for example POST /payments for creating a payment and GET /payments/{id} for checking its status. The operations describe what each endpoint does, including the request body and the response body. The schemas define every field, its type, whether it is required, and its constraints, for example that the instructed amount must be a number with at least two decimal places and a minimum value of 0.01. The security section states how the caller authenticates, for example with an OAuth2 token or with mutual TLS. And the responses list every status code the API can return, with the error format for each one. The contract must state the error responses explicitly, because error handling is where most API integrations fail. A 400 bad request means the request was invalid, for example a missing mandatory field, and the response must name the missing field. A 401 unauthorised means the caller is not authenticated. A 404 not found means the payment identifier does not exist. A 409 conflict means the request conflicts with the current state, for example trying to cancel a payment that has already settled. A 500 internal error means the server failed. A developer who only reads the happy path will build a client that breaks on the first error, so the contract must make the errors as clear as the success. The contract must also state the idempotency rule. When a client sends a payment request, it includes an idempotency key in a header, for example Idempotency-Key: 7f3a9c2e. If the request times out and the client retries with the same key, the API must return the stored result of the first request instead of creating a second payment. The contract states the header name, whether it is required, and how long the key is stored. Without that, a retry after a timeout becomes a duplicate payment, and the customer is debited twice. Idempotency is not a feature the developer adds later; it is part of the contract from the start. For a business analyst, writing an OpenAPI contract is a requirements exercise, not a coding exercise. The BA starts from the business need, for example a corporate client must be able to initiate a payment and check its status. The BA then defines the fields the client must send, the fields the API must return, the validation rules, the error cases, and the security. The BA reviews the contract with the developer, the tester and the security team, and signs it off before any code is written. The contract is then versioned, because a change to a required field or a response format is a breaking change that affects every client. A good contract is clear, complete, and stable, and it is the difference between an API that works and an API that generates support tickets.", "paragraphs": ["Before a developer writes a single line of code, a bank publishes a contract for its payment API. That contract is written in the OpenAPI Specification, a machine readable format that describes exactly what the API accepts, what it returns, and what can go wrong. It is usually a YAML or JSON file, and it is the single source of truth for the API. A developer reads it to build a client. A tester reads it to write test cases. A business analyst reads it to check that the API does what the business needs. If the contract is wrong, every system built on it will be wrong too.", "An OpenAPI contract has five parts. The paths list every endpoint, for example POST /payments for creating a payment and GET /payments/{id} for checking its status. The operations describe what each endpoint does, including the request body and the response body. The schemas define every field, its type, whether it is required, and its constraints, for example that the instructed amount must be a number with at least two decimal places and a minimum value of 0.01. The security section states how the caller authenticates, for example with an OAuth2 token or with mutual TLS. And the responses list every status code the API can return, with the error format for each one.", "The contract must state the error responses explicitly, because error handling is where most API integrations fail. A 400 bad request means the request was invalid, for example a missing mandatory field, and the response must name the missing field. A 401 unauthorised means the caller is not authenticated. A 404 not found means the payment identifier does not exist. A 409 conflict means the request conflicts with the current state, for example trying to cancel a payment that has already settled. A 500 internal error means the server failed. A developer who only reads the happy path will build a client that breaks on the first error, so the contract must make the errors as clear as the success.", "The contract must also state the idempotency rule. When a client sends a payment request, it includes an idempotency key in a header, for example Idempotency-Key: 7f3a9c2e. If the request times out and the client retries with the same key, the API must return the stored result of the first request instead of creating a second payment. The contract states the header name, whether it is required, and how long the key is stored. Without that, a retry after a timeout becomes a duplicate payment, and the customer is debited twice. Idempotency is not a feature the developer adds later; it is part of the contract from the start.", "For a business analyst, writing an OpenAPI contract is a requirements exercise, not a coding exercise. The BA starts from the business need, for example a corporate client must be able to initiate a payment and check its status. The BA then defines the fields the client must send, the fields the API must return, the validation rules, the error cases, and the security. The BA reviews the contract with the developer, the tester and the security team, and signs it off before any code is written. The contract is then versioned, because a change to a required field or a response format is a breaking change that affects every client. A good contract is clear, complete, and stable, and it is the difference between an API that works and an API that generates support tickets."], "accessibility": "Banking architecture diagram showing OpenAPI contracts: designing a payment API contract.", "visual_type": "architecture", "visual_choice_reason": "architecture chapter", "beats": [{"t0": 0.0, "t1": 36.7, "title": "OpenAPI contract: the single source of truth", "note": "Before a developer writes a single line of code, a bank publishes a contract for its payment API.", "highlight_nodes": ["n0"], "highlight_conns": [], "highlight_fields": []}, {"t0": 36.7, "t1": 73.7, "title": "Five parts of an OpenAPI contract", "note": "An OpenAPI contract has five parts.", "highlight_nodes": ["n1"], "highlight_conns": ["c0"], "highlight_fields": []}, {"t0": 73.7, "t1": 111.8, "title": "Error responses: 400, 401, 404, 409 and 500", "note": "And the responses list every status code the API can return, with the error format for each one.", "highlight_nodes": ["n2"], "highlight_conns": ["c1"], "highlight_fields": []}, {"t0": 111.8, "t1": 152.1, "title": "API error status meanings", "note": "A 500 internal error means the server failed.", "highlight_nodes": ["n3"], "highlight_conns": ["c2"], "highlight_fields": []}, {"t0": 152.1, "t1": 188.5, "title": "Retry after a timeout: no duplicate payment", "note": "Without that, a retry after a timeout becomes a duplicate payment, and the customer is debited twice.", "highlight_nodes": ["n4"], "highlight_conns": ["c3"], "highlight_fields": []}, {"t0": 188.5, "t1": 214.4, "title": "BA review and versioning of the contract", "note": "The BA reviews the contract with the developer, the tester and the security team, and signs it off before any code is written.", "highlight_nodes": ["n5"], "highlight_conns": ["c4"], "highlight_fields": []}], "node_ids": ["n0", "n1", "n2", "n3", "n4", "n5"], "framework": {"objective": "By the end of this lesson, you will be able to explain openapi contracts: designing a payment API contract. Before a developer writes a single line of code, a bank publishes a contract for its payment API.", "why_matters": "For a business analyst, writing an OpenAPI contract is a requirements exercise, not a coding exercise.", "technical_example": "Idempotency: The property that repeating the same request has the same effect as sending it once. In payments, an idempotency key lets a client safely retry a request after a timeout without creating a duplicate...", "failure_recovery": "A 500 internal error means the server failed.", "exercise": {"task": "Write the request and the expected response for the API call described in this lesson.", "info": "Use the API resources, operations and fields named in this lesson.", "action": "Write the JSON request with the required fields, the success response, and one error response with its error code.", "correct": "A correct request has all mandatory fields, a valid idempotency key, and the right resource and operation. The success response confirms acceptance, and the error response names the field or rule that failed.", "why": "An API contract is a promise between two systems. If the request is wrong, the API must reject it cleanly, not fail silently."}, "assessment": {"question": "A channel system sends a payment instruction to the hub, the request times out, and the channel retries with the same idempotency key. What should the hub do?", "options": ["Process the payment again, because a retry is a new payment", "Return the stored result of the first request without processing the payment again, because the idempotency key identifies it as the same request", "Reject the retry with an error, because retries are not allowed", "Process the payment again and reverse the first one"], "answer": 1, "explanation": "An idempotency key identifies a request. When the same key arrives again, the hub must return the stored result of the first request without processing the payment a second time. That is the whole point of idempotency: a retry after a timeout must not create a duplicate payment.", "why_wrong": ["This is not correct for this question. An idempotency key identifies a request.", "", "This is not correct for this question. An idempotency key identifies a request.", "This is not correct for this question. An idempotency key identifies a request."], "source": "test:ts-d09-11"}, "takeaway": "The contract states the header name, whether it is required, and how long the key is stored.", "prereq": "ch47s7", "next": "ch47s9", "connection_note": "Builds on \"Exercise: Design the Integration for a New Payment Rail (choose patterns, draw the integration map, define contracts and failure handling)\".", "tool": {"slug": "api-playground", "label": "API Playground", "url": "../simulators/api-playground.html", "scenario": "Call the API described in this lesson with a valid request, then with a missing field, and compare the responses."}, "simple": "In plain words: before a developer writes a single line of code, a bank publishes a contract for its payment API. That is the whole idea in one sentence, and the rest of the lesson shows how it works in a real bank.", "summary": "Before a developer writes a single line of code, a bank publishes a contract for its payment API. Key points: OpenAPI contract: the single source of truth; Five parts of an OpenAPI contract; Error responses: 400, 401, 404, 409 and 500; API error status meanings; Retry after a timeout: no duplicate payment; BA review and versioning of the contract.", "example": "Before a developer writes a single line of code, a bank publishes a contract for its payment API. The paths list every endpoint, for example POST /payments for creating a payment and GET /payments/{id} for checking its status."}}], "chapter_title": "Banking Integration Patterns", "meta_line": "Banking Integration Patterns, Lesson 8 of 9, Narration 3:34, D10 APIs and integration", "next_id": "ch47s9", "next_title": "Event-driven payments and Kafka: topics, partitions, ordering and replay"}]);</script>
+</div>
+<nav class="tool-rail" aria-label="Lesson tools">
+<button type="button" class="rail-tool" onclick="pfOpenTranscript('studio-ch47s8')" title="Open transcript"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M7 3h7l4 4v14H7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M14 3v4h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 12h5M10 15.5h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span>Transcript</span></button>
+<button type="button" class="rail-tool" onclick="pfToggleNote('studio-ch47s8')" title="Write a note on this lesson"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L8 19l-4 1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>Notes</span></button>
+<button type="button" class="rail-tool" onclick="pfToggleFiles('studio-ch47s8')" title="Download lesson files"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>Files</span></button>
+</nav>
+<div class="fw-files-panel" id="pf-files-studio-ch47s8" style="display:none"><b>Lesson files</b><p><a href="../audio/ch47s8.mp3" download>Download narration (MP3)</a></p><p><a href="#" onclick="pfDownloadTranscript('studio-ch47s8');return false">Download transcript (.txt)</a></p></div>
+</div>
+</div>
+</main>
+<footer><p>Payments Training Hub. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="../index.html">Home</a> &middot; <a href="../courses.html">Courses</a> &middot; <a href="../practice.html">Practice</a> &middot; <a href="../simulators.html">Simulators</a> &middot; <a href="../labs.html">Labs</a> &middot; <a href="../explorer.html">Explorer</a> &middot; <a href="../tests.html">Tests</a> &middot; <a href="../diagnostic.html">Diagnostic</a> &middot; <a href="../faq.html">Interview Ready Questions</a> &middot; <a href="../interview-prep.html">Interview Prep</a></p><p><a href="../about.html">About</a> &middot; <a href="../privacy.html">Privacy</a> &middot; <a href="../terms.html">Terms</a> &middot; <a href="../contact.html">Contact</a> &middot; <a href="../editorial-standards.html">Editorial Standards</a> &middot; <a href="../sources.html">Sources</a></p></footer>
+<script defer src="../assets/site.js"></script>
+<script defer src="../assets/bundles.js"></script>
+<script defer src="../assets/auth.js"></script>
+<script defer src="../assets/studio.js"></script>
+<script defer src="../assets/insight-components.js"></script>
+<script defer src="../assets/nav.js"></script>
+<script defer src="../assets/pf-enhance.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+if(window.PFInsight){PFInsight.init();}
+});
+</script>
+</body>
+</html>

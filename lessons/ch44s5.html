@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>Operational Controls, Queues and Exception Handling | Payments Training Hub</title>
+<meta name="description" content="Operational controls are the rules and checks that prevent errors, detect them quickly when they happen, and limit the damage. The most important...">
+<link rel="canonical" href="https://www.paymentstraininghub.in/lessons/ch44s5.html">
+<meta property="og:url" content="https://www.paymentstraininghub.in/lessons/ch44s5.html">
+<meta property="og:title" content="Operational Controls, Queues and Exception Handling | Payments Training Hub">
+<meta property="og:description" content="Operational controls are the rules and checks that prevent errors, detect them quickly when they happen, and limit the damage. The most important...">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.in/assets/hero/hero-poster.jpg">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.paymentstraininghub.in/index.html"}, {"@type": "ListItem", "position": 2, "name": "Payment Operations", "item": "https://www.paymentstraininghub.in/chapters/ch44-payment-operations.html"}, {"@type": "ListItem", "position": 3, "name": "Operational Controls, Queues and Exception Handling", "item": "https://www.paymentstraininghub.in/lessons/ch44s5.html"}]}</script>
+<link rel="stylesheet" href="../assets/studio.css">
+<link rel="stylesheet" href="../assets/pf-theme.css">
+<link rel="stylesheet" href="../assets/insight-components.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="../index.html" class="brand">Payments <span>Training Hub</span></a><nav class="topnav"><a href="../index.html">Home</a> <a href="../courses.html">Courses</a> <a href="../practice.html">Practice</a> <a href="../simulators.html">Simulators</a> <a href="../labs.html">Labs</a> <a href="../explorer.html">Explorer</a> <a href="../tests.html">Tests</a></nav><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox" style="display:none"><span id="authState">Not signed in</span> <span id="authForm" style="display:none"><input id="authEmail" type="email" placeholder="Email for OTP" aria-label="Email for sign-in"> <button class="mute-btn" onclick="paAuthSendOtp()">Send code</button> <input id="authCode" type="text" placeholder="6-digit code" aria-label="One-time code" style="display:none"> <button class="mute-btn" id="authVerifyBtn" onclick="paAuthVerifyOtp()" style="display:none">Verify</button> <button class="mute-btn" onclick="paAuthGoogle()">Sign in with Google</button> </span><button class="mute-btn" id="authSignOutBtn" onclick="paAuthSignOut()" style="display:none">Sign out</button></span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<div class="lesson-page">
+<div class="lesson-shell">
+<aside class="course-rail">
+<div class="rail-head">
+<h2>Payment Operations</h2>
+<a class="rail-close" href="../chapters/ch44-payment-operations.html" aria-label="Close and go to chapter" title="Back to chapter">&times;</a>
+</div>
+<div class="goal-card">
+<div class="goal-head"><b>Today's goal &middot; <span id="side-progress-text">0 of 7 items</span></b><span class="goal-flag"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 21V4m0 1h11l-2.5 3.5L17 12H6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="goal-chev">&#94;</span></div>
+<p class="goal-body" id="side-goal-body">Complete 3 items today to stay at a good pace!</p>
+</div>
+<ul class="lesson-list"><li class="" data-lesson="ch44s1"><a href="ch44s1.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">A Day in Payment Operations</span><span class="m">Video &middot; 4 min</span></span></a></li>
+<li class="" data-lesson="ch44s2"><a href="ch44s2.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Cut-Off Management and Processing Calendars</span><span class="m">Video &middot; 4 min</span></span></a></li>
+<li class="" data-lesson="ch44s3"><a href="ch44s3.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">End-of-Day Processing, Close and Start-of-Day Checks</span><span class="m">Video &middot; 3 min</span></span></a></li>
+<li class="" data-lesson="ch44s4"><a href="ch44s4.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Intraday Liquidity Operations and Monitoring</span><span class="m">Video &middot; 3 min</span></span></a></li>
+<li class="current" data-lesson="ch44s5"><a href="ch44s5.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Operational Controls, Queues and Exception Handling</span><span class="m">Video &middot; 4 min</span></span></a></li>
+<li class="" data-lesson="ch44s6"><a href="ch44s6.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Incident Management, Outages and Business Continuity</span><span class="m">Video &middot; 4 min</span></span></a></li>
+<li class="" data-lesson="ch44s7"><a href="ch44s7.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Exercise: Run the Operations Shift</span><span class="m">Video &middot; 4 min</span></span></a></li></ul>
+</aside>
+<div class="lesson-main">
+<div class="studio" id="studio-studio-ch44s5">
+<div class="player">
+<div class="studio-canvas" id="studio-canvas-studio-ch44s5">
+<div class="ch-sec studio-scene-vis active" id="studio-vis-studio-ch44s5-0"><div class="beat-frames">
+<div class="beat-frame active" data-frame="0">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Operational</tspan> <tspan fill="#FFFFFF">controls</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">STARTED</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Operational controls</tspan><tspan fill="#CBD5E1"> - rules and checks that prevent errors</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="0.55">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Queues</tspan><tspan fill="#CBD5E1"> - where payments sit when they cannot go</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="0.55">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Common exceptions</tspan><tspan fill="#CBD5E1"> - most common exceptions are simple data</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Correction</tspan><tspan fill="#CBD5E1"> - Every correction is logged with the old value</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Fraud exception</tspan><tspan fill="#CBD5E1"> - customer who normally pays 2,000 pounds</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Retail bank processing two million payments</tspan><tspan fill="#CBD5E1"> - day at 98 percent straight</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="128" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Operational controls are the rules and checks that prevent errors, detect them quickly when</text>
+<text x="450" y="476" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">they happen, and limit the damage.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 1 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 700" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="700" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Operational</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">controls</tspan></text>
+<rect x="24" y="86" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="104" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">STARTED</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="120" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="139" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Operational controls</text>
+<text x="180" y="157" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">rules and checks that prevent errors</text>
+<text x="180" y="175" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="0.55">
+<rect x="24" y="192" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="211" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Queues</text>
+<text x="180" y="229" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">where payments sit when they cannot go</text>
+<text x="180" y="247" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="0.55">
+<rect x="24" y="264" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="283" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Common exceptions</text>
+<text x="180" y="301" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">most common exceptions are simple data</text>
+<text x="180" y="319" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="24" y="336" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="355" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Correction</text>
+<text x="180" y="373" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Every correction is logged with the old value</text>
+<text x="180" y="391" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="24" y="408" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="427" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Fraud exception</text>
+<text x="180" y="445" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">customer who normally pays 2,000 pounds</text>
+<text x="180" y="463" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="480" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="499" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Retail bank processing</text>
+<text x="180" y="517" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">two million payments</text>
+<text x="180" y="535" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">day at 98 percent straight through</text>
+<text x="180" y="553" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="580" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Operational controls are the rules and</text>
+<text x="180" y="599" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">checks that prevent errors, detect them</text>
+<text x="180" y="618" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">quickly when they happen, and limit the</text>
+<text x="180" y="637" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">damage.</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="1">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Queues:</tspan> <tspan fill="#FFFFFF">safe</tspan> <tspan fill="#FFFFFF">waiting</tspan> <tspan fill="#FFFFFF">areas</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Operational controls</tspan><tspan fill="#CBD5E1"> - rules and checks that prevent errors</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Queues</tspan><tspan fill="#CBD5E1"> - where payments sit when they cannot go</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="0.55">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Common exceptions</tspan><tspan fill="#CBD5E1"> - most common exceptions are simple data</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Correction</tspan><tspan fill="#CBD5E1"> - Every correction is logged with the old value</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Fraud exception</tspan><tspan fill="#CBD5E1"> - customer who normally pays 2,000 pounds</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Retail bank processing two million payments</tspan><tspan fill="#CBD5E1"> - day at 98 percent straight</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="257" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Queues are the safe waiting areas where payments sit when they cannot go straight through.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 2 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 681" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="681" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Queues:</tspan> <tspan fill="#FFFFFF">safe</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">waiting</tspan> <tspan fill="#FFFFFF">areas</tspan></text>
+<rect x="24" y="86" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="104" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="120" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="139" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Operational controls</text>
+<text x="180" y="157" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">rules and checks that prevent errors</text>
+<text x="180" y="175" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="192" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="211" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Queues</text>
+<text x="180" y="229" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">where payments sit when they cannot go</text>
+<text x="180" y="247" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="0.55">
+<rect x="24" y="264" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="283" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Common exceptions</text>
+<text x="180" y="301" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">most common exceptions are simple data</text>
+<text x="180" y="319" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="24" y="336" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="355" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Correction</text>
+<text x="180" y="373" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Every correction is logged with the old value</text>
+<text x="180" y="391" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="24" y="408" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="427" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Fraud exception</text>
+<text x="180" y="445" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">customer who normally pays 2,000 pounds</text>
+<text x="180" y="463" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="480" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="499" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Retail bank processing</text>
+<text x="180" y="517" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">two million payments</text>
+<text x="180" y="535" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">day at 98 percent straight through</text>
+<text x="180" y="553" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="580" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Queues are the safe waiting areas</text>
+<text x="180" y="599" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">where payments sit when they cannot</text>
+<text x="180" y="618" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">go straight through.</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="2">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Common</tspan> <tspan fill="#FFFFFF">exceptions</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Operational controls</tspan><tspan fill="#CBD5E1"> - rules and checks that prevent errors</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Queues</tspan><tspan fill="#CBD5E1"> - where payments sit when they cannot go</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Common exceptions</tspan><tspan fill="#CBD5E1"> - most common exceptions are simple data</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Correction</tspan><tspan fill="#CBD5E1"> - Every correction is logged with the old value</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Fraud exception</tspan><tspan fill="#CBD5E1"> - customer who normally pays 2,000 pounds</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Retail bank processing two million payments</tspan><tspan fill="#CBD5E1"> - day at 98 percent straight</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="386" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The most common exceptions are simple data errors that can be fixed in minutes.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 3 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 681" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="681" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Common</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">exceptions</tspan></text>
+<rect x="24" y="86" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="104" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="120" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="139" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Operational controls</text>
+<text x="180" y="157" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">rules and checks that prevent errors</text>
+<text x="180" y="175" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="192" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="211" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Queues</text>
+<text x="180" y="229" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">where payments sit when they cannot go</text>
+<text x="180" y="247" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="1">
+<rect x="24" y="264" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="283" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Common exceptions</text>
+<text x="180" y="301" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">most common exceptions are simple data</text>
+<text x="180" y="319" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="24" y="336" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="355" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Correction</text>
+<text x="180" y="373" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Every correction is logged with the old value</text>
+<text x="180" y="391" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="24" y="408" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="427" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Fraud exception</text>
+<text x="180" y="445" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">customer who normally pays 2,000 pounds</text>
+<text x="180" y="463" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="480" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="499" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Retail bank processing</text>
+<text x="180" y="517" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">two million payments</text>
+<text x="180" y="535" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">day at 98 percent straight through</text>
+<text x="180" y="553" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="580" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The most common exceptions are</text>
+<text x="180" y="599" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">simple data errors that can be fixed in</text>
+<text x="180" y="618" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">minutes.</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="3">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Correction:</tspan> <tspan fill="#FFFFFF">logged</tspan> <tspan fill="#FFFFFF">with</tspan> <tspan fill="#FFFFFF">old</tspan> <tspan fill="#FFFFFF">value</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Operational controls</tspan><tspan fill="#CBD5E1"> - rules and checks that prevent errors</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Queues</tspan><tspan fill="#CBD5E1"> - where payments sit when they cannot go</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Common exceptions</tspan><tspan fill="#CBD5E1"> - most common exceptions are simple data</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Correction</tspan><tspan fill="#CBD5E1"> - Every correction is logged with the old value</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Fraud exception</tspan><tspan fill="#CBD5E1"> - customer who normally pays 2,000 pounds</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Retail bank processing two million payments</tspan><tspan fill="#CBD5E1"> - day at 98 percent straight</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="514" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Every correction is logged with the old value, the new value, the analyst name and the time, so</text>
+<text x="450" y="476" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">an auditor can reconstruct the change.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 4 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 700" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="700" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Correction:</tspan> <tspan fill="#FFFFFF">logged</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">with</tspan> <tspan fill="#FFFFFF">old</tspan> <tspan fill="#FFFFFF">value</tspan></text>
+<rect x="24" y="86" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="104" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="120" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="139" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Operational controls</text>
+<text x="180" y="157" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">rules and checks that prevent errors</text>
+<text x="180" y="175" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="192" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="211" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Queues</text>
+<text x="180" y="229" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">where payments sit when they cannot go</text>
+<text x="180" y="247" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="1">
+<rect x="24" y="264" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="283" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Common exceptions</text>
+<text x="180" y="301" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">most common exceptions are simple data</text>
+<text x="180" y="319" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="1">
+<rect x="24" y="336" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="355" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Correction</text>
+<text x="180" y="373" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Every correction is logged with the old value</text>
+<text x="180" y="391" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="24" y="408" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="427" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Fraud exception</text>
+<text x="180" y="445" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">customer who normally pays 2,000 pounds</text>
+<text x="180" y="463" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="480" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="499" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Retail bank processing</text>
+<text x="180" y="517" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">two million payments</text>
+<text x="180" y="535" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">day at 98 percent straight through</text>
+<text x="180" y="553" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="580" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Every correction is logged with the old</text>
+<text x="180" y="599" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">value, the new value, the analyst name</text>
+<text x="180" y="618" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">and the time, so an auditor can reconstruct</text>
+<text x="180" y="637" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">the change.</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="4">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Fraud</tspan> <tspan fill="#FFFFFF">exception</tspan> <tspan fill="#FFFFFF">may</tspan> <tspan fill="#FFFFFF">involve</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Operational controls</tspan><tspan fill="#CBD5E1"> - rules and checks that prevent errors</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Queues</tspan><tspan fill="#CBD5E1"> - where payments sit when they cannot go</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Common exceptions</tspan><tspan fill="#CBD5E1"> - most common exceptions are simple data</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Correction</tspan><tspan fill="#CBD5E1"> - Every correction is logged with the old value</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n4" data-beat="4">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Fraud exception</tspan><tspan fill="#CBD5E1"> - customer who normally pays 2,000 pounds</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Retail bank processing two million payments</tspan><tspan fill="#CBD5E1"> - day at 98 percent straight</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="643" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">A fraud exception may involve a customer who normally pays 2,000 pounds a month suddenly</text>
+<text x="450" y="476" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">sending 48,000 pounds to a new beneficiary in another country.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 5 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 700" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="700" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Fraud</tspan> <tspan fill="#FFFFFF">exception</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">may</tspan> <tspan fill="#FFFFFF">involve</tspan></text>
+<rect x="24" y="86" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="104" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="120" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="139" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Operational controls</text>
+<text x="180" y="157" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">rules and checks that prevent errors</text>
+<text x="180" y="175" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="192" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="211" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Queues</text>
+<text x="180" y="229" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">where payments sit when they cannot go</text>
+<text x="180" y="247" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="1">
+<rect x="24" y="264" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="283" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Common exceptions</text>
+<text x="180" y="301" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">most common exceptions are simple data</text>
+<text x="180" y="319" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="1">
+<rect x="24" y="336" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="355" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Correction</text>
+<text x="180" y="373" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Every correction is logged with the old value</text>
+<text x="180" y="391" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="1">
+<rect x="24" y="408" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="427" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Fraud exception</text>
+<text x="180" y="445" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">customer who normally pays 2,000 pounds</text>
+<text x="180" y="463" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="480" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="499" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Retail bank processing</text>
+<text x="180" y="517" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">two million payments</text>
+<text x="180" y="535" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">day at 98 percent straight through</text>
+<text x="180" y="553" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="580" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">A fraud exception may involve a customer</text>
+<text x="180" y="599" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">who normally pays 2,000 pounds a month</text>
+<text x="180" y="618" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">suddenly sending 48,000 pounds to a new</text>
+<text x="180" y="637" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">beneficiary in another country.</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="5">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Retail</tspan> <tspan fill="#FFFFFF">bank</tspan> <tspan fill="#FFFFFF">processing</tspan> <tspan fill="#FFFFFF">two</tspan> <tspan fill="#FFFFFF">million</tspan></text>
+<text x="48" y="126" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">payments</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">COMPLETE</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Operational controls</tspan><tspan fill="#CBD5E1"> - rules and checks that prevent errors</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Queues</tspan><tspan fill="#CBD5E1"> - where payments sit when they cannot go</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Common exceptions</tspan><tspan fill="#CBD5E1"> - most common exceptions are simple data</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Correction</tspan><tspan fill="#CBD5E1"> - Every correction is logged with the old value</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n4" data-beat="4">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Fraud exception</tspan><tspan fill="#CBD5E1"> - customer who normally pays 2,000 pounds</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n5" data-beat="5">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Retail bank processing two million payments</tspan><tspan fill="#CBD5E1"> - day at 98 percent straight</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">A retail bank processing two million payments a day at 98 percent straight through processing</text>
+<text x="450" y="476" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">still has 40</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 6 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#45A4FF"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 709" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="709" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Retail</tspan> <tspan fill="#FFFFFF">bank</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">processing</tspan> <tspan fill="#FFFFFF">two</tspan></text>
+<text x="24" y="96" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">million</tspan> <tspan fill="#FFFFFF">payments</tspan></text>
+<rect x="24" y="114" width="312" height="26" rx="8" fill="#0C1626" stroke="#2DD4BF" stroke-width="1.5"/>
+<text x="180" y="132" text-anchor="middle" font-size="12" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">COMPLETE</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="148" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="167" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Operational controls</text>
+<text x="180" y="185" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">rules and checks that prevent errors</text>
+<text x="180" y="203" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="220" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="239" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Queues</text>
+<text x="180" y="257" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">where payments sit when they cannot go</text>
+<text x="180" y="275" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="1">
+<rect x="24" y="292" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="311" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Common exceptions</text>
+<text x="180" y="329" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">most common exceptions are simple data</text>
+<text x="180" y="347" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="1">
+<rect x="24" y="364" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="383" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Correction</text>
+<text x="180" y="401" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Every correction is logged with the old value</text>
+<text x="180" y="419" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="1">
+<rect x="24" y="436" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="455" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Fraud exception</text>
+<text x="180" y="473" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">customer who normally pays 2,000 pounds</text>
+<text x="180" y="491" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="1">
+<rect x="24" y="508" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="527" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Retail bank processing</text>
+<text x="180" y="545" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">two million payments</text>
+<text x="180" y="563" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">day at 98 percent straight through</text>
+<text x="180" y="581" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<text x="180" y="608" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">A retail bank processing two million</text>
+<text x="180" y="627" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">payments a day at 98 percent straight</text>
+<text x="180" y="646" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">through processing still has 40</text>
+</svg>
+</div>
+</div>
+<p class="xml-caption">Exception workflow, step by step.</p></div>
+<div class="playerbar">
+<div class="studio-progress"><div class="studio-markers" id="studio-markers-studio-ch44s5"></div><input type="range" id="studio-slider-studio-ch44s5" min="0" max="1000" value="0" aria-label="Lesson timeline"></div>
+<div class="ctrl-row">
+<button class="ctrl-btn" id="studio-play-studio-ch44s5" onclick="studioTogglePlay('studio-ch44s5')" aria-label="Play lesson" title="Play lesson"><span class="ctrl-ic-play"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></span><span class="ctrl-ic-pause" style="display:none"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><rect x="6" y="5" width="4" height="14" fill="currentColor"/><rect x="14" y="5" width="4" height="14" fill="currentColor"/></svg></span></button>
+<button class="ctrl-btn studio-mute-btn" id="studio-mute-studio-ch44s5" onclick="studioToggleMute('studio-ch44s5')" aria-label="Mute narration" title="Mute / unmute narration"><svg class="studio-mute-icon" viewBox="0 0 24 24" width="28" height="28" fill="currentColor" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3z"/><path class="studio-mute-waves" d="M16 8.5a5 5 0 0 1 0 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><path class="studio-mute-waves" d="M18.5 6a9 9 0 0 1 0 12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><path class="studio-mute-x" d="M16 9.5l5 5M21 9.5l-5 5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" style="display:none"/></svg></button>
+<button class="ctrl-btn" onclick="studioSkip('studio-ch44s5', -10)" aria-label="Back 10 seconds" title="Back 10 seconds"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 5a7 7 0 1 1-6.32 4.06" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M5.5 3.5v5h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><text x="12" y="16.5" font-size="8" fill="currentColor" text-anchor="middle" font-weight="700">10</text></svg></button>
+<span class="studio-time ctrl-time" id="studio-time-studio-ch44s5">0:00 / 3:37</span>
+<button class="ctrl-btn" onclick="studioSkip('studio-ch44s5', 10)" aria-label="Forward 10 seconds" title="Forward 10 seconds"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 5a7 7 0 1 0 6.32 4.06" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M18.5 3.5v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><text x="12" y="16.5" font-size="8" fill="currentColor" text-anchor="middle" font-weight="700">10</text></svg></button>
+<span class="playerbar-spacer"></span>
+<span class="player-stage" id="studio-tag-studio-ch44s5">Step 1 of 6</span>
+<button class="ctrl-btn ctrl-step" id="studio-prevscene-studio-ch44s5" onclick="studioPrevScene('studio-ch44s5')" title="Previous step" aria-label="Previous step">&lsaquo;</button>
+<button class="ctrl-btn ctrl-step" id="studio-nextscene-studio-ch44s5" onclick="studioNextScene('studio-ch44s5')" title="Next step" aria-label="Next step">&rsaquo;</button>
+<button class="ctrl-btn ctrl-speed" id="studio-speedbtn-studio-ch44s5" onclick="studioCycleSpeed('studio-ch44s5')" title="Playback speed" aria-label="Playback speed">1x</button>
+<span class="ctrl-settings-wrap"><button class="ctrl-btn" onclick="studioToggleSettings('studio-ch44s5', event)" aria-label="Player settings" title="Settings"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5 5l2.1 2.1M16.9 16.9L19 19M19 5l-2.1 2.1M7.1 16.9L5 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button><span class="ctrl-popover" id="studio-settings-studio-ch44s5" style="display:none" onclick="event.stopPropagation()"><label class="ctrl-pop-row">Volume <input type="range" min="0" max="1" step="0.1" value="1" oninput="studioSetVolume('studio-ch44s5', this.value)" style="width:110px;accent-color:#3587FC"></label><button class="studio-btn" id="studio-captions-studio-ch44s5" onclick="studioToggleCaptions('studio-ch44s5')">Captions: On</button><button class="studio-btn" onclick="studioReplayScene('studio-ch44s5')">Replay scene</button></span></span>
+<button class="ctrl-btn" onclick="studioFullscreen('studio-ch44s5')" aria-label="Fullscreen" title="Fullscreen"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+</div>
+</div>
+</div>
+<p class="studio-caption" id="studio-caption-studio-ch44s5"></p>
+<p class="studio-loading" id="studio-loading-studio-ch44s5" style="display:none">Loading narration...</p>
+<p class="studio-error" id="studio-error-studio-ch44s5" role="alert" style="display:none"></p>
+<audio id="studio-audio-studio-ch44s5" preload="auto" src="../audio/ch44s5.mp3"></audio>
+</div>
+<div class="lesson-title-row">
+<h1>Operational Controls, Queues and Exception Handling</h1>
+<button class="save-note" type="button" onclick="pfToggleNote('studio-ch44s5')" title="Save a note on this lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L8 19l-4 1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg> Save note</button>
+</div>
+<p class="lesson-meta-line">Payment Operations, Lesson 5 of 7, Narration 3:37, D11 Operations, exceptions and reconciliation</p>
+<p class="lesson-note-saved" id="studio-note-saved-studio-ch44s5" style="display:none">Note saved.</p>
+<div class="note-editor" id="studio-note-editor-studio-ch44s5" style="display:none"><textarea id="studio-note-text-studio-ch44s5" rows="3" placeholder="Write a note on this lesson..." aria-label="Lesson note"></textarea><div class="note-editor-row"><button class="studio-btn primary" onclick="pfSaveNote('studio-ch44s5')">Save note</button> <button class="studio-btn" onclick="pfToggleNote('studio-ch44s5')">Cancel</button></div></div>
+<div class="dive-deeper">
+<div class="dive-head"><button type="button" class="dive-toggle" onclick="pfToggleDive(this)" aria-expanded="true"><span class="dive-spark"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 2l2.2 6.8L21 11l-6.8 2.2L12 20l-2.2-6.8L3 11l6.8-2.2z" fill="currentColor"/></svg></span><span class="dive-title">Dive deeper on this topic</span><span class="dive-chev"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 14l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button></div>
+<div class="dive-btns"><button type="button" class="dive-btn" data-kind="practice" onclick="pfDive('studio-ch44s5', 'practice')">Give me practice questions</button><button type="button" class="dive-btn" data-kind="simple" onclick="pfDive('studio-ch44s5', 'simple')">Explain this topic in simple terms</button><button type="button" class="dive-btn" data-kind="summary" onclick="pfDive('studio-ch44s5', 'summary')">Give me a summary</button><button type="button" class="dive-btn" data-kind="example" onclick="pfDive('studio-ch44s5', 'example')">Give me real-life examples</button></div>
+<div class="dive-panel" id="dive-panel-studio-ch44s5"><div class="dive-panel-body"></div></div>
+<script type="application/json" id="pf-dive-data-studio-ch44s5">{"simple": "In plain words: operational controls are the rules and checks that prevent errors, detect them quickly when they happen, and limit the damage. That is the whole idea in one sentence, and the rest of the lesson shows how it works in a real bank.", "summary": "Operational controls are the rules and checks that prevent errors, detect them quickly when they happen, and limit the damage. Key points: Operational controls; Queues: safe waiting areas; Common exceptions; Sanctions and fraud exceptions need more care; Exception handling.", "example": "In many banks that threshold is 100,000 pounds, so a payment of 250,000 euros to a supplier in France needs a maker and a checker. A payment of 2 million dollars in the sanctions queue takes priority over a payment of 150 pounds in the validation queue, because the value at risk and the customer impact are far greater."}</script>
+</div>
+<div class="lesson-feedback">
+<div class="fb-icons"><button type="button" class="fb-btn" data-kind="like" onclick="pfFeedback(this,'like')" aria-label="Like this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M7 21H4a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1h3v11zm0 0h9.6a2 2 0 0 0 1.9-1.4l1.6-5A2 2 0 0 0 18.2 12H15V6.5A2.5 2.5 0 0 0 12.5 4L11 7.5 8.6 10H7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button><button type="button" class="fb-btn" data-kind="dislike" onclick="pfFeedback(this,'dislike')" aria-label="Dislike this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M17 3h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1h-3V3zm0 0H7.4a2 2 0 0 0-1.9 1.4l-1.6 5A2 2 0 0 0 5.8 12H9v5.5A2.5 2.5 0 0 0 11.5 20L13 16.5l2.4-2.5H17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button><button type="button" class="fb-btn" data-kind="flag" onclick="pfFeedback(this,'flag')" aria-label="Flag this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M6 21V4m0 1h11l-2.5 3.5L17 12H6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+<button type="button" class="go-next" onclick="goLesson('ch44s6')" title="Next: Incident Management, Outages and Business Continuity">Go to next item &rarr;</button>
+</div>
+<div class="chips"><span class="chip">Exception</span><span class="chip">Liquidity</span><span class="chip">Repair</span></div>
+<div class="card learn-card">
+<h2>What you will learn</h2>
+<p class="transcript"><b>Your objective.</b> By the end of this lesson, you will be able to explain operational controls, queues and exception handling. Operational controls are the rules and checks that prevent errors, detect them quickly when they happen, and limit the damage.</p>
+<p class="transcript"><b>Why it matters.</b> A third control is the limit on what one analyst can release in a day, so a single compromised account cannot drain a large sum.</p>
+<p class="transcript">Chapter objective: Learner explains payment operations, including daily processing, cut-offs, monitoring, incident handling, and reporting, and builds a daily operations checklist for a payment team. Learner demonstrates this skill using realistic banking examples, explaining each step clearly and using correct terminology throughout.</p>
+<h3>Key learning points</h3>
+<ul id="studio-points-studio-ch44s5">
+<li>Operational controls</li>
+<li>Queues: safe waiting areas</li>
+<li>Common exceptions</li>
+<li>Correction: logged with old value</li>
+<li>Fraud exception may involve</li>
+<li>Retail bank processing two million payments</li>
+</ul>
+<h3>Key terms</h3>
+<div id="studio-terms-studio-ch44s5">
+<p class="keyterm"><b>Exception:</b> A payment that cannot be processed normally and needs manual handling, investigation or repair. Exceptions arise from missing data, failed screening, account errors or system faults.</p>
+<p class="keyterm"><b>Liquidity:</b> Cash or assets that a bank can use immediately to meet payment obligations. Banks manage liquidity by forecasting inflows and outflows, funding nostro and settlement accounts, and using central bank...</p>
+<p class="keyterm"><b>Repair:</b> Manual correction of a payment that failed straight through processing because of missing or invalid data.</p>
+</div>
+<p class="studio-note">Exception investigation workflow showing Operational Controls, Queues and Exception Handling.</p>
+</div>
+<section class="ic-lesson-section" id="pf-insights-studio-ch44s5">
+<h2>Insights and practice scenarios</h2>
+<p class="studio-note">Worked insights and practice scenarios for this lesson. Each one is a reusable PaymentForge case, so the same case may appear in more than one lesson.</p>
+<div data-ic-type="level" data-record-id="INS-061"><script type="application/json">{"level": 2, "meta": {"domain": "Payment Operations", "topic": "BA support during deployment and hypercare", "depth": 2, "difficulty": "intermediate", "insightId": "INS-061"}, "evidence": "public-post", "recordId": "INS-061", "problem": "Deployment and hypercare need BA eyes on the business journeys, not just the technical release.", "solution": "Monitor critical journeys, exception rates, unresolved transactions and stakeholder updates. Hypercare is about business journeys, not just system health.", "decision": {"question": "A payment release is in hypercare and exception rates are rising. What do you do?", "context": "A payment release is in hypercare. Exception rates are rising and stakeholders are asking for updates.", "options": [{"label": "Wait for it to settle", "detail": "Wait for the release to settle.", "correct": false, "why": "Waiting for the release to settle lets exceptions grow while support is still in place.", "outcome": "Waiting for the release to settle lets exceptions grow while support is still in place."}, {"label": "Monitor journeys, exceptions, updates", "detail": "Monitor critical journeys, exception rates, unresolved transactions and stakeholder updates.", "correct": true, "why": "Correct. Monitor critical journeys, exception rates, unresolved transactions and stakeholder updates.", "outcome": "Correct. Monitor critical journeys, exception rates, unresolved transactions and stakeholder updates."}, {"label": "Roll back immediately", "detail": "Roll back immediately.", "correct": false, "why": "Rolling back immediately, without diagnosis, may discard a good release and hide the cause.", "outcome": "Rolling back immediately, without diagnosis, may discard a good release and hide the cause."}, {"label": "Say everything is fine", "detail": "Tell stakeholders everything is fine.", "correct": false, "why": "Telling stakeholders everything is fine when exception rates are rising is false assurance.", "outcome": "Telling stakeholders everything is fine when exception rates are rising is false assurance."}]}, "flow": {"steps": [{"title": "Watch the critical journeys."}, {"title": "Track exception rates."}, {"title": "List unresolved transactions."}, {"title": "Update stakeholders."}, {"title": "Escalate what needs a decision."}, {"title": "Close hypercare with evidence."}]}, "negative": ["A critical journey has no monitoring.", "Exceptions age without an owner.", "Stakeholder updates stop."], "check": {"questions": [{"answer": 0, "explanation": "Hypercare monitors critical journeys, exception rates and unresolved transactions, not just system health.", "options": ["Critical journeys, exception rates and unresolved transactions", "Only server CPU and memory", "Only the number of staff on shift", "Only the release notes"], "question": "What is monitored during hypercare?"}, {"answer": 1, "explanation": "Stakeholder updates let stakeholders know the state of the release so they can make decisions.", "options": ["To fill time", "So stakeholders know the state and can decide", "To prove the release was perfect", "To avoid escalation"], "question": "Why update stakeholders during hypercare?"}, {"answer": 1, "explanation": "Rising exception rates are a signal to investigate now, while hypercare support is in place.", "options": ["Wait until hypercare ends", "Investigate now", "Ignore them if the system is up", "Tell stakeholders everything is fine"], "question": "Exception rates are rising during hypercare. What do you do?"}]}}</script></div>
+</section>
+<div class="fw-card" id="pf-exercise-studio-ch44s5">
+<p class="fw-label">Practise this lesson</p>
+<h2>Exercise</h2>
+<p><b>Handle the exception described in this lesson the way the lesson prescribes.</b></p>
+<p>Use the exception type, the reason code and the recovery path in this lesson.</p>
+<ol class="fw-steps">
+<li><b>What to do.</b> State what happened, what the correct action is, what must not be done, and what the post-incident review should capture.</li>
+</ol>
+<p><button class="studio-btn" id="pf-ex-btn-studio-ch44s5" onclick="pfRevealExercise('studio-ch44s5')">Show the answer</button></p>
+<div class="fw-exercise-answer" id="pf-ex-answer-studio-ch44s5">
+<p><b>Correct result.</b> The correct action is the one the lesson prescribes for this exception type, with the right reason code and the right message. The payment must not be resent without checking whether it already settled, because that creates a duplicate.</p>
+<p><b>Why.</b> An exception handled wrongly is worse than the exception itself. A duplicate payment is a loss, and an unlearned exception will happen again.</p>
+</div>
+</div>
+<div class="fw-card" id="pf-quiz-studio-ch44s5" data-answer="0">
+<p class="fw-label">Check your understanding</p>
+<h2>Practice question</h2>
+<p><b>Which of the following best describes operational controls, queues and exception handling?</b></p>
+<button type="button" class="quiz-opt" data-idx="0" onclick="pfCheckAnswer('studio-ch44s5', this)">Operational controls are the rules and checks that prevent errors, detect them quickly when they happen, and limit the damage</button>
+<button type="button" class="quiz-opt" data-idx="1" onclick="pfCheckAnswer('studio-ch44s5', this)">The morning routine is built around a checklist, not memory, because the same checks must happen every day without fail</button>
+<button type="button" class="quiz-opt" data-idx="2" onclick="pfCheckAnswer('studio-ch44s5', this)">During the middle of the day, the work changes from starting the factory to keeping it running at full speed</button>
+<button type="button" class="quiz-opt" data-idx="3" onclick="pfCheckAnswer('studio-ch44s5', this)">A payment operations day starts before most customers wake up, because the first files and instructions are already waiting in the queues</button>
+<div class="quiz-feedback" id="pf-quiz-fb-studio-ch44s5"></div>
+<script type="application/json" id="pf-quiz-data-studio-ch44s5">{"why_wrong": ["", "This describes a different concept from this chapter, not operational controls, queues and exception handling.", "This describes a different concept from this chapter, not operational controls, queues and exception handling.", "This describes a different concept from this chapter, not operational controls, queues and exception handling."], "explanation": "Operational controls are the rules and checks that prevent errors, detect them quickly when they happen, and limit the damage. This is the core idea of the lesson."}</script>
+</div>
+<div class="fw-card">
+<p class="fw-label">Takeaway and next step</p>
+<h2>What to remember</h2>
+<p>When the exception rate rises from two percent to four percent, the team leader investigates the cause, which is often a bad file from one corporate customer or a change in a screening rule.</p>
+<p>Run the exception from this lesson and follow the investigation to its resolution.</p>
+<p><a class="fw-tool-link" href="../simulators/exception.html">Open the Exception Investigation Simulator &rarr;</a></p>
+<p class="studio-note">Builds on "Intraday Liquidity Operations and Monitoring".</p>
+</div>
+<section class="upnext" id="studio-upnext-studio-ch44s5" style="display:none" aria-label="Up next">
+<span class="tag">Up next</span>
+<h2>Up next: Incident Management, Outages and Business Continuity</h2>
+<p>Lesson 6 of 7, Payment Operations, Narration 3:34</p>
+<div class="row">
+<button class="studio-btn primary" onclick="goLessonAuto('ch44s6')">Next lesson &rarr;</button>
+<button class="studio-btn" onclick="goLesson('ch44s4')">&larr; Previous lesson</button>
+<button class="studio-btn" onclick="studioReplayLesson('studio-ch44s5')">Replay this lesson</button>
+</div>
+</section>
+<div class="lesson-nav">
+<button class="studio-btn" onclick="goLesson('ch44s4')" title="Previous lesson: Intraday Liquidity Operations and Monitoring">&larr; Previous</button>
+<button class="studio-btn" onclick="goChapterContents('ch44')">Chapter contents</button>
+<button class="studio-btn primary" onclick="goLesson('ch44s6')" title="Next lesson: Incident Management, Outages and Business Continuity">Next &rarr;</button>
+</div>
+<div class="card transcript-card">
+<h2>Transcript and full text</h2>
+<details class="studio-transcript" id="studio-transcript-details-studio-ch44s5"><summary>Show transcript</summary>
+<p class="transcript" id="studio-transcript-studio-ch44s5">Operational controls are the rules and checks that prevent errors, detect them quickly when they happen, and limit the damage. The most important control is the four eyes principle, which means a second person checks any payment above a defined threshold before it is released. In many banks that threshold is 100,000 pounds, so a payment of 250,000 euros to a supplier in France needs a maker and a checker. Another control is the segregation of duties, which means the person who sets up a new beneficiary cannot also approve the first payment to that beneficiary. A third control is the limit on what one analyst can release in a day, so a single compromised account cannot drain a large sum. Queues are the safe waiting areas where payments sit when they cannot go straight through. The main queues are the validation queue for payments with missing or incorrect fields, the sanctions queue for payments that match a name on a screening list, the fraud queue for payments that look unusual, the liquidity queue for payments waiting for funds, and the repair queue for payments that failed in a downstream system. Each queue has an owner, a target age and a priority order. A payment of 2 million dollars in the sanctions queue takes priority over a payment of 150 pounds in the validation queue, because the value at risk and the customer impact are far greater. The most common exceptions are simple data errors that can be fixed in minutes. A payment may fail because the beneficiary account number is one digit short, the SWIFT code is out of date, the currency does not match the beneficiary account, or the amount exceeds the customer daily limit of 50,000 pounds. A payment of 75,000 euros to a company in Italy may be held because the IBAN is missing two characters. The analyst opens the payment, compares the instruction with the customer record or the previous payment to the same beneficiary, corrects the field and resubmits the payment for validation. Every correction is logged with the old value, the new value, the analyst name and the time, so an auditor can reconstruct the change. Sanctions and fraud exceptions need more care, because the analyst must judge risk rather than fix a typing error. A payment of 120,000 dollars to a company whose name is similar to a name on the United States OFAC sanctions list is held until compliance confirms whether the match is a true hit or a false positive. The analyst checks the full name, the address, the country and the date of birth of the individual where available, and passes the evidence to compliance. A fraud exception may involve a customer who normally pays 2,000 pounds a month suddenly sending 48,000 pounds to a new beneficiary in another country. The analyst calls the customer to confirm the payment is genuine before releasing it, and the call is recorded. Exception handling is measured every day, because the numbers reveal whether the process is working. The team tracks the straight through processing rate, which is the share of payments that need no manual touch, the average age of items in each queue, the number of payments repaired per analyst per hour, and the number of payments returned to customers. A retail bank processing two million payments a day at 98 percent straight through processing still has 40,000 exceptions to handle, which is why staffing is planned around the exception rate rather than the total volume. When the exception rate rises from two percent to four percent, the team leader investigates the cause, which is often a bad file from one corporate customer or a change in a screening rule.</p>
+<div id="studio-paras-studio-ch44s5">
+<p class="transcript">Operational controls are the rules and checks that prevent errors, detect them quickly when they happen, and limit the damage. The most important control is the four eyes principle, which means a second person checks any payment above a defined threshold before it is released. In many banks that threshold is 100,000 pounds, so a payment of 250,000 euros to a supplier in France needs a maker and a checker. Another control is the segregation of duties, which means the person who sets up a new beneficiary cannot also approve the first payment to that beneficiary. A third control is the limit on what one analyst can release in a day, so a single compromised account cannot drain a large sum.</p>
+<p class="transcript">Queues are the safe waiting areas where payments sit when they cannot go straight through. The main queues are the validation queue for payments with missing or incorrect fields, the sanctions queue for payments that match a name on a screening list, the fraud queue for payments that look unusual, the liquidity queue for payments waiting for funds, and the repair queue for payments that failed in a downstream system. Each queue has an owner, a target age and a priority order. A payment of 2 million dollars in the sanctions queue takes priority over a payment of 150 pounds in the validation queue, because the value at risk and the customer impact are far greater.</p>
+<p class="transcript">The most common exceptions are simple data errors that can be fixed in minutes. A payment may fail because the beneficiary account number is one digit short, the SWIFT code is out of date, the currency does not match the beneficiary account, or the amount exceeds the customer daily limit of 50,000 pounds. A payment of 75,000 euros to a company in Italy may be held because the IBAN is missing two characters. The analyst opens the payment, compares the instruction with the customer record or the previous payment to the same beneficiary, corrects the field and resubmits the payment for validation. Every correction is logged with the old value, the new value, the analyst name and the time, so an auditor can reconstruct the change.</p>
+<p class="transcript">Sanctions and fraud exceptions need more care, because the analyst must judge risk rather than fix a typing error. A payment of 120,000 dollars to a company whose name is similar to a name on the United States OFAC sanctions list is held until compliance confirms whether the match is a true hit or a false positive. The analyst checks the full name, the address, the country and the date of birth of the individual where available, and passes the evidence to compliance. A fraud exception may involve a customer who normally pays 2,000 pounds a month suddenly sending 48,000 pounds to a new beneficiary in another country. The analyst calls the customer to confirm the payment is genuine before releasing it, and the call is recorded.</p>
+<p class="transcript">Exception handling is measured every day, because the numbers reveal whether the process is working. The team tracks the straight through processing rate, which is the share of payments that need no manual touch, the average age of items in each queue, the number of payments repaired per analyst per hour, and the number of payments returned to customers. A retail bank processing two million payments a day at 98 percent straight through processing still has 40,000 exceptions to handle, which is why staffing is planned around the exception rate rather than the total volume. When the exception rate rises from two percent to four percent, the team leader investigates the cause, which is often a bad file from one corporate customer or a change in a screening rule.</p>
+</div>
+</details>
+<details class="studio-transcript"><summary>Full lesson text (all scenes)</summary><div id="studio-transcript-full-studio-ch44s5"></div></details>
+<p><button class="studio-btn primary" id="done-ch44s5" onclick="studioMarkSceneDone('studio-ch44s5')">Mark lesson complete</button> <span class="studio-note">Completing a lesson updates your progress dashboard on the homepage.</span></p>
+</div>
+<p class="studio-note">Scene timestamps are estimated by allocating the narration text proportionally across the real audio length. The audio playback position is the source of truth: pause freezes the visual, seeking restores the correct scene, replay restarts the scene animation.</p>
+</div>
+<script>window.__PA_STUDIO_QUEUE = window.__PA_STUDIO_QUEUE || []; window.__PA_STUDIO_QUEUE.push(["studio-ch44s5", {"sample_id": "studio-ch44s5", "chapter_id": "ch44", "title": "Operational Controls, Queues and Exception Handling", "domain": "D11 Operations, exceptions and reconciliation", "objective": "Learner explains payment operations, including daily processing, cut-offs, monitoring, incident handling, and reporting, and builds a daily operations checklist for a payment team. Learner demonstrates this skill using realistic banking examples, explaining each step clearly and using correct terminology throughout.", "scenes": [{"id": "ch44s5", "section_id": "ch44s5", "title": "Operational Controls, Queues and Exception Handling", "audio": "../audio/ch44s5.mp3", "duration_sec": 217.6, "points": ["Operational controls are the rules and checks that prevent errors, detect them quickly when they happen, and limit the damage.", "Queues are the safe waiting areas where payments sit when they cannot go straight through.", "The most common exceptions are simple data errors that can be fixed in minutes.", "Sanctions and fraud exceptions need more care, because the analyst must judge risk rather than fix a typing error.", "Exception handling is measured every day, because the numbers reveal whether the process is working."], "terms": [{"term": "Exception", "def": "A payment that cannot be processed normally and needs manual handling, investigation or repair. Exceptions arise from missing data, failed screening, account errors or system faults."}, {"term": "Liquidity", "def": "Cash or assets that a bank can use immediately to meet payment obligations. Banks manage liquidity by forecasting inflows and outflows, funding nostro and settlement accounts, and using central bank..."}, {"term": "Repair", "def": "Manual correction of a payment that failed straight through processing because of missing or invalid data."}], "transcript": "Operational controls are the rules and checks that prevent errors, detect them quickly when they happen, and limit the damage. The most important control is the four eyes principle, which means a second person checks any payment above a defined threshold before it is released. In many banks that threshold is 100,000 pounds, so a payment of 250,000 euros to a supplier in France needs a maker and a checker. Another control is the segregation of duties, which means the person who sets up a new beneficiary cannot also approve the first payment to that beneficiary. A third control is the limit on what one analyst can release in a day, so a single compromised account cannot drain a large sum. Queues are the safe waiting areas where payments sit when they cannot go straight through. The main queues are the validation queue for payments with missing or incorrect fields, the sanctions queue for payments that match a name on a screening list, the fraud queue for payments that look unusual, the liquidity queue for payments waiting for funds, and the repair queue for payments that failed in a downstream system. Each queue has an owner, a target age and a priority order. A payment of 2 million dollars in the sanctions queue takes priority over a payment of 150 pounds in the validation queue, because the value at risk and the customer impact are far greater. The most common exceptions are simple data errors that can be fixed in minutes. A payment may fail because the beneficiary account number is one digit short, the SWIFT code is out of date, the currency does not match the beneficiary account, or the amount exceeds the customer daily limit of 50,000 pounds. A payment of 75,000 euros to a company in Italy may be held because the IBAN is missing two characters. The analyst opens the payment, compares the instruction with the customer record or the previous payment to the same beneficiary, corrects the field and resubmits the payment for validation. Every correction is logged with the old value, the new value, the analyst name and the time, so an auditor can reconstruct the change. Sanctions and fraud exceptions need more care, because the analyst must judge risk rather than fix a typing error. A payment of 120,000 dollars to a company whose name is similar to a name on the United States OFAC sanctions list is held until compliance confirms whether the match is a true hit or a false positive. The analyst checks the full name, the address, the country and the date of birth of the individual where available, and passes the evidence to compliance. A fraud exception may involve a customer who normally pays 2,000 pounds a month suddenly sending 48,000 pounds to a new beneficiary in another country. The analyst calls the customer to confirm the payment is genuine before releasing it, and the call is recorded. Exception handling is measured every day, because the numbers reveal whether the process is working. The team tracks the straight through processing rate, which is the share of payments that need no manual touch, the average age of items in each queue, the number of payments repaired per analyst per hour, and the number of payments returned to customers. A retail bank processing two million payments a day at 98 percent straight through processing still has 40,000 exceptions to handle, which is why staffing is planned around the exception rate rather than the total volume. When the exception rate rises from two percent to four percent, the team leader investigates the cause, which is often a bad file from one corporate customer or a change in a screening rule.", "paragraphs": ["Operational controls are the rules and checks that prevent errors, detect them quickly when they happen, and limit the damage. The most important control is the four eyes principle, which means a second person checks any payment above a defined threshold before it is released. In many banks that threshold is 100,000 pounds, so a payment of 250,000 euros to a supplier in France needs a maker and a checker. Another control is the segregation of duties, which means the person who sets up a new beneficiary cannot also approve the first payment to that beneficiary. A third control is the limit on what one analyst can release in a day, so a single compromised account cannot drain a large sum.", "Queues are the safe waiting areas where payments sit when they cannot go straight through. The main queues are the validation queue for payments with missing or incorrect fields, the sanctions queue for payments that match a name on a screening list, the fraud queue for payments that look unusual, the liquidity queue for payments waiting for funds, and the repair queue for payments that failed in a downstream system. Each queue has an owner, a target age and a priority order. A payment of 2 million dollars in the sanctions queue takes priority over a payment of 150 pounds in the validation queue, because the value at risk and the customer impact are far greater.", "The most common exceptions are simple data errors that can be fixed in minutes. A payment may fail because the beneficiary account number is one digit short, the SWIFT code is out of date, the currency does not match the beneficiary account, or the amount exceeds the customer daily limit of 50,000 pounds. A payment of 75,000 euros to a company in Italy may be held because the IBAN is missing two characters. The analyst opens the payment, compares the instruction with the customer record or the previous payment to the same beneficiary, corrects the field and resubmits the payment for validation. Every correction is logged with the old value, the new value, the analyst name and the time, so an auditor can reconstruct the change.", "Sanctions and fraud exceptions need more care, because the analyst must judge risk rather than fix a typing error. A payment of 120,000 dollars to a company whose name is similar to a name on the United States OFAC sanctions list is held until compliance confirms whether the match is a true hit or a false positive. The analyst checks the full name, the address, the country and the date of birth of the individual where available, and passes the evidence to compliance. A fraud exception may involve a customer who normally pays 2,000 pounds a month suddenly sending 48,000 pounds to a new beneficiary in another country. The analyst calls the customer to confirm the payment is genuine before releasing it, and the call is recorded.", "Exception handling is measured every day, because the numbers reveal whether the process is working. The team tracks the straight through processing rate, which is the share of payments that need no manual touch, the average age of items in each queue, the number of payments repaired per analyst per hour, and the number of payments returned to customers. A retail bank processing two million payments a day at 98 percent straight through processing still has 40,000 exceptions to handle, which is why staffing is planned around the exception rate rather than the total volume. When the exception rate rises from two percent to four percent, the team leader investigates the cause, which is often a bad file from one corporate customer or a change in a screening rule."], "accessibility": "Exception investigation workflow showing Operational Controls, Queues and Exception Handling.", "visual_type": "exception_workflow", "visual_choice_reason": "exceptions heading", "beats": [{"t0": 0.0, "t1": 41.9, "title": "Operational controls", "note": "Operational controls are the rules and checks that prevent errors, detect them quickly when they happen, and limit the damage.", "highlight_nodes": ["n0"], "highlight_conns": [], "highlight_fields": []}, {"t0": 41.9, "t1": 82.4, "title": "Queues: safe waiting areas", "note": "Queues are the safe waiting areas where payments sit when they cannot go straight through.", "highlight_nodes": ["n1"], "highlight_conns": ["c0"], "highlight_fields": []}, {"t0": 82.4, "t1": 118.7, "title": "Common exceptions", "note": "The most common exceptions are simple data errors that can be fixed in minutes.", "highlight_nodes": ["n2"], "highlight_conns": ["c1"], "highlight_fields": []}, {"t0": 118.7, "t1": 155.3, "title": "Correction: logged with old value", "note": "Every correction is logged with the old value, the new value, the analyst name and the time, so an auditor can reconstruct the change.", "highlight_nodes": ["n3"], "highlight_conns": ["c2"], "highlight_fields": []}, {"t0": 155.3, "t1": 192.7, "title": "Fraud exception may involve", "note": "A fraud exception may involve a customer who normally pays 2,000 pounds a month suddenly sending 48,000 pounds to a new beneficiary in another country.", "highlight_nodes": ["n4"], "highlight_conns": ["c3"], "highlight_fields": []}, {"t0": 192.7, "t1": 217.6, "title": "Retail bank processing two million payments", "note": "A retail bank processing two million payments a day at 98 percent straight through processing still has 40", "highlight_nodes": ["n5"], "highlight_conns": ["c4"], "highlight_fields": []}], "framework": {"objective": "By the end of this lesson, you will be able to explain operational controls, queues and exception handling. Operational controls are the rules and checks that prevent errors, detect them quickly when they happen, and limit the damage.", "why_matters": "A third control is the limit on what one analyst can release in a day, so a single compromised account cannot drain a large sum.", "technical_example": "A payment of 75,000 euros to a company in Italy may be held because the IBAN is missing two characters.", "failure_recovery": "The main queues are the validation queue for payments with missing or incorrect fields, the sanctions queue for payments that match a name on a screening list, the fraud queue for payments that look unusual, the liquidity queue for payments waiting for funds, and the repair queue for payments that failed in a downstream system. The most common exceptions are simple data errors that can be fixed in minutes.", "exercise": {"task": "Handle the exception described in this lesson the way the lesson prescribes.", "info": "Use the exception type, the reason code and the recovery path in this lesson.", "action": "State what happened, what the correct action is, what must not be done, and what the post-incident review should capture.", "correct": "The correct action is the one the lesson prescribes for this exception type, with the right reason code and the right message. The payment must not be resent without checking whether it already settled, because that creates a duplicate.", "why": "An exception handled wrongly is worse than the exception itself. A duplicate payment is a loss, and an unlearned exception will happen again."}, "assessment": {"question": "Which of the following best describes operational controls, queues and exception handling?", "options": ["Operational controls are the rules and checks that prevent errors, detect them quickly when they happen, and limit the damage", "The morning routine is built around a checklist, not memory, because the same checks must happen every day without fail", "During the middle of the day, the work changes from starting the factory to keeping it running at full speed", "A payment operations day starts before most customers wake up, because the first files and instructions are already waiting in the queues"], "answer": 0, "explanation": "Operational controls are the rules and checks that prevent errors, detect them quickly when they happen, and limit the damage. This is the core idea of the lesson.", "why_wrong": ["", "This describes a different concept from this chapter, not operational controls, queues and exception handling.", "This describes a different concept from this chapter, not operational controls, queues and exception handling.", "This describes a different concept from this chapter, not operational controls, queues and exception handling."], "source": "generated:ch44s5"}, "takeaway": "When the exception rate rises from two percent to four percent, the team leader investigates the cause, which is often a bad file from one corporate customer or a change in a screening rule.", "prereq": "ch44s4", "next": "ch44s6", "connection_note": "Builds on \"Intraday Liquidity Operations and Monitoring\".", "tool": {"slug": "exception", "label": "Exception Investigation Simulator", "url": "../simulators/exception.html", "scenario": "Run the exception from this lesson and follow the investigation to its resolution."}, "simple": "In plain words: operational controls are the rules and checks that prevent errors, detect them quickly when they happen, and limit the damage. That is the whole idea in one sentence, and the rest of the lesson shows how it works in a real bank.", "summary": "Operational controls are the rules and checks that prevent errors, detect them quickly when they happen, and limit the damage. Key points: Operational controls; Queues: safe waiting areas; Common exceptions; Sanctions and fraud exceptions need more care; Exception handling.", "example": "In many banks that threshold is 100,000 pounds, so a payment of 250,000 euros to a supplier in France needs a maker and a checker. A payment of 2 million dollars in the sanctions queue takes priority over a payment of 150 pounds in the validation queue, because the value at risk and the customer impact are far greater."}}], "chapter_title": "Payment Operations", "meta_line": "Payment Operations, Lesson 5 of 7, Narration 3:37, D11 Operations, exceptions and reconciliation", "next_id": "ch44s6", "next_title": "Incident Management, Outages and Business Continuity"}]);</script>
+</div>
+<nav class="tool-rail" aria-label="Lesson tools">
+<button type="button" class="rail-tool" onclick="pfOpenTranscript('studio-ch44s5')" title="Open transcript"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M7 3h7l4 4v14H7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M14 3v4h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 12h5M10 15.5h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span>Transcript</span></button>
+<button type="button" class="rail-tool" onclick="pfToggleNote('studio-ch44s5')" title="Write a note on this lesson"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L8 19l-4 1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>Notes</span></button>
+<button type="button" class="rail-tool" onclick="pfToggleFiles('studio-ch44s5')" title="Download lesson files"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>Files</span></button>
+</nav>
+<div class="fw-files-panel" id="pf-files-studio-ch44s5" style="display:none"><b>Lesson files</b><p><a href="../audio/ch44s5.mp3" download>Download narration (MP3)</a></p><p><a href="#" onclick="pfDownloadTranscript('studio-ch44s5');return false">Download transcript (.txt)</a></p></div>
+</div>
+</div>
+</main>
+<footer><p>Payments Training Hub. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="../index.html">Home</a> &middot; <a href="../courses.html">Courses</a> &middot; <a href="../practice.html">Practice</a> &middot; <a href="../simulators.html">Simulators</a> &middot; <a href="../labs.html">Labs</a> &middot; <a href="../explorer.html">Explorer</a> &middot; <a href="../tests.html">Tests</a> &middot; <a href="../diagnostic.html">Diagnostic</a> &middot; <a href="../faq.html">Interview Ready Questions</a> &middot; <a href="../interview-prep.html">Interview Prep</a></p><p><a href="../about.html">About</a> &middot; <a href="../privacy.html">Privacy</a> &middot; <a href="../terms.html">Terms</a> &middot; <a href="../contact.html">Contact</a> &middot; <a href="../editorial-standards.html">Editorial Standards</a> &middot; <a href="../sources.html">Sources</a></p></footer>
+<script defer src="../assets/site.js"></script>
+<script defer src="../assets/bundles.js"></script>
+<script defer src="../assets/auth.js"></script>
+<script defer src="../assets/studio.js"></script>
+<script defer src="../assets/insight-components.js"></script>
+<script defer src="../assets/nav.js"></script>
+<script defer src="../assets/pf-enhance.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+if(window.PFInsight){PFInsight.init();}
+});
+</script>
+</body>
+</html>

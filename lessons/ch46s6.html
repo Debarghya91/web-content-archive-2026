@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>How UPI, FedNow, Faster Payments and SEPA Instant Do It Differently | Payments Training Hub</title>
+<meta name="description" content="UPI in India is built around a simple addressing model that hides account numbers behind a virtual payment address. A customer pays to a handle such as...">
+<link rel="canonical" href="https://www.paymentstraininghub.in/lessons/ch46s6.html">
+<meta property="og:url" content="https://www.paymentstraininghub.in/lessons/ch46s6.html">
+<meta property="og:title" content="How UPI, FedNow, Faster Payments and SEPA Instant Do It Differently | Payments Training Hub">
+<meta property="og:description" content="UPI in India is built around a simple addressing model that hides account numbers behind a virtual payment address. A customer pays to a handle such as...">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.in/assets/hero/hero-poster.jpg">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.paymentstraininghub.in/index.html"}, {"@type": "ListItem", "position": 2, "name": "Real-Time Payments Architecture", "item": "https://www.paymentstraininghub.in/chapters/ch46-real-time-payments-architecture.html"}, {"@type": "ListItem", "position": 3, "name": "How UPI, FedNow, Faster Payments and SEPA Instant Do It Differently", "item": "https://www.paymentstraininghub.in/lessons/ch46s6.html"}]}</script>
+<link rel="stylesheet" href="../assets/studio.css">
+<link rel="stylesheet" href="../assets/pf-theme.css">
+<link rel="stylesheet" href="../assets/insight-components.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="../index.html" class="brand">Payments <span>Training Hub</span></a><nav class="topnav"><a href="../index.html">Home</a> <a href="../courses.html">Courses</a> <a href="../practice.html">Practice</a> <a href="../simulators.html">Simulators</a> <a href="../labs.html">Labs</a> <a href="../explorer.html">Explorer</a> <a href="../tests.html">Tests</a></nav><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox" style="display:none"><span id="authState">Not signed in</span> <span id="authForm" style="display:none"><input id="authEmail" type="email" placeholder="Email for OTP" aria-label="Email for sign-in"> <button class="mute-btn" onclick="paAuthSendOtp()">Send code</button> <input id="authCode" type="text" placeholder="6-digit code" aria-label="One-time code" style="display:none"> <button class="mute-btn" id="authVerifyBtn" onclick="paAuthVerifyOtp()" style="display:none">Verify</button> <button class="mute-btn" onclick="paAuthGoogle()">Sign in with Google</button> </span><button class="mute-btn" id="authSignOutBtn" onclick="paAuthSignOut()" style="display:none">Sign out</button></span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<div class="lesson-page">
+<div class="lesson-shell">
+<aside class="course-rail">
+<div class="rail-head">
+<h2>Real-Time Payments Architecture</h2>
+<a class="rail-close" href="../chapters/ch46-real-time-payments-architecture.html" aria-label="Close and go to chapter" title="Back to chapter">&times;</a>
+</div>
+<div class="goal-card">
+<div class="goal-head"><b>Today's goal &middot; <span id="side-progress-text">0 of 7 items</span></b><span class="goal-flag"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 21V4m0 1h11l-2.5 3.5L17 12H6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="goal-chev">&#94;</span></div>
+<p class="goal-body" id="side-goal-body">Complete 3 items today to stay at a good pace!</p>
+</div>
+<ul class="lesson-list"><li class="" data-lesson="ch46s1"><a href="ch46s1.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">What Real-Time Really Means</span><span class="m">Video &middot; 3 min</span></span></a></li>
+<li class="" data-lesson="ch46s2"><a href="ch46s2.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Designing for 24/7 Availability and Low Latency</span><span class="m">Video &middot; 3 min</span></span></a></li>
+<li class="" data-lesson="ch46s3"><a href="ch46s3.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Timeouts, Duplicate Prevention and Idempotency</span><span class="m">Video &middot; 3 min</span></span></a></li>
+<li class="" data-lesson="ch46s4"><a href="ch46s4.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Real-Time Validation, Screening and Fraud Checks in Milliseconds</span><span class="m">Video &middot; 3 min</span></span></a></li>
+<li class="" data-lesson="ch46s5"><a href="ch46s5.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Instant Settlement, Liquidity and Prefunding</span><span class="m">Video &middot; 3 min</span></span></a></li>
+<li class="current" data-lesson="ch46s6"><a href="ch46s6.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">How UPI, FedNow, Faster Payments and SEPA Instant Do It Differently</span><span class="m">Video &middot; 4 min</span></span></a></li>
+<li class="" data-lesson="ch46s7"><a href="ch46s7.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Exercise: Design an Instant Payment Flow (initiation to confirmation with timeouts, retries and failure handling)</span><span class="m">Video &middot; 3 min</span></span></a></li></ul>
+</aside>
+<div class="lesson-main">
+<div class="studio" id="studio-studio-ch46s6">
+<div class="player">
+<div class="studio-canvas" id="studio-canvas-studio-ch46s6">
+<div class="ch-sec studio-scene-vis active" id="studio-vis-studio-ch46s6-0"><div class="beat-frames">
+<div class="beat-frame active" data-frame="0">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">UPI</tspan> <tspan fill="#FFFFFF">in</tspan> <tspan fill="#FFFFFF">India</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">STARTED</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">UPI in India</tspan><tspan fill="#CBD5E1"> - built around a simple addressing model</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="0.55">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="13" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">FedNow in the United States</tspan><tspan fill="#CBD5E1"> - built by the Federal Reserve and settles</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="0.55">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">FedNow</tspan><tspan fill="#CBD5E1"> - biller can ask a customer for USD 85</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Confirmation of payee</tspan><tspan fill="#CBD5E1"> - added later, checks the beneficiary name</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">European regulation that followed made receiving</tspan><tspan fill="#CBD5E1"> - payments mandatory for</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Business analyst designing a new instant</tspan><tspan fill="#CBD5E1"> - must therefore start from the</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="128" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">UPI in India is built around a simple addressing model that hides account numbers behind a</text>
+<text x="450" y="476" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">virtual payment address.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 1 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 732" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="732" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">UPI</tspan> <tspan fill="#FFFFFF">in</tspan> <tspan fill="#FFFFFF">India</tspan></text>
+<rect x="24" y="58" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="76" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">STARTED</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="92" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="111" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">UPI in India</text>
+<text x="180" y="129" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">built around a simple addressing model</text>
+<text x="180" y="147" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="0.55">
+<rect x="24" y="164" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="183" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">FedNow in the</text>
+<text x="180" y="201" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">United States</text>
+<text x="180" y="219" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">built by the Federal Reserve and settles</text>
+<text x="180" y="237" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="0.55">
+<rect x="24" y="256" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="275" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">FedNow</text>
+<text x="180" y="293" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">biller can ask a customer for USD 85</text>
+<text x="180" y="311" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="24" y="328" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="347" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Confirmation of</text>
+<text x="180" y="365" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">payee</text>
+<text x="180" y="383" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">added later, checks the beneficiary name</text>
+<text x="180" y="401" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="24" y="420" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="439" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">European regulation</text>
+<text x="180" y="457" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">that followed made</text>
+<text x="180" y="475" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">payments mandatory for banks</text>
+<text x="180" y="493" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="512" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="531" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Business analyst</text>
+<text x="180" y="549" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">designing a new instant</text>
+<text x="180" y="567" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">must therefore start from the market</text>
+<text x="180" y="585" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="612" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">UPI in India is built around a simple</text>
+<text x="180" y="631" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">addressing model that hides account</text>
+<text x="180" y="650" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">numbers behind a virtual payment</text>
+<text x="180" y="669" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">address.</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="1">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">FedNow</tspan> <tspan fill="#FFFFFF">in</tspan> <tspan fill="#FFFFFF">the</tspan> <tspan fill="#FFFFFF">United</tspan> <tspan fill="#FFFFFF">States</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">UPI in India</tspan><tspan fill="#CBD5E1"> - built around a simple addressing model</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="13" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">FedNow in the United States</tspan><tspan fill="#CBD5E1"> - built by the Federal Reserve and settles</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="0.55">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">FedNow</tspan><tspan fill="#CBD5E1"> - biller can ask a customer for USD 85</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Confirmation of payee</tspan><tspan fill="#CBD5E1"> - added later, checks the beneficiary name</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">European regulation that followed made receiving</tspan><tspan fill="#CBD5E1"> - payments mandatory for</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Business analyst designing a new instant</tspan><tspan fill="#CBD5E1"> - must therefore start from the</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="257" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">FedNow in the United States is built by the Federal Reserve and settles in central bank money</text>
+<text x="450" y="476" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">around the clock.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 2 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 741" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="741" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">FedNow</tspan> <tspan fill="#FFFFFF">in</tspan> <tspan fill="#FFFFFF">the</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">United</tspan> <tspan fill="#FFFFFF">States</tspan></text>
+<rect x="24" y="86" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="104" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="120" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="139" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">UPI in India</text>
+<text x="180" y="157" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">built around a simple addressing model</text>
+<text x="180" y="175" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="192" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="211" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">FedNow in the</text>
+<text x="180" y="229" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">United States</text>
+<text x="180" y="247" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">built by the Federal Reserve and settles</text>
+<text x="180" y="265" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="0.55">
+<rect x="24" y="284" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="303" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">FedNow</text>
+<text x="180" y="321" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">biller can ask a customer for USD 85</text>
+<text x="180" y="339" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="24" y="356" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="375" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Confirmation of</text>
+<text x="180" y="393" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">payee</text>
+<text x="180" y="411" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">added later, checks the beneficiary name</text>
+<text x="180" y="429" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="24" y="448" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="467" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">European regulation</text>
+<text x="180" y="485" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">that followed made</text>
+<text x="180" y="503" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">payments mandatory for banks</text>
+<text x="180" y="521" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="540" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="559" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Business analyst</text>
+<text x="180" y="577" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">designing a new instant</text>
+<text x="180" y="595" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">must therefore start from the market</text>
+<text x="180" y="613" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="640" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">FedNow in the United States is built by</text>
+<text x="180" y="659" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">the Federal Reserve and settles in</text>
+<text x="180" y="678" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">central bank money around the clock.</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="2">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">FedNow</tspan> <tspan fill="#FFFFFF">supports</tspan> <tspan fill="#FFFFFF">request</tspan> <tspan fill="#FFFFFF">for</tspan></text>
+<text x="48" y="126" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">payment</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">UPI in India</tspan><tspan fill="#CBD5E1"> - built around a simple addressing model</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="13" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">FedNow in the United States</tspan><tspan fill="#CBD5E1"> - built by the Federal Reserve and settles</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">FedNow</tspan><tspan fill="#CBD5E1"> - biller can ask a customer for USD 85</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Confirmation of payee</tspan><tspan fill="#CBD5E1"> - added later, checks the beneficiary name</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">European regulation that followed made receiving</tspan><tspan fill="#CBD5E1"> - payments mandatory for</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Business analyst designing a new instant</tspan><tspan fill="#CBD5E1"> - must therefore start from the</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="386" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">FedNow supports request for payment, so a biller can ask a customer for USD 85 for a utility bill,</text>
+<text x="450" y="476" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">and the customer approves it in their banking app.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 3 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 788" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="788" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">FedNow</tspan> <tspan fill="#FFFFFF">supports</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">request</tspan> <tspan fill="#FFFFFF">for</tspan></text>
+<text x="24" y="96" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">payment</tspan></text>
+<rect x="24" y="114" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="132" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="148" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="167" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">UPI in India</text>
+<text x="180" y="185" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">built around a simple addressing model</text>
+<text x="180" y="203" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="220" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="239" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">FedNow in the</text>
+<text x="180" y="257" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">United States</text>
+<text x="180" y="275" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">built by the Federal Reserve and settles</text>
+<text x="180" y="293" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="1">
+<rect x="24" y="312" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="331" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">FedNow</text>
+<text x="180" y="349" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">biller can ask a customer for USD 85</text>
+<text x="180" y="367" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="24" y="384" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="403" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Confirmation of</text>
+<text x="180" y="421" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">payee</text>
+<text x="180" y="439" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">added later, checks the beneficiary name</text>
+<text x="180" y="457" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="24" y="476" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="495" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">European regulation</text>
+<text x="180" y="513" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">that followed made</text>
+<text x="180" y="531" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">payments mandatory for banks</text>
+<text x="180" y="549" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="568" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="587" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Business analyst</text>
+<text x="180" y="605" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">designing a new instant</text>
+<text x="180" y="623" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">must therefore start from the market</text>
+<text x="180" y="641" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="668" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">FedNow supports request for payment, so</text>
+<text x="180" y="687" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">a biller can ask a customer for USD 85 for</text>
+<text x="180" y="706" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">a utility bill, and the customer approves it</text>
+<text x="180" y="725" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">in their banking app.</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="3">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Confirmation</tspan> <tspan fill="#FFFFFF">of</tspan> <tspan fill="#FFFFFF">payee</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">UPI in India</tspan><tspan fill="#CBD5E1"> - built around a simple addressing model</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="13" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">FedNow in the United States</tspan><tspan fill="#CBD5E1"> - built by the Federal Reserve and settles</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">FedNow</tspan><tspan fill="#CBD5E1"> - biller can ask a customer for USD 85</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Confirmation of payee</tspan><tspan fill="#CBD5E1"> - added later, checks the beneficiary name</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">European regulation that followed made receiving</tspan><tspan fill="#CBD5E1"> - payments mandatory for</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Business analyst designing a new instant</tspan><tspan fill="#CBD5E1"> - must therefore start from the</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="514" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Confirmation of payee, added later, checks the beneficiary name before the payment is sent.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 4 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 741" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="741" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Confirmation</tspan> <tspan fill="#FFFFFF">of</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">payee</tspan></text>
+<rect x="24" y="86" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="104" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="120" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="139" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">UPI in India</text>
+<text x="180" y="157" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">built around a simple addressing model</text>
+<text x="180" y="175" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="192" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="211" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">FedNow in the</text>
+<text x="180" y="229" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">United States</text>
+<text x="180" y="247" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">built by the Federal Reserve and settles</text>
+<text x="180" y="265" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="1">
+<rect x="24" y="284" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="303" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">FedNow</text>
+<text x="180" y="321" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">biller can ask a customer for USD 85</text>
+<text x="180" y="339" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="1">
+<rect x="24" y="356" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="375" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Confirmation of</text>
+<text x="180" y="393" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">payee</text>
+<text x="180" y="411" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">added later, checks the beneficiary name</text>
+<text x="180" y="429" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="24" y="448" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="467" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">European regulation</text>
+<text x="180" y="485" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">that followed made</text>
+<text x="180" y="503" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">payments mandatory for banks</text>
+<text x="180" y="521" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="540" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="559" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Business analyst</text>
+<text x="180" y="577" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">designing a new instant</text>
+<text x="180" y="595" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">must therefore start from the market</text>
+<text x="180" y="613" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="640" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Confirmation of payee, added later,</text>
+<text x="180" y="659" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">checks the beneficiary name before the</text>
+<text x="180" y="678" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">payment is sent.</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="4">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">European</tspan> <tspan fill="#FFFFFF">regulation</tspan> <tspan fill="#FFFFFF">that</tspan> <tspan fill="#FFFFFF">followed</tspan></text>
+<text x="48" y="126" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">made</tspan> <tspan fill="#FFFFFF">receiving</tspan> <tspan fill="#FFFFFF">instant</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">UPI in India</tspan><tspan fill="#CBD5E1"> - built around a simple addressing model</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="13" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">FedNow in the United States</tspan><tspan fill="#CBD5E1"> - built by the Federal Reserve and settles</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">FedNow</tspan><tspan fill="#CBD5E1"> - biller can ask a customer for USD 85</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Confirmation of payee</tspan><tspan fill="#CBD5E1"> - added later, checks the beneficiary name</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n4" data-beat="4">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">European regulation that followed made receiving</tspan><tspan fill="#CBD5E1"> - payments mandatory for</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Business analyst designing a new instant</tspan><tspan fill="#CBD5E1"> - must therefore start from the</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="643" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The European regulation that followed made receiving instant payments mandatory for banks</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 5 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 797" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="797" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">European</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">regulation</tspan> <tspan fill="#FFFFFF">that</tspan></text>
+<text x="24" y="96" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">followed</tspan> <tspan fill="#FFFFFF">made</tspan></text>
+<text x="24" y="124" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">receiving</tspan> <tspan fill="#FFFFFF">instant</tspan></text>
+<rect x="24" y="142" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="160" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="176" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="195" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">UPI in India</text>
+<text x="180" y="213" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">built around a simple addressing model</text>
+<text x="180" y="231" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="248" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="267" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">FedNow in the</text>
+<text x="180" y="285" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">United States</text>
+<text x="180" y="303" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">built by the Federal Reserve and settles</text>
+<text x="180" y="321" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="1">
+<rect x="24" y="340" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="359" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">FedNow</text>
+<text x="180" y="377" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">biller can ask a customer for USD 85</text>
+<text x="180" y="395" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="1">
+<rect x="24" y="412" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="431" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Confirmation of</text>
+<text x="180" y="449" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">payee</text>
+<text x="180" y="467" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">added later, checks the beneficiary name</text>
+<text x="180" y="485" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="1">
+<rect x="24" y="504" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="523" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">European regulation</text>
+<text x="180" y="541" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">that followed made</text>
+<text x="180" y="559" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">payments mandatory for banks</text>
+<text x="180" y="577" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="596" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="615" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Business analyst</text>
+<text x="180" y="633" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">designing a new instant</text>
+<text x="180" y="651" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">must therefore start from the market</text>
+<text x="180" y="669" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="696" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The European regulation that followed</text>
+<text x="180" y="715" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">made receiving instant payments</text>
+<text x="180" y="734" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">mandatory for banks</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="5">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Business</tspan> <tspan fill="#FFFFFF">analyst</tspan> <tspan fill="#FFFFFF">designing</tspan> <tspan fill="#FFFFFF">a</tspan> <tspan fill="#FFFFFF">new</tspan></text>
+<text x="48" y="126" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">instant</tspan> <tspan fill="#FFFFFF">service</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">COMPLETE</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">UPI in India</tspan><tspan fill="#CBD5E1"> - built around a simple addressing model</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="13" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">FedNow in the United States</tspan><tspan fill="#CBD5E1"> - built by the Federal Reserve and settles</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">FedNow</tspan><tspan fill="#CBD5E1"> - biller can ask a customer for USD 85</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Confirmation of payee</tspan><tspan fill="#CBD5E1"> - added later, checks the beneficiary name</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n4" data-beat="4">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">European regulation that followed made receiving</tspan><tspan fill="#CBD5E1"> - payments mandatory for</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n5" data-beat="5">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Business analyst designing a new instant</tspan><tspan fill="#CBD5E1"> - must therefore start from the</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">A business analyst designing a new instant service must therefore start from the market, the</text>
+<text x="450" y="476" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">regulation, and the customer need, and only then choose the technical pattern that fits.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 6 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#45A4FF"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 807" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="807" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Business</tspan> <tspan fill="#FFFFFF">analyst</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">designing</tspan> <tspan fill="#FFFFFF">a</tspan> <tspan fill="#FFFFFF">new</tspan></text>
+<text x="24" y="96" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">instant</tspan> <tspan fill="#FFFFFF">service</tspan></text>
+<rect x="24" y="114" width="312" height="26" rx="8" fill="#0C1626" stroke="#2DD4BF" stroke-width="1.5"/>
+<text x="180" y="132" text-anchor="middle" font-size="12" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">COMPLETE</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="148" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="167" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">UPI in India</text>
+<text x="180" y="185" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">built around a simple addressing model</text>
+<text x="180" y="203" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="220" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="239" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">FedNow in the</text>
+<text x="180" y="257" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">United States</text>
+<text x="180" y="275" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">built by the Federal Reserve and settles</text>
+<text x="180" y="293" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="1">
+<rect x="24" y="312" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="331" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">FedNow</text>
+<text x="180" y="349" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">biller can ask a customer for USD 85</text>
+<text x="180" y="367" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="1">
+<rect x="24" y="384" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="403" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Confirmation of</text>
+<text x="180" y="421" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">payee</text>
+<text x="180" y="439" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">added later, checks the beneficiary name</text>
+<text x="180" y="457" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="1">
+<rect x="24" y="476" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="495" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">European regulation</text>
+<text x="180" y="513" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">that followed made</text>
+<text x="180" y="531" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">payments mandatory for banks</text>
+<text x="180" y="549" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="1">
+<rect x="24" y="568" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="587" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Business analyst</text>
+<text x="180" y="605" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">designing a new instant</text>
+<text x="180" y="623" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">must therefore start from the market</text>
+<text x="180" y="641" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<text x="180" y="668" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">A business analyst designing a new instant</text>
+<text x="180" y="687" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">service must therefore start from the</text>
+<text x="180" y="706" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">market, the regulation, and the customer</text>
+<text x="180" y="725" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">need, and only then choose the technical</text>
+<text x="180" y="744" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">pattern that fits.</text>
+</svg>
+</div>
+</div>
+<p class="xml-caption">Flow of the explanation in this lesson.</p></div>
+<div class="playerbar">
+<div class="studio-progress"><div class="studio-markers" id="studio-markers-studio-ch46s6"></div><input type="range" id="studio-slider-studio-ch46s6" min="0" max="1000" value="0" aria-label="Lesson timeline"></div>
+<div class="ctrl-row">
+<button class="ctrl-btn" id="studio-play-studio-ch46s6" onclick="studioTogglePlay('studio-ch46s6')" aria-label="Play lesson" title="Play lesson"><span class="ctrl-ic-play"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></span><span class="ctrl-ic-pause" style="display:none"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><rect x="6" y="5" width="4" height="14" fill="currentColor"/><rect x="14" y="5" width="4" height="14" fill="currentColor"/></svg></span></button>
+<button class="ctrl-btn studio-mute-btn" id="studio-mute-studio-ch46s6" onclick="studioToggleMute('studio-ch46s6')" aria-label="Mute narration" title="Mute / unmute narration"><svg class="studio-mute-icon" viewBox="0 0 24 24" width="28" height="28" fill="currentColor" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3z"/><path class="studio-mute-waves" d="M16 8.5a5 5 0 0 1 0 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><path class="studio-mute-waves" d="M18.5 6a9 9 0 0 1 0 12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><path class="studio-mute-x" d="M16 9.5l5 5M21 9.5l-5 5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" style="display:none"/></svg></button>
+<button class="ctrl-btn" onclick="studioSkip('studio-ch46s6', -10)" aria-label="Back 10 seconds" title="Back 10 seconds"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 5a7 7 0 1 1-6.32 4.06" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M5.5 3.5v5h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><text x="12" y="16.5" font-size="8" fill="currentColor" text-anchor="middle" font-weight="700">10</text></svg></button>
+<span class="studio-time ctrl-time" id="studio-time-studio-ch46s6">0:00 / 3:37</span>
+<button class="ctrl-btn" onclick="studioSkip('studio-ch46s6', 10)" aria-label="Forward 10 seconds" title="Forward 10 seconds"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 5a7 7 0 1 0 6.32 4.06" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M18.5 3.5v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><text x="12" y="16.5" font-size="8" fill="currentColor" text-anchor="middle" font-weight="700">10</text></svg></button>
+<span class="playerbar-spacer"></span>
+<span class="player-stage" id="studio-tag-studio-ch46s6">Step 1 of 6</span>
+<button class="ctrl-btn ctrl-step" id="studio-prevscene-studio-ch46s6" onclick="studioPrevScene('studio-ch46s6')" title="Previous step" aria-label="Previous step">&lsaquo;</button>
+<button class="ctrl-btn ctrl-step" id="studio-nextscene-studio-ch46s6" onclick="studioNextScene('studio-ch46s6')" title="Next step" aria-label="Next step">&rsaquo;</button>
+<button class="ctrl-btn ctrl-speed" id="studio-speedbtn-studio-ch46s6" onclick="studioCycleSpeed('studio-ch46s6')" title="Playback speed" aria-label="Playback speed">1x</button>
+<span class="ctrl-settings-wrap"><button class="ctrl-btn" onclick="studioToggleSettings('studio-ch46s6', event)" aria-label="Player settings" title="Settings"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5 5l2.1 2.1M16.9 16.9L19 19M19 5l-2.1 2.1M7.1 16.9L5 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button><span class="ctrl-popover" id="studio-settings-studio-ch46s6" style="display:none" onclick="event.stopPropagation()"><label class="ctrl-pop-row">Volume <input type="range" min="0" max="1" step="0.1" value="1" oninput="studioSetVolume('studio-ch46s6', this.value)" style="width:110px;accent-color:#3587FC"></label><button class="studio-btn" id="studio-captions-studio-ch46s6" onclick="studioToggleCaptions('studio-ch46s6')">Captions: On</button><button class="studio-btn" onclick="studioReplayScene('studio-ch46s6')">Replay scene</button></span></span>
+<button class="ctrl-btn" onclick="studioFullscreen('studio-ch46s6')" aria-label="Fullscreen" title="Fullscreen"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+</div>
+</div>
+</div>
+<p class="studio-caption" id="studio-caption-studio-ch46s6"></p>
+<p class="studio-loading" id="studio-loading-studio-ch46s6" style="display:none">Loading narration...</p>
+<p class="studio-error" id="studio-error-studio-ch46s6" role="alert" style="display:none"></p>
+<audio id="studio-audio-studio-ch46s6" preload="auto" src="../audio/ch46s6.mp3"></audio>
+</div>
+<div class="lesson-title-row">
+<h1>How UPI, FedNow, Faster Payments and SEPA Instant Do It Differently</h1>
+<button class="save-note" type="button" onclick="pfToggleNote('studio-ch46s6')" title="Save a note on this lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L8 19l-4 1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg> Save note</button>
+</div>
+<p class="lesson-meta-line">Real-Time Payments Architecture, Lesson 6 of 7, Narration 3:37, D05 Domestic payment systems</p>
+<p class="lesson-note-saved" id="studio-note-saved-studio-ch46s6" style="display:none">Note saved.</p>
+<div class="note-editor" id="studio-note-editor-studio-ch46s6" style="display:none"><textarea id="studio-note-text-studio-ch46s6" rows="3" placeholder="Write a note on this lesson..." aria-label="Lesson note"></textarea><div class="note-editor-row"><button class="studio-btn primary" onclick="pfSaveNote('studio-ch46s6')">Save note</button> <button class="studio-btn" onclick="pfToggleNote('studio-ch46s6')">Cancel</button></div></div>
+<div class="dive-deeper">
+<div class="dive-head"><button type="button" class="dive-toggle" onclick="pfToggleDive(this)" aria-expanded="true"><span class="dive-spark"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 2l2.2 6.8L21 11l-6.8 2.2L12 20l-2.2-6.8L3 11l6.8-2.2z" fill="currentColor"/></svg></span><span class="dive-title">Dive deeper on this topic</span><span class="dive-chev"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 14l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button></div>
+<div class="dive-btns"><button type="button" class="dive-btn" data-kind="practice" onclick="pfDive('studio-ch46s6', 'practice')">Give me practice questions</button><button type="button" class="dive-btn" data-kind="simple" onclick="pfDive('studio-ch46s6', 'simple')">Explain this topic in simple terms</button><button type="button" class="dive-btn" data-kind="summary" onclick="pfDive('studio-ch46s6', 'summary')">Give me a summary</button><button type="button" class="dive-btn" data-kind="example" onclick="pfDive('studio-ch46s6', 'example')">Give me real-life examples</button></div>
+<div class="dive-panel" id="dive-panel-studio-ch46s6"><div class="dive-panel-body"></div></div>
+<script type="application/json" id="pf-dive-data-studio-ch46s6">{"simple": "In plain words: uPI in India is built around a simple addressing model that hides account numbers behind a virtual payment address. That is the whole idea in one sentence, and the rest of the lesson shows how it works in a real bank.", "summary": "UPI in India is built around a simple addressing model that hides account numbers behind a virtual payment address. Key points: UPI in India; FedNow in the United States; Faster Payments in the United Kingdom; SEPA Instant Credit Transfer in Europe; Comparison: no single correct architecture.", "example": "A customer pays to a handle such as a name followed by a bank identifier, or scans a QR code at a shop, and the system routes the payment to the correct account. A street vendor can receive INR 120 for a cup of tea just as easily as a business can receive INR 100,000 for an invoice."}</script>
+</div>
+<div class="lesson-feedback">
+<div class="fb-icons"><button type="button" class="fb-btn" data-kind="like" onclick="pfFeedback(this,'like')" aria-label="Like this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M7 21H4a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1h3v11zm0 0h9.6a2 2 0 0 0 1.9-1.4l1.6-5A2 2 0 0 0 18.2 12H15V6.5A2.5 2.5 0 0 0 12.5 4L11 7.5 8.6 10H7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button><button type="button" class="fb-btn" data-kind="dislike" onclick="pfFeedback(this,'dislike')" aria-label="Dislike this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M17 3h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1h-3V3zm0 0H7.4a2 2 0 0 0-1.9 1.4l-1.6 5A2 2 0 0 0 5.8 12H9v5.5A2.5 2.5 0 0 0 11.5 20L13 16.5l2.4-2.5H17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button><button type="button" class="fb-btn" data-kind="flag" onclick="pfFeedback(this,'flag')" aria-label="Flag this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M6 21V4m0 1h11l-2.5 3.5L17 12H6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+<button type="button" class="go-next" onclick="goLesson('ch46s7')" title="Next: Exercise: Design an Instant Payment Flow (initiation to confirmation with timeouts, retries and failure handling)">Go to next item &rarr;</button>
+</div>
+<div class="chips"><span class="chip">Settlement</span><span class="chip">ISO 20022</span><span class="chip">pacs.008</span></div>
+<div class="card learn-card">
+<h2>What you will learn</h2>
+<p class="transcript"><b>Your objective.</b> By the end of this lesson, you will be able to explain UPI, FEDNOW, faster payments and SEPA instant do it differently. UPI in India is built around a simple addressing model that hides account numbers behind a virtual payment address.</p>
+<p class="transcript"><b>Why it matters.</b> A business analyst designing a new instant service must therefore start from the market, the regulation, and the customer need, and only then choose the technical pattern that fits.</p>
+<p class="transcript">Chapter objective: Learner designs real-time payments architecture, covering 24 by 7 availability, instant clearing, liquidity, and failure handling, and explains how it differs from batch systems. Learner applies this skill in realistic banking scenarios, with clear examples and correct terminology throughout.</p>
+<h3>Key learning points</h3>
+<ul id="studio-points-studio-ch46s6">
+<li>UPI in India</li>
+<li>FedNow in the United States</li>
+<li>FedNow supports request for payment</li>
+<li>Confirmation of payee</li>
+<li>European regulation that followed made receiving instant</li>
+<li>Business analyst designing a new instant service</li>
+</ul>
+<h3>Key terms</h3>
+<div id="studio-terms-studio-ch46s6">
+<p class="keyterm"><b>Settlement:</b> The final movement of funds between banks to discharge obligations created by cleared payments. Settlement is usually made in central bank money or through correspondent accounts.</p>
+<p class="keyterm"><b>ISO 20022:</b> An international standard for financial messaging that defines XML message formats for payments, securities and trade.</p>
+<p class="keyterm"><b>pacs.008:</b> An ISO 20022 message for a financial institution to financial institution customer credit transfer. It replaces MT103 in cross border payments and carries structured debtor, creditor, charges and...</p>
+</div>
+<p class="studio-note">Banking architecture diagram showing How UPI, FedNow, Faster Payments and SEPA Instant Do It Differently.</p>
+</div>
+<div class="fw-card" id="pf-exercise-studio-ch46s6">
+<p class="fw-label">Practise this lesson</p>
+<h2>Exercise</h2>
+<p><b>Read the ISO 20022 messages message described in this lesson and identify its key parts.</b></p>
+<p>Use the message structure, fields and example in this lesson.</p>
+<ol class="fw-steps">
+<li><b>What to do.</b> List the main blocks of the message, name the field that carries the amount, and name the field that identifies the payment.</li>
+</ol>
+<p><button class="studio-btn" id="pf-ex-btn-studio-ch46s6" onclick="pfRevealExercise('studio-ch46s6')">Show the answer</button></p>
+<div class="fw-exercise-answer" id="pf-ex-answer-studio-ch46s6">
+<p><b>Correct result.</b> The message is made of blocks, each carrying a part of the payment instruction. The amount field and the identification field are the two a receiving bank checks first, because without them it cannot process or reconcile the payment.</p>
+<p><b>Why.</b> A message is only useful if you can read it. The blocks tell the receiving bank what to do, and the amount and identification fields are what it checks first.</p>
+</div>
+</div>
+<div class="fw-card" id="pf-quiz-studio-ch46s6" data-answer="2">
+<p class="fw-label">Check your understanding</p>
+<h2>Practice question</h2>
+<p><b>Which of the following best describes UPI, FEDNOW, faster payments and SEPA instant do it differently?</b></p>
+<button type="button" class="quiz-opt" data-idx="0" onclick="pfCheckAnswer('studio-ch46s6', this)">A real-time payment is a payment that moves from the sender account to the receiver account within seconds, with confirmation returned to the sender in the same session</button>
+<button type="button" class="quiz-opt" data-idx="1" onclick="pfCheckAnswer('studio-ch46s6', this)">Three parties share responsibility for every instant payment, and each one must perform inside a strict time budget</button>
+<button type="button" class="quiz-opt" data-idx="2" onclick="pfCheckAnswer('studio-ch46s6', this)">UPI in India is built around a simple addressing model that hides account numbers behind a virtual payment address</button>
+<button type="button" class="quiz-opt" data-idx="3" onclick="pfCheckAnswer('studio-ch46s6', this)">Real-time differs from traditional batch payments in almost every operational respect</button>
+<div class="quiz-feedback" id="pf-quiz-fb-studio-ch46s6"></div>
+<script type="application/json" id="pf-quiz-data-studio-ch46s6">{"why_wrong": ["This describes a different concept from this chapter, not UPI, FEDNOW, faster payments and SEPA instant do it differently.", "This describes a different concept from this chapter, not UPI, FEDNOW, faster payments and SEPA instant do it differently.", "", "This describes a different concept from this chapter, not UPI, FEDNOW, faster payments and SEPA instant do it differently."], "explanation": "UPI in India is built around a simple addressing model that hides account numbers behind a virtual payment address. This is the core idea of the lesson."}</script>
+</div>
+<div class="fw-card">
+<p class="fw-label">Takeaway and next step</p>
+<h2>What to remember</h2>
+<p>A business analyst designing a new instant service must therefore start from the market, the regulation, and the customer need, and only then choose the technical pattern that fits.</p>
+<p>Follow INR 120 through every stage, from instruction to beneficiary credit, and note where it can stop.</p>
+<p><a class="fw-tool-link" href="../simulators/lifecycle.html">Open the Payment Lifecycle Simulator &rarr;</a></p>
+<p class="studio-note">Builds on "Instant Settlement, Liquidity and Prefunding".</p>
+</div>
+<section class="upnext" id="studio-upnext-studio-ch46s6" style="display:none" aria-label="Up next">
+<span class="tag">Up next</span>
+<h2>Up next: Exercise: Design an Instant Payment Flow (initiation to confirmation with timeouts, retries and failure handling)</h2>
+<p>Lesson 7 of 7, Real-Time Payments Architecture, Narration 3:26</p>
+<div class="row">
+<button class="studio-btn primary" onclick="goLessonAuto('ch46s7')">Next lesson &rarr;</button>
+<button class="studio-btn" onclick="goLesson('ch46s5')">&larr; Previous lesson</button>
+<button class="studio-btn" onclick="studioReplayLesson('studio-ch46s6')">Replay this lesson</button>
+</div>
+</section>
+<div class="lesson-nav">
+<button class="studio-btn" onclick="goLesson('ch46s5')" title="Previous lesson: Instant Settlement, Liquidity and Prefunding">&larr; Previous</button>
+<button class="studio-btn" onclick="goChapterContents('ch46')">Chapter contents</button>
+<button class="studio-btn primary" onclick="goLesson('ch46s7')" title="Next lesson: Exercise: Design an Instant Payment Flow (initiation to confirmation with timeouts, retries and failure handling)">Next &rarr;</button>
+</div>
+<div class="card transcript-card">
+<h2>Transcript and full text</h2>
+<details class="studio-transcript" id="studio-transcript-details-studio-ch46s6"><summary>Show transcript</summary>
+<p class="transcript" id="studio-transcript-studio-ch46s6">UPI in India is built around a simple addressing model that hides account numbers behind a virtual payment address. A customer pays to a handle such as a name followed by a bank identifier, or scans a QR code at a shop, and the system routes the payment to the correct account. The National Payments Corporation of India operates the central switch, and more than 300 banks participate. A street vendor can receive INR 120 for a cup of tea just as easily as a business can receive INR 100,000 for an invoice. Transaction limits are set per transaction and per day, and the system handles billions of payments each month, making it the largest real-time system in the world by volume. FedNow in the United States is built by the Federal Reserve and settles in central bank money around the clock. Banks connect through a service provider or directly, and they exchange ISO 20022 messages such as pacs.008 for the payment and pacs.002 for the status report. The transaction limit at launch in 2023 was USD 500,000, with banks free to set lower limits for their own customers. The Federal Reserve later raised the network maximum to USD 1 million on 24 June 2025 and then to USD 10 million effective November 2025, while the participant default stayed at USD 100,000, so a learner should check the current limit before quoting it, because scheme limits change. FedNow supports request for payment, so a biller can ask a customer for USD 85 for a utility bill, and the customer approves it in their banking app. Adoption has grown steadily, but it coexists with older systems such as ACH and wire transfers, so banks must support several rails at once. Faster Payments in the United Kingdom is one of the oldest instant systems, launched in 2008, and it is built for speed inside a single country. Payments are normally credited within seconds, with a scheme limit of GBP 1 million per transaction, although individual banks set lower limits for retail customers. The system uses its own message formats and a central infrastructure operated by Pay.UK, and settlement happens through prefunded accounts at the Bank of England. Confirmation of payee, added later, checks the beneficiary name before the payment is sent. Faster Payments proves that an instant system can run reliably for more than fifteen years, but it also shows how hard it is to retrofit new features onto an established design. SEPA Instant Credit Transfer in Europe must work across more than thirty countries, which makes it the most complex of the four. A EUR 2,500 payment from a bank in Germany to a bank in France must complete within ten seconds, even though the two banks may use different core systems and different national practices. The scheme is based on ISO 20022 messages, and settlement can happen through the TARGET Instant Payment Settlement service operated by the European Central Bank, or through a clearing house. The European regulation that followed made receiving instant payments mandatory for banks, and it removed the price premium that some banks charged, which sharply increased adoption across the region. The comparison shows that there is no single correct architecture, only trade-offs that fit a market. UPI optimises for inclusion and volume, with simple addressing and low cost per transaction. FedNow optimises for safety, settling in central bank money with strong Federal Reserve backing. Faster Payments optimises for reliability inside one country, with a long operational track record. SEPA Instant optimises for cross-border reach, with a common rulebook across many jurisdictions. A business analyst designing a new instant service must therefore start from the market, the regulation, and the customer need, and only then choose the technical pattern that fits.</p>
+<div id="studio-paras-studio-ch46s6">
+<p class="transcript">UPI in India is built around a simple addressing model that hides account numbers behind a virtual payment address. A customer pays to a handle such as a name followed by a bank identifier, or scans a QR code at a shop, and the system routes the payment to the correct account. The National Payments Corporation of India operates the central switch, and more than 300 banks participate. A street vendor can receive INR 120 for a cup of tea just as easily as a business can receive INR 100,000 for an invoice. Transaction limits are set per transaction and per day, and the system handles billions of payments each month, making it the largest real-time system in the world by volume.</p>
+<p class="transcript">FedNow in the United States is built by the Federal Reserve and settles in central bank money around the clock. Banks connect through a service provider or directly, and they exchange ISO 20022 messages such as pacs.008 for the payment and pacs.002 for the status report. The transaction limit at launch in 2023 was USD 500,000, with banks free to set lower limits for their own customers. The Federal Reserve later raised the network maximum to USD 1 million on 24 June 2025 and then to USD 10 million effective November 2025, while the participant default stayed at USD 100,000, so a learner should check the current limit before quoting it, because scheme limits change. FedNow supports request for payment, so a biller can ask a customer for USD 85 for a utility bill, and the customer approves it in their banking app. Adoption has grown steadily, but it coexists with older systems such as ACH and wire transfers, so banks must support several rails at once.</p>
+<p class="transcript">Faster Payments in the United Kingdom is one of the oldest instant systems, launched in 2008, and it is built for speed inside a single country. Payments are normally credited within seconds, with a scheme limit of GBP 1 million per transaction, although individual banks set lower limits for retail customers. The system uses its own message formats and a central infrastructure operated by Pay.UK, and settlement happens through prefunded accounts at the Bank of England. Confirmation of payee, added later, checks the beneficiary name before the payment is sent. Faster Payments proves that an instant system can run reliably for more than fifteen years, but it also shows how hard it is to retrofit new features onto an established design.</p>
+<p class="transcript">SEPA Instant Credit Transfer in Europe must work across more than thirty countries, which makes it the most complex of the four. A EUR 2,500 payment from a bank in Germany to a bank in France must complete within ten seconds, even though the two banks may use different core systems and different national practices. The scheme is based on ISO 20022 messages, and settlement can happen through the TARGET Instant Payment Settlement service operated by the European Central Bank, or through a clearing house. The European regulation that followed made receiving instant payments mandatory for banks, and it removed the price premium that some banks charged, which sharply increased adoption across the region.</p>
+<p class="transcript">The comparison shows that there is no single correct architecture, only trade-offs that fit a market. UPI optimises for inclusion and volume, with simple addressing and low cost per transaction. FedNow optimises for safety, settling in central bank money with strong Federal Reserve backing. Faster Payments optimises for reliability inside one country, with a long operational track record. SEPA Instant optimises for cross-border reach, with a common rulebook across many jurisdictions. A business analyst designing a new instant service must therefore start from the market, the regulation, and the customer need, and only then choose the technical pattern that fits.</p>
+</div>
+</details>
+<details class="studio-transcript"><summary>Full lesson text (all scenes)</summary><div id="studio-transcript-full-studio-ch46s6"></div></details>
+<p><button class="studio-btn primary" id="done-ch46s6" onclick="studioMarkSceneDone('studio-ch46s6')">Mark lesson complete</button> <span class="studio-note">Completing a lesson updates your progress dashboard on the homepage.</span></p>
+</div>
+<p class="studio-note">Scene timestamps are estimated by allocating the narration text proportionally across the real audio length. The audio playback position is the source of truth: pause freezes the visual, seeking restores the correct scene, replay restarts the scene animation.</p>
+</div>
+<script>window.__PA_STUDIO_QUEUE = window.__PA_STUDIO_QUEUE || []; window.__PA_STUDIO_QUEUE.push(["studio-ch46s6", {"sample_id": "studio-ch46s6", "chapter_id": "ch46", "title": "How UPI, FedNow, Faster Payments and SEPA Instant Do It Differently", "domain": "D05 Domestic payment systems", "objective": "Learner designs real-time payments architecture, covering 24 by 7 availability, instant clearing, liquidity, and failure handling, and explains how it differs from batch systems. Learner applies this skill in realistic banking scenarios, with clear examples and correct terminology throughout.", "scenes": [{"id": "ch46s6", "section_id": "ch46s6", "title": "How UPI, FedNow, Faster Payments and SEPA Instant Do It Differently", "audio": "../audio/ch46s6.mp3", "duration_sec": 217.4, "points": ["UPI in India is built around a simple addressing model that hides account numbers behind a virtual payment address.", "FedNow in the United States is built by the Federal Reserve and settles in central bank money around the clock.", "Faster Payments in the United Kingdom is one of the oldest instant systems, launched in 2008, and it is built for speed inside a single country.", "SEPA Instant Credit Transfer in Europe must work across more than thirty countries, which makes it the most complex of the four.", "The comparison shows that there is no single correct architecture, only trade-offs that fit a market."], "terms": [{"term": "Settlement", "def": "The final movement of funds between banks to discharge obligations created by cleared payments. Settlement is usually made in central bank money or through correspondent accounts."}, {"term": "ISO 20022", "def": "An international standard for financial messaging that defines XML message formats for payments, securities and trade."}, {"term": "pacs.008", "def": "An ISO 20022 message for a financial institution to financial institution customer credit transfer. It replaces MT103 in cross border payments and carries structured debtor, creditor, charges and..."}], "transcript": "UPI in India is built around a simple addressing model that hides account numbers behind a virtual payment address. A customer pays to a handle such as a name followed by a bank identifier, or scans a QR code at a shop, and the system routes the payment to the correct account. The National Payments Corporation of India operates the central switch, and more than 300 banks participate. A street vendor can receive INR 120 for a cup of tea just as easily as a business can receive INR 100,000 for an invoice. Transaction limits are set per transaction and per day, and the system handles billions of payments each month, making it the largest real-time system in the world by volume. FedNow in the United States is built by the Federal Reserve and settles in central bank money around the clock. Banks connect through a service provider or directly, and they exchange ISO 20022 messages such as pacs.008 for the payment and pacs.002 for the status report. The transaction limit at launch in 2023 was USD 500,000, with banks free to set lower limits for their own customers. The Federal Reserve later raised the network maximum to USD 1 million on 24 June 2025 and then to USD 10 million effective November 2025, while the participant default stayed at USD 100,000, so a learner should check the current limit before quoting it, because scheme limits change. FedNow supports request for payment, so a biller can ask a customer for USD 85 for a utility bill, and the customer approves it in their banking app. Adoption has grown steadily, but it coexists with older systems such as ACH and wire transfers, so banks must support several rails at once. Faster Payments in the United Kingdom is one of the oldest instant systems, launched in 2008, and it is built for speed inside a single country. Payments are normally credited within seconds, with a scheme limit of GBP 1 million per transaction, although individual banks set lower limits for retail customers. The system uses its own message formats and a central infrastructure operated by Pay.UK, and settlement happens through prefunded accounts at the Bank of England. Confirmation of payee, added later, checks the beneficiary name before the payment is sent. Faster Payments proves that an instant system can run reliably for more than fifteen years, but it also shows how hard it is to retrofit new features onto an established design. SEPA Instant Credit Transfer in Europe must work across more than thirty countries, which makes it the most complex of the four. A EUR 2,500 payment from a bank in Germany to a bank in France must complete within ten seconds, even though the two banks may use different core systems and different national practices. The scheme is based on ISO 20022 messages, and settlement can happen through the TARGET Instant Payment Settlement service operated by the European Central Bank, or through a clearing house. The European regulation that followed made receiving instant payments mandatory for banks, and it removed the price premium that some banks charged, which sharply increased adoption across the region. The comparison shows that there is no single correct architecture, only trade-offs that fit a market. UPI optimises for inclusion and volume, with simple addressing and low cost per transaction. FedNow optimises for safety, settling in central bank money with strong Federal Reserve backing. Faster Payments optimises for reliability inside one country, with a long operational track record. SEPA Instant optimises for cross-border reach, with a common rulebook across many jurisdictions. A business analyst designing a new instant service must therefore start from the market, the regulation, and the customer need, and only then choose the technical pattern that fits.", "paragraphs": ["UPI in India is built around a simple addressing model that hides account numbers behind a virtual payment address. A customer pays to a handle such as a name followed by a bank identifier, or scans a QR code at a shop, and the system routes the payment to the correct account. The National Payments Corporation of India operates the central switch, and more than 300 banks participate. A street vendor can receive INR 120 for a cup of tea just as easily as a business can receive INR 100,000 for an invoice. Transaction limits are set per transaction and per day, and the system handles billions of payments each month, making it the largest real-time system in the world by volume.", "FedNow in the United States is built by the Federal Reserve and settles in central bank money around the clock. Banks connect through a service provider or directly, and they exchange ISO 20022 messages such as pacs.008 for the payment and pacs.002 for the status report. The transaction limit at launch in 2023 was USD 500,000, with banks free to set lower limits for their own customers. The Federal Reserve later raised the network maximum to USD 1 million on 24 June 2025 and then to USD 10 million effective November 2025, while the participant default stayed at USD 100,000, so a learner should check the current limit before quoting it, because scheme limits change. FedNow supports request for payment, so a biller can ask a customer for USD 85 for a utility bill, and the customer approves it in their banking app. Adoption has grown steadily, but it coexists with older systems such as ACH and wire transfers, so banks must support several rails at once.", "Faster Payments in the United Kingdom is one of the oldest instant systems, launched in 2008, and it is built for speed inside a single country. Payments are normally credited within seconds, with a scheme limit of GBP 1 million per transaction, although individual banks set lower limits for retail customers. The system uses its own message formats and a central infrastructure operated by Pay.UK, and settlement happens through prefunded accounts at the Bank of England. Confirmation of payee, added later, checks the beneficiary name before the payment is sent. Faster Payments proves that an instant system can run reliably for more than fifteen years, but it also shows how hard it is to retrofit new features onto an established design.", "SEPA Instant Credit Transfer in Europe must work across more than thirty countries, which makes it the most complex of the four. A EUR 2,500 payment from a bank in Germany to a bank in France must complete within ten seconds, even though the two banks may use different core systems and different national practices. The scheme is based on ISO 20022 messages, and settlement can happen through the TARGET Instant Payment Settlement service operated by the European Central Bank, or through a clearing house. The European regulation that followed made receiving instant payments mandatory for banks, and it removed the price premium that some banks charged, which sharply increased adoption across the region.", "The comparison shows that there is no single correct architecture, only trade-offs that fit a market. UPI optimises for inclusion and volume, with simple addressing and low cost per transaction. FedNow optimises for safety, settling in central bank money with strong Federal Reserve backing. Faster Payments optimises for reliability inside one country, with a long operational track record. SEPA Instant optimises for cross-border reach, with a common rulebook across many jurisdictions. A business analyst designing a new instant service must therefore start from the market, the regulation, and the customer need, and only then choose the technical pattern that fits."], "accessibility": "Banking architecture diagram showing How UPI, FedNow, Faster Payments and SEPA Instant Do It Differently.", "visual_type": "architecture", "visual_choice_reason": "architecture chapter", "beats": [{"t0": 0.0, "t1": 39.4, "title": "UPI in India", "note": "UPI in India is built around a simple addressing model that hides account numbers behind a virtual payment address.", "highlight_nodes": ["n0"], "highlight_conns": [], "highlight_fields": []}, {"t0": 39.4, "t1": 78.3, "title": "FedNow in the United States", "note": "FedNow in the United States is built by the Federal Reserve and settles in central bank money around the clock.", "highlight_nodes": ["n1"], "highlight_conns": ["c0"], "highlight_fields": []}, {"t0": 78.3, "t1": 122.4, "title": "FedNow supports request for payment", "note": "FedNow supports request for payment, so a biller can ask a customer for USD 85 for a utility bill, and the customer approves it in their banking app.", "highlight_nodes": ["n2"], "highlight_conns": ["c1"], "highlight_fields": []}, {"t0": 122.4, "t1": 167.2, "title": "Confirmation of payee", "note": "Confirmation of payee, added later, checks the beneficiary name before the payment is sent.", "highlight_nodes": ["n3"], "highlight_conns": ["c2"], "highlight_fields": []}, {"t0": 167.2, "t1": 206.9, "title": "European regulation that followed made receiving instant", "note": "The European regulation that followed made receiving instant payments mandatory for banks", "highlight_nodes": ["n4"], "highlight_conns": ["c3"], "highlight_fields": []}, {"t0": 206.9, "t1": 217.4, "title": "Business analyst designing a new instant service", "note": "A business analyst designing a new instant service must therefore start from the market, the regulation, and the customer need, and only then choose the technical pattern that fits.", "highlight_nodes": ["n5"], "highlight_conns": ["c4"], "highlight_fields": []}], "framework": {"objective": "By the end of this lesson, you will be able to explain UPI, FEDNOW, faster payments and SEPA instant do it differently. UPI in India is built around a simple addressing model that hides account numbers behind a virtual payment address.", "why_matters": "A business analyst designing a new instant service must therefore start from the market, the regulation, and the customer need, and only then choose the technical pattern that fits.", "technical_example": "Banks connect through a service provider or directly, and they exchange ISO 20022 messages such as pacs.008 for the payment and pacs.002 for the status report.", "failure_recovery": "A customer pays to a handle such as a name followed by a bank identifier, or scans a QR code at a shop, and the system routes the payment to the correct account. The comparison shows that there is no single correct architecture, only trade-offs that fit a market.", "exercise": {"task": "Read the ISO 20022 messages message described in this lesson and identify its key parts.", "info": "Use the message structure, fields and example in this lesson.", "action": "List the main blocks of the message, name the field that carries the amount, and name the field that identifies the payment.", "correct": "The message is made of blocks, each carrying a part of the payment instruction. The amount field and the identification field are the two a receiving bank checks first, because without them it cannot process or reconcile the payment.", "why": "A message is only useful if you can read it. The blocks tell the receiving bank what to do, and the amount and identification fields are what it checks first."}, "assessment": {"question": "Which of the following best describes UPI, FEDNOW, faster payments and SEPA instant do it differently?", "options": ["A real-time payment is a payment that moves from the sender account to the receiver account within seconds, with confirmation returned to the sender in the same session", "Three parties share responsibility for every instant payment, and each one must perform inside a strict time budget", "UPI in India is built around a simple addressing model that hides account numbers behind a virtual payment address", "Real-time differs from traditional batch payments in almost every operational respect"], "answer": 2, "explanation": "UPI in India is built around a simple addressing model that hides account numbers behind a virtual payment address. This is the core idea of the lesson.", "why_wrong": ["This describes a different concept from this chapter, not UPI, FEDNOW, faster payments and SEPA instant do it differently.", "This describes a different concept from this chapter, not UPI, FEDNOW, faster payments and SEPA instant do it differently.", "", "This describes a different concept from this chapter, not UPI, FEDNOW, faster payments and SEPA instant do it differently."], "source": "generated:ch46s6"}, "takeaway": "A business analyst designing a new instant service must therefore start from the market, the regulation, and the customer need, and only then choose the technical pattern that fits.", "prereq": "ch46s5", "next": "ch46s7", "connection_note": "Builds on \"Instant Settlement, Liquidity and Prefunding\".", "tool": {"slug": "lifecycle", "label": "Payment Lifecycle Simulator", "url": "../simulators/lifecycle.html", "scenario": "Follow INR 120 through every stage, from instruction to beneficiary credit, and note where it can stop."}, "simple": "In plain words: uPI in India is built around a simple addressing model that hides account numbers behind a virtual payment address. That is the whole idea in one sentence, and the rest of the lesson shows how it works in a real bank.", "summary": "UPI in India is built around a simple addressing model that hides account numbers behind a virtual payment address. Key points: UPI in India; FedNow in the United States; Faster Payments in the United Kingdom; SEPA Instant Credit Transfer in Europe; Comparison: no single correct architecture.", "example": "A customer pays to a handle such as a name followed by a bank identifier, or scans a QR code at a shop, and the system routes the payment to the correct account. A street vendor can receive INR 120 for a cup of tea just as easily as a business can receive INR 100,000 for an invoice."}}], "chapter_title": "Real-Time Payments Architecture", "meta_line": "Real-Time Payments Architecture, Lesson 6 of 7, Narration 3:37, D05 Domestic payment systems", "next_id": "ch46s7", "next_title": "Exercise: Design an Instant Payment Flow (initiation to confirmation with timeouts, retries and failure handling)"}]);</script>
+</div>
+<nav class="tool-rail" aria-label="Lesson tools">
+<button type="button" class="rail-tool" onclick="pfOpenTranscript('studio-ch46s6')" title="Open transcript"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M7 3h7l4 4v14H7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M14 3v4h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 12h5M10 15.5h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span>Transcript</span></button>
+<button type="button" class="rail-tool" onclick="pfToggleNote('studio-ch46s6')" title="Write a note on this lesson"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L8 19l-4 1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>Notes</span></button>
+<button type="button" class="rail-tool" onclick="pfToggleFiles('studio-ch46s6')" title="Download lesson files"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>Files</span></button>
+</nav>
+<div class="fw-files-panel" id="pf-files-studio-ch46s6" style="display:none"><b>Lesson files</b><p><a href="../audio/ch46s6.mp3" download>Download narration (MP3)</a></p><p><a href="#" onclick="pfDownloadTranscript('studio-ch46s6');return false">Download transcript (.txt)</a></p></div>
+</div>
+</div>
+</main>
+<footer><p>Payments Training Hub. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="../index.html">Home</a> &middot; <a href="../courses.html">Courses</a> &middot; <a href="../practice.html">Practice</a> &middot; <a href="../simulators.html">Simulators</a> &middot; <a href="../labs.html">Labs</a> &middot; <a href="../explorer.html">Explorer</a> &middot; <a href="../tests.html">Tests</a> &middot; <a href="../diagnostic.html">Diagnostic</a> &middot; <a href="../faq.html">Interview Ready Questions</a> &middot; <a href="../interview-prep.html">Interview Prep</a></p><p><a href="../about.html">About</a> &middot; <a href="../privacy.html">Privacy</a> &middot; <a href="../terms.html">Terms</a> &middot; <a href="../contact.html">Contact</a> &middot; <a href="../editorial-standards.html">Editorial Standards</a> &middot; <a href="../sources.html">Sources</a></p></footer>
+<script defer src="../assets/site.js"></script>
+<script defer src="../assets/bundles.js"></script>
+<script defer src="../assets/auth.js"></script>
+<script defer src="../assets/studio.js"></script>
+<script defer src="../assets/insight-components.js"></script>
+<script defer src="../assets/nav.js"></script>
+<script defer src="../assets/pf-enhance.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+if(window.PFInsight){PFInsight.init();}
+});
+</script>
+</body>
+</html>
