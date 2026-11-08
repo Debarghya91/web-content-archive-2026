@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>Error taxonomy: HTTP status is not the payment status | Payments Training Hub</title>
+<meta name="description" content="The single most common error in payment API design is confusing the HTTP status with the payment status. An HTTP status says what happened to the...">
+<link rel="canonical" href="https://www.paymentstraininghub.in/lessons/ch80s4.html">
+<meta property="og:url" content="https://www.paymentstraininghub.in/lessons/ch80s4.html">
+<meta property="og:title" content="Error taxonomy: HTTP status is not the payment status | Payments Training Hub">
+<meta property="og:description" content="The single most common error in payment API design is confusing the HTTP status with the payment status. An HTTP status says what happened to the...">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.in/assets/hero/hero-poster.jpg">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.paymentstraininghub.in/index.html"}, {"@type": "ListItem", "position": 2, "name": "API design standards and integration patterns", "item": "https://www.paymentstraininghub.in/chapters/ch80-api-design-standards-and-integration-patterns.html"}, {"@type": "ListItem", "position": 3, "name": "Error taxonomy: HTTP status is not the payment status", "item": "https://www.paymentstraininghub.in/lessons/ch80s4.html"}]}</script>
+<link rel="stylesheet" href="../assets/studio.css">
+<link rel="stylesheet" href="../assets/pf-theme.css">
+<link rel="stylesheet" href="../assets/insight-components.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="../index.html" class="brand">Payments <span>Training Hub</span></a><nav class="topnav"><a href="../index.html">Home</a> <a href="../courses.html">Courses</a> <a href="../practice.html">Practice</a> <a href="../simulators.html">Simulators</a> <a href="../labs.html">Labs</a> <a href="../explorer.html">Explorer</a> <a href="../tests.html">Tests</a></nav><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox" style="display:none"><span id="authState">Not signed in</span> <span id="authForm" style="display:none"><input id="authEmail" type="email" placeholder="Email for OTP" aria-label="Email for sign-in"> <button class="mute-btn" onclick="paAuthSendOtp()">Send code</button> <input id="authCode" type="text" placeholder="6-digit code" aria-label="One-time code" style="display:none"> <button class="mute-btn" id="authVerifyBtn" onclick="paAuthVerifyOtp()" style="display:none">Verify</button> <button class="mute-btn" onclick="paAuthGoogle()">Sign in with Google</button> </span><button class="mute-btn" id="authSignOutBtn" onclick="paAuthSignOut()" style="display:none">Sign out</button></span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<div class="lesson-page">
+<div class="lesson-shell">
+<aside class="course-rail">
+<div class="rail-head">
+<h2>API design standards and integration patterns</h2>
+<a class="rail-close" href="../chapters/ch80-api-design-standards-and-integration-patterns.html" aria-label="Close and go to chapter" title="Back to chapter">&times;</a>
+</div>
+<div class="goal-card">
+<div class="goal-head"><b>Today's goal &middot; <span id="side-progress-text">0 of 7 items</span></b><span class="goal-flag"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 21V4m0 1h11l-2.5 3.5L17 12H6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="goal-chev">&#94;</span></div>
+<p class="goal-body" id="side-goal-body">Complete 3 items today to stay at a good pace!</p>
+</div>
+<ul class="lesson-list"><li class="" data-lesson="ch80s1"><a href="ch80s1.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">API versioning and lifecycle: how to change an API without breaking clients</span><span class="m">Video &middot; 6 min</span></span></a></li>
+<li class="" data-lesson="ch80s2"><a href="ch80s2.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Pagination, filtering and sorting: returning large result sets safely</span><span class="m">Video &middot; 6 min</span></span></a></li>
+<li class="" data-lesson="ch80s3"><a href="ch80s3.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Rate limiting and quotas: protecting the API and the client</span><span class="m">Video &middot; 5 min</span></span></a></li>
+<li class="current" data-lesson="ch80s4"><a href="ch80s4.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Error taxonomy: HTTP status is not the payment status</span><span class="m">Video &middot; 6 min</span></span></a></li>
+<li class="" data-lesson="ch80s5"><a href="ch80s5.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Idempotency in depth: keys, replay, conflict and storage</span><span class="m">Video &middot; 6 min</span></span></a></li>
+<li class="" data-lesson="ch80s6"><a href="ch80s6.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">REST resource modelling for payments: resources, state and transitions</span><span class="m">Video &middot; 7 min</span></span></a></li>
+<li class="" data-lesson="ch80s7"><a href="ch80s7.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Webhooks and event delivery: signatures, retries, ordering and replay</span><span class="m">Video &middot; 6 min</span></span></a></li></ul>
+</aside>
+<div class="lesson-main">
+<div class="studio" id="studio-studio-ch80s4">
+<div class="player">
+<div class="studio-canvas" id="studio-canvas-studio-ch80s4">
+<div class="ch-sec studio-scene-vis active" id="studio-vis-studio-ch80s4-0"><div class="beat-frames">
+<div class="beat-frame active" data-frame="0">
+<svg class="flow-desktop" viewBox="0 0 900 560" role="img" aria-label="Lesson visual">
+<defs><pattern id="bfd884" width="18" height="18" patternUnits="userSpaceOnUse"><path d="M18 0H0V18" fill="none" stroke="#182A44" stroke-width="1"/></pattern></defs>
+<rect x="0" y="0" width="900" height="560" fill="#0B1F3D"/>
+<rect x="0" y="0" width="900" height="560" fill="url(#bfd884)"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">HTTP</tspan> <tspan fill="#FFFFFF">status</tspan> <tspan fill="#FFFFFF">versus</tspan> <tspan fill="#FFFFFF">payment</tspan> <tspan fill="#FFFFFF">status</tspan></text>
+<path data-conn="c0" data-beat="0" d="M 212 210 L 408 210" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c0" data-beat="0" points="420,210 408,217 408,203" fill="#47DCDD"/>
+<path data-conn="c1" data-beat="1" d="M 480 210 L 676 210" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c1" data-beat="1" points="688,210 676,217 676,203" fill="#47DCDD"/>
+<path data-conn="c2" data-beat="2" d="M 718 284 L 718 286 L 718 286 L 718 308" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c2" data-beat="2" points="718,320 711,308 725,308" fill="#47DCDD"/>
+<path data-conn="c3" data-beat="3" d="M 688 350 L 492 350" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c3" data-beat="3" points="480,350 492,343 492,357" fill="#47DCDD"/>
+<path data-conn="c4" data-beat="4" d="M 420 350 L 224 350" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c4" data-beat="4" points="212,350 224,343 224,357" fill="#47DCDD"/>
+<g data-node="n0" class="bf-now" data-beat="0">
+<circle cx="182" cy="210" r="26" fill="#0A1826" stroke="#47DCDD" stroke-width="3"/>
+<circle cx="182" cy="210" r="6" fill="#47DCDD"/>
+<circle cx="156" cy="210" r="4" fill="#47DCDD"/>
+<circle cx="208" cy="210" r="4" fill="#45A4FF"/>
+<circle cx="182" cy="210" r="33" fill="none" stroke="#47DCDD" stroke-width="1" opacity="0.5"/>
+<text x="234" y="180" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="182" y="258" text-anchor="middle" font-size="12" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">HTTP status versus</text>
+<text x="182" y="276" text-anchor="middle" font-size="12" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">payment status</text>
+</g>
+<g data-node="n1" class="bf-dim" data-beat="1">
+<circle cx="450" cy="210" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="450" cy="210" r="6" fill="#45A4FF"/>
+<circle cx="424" cy="210" r="4" fill="#47DCDD"/>
+<circle cx="476" cy="210" r="4" fill="#45A4FF"/>
+<text x="450" y="258" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">200 OK</text>
+</g>
+<g data-node="n2" class="bf-dim" data-beat="2">
+<circle cx="718" cy="210" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="718" cy="210" r="6" fill="#45A4FF"/>
+<circle cx="692" cy="210" r="4" fill="#47DCDD"/>
+<circle cx="744" cy="210" r="4" fill="#45A4FF"/>
+<text x="718" y="258" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">429 Too Many</text>
+<text x="718" y="276" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Requests</text>
+</g>
+<g data-node="n3" class="bf-dim" data-beat="3">
+<circle cx="718" cy="350" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="718" cy="350" r="6" fill="#45A4FF"/>
+<circle cx="692" cy="350" r="4" fill="#47DCDD"/>
+<circle cx="744" cy="350" r="4" fill="#45A4FF"/>
+<text x="718" y="398" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Payment status</text>
+<text x="718" y="416" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">codes</text>
+</g>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<circle cx="450" cy="350" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="450" cy="350" r="6" fill="#45A4FF"/>
+<circle cx="424" cy="350" r="4" fill="#47DCDD"/>
+<circle cx="476" cy="350" r="4" fill="#45A4FF"/>
+<text x="450" y="398" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Stable business</text>
+<text x="450" y="416" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">error codes</text>
+</g>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<circle cx="182" cy="350" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="182" cy="350" r="6" fill="#45A4FF"/>
+<circle cx="156" cy="350" r="4" fill="#47DCDD"/>
+<circle cx="208" cy="350" r="4" fill="#45A4FF"/>
+<text x="182" y="398" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Error taxonomy</text>
+<text x="182" y="416" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">testing</text>
+</g>
+<rect x="48" y="432" width="804" height="84" rx="10" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<text x="68" y="456" font-size="11" fill="#47DCDD" font-family="ui-monospace,Menlo,Consolas,monospace">MESSAGE TRACE</text>
+<text x="68" y="478" font-size="13" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">HTTP status versus payment status</text>
+<text x="68" y="504" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The single most common error in payment API design is confusing the HTTP status with the payment status.</text>
+<text x="48" y="538" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 1 of 6</text>
+<circle cx="772" cy="534" r="4" fill="#47DCDD"/>
+<circle cx="788" cy="534" r="4" fill="#334155"/>
+<circle cx="804" cy="534" r="4" fill="#334155"/>
+<circle cx="820" cy="534" r="4" fill="#334155"/>
+<circle cx="836" cy="534" r="4" fill="#334155"/>
+<circle cx="852" cy="534" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 815" role="img" aria-label="Lesson visual, vertical layout">
+<defs><pattern id="bfd885" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="360" height="815" fill="#0B1F3D"/>
+<rect x="0" y="0" width="360" height="815" fill="url(#bfd885)"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">HTTP</tspan> <tspan fill="#FFFFFF">status</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">versus</tspan> <tspan fill="#FFFFFF">payment</tspan></text>
+<text x="24" y="96" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">status</tspan></text>
+<g data-node="n0" class="bf-now" data-beat="0">
+<rect x="24" y="122" width="312" height="92" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="44" cy="142" r="11" fill="#1D4ED8"/>
+<text x="44" y="146" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="324" y="146" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="180" y="160" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">HTTP status versus</text>
+<text x="180" y="180" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">payment status</text>
+</g>
+<line data-conn="c0" data-beat="0" x1="180" y1="217" x2="180" y2="225" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c0" data-beat="0" points="180,237 173,225 187,225" fill="#DBEAFE"/>
+<g data-node="n1" class="bf-dim" data-beat="1">
+<rect x="24" y="240" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="260" r="11" fill="#1E3A5F"/>
+<text x="44" y="264" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="180" y="278" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">200 OK</text>
+</g>
+<line data-conn="c1" data-beat="1" x1="180" y1="315" x2="180" y2="323" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c1" data-beat="1" points="180,335 173,323 187,323" fill="#DBEAFE"/>
+<g data-node="n2" class="bf-dim" data-beat="2">
+<rect x="24" y="338" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="358" r="11" fill="#1E3A5F"/>
+<text x="44" y="362" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="180" y="376" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">429 Too Many Requests</text>
+</g>
+<line data-conn="c2" data-beat="2" x1="180" y1="413" x2="180" y2="421" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c2" data-beat="2" points="180,433 173,421 187,421" fill="#DBEAFE"/>
+<g data-node="n3" class="bf-dim" data-beat="3">
+<rect x="24" y="436" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="456" r="11" fill="#1E3A5F"/>
+<text x="44" y="460" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="180" y="474" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Payment status codes</text>
+</g>
+<line data-conn="c3" data-beat="3" x1="180" y1="511" x2="180" y2="519" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c3" data-beat="3" points="180,531 173,519 187,519" fill="#DBEAFE"/>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<rect x="24" y="534" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="554" r="11" fill="#1E3A5F"/>
+<text x="44" y="558" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="180" y="572" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Stable business error codes</text>
+</g>
+<line data-conn="c4" data-beat="4" x1="180" y1="609" x2="180" y2="617" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c4" data-beat="4" points="180,629 173,617 187,617" fill="#DBEAFE"/>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="24" y="632" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="652" r="11" fill="#1E3A5F"/>
+<text x="44" y="656" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="180" y="670" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Error taxonomy testing</text>
+</g>
+<g class="bf-paydot" style="--dx:0px;--dy:0px"><circle class="bf-pulse" cx="180" cy="122" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="180" cy="122" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="180" y="724" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The single most common error in</text>
+<text x="180" y="743" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">payment API design is confusing the</text>
+<text x="180" y="762" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">HTTP status with the payment status.</text>
+<text x="24" y="803" font-size="12" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 1 of 6</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="1">
+<svg class="flow-desktop" viewBox="0 0 900 560" role="img" aria-label="Lesson visual">
+<defs><pattern id="bfd886" width="18" height="18" patternUnits="userSpaceOnUse"><path d="M18 0H0V18" fill="none" stroke="#182A44" stroke-width="1"/></pattern></defs>
+<rect x="0" y="0" width="900" height="560" fill="#0B1F3D"/>
+<rect x="0" y="0" width="900" height="560" fill="url(#bfd886)"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">200</tspan> <tspan fill="#FFFFFF">OK</tspan></text>
+<path data-conn="c0" data-beat="0" d="M 212 210 L 408 210" stroke="#47DCDD" stroke-width="3" fill="none"/><polygon data-conn="c0" data-beat="0" points="420,210 408,217 408,203" fill="#47DCDD"/>
+<path data-conn="c1" data-beat="1" d="M 480 210 L 676 210" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c1" data-beat="1" points="688,210 676,217 676,203" fill="#47DCDD"/>
+<path data-conn="c2" data-beat="2" d="M 718 284 L 718 286 L 718 286 L 718 308" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c2" data-beat="2" points="718,320 711,308 725,308" fill="#47DCDD"/>
+<path data-conn="c3" data-beat="3" d="M 688 350 L 492 350" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c3" data-beat="3" points="480,350 492,343 492,357" fill="#47DCDD"/>
+<path data-conn="c4" data-beat="4" d="M 420 350 L 224 350" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c4" data-beat="4" points="212,350 224,343 224,357" fill="#47DCDD"/>
+<g data-node="n0" class="bf-done" data-beat="0">
+<circle cx="182" cy="210" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="182" cy="210" r="6" fill="#45A4FF"/>
+<circle cx="156" cy="210" r="4" fill="#47DCDD"/>
+<circle cx="208" cy="210" r="4" fill="#45A4FF"/>
+<text x="182" y="258" text-anchor="middle" font-size="12" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">HTTP status versus</text>
+<text x="182" y="276" text-anchor="middle" font-size="12" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">payment status</text>
+</g>
+<g data-node="n1" class="bf-now" data-beat="1">
+<circle cx="450" cy="210" r="26" fill="#0A1826" stroke="#47DCDD" stroke-width="3"/>
+<circle cx="450" cy="210" r="6" fill="#47DCDD"/>
+<circle cx="424" cy="210" r="4" fill="#47DCDD"/>
+<circle cx="476" cy="210" r="4" fill="#45A4FF"/>
+<circle cx="450" cy="210" r="33" fill="none" stroke="#47DCDD" stroke-width="1" opacity="0.5"/>
+<text x="502" y="180" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="450" y="258" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">200 OK</text>
+</g>
+<g data-node="n2" class="bf-dim" data-beat="2">
+<circle cx="718" cy="210" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="718" cy="210" r="6" fill="#45A4FF"/>
+<circle cx="692" cy="210" r="4" fill="#47DCDD"/>
+<circle cx="744" cy="210" r="4" fill="#45A4FF"/>
+<text x="718" y="258" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">429 Too Many</text>
+<text x="718" y="276" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Requests</text>
+</g>
+<g data-node="n3" class="bf-dim" data-beat="3">
+<circle cx="718" cy="350" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="718" cy="350" r="6" fill="#45A4FF"/>
+<circle cx="692" cy="350" r="4" fill="#47DCDD"/>
+<circle cx="744" cy="350" r="4" fill="#45A4FF"/>
+<text x="718" y="398" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Payment status</text>
+<text x="718" y="416" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">codes</text>
+</g>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<circle cx="450" cy="350" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="450" cy="350" r="6" fill="#45A4FF"/>
+<circle cx="424" cy="350" r="4" fill="#47DCDD"/>
+<circle cx="476" cy="350" r="4" fill="#45A4FF"/>
+<text x="450" y="398" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Stable business</text>
+<text x="450" y="416" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">error codes</text>
+</g>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<circle cx="182" cy="350" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="182" cy="350" r="6" fill="#45A4FF"/>
+<circle cx="156" cy="350" r="4" fill="#47DCDD"/>
+<circle cx="208" cy="350" r="4" fill="#45A4FF"/>
+<text x="182" y="398" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Error taxonomy</text>
+<text x="182" y="416" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">testing</text>
+</g>
+<rect x="48" y="432" width="804" height="84" rx="10" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<text x="68" y="456" font-size="11" fill="#47DCDD" font-family="ui-monospace,Menlo,Consolas,monospace">MESSAGE TRACE</text>
+<text x="68" y="478" font-size="13" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">HTTP status versus payment status &gt; 200 OK</text>
+<text x="68" y="504" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">200 OK means the request succeeded and the response carries the result, used for retrieving a payment or a</text>
+<text x="48" y="538" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 2 of 6</text>
+<circle cx="772" cy="534" r="4" fill="#334155"/>
+<circle cx="788" cy="534" r="4" fill="#47DCDD"/>
+<circle cx="804" cy="534" r="4" fill="#334155"/>
+<circle cx="820" cy="534" r="4" fill="#334155"/>
+<circle cx="836" cy="534" r="4" fill="#334155"/>
+<circle cx="852" cy="534" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 759" role="img" aria-label="Lesson visual, vertical layout">
+<defs><pattern id="bfd887" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="360" height="759" fill="#0B1F3D"/>
+<rect x="0" y="0" width="360" height="759" fill="url(#bfd887)"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">200</tspan> <tspan fill="#FFFFFF">OK</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="24" y="66" width="312" height="92" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="86" r="11" fill="#1E3A5F"/>
+<text x="44" y="90" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="180" y="104" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">HTTP status versus</text>
+<text x="180" y="124" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">payment status</text>
+</g>
+<line data-conn="c0" data-beat="0" x1="180" y1="161" x2="180" y2="169" stroke="#60A5FA" stroke-width="2"/>
+<polygon data-conn="c0" data-beat="0" points="180,181 173,169 187,169" fill="#DBEAFE"/>
+<g data-node="n1" class="bf-now" data-beat="1">
+<rect x="24" y="184" width="312" height="72" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="44" cy="204" r="11" fill="#1D4ED8"/>
+<text x="44" y="208" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="324" y="208" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="180" y="222" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">200 OK</text>
+</g>
+<line data-conn="c1" data-beat="1" x1="180" y1="259" x2="180" y2="267" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c1" data-beat="1" points="180,279 173,267 187,267" fill="#DBEAFE"/>
+<g data-node="n2" class="bf-dim" data-beat="2">
+<rect x="24" y="282" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="302" r="11" fill="#1E3A5F"/>
+<text x="44" y="306" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="180" y="320" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">429 Too Many Requests</text>
+</g>
+<line data-conn="c2" data-beat="2" x1="180" y1="357" x2="180" y2="365" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c2" data-beat="2" points="180,377 173,365 187,365" fill="#DBEAFE"/>
+<g data-node="n3" class="bf-dim" data-beat="3">
+<rect x="24" y="380" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="400" r="11" fill="#1E3A5F"/>
+<text x="44" y="404" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="180" y="418" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Payment status codes</text>
+</g>
+<line data-conn="c3" data-beat="3" x1="180" y1="455" x2="180" y2="463" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c3" data-beat="3" points="180,475 173,463 187,463" fill="#DBEAFE"/>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<rect x="24" y="478" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="498" r="11" fill="#1E3A5F"/>
+<text x="44" y="502" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="180" y="516" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Stable business error codes</text>
+</g>
+<line data-conn="c4" data-beat="4" x1="180" y1="553" x2="180" y2="561" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c4" data-beat="4" points="180,573 173,561 187,561" fill="#DBEAFE"/>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="24" y="576" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="596" r="11" fill="#1E3A5F"/>
+<text x="44" y="600" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="180" y="614" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Error taxonomy testing</text>
+</g>
+<g class="bf-paydot" style="--dx:0px;--dy:-62px"><circle class="bf-pulse" cx="180" cy="174" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="180" cy="174" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="180" y="668" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">200 OK means the request succeeded and</text>
+<text x="180" y="687" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">the response carries the result, used for</text>
+<text x="180" y="706" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">retrieving a payment or a status.</text>
+<text x="24" y="747" font-size="12" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 2 of 6</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="2">
+<svg class="flow-desktop" viewBox="0 0 900 560" role="img" aria-label="Lesson visual">
+<defs><pattern id="bfd888" width="18" height="18" patternUnits="userSpaceOnUse"><path d="M18 0H0V18" fill="none" stroke="#182A44" stroke-width="1"/></pattern></defs>
+<rect x="0" y="0" width="900" height="560" fill="#0B1F3D"/>
+<rect x="0" y="0" width="900" height="560" fill="url(#bfd888)"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">429</tspan> <tspan fill="#FFFFFF">Too</tspan> <tspan fill="#FFFFFF">Many</tspan> <tspan fill="#FFFFFF">Requests</tspan></text>
+<path data-conn="c0" data-beat="0" d="M 212 210 L 408 210" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c0" data-beat="0" points="420,210 408,217 408,203" fill="#47DCDD"/>
+<path data-conn="c1" data-beat="1" d="M 480 210 L 676 210" stroke="#47DCDD" stroke-width="3" fill="none"/><polygon data-conn="c1" data-beat="1" points="688,210 676,217 676,203" fill="#47DCDD"/>
+<path data-conn="c2" data-beat="2" d="M 718 284 L 718 286 L 718 286 L 718 308" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c2" data-beat="2" points="718,320 711,308 725,308" fill="#47DCDD"/>
+<path data-conn="c3" data-beat="3" d="M 688 350 L 492 350" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c3" data-beat="3" points="480,350 492,343 492,357" fill="#47DCDD"/>
+<path data-conn="c4" data-beat="4" d="M 420 350 L 224 350" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c4" data-beat="4" points="212,350 224,343 224,357" fill="#47DCDD"/>
+<g data-node="n0" class="bf-done" data-beat="0">
+<circle cx="182" cy="210" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="182" cy="210" r="6" fill="#45A4FF"/>
+<circle cx="156" cy="210" r="4" fill="#47DCDD"/>
+<circle cx="208" cy="210" r="4" fill="#45A4FF"/>
+<text x="182" y="258" text-anchor="middle" font-size="12" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">HTTP status versus</text>
+<text x="182" y="276" text-anchor="middle" font-size="12" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">payment status</text>
+</g>
+<g data-node="n1" class="bf-done" data-beat="1">
+<circle cx="450" cy="210" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="450" cy="210" r="6" fill="#45A4FF"/>
+<circle cx="424" cy="210" r="4" fill="#47DCDD"/>
+<circle cx="476" cy="210" r="4" fill="#45A4FF"/>
+<text x="450" y="258" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">200 OK</text>
+</g>
+<g data-node="n2" class="bf-now" data-beat="2">
+<circle cx="718" cy="210" r="26" fill="#0A1826" stroke="#47DCDD" stroke-width="3"/>
+<circle cx="718" cy="210" r="6" fill="#47DCDD"/>
+<circle cx="692" cy="210" r="4" fill="#47DCDD"/>
+<circle cx="744" cy="210" r="4" fill="#45A4FF"/>
+<circle cx="718" cy="210" r="33" fill="none" stroke="#47DCDD" stroke-width="1" opacity="0.5"/>
+<text x="770" y="180" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="718" y="258" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">429 Too Many</text>
+<text x="718" y="276" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Requests</text>
+</g>
+<g data-node="n3" class="bf-dim" data-beat="3">
+<circle cx="718" cy="350" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="718" cy="350" r="6" fill="#45A4FF"/>
+<circle cx="692" cy="350" r="4" fill="#47DCDD"/>
+<circle cx="744" cy="350" r="4" fill="#45A4FF"/>
+<text x="718" y="398" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Payment status</text>
+<text x="718" y="416" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">codes</text>
+</g>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<circle cx="450" cy="350" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="450" cy="350" r="6" fill="#45A4FF"/>
+<circle cx="424" cy="350" r="4" fill="#47DCDD"/>
+<circle cx="476" cy="350" r="4" fill="#45A4FF"/>
+<text x="450" y="398" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Stable business</text>
+<text x="450" y="416" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">error codes</text>
+</g>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<circle cx="182" cy="350" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="182" cy="350" r="6" fill="#45A4FF"/>
+<circle cx="156" cy="350" r="4" fill="#47DCDD"/>
+<circle cx="208" cy="350" r="4" fill="#45A4FF"/>
+<text x="182" y="398" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Error taxonomy</text>
+<text x="182" y="416" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">testing</text>
+</g>
+<rect x="48" y="432" width="804" height="84" rx="10" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<text x="68" y="456" font-size="11" fill="#47DCDD" font-family="ui-monospace,Menlo,Consolas,monospace">MESSAGE TRACE</text>
+<text x="68" y="478" font-size="13" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">HTTP status versus payment status &gt; 200 OK &gt; 429 Too Many Requests</text>
+<text x="68" y="504" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">429 Too Many Requests means the client exceeded the rate limit.</text>
+<text x="48" y="538" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 3 of 6</text>
+<circle cx="772" cy="534" r="4" fill="#334155"/>
+<circle cx="788" cy="534" r="4" fill="#334155"/>
+<circle cx="804" cy="534" r="4" fill="#47DCDD"/>
+<circle cx="820" cy="534" r="4" fill="#334155"/>
+<circle cx="836" cy="534" r="4" fill="#334155"/>
+<circle cx="852" cy="534" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 768" role="img" aria-label="Lesson visual, vertical layout">
+<defs><pattern id="bfd889" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="360" height="768" fill="#0B1F3D"/>
+<rect x="0" y="0" width="360" height="768" fill="url(#bfd889)"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">429</tspan> <tspan fill="#FFFFFF">Too</tspan> <tspan fill="#FFFFFF">Many</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">Requests</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="24" y="94" width="312" height="92" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="114" r="11" fill="#1E3A5F"/>
+<text x="44" y="118" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="180" y="132" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">HTTP status versus</text>
+<text x="180" y="152" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">payment status</text>
+</g>
+<line data-conn="c0" data-beat="0" x1="180" y1="189" x2="180" y2="197" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c0" data-beat="0" points="180,209 173,197 187,197" fill="#DBEAFE"/>
+<g data-node="n1" class="bf-done" data-beat="1">
+<rect x="24" y="212" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="232" r="11" fill="#1E3A5F"/>
+<text x="44" y="236" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="180" y="250" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">200 OK</text>
+</g>
+<line data-conn="c1" data-beat="1" x1="180" y1="287" x2="180" y2="295" stroke="#60A5FA" stroke-width="2"/>
+<polygon data-conn="c1" data-beat="1" points="180,307 173,295 187,295" fill="#DBEAFE"/>
+<g data-node="n2" class="bf-now" data-beat="2">
+<rect x="24" y="310" width="312" height="72" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="44" cy="330" r="11" fill="#1D4ED8"/>
+<text x="44" y="334" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="324" y="334" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="180" y="348" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">429 Too Many Requests</text>
+</g>
+<line data-conn="c2" data-beat="2" x1="180" y1="385" x2="180" y2="393" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c2" data-beat="2" points="180,405 173,393 187,393" fill="#DBEAFE"/>
+<g data-node="n3" class="bf-dim" data-beat="3">
+<rect x="24" y="408" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="428" r="11" fill="#1E3A5F"/>
+<text x="44" y="432" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="180" y="446" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Payment status codes</text>
+</g>
+<line data-conn="c3" data-beat="3" x1="180" y1="483" x2="180" y2="491" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c3" data-beat="3" points="180,503 173,491 187,491" fill="#DBEAFE"/>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<rect x="24" y="506" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="526" r="11" fill="#1E3A5F"/>
+<text x="44" y="530" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="180" y="544" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Stable business error codes</text>
+</g>
+<line data-conn="c4" data-beat="4" x1="180" y1="581" x2="180" y2="589" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c4" data-beat="4" points="180,601 173,589 187,589" fill="#DBEAFE"/>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="24" y="604" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="624" r="11" fill="#1E3A5F"/>
+<text x="44" y="628" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="180" y="642" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Error taxonomy testing</text>
+</g>
+<g class="bf-paydot" style="--dx:0px;--dy:-52px"><circle class="bf-pulse" cx="180" cy="300" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="180" cy="300" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="180" y="696" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">429 Too Many Requests means the</text>
+<text x="180" y="715" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">client exceeded the rate limit.</text>
+<text x="24" y="756" font-size="12" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 3 of 6</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="3">
+<svg class="flow-desktop" viewBox="0 0 900 560" role="img" aria-label="Lesson visual">
+<defs><pattern id="bfd890" width="18" height="18" patternUnits="userSpaceOnUse"><path d="M18 0H0V18" fill="none" stroke="#182A44" stroke-width="1"/></pattern></defs>
+<rect x="0" y="0" width="900" height="560" fill="#0B1F3D"/>
+<rect x="0" y="0" width="900" height="560" fill="url(#bfd890)"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Payment</tspan> <tspan fill="#FFFFFF">status</tspan> <tspan fill="#FFFFFF">codes</tspan></text>
+<path data-conn="c0" data-beat="0" d="M 212 210 L 408 210" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c0" data-beat="0" points="420,210 408,217 408,203" fill="#47DCDD"/>
+<path data-conn="c1" data-beat="1" d="M 480 210 L 676 210" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c1" data-beat="1" points="688,210 676,217 676,203" fill="#47DCDD"/>
+<path data-conn="c2" data-beat="2" d="M 718 284 L 718 286 L 718 286 L 718 308" stroke="#47DCDD" stroke-width="3" fill="none"/><polygon data-conn="c2" data-beat="2" points="718,320 711,308 725,308" fill="#47DCDD"/>
+<path data-conn="c3" data-beat="3" d="M 688 350 L 492 350" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c3" data-beat="3" points="480,350 492,343 492,357" fill="#47DCDD"/>
+<path data-conn="c4" data-beat="4" d="M 420 350 L 224 350" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c4" data-beat="4" points="212,350 224,343 224,357" fill="#47DCDD"/>
+<g data-node="n0" class="bf-done" data-beat="0">
+<circle cx="182" cy="210" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="182" cy="210" r="6" fill="#45A4FF"/>
+<circle cx="156" cy="210" r="4" fill="#47DCDD"/>
+<circle cx="208" cy="210" r="4" fill="#45A4FF"/>
+<text x="182" y="258" text-anchor="middle" font-size="12" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">HTTP status versus</text>
+<text x="182" y="276" text-anchor="middle" font-size="12" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">payment status</text>
+</g>
+<g data-node="n1" class="bf-done" data-beat="1">
+<circle cx="450" cy="210" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="450" cy="210" r="6" fill="#45A4FF"/>
+<circle cx="424" cy="210" r="4" fill="#47DCDD"/>
+<circle cx="476" cy="210" r="4" fill="#45A4FF"/>
+<text x="450" y="258" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">200 OK</text>
+</g>
+<g data-node="n2" class="bf-done" data-beat="2">
+<circle cx="718" cy="210" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="718" cy="210" r="6" fill="#45A4FF"/>
+<circle cx="692" cy="210" r="4" fill="#47DCDD"/>
+<circle cx="744" cy="210" r="4" fill="#45A4FF"/>
+<text x="718" y="258" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">429 Too Many</text>
+<text x="718" y="276" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Requests</text>
+</g>
+<g data-node="n3" class="bf-now" data-beat="3">
+<circle cx="718" cy="350" r="26" fill="#0A1826" stroke="#47DCDD" stroke-width="3"/>
+<circle cx="718" cy="350" r="6" fill="#47DCDD"/>
+<circle cx="692" cy="350" r="4" fill="#47DCDD"/>
+<circle cx="744" cy="350" r="4" fill="#45A4FF"/>
+<circle cx="718" cy="350" r="33" fill="none" stroke="#47DCDD" stroke-width="1" opacity="0.5"/>
+<text x="770" y="320" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="718" y="398" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Payment status</text>
+<text x="718" y="416" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">codes</text>
+</g>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<circle cx="450" cy="350" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="450" cy="350" r="6" fill="#45A4FF"/>
+<circle cx="424" cy="350" r="4" fill="#47DCDD"/>
+<circle cx="476" cy="350" r="4" fill="#45A4FF"/>
+<text x="450" y="398" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Stable business</text>
+<text x="450" y="416" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">error codes</text>
+</g>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<circle cx="182" cy="350" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="182" cy="350" r="6" fill="#45A4FF"/>
+<circle cx="156" cy="350" r="4" fill="#47DCDD"/>
+<circle cx="208" cy="350" r="4" fill="#45A4FF"/>
+<text x="182" y="398" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Error taxonomy</text>
+<text x="182" y="416" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">testing</text>
+</g>
+<rect x="48" y="432" width="804" height="84" rx="10" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<text x="68" y="456" font-size="11" fill="#47DCDD" font-family="ui-monospace,Menlo,Consolas,monospace">MESSAGE TRACE</text>
+<text x="68" y="478" font-size="13" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">HTTP status versus payment status &gt; 200 OK &gt; 429 Too Many Requests &gt; Payment status codes</text>
+<text x="68" y="504" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The payment status codes are the ISO 20022 set, and they must be used exactly as defined.</text>
+<text x="48" y="538" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 4 of 6</text>
+<circle cx="772" cy="534" r="4" fill="#334155"/>
+<circle cx="788" cy="534" r="4" fill="#334155"/>
+<circle cx="804" cy="534" r="4" fill="#334155"/>
+<circle cx="820" cy="534" r="4" fill="#47DCDD"/>
+<circle cx="836" cy="534" r="4" fill="#334155"/>
+<circle cx="852" cy="534" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 787" role="img" aria-label="Lesson visual, vertical layout">
+<defs><pattern id="bfd891" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="360" height="787" fill="#0B1F3D"/>
+<rect x="0" y="0" width="360" height="787" fill="url(#bfd891)"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Payment</tspan> <tspan fill="#FFFFFF">status</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">codes</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="24" y="94" width="312" height="92" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="114" r="11" fill="#1E3A5F"/>
+<text x="44" y="118" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="180" y="132" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">HTTP status versus</text>
+<text x="180" y="152" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">payment status</text>
+</g>
+<line data-conn="c0" data-beat="0" x1="180" y1="189" x2="180" y2="197" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c0" data-beat="0" points="180,209 173,197 187,197" fill="#DBEAFE"/>
+<g data-node="n1" class="bf-done" data-beat="1">
+<rect x="24" y="212" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="232" r="11" fill="#1E3A5F"/>
+<text x="44" y="236" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="180" y="250" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">200 OK</text>
+</g>
+<line data-conn="c1" data-beat="1" x1="180" y1="287" x2="180" y2="295" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c1" data-beat="1" points="180,307 173,295 187,295" fill="#DBEAFE"/>
+<g data-node="n2" class="bf-done" data-beat="2">
+<rect x="24" y="310" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="330" r="11" fill="#1E3A5F"/>
+<text x="44" y="334" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="180" y="348" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">429 Too Many Requests</text>
+</g>
+<line data-conn="c2" data-beat="2" x1="180" y1="385" x2="180" y2="393" stroke="#60A5FA" stroke-width="2"/>
+<polygon data-conn="c2" data-beat="2" points="180,405 173,393 187,393" fill="#DBEAFE"/>
+<g data-node="n3" class="bf-now" data-beat="3">
+<rect x="24" y="408" width="312" height="72" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="44" cy="428" r="11" fill="#1D4ED8"/>
+<text x="44" y="432" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="324" y="432" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="180" y="446" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Payment status codes</text>
+</g>
+<line data-conn="c3" data-beat="3" x1="180" y1="483" x2="180" y2="491" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c3" data-beat="3" points="180,503 173,491 187,491" fill="#DBEAFE"/>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<rect x="24" y="506" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="526" r="11" fill="#1E3A5F"/>
+<text x="44" y="530" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="180" y="544" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Stable business error codes</text>
+</g>
+<line data-conn="c4" data-beat="4" x1="180" y1="581" x2="180" y2="589" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c4" data-beat="4" points="180,601 173,589 187,589" fill="#DBEAFE"/>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="24" y="604" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="624" r="11" fill="#1E3A5F"/>
+<text x="44" y="628" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="180" y="642" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Error taxonomy testing</text>
+</g>
+<g class="bf-paydot" style="--dx:0px;--dy:-52px"><circle class="bf-pulse" cx="180" cy="398" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="180" cy="398" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="180" y="696" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The payment status codes are the ISO</text>
+<text x="180" y="715" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">20022 set, and they must be used</text>
+<text x="180" y="734" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">exactly as defined.</text>
+<text x="24" y="775" font-size="12" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 4 of 6</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="4">
+<svg class="flow-desktop" viewBox="0 0 900 560" role="img" aria-label="Lesson visual">
+<defs><pattern id="bfd892" width="18" height="18" patternUnits="userSpaceOnUse"><path d="M18 0H0V18" fill="none" stroke="#182A44" stroke-width="1"/></pattern></defs>
+<rect x="0" y="0" width="900" height="560" fill="#0B1F3D"/>
+<rect x="0" y="0" width="900" height="560" fill="url(#bfd892)"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Stable</tspan> <tspan fill="#FFFFFF">business</tspan> <tspan fill="#FFFFFF">error</tspan> <tspan fill="#FFFFFF">codes</tspan></text>
+<path data-conn="c0" data-beat="0" d="M 212 210 L 408 210" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c0" data-beat="0" points="420,210 408,217 408,203" fill="#47DCDD"/>
+<path data-conn="c1" data-beat="1" d="M 480 210 L 676 210" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c1" data-beat="1" points="688,210 676,217 676,203" fill="#47DCDD"/>
+<path data-conn="c2" data-beat="2" d="M 718 284 L 718 286 L 718 286 L 718 308" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c2" data-beat="2" points="718,320 711,308 725,308" fill="#47DCDD"/>
+<path data-conn="c3" data-beat="3" d="M 688 350 L 492 350" stroke="#47DCDD" stroke-width="3" fill="none"/><polygon data-conn="c3" data-beat="3" points="480,350 492,343 492,357" fill="#47DCDD"/>
+<path data-conn="c4" data-beat="4" d="M 420 350 L 224 350" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c4" data-beat="4" points="212,350 224,343 224,357" fill="#47DCDD"/>
+<g data-node="n0" class="bf-done" data-beat="0">
+<circle cx="182" cy="210" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="182" cy="210" r="6" fill="#45A4FF"/>
+<circle cx="156" cy="210" r="4" fill="#47DCDD"/>
+<circle cx="208" cy="210" r="4" fill="#45A4FF"/>
+<text x="182" y="258" text-anchor="middle" font-size="12" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">HTTP status versus</text>
+<text x="182" y="276" text-anchor="middle" font-size="12" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">payment status</text>
+</g>
+<g data-node="n1" class="bf-done" data-beat="1">
+<circle cx="450" cy="210" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="450" cy="210" r="6" fill="#45A4FF"/>
+<circle cx="424" cy="210" r="4" fill="#47DCDD"/>
+<circle cx="476" cy="210" r="4" fill="#45A4FF"/>
+<text x="450" y="258" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">200 OK</text>
+</g>
+<g data-node="n2" class="bf-done" data-beat="2">
+<circle cx="718" cy="210" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="718" cy="210" r="6" fill="#45A4FF"/>
+<circle cx="692" cy="210" r="4" fill="#47DCDD"/>
+<circle cx="744" cy="210" r="4" fill="#45A4FF"/>
+<text x="718" y="258" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">429 Too Many</text>
+<text x="718" y="276" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Requests</text>
+</g>
+<g data-node="n3" class="bf-done" data-beat="3">
+<circle cx="718" cy="350" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="718" cy="350" r="6" fill="#45A4FF"/>
+<circle cx="692" cy="350" r="4" fill="#47DCDD"/>
+<circle cx="744" cy="350" r="4" fill="#45A4FF"/>
+<text x="718" y="398" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Payment status</text>
+<text x="718" y="416" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">codes</text>
+</g>
+<g data-node="n4" class="bf-now" data-beat="4">
+<circle cx="450" cy="350" r="26" fill="#0A1826" stroke="#47DCDD" stroke-width="3"/>
+<circle cx="450" cy="350" r="6" fill="#47DCDD"/>
+<circle cx="424" cy="350" r="4" fill="#47DCDD"/>
+<circle cx="476" cy="350" r="4" fill="#45A4FF"/>
+<circle cx="450" cy="350" r="33" fill="none" stroke="#47DCDD" stroke-width="1" opacity="0.5"/>
+<text x="502" y="320" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="450" y="398" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Stable business</text>
+<text x="450" y="416" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">error codes</text>
+</g>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<circle cx="182" cy="350" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="182" cy="350" r="6" fill="#45A4FF"/>
+<circle cx="156" cy="350" r="4" fill="#47DCDD"/>
+<circle cx="208" cy="350" r="4" fill="#45A4FF"/>
+<text x="182" y="398" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Error taxonomy</text>
+<text x="182" y="416" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">testing</text>
+</g>
+<rect x="48" y="432" width="804" height="84" rx="10" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<text x="68" y="456" font-size="11" fill="#47DCDD" font-family="ui-monospace,Menlo,Consolas,monospace">MESSAGE TRACE</text>
+<text x="68" y="478" font-size="13" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">HTTP status versus payment status &gt; 200 OK &gt; 429 Too Many Requests &gt; Payment status codes &gt;</text>
+<text x="68" y="496" font-size="13" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Stable business error codes</text>
+<text x="68" y="504" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">A client that programs against the code AC01 expects it to mean the same thing in every response, in every</text>
+<text x="48" y="538" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 5 of 6</text>
+<circle cx="772" cy="534" r="4" fill="#334155"/>
+<circle cx="788" cy="534" r="4" fill="#334155"/>
+<circle cx="804" cy="534" r="4" fill="#334155"/>
+<circle cx="820" cy="534" r="4" fill="#334155"/>
+<circle cx="836" cy="534" r="4" fill="#47DCDD"/>
+<circle cx="852" cy="534" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 806" role="img" aria-label="Lesson visual, vertical layout">
+<defs><pattern id="bfd893" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="360" height="806" fill="#0B1F3D"/>
+<rect x="0" y="0" width="360" height="806" fill="url(#bfd893)"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Stable</tspan> <tspan fill="#FFFFFF">business</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">error</tspan> <tspan fill="#FFFFFF">codes</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="24" y="94" width="312" height="92" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="114" r="11" fill="#1E3A5F"/>
+<text x="44" y="118" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="180" y="132" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">HTTP status versus</text>
+<text x="180" y="152" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">payment status</text>
+</g>
+<line data-conn="c0" data-beat="0" x1="180" y1="189" x2="180" y2="197" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c0" data-beat="0" points="180,209 173,197 187,197" fill="#DBEAFE"/>
+<g data-node="n1" class="bf-done" data-beat="1">
+<rect x="24" y="212" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="232" r="11" fill="#1E3A5F"/>
+<text x="44" y="236" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="180" y="250" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">200 OK</text>
+</g>
+<line data-conn="c1" data-beat="1" x1="180" y1="287" x2="180" y2="295" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c1" data-beat="1" points="180,307 173,295 187,295" fill="#DBEAFE"/>
+<g data-node="n2" class="bf-done" data-beat="2">
+<rect x="24" y="310" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="330" r="11" fill="#1E3A5F"/>
+<text x="44" y="334" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="180" y="348" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">429 Too Many Requests</text>
+</g>
+<line data-conn="c2" data-beat="2" x1="180" y1="385" x2="180" y2="393" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c2" data-beat="2" points="180,405 173,393 187,393" fill="#DBEAFE"/>
+<g data-node="n3" class="bf-done" data-beat="3">
+<rect x="24" y="408" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="428" r="11" fill="#1E3A5F"/>
+<text x="44" y="432" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="180" y="446" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Payment status codes</text>
+</g>
+<line data-conn="c3" data-beat="3" x1="180" y1="483" x2="180" y2="491" stroke="#60A5FA" stroke-width="2"/>
+<polygon data-conn="c3" data-beat="3" points="180,503 173,491 187,491" fill="#DBEAFE"/>
+<g data-node="n4" class="bf-now" data-beat="4">
+<rect x="24" y="506" width="312" height="72" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="44" cy="526" r="11" fill="#1D4ED8"/>
+<text x="44" y="530" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="324" y="530" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="180" y="544" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Stable business error codes</text>
+</g>
+<line data-conn="c4" data-beat="4" x1="180" y1="581" x2="180" y2="589" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c4" data-beat="4" points="180,601 173,589 187,589" fill="#DBEAFE"/>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="24" y="604" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="624" r="11" fill="#1E3A5F"/>
+<text x="44" y="628" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="180" y="642" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Error taxonomy testing</text>
+</g>
+<g class="bf-paydot" style="--dx:0px;--dy:-52px"><circle class="bf-pulse" cx="180" cy="496" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="180" cy="496" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="180" y="696" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">A client that programs against the code</text>
+<text x="180" y="715" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">AC01 expects it to mean the same thing in</text>
+<text x="180" y="734" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">every response, in every version of the API,</text>
+<text x="180" y="753" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">and in every payment type.</text>
+<text x="24" y="794" font-size="12" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 5 of 6</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="5">
+<svg class="flow-desktop" viewBox="0 0 900 560" role="img" aria-label="Lesson visual">
+<defs><pattern id="bfd894" width="18" height="18" patternUnits="userSpaceOnUse"><path d="M18 0H0V18" fill="none" stroke="#182A44" stroke-width="1"/></pattern></defs>
+<rect x="0" y="0" width="900" height="560" fill="#0B1F3D"/>
+<rect x="0" y="0" width="900" height="560" fill="url(#bfd894)"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Error</tspan> <tspan fill="#FFFFFF">taxonomy</tspan> <tspan fill="#FFFFFF">testing</tspan></text>
+<path data-conn="c0" data-beat="0" d="M 212 210 L 408 210" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c0" data-beat="0" points="420,210 408,217 408,203" fill="#47DCDD"/>
+<path data-conn="c1" data-beat="1" d="M 480 210 L 676 210" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c1" data-beat="1" points="688,210 676,217 676,203" fill="#47DCDD"/>
+<path data-conn="c2" data-beat="2" d="M 718 284 L 718 286 L 718 286 L 718 308" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c2" data-beat="2" points="718,320 711,308 725,308" fill="#47DCDD"/>
+<path data-conn="c3" data-beat="3" d="M 688 350 L 492 350" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c3" data-beat="3" points="480,350 492,343 492,357" fill="#47DCDD"/>
+<path data-conn="c4" data-beat="4" d="M 420 350 L 224 350" stroke="#47DCDD" stroke-width="3" fill="none"/><polygon data-conn="c4" data-beat="4" points="212,350 224,343 224,357" fill="#47DCDD"/>
+<g data-node="n0" class="bf-done" data-beat="0">
+<circle cx="182" cy="210" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="182" cy="210" r="6" fill="#45A4FF"/>
+<circle cx="156" cy="210" r="4" fill="#47DCDD"/>
+<circle cx="208" cy="210" r="4" fill="#45A4FF"/>
+<text x="182" y="258" text-anchor="middle" font-size="12" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">HTTP status versus</text>
+<text x="182" y="276" text-anchor="middle" font-size="12" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">payment status</text>
+</g>
+<g data-node="n1" class="bf-done" data-beat="1">
+<circle cx="450" cy="210" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="450" cy="210" r="6" fill="#45A4FF"/>
+<circle cx="424" cy="210" r="4" fill="#47DCDD"/>
+<circle cx="476" cy="210" r="4" fill="#45A4FF"/>
+<text x="450" y="258" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">200 OK</text>
+</g>
+<g data-node="n2" class="bf-done" data-beat="2">
+<circle cx="718" cy="210" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="718" cy="210" r="6" fill="#45A4FF"/>
+<circle cx="692" cy="210" r="4" fill="#47DCDD"/>
+<circle cx="744" cy="210" r="4" fill="#45A4FF"/>
+<text x="718" y="258" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">429 Too Many</text>
+<text x="718" y="276" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Requests</text>
+</g>
+<g data-node="n3" class="bf-done" data-beat="3">
+<circle cx="718" cy="350" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="718" cy="350" r="6" fill="#45A4FF"/>
+<circle cx="692" cy="350" r="4" fill="#47DCDD"/>
+<circle cx="744" cy="350" r="4" fill="#45A4FF"/>
+<text x="718" y="398" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Payment status</text>
+<text x="718" y="416" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">codes</text>
+</g>
+<g data-node="n4" class="bf-done" data-beat="4">
+<circle cx="450" cy="350" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="450" cy="350" r="6" fill="#45A4FF"/>
+<circle cx="424" cy="350" r="4" fill="#47DCDD"/>
+<circle cx="476" cy="350" r="4" fill="#45A4FF"/>
+<text x="450" y="398" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Stable business</text>
+<text x="450" y="416" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">error codes</text>
+</g>
+<g data-node="n5" class="bf-now" data-beat="5">
+<circle cx="182" cy="350" r="26" fill="#0A1826" stroke="#47DCDD" stroke-width="3"/>
+<circle cx="182" cy="350" r="6" fill="#47DCDD"/>
+<circle cx="156" cy="350" r="4" fill="#47DCDD"/>
+<circle cx="208" cy="350" r="4" fill="#45A4FF"/>
+<circle cx="182" cy="350" r="33" fill="none" stroke="#47DCDD" stroke-width="1" opacity="0.5"/>
+<text x="234" y="320" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="182" y="398" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Error taxonomy</text>
+<text x="182" y="416" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">testing</text>
+</g>
+<rect x="48" y="432" width="804" height="84" rx="10" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<text x="68" y="456" font-size="11" fill="#47DCDD" font-family="ui-monospace,Menlo,Consolas,monospace">MESSAGE TRACE</text>
+<text x="68" y="478" font-size="13" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">HTTP status versus payment status &gt; 200 OK &gt; 429 Too Many Requests &gt; Payment status codes &gt;</text>
+<text x="68" y="496" font-size="13" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Stable business error codes &gt; Error taxonomy testing</text>
+<text x="68" y="504" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">A test pack that does not cover this case will pass in the test environment and fail when a real client calls the</text>
+<text x="48" y="538" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 6 of 6</text>
+<circle cx="772" cy="534" r="4" fill="#334155"/>
+<circle cx="788" cy="534" r="4" fill="#334155"/>
+<circle cx="804" cy="534" r="4" fill="#334155"/>
+<circle cx="820" cy="534" r="4" fill="#334155"/>
+<circle cx="836" cy="534" r="4" fill="#334155"/>
+<circle cx="852" cy="534" r="4" fill="#47DCDD"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 787" role="img" aria-label="Lesson visual, vertical layout">
+<defs><pattern id="bfd895" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="360" height="787" fill="#0B1F3D"/>
+<rect x="0" y="0" width="360" height="787" fill="url(#bfd895)"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Error</tspan> <tspan fill="#FFFFFF">taxonomy</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">testing</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="24" y="94" width="312" height="92" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="114" r="11" fill="#1E3A5F"/>
+<text x="44" y="118" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="180" y="132" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">HTTP status versus</text>
+<text x="180" y="152" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">payment status</text>
+</g>
+<line data-conn="c0" data-beat="0" x1="180" y1="189" x2="180" y2="197" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c0" data-beat="0" points="180,209 173,197 187,197" fill="#DBEAFE"/>
+<g data-node="n1" class="bf-done" data-beat="1">
+<rect x="24" y="212" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="232" r="11" fill="#1E3A5F"/>
+<text x="44" y="236" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="180" y="250" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">200 OK</text>
+</g>
+<line data-conn="c1" data-beat="1" x1="180" y1="287" x2="180" y2="295" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c1" data-beat="1" points="180,307 173,295 187,295" fill="#DBEAFE"/>
+<g data-node="n2" class="bf-done" data-beat="2">
+<rect x="24" y="310" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="330" r="11" fill="#1E3A5F"/>
+<text x="44" y="334" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="180" y="348" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">429 Too Many Requests</text>
+</g>
+<line data-conn="c2" data-beat="2" x1="180" y1="385" x2="180" y2="393" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c2" data-beat="2" points="180,405 173,393 187,393" fill="#DBEAFE"/>
+<g data-node="n3" class="bf-done" data-beat="3">
+<rect x="24" y="408" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="428" r="11" fill="#1E3A5F"/>
+<text x="44" y="432" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="180" y="446" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Payment status codes</text>
+</g>
+<line data-conn="c3" data-beat="3" x1="180" y1="483" x2="180" y2="491" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c3" data-beat="3" points="180,503 173,491 187,491" fill="#DBEAFE"/>
+<g data-node="n4" class="bf-done" data-beat="4">
+<rect x="24" y="506" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="526" r="11" fill="#1E3A5F"/>
+<text x="44" y="530" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="180" y="544" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Stable business error codes</text>
+</g>
+<line data-conn="c4" data-beat="4" x1="180" y1="581" x2="180" y2="589" stroke="#60A5FA" stroke-width="2"/>
+<polygon data-conn="c4" data-beat="4" points="180,601 173,589 187,589" fill="#DBEAFE"/>
+<g data-node="n5" class="bf-now" data-beat="5">
+<rect x="24" y="604" width="312" height="72" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="44" cy="624" r="11" fill="#1D4ED8"/>
+<text x="44" y="628" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="324" y="628" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="180" y="642" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Error taxonomy testing</text>
+</g>
+<g class="bf-paydot" style="--dx:0px;--dy:-52px"><circle class="bf-pulse" cx="180" cy="594" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="180" cy="594" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="180" y="696" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">A test pack that does not cover this</text>
+<text x="180" y="715" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">case will pass in the test environment</text>
+<text x="180" y="734" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">and fail when a real client calls the API.</text>
+<text x="24" y="775" font-size="12" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 6 of 6</text>
+</svg>
+</div>
+</div>
+<p class="xml-caption">Flow of the explanation in this lesson.</p></div>
+<div class="playerbar">
+<div class="studio-progress"><div class="studio-markers" id="studio-markers-studio-ch80s4"></div><input type="range" id="studio-slider-studio-ch80s4" min="0" max="1000" value="0" aria-label="Lesson timeline"></div>
+<div class="ctrl-row">
+<button class="ctrl-btn" id="studio-play-studio-ch80s4" onclick="studioTogglePlay('studio-ch80s4')" aria-label="Play lesson" title="Play lesson"><span class="ctrl-ic-play"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></span><span class="ctrl-ic-pause" style="display:none"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><rect x="6" y="5" width="4" height="14" fill="currentColor"/><rect x="14" y="5" width="4" height="14" fill="currentColor"/></svg></span></button>
+<button class="ctrl-btn studio-mute-btn" id="studio-mute-studio-ch80s4" onclick="studioToggleMute('studio-ch80s4')" aria-label="Mute narration" title="Mute / unmute narration"><svg class="studio-mute-icon" viewBox="0 0 24 24" width="28" height="28" fill="currentColor" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3z"/><path class="studio-mute-waves" d="M16 8.5a5 5 0 0 1 0 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><path class="studio-mute-waves" d="M18.5 6a9 9 0 0 1 0 12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><path class="studio-mute-x" d="M16 9.5l5 5M21 9.5l-5 5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" style="display:none"/></svg></button>
+<button class="ctrl-btn" onclick="studioSkip('studio-ch80s4', -10)" aria-label="Back 10 seconds" title="Back 10 seconds"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 5a7 7 0 1 1-6.32 4.06" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M5.5 3.5v5h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><text x="12" y="16.5" font-size="8" fill="currentColor" text-anchor="middle" font-weight="700">10</text></svg></button>
+<span class="studio-time ctrl-time" id="studio-time-studio-ch80s4">0:00 / 6:11</span>
+<button class="ctrl-btn" onclick="studioSkip('studio-ch80s4', 10)" aria-label="Forward 10 seconds" title="Forward 10 seconds"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 5a7 7 0 1 0 6.32 4.06" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M18.5 3.5v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><text x="12" y="16.5" font-size="8" fill="currentColor" text-anchor="middle" font-weight="700">10</text></svg></button>
+<span class="playerbar-spacer"></span>
+<span class="player-stage" id="studio-tag-studio-ch80s4">Step 1 of 6</span>
+<button class="ctrl-btn ctrl-step" id="studio-prevscene-studio-ch80s4" onclick="studioPrevScene('studio-ch80s4')" title="Previous step" aria-label="Previous step">&lsaquo;</button>
+<button class="ctrl-btn ctrl-step" id="studio-nextscene-studio-ch80s4" onclick="studioNextScene('studio-ch80s4')" title="Next step" aria-label="Next step">&rsaquo;</button>
+<button class="ctrl-btn ctrl-speed" id="studio-speedbtn-studio-ch80s4" onclick="studioCycleSpeed('studio-ch80s4')" title="Playback speed" aria-label="Playback speed">1x</button>
+<span class="ctrl-settings-wrap"><button class="ctrl-btn" onclick="studioToggleSettings('studio-ch80s4', event)" aria-label="Player settings" title="Settings"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5 5l2.1 2.1M16.9 16.9L19 19M19 5l-2.1 2.1M7.1 16.9L5 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button><span class="ctrl-popover" id="studio-settings-studio-ch80s4" style="display:none" onclick="event.stopPropagation()"><label class="ctrl-pop-row">Volume <input type="range" min="0" max="1" step="0.1" value="1" oninput="studioSetVolume('studio-ch80s4', this.value)" style="width:110px;accent-color:#3587FC"></label><button class="studio-btn" id="studio-captions-studio-ch80s4" onclick="studioToggleCaptions('studio-ch80s4')">Captions: On</button><button class="studio-btn" onclick="studioReplayScene('studio-ch80s4')">Replay scene</button></span></span>
+<button class="ctrl-btn" onclick="studioFullscreen('studio-ch80s4')" aria-label="Fullscreen" title="Fullscreen"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+</div>
+</div>
+</div>
+<p class="studio-caption" id="studio-caption-studio-ch80s4"></p>
+<p class="studio-loading" id="studio-loading-studio-ch80s4" style="display:none">Loading narration...</p>
+<p class="studio-error" id="studio-error-studio-ch80s4" role="alert" style="display:none"></p>
+<audio id="studio-audio-studio-ch80s4" preload="auto" src="../audio/ch80s4.mp3"></audio>
+</div>
+<div class="lesson-title-row">
+<h1>Error taxonomy: HTTP status is not the payment status</h1>
+<button class="save-note" type="button" onclick="pfToggleNote('studio-ch80s4')" title="Save a note on this lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L8 19l-4 1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg> Save note</button>
+</div>
+<p class="lesson-meta-line">API design standards and integration patterns, Lesson 4 of 7, Narration 6:11, D10 APIs and integration</p>
+<p class="lesson-note-saved" id="studio-note-saved-studio-ch80s4" style="display:none">Note saved.</p>
+<div class="note-editor" id="studio-note-editor-studio-ch80s4" style="display:none"><textarea id="studio-note-text-studio-ch80s4" rows="3" placeholder="Write a note on this lesson..." aria-label="Lesson note"></textarea><div class="note-editor-row"><button class="studio-btn primary" onclick="pfSaveNote('studio-ch80s4')">Save note</button> <button class="studio-btn" onclick="pfToggleNote('studio-ch80s4')">Cancel</button></div></div>
+<div class="dive-deeper">
+<div class="dive-head"><button type="button" class="dive-toggle" onclick="pfToggleDive(this)" aria-expanded="true"><span class="dive-spark"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 2l2.2 6.8L21 11l-6.8 2.2L12 20l-2.2-6.8L3 11l6.8-2.2z" fill="currentColor"/></svg></span><span class="dive-title">Dive deeper on this topic</span><span class="dive-chev"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 14l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button></div>
+<div class="dive-btns"><button type="button" class="dive-btn" data-kind="practice" onclick="pfDive('studio-ch80s4', 'practice')">Give me practice questions</button><button type="button" class="dive-btn" data-kind="simple" onclick="pfDive('studio-ch80s4', 'simple')">Explain this topic in simple terms</button><button type="button" class="dive-btn" data-kind="summary" onclick="pfDive('studio-ch80s4', 'summary')">Give me a summary</button><button type="button" class="dive-btn" data-kind="example" onclick="pfDive('studio-ch80s4', 'example')">Give me real-life examples</button></div>
+<div class="dive-panel" id="dive-panel-studio-ch80s4"><div class="dive-panel-body"></div></div>
+<script type="application/json" id="pf-dive-data-studio-ch80s4">{"simple": "In plain words: The single most common error in payment API design is confusing the HTTP status with the payment status.", "summary": "The single most common error in payment API design is confusing the HTTP status with the payment status.", "example": "This lesson is conceptual. The worked examples that use it are in the lessons that follow in this chapter."}</script>
+</div>
+<div class="lesson-feedback">
+<div class="fb-icons"><button type="button" class="fb-btn" data-kind="like" onclick="pfFeedback(this,'like')" aria-label="Like this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M7 21H4a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1h3v11zm0 0h9.6a2 2 0 0 0 1.9-1.4l1.6-5A2 2 0 0 0 18.2 12H15V6.5A2.5 2.5 0 0 0 12.5 4L11 7.5 8.6 10H7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button><button type="button" class="fb-btn" data-kind="dislike" onclick="pfFeedback(this,'dislike')" aria-label="Dislike this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M17 3h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1h-3V3zm0 0H7.4a2 2 0 0 0-1.9 1.4l-1.6 5A2 2 0 0 0 5.8 12H9v5.5A2.5 2.5 0 0 0 11.5 20L13 16.5l2.4-2.5H17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button><button type="button" class="fb-btn" data-kind="flag" onclick="pfFeedback(this,'flag')" aria-label="Flag this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M6 21V4m0 1h11l-2.5 3.5L17 12H6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+<button type="button" class="go-next" onclick="goLesson('ch80s5')" title="Next: Idempotency in depth: keys, replay, conflict and storage">Go to next item &rarr;</button>
+</div>
+<div class="chips"><span class="chip">Idempotency</span><span class="chip">Settlement</span><span class="chip">ISO 20022</span></div>
+<div class="card learn-card">
+<h2>What you will learn</h2>
+<p class="transcript"><b>Your objective.</b> By the end of this lesson, you will be able to explain error taxonomy: http status is not the payment status and apply it to a real banking scenario.</p>
+<p class="transcript"><b>Why it matters.</b> For a business analyst, the requirement is to define the error code for every failure the API can return, the HTTP status for each, and the message text, and to test each one with a real call.</p>
+<p class="transcript">Chapter objective: Learner explains API versioning and lifecycle, pagination, rate limiting and quotas, and the error taxonomy that separates HTTP status from payment status. Learner designs idempotent payment creation, models payment resources in REST, and explains webhook signatures, retries, ordering and replay.</p>
+<h3>Key learning points</h3>
+<ul id="studio-points-studio-ch80s4">
+<li>HTTP status versus payment status</li>
+<li>200 OK</li>
+<li>429 Too Many Requests</li>
+<li>Payment status codes</li>
+<li>Stable business error codes</li>
+<li>Error taxonomy testing</li>
+</ul>
+<h3>Key terms</h3>
+<div id="studio-terms-studio-ch80s4">
+<p class="keyterm"><b>Idempotency:</b> The property that repeating the same request has the same effect as sending it once. In payments, an idempotency key lets a client safely retry a request after a timeout without creating a duplicate...</p>
+<p class="keyterm"><b>Settlement:</b> The final movement of funds between banks to discharge obligations created by cleared payments. Settlement is usually made in central bank money or through correspondent accounts.</p>
+<p class="keyterm"><b>ISO 20022:</b> An international standard for financial messaging that defines XML message formats for payments, securities and trade.</p>
+</div>
+<p class="studio-note">Payment flow diagram showing Error taxonomy: HTTP status is not the payment status.</p>
+</div>
+<section class="ic-lesson-section" id="pf-insights-studio-ch80s4">
+<h2>Insights and practice scenarios</h2>
+<p class="studio-note">Worked insights and practice scenarios for this lesson. Each one is a reusable PaymentForge case, so the same case may appear in more than one lesson.</p>
+<div data-ic-type="level" data-record-id="INS-069"><script type="application/json">{"level": 2, "meta": {"domain": "APIs & Integration", "topic": "Checkout, authentication, status, refund and reversal APIs", "depth": 2, "difficulty": "intermediate", "insightId": "INS-069"}, "evidence": "public-post", "recordId": "INS-069", "problem": "A payment product needs several APIs across the payment lifecycle, and the BA must map them.", "solution": "Map API touchpoints across payment initiation and lifecycle operations: checkout, authentication, status, refund and reversal. Each touchpoint has its own purpose, contract and status semantics.", "decision": {"question": "A merchant asks which APIs it needs across a payment's life. How do you answer?", "context": "A merchant is integrating with a payment product and asks which APIs it needs from checkout through refund and reversal.", "options": [{"label": "One API for everything", "detail": "One API for everything.", "correct": false, "why": "One API for everything mixes different purposes, contracts and status semantics into a single endpoint.", "outcome": "One API for everything mixes different purposes, contracts and status semantics into a single endpoint."}, {"label": "Map touchpoints across the lifecycle", "detail": "Map API touchpoints across payment initiation and lifecycle operations: checkout, authentication, status, refund and reversal.", "correct": true, "why": "Correct. Map API touchpoints across payment initiation and lifecycle operations: checkout, authentication, status, refund and reversal.", "outcome": "Correct. Map API touchpoints across payment initiation and lifecycle operations: checkout, authentication, status, refund and reversal."}, {"label": "Expose the engine directly", "detail": "Expose the internal payment engine directly.", "correct": false, "why": "Exposing the internal payment engine directly gives clients no contract, no versioning and no control.", "outcome": "Exposing the internal payment engine directly gives clients no contract, no versioning and no control."}, {"label": "Checkout API only", "detail": "Build only a checkout API.", "correct": false, "why": "A checkout API alone leaves the merchant with no way to check status, refund or reverse.", "outcome": "A checkout API alone leaves the merchant with no way to check status, refund or reverse."}]}, "flow": {"steps": [{"title": "Map the checkout API."}, {"title": "Map the authentication API."}, {"title": "Map the status API."}, {"title": "Map the refund API."}, {"title": "Map the reversal API."}, {"title": "Document status semantics for each."}]}, "negative": ["Status API returns a state the client misreads.", "Refund and reversal are confused.", "Authentication step is skipped by a client."], "check": {"questions": [{"answer": 0, "explanation": "Each touchpoint has its own purpose, contract and status semantics, so they need separate APIs.", "options": ["Each has its own purpose, contract and status semantics", "One API is cheaper to build", "Merchants prefer a single endpoint", "The payment engine has only one interface"], "question": "Why separate APIs per lifecycle touchpoint?"}, {"answer": 1, "explanation": "The status API reports the payment's current state, which the merchant needs after initiation.", "options": ["It creates the payment", "It reports the payment's current state", "It refunds the customer", "It authenticates the cardholder"], "question": "What does the status API do?"}, {"answer": 1, "explanation": "Refund and reversal differ in business trigger, timing, original transaction linkage and ledger effects.", "options": ["They are the same thing", "Business trigger, timing, original transaction linkage and ledger effects", "Only the name differs", "Only the timing differs"], "question": "What differs between a refund API and a reversal API?"}]}}</script></div>
+<div data-ic-type="level" data-record-id="PAY-036"><script type="application/json">{"level": 3, "meta": {"domain": "Architecture and data", "topic": "HTTP 200 returned but payment not completed", "difficulty": "advanced", "depth": 3, "scenarioId": "PAY-036"}, "evidence": "practice-scenario", "recordId": "PAY-036", "problem": "A client interprets an HTTP 200 response as proof that the payment has settled.", "decision": {"question": "What does HTTP success mean versus business success?", "options": [{"label": "Define API response semantics precisely", "detail": "Define API response semantics precisely.", "correct": true, "why": "This is the recommended solution in this case. A synchronous 200 may mean request accepted or resource created, not final payment completion.", "outcome": "Client can distinguish request receipt, acceptance, processing, rejection and completion."}, {"label": "Accept the delivered outcome and update the documentation to match it", "detail": "Treat what was built as correct and rewrite the requirement afterwards.", "why": "The scenario requires the gap to be investigated and classified, not papered over after the fact.", "outcome": "The underlying gap stays open and recurs in the next release.", "correct": false}, {"label": "Escalate to senior management without analysis or evidence", "detail": "Raise the issue immediately with no findings attached.", "why": "Escalation without analysis gives decision makers nothing to decide on. The scenario requires findings first.", "outcome": "The decision is deferred and the issue returns with the same questions unanswered.", "correct": false}, {"label": "Rebuild the feature from scratch without a root-cause analysis", "detail": "Start again rather than finding out what went wrong.", "why": "Rebuilding without a root cause repeats the same mistake. The scenario requires the cause to be found first.", "outcome": "The rebuilt feature carries the same defect.", "correct": false}]}, "solution": "Define API response semantics precisely. A synchronous 200 may mean request accepted or resource created, not final payment completion. Return a payment resource/reference and status; use asynchronous status events or enquiry for later lifecycle updates.", "flow": {"steps": [{"title": "API gateway"}, {"title": "payment orchestration"}, {"title": "status API/webhook"}, {"title": "client"}]}, "happy": ["Client can distinguish request receipt, acceptance, processing, rejection and completion."], "negative": ["Async callback lost", "status polling too frequent", "client treats pending as success"], "technical": ["Document response codes, business status enum, correlation, webhook security, retry and idempotency", "Test client behaviour for every state", "Other standard named in this case: OpenAPI contract", "Other standard named in this case: payment messages downstream"], "accounting": ["Return a payment resource/reference and status; use asynchronous status events or enquiry for later lifecycle updates."], "gherkin": {"scenarios": [{"given": "the API accepts a payment for asynchronous processing", "when": "it returns HTTP 200/202", "then": "the response clearly indicates the payment's non-final status and provides a tracking reference"}]}, "check": {"questions": [{"question": "What is the recommended approach in this case?", "options": ["Define API response semantics precisely", "Accept the delivered outcome and update the documentation to match it", "Escalate to senior management without analysis or evidence", "Rebuild the feature from scratch without a root-cause analysis"], "answer": 0, "explanation": "Define API response semantics precisely.", "whyWrong": ["", "The scenario requires the gap to be investigated and classified, not papered over after the fact.", "Escalation without analysis gives decision makers nothing to decide on. The scenario requires findings first.", "Rebuilding without a root cause repeats the same mistake. The scenario requires the cause to be found first."]}, {"question": "Which of these is a negative path or edge case in this scenario?", "options": ["The payment settles in full with no exceptions", "Async callback lost", "The ledger and the statement agree on the first attempt", "The customer receives the funds before the instruction is sent"], "answer": 1, "explanation": "The scenario lists \"Async callback lost\" among its negative paths and edge cases.", "whyWrong": ["That describes a successful outcome, not a negative path in this scenario.", "", "That describes a successful outcome, not a negative path in this scenario.", "That describes a successful outcome, not a negative path in this scenario."]}, {"question": "What happens on the happy path?", "options": ["Async callback lost", "Status polling too frequent", "Client can distinguish request receipt, acceptance, processing, rejection and completion", "Client treats pending as success"], "answer": 2, "explanation": "Client can distinguish request receipt, acceptance, processing, rejection and completion.", "whyWrong": ["That is a failure outcome, not the happy path in this scenario.", "That is a failure outcome, not the happy path in this scenario.", "", "That is a failure outcome, not the happy path in this scenario."]}]}}</script></div>
+<div data-ic-type="level" data-record-id="PAY-088"><script type="application/json">{"level": 3, "meta": {"domain": "APIs & Integration / Production Support", "topic": "API returns success but downstream business transaction is incomplete", "difficulty": "intermediate", "depth": 3, "scenarioId": "PAY-088"}, "evidence": "practice-scenario", "recordId": "PAY-088", "problem": "A payment API returns a successful HTTP response, but a downstream order, account or case record is not created.", "decision": {"question": "What does HTTP 200 or 202 actually guarantee?", "options": [{"label": "Accept the delivered outcome and update the documentation to match it", "detail": "Treat what was built as correct and rewrite the requirement afterwards.", "why": "The scenario requires the gap to be investigated and classified, not papered over after the fact.", "outcome": "The underlying gap stays open and recurs in the next release.", "correct": false}, {"label": "Escalate to senior management without analysis or evidence", "detail": "Raise the issue immediately with no findings attached.", "why": "Escalation without analysis gives decision makers nothing to decide on. The scenario requires findings first.", "outcome": "The decision is deferred and the issue returns with the same questions unanswered.", "correct": false}, {"label": "Rebuild the feature from scratch without a root-cause analysis", "detail": "Start again rather than finding out what went wrong.", "why": "Rebuilding without a root cause repeats the same mistake. The scenario requires the cause to be found first.", "outcome": "The rebuilt feature carries the same defect.", "correct": false}, {"label": "Determine what the response contract promises: receipt, validation, acceptance or completion", "detail": "Determine what the response contract promises: receipt, validation, acceptance or completion.", "correct": true, "why": "This is the recommended solution in this case. Trace correlation IDs across gateway, service, event bus, downstream consumer and database.", "outcome": "The downstream transaction is created exactly once or the payment is placed in a controlled recovery state."}]}, "solution": "Determine what the response contract promises: receipt, validation, acceptance or completion. Trace correlation IDs across gateway, service, event bus, downstream consumer and database. Inspect payload, response body, webhook delivery, retries, dead-letter queues and persistence. Reconcile financial effects before retrying.", "flow": {"steps": [{"title": "Client"}, {"title": "API gateway"}, {"title": "payment service"}, {"title": "event/callback"}, {"title": "downstream system"}, {"title": "database/ledger"}]}, "happy": ["The downstream transaction is created exactly once or the payment is placed in a controlled recovery state."], "negative": ["Callback lost", "event consumer failed", "payload mapping error", "timeout", "duplicate retry", "DB constraint failure"], "technical": ["Separate HTTP transport success from business completion", "Use idempotency, durable events, correlation, status enquiry and reconciliation", "Other standard named in this case: OpenAPI contract", "Other standard named in this case: request", "Other standard named in this case: response", "Other standard named in this case: webhook", "Other standard named in this case: event", "Other standard named in this case: payment status messages where applicable"], "accounting": ["A payment API returns a successful HTTP response, but a downstream order, account or case record is not created.", "Reconcile financial effects before retrying.", "Use idempotency, durable events, correlation, status enquiry and reconciliation."], "gherkin": {"scenarios": [{"given": "the API accepted a request but the downstream record is absent", "when": "the BA coordinates investigation", "then": "the team traces the same correlation ID across each integration boundary and identifies the failed transition"}]}, "check": {"questions": [{"question": "What is the recommended approach in this case?", "options": ["Accept the delivered outcome and update the documentation to match it", "Escalate to senior management without analysis or evidence", "Rebuild the feature from scratch without a root-cause analysis", "Determine what the response contract promises: receipt, validation, acceptance or completion"], "answer": 3, "explanation": "Determine what the response contract promises: receipt, validation, acceptance or completion.", "whyWrong": ["The scenario requires the gap to be investigated and classified, not papered over after the fact.", "Escalation without analysis gives decision makers nothing to decide on. The scenario requires findings first.", "Rebuilding without a root cause repeats the same mistake. The scenario requires the cause to be found first.", ""]}, {"question": "Which of these is a negative path or edge case in this scenario?", "options": ["Callback lost", "The payment settles in full with no exceptions", "The ledger and the statement agree on the first attempt", "The customer receives the funds before the instruction is sent"], "answer": 0, "explanation": "The scenario lists \"Callback lost\" among its negative paths and edge cases.", "whyWrong": ["", "That describes a successful outcome, not a negative path in this scenario.", "That describes a successful outcome, not a negative path in this scenario.", "That describes a successful outcome, not a negative path in this scenario."]}, {"question": "What happens on the happy path?", "options": ["Callback lost", "The downstream transaction is created exactly once or the payment is placed in a controlled recovery state", "Event consumer failed", "Payload mapping error"], "answer": 1, "explanation": "The downstream transaction is created exactly once or the payment is placed in a controlled recovery state.", "whyWrong": ["That is a failure outcome, not the happy path in this scenario.", "", "That is a failure outcome, not the happy path in this scenario.", "That is a failure outcome, not the happy path in this scenario."]}]}}</script></div>
+</section>
+<div class="fw-card" id="pf-exercise-studio-ch80s4">
+<p class="fw-label">Practise this lesson</p>
+<h2>Exercise</h2>
+<p><b>Write the request and the expected response for the API call described in this lesson.</b></p>
+<p>Use the API resources, operations and fields named in this lesson.</p>
+<ol class="fw-steps">
+<li><b>What to do.</b> Write the JSON request with the required fields, the success response, and one error response with its error code.</li>
+</ol>
+<p><button class="studio-btn" id="pf-ex-btn-studio-ch80s4" onclick="pfRevealExercise('studio-ch80s4')">Show the answer</button></p>
+<div class="fw-exercise-answer" id="pf-ex-answer-studio-ch80s4">
+<p><b>Correct result.</b> A correct request has all mandatory fields, a valid idempotency key, and the right resource and operation. The success response confirms acceptance, and the error response names the field or rule that failed.</p>
+<p><b>Why.</b> An API contract is a promise between two systems. If the request is wrong, the API must reject it cleanly, not fail silently.</p>
+</div>
+</div>
+<div class="fw-card" id="pf-quiz-studio-ch80s4" data-answer="2">
+<p class="fw-label">Check your understanding</p>
+<h2>Practice question</h2>
+<p><b>Which of the following best describes error taxonomy: http status is not the payment status?</b></p>
+<button type="button" class="quiz-opt" data-idx="0" onclick="pfCheckAnswer('studio-ch80s4', this)">It is a related concept from this chapter, but it does not describe error taxonomy: http status is not the payment status.</button>
+<button type="button" class="quiz-opt" data-idx="1" onclick="pfCheckAnswer('studio-ch80s4', this)">It is a related concept from this chapter, but it does not describe error taxonomy: http status is not the payment status.</button>
+<button type="button" class="quiz-opt" data-idx="2" onclick="pfCheckAnswer('studio-ch80s4', this)">The single most common error in payment API design is confusing the HTTP status with the payment status</button>
+<button type="button" class="quiz-opt" data-idx="3" onclick="pfCheckAnswer('studio-ch80s4', this)">It is a related concept from this chapter, but it does not describe error taxonomy: http status is not the payment status.</button>
+<div class="quiz-feedback" id="pf-quiz-fb-studio-ch80s4"></div>
+<script type="application/json" id="pf-quiz-data-studio-ch80s4">{"why_wrong": ["This describes a different concept from this chapter, not error taxonomy: http status is not the payment status.", "This describes a different concept from this chapter, not error taxonomy: http status is not the payment status.", "", "This describes a different concept from this chapter, not error taxonomy: http status is not the payment status."], "explanation": "The single most common error in payment API design is confusing the HTTP status with the payment status. This is the core idea of the lesson."}</script>
+</div>
+<div class="fw-card">
+<p class="fw-label">Takeaway and next step</p>
+<h2>What to remember</h2>
+<p>These are different things, and they are always reported separately.</p>
+<p>Follow a payment through every stage, from instruction to beneficiary credit, and note where it can stop.</p>
+<p><a class="fw-tool-link" href="../simulators/lifecycle.html">Open the Payment Lifecycle Simulator &rarr;</a></p>
+<p class="studio-note">Builds on "Rate limiting and quotas: protecting the API and the client".</p>
+</div>
+<section class="upnext" id="studio-upnext-studio-ch80s4" style="display:none" aria-label="Up next">
+<span class="tag">Up next</span>
+<h2>Up next: Idempotency in depth: keys, replay, conflict and storage</h2>
+<p>Lesson 5 of 7, API design standards and integration patterns, Narration 5:44</p>
+<div class="row">
+<button class="studio-btn primary" onclick="goLessonAuto('ch80s5')">Next lesson &rarr;</button>
+<button class="studio-btn" onclick="goLesson('ch80s3')">&larr; Previous lesson</button>
+<button class="studio-btn" onclick="studioReplayLesson('studio-ch80s4')">Replay this lesson</button>
+</div>
+</section>
+<div class="lesson-nav">
+<button class="studio-btn" onclick="goLesson('ch80s3')" title="Previous lesson: Rate limiting and quotas: protecting the API and the client">&larr; Previous</button>
+<button class="studio-btn" onclick="goChapterContents('ch80')">Chapter contents</button>
+<button class="studio-btn primary" onclick="goLesson('ch80s5')" title="Next lesson: Idempotency in depth: keys, replay, conflict and storage">Next &rarr;</button>
+</div>
+<div class="card transcript-card">
+<h2>Transcript and full text</h2>
+<details class="studio-transcript" id="studio-transcript-details-studio-ch80s4"><summary>Show transcript</summary>
+<p class="transcript" id="studio-transcript-studio-ch80s4">The single most common error in payment API design is confusing the HTTP status with the payment status. An HTTP status says what happened to the request: whether the bank received it, understood it, and accepted it for processing. The payment status says what happened to the payment: whether it was accepted, is being settled, has been credited to the beneficiary, or was rejected. For a business analyst, the requirement is to define this behaviour in the API specification, because the client builds against the specification and nothing else. These are different things, and they are always reported separately. A 202 Accepted response means the request was accepted for processing; it does not mean the payment settled or the beneficiary was credited. A client that treats 202 as settled will tell its customer the money has arrived when it has not. Source: ISO 20022 ExternalPaymentTransactionStatus1Code; API design guidance; bank API developer documentation. The HTTP status codes a payment API uses are a small set, and each has a precise meaning. 200 OK means the request succeeded and the response carries the result, used for retrieving a payment or a status. 201 Created means a new resource was created synchronously and its location is returned, used when a resource is created immediately. 202 Accepted means the request was accepted for processing and the outcome will arrive later, used for initiating a payment, requesting a cancellation, or submitting an enquiry. 400 Bad Request means the request is malformed: bad JSON, a wrong field type, or a missing mandatory field. 401 Unauthorized means the credentials are missing, expired or invalid. 403 Forbidden means the caller is authenticated but not allowed to do this. 404 Not Found means no resource with that identification exists. 409 Conflict means the request conflicts with the current state, such as cancelling a payment that has already settled, or reusing an idempotency key with a different body. 422 Unprocessable Content means the request is well formed but a business rule failed, such as an invalid creditor account with code AC01. 429 Too Many Requests means the client exceeded the rate limit. Every error response carries three things: the HTTP status, a business error code, and a human readable message. The business error code is a stable identifier the client can program against, such as INVALID_REQUEST, AC01, AMOUNT_LIMIT_EXCEEDED, or RATE_LIMITED. The human readable message explains the problem in plain language, such as the creditor account number is invalid. The API documentation must state this rule plainly, because a client that has to guess will guess wrong. The response may also carry a field path, pointing to the exact field that failed, and a link to the API documentation for that error. A client that receives a 422 with code AC01 and field creditorAccount knows exactly what to fix; a client that receives only a 400 with no code must guess. For a business analyst, the requirement is to define the error code for every failure the API can return, the HTTP status for each, and the message text, and to test each one with a real call. The payment status codes are the ISO 20022 set, and they must be used exactly as defined. ACTC means technical validation passed. ACCP means accepted for processing, an early acceptance. ACSP means accepted and settlement is in process, a later acceptance. ACSC means settlement is completed on the debtor account. ACCC means settlement is completed on the creditor account, and it is the only code that confirms the beneficiary was credited. RJCT means rejected, and it always carries a reason code such as AC01, AC04, AM04 or FF01. PDNG means pending. The words ACCEPTED and CANCELLED are not ISO 20022 status codes and must never be used as payment statuses in an API response. A client that sees ACCC can tell its customer the money has arrived; a client that sees ACSP can only say the payment is being processed. The status code is the single most important field in the API response, because the client builds its customer message from it. A business error code must be stable and documented. A client that programs against the code AC01 expects it to mean the same thing in every response, in every version of the API, and in every payment type. If the bank changes the meaning of AC01, or uses it for a different error in a different endpoint, the client's error handling breaks. The bank must therefore maintain a catalogue of error codes, with the meaning, the HTTP status, and the message for each, and must never reuse a code for a different error. The catalogue is part of the API specification, and a change to it is a breaking change that requires a new API version. For a business analyst, the requirement is to define the error catalogue, the code for each error, and the process for adding a new code. Validation errors deserve special care, because they are the most common errors a client will see. When a request fails validation, the response must identify every field that failed, not just the first one, so the client can fix all of them in one attempt rather than submitting the request repeatedly and discovering one error at a time. A test pack that does not cover this case will pass in the test environment and fail when a real client calls the API. Each failed field must carry its path, such as creditorAccount.iban, the reason it failed, such as invalid format, and the value that was supplied, so the client can see what it sent. A validation response that says only invalid request is a poor experience; a validation response that lists every failed field with its path and reason is a good one. Further reading: ISO 20022 ExternalPaymentTransactionStatus1Code; API design guidance; bank API developer documentation. Last reviewed 7 November 2026.</p>
+<div id="studio-paras-studio-ch80s4">
+<p class="transcript">The single most common error in payment API design is confusing the HTTP status with the payment status. An HTTP status says what happened to the request: whether the bank received it, understood it, and accepted it for processing. The payment status says what happened to the payment: whether it was accepted, is being settled, has been credited to the beneficiary, or was rejected. For a business analyst, the requirement is to define this behaviour in the API specification, because the client builds against the specification and nothing else.</p>
+<p class="transcript">These are different things, and they are always reported separately. A 202 Accepted response means the request was accepted for processing; it does not mean the payment settled or the beneficiary was credited. A client that treats 202 as settled will tell its customer the money has arrived when it has not. Source: ISO 20022 ExternalPaymentTransactionStatus1Code; API design guidance; bank API developer documentation.</p>
+<p class="transcript">The HTTP status codes a payment API uses are a small set, and each has a precise meaning. 200 OK means the request succeeded and the response carries the result, used for retrieving a payment or a status. 201 Created means a new resource was created synchronously and its location is returned, used when a resource is created immediately. 202 Accepted means the request was accepted for processing and the outcome will arrive later, used for initiating a payment, requesting a cancellation, or submitting an enquiry. 400 Bad Request means the request is malformed: bad JSON, a wrong field type, or a missing mandatory field.</p>
+<p class="transcript">401 Unauthorized means the credentials are missing, expired or invalid. 403 Forbidden means the caller is authenticated but not allowed to do this. 404 Not Found means no resource with that identification exists. 409 Conflict means the request conflicts with the current state, such as cancelling a payment that has already settled, or reusing an idempotency key with a different body. 422 Unprocessable Content means the request is well formed but a business rule failed, such as an invalid creditor account with code AC01. 429 Too Many Requests means the client exceeded the rate limit.</p>
+<p class="transcript">Every error response carries three things: the HTTP status, a business error code, and a human readable message. The business error code is a stable identifier the client can program against, such as INVALID_REQUEST, AC01, AMOUNT_LIMIT_EXCEEDED, or RATE_LIMITED. The human readable message explains the problem in plain language, such as the creditor account number is invalid. The API documentation must state this rule plainly, because a client that has to guess will guess wrong.</p>
+<p class="transcript">The response may also carry a field path, pointing to the exact field that failed, and a link to the API documentation for that error. A client that receives a 422 with code AC01 and field creditorAccount knows exactly what to fix; a client that receives only a 400 with no code must guess. For a business analyst, the requirement is to define the error code for every failure the API can return, the HTTP status for each, and the message text, and to test each one with a real call.</p>
+<p class="transcript">The payment status codes are the ISO 20022 set, and they must be used exactly as defined. ACTC means technical validation passed. ACCP means accepted for processing, an early acceptance. ACSP means accepted and settlement is in process, a later acceptance. ACSC means settlement is completed on the debtor account. ACCC means settlement is completed on the creditor account, and it is the only code that confirms the beneficiary was credited.</p>
+<p class="transcript">RJCT means rejected, and it always carries a reason code such as AC01, AC04, AM04 or FF01. PDNG means pending. The words ACCEPTED and CANCELLED are not ISO 20022 status codes and must never be used as payment statuses in an API response. A client that sees ACCC can tell its customer the money has arrived; a client that sees ACSP can only say the payment is being processed. The status code is the single most important field in the API response, because the client builds its customer message from it.</p>
+<p class="transcript">A business error code must be stable and documented. A client that programs against the code AC01 expects it to mean the same thing in every response, in every version of the API, and in every payment type. If the bank changes the meaning of AC01, or uses it for a different error in a different endpoint, the client's error handling breaks. The bank must therefore maintain a catalogue of error codes, with the meaning, the HTTP status, and the message for each, and must never reuse a code for a different error. The catalogue is part of the API specification, and a change to it is a breaking change that requires a new API version. For a business analyst, the requirement is to define the error catalogue, the code for each error, and the process for adding a new code.</p>
+<p class="transcript">Validation errors deserve special care, because they are the most common errors a client will see. When a request fails validation, the response must identify every field that failed, not just the first one, so the client can fix all of them in one attempt rather than submitting the request repeatedly and discovering one error at a time. A test pack that does not cover this case will pass in the test environment and fail when a real client calls the API.</p>
+<p class="transcript">Each failed field must carry its path, such as creditorAccount.iban, the reason it failed, such as invalid format, and the value that was supplied, so the client can see what it sent. A validation response that says only invalid request is a poor experience; a validation response that lists every failed field with its path and reason is a good one. Further reading: ISO 20022 ExternalPaymentTransactionStatus1Code; API design guidance; bank API developer documentation. Last reviewed 7 November 2026.</p>
+</div>
+</details>
+<details class="studio-transcript"><summary>Full lesson text (all scenes)</summary><div id="studio-transcript-full-studio-ch80s4"></div></details>
+<p><button class="studio-btn primary" id="done-ch80s4" onclick="studioMarkSceneDone('studio-ch80s4')">Mark lesson complete</button> <span class="studio-note">Completing a lesson updates your progress dashboard on the homepage.</span></p>
+</div>
+<p class="studio-note">Scene timestamps are estimated by allocating the narration text proportionally across the real audio length. The audio playback position is the source of truth: pause freezes the visual, seeking restores the correct scene, replay restarts the scene animation.</p>
+</div>
+<script>window.__PA_STUDIO_QUEUE = window.__PA_STUDIO_QUEUE || []; window.__PA_STUDIO_QUEUE.push(["studio-ch80s4", {"sample_id": "studio-ch80s4", "chapter_id": "ch80", "title": "Error taxonomy: HTTP status is not the payment status", "domain": "D10 APIs and integration", "objective": "Learner explains API versioning and lifecycle, pagination, rate limiting and quotas, and the error taxonomy that separates HTTP status from payment status. Learner designs idempotent payment creation, models payment resources in REST, and explains webhook signatures, retries, ordering and replay.", "scenes": [{"id": "ch80s4", "section_id": "ch80s4", "title": "Error taxonomy: HTTP status is not the payment status", "audio": "../audio/ch80s4.mp3", "duration_sec": 371.9, "points": ["The single most common error in payment API design is confusing the HTTP status with the payment status.", "These are different things, and they are always reported separately.", "The HTTP status codes a payment API uses are a small set, and each has a precise meaning.", "401 Unauthorized means the credentials are missing, expired or invalid.", "Every error response carries three things: the HTTP status, a business error code, and a human readable message."], "terms": [{"term": "Idempotency", "def": "The property that repeating the same request has the same effect as sending it once. In payments, an idempotency key lets a client safely retry a request after a timeout without creating a duplicate..."}, {"term": "Settlement", "def": "The final movement of funds between banks to discharge obligations created by cleared payments. Settlement is usually made in central bank money or through correspondent accounts."}, {"term": "ISO 20022", "def": "An international standard for financial messaging that defines XML message formats for payments, securities and trade."}], "transcript": "The single most common error in payment API design is confusing the HTTP status with the payment status. An HTTP status says what happened to the request: whether the bank received it, understood it, and accepted it for processing. The payment status says what happened to the payment: whether it was accepted, is being settled, has been credited to the beneficiary, or was rejected. For a business analyst, the requirement is to define this behaviour in the API specification, because the client builds against the specification and nothing else. These are different things, and they are always reported separately. A 202 Accepted response means the request was accepted for processing; it does not mean the payment settled or the beneficiary was credited. A client that treats 202 as settled will tell its customer the money has arrived when it has not. Source: ISO 20022 ExternalPaymentTransactionStatus1Code; API design guidance; bank API developer documentation. The HTTP status codes a payment API uses are a small set, and each has a precise meaning. 200 OK means the request succeeded and the response carries the result, used for retrieving a payment or a status. 201 Created means a new resource was created synchronously and its location is returned, used when a resource is created immediately. 202 Accepted means the request was accepted for processing and the outcome will arrive later, used for initiating a payment, requesting a cancellation, or submitting an enquiry. 400 Bad Request means the request is malformed: bad JSON, a wrong field type, or a missing mandatory field. 401 Unauthorized means the credentials are missing, expired or invalid. 403 Forbidden means the caller is authenticated but not allowed to do this. 404 Not Found means no resource with that identification exists. 409 Conflict means the request conflicts with the current state, such as cancelling a payment that has already settled, or reusing an idempotency key with a different body. 422 Unprocessable Content means the request is well formed but a business rule failed, such as an invalid creditor account with code AC01. 429 Too Many Requests means the client exceeded the rate limit. Every error response carries three things: the HTTP status, a business error code, and a human readable message. The business error code is a stable identifier the client can program against, such as INVALID_REQUEST, AC01, AMOUNT_LIMIT_EXCEEDED, or RATE_LIMITED. The human readable message explains the problem in plain language, such as the creditor account number is invalid. The API documentation must state this rule plainly, because a client that has to guess will guess wrong. The response may also carry a field path, pointing to the exact field that failed, and a link to the API documentation for that error. A client that receives a 422 with code AC01 and field creditorAccount knows exactly what to fix; a client that receives only a 400 with no code must guess. For a business analyst, the requirement is to define the error code for every failure the API can return, the HTTP status for each, and the message text, and to test each one with a real call. The payment status codes are the ISO 20022 set, and they must be used exactly as defined. ACTC means technical validation passed. ACCP means accepted for processing, an early acceptance. ACSP means accepted and settlement is in process, a later acceptance. ACSC means settlement is completed on the debtor account. ACCC means settlement is completed on the creditor account, and it is the only code that confirms the beneficiary was credited. RJCT means rejected, and it always carries a reason code such as AC01, AC04, AM04 or FF01. PDNG means pending. The words ACCEPTED and CANCELLED are not ISO 20022 status codes and must never be used as payment statuses in an API response. A client that sees ACCC can tell its customer the money has arrived; a client that sees ACSP can only say the payment is being processed. The status code is the single most important field in the API response, because the client builds its customer message from it. A business error code must be stable and documented. A client that programs against the code AC01 expects it to mean the same thing in every response, in every version of the API, and in every payment type. If the bank changes the meaning of AC01, or uses it for a different error in a different endpoint, the client's error handling breaks. The bank must therefore maintain a catalogue of error codes, with the meaning, the HTTP status, and the message for each, and must never reuse a code for a different error. The catalogue is part of the API specification, and a change to it is a breaking change that requires a new API version. For a business analyst, the requirement is to define the error catalogue, the code for each error, and the process for adding a new code. Validation errors deserve special care, because they are the most common errors a client will see. When a request fails validation, the response must identify every field that failed, not just the first one, so the client can fix all of them in one attempt rather than submitting the request repeatedly and discovering one error at a time. A test pack that does not cover this case will pass in the test environment and fail when a real client calls the API. Each failed field must carry its path, such as creditorAccount.iban, the reason it failed, such as invalid format, and the value that was supplied, so the client can see what it sent. A validation response that says only invalid request is a poor experience; a validation response that lists every failed field with its path and reason is a good one. Further reading: ISO 20022 ExternalPaymentTransactionStatus1Code; API design guidance; bank API developer documentation. Last reviewed 7 November 2026.", "paragraphs": ["The single most common error in payment API design is confusing the HTTP status with the payment status. An HTTP status says what happened to the request: whether the bank received it, understood it, and accepted it for processing. The payment status says what happened to the payment: whether it was accepted, is being settled, has been credited to the beneficiary, or was rejected. For a business analyst, the requirement is to define this behaviour in the API specification, because the client builds against the specification and nothing else.", "These are different things, and they are always reported separately. A 202 Accepted response means the request was accepted for processing; it does not mean the payment settled or the beneficiary was credited. A client that treats 202 as settled will tell its customer the money has arrived when it has not. Source: ISO 20022 ExternalPaymentTransactionStatus1Code; API design guidance; bank API developer documentation.", "The HTTP status codes a payment API uses are a small set, and each has a precise meaning. 200 OK means the request succeeded and the response carries the result, used for retrieving a payment or a status. 201 Created means a new resource was created synchronously and its location is returned, used when a resource is created immediately. 202 Accepted means the request was accepted for processing and the outcome will arrive later, used for initiating a payment, requesting a cancellation, or submitting an enquiry. 400 Bad Request means the request is malformed: bad JSON, a wrong field type, or a missing mandatory field.", "401 Unauthorized means the credentials are missing, expired or invalid. 403 Forbidden means the caller is authenticated but not allowed to do this. 404 Not Found means no resource with that identification exists. 409 Conflict means the request conflicts with the current state, such as cancelling a payment that has already settled, or reusing an idempotency key with a different body. 422 Unprocessable Content means the request is well formed but a business rule failed, such as an invalid creditor account with code AC01. 429 Too Many Requests means the client exceeded the rate limit.", "Every error response carries three things: the HTTP status, a business error code, and a human readable message. The business error code is a stable identifier the client can program against, such as INVALID_REQUEST, AC01, AMOUNT_LIMIT_EXCEEDED, or RATE_LIMITED. The human readable message explains the problem in plain language, such as the creditor account number is invalid. The API documentation must state this rule plainly, because a client that has to guess will guess wrong.", "The response may also carry a field path, pointing to the exact field that failed, and a link to the API documentation for that error. A client that receives a 422 with code AC01 and field creditorAccount knows exactly what to fix; a client that receives only a 400 with no code must guess. For a business analyst, the requirement is to define the error code for every failure the API can return, the HTTP status for each, and the message text, and to test each one with a real call.", "The payment status codes are the ISO 20022 set, and they must be used exactly as defined. ACTC means technical validation passed. ACCP means accepted for processing, an early acceptance. ACSP means accepted and settlement is in process, a later acceptance. ACSC means settlement is completed on the debtor account. ACCC means settlement is completed on the creditor account, and it is the only code that confirms the beneficiary was credited.", "RJCT means rejected, and it always carries a reason code such as AC01, AC04, AM04 or FF01. PDNG means pending. The words ACCEPTED and CANCELLED are not ISO 20022 status codes and must never be used as payment statuses in an API response. A client that sees ACCC can tell its customer the money has arrived; a client that sees ACSP can only say the payment is being processed. The status code is the single most important field in the API response, because the client builds its customer message from it.", "A business error code must be stable and documented. A client that programs against the code AC01 expects it to mean the same thing in every response, in every version of the API, and in every payment type. If the bank changes the meaning of AC01, or uses it for a different error in a different endpoint, the client's error handling breaks. The bank must therefore maintain a catalogue of error codes, with the meaning, the HTTP status, and the message for each, and must never reuse a code for a different error. The catalogue is part of the API specification, and a change to it is a breaking change that requires a new API version. For a business analyst, the requirement is to define the error catalogue, the code for each error, and the process for adding a new code.", "Validation errors deserve special care, because they are the most common errors a client will see. When a request fails validation, the response must identify every field that failed, not just the first one, so the client can fix all of them in one attempt rather than submitting the request repeatedly and discovering one error at a time. A test pack that does not cover this case will pass in the test environment and fail when a real client calls the API.", "Each failed field must carry its path, such as creditorAccount.iban, the reason it failed, such as invalid format, and the value that was supplied, so the client can see what it sent. A validation response that says only invalid request is a poor experience; a validation response that lists every failed field with its path and reason is a good one. Further reading: ISO 20022 ExternalPaymentTransactionStatus1Code; API design guidance; bank API developer documentation. Last reviewed 7 November 2026."], "accessibility": "Payment flow diagram showing Error taxonomy: HTTP status is not the payment status.", "visual_type": "payment_flow", "visual_choice_reason": "default payment journey", "beats": [{"t0": 0.0, "t1": 67.5, "title": "HTTP status versus payment status", "note": "The single most common error in payment API design is confusing the HTTP status with the payment status.", "highlight_nodes": ["n0"], "highlight_conns": [], "highlight_fields": []}, {"t0": 67.5, "t1": 135.1, "title": "200 OK", "note": "200 OK means the request succeeded and the response carries the result, used for retrieving a payment or a status.", "highlight_nodes": ["n1"], "highlight_conns": ["c0"], "highlight_fields": []}, {"t0": 135.1, "t1": 200.9, "title": "429 Too Many Requests", "note": "429 Too Many Requests means the client exceeded the rate limit.", "highlight_nodes": ["n2"], "highlight_conns": ["c1"], "highlight_fields": []}, {"t0": 200.9, "t1": 264.4, "title": "Payment status codes", "note": "The payment status codes are the ISO 20022 set, and they must be used exactly as defined.", "highlight_nodes": ["n3"], "highlight_conns": ["c2"], "highlight_fields": []}, {"t0": 264.4, "t1": 332.2, "title": "Stable business error codes", "note": "A client that programs against the code AC01 expects it to mean the same thing in every response, in every version of the API, and in every payment type.", "highlight_nodes": ["n4"], "highlight_conns": ["c3"], "highlight_fields": []}, {"t0": 332.2, "t1": 371.9, "title": "Error taxonomy testing", "note": "A test pack that does not cover this case will pass in the test environment and fail when a real client calls the API.", "highlight_nodes": ["n5"], "highlight_conns": ["c4"], "highlight_fields": []}], "node_ids": ["n0", "n1", "n2", "n3", "n4", "n5"], "framework": {"objective": "By the end of this lesson, you will be able to explain error taxonomy: http status is not the payment status and apply it to a real banking scenario.", "why_matters": "For a business analyst, the requirement is to define the error code for every failure the API can return, the HTTP status for each, and the message text, and to test each one with a real call.", "technical_example": "Source: ISO 20022 ExternalPaymentTransactionStatus1Code; API design guidance; bank API developer documentation.", "failure_recovery": "When a request fails validation, the response must identify every field that failed, not just the first one, so the client can fix all of them in one attempt rather than submitting the request repeatedly and discovering one error at a time.", "exercise": {"task": "Write the request and the expected response for the API call described in this lesson.", "info": "Use the API resources, operations and fields named in this lesson.", "action": "Write the JSON request with the required fields, the success response, and one error response with its error code.", "correct": "A correct request has all mandatory fields, a valid idempotency key, and the right resource and operation. The success response confirms acceptance, and the error response names the field or rule that failed.", "why": "An API contract is a promise between two systems. If the request is wrong, the API must reject it cleanly, not fail silently."}, "assessment": {"question": "Which of the following best describes error taxonomy: http status is not the payment status?", "options": ["It is a related concept from this chapter, but it does not describe error taxonomy: http status is not the payment status.", "It is a related concept from this chapter, but it does not describe error taxonomy: http status is not the payment status.", "The single most common error in payment API design is confusing the HTTP status with the payment status", "It is a related concept from this chapter, but it does not describe error taxonomy: http status is not the payment status."], "answer": 2, "explanation": "The single most common error in payment API design is confusing the HTTP status with the payment status. This is the core idea of the lesson.", "why_wrong": ["This describes a different concept from this chapter, not error taxonomy: http status is not the payment status.", "This describes a different concept from this chapter, not error taxonomy: http status is not the payment status.", "", "This describes a different concept from this chapter, not error taxonomy: http status is not the payment status."], "source": "generated:ch80s4"}, "takeaway": "These are different things, and they are always reported separately.", "prereq": "ch80s3", "next": "ch80s5", "connection_note": "Builds on \"Rate limiting and quotas: protecting the API and the client\".", "tool": {"slug": "lifecycle", "label": "Payment Lifecycle Simulator", "url": "../simulators/lifecycle.html", "scenario": "Follow a payment through every stage, from instruction to beneficiary credit, and note where it can stop."}, "simple": "In plain words: The single most common error in payment API design is confusing the HTTP status with the payment status.", "summary": "The single most common error in payment API design is confusing the HTTP status with the payment status.", "example": "This lesson is conceptual. The worked examples that use it are in the lessons that follow in this chapter."}}], "chapter_title": "API design standards and integration patterns", "meta_line": "API design standards and integration patterns, Lesson 4 of 7, Narration 6:11, D10 APIs and integration", "next_id": "ch80s5", "next_title": "Idempotency in depth: keys, replay, conflict and storage"}]);</script>
+</div>
+<nav class="tool-rail" aria-label="Lesson tools">
+<button type="button" class="rail-tool" onclick="pfOpenTranscript('studio-ch80s4')" title="Open transcript"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M7 3h7l4 4v14H7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M14 3v4h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 12h5M10 15.5h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span>Transcript</span></button>
+<button type="button" class="rail-tool" onclick="pfToggleNote('studio-ch80s4')" title="Write a note on this lesson"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L8 19l-4 1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>Notes</span></button>
+<button type="button" class="rail-tool" onclick="pfToggleFiles('studio-ch80s4')" title="Download lesson files"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>Files</span></button>
+</nav>
+<div class="fw-files-panel" id="pf-files-studio-ch80s4" style="display:none"><b>Lesson files</b><p><a href="../audio/ch80s4.mp3" download>Download narration (MP3)</a></p><p><a href="#" onclick="pfDownloadTranscript('studio-ch80s4');return false">Download transcript (.txt)</a></p></div>
+</div>
+</div>
+</main>
+<footer><p>Payments Training Hub. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="../index.html">Home</a> &middot; <a href="../courses.html">Courses</a> &middot; <a href="../practice.html">Practice</a> &middot; <a href="../simulators.html">Simulators</a> &middot; <a href="../labs.html">Labs</a> &middot; <a href="../explorer.html">Explorer</a> &middot; <a href="../tests.html">Tests</a> &middot; <a href="../diagnostic.html">Diagnostic</a> &middot; <a href="../faq.html">Interview Ready Questions</a> &middot; <a href="../interview-prep.html">Interview Prep</a></p><p><a href="../about.html">About</a> &middot; <a href="../privacy.html">Privacy</a> &middot; <a href="../terms.html">Terms</a> &middot; <a href="../contact.html">Contact</a> &middot; <a href="../editorial-standards.html">Editorial Standards</a> &middot; <a href="../sources.html">Sources</a></p></footer>
+<script defer src="../assets/site.js"></script>
+<script defer src="../assets/bundles.js"></script>
+<script defer src="../assets/auth.js"></script>
+<script defer src="../assets/studio.js"></script>
+<script defer src="../assets/insight-components.js"></script>
+<script defer src="../assets/nav.js"></script>
+<script defer src="../assets/pf-enhance.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+if(window.PFInsight){PFInsight.init();}
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>Engine performance and capacity: throughput, latency budgets and load | Payments Training Hub</title>
+<meta name="description" content="A payment engine must handle the bank&#x27;s peak volume without slowing down, and peak volume is not the average: it is the busiest hour of the busiest...">
+<link rel="canonical" href="https://www.paymentstraininghub.in/lessons/ch79s7.html">
+<meta property="og:url" content="https://www.paymentstraininghub.in/lessons/ch79s7.html">
+<meta property="og:title" content="Engine performance and capacity: throughput, latency budgets and load | Payments Training Hub">
+<meta property="og:description" content="A payment engine must handle the bank&#x27;s peak volume without slowing down, and peak volume is not the average: it is the busiest hour of the busiest...">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.in/assets/hero/hero-poster.jpg">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.paymentstraininghub.in/index.html"}, {"@type": "ListItem", "position": 2, "name": "Payment engine internals and observability", "item": "https://www.paymentstraininghub.in/chapters/ch79-payment-engine-internals-and-observability.html"}, {"@type": "ListItem", "position": 3, "name": "Engine performance and capacity: throughput, latency budgets and load testing", "item": "https://www.paymentstraininghub.in/lessons/ch79s7.html"}]}</script>
+<link rel="stylesheet" href="../assets/studio.css">
+<link rel="stylesheet" href="../assets/pf-theme.css">
+<link rel="stylesheet" href="../assets/insight-components.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="../index.html" class="brand">Payments <span>Training Hub</span></a><nav class="topnav"><a href="../index.html">Home</a> <a href="../courses.html">Courses</a> <a href="../practice.html">Practice</a> <a href="../simulators.html">Simulators</a> <a href="../labs.html">Labs</a> <a href="../explorer.html">Explorer</a> <a href="../tests.html">Tests</a></nav><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox" style="display:none"><span id="authState">Not signed in</span> <span id="authForm" style="display:none"><input id="authEmail" type="email" placeholder="Email for OTP" aria-label="Email for sign-in"> <button class="mute-btn" onclick="paAuthSendOtp()">Send code</button> <input id="authCode" type="text" placeholder="6-digit code" aria-label="One-time code" style="display:none"> <button class="mute-btn" id="authVerifyBtn" onclick="paAuthVerifyOtp()" style="display:none">Verify</button> <button class="mute-btn" onclick="paAuthGoogle()">Sign in with Google</button> </span><button class="mute-btn" id="authSignOutBtn" onclick="paAuthSignOut()" style="display:none">Sign out</button></span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<div class="lesson-page">
+<div class="lesson-shell">
+<aside class="course-rail">
+<div class="rail-head">
+<h2>Payment engine internals and observability</h2>
+<a class="rail-close" href="../chapters/ch79-payment-engine-internals-and-observability.html" aria-label="Close and go to chapter" title="Back to chapter">&times;</a>
+</div>
+<div class="goal-card">
+<div class="goal-head"><b>Today's goal &middot; <span id="side-progress-text">0 of 7 items</span></b><span class="goal-flag"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 21V4m0 1h11l-2.5 3.5L17 12H6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="goal-chev">&#94;</span></div>
+<p class="goal-body" id="side-goal-body">Complete 3 items today to stay at a good pace!</p>
+</div>
+<ul class="lesson-list"><li class="" data-lesson="ch79s1"><a href="ch79s1.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Payment engine modules: the anatomy of an engine</span><span class="m">Video &middot; 6 min</span></span></a></li>
+<li class="" data-lesson="ch79s2"><a href="ch79s2.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Booking entries per message: how a payment posts to the ledger</span><span class="m">Video &middot; 6 min</span></span></a></li>
+<li class="" data-lesson="ch79s3"><a href="ch79s3.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Worklists and audit trails: what operators see and what auditors need</span><span class="m">Video &middot; 6 min</span></span></a></li>
+<li class="" data-lesson="ch79s4"><a href="ch79s4.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Orchestration failure handling: timeouts, retries, compensation and sagas</span><span class="m">Video &middot; 6 min</span></span></a></li>
+<li class="" data-lesson="ch79s5"><a href="ch79s5.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Observability: metrics, logs, traces and alerting for payments</span><span class="m">Video &middot; 6 min</span></span></a></li>
+<li class="" data-lesson="ch79s6"><a href="ch79s6.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Microservices for payments: service boundaries and data ownership</span><span class="m">Video &middot; 7 min</span></span></a></li>
+<li class="current" data-lesson="ch79s7"><a href="ch79s7.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Engine performance and capacity: throughput, latency budgets and load testing</span><span class="m">Video &middot; 6 min</span></span></a></li></ul>
+</aside>
+<div class="lesson-main">
+<div class="studio" id="studio-studio-ch79s7">
+<div class="player">
+<div class="studio-canvas" id="studio-canvas-studio-ch79s7">
+<div class="ch-sec studio-scene-vis active" id="studio-vis-studio-ch79s7-0"><div class="beat-frames">
+<div class="beat-frame active" data-frame="0">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Peak</tspan> <tspan fill="#FFFFFF">volume</tspan> <tspan fill="#FFFFFF">handling</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">STARTED</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="13" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Peak volume handling</tspan><tspan fill="#CBD5E1"> - payment engine must handle the bank's peak</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="0.55">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Throughput and parallel processing</tspan><tspan fill="#CBD5E1"> - business analyst</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="0.55">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Latency budgets per step</tspan><tspan fill="#CBD5E1"> - budget is split: intake 200 milliseconds</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Load testing slow downstream systems</tspan><tspan fill="#CBD5E1"> - operations team must be able to see</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Recovery planning</tspan><tspan fill="#CBD5E1"> - bank that sizes its engine for an ordinary</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Cloud scaling lead time</tspan><tspan fill="#CBD5E1"> - not instant: it takes minutes to start new</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="128" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">A payment engine must handle the bank's peak volume without slowing down</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 1 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 761" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="761" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Peak</tspan> <tspan fill="#FFFFFF">volume</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">handling</tspan></text>
+<rect x="24" y="86" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="104" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">STARTED</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="120" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="139" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Peak volume</text>
+<text x="180" y="157" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">handling</text>
+<text x="180" y="175" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">payment engine must handle the bank's peak</text>
+<text x="180" y="193" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="0.55">
+<rect x="24" y="212" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="231" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Throughput and</text>
+<text x="180" y="249" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">parallel processing</text>
+<text x="180" y="267" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">business analyst</text>
+<text x="180" y="285" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="0.55">
+<rect x="24" y="304" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="323" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Latency budgets per</text>
+<text x="180" y="341" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">step</text>
+<text x="180" y="359" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">budget is split: intake 200 milliseconds</text>
+<text x="180" y="377" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="24" y="396" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="415" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Load testing slow</text>
+<text x="180" y="433" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">downstream systems</text>
+<text x="180" y="451" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">operations team must be able to see</text>
+<text x="180" y="469" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="24" y="488" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="507" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Recovery planning</text>
+<text x="180" y="525" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">bank that sizes its engine for an ordinary</text>
+<text x="180" y="543" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="560" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="579" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Cloud scaling lead</text>
+<text x="180" y="597" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">time</text>
+<text x="180" y="615" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">not instant: it takes minutes to start new</text>
+<text x="180" y="633" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="660" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">A payment engine must handle the</text>
+<text x="180" y="679" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">bank's peak volume without slowing</text>
+<text x="180" y="698" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">down</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="1">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Throughput</tspan> <tspan fill="#FFFFFF">and</tspan> <tspan fill="#FFFFFF">parallel</tspan> <tspan fill="#FFFFFF">processing</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="13" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Peak volume handling</tspan><tspan fill="#CBD5E1"> - payment engine must handle the bank's peak</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Throughput and parallel processing</tspan><tspan fill="#CBD5E1"> - business analyst</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="0.55">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Latency budgets per step</tspan><tspan fill="#CBD5E1"> - budget is split: intake 200 milliseconds</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Load testing slow downstream systems</tspan><tspan fill="#CBD5E1"> - operations team must be able to see</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Recovery planning</tspan><tspan fill="#CBD5E1"> - bank that sizes its engine for an ordinary</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Cloud scaling lead time</tspan><tspan fill="#CBD5E1"> - not instant: it takes minutes to start new</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="257" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">For a business analyst, the requirement is to define this behaviour explicitly, because the engine</text>
+<text x="450" y="476" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">does what the requirement says and nothing more.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 2 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 780" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="780" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Throughput</tspan> <tspan fill="#FFFFFF">and</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">parallel</tspan> <tspan fill="#FFFFFF">processing</tspan></text>
+<rect x="24" y="86" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="104" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="120" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="139" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Peak volume</text>
+<text x="180" y="157" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">handling</text>
+<text x="180" y="175" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">payment engine must handle the bank's peak</text>
+<text x="180" y="193" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="212" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="231" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Throughput and</text>
+<text x="180" y="249" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">parallel processing</text>
+<text x="180" y="267" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">business analyst</text>
+<text x="180" y="285" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="0.55">
+<rect x="24" y="304" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="323" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Latency budgets per</text>
+<text x="180" y="341" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">step</text>
+<text x="180" y="359" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">budget is split: intake 200 milliseconds</text>
+<text x="180" y="377" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="24" y="396" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="415" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Load testing slow</text>
+<text x="180" y="433" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">downstream systems</text>
+<text x="180" y="451" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">operations team must be able to see</text>
+<text x="180" y="469" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="24" y="488" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="507" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Recovery planning</text>
+<text x="180" y="525" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">bank that sizes its engine for an ordinary</text>
+<text x="180" y="543" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="560" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="579" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Cloud scaling lead</text>
+<text x="180" y="597" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">time</text>
+<text x="180" y="615" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">not instant: it takes minutes to start new</text>
+<text x="180" y="633" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="660" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">For a business analyst, the requirement is</text>
+<text x="180" y="679" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">to define this behaviour explicitly, because</text>
+<text x="180" y="698" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">the engine does what the requirement</text>
+<text x="180" y="717" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">says and nothing more.</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="2">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Latency</tspan> <tspan fill="#FFFFFF">budgets</tspan> <tspan fill="#FFFFFF">per</tspan> <tspan fill="#FFFFFF">step</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="13" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Peak volume handling</tspan><tspan fill="#CBD5E1"> - payment engine must handle the bank's peak</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Throughput and parallel processing</tspan><tspan fill="#CBD5E1"> - business analyst</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Latency budgets per step</tspan><tspan fill="#CBD5E1"> - budget is split: intake 200 milliseconds</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Load testing slow downstream systems</tspan><tspan fill="#CBD5E1"> - operations team must be able to see</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Recovery planning</tspan><tspan fill="#CBD5E1"> - bank that sizes its engine for an ordinary</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Cloud scaling lead time</tspan><tspan fill="#CBD5E1"> - not instant: it takes minutes to start new</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="386" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The budget is split: intake 200 milliseconds</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 3 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 742" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="742" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Latency</tspan> <tspan fill="#FFFFFF">budgets</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">per</tspan> <tspan fill="#FFFFFF">step</tspan></text>
+<rect x="24" y="86" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="104" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="120" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="139" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Peak volume</text>
+<text x="180" y="157" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">handling</text>
+<text x="180" y="175" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">payment engine must handle the bank's peak</text>
+<text x="180" y="193" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="212" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="231" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Throughput and</text>
+<text x="180" y="249" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">parallel processing</text>
+<text x="180" y="267" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">business analyst</text>
+<text x="180" y="285" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="1">
+<rect x="24" y="304" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="323" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Latency budgets per</text>
+<text x="180" y="341" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">step</text>
+<text x="180" y="359" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">budget is split: intake 200 milliseconds</text>
+<text x="180" y="377" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="24" y="396" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="415" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Load testing slow</text>
+<text x="180" y="433" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">downstream systems</text>
+<text x="180" y="451" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">operations team must be able to see</text>
+<text x="180" y="469" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="24" y="488" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="507" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Recovery planning</text>
+<text x="180" y="525" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">bank that sizes its engine for an ordinary</text>
+<text x="180" y="543" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="560" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="579" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Cloud scaling lead</text>
+<text x="180" y="597" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">time</text>
+<text x="180" y="615" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">not instant: it takes minutes to start new</text>
+<text x="180" y="633" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="660" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The budget is split: intake 200</text>
+<text x="180" y="679" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">milliseconds</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="3">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Load</tspan> <tspan fill="#FFFFFF">testing</tspan> <tspan fill="#FFFFFF">slow</tspan> <tspan fill="#FFFFFF">downstream</tspan></text>
+<text x="48" y="126" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">systems</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="13" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Peak volume handling</tspan><tspan fill="#CBD5E1"> - payment engine must handle the bank's peak</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Throughput and parallel processing</tspan><tspan fill="#CBD5E1"> - business analyst</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Latency budgets per step</tspan><tspan fill="#CBD5E1"> - budget is split: intake 200 milliseconds</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Load testing slow downstream systems</tspan><tspan fill="#CBD5E1"> - operations team must be able to see</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Recovery planning</tspan><tspan fill="#CBD5E1"> - bank that sizes its engine for an ordinary</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Cloud scaling lead time</tspan><tspan fill="#CBD5E1"> - not instant: it takes minutes to start new</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="514" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The operations team must be able to see this state on a dashboard, because a payment that</text>
+<text x="450" y="476" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">cannot be seen cannot be managed.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 4 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 808" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="808" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Load</tspan> <tspan fill="#FFFFFF">testing</tspan> <tspan fill="#FFFFFF">slow</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">downstream</tspan></text>
+<text x="24" y="96" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">systems</tspan></text>
+<rect x="24" y="114" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="132" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="148" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="167" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Peak volume</text>
+<text x="180" y="185" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">handling</text>
+<text x="180" y="203" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">payment engine must handle the bank's peak</text>
+<text x="180" y="221" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="240" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="259" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Throughput and</text>
+<text x="180" y="277" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">parallel processing</text>
+<text x="180" y="295" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">business analyst</text>
+<text x="180" y="313" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="1">
+<rect x="24" y="332" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="351" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Latency budgets per</text>
+<text x="180" y="369" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">step</text>
+<text x="180" y="387" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">budget is split: intake 200 milliseconds</text>
+<text x="180" y="405" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="1">
+<rect x="24" y="424" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="443" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Load testing slow</text>
+<text x="180" y="461" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">downstream systems</text>
+<text x="180" y="479" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">operations team must be able to see</text>
+<text x="180" y="497" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="24" y="516" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="535" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Recovery planning</text>
+<text x="180" y="553" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">bank that sizes its engine for an ordinary</text>
+<text x="180" y="571" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="588" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="607" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Cloud scaling lead</text>
+<text x="180" y="625" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">time</text>
+<text x="180" y="643" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">not instant: it takes minutes to start new</text>
+<text x="180" y="661" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="688" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The operations team must be able to see</text>
+<text x="180" y="707" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">this state on a dashboard, because a</text>
+<text x="180" y="726" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">payment that cannot be seen cannot be</text>
+<text x="180" y="745" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">managed.</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="4">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Recovery</tspan> <tspan fill="#FFFFFF">planning</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="13" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Peak volume handling</tspan><tspan fill="#CBD5E1"> - payment engine must handle the bank's peak</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Throughput and parallel processing</tspan><tspan fill="#CBD5E1"> - business analyst</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Latency budgets per step</tspan><tspan fill="#CBD5E1"> - budget is split: intake 200 milliseconds</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Load testing slow downstream systems</tspan><tspan fill="#CBD5E1"> - operations team must be able to see</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n4" data-beat="4">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Recovery planning</tspan><tspan fill="#CBD5E1"> - bank that sizes its engine for an ordinary</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Cloud scaling lead time</tspan><tspan fill="#CBD5E1"> - not instant: it takes minutes to start new</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="643" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">A bank that sizes its engine for an ordinary Tuesday will fail on both days.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 5 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 714" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="714" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Recovery</tspan> <tspan fill="#FFFFFF">planning</tspan></text>
+<rect x="24" y="58" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="76" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="92" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="111" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Peak volume</text>
+<text x="180" y="129" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">handling</text>
+<text x="180" y="147" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">payment engine must handle the bank's peak</text>
+<text x="180" y="165" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="184" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="203" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Throughput and</text>
+<text x="180" y="221" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">parallel processing</text>
+<text x="180" y="239" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">business analyst</text>
+<text x="180" y="257" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="1">
+<rect x="24" y="276" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="295" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Latency budgets per</text>
+<text x="180" y="313" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">step</text>
+<text x="180" y="331" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">budget is split: intake 200 milliseconds</text>
+<text x="180" y="349" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="1">
+<rect x="24" y="368" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="387" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Load testing slow</text>
+<text x="180" y="405" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">downstream systems</text>
+<text x="180" y="423" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">operations team must be able to see</text>
+<text x="180" y="441" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="1">
+<rect x="24" y="460" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="479" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Recovery planning</text>
+<text x="180" y="497" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">bank that sizes its engine for an ordinary</text>
+<text x="180" y="515" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="532" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="551" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Cloud scaling lead</text>
+<text x="180" y="569" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">time</text>
+<text x="180" y="587" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">not instant: it takes minutes to start new</text>
+<text x="180" y="605" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="632" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">A bank that sizes its engine for an</text>
+<text x="180" y="651" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">ordinary Tuesday will fail on both days.</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="5">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Cloud</tspan> <tspan fill="#FFFFFF">scaling</tspan> <tspan fill="#FFFFFF">lead</tspan> <tspan fill="#FFFFFF">time</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">COMPLETE</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="13" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Peak volume handling</tspan><tspan fill="#CBD5E1"> - payment engine must handle the bank's peak</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Throughput and parallel processing</tspan><tspan fill="#CBD5E1"> - business analyst</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Latency budgets per step</tspan><tspan fill="#CBD5E1"> - budget is split: intake 200 milliseconds</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Load testing slow downstream systems</tspan><tspan fill="#CBD5E1"> - operations team must be able to see</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n4" data-beat="4">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Recovery planning</tspan><tspan fill="#CBD5E1"> - bank that sizes its engine for an ordinary</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n5" data-beat="5">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Cloud scaling lead time</tspan><tspan fill="#CBD5E1"> - not instant: it takes minutes to start new</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">But cloud scaling is not instant: it takes minutes to start new instances, so the bank must scale</text>
+<text x="450" y="476" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">up before the peak arrives, not when it is already happening.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 6 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#45A4FF"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 780" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="780" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Cloud</tspan> <tspan fill="#FFFFFF">scaling</tspan> <tspan fill="#FFFFFF">lead</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">time</tspan></text>
+<rect x="24" y="86" width="312" height="26" rx="8" fill="#0C1626" stroke="#2DD4BF" stroke-width="1.5"/>
+<text x="180" y="104" text-anchor="middle" font-size="12" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">COMPLETE</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="120" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="139" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Peak volume</text>
+<text x="180" y="157" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">handling</text>
+<text x="180" y="175" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">payment engine must handle the bank's peak</text>
+<text x="180" y="193" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="212" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="231" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Throughput and</text>
+<text x="180" y="249" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">parallel processing</text>
+<text x="180" y="267" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">business analyst</text>
+<text x="180" y="285" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="1">
+<rect x="24" y="304" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="323" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Latency budgets per</text>
+<text x="180" y="341" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">step</text>
+<text x="180" y="359" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">budget is split: intake 200 milliseconds</text>
+<text x="180" y="377" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="1">
+<rect x="24" y="396" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="415" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Load testing slow</text>
+<text x="180" y="433" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">downstream systems</text>
+<text x="180" y="451" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">operations team must be able to see</text>
+<text x="180" y="469" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="1">
+<rect x="24" y="488" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="507" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Recovery planning</text>
+<text x="180" y="525" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">bank that sizes its engine for an ordinary</text>
+<text x="180" y="543" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="1">
+<rect x="24" y="560" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="579" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Cloud scaling lead</text>
+<text x="180" y="597" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">time</text>
+<text x="180" y="615" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">not instant: it takes minutes to start new</text>
+<text x="180" y="633" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<text x="180" y="660" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">But cloud scaling is not instant: it takes</text>
+<text x="180" y="679" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">minutes to start new instances, so the</text>
+<text x="180" y="698" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">bank must scale up before the peak</text>
+<text x="180" y="717" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">arrives, not when it is already happening.</text>
+</svg>
+</div>
+</div>
+<p class="xml-caption">Flow of the explanation in this lesson.</p></div>
+<div class="playerbar">
+<div class="studio-progress"><div class="studio-markers" id="studio-markers-studio-ch79s7"></div><input type="range" id="studio-slider-studio-ch79s7" min="0" max="1000" value="0" aria-label="Lesson timeline"></div>
+<div class="ctrl-row">
+<button class="ctrl-btn" id="studio-play-studio-ch79s7" onclick="studioTogglePlay('studio-ch79s7')" aria-label="Play lesson" title="Play lesson"><span class="ctrl-ic-play"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></span><span class="ctrl-ic-pause" style="display:none"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><rect x="6" y="5" width="4" height="14" fill="currentColor"/><rect x="14" y="5" width="4" height="14" fill="currentColor"/></svg></span></button>
+<button class="ctrl-btn studio-mute-btn" id="studio-mute-studio-ch79s7" onclick="studioToggleMute('studio-ch79s7')" aria-label="Mute narration" title="Mute / unmute narration"><svg class="studio-mute-icon" viewBox="0 0 24 24" width="28" height="28" fill="currentColor" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3z"/><path class="studio-mute-waves" d="M16 8.5a5 5 0 0 1 0 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><path class="studio-mute-waves" d="M18.5 6a9 9 0 0 1 0 12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><path class="studio-mute-x" d="M16 9.5l5 5M21 9.5l-5 5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" style="display:none"/></svg></button>
+<button class="ctrl-btn" onclick="studioSkip('studio-ch79s7', -10)" aria-label="Back 10 seconds" title="Back 10 seconds"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 5a7 7 0 1 1-6.32 4.06" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M5.5 3.5v5h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><text x="12" y="16.5" font-size="8" fill="currentColor" text-anchor="middle" font-weight="700">10</text></svg></button>
+<span class="studio-time ctrl-time" id="studio-time-studio-ch79s7">0:00 / 5:56</span>
+<button class="ctrl-btn" onclick="studioSkip('studio-ch79s7', 10)" aria-label="Forward 10 seconds" title="Forward 10 seconds"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 5a7 7 0 1 0 6.32 4.06" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M18.5 3.5v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><text x="12" y="16.5" font-size="8" fill="currentColor" text-anchor="middle" font-weight="700">10</text></svg></button>
+<span class="playerbar-spacer"></span>
+<span class="player-stage" id="studio-tag-studio-ch79s7">Step 1 of 6</span>
+<button class="ctrl-btn ctrl-step" id="studio-prevscene-studio-ch79s7" onclick="studioPrevScene('studio-ch79s7')" title="Previous step" aria-label="Previous step">&lsaquo;</button>
+<button class="ctrl-btn ctrl-step" id="studio-nextscene-studio-ch79s7" onclick="studioNextScene('studio-ch79s7')" title="Next step" aria-label="Next step">&rsaquo;</button>
+<button class="ctrl-btn ctrl-speed" id="studio-speedbtn-studio-ch79s7" onclick="studioCycleSpeed('studio-ch79s7')" title="Playback speed" aria-label="Playback speed">1x</button>
+<span class="ctrl-settings-wrap"><button class="ctrl-btn" onclick="studioToggleSettings('studio-ch79s7', event)" aria-label="Player settings" title="Settings"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5 5l2.1 2.1M16.9 16.9L19 19M19 5l-2.1 2.1M7.1 16.9L5 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button><span class="ctrl-popover" id="studio-settings-studio-ch79s7" style="display:none" onclick="event.stopPropagation()"><label class="ctrl-pop-row">Volume <input type="range" min="0" max="1" step="0.1" value="1" oninput="studioSetVolume('studio-ch79s7', this.value)" style="width:110px;accent-color:#3587FC"></label><button class="studio-btn" id="studio-captions-studio-ch79s7" onclick="studioToggleCaptions('studio-ch79s7')">Captions: On</button><button class="studio-btn" onclick="studioReplayScene('studio-ch79s7')">Replay scene</button></span></span>
+<button class="ctrl-btn" onclick="studioFullscreen('studio-ch79s7')" aria-label="Fullscreen" title="Fullscreen"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+</div>
+</div>
+</div>
+<p class="studio-caption" id="studio-caption-studio-ch79s7"></p>
+<p class="studio-loading" id="studio-loading-studio-ch79s7" style="display:none">Loading narration...</p>
+<p class="studio-error" id="studio-error-studio-ch79s7" role="alert" style="display:none"></p>
+<audio id="studio-audio-studio-ch79s7" preload="auto" src="../audio/ch79s7.mp3"></audio>
+</div>
+<div class="lesson-title-row">
+<h1>Engine performance and capacity: throughput, latency budgets and load testing</h1>
+<button class="save-note" type="button" onclick="pfToggleNote('studio-ch79s7')" title="Save a note on this lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L8 19l-4 1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg> Save note</button>
+</div>
+<p class="lesson-meta-line">Payment engine internals and observability, Lesson 7 of 7, Narration 5:56, D09 Payment architecture and technology</p>
+<p class="lesson-note-saved" id="studio-note-saved-studio-ch79s7" style="display:none">Note saved.</p>
+<div class="note-editor" id="studio-note-editor-studio-ch79s7" style="display:none"><textarea id="studio-note-text-studio-ch79s7" rows="3" placeholder="Write a note on this lesson..." aria-label="Lesson note"></textarea><div class="note-editor-row"><button class="studio-btn primary" onclick="pfSaveNote('studio-ch79s7')">Save note</button> <button class="studio-btn" onclick="pfToggleNote('studio-ch79s7')">Cancel</button></div></div>
+<div class="dive-deeper">
+<div class="dive-head"><button type="button" class="dive-toggle" onclick="pfToggleDive(this)" aria-expanded="true"><span class="dive-spark"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 2l2.2 6.8L21 11l-6.8 2.2L12 20l-2.2-6.8L3 11l6.8-2.2z" fill="currentColor"/></svg></span><span class="dive-title">Dive deeper on this topic</span><span class="dive-chev"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 14l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button></div>
+<div class="dive-btns"><button type="button" class="dive-btn" data-kind="practice" onclick="pfDive('studio-ch79s7', 'practice')">Give me practice questions</button><button type="button" class="dive-btn" data-kind="simple" onclick="pfDive('studio-ch79s7', 'simple')">Explain this topic in simple terms</button><button type="button" class="dive-btn" data-kind="summary" onclick="pfDive('studio-ch79s7', 'summary')">Give me a summary</button><button type="button" class="dive-btn" data-kind="example" onclick="pfDive('studio-ch79s7', 'example')">Give me real-life examples</button></div>
+<div class="dive-panel" id="dive-panel-studio-ch79s7"><div class="dive-panel-body"></div></div>
+<script type="application/json" id="pf-dive-data-studio-ch79s7">{"simple": "In plain words: A payment engine must handle the bank's peak volume without slowing down, and peak volume is not the average: it is the busiest hour of the busiest day, often the end of month payroll run, the morning after a bank holiday, or the hour before a clearing cut off.", "summary": "A payment engine must handle the bank's peak volume without slowing down, and peak volume is not the average: it is the busiest hour of the busiest day, often the end of month payroll run, the morning after a bank holiday, or the hour before a clearing cut off.", "example": "A payment engine must handle the bank's peak volume without slowing down, and peak volume is not the average: it is the busiest hour of the busiest day, often the end of month payroll run, the morning after a bank holiday, or the hour before a clearing cut off. A bank that processes 250 million payments a year averages about 8 payments a second, but its peak may be 200 payments a second, twenty five times the average."}</script>
+</div>
+<div class="lesson-feedback">
+<div class="fb-icons"><button type="button" class="fb-btn" data-kind="like" onclick="pfFeedback(this,'like')" aria-label="Like this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M7 21H4a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1h3v11zm0 0h9.6a2 2 0 0 0 1.9-1.4l1.6-5A2 2 0 0 0 18.2 12H15V6.5A2.5 2.5 0 0 0 12.5 4L11 7.5 8.6 10H7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button><button type="button" class="fb-btn" data-kind="dislike" onclick="pfFeedback(this,'dislike')" aria-label="Dislike this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M17 3h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1h-3V3zm0 0H7.4a2 2 0 0 0-1.9 1.4l-1.6 5A2 2 0 0 0 5.8 12H9v5.5A2.5 2.5 0 0 0 11.5 20L13 16.5l2.4-2.5H17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button><button type="button" class="fb-btn" data-kind="flag" onclick="pfFeedback(this,'flag')" aria-label="Flag this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M6 21V4m0 1h11l-2.5 3.5L17 12H6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+<button type="button" class="go-next" onclick="goLesson('ch80s1')" title="Next: API versioning and lifecycle: how to change an API without breaking clients">Go to next item &rarr;</button>
+</div>
+<div class="chips"><span class="chip">Clearing</span><span class="chip">Repair</span><span class="chip">Queue</span></div>
+<div class="card learn-card">
+<h2>What you will learn</h2>
+<p class="transcript"><b>Your objective.</b> By the end of this lesson, you will be able to explain engine performance and capacity: throughput, latency budgets and load testing and apply it to a real banking scenario.</p>
+<p class="transcript"><b>Why it matters.</b> For a business analyst, the requirement is to define the latency budget per payment type, per step, and the alert threshold for each.</p>
+<p class="transcript">Chapter objective: Learner explains the modules inside a payment engine, the booking entries each message creates, and how worklists and audit trails support operators and auditors. Learner describes orchestration failure handling with timeouts, retries, compensation and sagas, explains observability through metrics, logs, traces and alerting, and states how microservice boundaries and capacity are designed.</p>
+<h3>Key learning points</h3>
+<ul id="studio-points-studio-ch79s7">
+<li>Peak volume handling</li>
+<li>Throughput and parallel processing</li>
+<li>Latency budgets per step</li>
+<li>Load testing slow downstream systems</li>
+<li>Recovery planning</li>
+<li>Cloud scaling lead time</li>
+</ul>
+<h3>Key terms</h3>
+<div id="studio-terms-studio-ch79s7">
+<p class="keyterm"><b>Clearing:</b> The process of exchanging payment instructions between banks and calculating what each bank owes the others.</p>
+<p class="keyterm"><b>Repair:</b> Manual correction of a payment that failed straight through processing because of missing or invalid data.</p>
+<p class="keyterm"><b>Queue:</b> A holding area in a payment system where payments wait for sufficient funds or for their turn to settle.</p>
+</div>
+<p class="studio-note">Payment flow diagram showing Engine performance and capacity: throughput, latency budgets and load testing.</p>
+</div>
+<section class="ic-lesson-section" id="pf-insights-studio-ch79s7">
+<h2>Insights and practice scenarios</h2>
+<p class="studio-note">Worked insights and practice scenarios for this lesson. Each one is a reusable PaymentForge case, so the same case may appear in more than one lesson.</p>
+<div data-ic-type="level" data-record-id="INS-066"><script type="application/json">{"level": 3, "meta": {"domain": "Architecture & Resilience", "topic": "Payment volume rises 300% during zero-fee campaign", "depth": 3, "difficulty": "advanced", "insightId": "INS-066"}, "evidence": "public-post", "recordId": "INS-066", "problem": "Meridian Bank launches a zero-fee weekend campaign for retail payments. Within the first hour, payment volume rises to 300 percent of a normal peak, roughly four times the usual load. Latency climbs, channel sessions start timing out, and the clearing connector queue grows faster than it drains. Customers retry the same payment from the app, which adds duplicate submissions to an already loaded platform. The campaign team wants the promotion to continue; operations wants to protect cut-off deadlines and avoid a backlog that cannot be cleared the same day.\n\nThe problem is not only raw volume. Timeouts create unknown outcomes, so a retry may duplicate a payment that was already accepted. The queue holds payments with different cut-offs and different customer impact, and a simple first-in first-out drain may let high value or time critical payments miss their deadlines while low value items consume capacity. Downstream capacity is finite: the clearing connector, the ledger and the fraud service each have their own limits, and pushing harder at the front door only moves the failure downstream.\n\nThe bank needs a controlled response that keeps the platform stable, protects the payments most at risk, prevents retry storms, and gives the campaign a throttle it can actually operate, rather than a choice between letting everything through and switching the campaign off.", "solution": "Treat the surge as a capacity problem with three controls: intake, queue and recovery. At intake, apply back-pressure through the API gateway and channel: queue or gracefully defer non critical traffic, show a clear pending state instead of a silent timeout, and throttle campaign traffic to a rate the downstream chain can sustain. Communicate the throttle honestly so customers stop retrying blindly. At the queue, prioritise by cut-off risk and customer impact, not by arrival order alone, and age items so nothing sits silently past its deadline.\n\nPrevent retry storms with idempotency. Every submission carries an idempotency key scoped to the initiating party and instruction; a retry with the same key returns the original reference instead of creating a second payment. Where the outcome is unknown after a timeout, the channel must query by correlation ID and show a pending or unknown state until the engine confirms the outcome. Never retry automatically with a new key.\n\nPlan recovery before the surge ends. Define a circuit breaker for the clearing connector with a bounded retry schedule, a dead-letter path for items that cannot be processed, and a controlled replay that reconciles every queued item against the ledger and clearing acknowledgements before release. After the event, size capacity from measured traffic, latency, timeout and failure rates per component, and make campaign throttling a pre-agreed product control with named thresholds, not an improvisation during the next campaign.", "decision": {"question": "Volume is four times normal peak, latency is climbing, the clearing queue is growing, and customers are retrying timed-out payments. What is the first controlled response?", "context": "", "options": [{"label": "A", "detail": "Apply back-pressure at the channel, prioritise the queue by cut-off and customer impact, throttle new campaign intake, and block duplicate retries with idempotency checks.", "correct": true}, {"label": "B", "detail": "Raise every timeout and let all traffic through, trusting the platform to catch up overnight.", "correct": false}, {"label": "C", "detail": "Restart the payment engine to clear the queue and reprocess everything from the start.", "correct": false}, {"label": "D", "detail": "Switch the campaign off without telling customers and reject all new payments.", "correct": false}]}, "decisionRationale": "A is correct because back-pressure protects the platform, prioritisation protects cut-off critical payments, throttling controls new load, and idempotency stops retries becoming duplicates. B is wrong because longer timeouts and unlimited intake overload downstream systems. D is wrong because an unexplained shutdown harms customers and does not clear the backlog safely. C is wrong because a restart loses in-flight state and risks duplicate or lost payments.", "flow": {"steps": [{"title": "Submits a payment during the zero-fee campaign", "actor": "Customer", "note": "Mobile banking and web channel"}, {"title": "Applies back-pressure and throttling when intake exceeds the sustainable rate", "actor": "API gateway", "note": "API gateway"}, {"title": "Accepts the instruction, checks idempotency, and places it in a durable prioritised queue", "actor": "Payment engine", "note": "Payment engine"}, {"title": "Prioritises queued items by cut-off risk and customer impact", "actor": "Payment engine", "note": "Queue manager"}, {"title": "Sends items to clearing within connector capacity, with a circuit breaker on failure", "actor": "Clearing connector", "note": "Clearing connector"}, {"title": "Shows a pending or unknown state after a timeout and queries by correlation ID instead of resubmitting", "actor": "Channel", "note": "Channel status service"}, {"title": "Reconciles queued and sent items against ledger postings and clearing acknowledgements", "actor": "Payment engine", "note": "Reconciliation service"}, {"title": "Replays the backlog in a controlled order after the connector recovers, with duplicate checks", "actor": "Operations", "note": "Operations console"}, {"title": "Updates customers on delayed payments and the campaign throttle", "actor": "Communications", "note": "App messaging and contact centre"}, {"title": "Reviews traffic, latency, timeout and failure rates and resets capacity and throttle thresholds", "actor": "Product and engineering", "note": "Capacity review"}]}, "happy": ["Back-pressure holds intake at a sustainable rate, the queue drains in priority order, no payment misses its cut-off, timed-out submissions resolve to a single payment through idempotency, and the backlog replays cleanly after the connector recovers with every item reconciled to the ledger."], "negative": [{"title": "Retry storm", "detail": "Customers retry timed-out payments and each retry creates a new submission. Return the original reference for the same idempotency key, show a pending state, and rate limit retries from the channel."}, {"title": "Queue storage pressure", "detail": "The backlog grows until queue storage or memory is at risk. Shed or defer non critical intake early, alert on queue depth thresholds, and spill to durable storage with an ageing policy."}, {"title": "Expired payments", "detail": "Queued items pass their cut-off or validity window while waiting. Expire them under a defined policy, reverse or release any reservation once, notify the customer, and never release an expired payment silently."}, {"title": "Partial replay", "detail": "Only some queued items replay after recovery and the rest are unaccounted for. Reconcile the full queue against sent messages, acknowledgements and ledger entries before declaring recovery complete."}, {"title": "Downstream overload", "detail": "The ledger or fraud service becomes the bottleneck once the connector recovers. Apply back-pressure per component, drain at the slowest downstream rate, and monitor latency and failure rates at each hop, not only at the front door."}], "technical": ["Make the queue durable with a persisted item state, priority, cut-off timestamp, correlation ID and idempotency key, so a restart does not lose or duplicate work. Use a circuit breaker with a bounded retry schedule and exponential back-off for the clearing connector, and a dead-letter queue for items that exhaust retries. Emit latency, timeout rate, failure rate and queue depth per component so the bottleneck is visible, and alert on thresholds rather than on total volume alone. Keep status as a durable state machine with an authoritative source per transition, and use outbox or inbox patterns so a status update cannot be lost between the engine and the ledger. Every retry must carry the original idempotency key and payload hash."], "messages": [{"message": "pain.001", "title": "Customer credit transfer initiation carrying the original instruction and idempotency reference from the channel.", "fields": [{"tag": "Instruction identification", "name": "Instruction identification", "relevant": true}, {"tag": "End to end identification", "name": "End to end identification", "relevant": true}, {"tag": "Debtor and creditor account", "name": "Debtor and creditor account", "relevant": true}, {"tag": "Instructed amount and currency", "name": "Instructed amount and currency", "relevant": true}]}, {"message": "pacs.008", "title": "Customer credit transfer sent to clearing for each accepted payment.", "fields": [{"tag": "Instruction identification", "name": "Instruction identification", "relevant": true}, {"tag": "End to end identification", "name": "End to end identification", "relevant": true}, {"tag": "Interbank settlement amount", "name": "Interbank settlement amount", "relevant": true}, {"tag": "Debtor and creditor agent", "name": "Debtor and creditor agent", "relevant": true}]}, {"message": "pacs.002", "title": "Payment status report confirming acceptance or rejection at each hop.", "fields": [{"tag": "Original instruction reference", "name": "Original instruction reference", "relevant": true}, {"tag": "Transaction status code", "name": "Transaction status code", "relevant": true}, {"tag": "Status reason code", "name": "Status reason code", "relevant": true}]}, {"message": "camt.054", "title": "Debit credit notification evidencing the ledger posting for a completed payment.", "fields": [{"tag": "Notification reference", "name": "Notification reference", "relevant": true}, {"tag": "Related payment reference", "name": "Related payment reference", "relevant": true}, {"tag": "Amount and currency", "name": "Amount and currency", "relevant": true}]}], "accounting": ["Queued payments are not settled payments, so no settlement posting is made until clearing acceptance is confirmed. Any reservation or hold taken at acceptance must be released or reversed exactly once if the payment expires or is rejected, and the reversal must reference the original instruction. The backlog becomes an operational worklist ordered by cut-off risk, with ageing alerts and a named owner, and recovery is measured by reconciled items, not by queue depth alone. Fees waived under the campaign are recorded as waived, not as missing, so revenue reporting stays accurate. If a duplicate does slip through, it is handled as a linked exception with a single reversal, never by deleting the original posting."], "gherkin": {"scenarios": [{"given": "the clearing connector is unavailable", "when": "queue depth crosses the defined threshold", "then": "alerts and controlled back-pressure are activated. new intake is throttled to the sustainable rate"}, {"given": "a submission timeout", "when": "the client enquires using the original reference", "then": "the platform returns the current known state. does not create a new transaction"}]}, "check": {"questions": [{"question": "Why is back-pressure better than simply raising timeouts during a volume surge?", "options": ["It increases revenue", "It protects downstream systems from overload and keeps the platform stable while intake is controlled", "It removes the need for a queue", "It makes the app look faster"], "answer": 1, "explanation": "Longer timeouts and unlimited intake push the failure downstream to the connector, ledger or fraud service. Back-pressure controls load at the sustainable rate."}, {"question": "A customer retries after a timeout. What prevents a duplicate payment?", "options": ["Asking the customer to wait a day", "Charging a retry fee", "Deleting the first payment", "Returning the original reference for the same idempotency key and showing a pending state until the outcome is confirmed"], "answer": 3, "explanation": "The same idempotency key must return the original payment reference. A retry with a new key is a new payment."}, {"question": "How should a recovery queue be drained after an outage?", "options": ["In a controlled priority order by cut-off risk and customer impact, reconciling every item before declaring recovery complete", "By reprocessing everything twice", "First in, first out, as fast as possible", "By deleting the oldest items"], "answer": 0, "explanation": "Priority order protects cut-off critical payments, and reconciliation proves no item was lost or duplicated during replay."}, {"question": "What does a circuit breaker do for a failing clearing connector?", "options": ["It stops repeated retries hammering the connector, applies a bounded retry schedule, and routes exhausted items to a dead-letter path", "It increases the retry rate", "It deletes queued payments", "It bypasses clearing entirely"], "answer": 0, "explanation": "Repeated retries during an outage create a retry storm. A circuit breaker pauses calls, retries on a schedule, and isolates items that cannot be processed."}]}}</script></div>
+<div data-ic-type="level" data-record-id="PAY-012"><script type="application/json">{"level": 3, "meta": {"domain": "Payment processing", "topic": "Peak volume growth threatens throughput", "difficulty": "intermediate", "depth": 3, "scenarioId": "PAY-012"}, "evidence": "practice-scenario", "recordId": "PAY-012", "problem": "New customers are forecast to increase daily volume and peak TPS materially.", "decision": {"question": "How do you translate business growth into measurable NFRs?", "options": [{"label": "Resubmit the instruction with a new reference without checking the original", "detail": "Send the payment again as if the first attempt never happened.", "why": "The original instruction may already have been accepted. A new reference creates a second payment.", "outcome": "A duplicate payment is created and must be reversed.", "correct": false}, {"label": "Treat the unclear outcome as a failure and reverse the payment at once", "detail": "Assume the payment failed and move the money back immediately.", "why": "An unclear outcome is not a failure. Reversal is only correct after the current state is confirmed; reversing at once can move money twice.", "outcome": "The payment is reversed even though it had already settled.", "correct": false}, {"label": "Build a capacity model using average", "detail": "Build a capacity model using average, peak and burst volumes, payload sizes, dependency latency and retry amplification.", "correct": true, "why": "This is the recommended solution in this case. Load-test the complete chain and define scaling thresholds and degradation behaviour.", "outcome": "The platform meets throughput and latency targets under agreed peak and stress profiles."}, {"label": "Close the case without investigating and wait for the customer to report it", "detail": "Log the incident and take no further action.", "why": "Every case in this set requires investigation, evidence and a controlled outcome before it is closed.", "outcome": "The break stays open and is found later by reconciliation or by the customer.", "correct": false}]}, "solution": "Build a capacity model using average, peak and burst volumes, payload sizes, dependency latency and retry amplification. Load-test the complete chain and define scaling thresholds and degradation behaviour.", "flow": {"steps": [{"title": "Channel"}, {"title": "gateway"}, {"title": "orchestration"}, {"title": "screening"}, {"title": "engine"}, {"title": "connectors"}, {"title": "ledger"}]}, "happy": ["The platform meets throughput and latency targets under agreed peak and stress profiles."], "negative": ["Dependency saturation", "queue growth", "retry storm", "database contention", "failover capacity insufficient"], "technical": ["Define NFRs, capacity headroom, back-pressure, queue limits, autoscaling, graceful degradation and recovery objectives", "Other standard named in this case: Not message-specific", "Other standard named in this case: include rail-specific payloads"], "accounting": ["The ledger, the customer account and the statement must agree before the case is closed; any correction is posted as a separate, traceable entry, never by editing the original."], "gherkin": {"scenarios": [{"given": "forecast peak load", "when": "the system is tested at the agreed stress level", "then": "throughput and latency remain within approved thresholds"}]}, "check": {"questions": [{"question": "What is the recommended approach in this case?", "options": ["Resubmit the instruction with a new reference without checking the original", "Treat the unclear outcome as a failure and reverse the payment at once", "Build a capacity model using average", "Close the case without investigating and wait for the customer to report it"], "answer": 2, "explanation": "Build a capacity model using average, peak and burst volumes, payload sizes, dependency latency and retry amplification.", "whyWrong": ["The original instruction may already have been accepted. A new reference creates a second payment.", "An unclear outcome is not a failure. Reversal is only correct after the current state is confirmed; reversing at once can move money twice.", "", "Every case in this set requires investigation, evidence and a controlled outcome before it is closed."]}, {"question": "Which of these is a negative path or edge case in this scenario?", "options": ["The payment settles in full with no exceptions", "The ledger and the statement agree on the first attempt", "The customer receives the funds before the instruction is sent", "Dependency saturation"], "answer": 3, "explanation": "The scenario lists \"Dependency saturation\" among its negative paths and edge cases.", "whyWrong": ["That describes a successful outcome, not a negative path in this scenario.", "That describes a successful outcome, not a negative path in this scenario.", "That describes a successful outcome, not a negative path in this scenario.", ""]}, {"question": "What happens on the happy path?", "options": ["The platform meets throughput and latency targets under agreed peak and stress profiles", "Dependency saturation", "Queue growth", "Retry storm"], "answer": 0, "explanation": "The platform meets throughput and latency targets under agreed peak and stress profiles.", "whyWrong": ["", "That is a failure outcome, not the happy path in this scenario.", "That is a failure outcome, not the happy path in this scenario.", "That is a failure outcome, not the happy path in this scenario."]}]}}</script></div>
+</section>
+<div class="fw-card" id="pf-exercise-studio-ch79s7">
+<p class="fw-label">Practise this lesson</p>
+<h2>Exercise</h2>
+<p><b>Apply the concept in this lesson to a real banking scenario.</b></p>
+<p>Use the definition, the example and the key points in this lesson.</p>
+<ol class="fw-steps">
+<li><b>What to do.</b> Explain the concept in your own words, give a banking example with an amount, and state what goes wrong if it is misunderstood.</li>
+</ol>
+<p><button class="studio-btn" id="pf-ex-btn-studio-ch79s7" onclick="pfRevealExercise('studio-ch79s7')">Show the answer</button></p>
+<div class="fw-exercise-answer" id="pf-ex-answer-studio-ch79s7">
+<p><b>Correct result.</b> A correct answer names the concept accurately, uses a realistic banking example with a concrete amount, and identifies the consequence of getting it wrong.</p>
+<p><b>Why.</b> Understanding is not memorising a definition. It is being able to explain it, apply it, and spot the failure it prevents.</p>
+</div>
+</div>
+<div class="fw-card" id="pf-quiz-studio-ch79s7" data-answer="2">
+<p class="fw-label">Check your understanding</p>
+<h2>Practice question</h2>
+<p><b>Which of the following best describes engine performance and capacity: throughput, latency budgets and load testing?</b></p>
+<button type="button" class="quiz-opt" data-idx="0" onclick="pfCheckAnswer('studio-ch79s7', this)">It is a related concept from this chapter, but it does not describe engine performance and capacity: throughput, latency budgets and load testing.</button>
+<button type="button" class="quiz-opt" data-idx="1" onclick="pfCheckAnswer('studio-ch79s7', this)">It is a related concept from this chapter, but it does not describe engine performance and capacity: throughput, latency budgets and load testing.</button>
+<button type="button" class="quiz-opt" data-idx="2" onclick="pfCheckAnswer('studio-ch79s7', this)">A payment engine must handle the bank's peak volume without slowing down, and peak volume is not the average: it is the busiest hour of the busiest day, often the end of month payroll run, the morning after a bank holiday, or the hour before a clearing cut off</button>
+<button type="button" class="quiz-opt" data-idx="3" onclick="pfCheckAnswer('studio-ch79s7', this)">It is a related concept from this chapter, but it does not describe engine performance and capacity: throughput, latency budgets and load testing.</button>
+<div class="quiz-feedback" id="pf-quiz-fb-studio-ch79s7"></div>
+<script type="application/json" id="pf-quiz-data-studio-ch79s7">{"why_wrong": ["This describes a different concept from this chapter, not engine performance and capacity: throughput, latency budgets and load testing.", "This describes a different concept from this chapter, not engine performance and capacity: throughput, latency budgets and load testing.", "", "This describes a different concept from this chapter, not engine performance and capacity: throughput, latency budgets and load testing."], "explanation": "A payment engine must handle the bank's peak volume without slowing down, and peak volume is not the average: it is the busiest hour of the busiest day, often the end of month payroll run, the morning after a bank holiday, or the hour before a clearing cut off. This is the core idea of the lesson."}</script>
+</div>
+<div class="fw-card">
+<p class="fw-label">Takeaway and next step</p>
+<h2>What to remember</h2>
+<p>For a business analyst, the requirement is to define the latency budget per payment type, per step, and the alert threshold for each.</p>
+<p>Follow a payment through every stage, from instruction to beneficiary credit, and note where it can stop.</p>
+<p><a class="fw-tool-link" href="../simulators/lifecycle.html">Open the Payment Lifecycle Simulator &rarr;</a></p>
+<p class="studio-note">Builds on "Microservices for payments: service boundaries and data ownership".</p>
+</div>
+<section class="upnext" id="studio-upnext-studio-ch79s7" style="display:none" aria-label="Up next">
+<span class="tag">Up next</span>
+<h2>Up next: API versioning and lifecycle: how to change an API without breaking clients</h2>
+<p>Lesson 1 of 7, API design standards and integration patterns, Narration 5:39</p>
+<div class="row">
+<button class="studio-btn primary" onclick="goLessonAuto('ch80s1')">Next lesson &rarr;</button>
+<button class="studio-btn" onclick="goLesson('ch79s6')">&larr; Previous lesson</button>
+<button class="studio-btn" onclick="studioReplayLesson('studio-ch79s7')">Replay this lesson</button>
+</div>
+</section>
+<div class="lesson-nav">
+<button class="studio-btn" onclick="goLesson('ch79s6')" title="Previous lesson: Microservices for payments: service boundaries and data ownership">&larr; Previous</button>
+<button class="studio-btn" onclick="goChapterContents('ch79')">Chapter contents</button>
+<button class="studio-btn primary" onclick="goLesson('ch80s1')" title="Next lesson: API versioning and lifecycle: how to change an API without breaking clients">Next &rarr;</button>
+</div>
+<div class="card transcript-card">
+<h2>Transcript and full text</h2>
+<details class="studio-transcript" id="studio-transcript-details-studio-ch79s7"><summary>Show transcript</summary>
+<p class="transcript" id="studio-transcript-studio-ch79s7">A payment engine must handle the bank's peak volume without slowing down, and peak volume is not the average: it is the busiest hour of the busiest day, often the end of month payroll run, the morning after a bank holiday, or the hour before a clearing cut off. A bank that processes 250 million payments a year averages about 8 payments a second, but its peak may be 200 payments a second, twenty five times the average. An engine sized for the average will collapse at peak, and a collapse at peak means payments queue, customers complain, and the bank misses cut offs. Capacity planning starts by measuring the peak, not the average, and by understanding what drives it. Source: bank payment platform capacity planning; Site Reliability Engineering, Google. Throughput is the number of payments the engine can process per second, and it is limited by the slowest step. If validation takes 50 milliseconds, enrichment takes 200 milliseconds because it calls an external reference data service, and posting takes 100 milliseconds, the engine can process at most 5 payments a second through a single thread, because enrichment is the bottleneck. For a business analyst, the requirement is to define this behaviour explicitly, because the engine does what the requirement says and nothing more. The engine increases throughput by running steps in parallel where they are independent, and by scaling out: running more instances of the slow service. But scaling out only helps if the bottleneck is CPU or memory in the engine itself. If the bottleneck is the external reference data service, adding more engine instances makes the problem worse, because more instances call the same slow service. The fix then is to cache the reference data, or to call the service asynchronously and continue processing while waiting. Latency budgets assign a time allowance to each step, and the sum of the allowances is the total the customer experiences. For an instant payment, the total budget might be 10 seconds from intake to beneficiary credit, as required by the SEPA Instant regulation. The budget is split: intake 200 milliseconds, validation 300 milliseconds, screening 2 seconds, enrichment 1 second, routing 200 milliseconds, clearing 3 seconds, posting 500 milliseconds, and the remainder as contingency. Each step reports its actual time, and the engine alerts when a step consistently exceeds its budget. A step that takes 5 seconds when its budget is 2 seconds is a defect, even if the total is still within 10 seconds, because the next slow step will push the total over. For a business analyst, the requirement is to define the latency budget per payment type, per step, and the alert threshold for each. Load testing proves the engine can handle peak before peak arrives. A load test replays a realistic mix of payments at peak volume and measures throughput, latency and error rate. The mix matters: a test that sends only simple domestic payments will not reveal that cross border payments, which need enrichment and correspondent routing, are three times slower. The operations team must be able to see this state on a dashboard, because a payment that cannot be seen cannot be managed. A good load test includes the full mix, including the payments that fail validation, the payments that hit sanctions holds, and the payments that need repair, because those consume capacity too. The test also measures what happens when a downstream system is slow: if the clearing system responds in 5 seconds instead of 200 milliseconds, does the engine queue gracefully, or does it run out of threads and stop accepting new payments? A load test that passes is evidence; a load test that has never been run is an assumption. Seasonality drives capacity in ways that surprise banks that only look at averages. The busiest day of the year for many banks is the last working day before Christmas, when payroll, supplier payments and consumer spending all peak at once. The second busiest is the end of the financial year, when tax payments and year end settlements coincide. A bank that sizes its engine for an ordinary Tuesday will fail on both days. Capacity planning must therefore model the peak day, not the average day, and must include a margin for growth: if volume grows 15 percent a year, the engine must handle next year's peak, not this year's. The plan must also cover the recovery from a failure: if the engine is down for 30 minutes at peak, it must clear the backlog within the next hour, which means it needs spare capacity above the peak rate, not just at it. Cost is the other side of capacity. An engine that is sized for ten times the peak volume wastes money on idle servers, and an engine that is sized exactly for the peak will fail when volume exceeds it. The right size is the peak plus a margin, typically 30 to 50 percent, and the margin is reviewed every quarter against actual volume. Cloud infrastructure makes this easier, because the bank can scale out for a known peak, such as the end of month payroll run, and scale back down afterwards, paying only for the capacity it used. But cloud scaling is not instant: it takes minutes to start new instances, so the bank must scale up before the peak arrives, not when it is already happening. For a business analyst, the requirement is to define the capacity model, the peak scenarios, the margin, and the scaling triggers, and to review them quarterly against actuals. Further reading: Site Reliability Engineering, Google; bank payment platform capacity planning guides. Last reviewed 7 November 2026.</p>
+<div id="studio-paras-studio-ch79s7">
+<p class="transcript">A payment engine must handle the bank's peak volume without slowing down, and peak volume is not the average: it is the busiest hour of the busiest day, often the end of month payroll run, the morning after a bank holiday, or the hour before a clearing cut off. A bank that processes 250 million payments a year averages about 8 payments a second, but its peak may be 200 payments a second, twenty five times the average. An engine sized for the average will collapse at peak, and a collapse at peak means payments queue, customers complain, and the bank misses cut offs. Capacity planning starts by measuring the peak, not the average, and by understanding what drives it. Source: bank payment platform capacity planning; Site Reliability Engineering, Google.</p>
+<p class="transcript">Throughput is the number of payments the engine can process per second, and it is limited by the slowest step. If validation takes 50 milliseconds, enrichment takes 200 milliseconds because it calls an external reference data service, and posting takes 100 milliseconds, the engine can process at most 5 payments a second through a single thread, because enrichment is the bottleneck. For a business analyst, the requirement is to define this behaviour explicitly, because the engine does what the requirement says and nothing more.</p>
+<p class="transcript">The engine increases throughput by running steps in parallel where they are independent, and by scaling out: running more instances of the slow service. But scaling out only helps if the bottleneck is CPU or memory in the engine itself. If the bottleneck is the external reference data service, adding more engine instances makes the problem worse, because more instances call the same slow service. The fix then is to cache the reference data, or to call the service asynchronously and continue processing while waiting.</p>
+<p class="transcript">Latency budgets assign a time allowance to each step, and the sum of the allowances is the total the customer experiences. For an instant payment, the total budget might be 10 seconds from intake to beneficiary credit, as required by the SEPA Instant regulation. The budget is split: intake 200 milliseconds, validation 300 milliseconds, screening 2 seconds, enrichment 1 second, routing 200 milliseconds, clearing 3 seconds, posting 500 milliseconds, and the remainder as contingency.</p>
+<p class="transcript">Each step reports its actual time, and the engine alerts when a step consistently exceeds its budget. A step that takes 5 seconds when its budget is 2 seconds is a defect, even if the total is still within 10 seconds, because the next slow step will push the total over. For a business analyst, the requirement is to define the latency budget per payment type, per step, and the alert threshold for each.</p>
+<p class="transcript">Load testing proves the engine can handle peak before peak arrives. A load test replays a realistic mix of payments at peak volume and measures throughput, latency and error rate. The mix matters: a test that sends only simple domestic payments will not reveal that cross border payments, which need enrichment and correspondent routing, are three times slower. The operations team must be able to see this state on a dashboard, because a payment that cannot be seen cannot be managed.</p>
+<p class="transcript">A good load test includes the full mix, including the payments that fail validation, the payments that hit sanctions holds, and the payments that need repair, because those consume capacity too. The test also measures what happens when a downstream system is slow: if the clearing system responds in 5 seconds instead of 200 milliseconds, does the engine queue gracefully, or does it run out of threads and stop accepting new payments? A load test that passes is evidence; a load test that has never been run is an assumption.</p>
+<p class="transcript">Seasonality drives capacity in ways that surprise banks that only look at averages. The busiest day of the year for many banks is the last working day before Christmas, when payroll, supplier payments and consumer spending all peak at once. The second busiest is the end of the financial year, when tax payments and year end settlements coincide. A bank that sizes its engine for an ordinary Tuesday will fail on both days.</p>
+<p class="transcript">Capacity planning must therefore model the peak day, not the average day, and must include a margin for growth: if volume grows 15 percent a year, the engine must handle next year's peak, not this year's. The plan must also cover the recovery from a failure: if the engine is down for 30 minutes at peak, it must clear the backlog within the next hour, which means it needs spare capacity above the peak rate, not just at it.</p>
+<p class="transcript">Cost is the other side of capacity. An engine that is sized for ten times the peak volume wastes money on idle servers, and an engine that is sized exactly for the peak will fail when volume exceeds it. The right size is the peak plus a margin, typically 30 to 50 percent, and the margin is reviewed every quarter against actual volume. Cloud infrastructure makes this easier, because the bank can scale out for a known peak, such as the end of month payroll run, and scale back down afterwards, paying only for the capacity it used.</p>
+<p class="transcript">But cloud scaling is not instant: it takes minutes to start new instances, so the bank must scale up before the peak arrives, not when it is already happening. For a business analyst, the requirement is to define the capacity model, the peak scenarios, the margin, and the scaling triggers, and to review them quarterly against actuals. Further reading: Site Reliability Engineering, Google; bank payment platform capacity planning guides. Last reviewed 7 November 2026.</p>
+</div>
+</details>
+<details class="studio-transcript"><summary>Full lesson text (all scenes)</summary><div id="studio-transcript-full-studio-ch79s7"></div></details>
+<p><button class="studio-btn primary" id="done-ch79s7" onclick="studioMarkSceneDone('studio-ch79s7')">Mark lesson complete</button> <span class="studio-note">Completing a lesson updates your progress dashboard on the homepage.</span></p>
+</div>
+<p class="studio-note">Scene timestamps are estimated by allocating the narration text proportionally across the real audio length. The audio playback position is the source of truth: pause freezes the visual, seeking restores the correct scene, replay restarts the scene animation.</p>
+</div>
+<script>window.__PA_STUDIO_QUEUE = window.__PA_STUDIO_QUEUE || []; window.__PA_STUDIO_QUEUE.push(["studio-ch79s7", {"sample_id": "studio-ch79s7", "chapter_id": "ch79", "title": "Engine performance and capacity: throughput, latency budgets and load testing", "domain": "D09 Payment architecture and technology", "objective": "Learner explains the modules inside a payment engine, the booking entries each message creates, and how worklists and audit trails support operators and auditors. Learner describes orchestration failure handling with timeouts, retries, compensation and sagas, explains observability through metrics, logs, traces and alerting, and states how microservice boundaries and capacity are designed.", "scenes": [{"id": "ch79s7", "section_id": "ch79s7", "title": "Engine performance and capacity: throughput, latency budgets and load testing", "audio": "../audio/ch79s7.mp3", "duration_sec": 356.4, "points": ["A payment engine must handle the bank's peak volume without slowing down, and peak volume is not the average: it is the busiest hour of the busiest day, often the end of month payroll run, the morning after a bank...", "Throughput is the number of payments the engine can process per second, and it is limited by the slowest step.", "The engine increases throughput by running steps in parallel where they are independent, and by scaling out: running more instances of the slow service.", "Latency budgets assign a time allowance to each step, and the sum of the allowances is the total the customer experiences.", "Each step reports its actual time, and the engine alerts when a step consistently exceeds its budget."], "terms": [{"term": "Clearing", "def": "The process of exchanging payment instructions between banks and calculating what each bank owes the others."}, {"term": "Repair", "def": "Manual correction of a payment that failed straight through processing because of missing or invalid data."}, {"term": "Queue", "def": "A holding area in a payment system where payments wait for sufficient funds or for their turn to settle."}], "transcript": "A payment engine must handle the bank's peak volume without slowing down, and peak volume is not the average: it is the busiest hour of the busiest day, often the end of month payroll run, the morning after a bank holiday, or the hour before a clearing cut off. A bank that processes 250 million payments a year averages about 8 payments a second, but its peak may be 200 payments a second, twenty five times the average. An engine sized for the average will collapse at peak, and a collapse at peak means payments queue, customers complain, and the bank misses cut offs. Capacity planning starts by measuring the peak, not the average, and by understanding what drives it. Source: bank payment platform capacity planning; Site Reliability Engineering, Google. Throughput is the number of payments the engine can process per second, and it is limited by the slowest step. If validation takes 50 milliseconds, enrichment takes 200 milliseconds because it calls an external reference data service, and posting takes 100 milliseconds, the engine can process at most 5 payments a second through a single thread, because enrichment is the bottleneck. For a business analyst, the requirement is to define this behaviour explicitly, because the engine does what the requirement says and nothing more. The engine increases throughput by running steps in parallel where they are independent, and by scaling out: running more instances of the slow service. But scaling out only helps if the bottleneck is CPU or memory in the engine itself. If the bottleneck is the external reference data service, adding more engine instances makes the problem worse, because more instances call the same slow service. The fix then is to cache the reference data, or to call the service asynchronously and continue processing while waiting. Latency budgets assign a time allowance to each step, and the sum of the allowances is the total the customer experiences. For an instant payment, the total budget might be 10 seconds from intake to beneficiary credit, as required by the SEPA Instant regulation. The budget is split: intake 200 milliseconds, validation 300 milliseconds, screening 2 seconds, enrichment 1 second, routing 200 milliseconds, clearing 3 seconds, posting 500 milliseconds, and the remainder as contingency. Each step reports its actual time, and the engine alerts when a step consistently exceeds its budget. A step that takes 5 seconds when its budget is 2 seconds is a defect, even if the total is still within 10 seconds, because the next slow step will push the total over. For a business analyst, the requirement is to define the latency budget per payment type, per step, and the alert threshold for each. Load testing proves the engine can handle peak before peak arrives. A load test replays a realistic mix of payments at peak volume and measures throughput, latency and error rate. The mix matters: a test that sends only simple domestic payments will not reveal that cross border payments, which need enrichment and correspondent routing, are three times slower. The operations team must be able to see this state on a dashboard, because a payment that cannot be seen cannot be managed. A good load test includes the full mix, including the payments that fail validation, the payments that hit sanctions holds, and the payments that need repair, because those consume capacity too. The test also measures what happens when a downstream system is slow: if the clearing system responds in 5 seconds instead of 200 milliseconds, does the engine queue gracefully, or does it run out of threads and stop accepting new payments? A load test that passes is evidence; a load test that has never been run is an assumption. Seasonality drives capacity in ways that surprise banks that only look at averages. The busiest day of the year for many banks is the last working day before Christmas, when payroll, supplier payments and consumer spending all peak at once. The second busiest is the end of the financial year, when tax payments and year end settlements coincide. A bank that sizes its engine for an ordinary Tuesday will fail on both days. Capacity planning must therefore model the peak day, not the average day, and must include a margin for growth: if volume grows 15 percent a year, the engine must handle next year's peak, not this year's. The plan must also cover the recovery from a failure: if the engine is down for 30 minutes at peak, it must clear the backlog within the next hour, which means it needs spare capacity above the peak rate, not just at it. Cost is the other side of capacity. An engine that is sized for ten times the peak volume wastes money on idle servers, and an engine that is sized exactly for the peak will fail when volume exceeds it. The right size is the peak plus a margin, typically 30 to 50 percent, and the margin is reviewed every quarter against actual volume. Cloud infrastructure makes this easier, because the bank can scale out for a known peak, such as the end of month payroll run, and scale back down afterwards, paying only for the capacity it used. But cloud scaling is not instant: it takes minutes to start new instances, so the bank must scale up before the peak arrives, not when it is already happening. For a business analyst, the requirement is to define the capacity model, the peak scenarios, the margin, and the scaling triggers, and to review them quarterly against actuals. Further reading: Site Reliability Engineering, Google; bank payment platform capacity planning guides. Last reviewed 7 November 2026.", "paragraphs": ["A payment engine must handle the bank's peak volume without slowing down, and peak volume is not the average: it is the busiest hour of the busiest day, often the end of month payroll run, the morning after a bank holiday, or the hour before a clearing cut off. A bank that processes 250 million payments a year averages about 8 payments a second, but its peak may be 200 payments a second, twenty five times the average. An engine sized for the average will collapse at peak, and a collapse at peak means payments queue, customers complain, and the bank misses cut offs. Capacity planning starts by measuring the peak, not the average, and by understanding what drives it. Source: bank payment platform capacity planning; Site Reliability Engineering, Google.", "Throughput is the number of payments the engine can process per second, and it is limited by the slowest step. If validation takes 50 milliseconds, enrichment takes 200 milliseconds because it calls an external reference data service, and posting takes 100 milliseconds, the engine can process at most 5 payments a second through a single thread, because enrichment is the bottleneck. For a business analyst, the requirement is to define this behaviour explicitly, because the engine does what the requirement says and nothing more.", "The engine increases throughput by running steps in parallel where they are independent, and by scaling out: running more instances of the slow service. But scaling out only helps if the bottleneck is CPU or memory in the engine itself. If the bottleneck is the external reference data service, adding more engine instances makes the problem worse, because more instances call the same slow service. The fix then is to cache the reference data, or to call the service asynchronously and continue processing while waiting.", "Latency budgets assign a time allowance to each step, and the sum of the allowances is the total the customer experiences. For an instant payment, the total budget might be 10 seconds from intake to beneficiary credit, as required by the SEPA Instant regulation. The budget is split: intake 200 milliseconds, validation 300 milliseconds, screening 2 seconds, enrichment 1 second, routing 200 milliseconds, clearing 3 seconds, posting 500 milliseconds, and the remainder as contingency.", "Each step reports its actual time, and the engine alerts when a step consistently exceeds its budget. A step that takes 5 seconds when its budget is 2 seconds is a defect, even if the total is still within 10 seconds, because the next slow step will push the total over. For a business analyst, the requirement is to define the latency budget per payment type, per step, and the alert threshold for each.", "Load testing proves the engine can handle peak before peak arrives. A load test replays a realistic mix of payments at peak volume and measures throughput, latency and error rate. The mix matters: a test that sends only simple domestic payments will not reveal that cross border payments, which need enrichment and correspondent routing, are three times slower. The operations team must be able to see this state on a dashboard, because a payment that cannot be seen cannot be managed.", "A good load test includes the full mix, including the payments that fail validation, the payments that hit sanctions holds, and the payments that need repair, because those consume capacity too. The test also measures what happens when a downstream system is slow: if the clearing system responds in 5 seconds instead of 200 milliseconds, does the engine queue gracefully, or does it run out of threads and stop accepting new payments? A load test that passes is evidence; a load test that has never been run is an assumption.", "Seasonality drives capacity in ways that surprise banks that only look at averages. The busiest day of the year for many banks is the last working day before Christmas, when payroll, supplier payments and consumer spending all peak at once. The second busiest is the end of the financial year, when tax payments and year end settlements coincide. A bank that sizes its engine for an ordinary Tuesday will fail on both days.", "Capacity planning must therefore model the peak day, not the average day, and must include a margin for growth: if volume grows 15 percent a year, the engine must handle next year's peak, not this year's. The plan must also cover the recovery from a failure: if the engine is down for 30 minutes at peak, it must clear the backlog within the next hour, which means it needs spare capacity above the peak rate, not just at it.", "Cost is the other side of capacity. An engine that is sized for ten times the peak volume wastes money on idle servers, and an engine that is sized exactly for the peak will fail when volume exceeds it. The right size is the peak plus a margin, typically 30 to 50 percent, and the margin is reviewed every quarter against actual volume. Cloud infrastructure makes this easier, because the bank can scale out for a known peak, such as the end of month payroll run, and scale back down afterwards, paying only for the capacity it used.", "But cloud scaling is not instant: it takes minutes to start new instances, so the bank must scale up before the peak arrives, not when it is already happening. For a business analyst, the requirement is to define the capacity model, the peak scenarios, the margin, and the scaling triggers, and to review them quarterly against actuals. Further reading: Site Reliability Engineering, Google; bank payment platform capacity planning guides. Last reviewed 7 November 2026."], "accessibility": "Payment flow diagram showing Engine performance and capacity: throughput, latency budgets and load testing.", "visual_type": "payment_flow", "visual_choice_reason": "default payment journey", "beats": [{"t0": 0.0, "t1": 73.3, "title": "Peak volume handling", "note": "A payment engine must handle the bank's peak volume without slowing down", "highlight_nodes": ["n0"], "highlight_conns": [], "highlight_fields": []}, {"t0": 73.3, "t1": 132.9, "title": "Throughput and parallel processing", "note": "For a business analyst, the requirement is to define this behaviour explicitly, because the engine does what the requirement says and nothing more.", "highlight_nodes": ["n1"], "highlight_conns": ["c0"], "highlight_fields": []}, {"t0": 132.9, "t1": 196.2, "title": "Latency budgets per step", "note": "The budget is split: intake 200 milliseconds", "highlight_nodes": ["n2"], "highlight_conns": ["c1"], "highlight_fields": []}, {"t0": 196.2, "t1": 260.0, "title": "Load testing slow downstream systems", "note": "The operations team must be able to see this state on a dashboard, because a payment that cannot be seen cannot be managed.", "highlight_nodes": ["n3"], "highlight_conns": ["c2"], "highlight_fields": []}, {"t0": 260.0, "t1": 326.3, "title": "Recovery planning", "note": "A bank that sizes its engine for an ordinary Tuesday will fail on both days.", "highlight_nodes": ["n4"], "highlight_conns": ["c3"], "highlight_fields": []}, {"t0": 326.3, "t1": 356.4, "title": "Cloud scaling lead time", "note": "But cloud scaling is not instant: it takes minutes to start new instances, so the bank must scale up before the peak arrives, not when it is already happening.", "highlight_nodes": ["n5"], "highlight_conns": ["c4"], "highlight_fields": []}], "node_ids": ["n0", "n1", "n2", "n3", "n4", "n5"], "framework": {"objective": "By the end of this lesson, you will be able to explain engine performance and capacity: throughput, latency budgets and load testing and apply it to a real banking scenario.", "why_matters": "For a business analyst, the requirement is to define the latency budget per payment type, per step, and the alert threshold for each.", "technical_example": "This lesson introduces a concept rather than a specific message, field or calculation. The technical detail is in the diagram and the key points.", "failure_recovery": "A good load test includes the full mix, including the payments that fail validation, the payments that hit sanctions holds, and the payments that need repair, because those consume capacity too. The plan must also cover the recovery from a failure: if the engine is down for 30 minutes at peak, it must clear the backlog within the next hour, which means it needs spare capacity above the peak rate, not just at it.", "exercise": {"task": "Apply the concept in this lesson to a real banking scenario.", "info": "Use the definition, the example and the key points in this lesson.", "action": "Explain the concept in your own words, give a banking example with an amount, and state what goes wrong if it is misunderstood.", "correct": "A correct answer names the concept accurately, uses a realistic banking example with a concrete amount, and identifies the consequence of getting it wrong.", "why": "Understanding is not memorising a definition. It is being able to explain it, apply it, and spot the failure it prevents."}, "assessment": {"question": "Which of the following best describes engine performance and capacity: throughput, latency budgets and load testing?", "options": ["It is a related concept from this chapter, but it does not describe engine performance and capacity: throughput, latency budgets and load testing.", "It is a related concept from this chapter, but it does not describe engine performance and capacity: throughput, latency budgets and load testing.", "A payment engine must handle the bank's peak volume without slowing down, and peak volume is not the average: it is the busiest hour of the busiest day, often the end of month payroll run, the morning after a bank holiday, or the hour before a clearing cut off", "It is a related concept from this chapter, but it does not describe engine performance and capacity: throughput, latency budgets and load testing."], "answer": 2, "explanation": "A payment engine must handle the bank's peak volume without slowing down, and peak volume is not the average: it is the busiest hour of the busiest day, often the end of month payroll run, the morning after a bank holiday, or the hour before a clearing cut off. This is the core idea of the lesson.", "why_wrong": ["This describes a different concept from this chapter, not engine performance and capacity: throughput, latency budgets and load testing.", "This describes a different concept from this chapter, not engine performance and capacity: throughput, latency budgets and load testing.", "", "This describes a different concept from this chapter, not engine performance and capacity: throughput, latency budgets and load testing."], "source": "generated:ch79s7"}, "takeaway": "For a business analyst, the requirement is to define the latency budget per payment type, per step, and the alert threshold for each.", "prereq": "ch79s6", "next": "ch80s1", "connection_note": "Builds on \"Microservices for payments: service boundaries and data ownership\".", "tool": {"slug": "lifecycle", "label": "Payment Lifecycle Simulator", "url": "../simulators/lifecycle.html", "scenario": "Follow a payment through every stage, from instruction to beneficiary credit, and note where it can stop."}, "simple": "In plain words: A payment engine must handle the bank's peak volume without slowing down, and peak volume is not the average: it is the busiest hour of the busiest day, often the end of month payroll run, the morning after a bank holiday, or the hour before a clearing cut off.", "summary": "A payment engine must handle the bank's peak volume without slowing down, and peak volume is not the average: it is the busiest hour of the busiest day, often the end of month payroll run, the morning after a bank holiday, or the hour before a clearing cut off.", "example": "A payment engine must handle the bank's peak volume without slowing down, and peak volume is not the average: it is the busiest hour of the busiest day, often the end of month payroll run, the morning after a bank holiday, or the hour before a clearing cut off. A bank that processes 250 million payments a year averages about 8 payments a second, but its peak may be 200 payments a second, twenty five times the average."}}], "chapter_title": "Payment engine internals and observability", "meta_line": "Payment engine internals and observability, Lesson 7 of 7, Narration 5:56, D09 Payment architecture and technology", "next_id": "ch80s1", "next_title": "API versioning and lifecycle: how to change an API without breaking clients"}]);</script>
+</div>
+<nav class="tool-rail" aria-label="Lesson tools">
+<button type="button" class="rail-tool" onclick="pfOpenTranscript('studio-ch79s7')" title="Open transcript"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M7 3h7l4 4v14H7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M14 3v4h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 12h5M10 15.5h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span>Transcript</span></button>
+<button type="button" class="rail-tool" onclick="pfToggleNote('studio-ch79s7')" title="Write a note on this lesson"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L8 19l-4 1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>Notes</span></button>
+<button type="button" class="rail-tool" onclick="pfToggleFiles('studio-ch79s7')" title="Download lesson files"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>Files</span></button>
+</nav>
+<div class="fw-files-panel" id="pf-files-studio-ch79s7" style="display:none"><b>Lesson files</b><p><a href="../audio/ch79s7.mp3" download>Download narration (MP3)</a></p><p><a href="#" onclick="pfDownloadTranscript('studio-ch79s7');return false">Download transcript (.txt)</a></p></div>
+</div>
+</div>
+</main>
+<footer><p>Payments Training Hub. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="../index.html">Home</a> &middot; <a href="../courses.html">Courses</a> &middot; <a href="../practice.html">Practice</a> &middot; <a href="../simulators.html">Simulators</a> &middot; <a href="../labs.html">Labs</a> &middot; <a href="../explorer.html">Explorer</a> &middot; <a href="../tests.html">Tests</a> &middot; <a href="../diagnostic.html">Diagnostic</a> &middot; <a href="../faq.html">Interview Ready Questions</a> &middot; <a href="../interview-prep.html">Interview Prep</a></p><p><a href="../about.html">About</a> &middot; <a href="../privacy.html">Privacy</a> &middot; <a href="../terms.html">Terms</a> &middot; <a href="../contact.html">Contact</a> &middot; <a href="../editorial-standards.html">Editorial Standards</a> &middot; <a href="../sources.html">Sources</a></p></footer>
+<script defer src="../assets/site.js"></script>
+<script defer src="../assets/bundles.js"></script>
+<script defer src="../assets/auth.js"></script>
+<script defer src="../assets/studio.js"></script>
+<script defer src="../assets/insight-components.js"></script>
+<script defer src="../assets/nav.js"></script>
+<script defer src="../assets/pf-enhance.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+if(window.PFInsight){PFInsight.init();}
+});
+</script>
+</body>
+</html>
