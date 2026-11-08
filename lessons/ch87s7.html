@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>Scheme rulebooks as control: how Visa, Mastercard and SEPA rules bind a bank | Payments Training Hub</title>
+<meta name="description" content="A scheme rulebook is a contract, and it is the contract that makes a payment system work. When a bank joins Visa, Mastercard, or a SEPA scheme, it...">
+<link rel="canonical" href="https://www.paymentstraininghub.in/lessons/ch87s7.html">
+<meta property="og:url" content="https://www.paymentstraininghub.in/lessons/ch87s7.html">
+<meta property="og:title" content="Scheme rulebooks as control: how Visa, Mastercard and SEPA rules bind a bank | Payments Training Hub">
+<meta property="og:description" content="A scheme rulebook is a contract, and it is the contract that makes a payment system work. When a bank joins Visa, Mastercard, or a SEPA scheme, it...">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.in/assets/hero/hero-poster.jpg">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.paymentstraininghub.in/index.html"}, {"@type": "ListItem", "position": 2, "name": "Controls that keep payments safe", "item": "https://www.paymentstraininghub.in/chapters/ch87-controls-that-keep-payments-safe.html"}, {"@type": "ListItem", "position": 3, "name": "Scheme rulebooks as control: how Visa, Mastercard and SEPA rules bind a bank", "item": "https://www.paymentstraininghub.in/lessons/ch87s7.html"}]}</script>
+<link rel="stylesheet" href="../assets/studio.css">
+<link rel="stylesheet" href="../assets/pf-theme.css">
+<link rel="stylesheet" href="../assets/insight-components.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="../index.html" class="brand">Payments <span>Training Hub</span></a><nav class="topnav"><a href="../index.html">Home</a> <a href="../courses.html">Courses</a> <a href="../practice.html">Practice</a> <a href="../simulators.html">Simulators</a> <a href="../labs.html">Labs</a> <a href="../explorer.html">Explorer</a> <a href="../tests.html">Tests</a></nav><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox" style="display:none"><span id="authState">Not signed in</span> <span id="authForm" style="display:none"><input id="authEmail" type="email" placeholder="Email for OTP" aria-label="Email for sign-in"> <button class="mute-btn" onclick="paAuthSendOtp()">Send code</button> <input id="authCode" type="text" placeholder="6-digit code" aria-label="One-time code" style="display:none"> <button class="mute-btn" id="authVerifyBtn" onclick="paAuthVerifyOtp()" style="display:none">Verify</button> <button class="mute-btn" onclick="paAuthGoogle()">Sign in with Google</button> </span><button class="mute-btn" id="authSignOutBtn" onclick="paAuthSignOut()" style="display:none">Sign out</button></span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<div class="lesson-page">
+<div class="lesson-shell">
+<aside class="course-rail">
+<div class="rail-head">
+<h2>Controls that keep payments safe</h2>
+<a class="rail-close" href="../chapters/ch87-controls-that-keep-payments-safe.html" aria-label="Close and go to chapter" title="Back to chapter">&times;</a>
+</div>
+<div class="goal-card">
+<div class="goal-head"><b>Today's goal &middot; <span id="side-progress-text">0 of 7 items</span></b><span class="goal-flag"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 21V4m0 1h11l-2.5 3.5L17 12H6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="goal-chev">&#94;</span></div>
+<p class="goal-body" id="side-goal-body">Complete 3 items today to stay at a good pace!</p>
+</div>
+<ul class="lesson-list"><li class="" data-lesson="ch87s1"><a href="ch87s1.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Fraud typologies in payments: APP scams, mule accounts and business email compromise</span><span class="m">Video &middot; 6 min</span></span></a></li>
+<li class="" data-lesson="ch87s2"><a href="ch87s2.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Transaction monitoring systems: rules, thresholds, alert triage and tuning</span><span class="m">Video &middot; 6 min</span></span></a></li>
+<li class="" data-lesson="ch87s3"><a href="ch87s3.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">SAR and STR filing: what gets reported, when and to whom</span><span class="m">Video &middot; 6 min</span></span></a></li>
+<li class="" data-lesson="ch87s4"><a href="ch87s4.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">KYC and CDD: customer due diligence in payment onboarding</span><span class="m">Video &middot; 5 min</span></span></a></li>
+<li class="" data-lesson="ch87s5"><a href="ch87s5.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Access controls and segregation of duties inside a payments operation</span><span class="m">Video &middot; 6 min</span></span></a></li>
+<li class="" data-lesson="ch87s6"><a href="ch87s6.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Audit trails and record keeping: what must be provable after the fact</span><span class="m">Video &middot; 5 min</span></span></a></li>
+<li class="current" data-lesson="ch87s7"><a href="ch87s7.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Scheme rulebooks as control: how Visa, Mastercard and SEPA rules bind a bank</span><span class="m">Video &middot; 5 min</span></span></a></li></ul>
+</aside>
+<div class="lesson-main">
+<div class="studio" id="studio-studio-ch87s7">
+<div class="player">
+<div class="studio-canvas" id="studio-canvas-studio-ch87s7">
+<div class="ch-sec studio-scene-vis active" id="studio-vis-studio-ch87s7-0"><div class="beat-frames">
+<div class="beat-frame active" data-frame="0">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<defs><pattern id="bfd1595" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<rect x="0" y="0" width="900" height="506" fill="url(#bfd1595)"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Scheme</tspan> <tspan fill="#FFFFFF">rulebook</tspan></text>
+<g data-node="n0" class="bf-now" data-beat="0">
+<rect x="48" y="172" width="249" height="96" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="68" cy="192" r="11" fill="#1D4ED8"/>
+<text x="68" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="285" y="196" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="172" y="223" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Scheme rulebook</text>
+</g>
+<g data-node="n1" class="bf-dim" data-beat="1">
+<rect x="325" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="345" cy="192" r="11" fill="#1E3A5F"/>
+<text x="345" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="449" y="223" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">They contain mandates</text>
+</g>
+<g data-node="n2" class="bf-dim" data-beat="2">
+<rect x="602" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="622" cy="192" r="11" fill="#1E3A5F"/>
+<text x="622" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="726" y="223" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Rulebooks</text>
+</g>
+<g data-node="n3" class="bf-dim" data-beat="3">
+<rect x="602" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="622" cy="332" r="11" fill="#1E3A5F"/>
+<text x="622" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="726" y="363" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Chargeback rules</text>
+</g>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<rect x="325" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="345" cy="332" r="11" fill="#1E3A5F"/>
+<text x="345" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="449" y="363" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Impact assessment</text>
+</g>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="48" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="68" cy="332" r="11" fill="#1E3A5F"/>
+<text x="68" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="172" y="363" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Evidence</text>
+</g>
+<path data-conn="c0" data-beat="0" d="M 300 220 L 310 220" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c0" data-beat="0" points="322,220 310,227 310,213" fill="#DBEAFE"/>
+<path data-conn="c1" data-beat="1" d="M 577 220 L 587 220" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c1" data-beat="1" points="599,220 587,227 587,213" fill="#DBEAFE"/>
+<path data-conn="c2" data-beat="2" d="M 726 271 L 726 290 L 726 290 L 726 297" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c2" data-beat="2" points="726,309 719,297 733,297" fill="#DBEAFE"/>
+<path data-conn="c3" data-beat="3" d="M 599 360 L 589 360" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c3" data-beat="3" points="577,360 589,353 589,367" fill="#DBEAFE"/>
+<path data-conn="c4" data-beat="4" d="M 322 360 L 312 360" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c4" data-beat="4" points="300,360 312,353 312,367" fill="#DBEAFE"/>
+<g class="bf-paydot" style="--dx:0px;--dy:0px"><circle class="bf-pulse" cx="48" cy="220" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="48" cy="220" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="450" y="444" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">A scheme rulebook is a contract, and it is the contract that makes a payment system work.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 1 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#60A5FA"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 739" role="img" aria-label="Lesson visual, vertical layout">
+<defs><pattern id="bfd1596" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="360" height="739" fill="#0B1F3D"/>
+<rect x="0" y="0" width="360" height="739" fill="url(#bfd1596)"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Scheme</tspan> <tspan fill="#FFFFFF">rulebook</tspan></text>
+<g data-node="n0" class="bf-now" data-beat="0">
+<rect x="24" y="66" width="312" height="72" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="44" cy="86" r="11" fill="#1D4ED8"/>
+<text x="44" y="90" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="324" y="90" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="180" y="104" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Scheme rulebook</text>
+</g>
+<line data-conn="c0" data-beat="0" x1="180" y1="141" x2="180" y2="149" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c0" data-beat="0" points="180,161 173,149 187,149" fill="#DBEAFE"/>
+<g data-node="n1" class="bf-dim" data-beat="1">
+<rect x="24" y="164" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="184" r="11" fill="#1E3A5F"/>
+<text x="44" y="188" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="180" y="202" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">They contain mandates</text>
+</g>
+<line data-conn="c1" data-beat="1" x1="180" y1="239" x2="180" y2="247" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c1" data-beat="1" points="180,259 173,247 187,247" fill="#DBEAFE"/>
+<g data-node="n2" class="bf-dim" data-beat="2">
+<rect x="24" y="262" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="282" r="11" fill="#1E3A5F"/>
+<text x="44" y="286" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="180" y="300" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Rulebooks</text>
+</g>
+<line data-conn="c2" data-beat="2" x1="180" y1="337" x2="180" y2="345" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c2" data-beat="2" points="180,357 173,345 187,345" fill="#DBEAFE"/>
+<g data-node="n3" class="bf-dim" data-beat="3">
+<rect x="24" y="360" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="380" r="11" fill="#1E3A5F"/>
+<text x="44" y="384" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="180" y="398" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Chargeback rules</text>
+</g>
+<line data-conn="c3" data-beat="3" x1="180" y1="435" x2="180" y2="443" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c3" data-beat="3" points="180,455 173,443 187,443" fill="#DBEAFE"/>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<rect x="24" y="458" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="478" r="11" fill="#1E3A5F"/>
+<text x="44" y="482" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="180" y="496" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Impact assessment</text>
+</g>
+<line data-conn="c4" data-beat="4" x1="180" y1="533" x2="180" y2="541" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c4" data-beat="4" points="180,553 173,541 187,541" fill="#DBEAFE"/>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="24" y="556" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="576" r="11" fill="#1E3A5F"/>
+<text x="44" y="580" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="180" y="594" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Evidence</text>
+</g>
+<g class="bf-paydot" style="--dx:0px;--dy:0px"><circle class="bf-pulse" cx="180" cy="66" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="180" cy="66" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="180" y="648" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">A scheme rulebook is a contract, and it</text>
+<text x="180" y="667" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">is the contract that makes a payment</text>
+<text x="180" y="686" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">system work.</text>
+<text x="24" y="727" font-size="12" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 1 of 6</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="1">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<defs><pattern id="bfd1597" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<rect x="0" y="0" width="900" height="506" fill="url(#bfd1597)"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">They</tspan> <tspan fill="#FFFFFF">contain</tspan> <tspan fill="#FFFFFF">mandates</tspan> <tspan fill="#FFFFFF">specific</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="48" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="68" cy="192" r="11" fill="#1E3A5F"/>
+<text x="68" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="172" y="223" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Scheme rulebook</text>
+</g>
+<g data-node="n1" class="bf-now" data-beat="1">
+<rect x="325" y="172" width="249" height="96" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="345" cy="192" r="11" fill="#1D4ED8"/>
+<text x="345" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="562" y="196" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="449" y="223" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">They contain mandates</text>
+</g>
+<g data-node="n2" class="bf-dim" data-beat="2">
+<rect x="602" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="622" cy="192" r="11" fill="#1E3A5F"/>
+<text x="622" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="726" y="223" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Rulebooks</text>
+</g>
+<g data-node="n3" class="bf-dim" data-beat="3">
+<rect x="602" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="622" cy="332" r="11" fill="#1E3A5F"/>
+<text x="622" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="726" y="363" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Chargeback rules</text>
+</g>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<rect x="325" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="345" cy="332" r="11" fill="#1E3A5F"/>
+<text x="345" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="449" y="363" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Impact assessment</text>
+</g>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="48" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="68" cy="332" r="11" fill="#1E3A5F"/>
+<text x="68" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="172" y="363" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Evidence</text>
+</g>
+<path data-conn="c0" data-beat="0" d="M 300 220 L 310 220" stroke="#60A5FA" stroke-width="3" fill="none"/><polygon data-conn="c0" data-beat="0" points="322,220 310,227 310,213" fill="#DBEAFE"/>
+<path data-conn="c1" data-beat="1" d="M 577 220 L 587 220" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c1" data-beat="1" points="599,220 587,227 587,213" fill="#DBEAFE"/>
+<path data-conn="c2" data-beat="2" d="M 726 271 L 726 290 L 726 290 L 726 297" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c2" data-beat="2" points="726,309 719,297 733,297" fill="#DBEAFE"/>
+<path data-conn="c3" data-beat="3" d="M 599 360 L 589 360" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c3" data-beat="3" points="577,360 589,353 589,367" fill="#DBEAFE"/>
+<path data-conn="c4" data-beat="4" d="M 322 360 L 312 360" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c4" data-beat="4" points="300,360 312,353 312,367" fill="#DBEAFE"/>
+<g class="bf-paydot" style="--dx:-143px;--dy:0px"><circle class="bf-pulse" cx="315" cy="220" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="315" cy="220" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="450" y="444" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">They also contain mandates: specific changes that every member must implement by a date.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 2 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#60A5FA"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 767" role="img" aria-label="Lesson visual, vertical layout">
+<defs><pattern id="bfd1598" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="360" height="767" fill="#0B1F3D"/>
+<rect x="0" y="0" width="360" height="767" fill="url(#bfd1598)"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">They</tspan> <tspan fill="#FFFFFF">contain</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">mandates</tspan> <tspan fill="#FFFFFF">specific</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="24" y="94" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="114" r="11" fill="#1E3A5F"/>
+<text x="44" y="118" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="180" y="132" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Scheme rulebook</text>
+</g>
+<line data-conn="c0" data-beat="0" x1="180" y1="169" x2="180" y2="177" stroke="#60A5FA" stroke-width="2"/>
+<polygon data-conn="c0" data-beat="0" points="180,189 173,177 187,177" fill="#DBEAFE"/>
+<g data-node="n1" class="bf-now" data-beat="1">
+<rect x="24" y="192" width="312" height="72" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="44" cy="212" r="11" fill="#1D4ED8"/>
+<text x="44" y="216" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="324" y="216" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="180" y="230" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">They contain mandates</text>
+</g>
+<line data-conn="c1" data-beat="1" x1="180" y1="267" x2="180" y2="275" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c1" data-beat="1" points="180,287 173,275 187,275" fill="#DBEAFE"/>
+<g data-node="n2" class="bf-dim" data-beat="2">
+<rect x="24" y="290" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="310" r="11" fill="#1E3A5F"/>
+<text x="44" y="314" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="180" y="328" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Rulebooks</text>
+</g>
+<line data-conn="c2" data-beat="2" x1="180" y1="365" x2="180" y2="373" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c2" data-beat="2" points="180,385 173,373 187,373" fill="#DBEAFE"/>
+<g data-node="n3" class="bf-dim" data-beat="3">
+<rect x="24" y="388" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="408" r="11" fill="#1E3A5F"/>
+<text x="44" y="412" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="180" y="426" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Chargeback rules</text>
+</g>
+<line data-conn="c3" data-beat="3" x1="180" y1="463" x2="180" y2="471" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c3" data-beat="3" points="180,483 173,471 187,471" fill="#DBEAFE"/>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<rect x="24" y="486" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="506" r="11" fill="#1E3A5F"/>
+<text x="44" y="510" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="180" y="524" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Impact assessment</text>
+</g>
+<line data-conn="c4" data-beat="4" x1="180" y1="561" x2="180" y2="569" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c4" data-beat="4" points="180,581 173,569 187,569" fill="#DBEAFE"/>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="24" y="584" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="604" r="11" fill="#1E3A5F"/>
+<text x="44" y="608" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="180" y="622" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Evidence</text>
+</g>
+<g class="bf-paydot" style="--dx:0px;--dy:-52px"><circle class="bf-pulse" cx="180" cy="182" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="180" cy="182" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="180" y="676" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">They also contain mandates: specific</text>
+<text x="180" y="695" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">changes that every member must</text>
+<text x="180" y="714" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">implement by a date.</text>
+<text x="24" y="755" font-size="12" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 2 of 6</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="2">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<defs><pattern id="bfd1599" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<rect x="0" y="0" width="900" height="506" fill="url(#bfd1599)"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Rulebooks:</tspan> <tspan fill="#FFFFFF">updated</tspan> <tspan fill="#FFFFFF">on</tspan> <tspan fill="#FFFFFF">regular</tspan> <tspan fill="#FFFFFF">cycle</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="48" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="68" cy="192" r="11" fill="#1E3A5F"/>
+<text x="68" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="172" y="223" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Scheme rulebook</text>
+</g>
+<g data-node="n1" class="bf-done" data-beat="1">
+<rect x="325" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="345" cy="192" r="11" fill="#1E3A5F"/>
+<text x="345" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="449" y="223" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">They contain mandates</text>
+</g>
+<g data-node="n2" class="bf-now" data-beat="2">
+<rect x="602" y="172" width="249" height="96" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="622" cy="192" r="11" fill="#1D4ED8"/>
+<text x="622" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="839" y="196" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="726" y="223" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Rulebooks</text>
+</g>
+<g data-node="n3" class="bf-dim" data-beat="3">
+<rect x="602" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="622" cy="332" r="11" fill="#1E3A5F"/>
+<text x="622" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="726" y="363" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Chargeback rules</text>
+</g>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<rect x="325" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="345" cy="332" r="11" fill="#1E3A5F"/>
+<text x="345" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="449" y="363" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Impact assessment</text>
+</g>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="48" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="68" cy="332" r="11" fill="#1E3A5F"/>
+<text x="68" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="172" y="363" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Evidence</text>
+</g>
+<path data-conn="c0" data-beat="0" d="M 300 220 L 310 220" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c0" data-beat="0" points="322,220 310,227 310,213" fill="#DBEAFE"/>
+<path data-conn="c1" data-beat="1" d="M 577 220 L 587 220" stroke="#60A5FA" stroke-width="3" fill="none"/><polygon data-conn="c1" data-beat="1" points="599,220 587,227 587,213" fill="#DBEAFE"/>
+<path data-conn="c2" data-beat="2" d="M 726 271 L 726 290 L 726 290 L 726 297" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c2" data-beat="2" points="726,309 719,297 733,297" fill="#DBEAFE"/>
+<path data-conn="c3" data-beat="3" d="M 599 360 L 589 360" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c3" data-beat="3" points="577,360 589,353 589,367" fill="#DBEAFE"/>
+<path data-conn="c4" data-beat="4" d="M 322 360 L 312 360" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c4" data-beat="4" points="300,360 312,353 312,367" fill="#DBEAFE"/>
+<g class="bf-paydot" style="--dx:-143px;--dy:0px"><circle class="bf-pulse" cx="592" cy="220" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="592" cy="220" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="450" y="444" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The rulebooks are updated on a regular cycle</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 3 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#60A5FA"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 776" role="img" aria-label="Lesson visual, vertical layout">
+<defs><pattern id="bfd1600" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="360" height="776" fill="#0B1F3D"/>
+<rect x="0" y="0" width="360" height="776" fill="url(#bfd1600)"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Rulebooks:</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">updated</tspan> <tspan fill="#FFFFFF">on</tspan> <tspan fill="#FFFFFF">regular</tspan></text>
+<text x="24" y="96" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">cycle</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="24" y="122" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="142" r="11" fill="#1E3A5F"/>
+<text x="44" y="146" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="180" y="160" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Scheme rulebook</text>
+</g>
+<line data-conn="c0" data-beat="0" x1="180" y1="197" x2="180" y2="205" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c0" data-beat="0" points="180,217 173,205 187,205" fill="#DBEAFE"/>
+<g data-node="n1" class="bf-done" data-beat="1">
+<rect x="24" y="220" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="240" r="11" fill="#1E3A5F"/>
+<text x="44" y="244" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="180" y="258" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">They contain mandates</text>
+</g>
+<line data-conn="c1" data-beat="1" x1="180" y1="295" x2="180" y2="303" stroke="#60A5FA" stroke-width="2"/>
+<polygon data-conn="c1" data-beat="1" points="180,315 173,303 187,303" fill="#DBEAFE"/>
+<g data-node="n2" class="bf-now" data-beat="2">
+<rect x="24" y="318" width="312" height="72" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="44" cy="338" r="11" fill="#1D4ED8"/>
+<text x="44" y="342" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="324" y="342" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="180" y="356" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Rulebooks</text>
+</g>
+<line data-conn="c2" data-beat="2" x1="180" y1="393" x2="180" y2="401" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c2" data-beat="2" points="180,413 173,401 187,401" fill="#DBEAFE"/>
+<g data-node="n3" class="bf-dim" data-beat="3">
+<rect x="24" y="416" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="436" r="11" fill="#1E3A5F"/>
+<text x="44" y="440" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="180" y="454" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Chargeback rules</text>
+</g>
+<line data-conn="c3" data-beat="3" x1="180" y1="491" x2="180" y2="499" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c3" data-beat="3" points="180,511 173,499 187,499" fill="#DBEAFE"/>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<rect x="24" y="514" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="534" r="11" fill="#1E3A5F"/>
+<text x="44" y="538" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="180" y="552" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Impact assessment</text>
+</g>
+<line data-conn="c4" data-beat="4" x1="180" y1="589" x2="180" y2="597" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c4" data-beat="4" points="180,609 173,597 187,597" fill="#DBEAFE"/>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="24" y="612" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="632" r="11" fill="#1E3A5F"/>
+<text x="44" y="636" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="180" y="650" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Evidence</text>
+</g>
+<g class="bf-paydot" style="--dx:0px;--dy:-52px"><circle class="bf-pulse" cx="180" cy="308" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="180" cy="308" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="180" y="704" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The rulebooks are updated on a regular</text>
+<text x="180" y="723" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">cycle</text>
+<text x="24" y="764" font-size="12" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 3 of 6</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="3">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<defs><pattern id="bfd1601" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<rect x="0" y="0" width="900" height="506" fill="url(#bfd1601)"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Chargeback</tspan> <tspan fill="#FFFFFF">rules</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="48" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="68" cy="192" r="11" fill="#1E3A5F"/>
+<text x="68" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="172" y="223" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Scheme rulebook</text>
+</g>
+<g data-node="n1" class="bf-done" data-beat="1">
+<rect x="325" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="345" cy="192" r="11" fill="#1E3A5F"/>
+<text x="345" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="449" y="223" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">They contain mandates</text>
+</g>
+<g data-node="n2" class="bf-done" data-beat="2">
+<rect x="602" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="622" cy="192" r="11" fill="#1E3A5F"/>
+<text x="622" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="726" y="223" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Rulebooks</text>
+</g>
+<g data-node="n3" class="bf-now" data-beat="3">
+<rect x="602" y="312" width="249" height="96" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="622" cy="332" r="11" fill="#1D4ED8"/>
+<text x="622" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="839" y="336" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="726" y="363" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Chargeback rules</text>
+</g>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<rect x="325" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="345" cy="332" r="11" fill="#1E3A5F"/>
+<text x="345" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="449" y="363" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Impact assessment</text>
+</g>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="48" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="68" cy="332" r="11" fill="#1E3A5F"/>
+<text x="68" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="172" y="363" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Evidence</text>
+</g>
+<path data-conn="c0" data-beat="0" d="M 300 220 L 310 220" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c0" data-beat="0" points="322,220 310,227 310,213" fill="#DBEAFE"/>
+<path data-conn="c1" data-beat="1" d="M 577 220 L 587 220" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c1" data-beat="1" points="599,220 587,227 587,213" fill="#DBEAFE"/>
+<path data-conn="c2" data-beat="2" d="M 726 271 L 726 290 L 726 290 L 726 297" stroke="#60A5FA" stroke-width="3" fill="none"/><polygon data-conn="c2" data-beat="2" points="726,309 719,297 733,297" fill="#DBEAFE"/>
+<path data-conn="c3" data-beat="3" d="M 599 360 L 589 360" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c3" data-beat="3" points="577,360 589,353 589,367" fill="#DBEAFE"/>
+<path data-conn="c4" data-beat="4" d="M 322 360 L 312 360" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c4" data-beat="4" points="300,360 312,353 312,367" fill="#DBEAFE"/>
+<g class="bf-paydot" style="--dx:0px;--dy:-82px"><circle class="bf-pulse" cx="726" cy="302" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="726" cy="302" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="450" y="444" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Chargeback rules are the part of the rulebook that most directly affects the customer, and they</text>
+<text x="450" y="464" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">are a control in themselves.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 4 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#60A5FA"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 758" role="img" aria-label="Lesson visual, vertical layout">
+<defs><pattern id="bfd1602" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="360" height="758" fill="#0B1F3D"/>
+<rect x="0" y="0" width="360" height="758" fill="url(#bfd1602)"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Chargeback</tspan> <tspan fill="#FFFFFF">rules</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="24" y="66" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="86" r="11" fill="#1E3A5F"/>
+<text x="44" y="90" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="180" y="104" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Scheme rulebook</text>
+</g>
+<line data-conn="c0" data-beat="0" x1="180" y1="141" x2="180" y2="149" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c0" data-beat="0" points="180,161 173,149 187,149" fill="#DBEAFE"/>
+<g data-node="n1" class="bf-done" data-beat="1">
+<rect x="24" y="164" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="184" r="11" fill="#1E3A5F"/>
+<text x="44" y="188" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="180" y="202" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">They contain mandates</text>
+</g>
+<line data-conn="c1" data-beat="1" x1="180" y1="239" x2="180" y2="247" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c1" data-beat="1" points="180,259 173,247 187,247" fill="#DBEAFE"/>
+<g data-node="n2" class="bf-done" data-beat="2">
+<rect x="24" y="262" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="282" r="11" fill="#1E3A5F"/>
+<text x="44" y="286" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="180" y="300" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Rulebooks</text>
+</g>
+<line data-conn="c2" data-beat="2" x1="180" y1="337" x2="180" y2="345" stroke="#60A5FA" stroke-width="2"/>
+<polygon data-conn="c2" data-beat="2" points="180,357 173,345 187,345" fill="#DBEAFE"/>
+<g data-node="n3" class="bf-now" data-beat="3">
+<rect x="24" y="360" width="312" height="72" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="44" cy="380" r="11" fill="#1D4ED8"/>
+<text x="44" y="384" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="324" y="384" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="180" y="398" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Chargeback rules</text>
+</g>
+<line data-conn="c3" data-beat="3" x1="180" y1="435" x2="180" y2="443" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c3" data-beat="3" points="180,455 173,443 187,443" fill="#DBEAFE"/>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<rect x="24" y="458" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="478" r="11" fill="#1E3A5F"/>
+<text x="44" y="482" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="180" y="496" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Impact assessment</text>
+</g>
+<line data-conn="c4" data-beat="4" x1="180" y1="533" x2="180" y2="541" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c4" data-beat="4" points="180,553 173,541 187,541" fill="#DBEAFE"/>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="24" y="556" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="576" r="11" fill="#1E3A5F"/>
+<text x="44" y="580" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="180" y="594" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Evidence</text>
+</g>
+<g class="bf-paydot" style="--dx:0px;--dy:-52px"><circle class="bf-pulse" cx="180" cy="350" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="180" cy="350" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="180" y="648" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Chargeback rules are the part of the</text>
+<text x="180" y="667" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">rulebook that most directly affects the</text>
+<text x="180" y="686" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">customer, and they are a control in</text>
+<text x="180" y="705" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">themselves.</text>
+<text x="24" y="746" font-size="12" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 4 of 6</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="4">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<defs><pattern id="bfd1603" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<rect x="0" y="0" width="900" height="506" fill="url(#bfd1603)"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Impact</tspan> <tspan fill="#FFFFFF">assessment</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="48" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="68" cy="192" r="11" fill="#1E3A5F"/>
+<text x="68" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="172" y="223" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Scheme rulebook</text>
+</g>
+<g data-node="n1" class="bf-done" data-beat="1">
+<rect x="325" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="345" cy="192" r="11" fill="#1E3A5F"/>
+<text x="345" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="449" y="223" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">They contain mandates</text>
+</g>
+<g data-node="n2" class="bf-done" data-beat="2">
+<rect x="602" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="622" cy="192" r="11" fill="#1E3A5F"/>
+<text x="622" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="726" y="223" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Rulebooks</text>
+</g>
+<g data-node="n3" class="bf-done" data-beat="3">
+<rect x="602" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="622" cy="332" r="11" fill="#1E3A5F"/>
+<text x="622" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="726" y="363" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Chargeback rules</text>
+</g>
+<g data-node="n4" class="bf-now" data-beat="4">
+<rect x="325" y="312" width="249" height="96" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="345" cy="332" r="11" fill="#1D4ED8"/>
+<text x="345" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="562" y="336" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="449" y="363" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Impact assessment</text>
+</g>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="48" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="68" cy="332" r="11" fill="#1E3A5F"/>
+<text x="68" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="172" y="363" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Evidence</text>
+</g>
+<path data-conn="c0" data-beat="0" d="M 300 220 L 310 220" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c0" data-beat="0" points="322,220 310,227 310,213" fill="#DBEAFE"/>
+<path data-conn="c1" data-beat="1" d="M 577 220 L 587 220" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c1" data-beat="1" points="599,220 587,227 587,213" fill="#DBEAFE"/>
+<path data-conn="c2" data-beat="2" d="M 726 271 L 726 290 L 726 290 L 726 297" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c2" data-beat="2" points="726,309 719,297 733,297" fill="#DBEAFE"/>
+<path data-conn="c3" data-beat="3" d="M 599 360 L 589 360" stroke="#60A5FA" stroke-width="3" fill="none"/><polygon data-conn="c3" data-beat="3" points="577,360 589,353 589,367" fill="#DBEAFE"/>
+<path data-conn="c4" data-beat="4" d="M 322 360 L 312 360" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c4" data-beat="4" points="300,360 312,353 312,367" fill="#DBEAFE"/>
+<g class="bf-paydot" style="--dx:142px;--dy:0px"><circle class="bf-pulse" cx="584" cy="360" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="584" cy="360" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="450" y="444" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The impact assessment goes to the product and technology teams, who estimate the change,</text>
+<text x="450" y="464" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">and to the board or the delegated committee, which approves the funding.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 5 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#60A5FA"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 777" role="img" aria-label="Lesson visual, vertical layout">
+<defs><pattern id="bfd1604" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="360" height="777" fill="#0B1F3D"/>
+<rect x="0" y="0" width="360" height="777" fill="url(#bfd1604)"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Impact</tspan> <tspan fill="#FFFFFF">assessment</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="24" y="66" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="86" r="11" fill="#1E3A5F"/>
+<text x="44" y="90" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="180" y="104" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Scheme rulebook</text>
+</g>
+<line data-conn="c0" data-beat="0" x1="180" y1="141" x2="180" y2="149" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c0" data-beat="0" points="180,161 173,149 187,149" fill="#DBEAFE"/>
+<g data-node="n1" class="bf-done" data-beat="1">
+<rect x="24" y="164" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="184" r="11" fill="#1E3A5F"/>
+<text x="44" y="188" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="180" y="202" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">They contain mandates</text>
+</g>
+<line data-conn="c1" data-beat="1" x1="180" y1="239" x2="180" y2="247" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c1" data-beat="1" points="180,259 173,247 187,247" fill="#DBEAFE"/>
+<g data-node="n2" class="bf-done" data-beat="2">
+<rect x="24" y="262" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="282" r="11" fill="#1E3A5F"/>
+<text x="44" y="286" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="180" y="300" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Rulebooks</text>
+</g>
+<line data-conn="c2" data-beat="2" x1="180" y1="337" x2="180" y2="345" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c2" data-beat="2" points="180,357 173,345 187,345" fill="#DBEAFE"/>
+<g data-node="n3" class="bf-done" data-beat="3">
+<rect x="24" y="360" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="380" r="11" fill="#1E3A5F"/>
+<text x="44" y="384" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="180" y="398" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Chargeback rules</text>
+</g>
+<line data-conn="c3" data-beat="3" x1="180" y1="435" x2="180" y2="443" stroke="#60A5FA" stroke-width="2"/>
+<polygon data-conn="c3" data-beat="3" points="180,455 173,443 187,443" fill="#DBEAFE"/>
+<g data-node="n4" class="bf-now" data-beat="4">
+<rect x="24" y="458" width="312" height="72" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="44" cy="478" r="11" fill="#1D4ED8"/>
+<text x="44" y="482" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="324" y="482" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="180" y="496" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Impact assessment</text>
+</g>
+<line data-conn="c4" data-beat="4" x1="180" y1="533" x2="180" y2="541" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c4" data-beat="4" points="180,553 173,541 187,541" fill="#DBEAFE"/>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="24" y="556" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="576" r="11" fill="#1E3A5F"/>
+<text x="44" y="580" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="180" y="594" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Evidence</text>
+</g>
+<g class="bf-paydot" style="--dx:0px;--dy:-52px"><circle class="bf-pulse" cx="180" cy="448" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="180" cy="448" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="180" y="648" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The impact assessment goes to the</text>
+<text x="180" y="667" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">product and technology teams, who</text>
+<text x="180" y="686" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">estimate the change, and to the board or</text>
+<text x="180" y="705" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">the delegated committee, which approves</text>
+<text x="180" y="724" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">the funding.</text>
+<text x="24" y="765" font-size="12" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 5 of 6</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="5">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<defs><pattern id="bfd1605" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<rect x="0" y="0" width="900" height="506" fill="url(#bfd1605)"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Evidence</tspan> <tspan fill="#FFFFFF">must</tspan> <tspan fill="#FFFFFF">be</tspan> <tspan fill="#FFFFFF">kept</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="48" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="68" cy="192" r="11" fill="#1E3A5F"/>
+<text x="68" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="172" y="223" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Scheme rulebook</text>
+</g>
+<g data-node="n1" class="bf-done" data-beat="1">
+<rect x="325" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="345" cy="192" r="11" fill="#1E3A5F"/>
+<text x="345" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="449" y="223" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">They contain mandates</text>
+</g>
+<g data-node="n2" class="bf-done" data-beat="2">
+<rect x="602" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="622" cy="192" r="11" fill="#1E3A5F"/>
+<text x="622" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="726" y="223" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Rulebooks</text>
+</g>
+<g data-node="n3" class="bf-done" data-beat="3">
+<rect x="602" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="622" cy="332" r="11" fill="#1E3A5F"/>
+<text x="622" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="726" y="363" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Chargeback rules</text>
+</g>
+<g data-node="n4" class="bf-done" data-beat="4">
+<rect x="325" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="345" cy="332" r="11" fill="#1E3A5F"/>
+<text x="345" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="449" y="363" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Impact assessment</text>
+</g>
+<g data-node="n5" class="bf-now" data-beat="5">
+<rect x="48" y="312" width="249" height="96" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="68" cy="332" r="11" fill="#1D4ED8"/>
+<text x="68" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="285" y="336" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="172" y="363" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Evidence</text>
+</g>
+<path data-conn="c0" data-beat="0" d="M 300 220 L 310 220" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c0" data-beat="0" points="322,220 310,227 310,213" fill="#DBEAFE"/>
+<path data-conn="c1" data-beat="1" d="M 577 220 L 587 220" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c1" data-beat="1" points="599,220 587,227 587,213" fill="#DBEAFE"/>
+<path data-conn="c2" data-beat="2" d="M 726 271 L 726 290 L 726 290 L 726 297" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c2" data-beat="2" points="726,309 719,297 733,297" fill="#DBEAFE"/>
+<path data-conn="c3" data-beat="3" d="M 599 360 L 589 360" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c3" data-beat="3" points="577,360 589,353 589,367" fill="#DBEAFE"/>
+<path data-conn="c4" data-beat="4" d="M 322 360 L 312 360" stroke="#60A5FA" stroke-width="3" fill="none"/><polygon data-conn="c4" data-beat="4" points="300,360 312,353 312,367" fill="#DBEAFE"/>
+<g class="bf-paydot" style="--dx:142px;--dy:0px"><circle class="bf-pulse" cx="307" cy="360" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="307" cy="360" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="450" y="444" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The evidence must be kept, because the scheme can ask for it, and because a rulebook</text>
+<text x="450" y="464" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">obligation that is not tracked is an obligation that will be missed.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 6 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#60A5FA"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 786" role="img" aria-label="Lesson visual, vertical layout">
+<defs><pattern id="bfd1606" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="360" height="786" fill="#0B1F3D"/>
+<rect x="0" y="0" width="360" height="786" fill="url(#bfd1606)"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Evidence</tspan> <tspan fill="#FFFFFF">must</tspan> <tspan fill="#FFFFFF">be</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">kept</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="24" y="94" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="114" r="11" fill="#1E3A5F"/>
+<text x="44" y="118" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="180" y="132" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Scheme rulebook</text>
+</g>
+<line data-conn="c0" data-beat="0" x1="180" y1="169" x2="180" y2="177" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c0" data-beat="0" points="180,189 173,177 187,177" fill="#DBEAFE"/>
+<g data-node="n1" class="bf-done" data-beat="1">
+<rect x="24" y="192" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="212" r="11" fill="#1E3A5F"/>
+<text x="44" y="216" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="180" y="230" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">They contain mandates</text>
+</g>
+<line data-conn="c1" data-beat="1" x1="180" y1="267" x2="180" y2="275" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c1" data-beat="1" points="180,287 173,275 187,275" fill="#DBEAFE"/>
+<g data-node="n2" class="bf-done" data-beat="2">
+<rect x="24" y="290" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="310" r="11" fill="#1E3A5F"/>
+<text x="44" y="314" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="180" y="328" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Rulebooks</text>
+</g>
+<line data-conn="c2" data-beat="2" x1="180" y1="365" x2="180" y2="373" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c2" data-beat="2" points="180,385 173,373 187,373" fill="#DBEAFE"/>
+<g data-node="n3" class="bf-done" data-beat="3">
+<rect x="24" y="388" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="408" r="11" fill="#1E3A5F"/>
+<text x="44" y="412" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="180" y="426" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Chargeback rules</text>
+</g>
+<line data-conn="c3" data-beat="3" x1="180" y1="463" x2="180" y2="471" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c3" data-beat="3" points="180,483 173,471 187,471" fill="#DBEAFE"/>
+<g data-node="n4" class="bf-done" data-beat="4">
+<rect x="24" y="486" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="506" r="11" fill="#1E3A5F"/>
+<text x="44" y="510" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="180" y="524" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Impact assessment</text>
+</g>
+<line data-conn="c4" data-beat="4" x1="180" y1="561" x2="180" y2="569" stroke="#60A5FA" stroke-width="2"/>
+<polygon data-conn="c4" data-beat="4" points="180,581 173,569 187,569" fill="#DBEAFE"/>
+<g data-node="n5" class="bf-now" data-beat="5">
+<rect x="24" y="584" width="312" height="72" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="44" cy="604" r="11" fill="#1D4ED8"/>
+<text x="44" y="608" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="324" y="608" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="180" y="622" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Evidence</text>
+</g>
+<g class="bf-paydot" style="--dx:0px;--dy:-52px"><circle class="bf-pulse" cx="180" cy="574" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="180" cy="574" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="180" y="676" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The evidence must be kept, because the</text>
+<text x="180" y="695" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">scheme can ask for it, and because a</text>
+<text x="180" y="714" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">rulebook obligation that is not tracked is</text>
+<text x="180" y="733" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">an obligation that will be missed.</text>
+<text x="24" y="774" font-size="12" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 6 of 6</text>
+</svg>
+</div>
+</div>
+<p class="xml-caption">Flow of the explanation in this lesson.</p></div>
+<div class="playerbar">
+<div class="studio-progress"><div class="studio-markers" id="studio-markers-studio-ch87s7"></div><input type="range" id="studio-slider-studio-ch87s7" min="0" max="1000" value="0" aria-label="Lesson timeline"></div>
+<div class="ctrl-row">
+<button class="ctrl-btn" id="studio-play-studio-ch87s7" onclick="studioTogglePlay('studio-ch87s7')" aria-label="Play lesson" title="Play lesson"><span class="ctrl-ic-play"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></span><span class="ctrl-ic-pause" style="display:none"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><rect x="6" y="5" width="4" height="14" fill="currentColor"/><rect x="14" y="5" width="4" height="14" fill="currentColor"/></svg></span></button>
+<button class="ctrl-btn studio-mute-btn" id="studio-mute-studio-ch87s7" onclick="studioToggleMute('studio-ch87s7')" aria-label="Mute narration" title="Mute / unmute narration"><svg class="studio-mute-icon" viewBox="0 0 24 24" width="28" height="28" fill="currentColor" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3z"/><path class="studio-mute-waves" d="M16 8.5a5 5 0 0 1 0 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><path class="studio-mute-waves" d="M18.5 6a9 9 0 0 1 0 12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><path class="studio-mute-x" d="M16 9.5l5 5M21 9.5l-5 5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" style="display:none"/></svg></button>
+<button class="ctrl-btn" onclick="studioSkip('studio-ch87s7', -10)" aria-label="Back 10 seconds" title="Back 10 seconds"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 5a7 7 0 1 1-6.32 4.06" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M5.5 3.5v5h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><text x="12" y="16.5" font-size="8" fill="currentColor" text-anchor="middle" font-weight="700">10</text></svg></button>
+<span class="studio-time ctrl-time" id="studio-time-studio-ch87s7">0:00 / 5:13</span>
+<button class="ctrl-btn" onclick="studioSkip('studio-ch87s7', 10)" aria-label="Forward 10 seconds" title="Forward 10 seconds"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 5a7 7 0 1 0 6.32 4.06" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M18.5 3.5v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><text x="12" y="16.5" font-size="8" fill="currentColor" text-anchor="middle" font-weight="700">10</text></svg></button>
+<span class="playerbar-spacer"></span>
+<span class="player-stage" id="studio-tag-studio-ch87s7">Step 1 of 6</span>
+<button class="ctrl-btn ctrl-step" id="studio-prevscene-studio-ch87s7" onclick="studioPrevScene('studio-ch87s7')" title="Previous step" aria-label="Previous step">&lsaquo;</button>
+<button class="ctrl-btn ctrl-step" id="studio-nextscene-studio-ch87s7" onclick="studioNextScene('studio-ch87s7')" title="Next step" aria-label="Next step">&rsaquo;</button>
+<button class="ctrl-btn ctrl-speed" id="studio-speedbtn-studio-ch87s7" onclick="studioCycleSpeed('studio-ch87s7')" title="Playback speed" aria-label="Playback speed">1x</button>
+<span class="ctrl-settings-wrap"><button class="ctrl-btn" onclick="studioToggleSettings('studio-ch87s7', event)" aria-label="Player settings" title="Settings"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5 5l2.1 2.1M16.9 16.9L19 19M19 5l-2.1 2.1M7.1 16.9L5 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button><span class="ctrl-popover" id="studio-settings-studio-ch87s7" style="display:none" onclick="event.stopPropagation()"><label class="ctrl-pop-row">Volume <input type="range" min="0" max="1" step="0.1" value="1" oninput="studioSetVolume('studio-ch87s7', this.value)" style="width:110px;accent-color:#3587FC"></label><button class="studio-btn" id="studio-captions-studio-ch87s7" onclick="studioToggleCaptions('studio-ch87s7')">Captions: On</button><button class="studio-btn" onclick="studioReplayScene('studio-ch87s7')">Replay scene</button></span></span>
+<button class="ctrl-btn" onclick="studioFullscreen('studio-ch87s7')" aria-label="Fullscreen" title="Fullscreen"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+</div>
+</div>
+</div>
+<p class="studio-caption" id="studio-caption-studio-ch87s7"></p>
+<p class="studio-loading" id="studio-loading-studio-ch87s7" style="display:none">Loading narration...</p>
+<p class="studio-error" id="studio-error-studio-ch87s7" role="alert" style="display:none"></p>
+<audio id="studio-audio-studio-ch87s7" preload="auto" src="../audio/ch87s7.mp3"></audio>
+</div>
+<div class="lesson-title-row">
+<h1>Scheme rulebooks as control: how Visa, Mastercard and SEPA rules bind a bank</h1>
+<button class="save-note" type="button" onclick="pfToggleNote('studio-ch87s7')" title="Save a note on this lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L8 19l-4 1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg> Save note</button>
+</div>
+<p class="lesson-meta-line">Controls that keep payments safe, Lesson 7 of 7, Narration 5:13, D12 Risk, compliance and regulation</p>
+<p class="lesson-note-saved" id="studio-note-saved-studio-ch87s7" style="display:none">Note saved.</p>
+<div class="note-editor" id="studio-note-editor-studio-ch87s7" style="display:none"><textarea id="studio-note-text-studio-ch87s7" rows="3" placeholder="Write a note on this lesson..." aria-label="Lesson note"></textarea><div class="note-editor-row"><button class="studio-btn primary" onclick="pfSaveNote('studio-ch87s7')">Save note</button> <button class="studio-btn" onclick="pfToggleNote('studio-ch87s7')">Cancel</button></div></div>
+<div class="dive-deeper">
+<div class="dive-head"><button type="button" class="dive-toggle" onclick="pfToggleDive(this)" aria-expanded="true"><span class="dive-spark"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 2l2.2 6.8L21 11l-6.8 2.2L12 20l-2.2-6.8L3 11l6.8-2.2z" fill="currentColor"/></svg></span><span class="dive-title">Dive deeper on this topic</span><span class="dive-chev"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 14l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button></div>
+<div class="dive-btns"><button type="button" class="dive-btn" data-kind="practice" onclick="pfDive('studio-ch87s7', 'practice')">Give me practice questions</button><button type="button" class="dive-btn" data-kind="simple" onclick="pfDive('studio-ch87s7', 'simple')">Explain this topic in simple terms</button><button type="button" class="dive-btn" data-kind="summary" onclick="pfDive('studio-ch87s7', 'summary')">Give me a summary</button><button type="button" class="dive-btn" data-kind="example" onclick="pfDive('studio-ch87s7', 'example')">Give me real-life examples</button></div>
+<div class="dive-panel" id="dive-panel-studio-ch87s7"><div class="dive-panel-body"></div></div>
+<script type="application/json" id="pf-dive-data-studio-ch87s7">{"simple": "In plain words: A scheme rulebook is a contract, and it is the contract that makes a payment system work.", "summary": "A scheme rulebook is a contract, and it is the contract that makes a payment system work.", "example": "Visa and Mastercard each publish operating regulations that run to thousands of pages, and they are updated on a regular cycle with mandatory compliance dates."}</script>
+</div>
+<div class="lesson-feedback">
+<div class="fb-icons"><button type="button" class="fb-btn" data-kind="like" onclick="pfFeedback(this,'like')" aria-label="Like this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M7 21H4a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1h3v11zm0 0h9.6a2 2 0 0 0 1.9-1.4l1.6-5A2 2 0 0 0 18.2 12H15V6.5A2.5 2.5 0 0 0 12.5 4L11 7.5 8.6 10H7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button><button type="button" class="fb-btn" data-kind="dislike" onclick="pfFeedback(this,'dislike')" aria-label="Dislike this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M17 3h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1h-3V3zm0 0H7.4a2 2 0 0 0-1.9 1.4l-1.6 5A2 2 0 0 0 5.8 12H9v5.5A2.5 2.5 0 0 0 11.5 20L13 16.5l2.4-2.5H17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button><button type="button" class="fb-btn" data-kind="flag" onclick="pfFeedback(this,'flag')" aria-label="Flag this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M6 21V4m0 1h11l-2.5 3.5L17 12H6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+<button type="button" class="go-next" onclick="goLesson('ch88s1')" title="Next: What a clearing and settlement mechanism is, and where it sits between banks and schemes">Go to next item &rarr;</button>
+</div>
+<div class="chips"><span class="chip">Authorisation</span><span class="chip">Tokenisation</span><span class="chip">Settlement</span></div>
+<div class="card learn-card">
+<h2>What you will learn</h2>
+<p class="transcript"><b>Your objective.</b> By the end of this lesson, you will be able to explain scheme rulebooks as control and apply it to a real banking scenario.</p>
+<p class="transcript"><b>Why it matters.</b> Scheme rulebooks are a hidden source of requirements, and the analyst must track them like regulation.</p>
+<p class="transcript">Chapter objective: Learner explains the control framework that keeps payments safe, distinguishes fraud typologies, transaction monitoring, SAR and STR filing, KYC and CDD, access controls, audit trails and scheme rulebooks, and applies each control to realistic payment operations with correct terminology.</p>
+<h3>Key learning points</h3>
+<ul id="studio-points-studio-ch87s7">
+<li>Scheme rulebook</li>
+<li>They contain mandates specific</li>
+<li>Rulebooks: updated on regular cycle</li>
+<li>Chargeback rules</li>
+<li>Impact assessment</li>
+<li>Evidence must be kept</li>
+</ul>
+<h3>Key terms</h3>
+<div id="studio-terms-studio-ch87s7">
+<p class="keyterm"><b>Authorisation:</b> Approval by the issuer for a card transaction to proceed, confirming the card is valid and funds or credit are available.</p>
+<p class="keyterm"><b>Tokenisation:</b> Replacing a sensitive value, such as a card number, with a random token that has no meaning outside the system that created it.</p>
+<p class="keyterm"><b>Settlement:</b> The final movement of funds between banks to discharge obligations created by cleared payments. Settlement is usually made in central bank money or through correspondent accounts.</p>
+</div>
+<p class="studio-note">Payment flow diagram showing Scheme rulebooks as control: how Visa, Mastercard and SEPA rules bind a bank.</p>
+</div>
+<div class="fw-card" id="pf-exercise-studio-ch87s7">
+<p class="fw-label">Practise this lesson</p>
+<h2>Exercise</h2>
+<p><b>Visa changes its chargeback reason codes. Work out what the bank must do.</b></p>
+<p>Use the rules, numbers and worked examples in this lesson.</p>
+<ol class="fw-steps">
+<li><b>What to do.</b> Work through the scenario and state the outcome with the reason.</li>
+</ol>
+<p><button class="studio-btn" id="pf-ex-btn-studio-ch87s7" onclick="pfRevealExercise('studio-ch87s7')">Show the answer</button></p>
+<div class="fw-exercise-answer" id="pf-ex-answer-studio-ch87s7">
+<p><b>Correct result.</b> The bank updates its dispute handling, retrains staff, changes the reason code mapping in its systems, and tests the new codes before the effective date.</p>
+<p><b>Why.</b> A missed scheme rule change means chargebacks are filed under the wrong code and lost, so the change process is a control in itself.</p>
+</div>
+</div>
+<div class="fw-card" id="pf-quiz-studio-ch87s7" data-answer="0">
+<p class="fw-label">Check your understanding</p>
+<h2>Practice question</h2>
+<p><b>How do scheme rulebooks bind a bank that issues cards or processes SEPA payments?</b></p>
+<button type="button" class="quiz-opt" data-idx="0" onclick="pfCheckAnswer('studio-ch87s7', this)">The rules are contractual obligations, and breaking them brings fines, loss of membership and liability for the loss</button>
+<button type="button" class="quiz-opt" data-idx="1" onclick="pfCheckAnswer('studio-ch87s7', this)">The rules are voluntary guidance that a bank may ignore</button>
+<button type="button" class="quiz-opt" data-idx="2" onclick="pfCheckAnswer('studio-ch87s7', this)">The rules apply only to the scheme, not to its members</button>
+<button type="button" class="quiz-opt" data-idx="3" onclick="pfCheckAnswer('studio-ch87s7', this)">The rules are enforced only by national regulators</button>
+<div class="quiz-feedback" id="pf-quiz-fb-studio-ch87s7"></div>
+<script type="application/json" id="pf-quiz-data-studio-ch87s7">{"why_wrong": ["", "This is not correct for this question. Scheme rules are binding contract terms, and the scheme can fine members, suspend them, or hold them liable, which is why rule changes drive system requirements.", "This is not correct for this question. Scheme rules are binding contract terms, and the scheme can fine members, suspend them, or hold them liable, which is why rule changes drive system requirements.", "This is not correct for this question. Scheme rules are binding contract terms, and the scheme can fine members, suspend them, or hold them liable, which is why rule changes drive system requirements."], "explanation": "Scheme rules are binding contract terms, and the scheme can fine members, suspend them, or hold them liable, which is why rule changes drive system requirements."}</script>
+</div>
+<div class="fw-card">
+<p class="fw-label">Takeaway and next step</p>
+<h2>What to remember</h2>
+<p>Further reading: Visa Core Rules and Visa Product and Service Rules; Mastercard rules; the European Payments Council SEPA Credit Transfer rulebook and SEPA Instant Credit Transfer rulebook; the Payment Card Industry Data Security Standard.</p>
+<p>Run the control failure from this lesson and follow the investigation to its resolution.</p>
+<p><a class="fw-tool-link" href="../simulators/exception.html">Open the Exception Investigation Simulator &rarr;</a></p>
+<p class="studio-note">Builds on "Audit trails and record keeping: what must be provable after the fact".</p>
+</div>
+<section class="upnext" id="studio-upnext-studio-ch87s7" style="display:none" aria-label="Up next">
+<span class="tag">Up next</span>
+<h2>Up next: What a clearing and settlement mechanism is, and where it sits between banks and schemes</h2>
+<p>Lesson 1 of 6, Clearing and settlement mechanisms, Narration 4:58</p>
+<div class="row">
+<button class="studio-btn primary" onclick="goLessonAuto('ch88s1')">Next lesson &rarr;</button>
+<button class="studio-btn" onclick="goLesson('ch87s6')">&larr; Previous lesson</button>
+<button class="studio-btn" onclick="studioReplayLesson('studio-ch87s7')">Replay this lesson</button>
+</div>
+</section>
+<div class="lesson-nav">
+<button class="studio-btn" onclick="goLesson('ch87s6')" title="Previous lesson: Audit trails and record keeping: what must be provable after the fact">&larr; Previous</button>
+<button class="studio-btn" onclick="goChapterContents('ch87')">Chapter contents</button>
+<button class="studio-btn primary" onclick="goLesson('ch88s1')" title="Next lesson: What a clearing and settlement mechanism is, and where it sits between banks and schemes">Next &rarr;</button>
+</div>
+<div class="card transcript-card">
+<h2>Transcript and full text</h2>
+<details class="studio-transcript" id="studio-transcript-details-studio-ch87s7"><summary>Show transcript</summary>
+<p class="transcript" id="studio-transcript-studio-ch87s7">A scheme rulebook is a contract, and it is the contract that makes a payment system work. When a bank joins Visa, Mastercard, or a SEPA scheme, it signs an agreement to follow the rulebook, and the rulebook then binds it in the same way a law does. The rulebook sets out who can join, what they must do, how payments are processed, how disputes are resolved, and what happens when a member breaks the rules. A bank that does not follow the rulebook can be fined, suspended, or expelled, and expulsion means it can no longer process payments on that scheme. The rulebook is therefore a control in its own right, and the bank must treat it as one. Visa and Mastercard each publish operating regulations that run to thousands of pages, and they are updated on a regular cycle with mandatory compliance dates. The regulations cover authorisation, clearing, settlement, chargebacks, and the technical standards for messages and files. They also contain mandates: specific changes that every member must implement by a date. Recent mandates have covered 3D Secure, tokenisation, the display of the merchant name, and the handling of recurring payments. A mandate is not optional, and the scheme monitors compliance and fines members that miss the date. The compliance team must therefore track the mandate calendar, assess the impact of each mandate on the bank systems, and deliver the change before the deadline. The SEPA rulebooks work differently but with the same force. The European Payments Council publishes a rulebook for each scheme: the SEPA Credit Transfer, the SEPA Instant Credit Transfer, the SEPA Direct Debit Core, and the SEPA Direct Debit Business to Business. Each rulebook sets out the scheme rules, the message standards, the timelines, and the exception handling. Adherence is through a formal process, and a payment service provider that does not adhere cannot offer the scheme. The rulebooks are updated on a regular cycle, and the changes flow into the bank requirements: a new rulebook version means a gap analysis, an impact assessment, and a change programme, with a deadline set by the scheme. Compliance monitoring is how the schemes enforce the rulebook. The schemes audit their members, either directly or through a qualified assessor, and they run compliance programmes that test specific areas, such as chargeback handling, authorisation rates, or data quality. A member that fails an audit is given a remediation plan with a deadline, and failure to meet the deadline leads to fines. The fines are not trivial: they are calculated per case and can run into millions for a systemic failure. The bank must therefore have a compliance monitoring programme of its own, which tests its own adherence before the scheme does, and which tracks the remediation of any finding to completion. Chargeback rules are the part of the rulebook that most directly affects the customer, and they are a control in themselves. A chargeback is a dispute raised by the cardholder bank against the merchant bank, and the rules set out the reason codes, the time limits, the evidence required, and the liability. The reason codes cover fraud, processing errors, and authorisation problems, and each one has a specific evidence requirement. Representment is the merchant defence, and it must be filed with the evidence the rulebook requires, inside the time limit the rulebook sets. A bank that misses the time limit loses the case automatically, whatever the merits. The chargeback process is therefore a workflow with hard deadlines, and the workflow must be built into the system, not left to a manual diary. Rulebook changes flow into requirements through a defined process. When a new rulebook version is published, the compliance team reads it, identifies the changes that affect the bank, and writes an impact assessment. The impact assessment goes to the product and technology teams, who estimate the change, and to the board or the delegated committee, which approves the funding. The change is then built, tested, and deployed before the scheme deadline. The process sounds simple, but it fails when the rulebook is read late, when the impact assessment misses a change, or when the change is deprioritised against a commercial feature. The remedy is a calendar that tracks every rulebook version, every mandate, and every deadline, and a governance process that treats a scheme deadline as fixed, because it is. For a business analyst, the rulebook work is a tracking and translation discipline. The analyst must be able to read a rulebook change, understand what it means for the product, and write the requirement that implements it. The acceptance criteria must include a test where a new rulebook version is assessed and the impact is documented, a test where a mandate is delivered before its deadline, a test where a chargeback is filed inside its time limit with the correct evidence, and a test where a scheme audit finding is remediated and closed. The evidence must be kept, because the scheme can ask for it, and because a rulebook obligation that is not tracked is an obligation that will be missed. Last reviewed 8 November 2026. Further reading: Visa Core Rules and Visa Product and Service Rules; Mastercard rules; the European Payments Council SEPA Credit Transfer rulebook and SEPA Instant Credit Transfer rulebook; the Payment Card Industry Data Security Standard.</p>
+<div id="studio-paras-studio-ch87s7">
+<p class="transcript">A scheme rulebook is a contract, and it is the contract that makes a payment system work. When a bank joins Visa, Mastercard, or a SEPA scheme, it signs an agreement to follow the rulebook, and the rulebook then binds it in the same way a law does. The rulebook sets out who can join, what they must do, how payments are processed, how disputes are resolved, and what happens when a member breaks the rules. A bank that does not follow the rulebook can be fined, suspended, or expelled, and expulsion means it can no longer process payments on that scheme. The rulebook is therefore a control in its own right, and the bank must treat it as one.</p>
+<p class="transcript">Visa and Mastercard each publish operating regulations that run to thousands of pages, and they are updated on a regular cycle with mandatory compliance dates. The regulations cover authorisation, clearing, settlement, chargebacks, and the technical standards for messages and files. They also contain mandates: specific changes that every member must implement by a date. Recent mandates have covered 3D Secure, tokenisation, the display of the merchant name, and the handling of recurring payments. A mandate is not optional, and the scheme monitors compliance and fines members that miss the date. The compliance team must therefore track the mandate calendar, assess the impact of each mandate on the bank systems, and deliver the change before the deadline.</p>
+<p class="transcript">The SEPA rulebooks work differently but with the same force. The European Payments Council publishes a rulebook for each scheme: the SEPA Credit Transfer, the SEPA Instant Credit Transfer, the SEPA Direct Debit Core, and the SEPA Direct Debit Business to Business. Each rulebook sets out the scheme rules, the message standards, the timelines, and the exception handling. Adherence is through a formal process, and a payment service provider that does not adhere cannot offer the scheme. The rulebooks are updated on a regular cycle, and the changes flow into the bank requirements: a new rulebook version means a gap analysis, an impact assessment, and a change programme, with a deadline set by the scheme.</p>
+<p class="transcript">Compliance monitoring is how the schemes enforce the rulebook. The schemes audit their members, either directly or through a qualified assessor, and they run compliance programmes that test specific areas, such as chargeback handling, authorisation rates, or data quality. A member that fails an audit is given a remediation plan with a deadline, and failure to meet the deadline leads to fines. The fines are not trivial: they are calculated per case and can run into millions for a systemic failure. The bank must therefore have a compliance monitoring programme of its own, which tests its own adherence before the scheme does, and which tracks the remediation of any finding to completion.</p>
+<p class="transcript">Chargeback rules are the part of the rulebook that most directly affects the customer, and they are a control in themselves. A chargeback is a dispute raised by the cardholder bank against the merchant bank, and the rules set out the reason codes, the time limits, the evidence required, and the liability. The reason codes cover fraud, processing errors, and authorisation problems, and each one has a specific evidence requirement. Representment is the merchant defence, and it must be filed with the evidence the rulebook requires, inside the time limit the rulebook sets. A bank that misses the time limit loses the case automatically, whatever the merits. The chargeback process is therefore a workflow with hard deadlines, and the workflow must be built into the system, not left to a manual diary.</p>
+<p class="transcript">Rulebook changes flow into requirements through a defined process. When a new rulebook version is published, the compliance team reads it, identifies the changes that affect the bank, and writes an impact assessment. The impact assessment goes to the product and technology teams, who estimate the change, and to the board or the delegated committee, which approves the funding. The change is then built, tested, and deployed before the scheme deadline. The process sounds simple, but it fails when the rulebook is read late, when the impact assessment misses a change, or when the change is deprioritised against a commercial feature. The remedy is a calendar that tracks every rulebook version, every mandate, and every deadline, and a governance process that treats a scheme deadline as fixed, because it is.</p>
+<p class="transcript">For a business analyst, the rulebook work is a tracking and translation discipline. The analyst must be able to read a rulebook change, understand what it means for the product, and write the requirement that implements it. The acceptance criteria must include a test where a new rulebook version is assessed and the impact is documented, a test where a mandate is delivered before its deadline, a test where a chargeback is filed inside its time limit with the correct evidence, and a test where a scheme audit finding is remediated and closed. The evidence must be kept, because the scheme can ask for it, and because a rulebook obligation that is not tracked is an obligation that will be missed. Last reviewed 8 November 2026. Further reading: Visa Core Rules and Visa Product and Service Rules; Mastercard rules; the European Payments Council SEPA Credit Transfer rulebook and SEPA Instant Credit Transfer rulebook; the Payment Card Industry Data Security Standard.</p>
+</div>
+</details>
+<details class="studio-transcript"><summary>Full lesson text (all scenes)</summary><div id="studio-transcript-full-studio-ch87s7"></div></details>
+<p><button class="studio-btn primary" id="done-ch87s7" onclick="studioMarkSceneDone('studio-ch87s7')">Mark lesson complete</button> <span class="studio-note">Completing a lesson updates your progress dashboard on the homepage.</span></p>
+</div>
+<p class="studio-note">Scene timestamps are estimated by allocating the narration text proportionally across the real audio length. The audio playback position is the source of truth: pause freezes the visual, seeking restores the correct scene, replay restarts the scene animation.</p>
+</div>
+<script>window.__PA_STUDIO_QUEUE = window.__PA_STUDIO_QUEUE || []; window.__PA_STUDIO_QUEUE.push(["studio-ch87s7", {"sample_id": "studio-ch87s7", "chapter_id": "ch87", "title": "Scheme rulebooks as control: how Visa, Mastercard and SEPA rules bind a bank", "domain": "D12 Risk, compliance and regulation", "objective": "Learner explains the control framework that keeps payments safe, distinguishes fraud typologies, transaction monitoring, SAR and STR filing, KYC and CDD, access controls, audit trails and scheme rulebooks, and applies each control to realistic payment operations with correct terminology.", "scenes": [{"id": "ch87s7", "section_id": "ch87s7", "title": "Scheme rulebooks as control: how Visa, Mastercard and SEPA rules bind a bank", "audio": "../audio/ch87s7.mp3", "duration_sec": 313.9, "points": ["A scheme rulebook is a contract, and it is the contract that makes a payment system work.", "Visa and Mastercard each publish operating regulations that run to thousands of pages, and they are updated on a regular cycle with mandatory compliance dates.", "The SEPA rulebooks work differently but with the same force.", "Compliance monitoring is how the schemes enforce the rulebook.", "Chargeback rules are the part of the rulebook that most directly affects the customer, and they are a control in themselves."], "terms": [{"term": "Authorisation", "def": "Approval by the issuer for a card transaction to proceed, confirming the card is valid and funds or credit are available."}, {"term": "Tokenisation", "def": "Replacing a sensitive value, such as a card number, with a random token that has no meaning outside the system that created it."}, {"term": "Settlement", "def": "The final movement of funds between banks to discharge obligations created by cleared payments. Settlement is usually made in central bank money or through correspondent accounts."}], "transcript": "A scheme rulebook is a contract, and it is the contract that makes a payment system work. When a bank joins Visa, Mastercard, or a SEPA scheme, it signs an agreement to follow the rulebook, and the rulebook then binds it in the same way a law does. The rulebook sets out who can join, what they must do, how payments are processed, how disputes are resolved, and what happens when a member breaks the rules. A bank that does not follow the rulebook can be fined, suspended, or expelled, and expulsion means it can no longer process payments on that scheme. The rulebook is therefore a control in its own right, and the bank must treat it as one. Visa and Mastercard each publish operating regulations that run to thousands of pages, and they are updated on a regular cycle with mandatory compliance dates. The regulations cover authorisation, clearing, settlement, chargebacks, and the technical standards for messages and files. They also contain mandates: specific changes that every member must implement by a date. Recent mandates have covered 3D Secure, tokenisation, the display of the merchant name, and the handling of recurring payments. A mandate is not optional, and the scheme monitors compliance and fines members that miss the date. The compliance team must therefore track the mandate calendar, assess the impact of each mandate on the bank systems, and deliver the change before the deadline. The SEPA rulebooks work differently but with the same force. The European Payments Council publishes a rulebook for each scheme: the SEPA Credit Transfer, the SEPA Instant Credit Transfer, the SEPA Direct Debit Core, and the SEPA Direct Debit Business to Business. Each rulebook sets out the scheme rules, the message standards, the timelines, and the exception handling. Adherence is through a formal process, and a payment service provider that does not adhere cannot offer the scheme. The rulebooks are updated on a regular cycle, and the changes flow into the bank requirements: a new rulebook version means a gap analysis, an impact assessment, and a change programme, with a deadline set by the scheme. Compliance monitoring is how the schemes enforce the rulebook. The schemes audit their members, either directly or through a qualified assessor, and they run compliance programmes that test specific areas, such as chargeback handling, authorisation rates, or data quality. A member that fails an audit is given a remediation plan with a deadline, and failure to meet the deadline leads to fines. The fines are not trivial: they are calculated per case and can run into millions for a systemic failure. The bank must therefore have a compliance monitoring programme of its own, which tests its own adherence before the scheme does, and which tracks the remediation of any finding to completion. Chargeback rules are the part of the rulebook that most directly affects the customer, and they are a control in themselves. A chargeback is a dispute raised by the cardholder bank against the merchant bank, and the rules set out the reason codes, the time limits, the evidence required, and the liability. The reason codes cover fraud, processing errors, and authorisation problems, and each one has a specific evidence requirement. Representment is the merchant defence, and it must be filed with the evidence the rulebook requires, inside the time limit the rulebook sets. A bank that misses the time limit loses the case automatically, whatever the merits. The chargeback process is therefore a workflow with hard deadlines, and the workflow must be built into the system, not left to a manual diary. Rulebook changes flow into requirements through a defined process. When a new rulebook version is published, the compliance team reads it, identifies the changes that affect the bank, and writes an impact assessment. The impact assessment goes to the product and technology teams, who estimate the change, and to the board or the delegated committee, which approves the funding. The change is then built, tested, and deployed before the scheme deadline. The process sounds simple, but it fails when the rulebook is read late, when the impact assessment misses a change, or when the change is deprioritised against a commercial feature. The remedy is a calendar that tracks every rulebook version, every mandate, and every deadline, and a governance process that treats a scheme deadline as fixed, because it is. For a business analyst, the rulebook work is a tracking and translation discipline. The analyst must be able to read a rulebook change, understand what it means for the product, and write the requirement that implements it. The acceptance criteria must include a test where a new rulebook version is assessed and the impact is documented, a test where a mandate is delivered before its deadline, a test where a chargeback is filed inside its time limit with the correct evidence, and a test where a scheme audit finding is remediated and closed. The evidence must be kept, because the scheme can ask for it, and because a rulebook obligation that is not tracked is an obligation that will be missed. Last reviewed 8 November 2026. Further reading: Visa Core Rules and Visa Product and Service Rules; Mastercard rules; the European Payments Council SEPA Credit Transfer rulebook and SEPA Instant Credit Transfer rulebook; the Payment Card Industry Data Security Standard.", "paragraphs": ["A scheme rulebook is a contract, and it is the contract that makes a payment system work. When a bank joins Visa, Mastercard, or a SEPA scheme, it signs an agreement to follow the rulebook, and the rulebook then binds it in the same way a law does. The rulebook sets out who can join, what they must do, how payments are processed, how disputes are resolved, and what happens when a member breaks the rules. A bank that does not follow the rulebook can be fined, suspended, or expelled, and expulsion means it can no longer process payments on that scheme. The rulebook is therefore a control in its own right, and the bank must treat it as one.", "Visa and Mastercard each publish operating regulations that run to thousands of pages, and they are updated on a regular cycle with mandatory compliance dates. The regulations cover authorisation, clearing, settlement, chargebacks, and the technical standards for messages and files. They also contain mandates: specific changes that every member must implement by a date. Recent mandates have covered 3D Secure, tokenisation, the display of the merchant name, and the handling of recurring payments. A mandate is not optional, and the scheme monitors compliance and fines members that miss the date. The compliance team must therefore track the mandate calendar, assess the impact of each mandate on the bank systems, and deliver the change before the deadline.", "The SEPA rulebooks work differently but with the same force. The European Payments Council publishes a rulebook for each scheme: the SEPA Credit Transfer, the SEPA Instant Credit Transfer, the SEPA Direct Debit Core, and the SEPA Direct Debit Business to Business. Each rulebook sets out the scheme rules, the message standards, the timelines, and the exception handling. Adherence is through a formal process, and a payment service provider that does not adhere cannot offer the scheme. The rulebooks are updated on a regular cycle, and the changes flow into the bank requirements: a new rulebook version means a gap analysis, an impact assessment, and a change programme, with a deadline set by the scheme.", "Compliance monitoring is how the schemes enforce the rulebook. The schemes audit their members, either directly or through a qualified assessor, and they run compliance programmes that test specific areas, such as chargeback handling, authorisation rates, or data quality. A member that fails an audit is given a remediation plan with a deadline, and failure to meet the deadline leads to fines. The fines are not trivial: they are calculated per case and can run into millions for a systemic failure. The bank must therefore have a compliance monitoring programme of its own, which tests its own adherence before the scheme does, and which tracks the remediation of any finding to completion.", "Chargeback rules are the part of the rulebook that most directly affects the customer, and they are a control in themselves. A chargeback is a dispute raised by the cardholder bank against the merchant bank, and the rules set out the reason codes, the time limits, the evidence required, and the liability. The reason codes cover fraud, processing errors, and authorisation problems, and each one has a specific evidence requirement. Representment is the merchant defence, and it must be filed with the evidence the rulebook requires, inside the time limit the rulebook sets. A bank that misses the time limit loses the case automatically, whatever the merits. The chargeback process is therefore a workflow with hard deadlines, and the workflow must be built into the system, not left to a manual diary.", "Rulebook changes flow into requirements through a defined process. When a new rulebook version is published, the compliance team reads it, identifies the changes that affect the bank, and writes an impact assessment. The impact assessment goes to the product and technology teams, who estimate the change, and to the board or the delegated committee, which approves the funding. The change is then built, tested, and deployed before the scheme deadline. The process sounds simple, but it fails when the rulebook is read late, when the impact assessment misses a change, or when the change is deprioritised against a commercial feature. The remedy is a calendar that tracks every rulebook version, every mandate, and every deadline, and a governance process that treats a scheme deadline as fixed, because it is.", "For a business analyst, the rulebook work is a tracking and translation discipline. The analyst must be able to read a rulebook change, understand what it means for the product, and write the requirement that implements it. The acceptance criteria must include a test where a new rulebook version is assessed and the impact is documented, a test where a mandate is delivered before its deadline, a test where a chargeback is filed inside its time limit with the correct evidence, and a test where a scheme audit finding is remediated and closed. The evidence must be kept, because the scheme can ask for it, and because a rulebook obligation that is not tracked is an obligation that will be missed. Last reviewed 8 November 2026. Further reading: Visa Core Rules and Visa Product and Service Rules; Mastercard rules; the European Payments Council SEPA Credit Transfer rulebook and SEPA Instant Credit Transfer rulebook; the Payment Card Industry Data Security Standard."], "accessibility": "Payment flow diagram showing Scheme rulebooks as control: how Visa, Mastercard and SEPA rules bind a bank.", "visual_type": "payment_flow", "visual_choice_reason": "default payment journey", "beats": [{"t0": 0.0, "t1": 54.0, "title": "Scheme rulebook", "note": "A scheme rulebook is a contract, and it is the contract that makes a payment system work.", "highlight_nodes": ["n0"], "highlight_conns": [], "highlight_fields": []}, {"t0": 54.0, "t1": 110.2, "title": "They contain mandates specific", "note": "They also contain mandates: specific changes that every member must implement by a date.", "highlight_nodes": ["n1"], "highlight_conns": ["c0"], "highlight_fields": []}, {"t0": 110.2, "t1": 163.4, "title": "Rulebooks: updated on regular cycle", "note": "The rulebooks are updated on a regular cycle", "highlight_nodes": ["n2"], "highlight_conns": ["c1"], "highlight_fields": []}, {"t0": 163.4, "t1": 222.8, "title": "Chargeback rules", "note": "Chargeback rules are the part of the rulebook that most directly affects the customer, and they are a control in themselves.", "highlight_nodes": ["n3"], "highlight_conns": ["c2"], "highlight_fields": []}, {"t0": 222.8, "t1": 289.2, "title": "Impact assessment", "note": "The impact assessment goes to the product and technology teams, who estimate the change, and to the board or the delegated committee, which approves the funding.", "highlight_nodes": ["n4"], "highlight_conns": ["c3"], "highlight_fields": []}, {"t0": 289.2, "t1": 313.9, "title": "Evidence must be kept", "note": "The evidence must be kept, because the scheme can ask for it, and because a rulebook obligation that is not tracked is an obligation that will be missed.", "highlight_nodes": ["n5"], "highlight_conns": ["c4"], "highlight_fields": []}], "framework": {"objective": "By the end of this lesson, you will be able to explain scheme rulebooks as control and apply it to a real banking scenario.", "why_matters": "Scheme rulebooks are a hidden source of requirements, and the analyst must track them like regulation.", "technical_example": "Visa and Mastercard each publish operating regulations that run to thousands of pages, and they are updated on a regular cycle with mandatory compliance dates.", "failure_recovery": "A member that fails an audit is given a remediation plan with a deadline, and failure to meet the deadline leads to fines.", "exercise": {"task": "Visa changes its chargeback reason codes. Work out what the bank must do.", "info": "Use the rules, numbers and worked examples in this lesson.", "action": "Work through the scenario and state the outcome with the reason.", "correct": "The bank updates its dispute handling, retrains staff, changes the reason code mapping in its systems, and tests the new codes before the effective date.", "why": "A missed scheme rule change means chargebacks are filed under the wrong code and lost, so the change process is a control in itself."}, "assessment": {"question": "How do scheme rulebooks bind a bank that issues cards or processes SEPA payments?", "options": ["The rules are contractual obligations, and breaking them brings fines, loss of membership and liability for the loss", "The rules are voluntary guidance that a bank may ignore", "The rules apply only to the scheme, not to its members", "The rules are enforced only by national regulators"], "answer": 0, "explanation": "Scheme rules are binding contract terms, and the scheme can fine members, suspend them, or hold them liable, which is why rule changes drive system requirements.", "why_wrong": ["", "This is not correct for this question. Scheme rules are binding contract terms, and the scheme can fine members, suspend them, or hold them liable, which is why rule changes drive system requirements.", "This is not correct for this question. Scheme rules are binding contract terms, and the scheme can fine members, suspend them, or hold them liable, which is why rule changes drive system requirements.", "This is not correct for this question. Scheme rules are binding contract terms, and the scheme can fine members, suspend them, or hold them liable, which is why rule changes drive system requirements."], "source": "lesson text"}, "takeaway": "Further reading: Visa Core Rules and Visa Product and Service Rules; Mastercard rules; the European Payments Council SEPA Credit Transfer rulebook and SEPA Instant Credit Transfer rulebook; the Payment Card Industry Data Security Standard.", "prereq": "ch87s6", "next": "ch88s1", "connection_note": "Builds on \"Audit trails and record keeping: what must be provable after the fact\".", "tool": {"slug": "exception", "label": "Exception Investigation Simulator", "url": "../simulators/exception.html", "scenario": "Run the control failure from this lesson and follow the investigation to its resolution."}, "simple": "In plain words: A scheme rulebook is a contract, and it is the contract that makes a payment system work.", "summary": "A scheme rulebook is a contract, and it is the contract that makes a payment system work.", "example": "Visa and Mastercard each publish operating regulations that run to thousands of pages, and they are updated on a regular cycle with mandatory compliance dates."}}], "chapter_title": "Controls that keep payments safe", "meta_line": "Controls that keep payments safe, Lesson 7 of 7, Narration 5:13, D12 Risk, compliance and regulation", "next_id": "ch88s1", "next_title": "What a clearing and settlement mechanism is, and where it sits between banks and schemes"}]);</script>
+</div>
+<nav class="tool-rail" aria-label="Lesson tools">
+<button type="button" class="rail-tool" onclick="pfOpenTranscript('studio-ch87s7')" title="Open transcript"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M7 3h7l4 4v14H7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M14 3v4h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 12h5M10 15.5h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span>Transcript</span></button>
+<button type="button" class="rail-tool" onclick="pfToggleNote('studio-ch87s7')" title="Write a note on this lesson"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L8 19l-4 1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>Notes</span></button>
+<button type="button" class="rail-tool" onclick="pfToggleFiles('studio-ch87s7')" title="Download lesson files"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>Files</span></button>
+</nav>
+<div class="fw-files-panel" id="pf-files-studio-ch87s7" style="display:none"><b>Lesson files</b><p><a href="../audio/ch87s7.mp3" download>Download narration (MP3)</a></p><p><a href="#" onclick="pfDownloadTranscript('studio-ch87s7');return false">Download transcript (.txt)</a></p></div>
+</div>
+</div>
+</main>
+<footer><p>Payments Training Hub. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="../index.html">Home</a> &middot; <a href="../courses.html">Courses</a> &middot; <a href="../practice.html">Practice</a> &middot; <a href="../simulators.html">Simulators</a> &middot; <a href="../labs.html">Labs</a> &middot; <a href="../explorer.html">Explorer</a> &middot; <a href="../tests.html">Tests</a> &middot; <a href="../diagnostic.html">Diagnostic</a> &middot; <a href="../faq.html">Interview Ready Questions</a> &middot; <a href="../interview-prep.html">Interview Prep</a></p><p><a href="../about.html">About</a> &middot; <a href="../privacy.html">Privacy</a> &middot; <a href="../terms.html">Terms</a> &middot; <a href="../contact.html">Contact</a> &middot; <a href="../editorial-standards.html">Editorial Standards</a> &middot; <a href="../sources.html">Sources</a></p></footer>
+<script defer src="../assets/site.js"></script>
+<script defer src="../assets/bundles.js"></script>
+<script defer src="../assets/auth.js"></script>
+<script defer src="../assets/studio.js"></script>
+<script defer src="../assets/insight-components.js"></script>
+<script defer src="../assets/nav.js"></script>
+<script defer src="../assets/pf-enhance.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+if(window.PFInsight){PFInsight.init();}
+});
+</script>
+</body>
+</html>

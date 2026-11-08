@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>Transaction monitoring systems: rules, thresholds, alert triage and tuning | Payments Training Hub</title>
+<meta name="description" content="A transaction monitoring system has four parts, and a failure in any one of them breaks the whole control. Ingestion takes every payment from every...">
+<link rel="canonical" href="https://www.paymentstraininghub.in/lessons/ch87s2.html">
+<meta property="og:url" content="https://www.paymentstraininghub.in/lessons/ch87s2.html">
+<meta property="og:title" content="Transaction monitoring systems: rules, thresholds, alert triage and tuning | Payments Training Hub">
+<meta property="og:description" content="A transaction monitoring system has four parts, and a failure in any one of them breaks the whole control. Ingestion takes every payment from every...">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.in/assets/hero/hero-poster.jpg">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.paymentstraininghub.in/index.html"}, {"@type": "ListItem", "position": 2, "name": "Controls that keep payments safe", "item": "https://www.paymentstraininghub.in/chapters/ch87-controls-that-keep-payments-safe.html"}, {"@type": "ListItem", "position": 3, "name": "Transaction monitoring systems: rules, thresholds, alert triage and tuning", "item": "https://www.paymentstraininghub.in/lessons/ch87s2.html"}]}</script>
+<link rel="stylesheet" href="../assets/studio.css">
+<link rel="stylesheet" href="../assets/pf-theme.css">
+<link rel="stylesheet" href="../assets/insight-components.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="../index.html" class="brand">Payments <span>Training Hub</span></a><nav class="topnav"><a href="../index.html">Home</a> <a href="../courses.html">Courses</a> <a href="../practice.html">Practice</a> <a href="../simulators.html">Simulators</a> <a href="../labs.html">Labs</a> <a href="../explorer.html">Explorer</a> <a href="../tests.html">Tests</a></nav><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox" style="display:none"><span id="authState">Not signed in</span> <span id="authForm" style="display:none"><input id="authEmail" type="email" placeholder="Email for OTP" aria-label="Email for sign-in"> <button class="mute-btn" onclick="paAuthSendOtp()">Send code</button> <input id="authCode" type="text" placeholder="6-digit code" aria-label="One-time code" style="display:none"> <button class="mute-btn" id="authVerifyBtn" onclick="paAuthVerifyOtp()" style="display:none">Verify</button> <button class="mute-btn" onclick="paAuthGoogle()">Sign in with Google</button> </span><button class="mute-btn" id="authSignOutBtn" onclick="paAuthSignOut()" style="display:none">Sign out</button></span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<div class="lesson-page">
+<div class="lesson-shell">
+<aside class="course-rail">
+<div class="rail-head">
+<h2>Controls that keep payments safe</h2>
+<a class="rail-close" href="../chapters/ch87-controls-that-keep-payments-safe.html" aria-label="Close and go to chapter" title="Back to chapter">&times;</a>
+</div>
+<div class="goal-card">
+<div class="goal-head"><b>Today's goal &middot; <span id="side-progress-text">0 of 7 items</span></b><span class="goal-flag"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 21V4m0 1h11l-2.5 3.5L17 12H6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="goal-chev">&#94;</span></div>
+<p class="goal-body" id="side-goal-body">Complete 3 items today to stay at a good pace!</p>
+</div>
+<ul class="lesson-list"><li class="" data-lesson="ch87s1"><a href="ch87s1.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Fraud typologies in payments: APP scams, mule accounts and business email compromise</span><span class="m">Video &middot; 6 min</span></span></a></li>
+<li class="current" data-lesson="ch87s2"><a href="ch87s2.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Transaction monitoring systems: rules, thresholds, alert triage and tuning</span><span class="m">Video &middot; 6 min</span></span></a></li>
+<li class="" data-lesson="ch87s3"><a href="ch87s3.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">SAR and STR filing: what gets reported, when and to whom</span><span class="m">Video &middot; 6 min</span></span></a></li>
+<li class="" data-lesson="ch87s4"><a href="ch87s4.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">KYC and CDD: customer due diligence in payment onboarding</span><span class="m">Video &middot; 5 min</span></span></a></li>
+<li class="" data-lesson="ch87s5"><a href="ch87s5.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Access controls and segregation of duties inside a payments operation</span><span class="m">Video &middot; 6 min</span></span></a></li>
+<li class="" data-lesson="ch87s6"><a href="ch87s6.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Audit trails and record keeping: what must be provable after the fact</span><span class="m">Video &middot; 5 min</span></span></a></li>
+<li class="" data-lesson="ch87s7"><a href="ch87s7.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Scheme rulebooks as control: how Visa, Mastercard and SEPA rules bind a bank</span><span class="m">Video &middot; 5 min</span></span></a></li></ul>
+</aside>
+<div class="lesson-main">
+<div class="studio" id="studio-studio-ch87s2">
+<div class="player">
+<div class="studio-canvas" id="studio-canvas-studio-ch87s2">
+<div class="ch-sec studio-scene-vis active" id="studio-vis-studio-ch87s2-0"><div class="beat-frames">
+<div class="beat-frame active" data-frame="0">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<defs><pattern id="bfd1547" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<rect x="0" y="0" width="900" height="506" fill="url(#bfd1547)"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Transaction</tspan> <tspan fill="#FFFFFF">monitoring</tspan> <tspan fill="#FFFFFF">system</tspan> <tspan fill="#FFFFFF">has</tspan></text>
+<text x="48" y="126" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">four</tspan> <tspan fill="#FFFFFF">parts</tspan></text>
+<g data-node="n0" class="bf-now" data-beat="0">
+<rect x="48" y="172" width="249" height="96" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="68" cy="192" r="11" fill="#1D4ED8"/>
+<text x="68" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="285" y="196" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="172" y="214" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Transaction monitoring</text>
+<text x="172" y="232" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">system</text>
+</g>
+<g data-node="n1" class="bf-dim" data-beat="1">
+<rect x="325" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="345" cy="192" r="11" fill="#1E3A5F"/>
+<text x="345" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="449" y="223" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Structuring rules look</text>
+</g>
+<g data-node="n2" class="bf-dim" data-beat="2">
+<rect x="602" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="622" cy="192" r="11" fill="#1E3A5F"/>
+<text x="622" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="726" y="223" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Used to adjust threshold</text>
+</g>
+<g data-node="n3" class="bf-dim" data-beat="3">
+<rect x="602" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="622" cy="332" r="11" fill="#1E3A5F"/>
+<text x="622" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="726" y="363" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Model risk management</text>
+</g>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<rect x="325" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="345" cy="332" r="11" fill="#1E3A5F"/>
+<text x="345" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="449" y="363" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Hold decision</text>
+</g>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="48" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="68" cy="332" r="11" fill="#1E3A5F"/>
+<text x="68" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="172" y="363" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Management information</text>
+</g>
+<path data-conn="c0" data-beat="0" d="M 300 220 L 310 220" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c0" data-beat="0" points="322,220 310,227 310,213" fill="#DBEAFE"/>
+<path data-conn="c1" data-beat="1" d="M 577 220 L 587 220" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c1" data-beat="1" points="599,220 587,227 587,213" fill="#DBEAFE"/>
+<path data-conn="c2" data-beat="2" d="M 726 271 L 726 290 L 726 290 L 726 297" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c2" data-beat="2" points="726,309 719,297 733,297" fill="#DBEAFE"/>
+<path data-conn="c3" data-beat="3" d="M 599 360 L 589 360" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c3" data-beat="3" points="577,360 589,353 589,367" fill="#DBEAFE"/>
+<path data-conn="c4" data-beat="4" d="M 322 360 L 312 360" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c4" data-beat="4" points="300,360 312,353 312,367" fill="#DBEAFE"/>
+<g class="bf-paydot" style="--dx:0px;--dy:0px"><circle class="bf-pulse" cx="48" cy="220" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="48" cy="220" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="450" y="444" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">A transaction monitoring system has four parts, and a failure in any one of them breaks the</text>
+<text x="450" y="464" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">whole control.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 1 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#60A5FA"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 815" role="img" aria-label="Lesson visual, vertical layout">
+<defs><pattern id="bfd1548" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="360" height="815" fill="#0B1F3D"/>
+<rect x="0" y="0" width="360" height="815" fill="url(#bfd1548)"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Transaction</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">monitoring</tspan> <tspan fill="#FFFFFF">system</tspan></text>
+<text x="24" y="96" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">has</tspan> <tspan fill="#FFFFFF">four</tspan> <tspan fill="#FFFFFF">parts</tspan></text>
+<g data-node="n0" class="bf-now" data-beat="0">
+<rect x="24" y="122" width="312" height="92" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="44" cy="142" r="11" fill="#1D4ED8"/>
+<text x="44" y="146" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="324" y="146" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="180" y="160" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Transaction monitoring</text>
+<text x="180" y="180" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">system</text>
+</g>
+<line data-conn="c0" data-beat="0" x1="180" y1="217" x2="180" y2="225" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c0" data-beat="0" points="180,237 173,225 187,225" fill="#DBEAFE"/>
+<g data-node="n1" class="bf-dim" data-beat="1">
+<rect x="24" y="240" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="260" r="11" fill="#1E3A5F"/>
+<text x="44" y="264" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="180" y="278" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Structuring rules look</text>
+</g>
+<line data-conn="c1" data-beat="1" x1="180" y1="315" x2="180" y2="323" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c1" data-beat="1" points="180,335 173,323 187,323" fill="#DBEAFE"/>
+<g data-node="n2" class="bf-dim" data-beat="2">
+<rect x="24" y="338" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="358" r="11" fill="#1E3A5F"/>
+<text x="44" y="362" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="180" y="376" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Used to adjust threshold</text>
+</g>
+<line data-conn="c2" data-beat="2" x1="180" y1="413" x2="180" y2="421" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c2" data-beat="2" points="180,433 173,421 187,421" fill="#DBEAFE"/>
+<g data-node="n3" class="bf-dim" data-beat="3">
+<rect x="24" y="436" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="456" r="11" fill="#1E3A5F"/>
+<text x="44" y="460" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="180" y="474" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Model risk management</text>
+</g>
+<line data-conn="c3" data-beat="3" x1="180" y1="511" x2="180" y2="519" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c3" data-beat="3" points="180,531 173,519 187,519" fill="#DBEAFE"/>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<rect x="24" y="534" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="554" r="11" fill="#1E3A5F"/>
+<text x="44" y="558" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="180" y="572" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Hold decision</text>
+</g>
+<line data-conn="c4" data-beat="4" x1="180" y1="609" x2="180" y2="617" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c4" data-beat="4" points="180,629 173,617 187,617" fill="#DBEAFE"/>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="24" y="632" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="652" r="11" fill="#1E3A5F"/>
+<text x="44" y="656" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="180" y="670" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Management information</text>
+</g>
+<g class="bf-paydot" style="--dx:0px;--dy:0px"><circle class="bf-pulse" cx="180" cy="122" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="180" cy="122" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="180" y="724" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">A transaction monitoring system has</text>
+<text x="180" y="743" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">four parts, and a failure in any one of</text>
+<text x="180" y="762" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">them breaks the whole control.</text>
+<text x="24" y="803" font-size="12" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 1 of 6</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="1">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<defs><pattern id="bfd1549" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<rect x="0" y="0" width="900" height="506" fill="url(#bfd1549)"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Structuring</tspan> <tspan fill="#FFFFFF">rules</tspan> <tspan fill="#FFFFFF">look</tspan> <tspan fill="#FFFFFF">for</tspan> <tspan fill="#FFFFFF">multiple</tspan></text>
+<text x="48" y="126" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">payments</tspan> <tspan fill="#FFFFFF">just</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="48" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="68" cy="192" r="11" fill="#1E3A5F"/>
+<text x="68" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="172" y="214" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Transaction monitoring</text>
+<text x="172" y="232" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">system</text>
+</g>
+<g data-node="n1" class="bf-now" data-beat="1">
+<rect x="325" y="172" width="249" height="96" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="345" cy="192" r="11" fill="#1D4ED8"/>
+<text x="345" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="562" y="196" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="449" y="223" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Structuring rules look</text>
+</g>
+<g data-node="n2" class="bf-dim" data-beat="2">
+<rect x="602" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="622" cy="192" r="11" fill="#1E3A5F"/>
+<text x="622" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="726" y="223" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Used to adjust threshold</text>
+</g>
+<g data-node="n3" class="bf-dim" data-beat="3">
+<rect x="602" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="622" cy="332" r="11" fill="#1E3A5F"/>
+<text x="622" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="726" y="363" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Model risk management</text>
+</g>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<rect x="325" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="345" cy="332" r="11" fill="#1E3A5F"/>
+<text x="345" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="449" y="363" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Hold decision</text>
+</g>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="48" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="68" cy="332" r="11" fill="#1E3A5F"/>
+<text x="68" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="172" y="363" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Management information</text>
+</g>
+<path data-conn="c0" data-beat="0" d="M 300 220 L 310 220" stroke="#60A5FA" stroke-width="3" fill="none"/><polygon data-conn="c0" data-beat="0" points="322,220 310,227 310,213" fill="#DBEAFE"/>
+<path data-conn="c1" data-beat="1" d="M 577 220 L 587 220" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c1" data-beat="1" points="599,220 587,227 587,213" fill="#DBEAFE"/>
+<path data-conn="c2" data-beat="2" d="M 726 271 L 726 290 L 726 290 L 726 297" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c2" data-beat="2" points="726,309 719,297 733,297" fill="#DBEAFE"/>
+<path data-conn="c3" data-beat="3" d="M 599 360 L 589 360" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c3" data-beat="3" points="577,360 589,353 589,367" fill="#DBEAFE"/>
+<path data-conn="c4" data-beat="4" d="M 322 360 L 312 360" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c4" data-beat="4" points="300,360 312,353 312,367" fill="#DBEAFE"/>
+<g class="bf-paydot" style="--dx:-143px;--dy:0px"><circle class="bf-pulse" cx="315" cy="220" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="315" cy="220" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="450" y="444" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Structuring rules look for multiple payments just under a reporting threshold, for example five</text>
+<text x="450" y="464" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">payments of 9,500 euros from a customer whose normal pattern is one payment a month.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 2 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#60A5FA"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 853" role="img" aria-label="Lesson visual, vertical layout">
+<defs><pattern id="bfd1550" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="360" height="853" fill="#0B1F3D"/>
+<rect x="0" y="0" width="360" height="853" fill="url(#bfd1550)"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Structuring</tspan> <tspan fill="#FFFFFF">rules</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">look</tspan> <tspan fill="#FFFFFF">for</tspan> <tspan fill="#FFFFFF">multiple</tspan></text>
+<text x="24" y="96" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">payments</tspan> <tspan fill="#FFFFFF">just</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="24" y="122" width="312" height="92" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="142" r="11" fill="#1E3A5F"/>
+<text x="44" y="146" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="180" y="160" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Transaction monitoring</text>
+<text x="180" y="180" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">system</text>
+</g>
+<line data-conn="c0" data-beat="0" x1="180" y1="217" x2="180" y2="225" stroke="#60A5FA" stroke-width="2"/>
+<polygon data-conn="c0" data-beat="0" points="180,237 173,225 187,225" fill="#DBEAFE"/>
+<g data-node="n1" class="bf-now" data-beat="1">
+<rect x="24" y="240" width="312" height="72" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="44" cy="260" r="11" fill="#1D4ED8"/>
+<text x="44" y="264" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="324" y="264" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="180" y="278" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Structuring rules look</text>
+</g>
+<line data-conn="c1" data-beat="1" x1="180" y1="315" x2="180" y2="323" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c1" data-beat="1" points="180,335 173,323 187,323" fill="#DBEAFE"/>
+<g data-node="n2" class="bf-dim" data-beat="2">
+<rect x="24" y="338" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="358" r="11" fill="#1E3A5F"/>
+<text x="44" y="362" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="180" y="376" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Used to adjust threshold</text>
+</g>
+<line data-conn="c2" data-beat="2" x1="180" y1="413" x2="180" y2="421" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c2" data-beat="2" points="180,433 173,421 187,421" fill="#DBEAFE"/>
+<g data-node="n3" class="bf-dim" data-beat="3">
+<rect x="24" y="436" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="456" r="11" fill="#1E3A5F"/>
+<text x="44" y="460" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="180" y="474" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Model risk management</text>
+</g>
+<line data-conn="c3" data-beat="3" x1="180" y1="511" x2="180" y2="519" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c3" data-beat="3" points="180,531 173,519 187,519" fill="#DBEAFE"/>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<rect x="24" y="534" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="554" r="11" fill="#1E3A5F"/>
+<text x="44" y="558" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="180" y="572" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Hold decision</text>
+</g>
+<line data-conn="c4" data-beat="4" x1="180" y1="609" x2="180" y2="617" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c4" data-beat="4" points="180,629 173,617 187,617" fill="#DBEAFE"/>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="24" y="632" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="652" r="11" fill="#1E3A5F"/>
+<text x="44" y="656" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="180" y="670" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Management information</text>
+</g>
+<g class="bf-paydot" style="--dx:0px;--dy:-62px"><circle class="bf-pulse" cx="180" cy="230" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="180" cy="230" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="180" y="724" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Structuring rules look for multiple</text>
+<text x="180" y="743" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">payments just under a reporting threshold,</text>
+<text x="180" y="762" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">for example five payments of 9,500 euros</text>
+<text x="180" y="781" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">from a customer whose normal pattern is</text>
+<text x="180" y="800" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">one payment a month.</text>
+<text x="24" y="841" font-size="12" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 2 of 6</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="2">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<defs><pattern id="bfd1551" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<rect x="0" y="0" width="900" height="506" fill="url(#bfd1551)"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Results:</tspan> <tspan fill="#FFFFFF">used</tspan> <tspan fill="#FFFFFF">to</tspan> <tspan fill="#FFFFFF">adjust</tspan> <tspan fill="#FFFFFF">threshold</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="48" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="68" cy="192" r="11" fill="#1E3A5F"/>
+<text x="68" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="172" y="214" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Transaction monitoring</text>
+<text x="172" y="232" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">system</text>
+</g>
+<g data-node="n1" class="bf-done" data-beat="1">
+<rect x="325" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="345" cy="192" r="11" fill="#1E3A5F"/>
+<text x="345" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="449" y="223" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Structuring rules look</text>
+</g>
+<g data-node="n2" class="bf-now" data-beat="2">
+<rect x="602" y="172" width="249" height="96" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="622" cy="192" r="11" fill="#1D4ED8"/>
+<text x="622" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="839" y="196" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="726" y="223" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Used to adjust threshold</text>
+</g>
+<g data-node="n3" class="bf-dim" data-beat="3">
+<rect x="602" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="622" cy="332" r="11" fill="#1E3A5F"/>
+<text x="622" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="726" y="363" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Model risk management</text>
+</g>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<rect x="325" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="345" cy="332" r="11" fill="#1E3A5F"/>
+<text x="345" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="449" y="363" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Hold decision</text>
+</g>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="48" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="68" cy="332" r="11" fill="#1E3A5F"/>
+<text x="68" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="172" y="363" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Management information</text>
+</g>
+<path data-conn="c0" data-beat="0" d="M 300 220 L 310 220" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c0" data-beat="0" points="322,220 310,227 310,213" fill="#DBEAFE"/>
+<path data-conn="c1" data-beat="1" d="M 577 220 L 587 220" stroke="#60A5FA" stroke-width="3" fill="none"/><polygon data-conn="c1" data-beat="1" points="599,220 587,227 587,213" fill="#DBEAFE"/>
+<path data-conn="c2" data-beat="2" d="M 726 271 L 726 290 L 726 290 L 726 297" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c2" data-beat="2" points="726,309 719,297 733,297" fill="#DBEAFE"/>
+<path data-conn="c3" data-beat="3" d="M 599 360 L 589 360" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c3" data-beat="3" points="577,360 589,353 589,367" fill="#DBEAFE"/>
+<path data-conn="c4" data-beat="4" d="M 322 360 L 312 360" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c4" data-beat="4" points="300,360 312,353 312,367" fill="#DBEAFE"/>
+<g class="bf-paydot" style="--dx:-143px;--dy:0px"><circle class="bf-pulse" cx="592" cy="220" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="592" cy="220" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="450" y="444" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The results are used to adjust the threshold, and the adjustment is documented with the</text>
+<text x="450" y="464" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">evidence.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 3 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#60A5FA"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 787" role="img" aria-label="Lesson visual, vertical layout">
+<defs><pattern id="bfd1552" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="360" height="787" fill="#0B1F3D"/>
+<rect x="0" y="0" width="360" height="787" fill="url(#bfd1552)"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Results:</tspan> <tspan fill="#FFFFFF">used</tspan> <tspan fill="#FFFFFF">to</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">adjust</tspan> <tspan fill="#FFFFFF">threshold</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="24" y="94" width="312" height="92" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="114" r="11" fill="#1E3A5F"/>
+<text x="44" y="118" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="180" y="132" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Transaction monitoring</text>
+<text x="180" y="152" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">system</text>
+</g>
+<line data-conn="c0" data-beat="0" x1="180" y1="189" x2="180" y2="197" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c0" data-beat="0" points="180,209 173,197 187,197" fill="#DBEAFE"/>
+<g data-node="n1" class="bf-done" data-beat="1">
+<rect x="24" y="212" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="232" r="11" fill="#1E3A5F"/>
+<text x="44" y="236" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="180" y="250" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Structuring rules look</text>
+</g>
+<line data-conn="c1" data-beat="1" x1="180" y1="287" x2="180" y2="295" stroke="#60A5FA" stroke-width="2"/>
+<polygon data-conn="c1" data-beat="1" points="180,307 173,295 187,295" fill="#DBEAFE"/>
+<g data-node="n2" class="bf-now" data-beat="2">
+<rect x="24" y="310" width="312" height="72" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="44" cy="330" r="11" fill="#1D4ED8"/>
+<text x="44" y="334" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="324" y="334" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="180" y="348" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Used to adjust threshold</text>
+</g>
+<line data-conn="c2" data-beat="2" x1="180" y1="385" x2="180" y2="393" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c2" data-beat="2" points="180,405 173,393 187,393" fill="#DBEAFE"/>
+<g data-node="n3" class="bf-dim" data-beat="3">
+<rect x="24" y="408" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="428" r="11" fill="#1E3A5F"/>
+<text x="44" y="432" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="180" y="446" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Model risk management</text>
+</g>
+<line data-conn="c3" data-beat="3" x1="180" y1="483" x2="180" y2="491" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c3" data-beat="3" points="180,503 173,491 187,491" fill="#DBEAFE"/>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<rect x="24" y="506" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="526" r="11" fill="#1E3A5F"/>
+<text x="44" y="530" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="180" y="544" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Hold decision</text>
+</g>
+<line data-conn="c4" data-beat="4" x1="180" y1="581" x2="180" y2="589" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c4" data-beat="4" points="180,601 173,589 187,589" fill="#DBEAFE"/>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="24" y="604" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="624" r="11" fill="#1E3A5F"/>
+<text x="44" y="628" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="180" y="642" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Management information</text>
+</g>
+<g class="bf-paydot" style="--dx:0px;--dy:-52px"><circle class="bf-pulse" cx="180" cy="300" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="180" cy="300" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="180" y="696" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The results are used to adjust the</text>
+<text x="180" y="715" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">threshold, and the adjustment is</text>
+<text x="180" y="734" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">documented with the evidence.</text>
+<text x="24" y="775" font-size="12" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 3 of 6</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="3">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<defs><pattern id="bfd1553" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<rect x="0" y="0" width="900" height="506" fill="url(#bfd1553)"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Model</tspan> <tspan fill="#FFFFFF">risk</tspan> <tspan fill="#FFFFFF">management</tspan> <tspan fill="#FFFFFF">applies</tspan> <tspan fill="#FFFFFF">to</tspan></text>
+<text x="48" y="126" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">monitoring</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="48" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="68" cy="192" r="11" fill="#1E3A5F"/>
+<text x="68" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="172" y="214" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Transaction monitoring</text>
+<text x="172" y="232" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">system</text>
+</g>
+<g data-node="n1" class="bf-done" data-beat="1">
+<rect x="325" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="345" cy="192" r="11" fill="#1E3A5F"/>
+<text x="345" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="449" y="223" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Structuring rules look</text>
+</g>
+<g data-node="n2" class="bf-done" data-beat="2">
+<rect x="602" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="622" cy="192" r="11" fill="#1E3A5F"/>
+<text x="622" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="726" y="223" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Used to adjust threshold</text>
+</g>
+<g data-node="n3" class="bf-now" data-beat="3">
+<rect x="602" y="312" width="249" height="96" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="622" cy="332" r="11" fill="#1D4ED8"/>
+<text x="622" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="839" y="336" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="726" y="363" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Model risk management</text>
+</g>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<rect x="325" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="345" cy="332" r="11" fill="#1E3A5F"/>
+<text x="345" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="449" y="363" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Hold decision</text>
+</g>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="48" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="68" cy="332" r="11" fill="#1E3A5F"/>
+<text x="68" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="172" y="363" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Management information</text>
+</g>
+<path data-conn="c0" data-beat="0" d="M 300 220 L 310 220" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c0" data-beat="0" points="322,220 310,227 310,213" fill="#DBEAFE"/>
+<path data-conn="c1" data-beat="1" d="M 577 220 L 587 220" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c1" data-beat="1" points="599,220 587,227 587,213" fill="#DBEAFE"/>
+<path data-conn="c2" data-beat="2" d="M 726 271 L 726 290 L 726 290 L 726 297" stroke="#60A5FA" stroke-width="3" fill="none"/><polygon data-conn="c2" data-beat="2" points="726,309 719,297 733,297" fill="#DBEAFE"/>
+<path data-conn="c3" data-beat="3" d="M 599 360 L 589 360" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c3" data-beat="3" points="577,360 589,353 589,367" fill="#DBEAFE"/>
+<path data-conn="c4" data-beat="4" d="M 322 360 L 312 360" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c4" data-beat="4" points="300,360 312,353 312,367" fill="#DBEAFE"/>
+<g class="bf-paydot" style="--dx:0px;--dy:-82px"><circle class="bf-pulse" cx="726" cy="302" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="726" cy="302" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="450" y="444" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Model risk management applies to monitoring systems in the same way it applies to credit</text>
+<text x="450" y="464" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">models.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 4 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#60A5FA"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 843" role="img" aria-label="Lesson visual, vertical layout">
+<defs><pattern id="bfd1554" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="360" height="843" fill="#0B1F3D"/>
+<rect x="0" y="0" width="360" height="843" fill="url(#bfd1554)"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Model</tspan> <tspan fill="#FFFFFF">risk</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">management</tspan></text>
+<text x="24" y="96" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">applies</tspan> <tspan fill="#FFFFFF">to</tspan></text>
+<text x="24" y="124" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">monitoring</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="24" y="150" width="312" height="92" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="170" r="11" fill="#1E3A5F"/>
+<text x="44" y="174" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="180" y="188" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Transaction monitoring</text>
+<text x="180" y="208" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">system</text>
+</g>
+<line data-conn="c0" data-beat="0" x1="180" y1="245" x2="180" y2="253" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c0" data-beat="0" points="180,265 173,253 187,253" fill="#DBEAFE"/>
+<g data-node="n1" class="bf-done" data-beat="1">
+<rect x="24" y="268" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="288" r="11" fill="#1E3A5F"/>
+<text x="44" y="292" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="180" y="306" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Structuring rules look</text>
+</g>
+<line data-conn="c1" data-beat="1" x1="180" y1="343" x2="180" y2="351" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c1" data-beat="1" points="180,363 173,351 187,351" fill="#DBEAFE"/>
+<g data-node="n2" class="bf-done" data-beat="2">
+<rect x="24" y="366" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="386" r="11" fill="#1E3A5F"/>
+<text x="44" y="390" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="180" y="404" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Used to adjust threshold</text>
+</g>
+<line data-conn="c2" data-beat="2" x1="180" y1="441" x2="180" y2="449" stroke="#60A5FA" stroke-width="2"/>
+<polygon data-conn="c2" data-beat="2" points="180,461 173,449 187,449" fill="#DBEAFE"/>
+<g data-node="n3" class="bf-now" data-beat="3">
+<rect x="24" y="464" width="312" height="72" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="44" cy="484" r="11" fill="#1D4ED8"/>
+<text x="44" y="488" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="324" y="488" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="180" y="502" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Model risk management</text>
+</g>
+<line data-conn="c3" data-beat="3" x1="180" y1="539" x2="180" y2="547" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c3" data-beat="3" points="180,559 173,547 187,547" fill="#DBEAFE"/>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<rect x="24" y="562" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="582" r="11" fill="#1E3A5F"/>
+<text x="44" y="586" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="180" y="600" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Hold decision</text>
+</g>
+<line data-conn="c4" data-beat="4" x1="180" y1="637" x2="180" y2="645" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c4" data-beat="4" points="180,657 173,645 187,645" fill="#DBEAFE"/>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="24" y="660" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="680" r="11" fill="#1E3A5F"/>
+<text x="44" y="684" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="180" y="698" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Management information</text>
+</g>
+<g class="bf-paydot" style="--dx:0px;--dy:-52px"><circle class="bf-pulse" cx="180" cy="454" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="180" cy="454" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="180" y="752" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Model risk management applies to</text>
+<text x="180" y="771" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">monitoring systems in the same way it</text>
+<text x="180" y="790" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">applies to credit models.</text>
+<text x="24" y="831" font-size="12" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 4 of 6</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="4">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<defs><pattern id="bfd1555" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<rect x="0" y="0" width="900" height="506" fill="url(#bfd1555)"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Hold</tspan> <tspan fill="#FFFFFF">decision</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="48" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="68" cy="192" r="11" fill="#1E3A5F"/>
+<text x="68" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="172" y="214" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Transaction monitoring</text>
+<text x="172" y="232" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">system</text>
+</g>
+<g data-node="n1" class="bf-done" data-beat="1">
+<rect x="325" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="345" cy="192" r="11" fill="#1E3A5F"/>
+<text x="345" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="449" y="223" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Structuring rules look</text>
+</g>
+<g data-node="n2" class="bf-done" data-beat="2">
+<rect x="602" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="622" cy="192" r="11" fill="#1E3A5F"/>
+<text x="622" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="726" y="223" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Used to adjust threshold</text>
+</g>
+<g data-node="n3" class="bf-done" data-beat="3">
+<rect x="602" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="622" cy="332" r="11" fill="#1E3A5F"/>
+<text x="622" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="726" y="363" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Model risk management</text>
+</g>
+<g data-node="n4" class="bf-now" data-beat="4">
+<rect x="325" y="312" width="249" height="96" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="345" cy="332" r="11" fill="#1D4ED8"/>
+<text x="345" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="562" y="336" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="449" y="363" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Hold decision</text>
+</g>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="48" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="68" cy="332" r="11" fill="#1E3A5F"/>
+<text x="68" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="172" y="363" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Management information</text>
+</g>
+<path data-conn="c0" data-beat="0" d="M 300 220 L 310 220" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c0" data-beat="0" points="322,220 310,227 310,213" fill="#DBEAFE"/>
+<path data-conn="c1" data-beat="1" d="M 577 220 L 587 220" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c1" data-beat="1" points="599,220 587,227 587,213" fill="#DBEAFE"/>
+<path data-conn="c2" data-beat="2" d="M 726 271 L 726 290 L 726 290 L 726 297" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c2" data-beat="2" points="726,309 719,297 733,297" fill="#DBEAFE"/>
+<path data-conn="c3" data-beat="3" d="M 599 360 L 589 360" stroke="#60A5FA" stroke-width="3" fill="none"/><polygon data-conn="c3" data-beat="3" points="577,360 589,353 589,367" fill="#DBEAFE"/>
+<path data-conn="c4" data-beat="4" d="M 322 360 L 312 360" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c4" data-beat="4" points="300,360 312,353 312,367" fill="#DBEAFE"/>
+<g class="bf-paydot" style="--dx:142px;--dy:0px"><circle class="bf-pulse" cx="584" cy="360" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="584" cy="360" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="450" y="444" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The hold decision is the hardest, because a held instant payment breaches the 10-second rule,</text>
+<text x="450" y="464" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">so the hold must be reserved for the highest-risk cases</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 5 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#60A5FA"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 778" role="img" aria-label="Lesson visual, vertical layout">
+<defs><pattern id="bfd1556" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="360" height="778" fill="#0B1F3D"/>
+<rect x="0" y="0" width="360" height="778" fill="url(#bfd1556)"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Hold</tspan> <tspan fill="#FFFFFF">decision</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="24" y="66" width="312" height="92" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="86" r="11" fill="#1E3A5F"/>
+<text x="44" y="90" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="180" y="104" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Transaction monitoring</text>
+<text x="180" y="124" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">system</text>
+</g>
+<line data-conn="c0" data-beat="0" x1="180" y1="161" x2="180" y2="169" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c0" data-beat="0" points="180,181 173,169 187,169" fill="#DBEAFE"/>
+<g data-node="n1" class="bf-done" data-beat="1">
+<rect x="24" y="184" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="204" r="11" fill="#1E3A5F"/>
+<text x="44" y="208" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="180" y="222" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Structuring rules look</text>
+</g>
+<line data-conn="c1" data-beat="1" x1="180" y1="259" x2="180" y2="267" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c1" data-beat="1" points="180,279 173,267 187,267" fill="#DBEAFE"/>
+<g data-node="n2" class="bf-done" data-beat="2">
+<rect x="24" y="282" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="302" r="11" fill="#1E3A5F"/>
+<text x="44" y="306" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="180" y="320" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Used to adjust threshold</text>
+</g>
+<line data-conn="c2" data-beat="2" x1="180" y1="357" x2="180" y2="365" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c2" data-beat="2" points="180,377 173,365 187,365" fill="#DBEAFE"/>
+<g data-node="n3" class="bf-done" data-beat="3">
+<rect x="24" y="380" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="400" r="11" fill="#1E3A5F"/>
+<text x="44" y="404" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="180" y="418" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Model risk management</text>
+</g>
+<line data-conn="c3" data-beat="3" x1="180" y1="455" x2="180" y2="463" stroke="#60A5FA" stroke-width="2"/>
+<polygon data-conn="c3" data-beat="3" points="180,475 173,463 187,463" fill="#DBEAFE"/>
+<g data-node="n4" class="bf-now" data-beat="4">
+<rect x="24" y="478" width="312" height="72" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="44" cy="498" r="11" fill="#1D4ED8"/>
+<text x="44" y="502" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="324" y="502" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="180" y="516" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Hold decision</text>
+</g>
+<line data-conn="c4" data-beat="4" x1="180" y1="553" x2="180" y2="561" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c4" data-beat="4" points="180,573 173,561 187,561" fill="#DBEAFE"/>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="24" y="576" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="596" r="11" fill="#1E3A5F"/>
+<text x="44" y="600" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="180" y="614" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Management information</text>
+</g>
+<g class="bf-paydot" style="--dx:0px;--dy:-52px"><circle class="bf-pulse" cx="180" cy="468" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="180" cy="468" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="180" y="668" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The hold decision is the hardest, because a</text>
+<text x="180" y="687" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">held instant payment breaches the</text>
+<text x="180" y="706" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">10-second rule, so the hold must be</text>
+<text x="180" y="725" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">reserved for the highest-risk cases</text>
+<text x="24" y="766" font-size="12" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 5 of 6</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="5">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<defs><pattern id="bfd1557" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<rect x="0" y="0" width="900" height="506" fill="url(#bfd1557)"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Management</tspan> <tspan fill="#FFFFFF">information</tspan> <tspan fill="#FFFFFF">must</tspan> <tspan fill="#FFFFFF">show</tspan></text>
+<text x="48" y="126" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">the</tspan> <tspan fill="#FFFFFF">alert</tspan> <tspan fill="#FFFFFF">volumes</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="48" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="68" cy="192" r="11" fill="#1E3A5F"/>
+<text x="68" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="172" y="214" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Transaction monitoring</text>
+<text x="172" y="232" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">system</text>
+</g>
+<g data-node="n1" class="bf-done" data-beat="1">
+<rect x="325" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="345" cy="192" r="11" fill="#1E3A5F"/>
+<text x="345" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="449" y="223" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Structuring rules look</text>
+</g>
+<g data-node="n2" class="bf-done" data-beat="2">
+<rect x="602" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="622" cy="192" r="11" fill="#1E3A5F"/>
+<text x="622" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="726" y="223" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Used to adjust threshold</text>
+</g>
+<g data-node="n3" class="bf-done" data-beat="3">
+<rect x="602" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="622" cy="332" r="11" fill="#1E3A5F"/>
+<text x="622" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="726" y="363" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Model risk management</text>
+</g>
+<g data-node="n4" class="bf-done" data-beat="4">
+<rect x="325" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="345" cy="332" r="11" fill="#1E3A5F"/>
+<text x="345" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="449" y="363" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Hold decision</text>
+</g>
+<g data-node="n5" class="bf-now" data-beat="5">
+<rect x="48" y="312" width="249" height="96" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="68" cy="332" r="11" fill="#1D4ED8"/>
+<text x="68" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="285" y="336" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="172" y="363" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Management information</text>
+</g>
+<path data-conn="c0" data-beat="0" d="M 300 220 L 310 220" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c0" data-beat="0" points="322,220 310,227 310,213" fill="#DBEAFE"/>
+<path data-conn="c1" data-beat="1" d="M 577 220 L 587 220" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c1" data-beat="1" points="599,220 587,227 587,213" fill="#DBEAFE"/>
+<path data-conn="c2" data-beat="2" d="M 726 271 L 726 290 L 726 290 L 726 297" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c2" data-beat="2" points="726,309 719,297 733,297" fill="#DBEAFE"/>
+<path data-conn="c3" data-beat="3" d="M 599 360 L 589 360" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c3" data-beat="3" points="577,360 589,353 589,367" fill="#DBEAFE"/>
+<path data-conn="c4" data-beat="4" d="M 322 360 L 312 360" stroke="#60A5FA" stroke-width="3" fill="none"/><polygon data-conn="c4" data-beat="4" points="300,360 312,353 312,367" fill="#DBEAFE"/>
+<g class="bf-paydot" style="--dx:142px;--dy:0px"><circle class="bf-pulse" cx="307" cy="360" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="307" cy="360" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="450" y="444" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The management information must show the alert volumes</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 6 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#60A5FA"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 824" role="img" aria-label="Lesson visual, vertical layout">
+<defs><pattern id="bfd1558" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="360" height="824" fill="#0B1F3D"/>
+<rect x="0" y="0" width="360" height="824" fill="url(#bfd1558)"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Management</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">information</tspan> <tspan fill="#FFFFFF">must</tspan></text>
+<text x="24" y="96" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">show</tspan> <tspan fill="#FFFFFF">the</tspan> <tspan fill="#FFFFFF">alert</tspan></text>
+<text x="24" y="124" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">volumes</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="24" y="150" width="312" height="92" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="170" r="11" fill="#1E3A5F"/>
+<text x="44" y="174" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="180" y="188" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Transaction monitoring</text>
+<text x="180" y="208" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">system</text>
+</g>
+<line data-conn="c0" data-beat="0" x1="180" y1="245" x2="180" y2="253" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c0" data-beat="0" points="180,265 173,253 187,253" fill="#DBEAFE"/>
+<g data-node="n1" class="bf-done" data-beat="1">
+<rect x="24" y="268" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="288" r="11" fill="#1E3A5F"/>
+<text x="44" y="292" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="180" y="306" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Structuring rules look</text>
+</g>
+<line data-conn="c1" data-beat="1" x1="180" y1="343" x2="180" y2="351" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c1" data-beat="1" points="180,363 173,351 187,351" fill="#DBEAFE"/>
+<g data-node="n2" class="bf-done" data-beat="2">
+<rect x="24" y="366" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="386" r="11" fill="#1E3A5F"/>
+<text x="44" y="390" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="180" y="404" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Used to adjust threshold</text>
+</g>
+<line data-conn="c2" data-beat="2" x1="180" y1="441" x2="180" y2="449" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c2" data-beat="2" points="180,461 173,449 187,449" fill="#DBEAFE"/>
+<g data-node="n3" class="bf-done" data-beat="3">
+<rect x="24" y="464" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="484" r="11" fill="#1E3A5F"/>
+<text x="44" y="488" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="180" y="502" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Model risk management</text>
+</g>
+<line data-conn="c3" data-beat="3" x1="180" y1="539" x2="180" y2="547" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c3" data-beat="3" points="180,559 173,547 187,547" fill="#DBEAFE"/>
+<g data-node="n4" class="bf-done" data-beat="4">
+<rect x="24" y="562" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="582" r="11" fill="#1E3A5F"/>
+<text x="44" y="586" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="180" y="600" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Hold decision</text>
+</g>
+<line data-conn="c4" data-beat="4" x1="180" y1="637" x2="180" y2="645" stroke="#60A5FA" stroke-width="2"/>
+<polygon data-conn="c4" data-beat="4" points="180,657 173,645 187,645" fill="#DBEAFE"/>
+<g data-node="n5" class="bf-now" data-beat="5">
+<rect x="24" y="660" width="312" height="72" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="44" cy="680" r="11" fill="#1D4ED8"/>
+<text x="44" y="684" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="324" y="684" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="180" y="698" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Management information</text>
+</g>
+<g class="bf-paydot" style="--dx:0px;--dy:-52px"><circle class="bf-pulse" cx="180" cy="650" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="180" cy="650" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="180" y="752" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The management information must</text>
+<text x="180" y="771" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">show the alert volumes</text>
+<text x="24" y="812" font-size="12" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 6 of 6</text>
+</svg>
+</div>
+</div>
+<p class="xml-caption">Flow of the explanation in this lesson.</p></div>
+<div class="playerbar">
+<div class="studio-progress"><div class="studio-markers" id="studio-markers-studio-ch87s2"></div><input type="range" id="studio-slider-studio-ch87s2" min="0" max="1000" value="0" aria-label="Lesson timeline"></div>
+<div class="ctrl-row">
+<button class="ctrl-btn" id="studio-play-studio-ch87s2" onclick="studioTogglePlay('studio-ch87s2')" aria-label="Play lesson" title="Play lesson"><span class="ctrl-ic-play"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></span><span class="ctrl-ic-pause" style="display:none"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><rect x="6" y="5" width="4" height="14" fill="currentColor"/><rect x="14" y="5" width="4" height="14" fill="currentColor"/></svg></span></button>
+<button class="ctrl-btn studio-mute-btn" id="studio-mute-studio-ch87s2" onclick="studioToggleMute('studio-ch87s2')" aria-label="Mute narration" title="Mute / unmute narration"><svg class="studio-mute-icon" viewBox="0 0 24 24" width="28" height="28" fill="currentColor" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3z"/><path class="studio-mute-waves" d="M16 8.5a5 5 0 0 1 0 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><path class="studio-mute-waves" d="M18.5 6a9 9 0 0 1 0 12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><path class="studio-mute-x" d="M16 9.5l5 5M21 9.5l-5 5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" style="display:none"/></svg></button>
+<button class="ctrl-btn" onclick="studioSkip('studio-ch87s2', -10)" aria-label="Back 10 seconds" title="Back 10 seconds"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 5a7 7 0 1 1-6.32 4.06" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M5.5 3.5v5h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><text x="12" y="16.5" font-size="8" fill="currentColor" text-anchor="middle" font-weight="700">10</text></svg></button>
+<span class="studio-time ctrl-time" id="studio-time-studio-ch87s2">0:00 / 5:37</span>
+<button class="ctrl-btn" onclick="studioSkip('studio-ch87s2', 10)" aria-label="Forward 10 seconds" title="Forward 10 seconds"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 5a7 7 0 1 0 6.32 4.06" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M18.5 3.5v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><text x="12" y="16.5" font-size="8" fill="currentColor" text-anchor="middle" font-weight="700">10</text></svg></button>
+<span class="playerbar-spacer"></span>
+<span class="player-stage" id="studio-tag-studio-ch87s2">Step 1 of 6</span>
+<button class="ctrl-btn ctrl-step" id="studio-prevscene-studio-ch87s2" onclick="studioPrevScene('studio-ch87s2')" title="Previous step" aria-label="Previous step">&lsaquo;</button>
+<button class="ctrl-btn ctrl-step" id="studio-nextscene-studio-ch87s2" onclick="studioNextScene('studio-ch87s2')" title="Next step" aria-label="Next step">&rsaquo;</button>
+<button class="ctrl-btn ctrl-speed" id="studio-speedbtn-studio-ch87s2" onclick="studioCycleSpeed('studio-ch87s2')" title="Playback speed" aria-label="Playback speed">1x</button>
+<span class="ctrl-settings-wrap"><button class="ctrl-btn" onclick="studioToggleSettings('studio-ch87s2', event)" aria-label="Player settings" title="Settings"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5 5l2.1 2.1M16.9 16.9L19 19M19 5l-2.1 2.1M7.1 16.9L5 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button><span class="ctrl-popover" id="studio-settings-studio-ch87s2" style="display:none" onclick="event.stopPropagation()"><label class="ctrl-pop-row">Volume <input type="range" min="0" max="1" step="0.1" value="1" oninput="studioSetVolume('studio-ch87s2', this.value)" style="width:110px;accent-color:#3587FC"></label><button class="studio-btn" id="studio-captions-studio-ch87s2" onclick="studioToggleCaptions('studio-ch87s2')">Captions: On</button><button class="studio-btn" onclick="studioReplayScene('studio-ch87s2')">Replay scene</button></span></span>
+<button class="ctrl-btn" onclick="studioFullscreen('studio-ch87s2')" aria-label="Fullscreen" title="Fullscreen"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+</div>
+</div>
+</div>
+<p class="studio-caption" id="studio-caption-studio-ch87s2"></p>
+<p class="studio-loading" id="studio-loading-studio-ch87s2" style="display:none">Loading narration...</p>
+<p class="studio-error" id="studio-error-studio-ch87s2" role="alert" style="display:none"></p>
+<audio id="studio-audio-studio-ch87s2" preload="auto" src="../audio/ch87s2.mp3"></audio>
+</div>
+<div class="lesson-title-row">
+<h1>Transaction monitoring systems: rules, thresholds, alert triage and tuning</h1>
+<button class="save-note" type="button" onclick="pfToggleNote('studio-ch87s2')" title="Save a note on this lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L8 19l-4 1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg> Save note</button>
+</div>
+<p class="lesson-meta-line">Controls that keep payments safe, Lesson 2 of 7, Narration 5:37, D12 Risk, compliance and regulation</p>
+<p class="lesson-note-saved" id="studio-note-saved-studio-ch87s2" style="display:none">Note saved.</p>
+<div class="note-editor" id="studio-note-editor-studio-ch87s2" style="display:none"><textarea id="studio-note-text-studio-ch87s2" rows="3" placeholder="Write a note on this lesson..." aria-label="Lesson note"></textarea><div class="note-editor-row"><button class="studio-btn primary" onclick="pfSaveNote('studio-ch87s2')">Save note</button> <button class="studio-btn" onclick="pfToggleNote('studio-ch87s2')">Cancel</button></div></div>
+<div class="dive-deeper">
+<div class="dive-head"><button type="button" class="dive-toggle" onclick="pfToggleDive(this)" aria-expanded="true"><span class="dive-spark"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 2l2.2 6.8L21 11l-6.8 2.2L12 20l-2.2-6.8L3 11l6.8-2.2z" fill="currentColor"/></svg></span><span class="dive-title">Dive deeper on this topic</span><span class="dive-chev"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 14l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button></div>
+<div class="dive-btns"><button type="button" class="dive-btn" data-kind="practice" onclick="pfDive('studio-ch87s2', 'practice')">Give me practice questions</button><button type="button" class="dive-btn" data-kind="simple" onclick="pfDive('studio-ch87s2', 'simple')">Explain this topic in simple terms</button><button type="button" class="dive-btn" data-kind="summary" onclick="pfDive('studio-ch87s2', 'summary')">Give me a summary</button><button type="button" class="dive-btn" data-kind="example" onclick="pfDive('studio-ch87s2', 'example')">Give me real-life examples</button></div>
+<div class="dive-panel" id="dive-panel-studio-ch87s2"><div class="dive-panel-body"></div></div>
+<script type="application/json" id="pf-dive-data-studio-ch87s2">{"simple": "In plain words: A transaction monitoring system has four parts, and a failure in any one of them breaks the whole control.", "summary": "A transaction monitoring system has four parts, and a failure in any one of them breaks the whole control.", "example": "The rules are the heart of the system, and they fall into families."}</script>
+</div>
+<div class="lesson-feedback">
+<div class="fb-icons"><button type="button" class="fb-btn" data-kind="like" onclick="pfFeedback(this,'like')" aria-label="Like this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M7 21H4a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1h3v11zm0 0h9.6a2 2 0 0 0 1.9-1.4l1.6-5A2 2 0 0 0 18.2 12H15V6.5A2.5 2.5 0 0 0 12.5 4L11 7.5 8.6 10H7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button><button type="button" class="fb-btn" data-kind="dislike" onclick="pfFeedback(this,'dislike')" aria-label="Dislike this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M17 3h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1h-3V3zm0 0H7.4a2 2 0 0 0-1.9 1.4l-1.6 5A2 2 0 0 0 5.8 12H9v5.5A2.5 2.5 0 0 0 11.5 20L13 16.5l2.4-2.5H17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button><button type="button" class="fb-btn" data-kind="flag" onclick="pfFeedback(this,'flag')" aria-label="Flag this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M6 21V4m0 1h11l-2.5 3.5L17 12H6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+<button type="button" class="go-next" onclick="goLesson('ch87s3')" title="Next: SAR and STR filing: what gets reported, when and to whom">Go to next item &rarr;</button>
+</div>
+<div class="card learn-card">
+<h2>What you will learn</h2>
+<p class="transcript"><b>Your objective.</b> By the end of this lesson, you will be able to explain transaction monitoring systems and apply it to a real banking scenario.</p>
+<p class="transcript"><b>Why it matters.</b> Monitoring is only as good as its tuning, and the analyst defines the thresholds and the triage workflow.</p>
+<p class="transcript">Chapter objective: Learner explains the control framework that keeps payments safe, distinguishes fraud typologies, transaction monitoring, SAR and STR filing, KYC and CDD, access controls, audit trails and scheme rulebooks, and applies each control to realistic payment operations with correct terminology.</p>
+<h3>Key learning points</h3>
+<ul id="studio-points-studio-ch87s2">
+<li>Transaction monitoring system has four parts</li>
+<li>Structuring rules look for multiple payments just</li>
+<li>Results: used to adjust threshold</li>
+<li>Model risk management applies to monitoring</li>
+<li>Hold decision</li>
+<li>Management information must show the alert volumes</li>
+</ul>
+<h3>Key terms</h3>
+<div id="studio-terms-studio-ch87s2">
+</div>
+<p class="studio-note">Payment flow diagram showing Transaction monitoring systems: rules, thresholds, alert triage and tuning.</p>
+</div>
+<div class="fw-card" id="pf-exercise-studio-ch87s2">
+<p class="fw-label">Practise this lesson</p>
+<h2>Exercise</h2>
+<p><b>A monitoring rule flags 1,000 transactions a day and only 5 are real fraud. Work out the triage approach.</b></p>
+<p>Use the rules, numbers and worked examples in this lesson.</p>
+<ol class="fw-steps">
+<li><b>What to do.</b> Work through the scenario and state the outcome with the reason.</li>
+</ol>
+<p><button class="studio-btn" id="pf-ex-btn-studio-ch87s2" onclick="pfRevealExercise('studio-ch87s2')">Show the answer</button></p>
+<div class="fw-exercise-answer" id="pf-ex-answer-studio-ch87s2">
+<p><b>Correct result.</b> Analysts triage by risk score, clear the obvious legitimate payments quickly, escalate the suspicious ones for deeper review, and feed the outcomes back to tune the threshold.</p>
+<p><b>Why.</b> Tuning is a feedback loop: every disposition teaches the system, and without it the alert queue grows until real fraud is missed.</p>
+</div>
+</div>
+<div class="fw-card" id="pf-quiz-studio-ch87s2" data-answer="0">
+<p class="fw-label">Check your understanding</p>
+<h2>Practice question</h2>
+<p><b>Why do transaction monitoring systems generate so many false positive alerts?</b></p>
+<button type="button" class="quiz-opt" data-idx="0" onclick="pfCheckAnswer('studio-ch87s2', this)">Because the rules are set broadly to catch rare fraud, so most flagged transactions are legitimate</button>
+<button type="button" class="quiz-opt" data-idx="1" onclick="pfCheckAnswer('studio-ch87s2', this)">Because the system is broken and cannot be tuned</button>
+<button type="button" class="quiz-opt" data-idx="2" onclick="pfCheckAnswer('studio-ch87s2', this)">Because fraud is more common than legitimate payments</button>
+<button type="button" class="quiz-opt" data-idx="3" onclick="pfCheckAnswer('studio-ch87s2', this)">Because the rules only look at the amount and nothing else</button>
+<div class="quiz-feedback" id="pf-quiz-fb-studio-ch87s2"></div>
+<script type="application/json" id="pf-quiz-data-studio-ch87s2">{"why_wrong": ["", "This is not correct for this question. Fraud is rare, so a rule sensitive enough to catch it will also flag many legitimate payments, which is why alert triage and threshold tuning are core operational work.", "This is not correct for this question. Fraud is rare, so a rule sensitive enough to catch it will also flag many legitimate payments, which is why alert triage and threshold tuning are core operational work.", "This is not correct for this question. Fraud is rare, so a rule sensitive enough to catch it will also flag many legitimate payments, which is why alert triage and threshold tuning are core operational work."], "explanation": "Fraud is rare, so a rule sensitive enough to catch it will also flag many legitimate payments, which is why alert triage and threshold tuning are core operational work."}</script>
+</div>
+<div class="fw-card">
+<p class="fw-label">Takeaway and next step</p>
+<h2>What to remember</h2>
+<p>Further reading: Financial Action Task Force guidance on transaction monitoring; the Wolfsberg Group guidance on transaction monitoring; Federal Reserve SR 11-7 on model risk management; European Banking Authority guidelines on money laundering and terrorist financing risk factors.</p>
+<p>Run the control failure from this lesson and follow the investigation to its resolution.</p>
+<p><a class="fw-tool-link" href="../simulators/exception.html">Open the Exception Investigation Simulator &rarr;</a></p>
+<p class="studio-note">Builds on "Fraud typologies in payments: APP scams, mule accounts and business email compromise".</p>
+</div>
+<section class="upnext" id="studio-upnext-studio-ch87s2" style="display:none" aria-label="Up next">
+<span class="tag">Up next</span>
+<h2>Up next: SAR and STR filing: what gets reported, when and to whom</h2>
+<p>Lesson 3 of 7, Controls that keep payments safe, Narration 5:36</p>
+<div class="row">
+<button class="studio-btn primary" onclick="goLessonAuto('ch87s3')">Next lesson &rarr;</button>
+<button class="studio-btn" onclick="goLesson('ch87s1')">&larr; Previous lesson</button>
+<button class="studio-btn" onclick="studioReplayLesson('studio-ch87s2')">Replay this lesson</button>
+</div>
+</section>
+<div class="lesson-nav">
+<button class="studio-btn" onclick="goLesson('ch87s1')" title="Previous lesson: Fraud typologies in payments: APP scams, mule accounts and business email compromise">&larr; Previous</button>
+<button class="studio-btn" onclick="goChapterContents('ch87')">Chapter contents</button>
+<button class="studio-btn primary" onclick="goLesson('ch87s3')" title="Next lesson: SAR and STR filing: what gets reported, when and to whom">Next &rarr;</button>
+</div>
+<div class="card transcript-card">
+<h2>Transcript and full text</h2>
+<details class="studio-transcript" id="studio-transcript-details-studio-ch87s2"><summary>Show transcript</summary>
+<p class="transcript" id="studio-transcript-studio-ch87s2">A transaction monitoring system has four parts, and a failure in any one of them breaks the whole control. Ingestion takes every payment from every channel and normalises it into a single record: who sent it, who received it, how much, in what currency, through which channel, and with what reference. The rules engine applies scenarios to the normalised records and generates alerts. Scoring ranks the alerts by risk so the team works on the most dangerous first. Case management holds the investigation, the evidence, the decision and the audit trail. A system that ingests only some channels, or that normalises inconsistently, will miss the payment that matters, and the gap will be found by an examiner, not by the team. The rules are the heart of the system, and they fall into families. Threshold rules fire when a payment exceeds a value, or when the total for a customer exceeds a value in a period. Velocity rules fire when the number of payments, or the total value, exceeds what is normal for that customer. Structuring rules look for multiple payments just under a reporting threshold, for example five payments of 9,500 euros from a customer whose normal pattern is one payment a month. Dormancy rules fire when an account that has been quiet for a year suddenly moves large amounts. Geographic rules fire on payments to or from high-risk jurisdictions, or on payments that pass through an unexpected corridor. Each rule needs a threshold, an owner, and a documented reason, because a rule with no reason cannot be defended. Tuning is the discipline that keeps the rules honest. A rule that is too sensitive generates thousands of alerts the team cannot review, and the team starts closing them without investigation, which is worse than having no rule at all. A rule that is too loose misses the fraud it was built to catch. Tuning uses above-the-line and below-the-line testing: the team takes a sample of transactions that fell just below the threshold and checks whether any of them were suspicious, and takes a sample above the threshold and checks whether the alerts were genuine. The results are used to adjust the threshold, and the adjustment is documented with the evidence. Tuning is done on a schedule, not when someone complains, and the schedule is part of the governance. Alert triage is the human part of the system, and it needs a service level agreement by risk. A high-risk alert, such as a payment to a sanctioned geography, must be reviewed within hours. A medium-risk alert must be reviewed within a day. A low-risk alert can wait a week. The triage must record a disposition for every alert: true positive, false positive, or inconclusive, with a reason. The disposition matters, because it feeds back into the tuning: if a rule generates 95 percent false positives, the rule is wrong, not the customers. Quality assurance samples a proportion of closed alerts and re-reviews them, and the sampling rate is higher for the alerts closed as false positives, because that is where a missed fraud hides. Model risk management applies to monitoring systems in the same way it applies to credit models. In the United States the Federal Reserve guidance on model risk management, SR 11-7, sets the standard: a model must be documented, validated by a team that did not build it, and monitored after deployment. The validation covers the data, the logic, the assumptions and the limitations. A monitoring model that was validated on retail payments and is then used on corporate payments without revalidation has a gap, and the gap will be found. The validation report must be kept, and the board must see it, because the board owns the model risk. Real-time monitoring is the challenge that instant payments created. When a payment must complete in 10 seconds, the monitoring cannot wait for an overnight batch. The system must score the payment before release, using precomputed features, and must decide in well under a second whether to allow, challenge or hold it. The hold decision is the hardest, because a held instant payment breaches the 10-second rule, so the hold must be reserved for the highest-risk cases and the decision must be logged with the reason. Post-event monitoring still runs, for the patterns that only emerge over days, such as structuring and layering, but the pre-release check is what stops the fraud before the money leaves. For a business analyst, the monitoring work is a set of requirements that must be measurable. The ingestion must cover every channel and every payment type, and the coverage must be provable. Each rule must have a documented threshold, an owner, and a tuning schedule. The triage must have a service level by risk and a disposition code for every alert. The acceptance criteria must include a test where a structuring pattern generates an alert, a test where a high-risk alert is reviewed inside its service level, a test where a tuning exercise changes a threshold with documented evidence, and a test where an instant payment is scored and released inside the 10-second budget. The management information must show the alert volumes, the false positive rate, and the time to disposition, because a monitoring system without management information is a system nobody is watching. Last reviewed 8 November 2026. Further reading: Financial Action Task Force guidance on transaction monitoring; the Wolfsberg Group guidance on transaction monitoring; Federal Reserve SR 11-7 on model risk management; European Banking Authority guidelines on money laundering and terrorist financing risk factors.</p>
+<div id="studio-paras-studio-ch87s2">
+<p class="transcript">A transaction monitoring system has four parts, and a failure in any one of them breaks the whole control. Ingestion takes every payment from every channel and normalises it into a single record: who sent it, who received it, how much, in what currency, through which channel, and with what reference. The rules engine applies scenarios to the normalised records and generates alerts. Scoring ranks the alerts by risk so the team works on the most dangerous first. Case management holds the investigation, the evidence, the decision and the audit trail. A system that ingests only some channels, or that normalises inconsistently, will miss the payment that matters, and the gap will be found by an examiner, not by the team.</p>
+<p class="transcript">The rules are the heart of the system, and they fall into families. Threshold rules fire when a payment exceeds a value, or when the total for a customer exceeds a value in a period. Velocity rules fire when the number of payments, or the total value, exceeds what is normal for that customer. Structuring rules look for multiple payments just under a reporting threshold, for example five payments of 9,500 euros from a customer whose normal pattern is one payment a month. Dormancy rules fire when an account that has been quiet for a year suddenly moves large amounts. Geographic rules fire on payments to or from high-risk jurisdictions, or on payments that pass through an unexpected corridor. Each rule needs a threshold, an owner, and a documented reason, because a rule with no reason cannot be defended.</p>
+<p class="transcript">Tuning is the discipline that keeps the rules honest. A rule that is too sensitive generates thousands of alerts the team cannot review, and the team starts closing them without investigation, which is worse than having no rule at all. A rule that is too loose misses the fraud it was built to catch. Tuning uses above-the-line and below-the-line testing: the team takes a sample of transactions that fell just below the threshold and checks whether any of them were suspicious, and takes a sample above the threshold and checks whether the alerts were genuine. The results are used to adjust the threshold, and the adjustment is documented with the evidence. Tuning is done on a schedule, not when someone complains, and the schedule is part of the governance.</p>
+<p class="transcript">Alert triage is the human part of the system, and it needs a service level agreement by risk. A high-risk alert, such as a payment to a sanctioned geography, must be reviewed within hours. A medium-risk alert must be reviewed within a day. A low-risk alert can wait a week. The triage must record a disposition for every alert: true positive, false positive, or inconclusive, with a reason. The disposition matters, because it feeds back into the tuning: if a rule generates 95 percent false positives, the rule is wrong, not the customers. Quality assurance samples a proportion of closed alerts and re-reviews them, and the sampling rate is higher for the alerts closed as false positives, because that is where a missed fraud hides.</p>
+<p class="transcript">Model risk management applies to monitoring systems in the same way it applies to credit models. In the United States the Federal Reserve guidance on model risk management, SR 11-7, sets the standard: a model must be documented, validated by a team that did not build it, and monitored after deployment. The validation covers the data, the logic, the assumptions and the limitations. A monitoring model that was validated on retail payments and is then used on corporate payments without revalidation has a gap, and the gap will be found. The validation report must be kept, and the board must see it, because the board owns the model risk.</p>
+<p class="transcript">Real-time monitoring is the challenge that instant payments created. When a payment must complete in 10 seconds, the monitoring cannot wait for an overnight batch. The system must score the payment before release, using precomputed features, and must decide in well under a second whether to allow, challenge or hold it. The hold decision is the hardest, because a held instant payment breaches the 10-second rule, so the hold must be reserved for the highest-risk cases and the decision must be logged with the reason. Post-event monitoring still runs, for the patterns that only emerge over days, such as structuring and layering, but the pre-release check is what stops the fraud before the money leaves.</p>
+<p class="transcript">For a business analyst, the monitoring work is a set of requirements that must be measurable. The ingestion must cover every channel and every payment type, and the coverage must be provable. Each rule must have a documented threshold, an owner, and a tuning schedule. The triage must have a service level by risk and a disposition code for every alert. The acceptance criteria must include a test where a structuring pattern generates an alert, a test where a high-risk alert is reviewed inside its service level, a test where a tuning exercise changes a threshold with documented evidence, and a test where an instant payment is scored and released inside the 10-second budget. The management information must show the alert volumes, the false positive rate, and the time to disposition, because a monitoring system without management information is a system nobody is watching. Last reviewed 8 November 2026. Further reading: Financial Action Task Force guidance on transaction monitoring; the Wolfsberg Group guidance on transaction monitoring; Federal Reserve SR 11-7 on model risk management; European Banking Authority guidelines on money laundering and terrorist financing risk factors.</p>
+</div>
+</details>
+<details class="studio-transcript"><summary>Full lesson text (all scenes)</summary><div id="studio-transcript-full-studio-ch87s2"></div></details>
+<p><button class="studio-btn primary" id="done-ch87s2" onclick="studioMarkSceneDone('studio-ch87s2')">Mark lesson complete</button> <span class="studio-note">Completing a lesson updates your progress dashboard on the homepage.</span></p>
+</div>
+<p class="studio-note">Scene timestamps are estimated by allocating the narration text proportionally across the real audio length. The audio playback position is the source of truth: pause freezes the visual, seeking restores the correct scene, replay restarts the scene animation.</p>
+</div>
+<script>window.__PA_STUDIO_QUEUE = window.__PA_STUDIO_QUEUE || []; window.__PA_STUDIO_QUEUE.push(["studio-ch87s2", {"sample_id": "studio-ch87s2", "chapter_id": "ch87", "title": "Transaction monitoring systems: rules, thresholds, alert triage and tuning", "domain": "D12 Risk, compliance and regulation", "objective": "Learner explains the control framework that keeps payments safe, distinguishes fraud typologies, transaction monitoring, SAR and STR filing, KYC and CDD, access controls, audit trails and scheme rulebooks, and applies each control to realistic payment operations with correct terminology.", "scenes": [{"id": "ch87s2", "section_id": "ch87s2", "title": "Transaction monitoring systems: rules, thresholds, alert triage and tuning", "audio": "../audio/ch87s2.mp3", "duration_sec": 337.9, "points": ["A transaction monitoring system has four parts, and a failure in any one of them breaks the whole control.", "The rules are the heart of the system, and they fall into families.", "Tuning is the discipline that keeps the rules honest.", "Alert triage is the human part of the system, and it needs a service level agreement by risk.", "Model risk management applies to monitoring systems in the same way it applies to credit models."], "terms": [], "transcript": "A transaction monitoring system has four parts, and a failure in any one of them breaks the whole control. Ingestion takes every payment from every channel and normalises it into a single record: who sent it, who received it, how much, in what currency, through which channel, and with what reference. The rules engine applies scenarios to the normalised records and generates alerts. Scoring ranks the alerts by risk so the team works on the most dangerous first. Case management holds the investigation, the evidence, the decision and the audit trail. A system that ingests only some channels, or that normalises inconsistently, will miss the payment that matters, and the gap will be found by an examiner, not by the team. The rules are the heart of the system, and they fall into families. Threshold rules fire when a payment exceeds a value, or when the total for a customer exceeds a value in a period. Velocity rules fire when the number of payments, or the total value, exceeds what is normal for that customer. Structuring rules look for multiple payments just under a reporting threshold, for example five payments of 9,500 euros from a customer whose normal pattern is one payment a month. Dormancy rules fire when an account that has been quiet for a year suddenly moves large amounts. Geographic rules fire on payments to or from high-risk jurisdictions, or on payments that pass through an unexpected corridor. Each rule needs a threshold, an owner, and a documented reason, because a rule with no reason cannot be defended. Tuning is the discipline that keeps the rules honest. A rule that is too sensitive generates thousands of alerts the team cannot review, and the team starts closing them without investigation, which is worse than having no rule at all. A rule that is too loose misses the fraud it was built to catch. Tuning uses above-the-line and below-the-line testing: the team takes a sample of transactions that fell just below the threshold and checks whether any of them were suspicious, and takes a sample above the threshold and checks whether the alerts were genuine. The results are used to adjust the threshold, and the adjustment is documented with the evidence. Tuning is done on a schedule, not when someone complains, and the schedule is part of the governance. Alert triage is the human part of the system, and it needs a service level agreement by risk. A high-risk alert, such as a payment to a sanctioned geography, must be reviewed within hours. A medium-risk alert must be reviewed within a day. A low-risk alert can wait a week. The triage must record a disposition for every alert: true positive, false positive, or inconclusive, with a reason. The disposition matters, because it feeds back into the tuning: if a rule generates 95 percent false positives, the rule is wrong, not the customers. Quality assurance samples a proportion of closed alerts and re-reviews them, and the sampling rate is higher for the alerts closed as false positives, because that is where a missed fraud hides. Model risk management applies to monitoring systems in the same way it applies to credit models. In the United States the Federal Reserve guidance on model risk management, SR 11-7, sets the standard: a model must be documented, validated by a team that did not build it, and monitored after deployment. The validation covers the data, the logic, the assumptions and the limitations. A monitoring model that was validated on retail payments and is then used on corporate payments without revalidation has a gap, and the gap will be found. The validation report must be kept, and the board must see it, because the board owns the model risk. Real-time monitoring is the challenge that instant payments created. When a payment must complete in 10 seconds, the monitoring cannot wait for an overnight batch. The system must score the payment before release, using precomputed features, and must decide in well under a second whether to allow, challenge or hold it. The hold decision is the hardest, because a held instant payment breaches the 10-second rule, so the hold must be reserved for the highest-risk cases and the decision must be logged with the reason. Post-event monitoring still runs, for the patterns that only emerge over days, such as structuring and layering, but the pre-release check is what stops the fraud before the money leaves. For a business analyst, the monitoring work is a set of requirements that must be measurable. The ingestion must cover every channel and every payment type, and the coverage must be provable. Each rule must have a documented threshold, an owner, and a tuning schedule. The triage must have a service level by risk and a disposition code for every alert. The acceptance criteria must include a test where a structuring pattern generates an alert, a test where a high-risk alert is reviewed inside its service level, a test where a tuning exercise changes a threshold with documented evidence, and a test where an instant payment is scored and released inside the 10-second budget. The management information must show the alert volumes, the false positive rate, and the time to disposition, because a monitoring system without management information is a system nobody is watching. Last reviewed 8 November 2026. Further reading: Financial Action Task Force guidance on transaction monitoring; the Wolfsberg Group guidance on transaction monitoring; Federal Reserve SR 11-7 on model risk management; European Banking Authority guidelines on money laundering and terrorist financing risk factors.", "paragraphs": ["A transaction monitoring system has four parts, and a failure in any one of them breaks the whole control. Ingestion takes every payment from every channel and normalises it into a single record: who sent it, who received it, how much, in what currency, through which channel, and with what reference. The rules engine applies scenarios to the normalised records and generates alerts. Scoring ranks the alerts by risk so the team works on the most dangerous first. Case management holds the investigation, the evidence, the decision and the audit trail. A system that ingests only some channels, or that normalises inconsistently, will miss the payment that matters, and the gap will be found by an examiner, not by the team.", "The rules are the heart of the system, and they fall into families. Threshold rules fire when a payment exceeds a value, or when the total for a customer exceeds a value in a period. Velocity rules fire when the number of payments, or the total value, exceeds what is normal for that customer. Structuring rules look for multiple payments just under a reporting threshold, for example five payments of 9,500 euros from a customer whose normal pattern is one payment a month. Dormancy rules fire when an account that has been quiet for a year suddenly moves large amounts. Geographic rules fire on payments to or from high-risk jurisdictions, or on payments that pass through an unexpected corridor. Each rule needs a threshold, an owner, and a documented reason, because a rule with no reason cannot be defended.", "Tuning is the discipline that keeps the rules honest. A rule that is too sensitive generates thousands of alerts the team cannot review, and the team starts closing them without investigation, which is worse than having no rule at all. A rule that is too loose misses the fraud it was built to catch. Tuning uses above-the-line and below-the-line testing: the team takes a sample of transactions that fell just below the threshold and checks whether any of them were suspicious, and takes a sample above the threshold and checks whether the alerts were genuine. The results are used to adjust the threshold, and the adjustment is documented with the evidence. Tuning is done on a schedule, not when someone complains, and the schedule is part of the governance.", "Alert triage is the human part of the system, and it needs a service level agreement by risk. A high-risk alert, such as a payment to a sanctioned geography, must be reviewed within hours. A medium-risk alert must be reviewed within a day. A low-risk alert can wait a week. The triage must record a disposition for every alert: true positive, false positive, or inconclusive, with a reason. The disposition matters, because it feeds back into the tuning: if a rule generates 95 percent false positives, the rule is wrong, not the customers. Quality assurance samples a proportion of closed alerts and re-reviews them, and the sampling rate is higher for the alerts closed as false positives, because that is where a missed fraud hides.", "Model risk management applies to monitoring systems in the same way it applies to credit models. In the United States the Federal Reserve guidance on model risk management, SR 11-7, sets the standard: a model must be documented, validated by a team that did not build it, and monitored after deployment. The validation covers the data, the logic, the assumptions and the limitations. A monitoring model that was validated on retail payments and is then used on corporate payments without revalidation has a gap, and the gap will be found. The validation report must be kept, and the board must see it, because the board owns the model risk.", "Real-time monitoring is the challenge that instant payments created. When a payment must complete in 10 seconds, the monitoring cannot wait for an overnight batch. The system must score the payment before release, using precomputed features, and must decide in well under a second whether to allow, challenge or hold it. The hold decision is the hardest, because a held instant payment breaches the 10-second rule, so the hold must be reserved for the highest-risk cases and the decision must be logged with the reason. Post-event monitoring still runs, for the patterns that only emerge over days, such as structuring and layering, but the pre-release check is what stops the fraud before the money leaves.", "For a business analyst, the monitoring work is a set of requirements that must be measurable. The ingestion must cover every channel and every payment type, and the coverage must be provable. Each rule must have a documented threshold, an owner, and a tuning schedule. The triage must have a service level by risk and a disposition code for every alert. The acceptance criteria must include a test where a structuring pattern generates an alert, a test where a high-risk alert is reviewed inside its service level, a test where a tuning exercise changes a threshold with documented evidence, and a test where an instant payment is scored and released inside the 10-second budget. The management information must show the alert volumes, the false positive rate, and the time to disposition, because a monitoring system without management information is a system nobody is watching. Last reviewed 8 November 2026. Further reading: Financial Action Task Force guidance on transaction monitoring; the Wolfsberg Group guidance on transaction monitoring; Federal Reserve SR 11-7 on model risk management; European Banking Authority guidelines on money laundering and terrorist financing risk factors."], "accessibility": "Payment flow diagram showing Transaction monitoring systems: rules, thresholds, alert triage and tuning.", "visual_type": "payment_flow", "visual_choice_reason": "default payment journey", "beats": [{"t0": 0.0, "t1": 61.7, "title": "Transaction monitoring system has four parts", "note": "A transaction monitoring system has four parts, and a failure in any one of them breaks the whole control.", "highlight_nodes": ["n0"], "highlight_conns": [], "highlight_fields": []}, {"t0": 61.7, "t1": 127.2, "title": "Structuring rules look for multiple payments just", "note": "Structuring rules look for multiple payments just under a reporting threshold, for example five payments of 9,500 euros from a customer whose normal pattern is one payment a month.", "highlight_nodes": ["n1"], "highlight_conns": ["c0"], "highlight_fields": []}, {"t0": 127.2, "t1": 183.8, "title": "Results: used to adjust threshold", "note": "The results are used to adjust the threshold, and the adjustment is documented with the evidence.", "highlight_nodes": ["n2"], "highlight_conns": ["c1"], "highlight_fields": []}, {"t0": 183.8, "t1": 242.0, "title": "Model risk management applies to monitoring", "note": "Model risk management applies to monitoring systems in the same way it applies to credit models.", "highlight_nodes": ["n3"], "highlight_conns": ["c2"], "highlight_fields": []}, {"t0": 242.0, "t1": 306.7, "title": "Hold decision", "note": "The hold decision is the hardest, because a held instant payment breaches the 10-second rule, so the hold must be reserved for the highest-risk cases", "highlight_nodes": ["n4"], "highlight_conns": ["c3"], "highlight_fields": []}, {"t0": 306.7, "t1": 337.9, "title": "Management information must show the alert volumes", "note": "The management information must show the alert volumes", "highlight_nodes": ["n5"], "highlight_conns": ["c4"], "highlight_fields": []}], "framework": {"objective": "By the end of this lesson, you will be able to explain transaction monitoring systems and apply it to a real banking scenario.", "why_matters": "Monitoring is only as good as its tuning, and the analyst defines the thresholds and the triage workflow.", "technical_example": "Structuring rules look for multiple payments just under a reporting threshold, for example five payments of 9,500 euros from a customer whose normal pattern is one payment a month.", "failure_recovery": "A transaction monitoring system has four parts, and a failure in any one of them breaks the whole control.", "exercise": {"task": "A monitoring rule flags 1,000 transactions a day and only 5 are real fraud. Work out the triage approach.", "info": "Use the rules, numbers and worked examples in this lesson.", "action": "Work through the scenario and state the outcome with the reason.", "correct": "Analysts triage by risk score, clear the obvious legitimate payments quickly, escalate the suspicious ones for deeper review, and feed the outcomes back to tune the threshold.", "why": "Tuning is a feedback loop: every disposition teaches the system, and without it the alert queue grows until real fraud is missed."}, "assessment": {"question": "Why do transaction monitoring systems generate so many false positive alerts?", "options": ["Because the rules are set broadly to catch rare fraud, so most flagged transactions are legitimate", "Because the system is broken and cannot be tuned", "Because fraud is more common than legitimate payments", "Because the rules only look at the amount and nothing else"], "answer": 0, "explanation": "Fraud is rare, so a rule sensitive enough to catch it will also flag many legitimate payments, which is why alert triage and threshold tuning are core operational work.", "why_wrong": ["", "This is not correct for this question. Fraud is rare, so a rule sensitive enough to catch it will also flag many legitimate payments, which is why alert triage and threshold tuning are core operational work.", "This is not correct for this question. Fraud is rare, so a rule sensitive enough to catch it will also flag many legitimate payments, which is why alert triage and threshold tuning are core operational work.", "This is not correct for this question. Fraud is rare, so a rule sensitive enough to catch it will also flag many legitimate payments, which is why alert triage and threshold tuning are core operational work."], "source": "lesson text"}, "takeaway": "Further reading: Financial Action Task Force guidance on transaction monitoring; the Wolfsberg Group guidance on transaction monitoring; Federal Reserve SR 11-7 on model risk management; European Banking Authority guidelines on money laundering and terrorist financing risk factors.", "prereq": "ch87s1", "next": "ch87s3", "connection_note": "Builds on \"Fraud typologies in payments: APP scams, mule accounts and business email compromise\".", "tool": {"slug": "exception", "label": "Exception Investigation Simulator", "url": "../simulators/exception.html", "scenario": "Run the control failure from this lesson and follow the investigation to its resolution."}, "simple": "In plain words: A transaction monitoring system has four parts, and a failure in any one of them breaks the whole control.", "summary": "A transaction monitoring system has four parts, and a failure in any one of them breaks the whole control.", "example": "The rules are the heart of the system, and they fall into families."}}], "chapter_title": "Controls that keep payments safe", "meta_line": "Controls that keep payments safe, Lesson 2 of 7, Narration 5:37, D12 Risk, compliance and regulation", "next_id": "ch87s3", "next_title": "SAR and STR filing: what gets reported, when and to whom"}]);</script>
+</div>
+<nav class="tool-rail" aria-label="Lesson tools">
+<button type="button" class="rail-tool" onclick="pfOpenTranscript('studio-ch87s2')" title="Open transcript"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M7 3h7l4 4v14H7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M14 3v4h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 12h5M10 15.5h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span>Transcript</span></button>
+<button type="button" class="rail-tool" onclick="pfToggleNote('studio-ch87s2')" title="Write a note on this lesson"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L8 19l-4 1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>Notes</span></button>
+<button type="button" class="rail-tool" onclick="pfToggleFiles('studio-ch87s2')" title="Download lesson files"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>Files</span></button>
+</nav>
+<div class="fw-files-panel" id="pf-files-studio-ch87s2" style="display:none"><b>Lesson files</b><p><a href="../audio/ch87s2.mp3" download>Download narration (MP3)</a></p><p><a href="#" onclick="pfDownloadTranscript('studio-ch87s2');return false">Download transcript (.txt)</a></p></div>
+</div>
+</div>
+</main>
+<footer><p>Payments Training Hub. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="../index.html">Home</a> &middot; <a href="../courses.html">Courses</a> &middot; <a href="../practice.html">Practice</a> &middot; <a href="../simulators.html">Simulators</a> &middot; <a href="../labs.html">Labs</a> &middot; <a href="../explorer.html">Explorer</a> &middot; <a href="../tests.html">Tests</a> &middot; <a href="../diagnostic.html">Diagnostic</a> &middot; <a href="../faq.html">Interview Ready Questions</a> &middot; <a href="../interview-prep.html">Interview Prep</a></p><p><a href="../about.html">About</a> &middot; <a href="../privacy.html">Privacy</a> &middot; <a href="../terms.html">Terms</a> &middot; <a href="../contact.html">Contact</a> &middot; <a href="../editorial-standards.html">Editorial Standards</a> &middot; <a href="../sources.html">Sources</a></p></footer>
+<script defer src="../assets/site.js"></script>
+<script defer src="../assets/bundles.js"></script>
+<script defer src="../assets/auth.js"></script>
+<script defer src="../assets/studio.js"></script>
+<script defer src="../assets/insight-components.js"></script>
+<script defer src="../assets/nav.js"></script>
+<script defer src="../assets/pf-enhance.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+if(window.PFInsight){PFInsight.init();}
+});
+</script>
+</body>
+</html>

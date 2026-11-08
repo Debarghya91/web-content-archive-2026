@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>Production support and root cause analysis: keeping payments running | Payments Training Hub</title>
+<meta name="description" content="Production support in payments is a 24 hour discipline, because payments do not stop at 5pm. An instant payment can be sent at 3am on a Sunday, and if...">
+<link rel="canonical" href="https://www.paymentstraininghub.in/lessons/ch84s8.html">
+<meta property="og:url" content="https://www.paymentstraininghub.in/lessons/ch84s8.html">
+<meta property="og:title" content="Production support and root cause analysis: keeping payments running | Payments Training Hub">
+<meta property="og:description" content="Production support in payments is a 24 hour discipline, because payments do not stop at 5pm. An instant payment can be sent at 3am on a Sunday, and if...">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.in/assets/hero/hero-poster.jpg">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.paymentstraininghub.in/index.html"}, {"@type": "ListItem", "position": 2, "name": "BA practice depth", "item": "https://www.paymentstraininghub.in/chapters/ch84-ba-practice-depth.html"}, {"@type": "ListItem", "position": 3, "name": "Production support and root cause analysis: keeping payments running", "item": "https://www.paymentstraininghub.in/lessons/ch84s8.html"}]}</script>
+<link rel="stylesheet" href="../assets/studio.css">
+<link rel="stylesheet" href="../assets/pf-theme.css">
+<link rel="stylesheet" href="../assets/insight-components.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="../index.html" class="brand">Payments <span>Training Hub</span></a><nav class="topnav"><a href="../index.html">Home</a> <a href="../courses.html">Courses</a> <a href="../practice.html">Practice</a> <a href="../simulators.html">Simulators</a> <a href="../labs.html">Labs</a> <a href="../explorer.html">Explorer</a> <a href="../tests.html">Tests</a></nav><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox" style="display:none"><span id="authState">Not signed in</span> <span id="authForm" style="display:none"><input id="authEmail" type="email" placeholder="Email for OTP" aria-label="Email for sign-in"> <button class="mute-btn" onclick="paAuthSendOtp()">Send code</button> <input id="authCode" type="text" placeholder="6-digit code" aria-label="One-time code" style="display:none"> <button class="mute-btn" id="authVerifyBtn" onclick="paAuthVerifyOtp()" style="display:none">Verify</button> <button class="mute-btn" onclick="paAuthGoogle()">Sign in with Google</button> </span><button class="mute-btn" id="authSignOutBtn" onclick="paAuthSignOut()" style="display:none">Sign out</button></span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<div class="lesson-page">
+<div class="lesson-shell">
+<aside class="course-rail">
+<div class="rail-head">
+<h2>BA practice depth</h2>
+<a class="rail-close" href="../chapters/ch84-ba-practice-depth.html" aria-label="Close and go to chapter" title="Back to chapter">&times;</a>
+</div>
+<div class="goal-card">
+<div class="goal-head"><b>Today's goal &middot; <span id="side-progress-text">0 of 8 items</span></b><span class="goal-flag"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 21V4m0 1h11l-2.5 3.5L17 12H6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="goal-chev">&#94;</span></div>
+<p class="goal-body" id="side-goal-body">Complete 3 items today to stay at a good pace!</p>
+</div>
+<ul class="lesson-list"><li class="" data-lesson="ch84s1"><a href="ch84s1.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Requirements gathering for payments: workshops, elicitation and the domain language</span><span class="m">Video &middot; 4 min</span></span></a></li>
+<li class="" data-lesson="ch84s2"><a href="ch84s2.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Writing a BRD and a functional specification for a payment product</span><span class="m">Video &middot; 5 min</span></span></a></li>
+<li class="" data-lesson="ch84s3"><a href="ch84s3.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">User stories and acceptance criteria for payments: Gherkin in practice</span><span class="m">Video &middot; 4 min</span></span></a></li>
+<li class="" data-lesson="ch84s4"><a href="ch84s4.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Process mapping and BPMN: drawing the payment flow so everyone agrees</span><span class="m">Video &middot; 4 min</span></span></a></li>
+<li class="" data-lesson="ch84s5"><a href="ch84s5.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Data mapping and message mapping: field by field, MT to MX</span><span class="m">Video &middot; 7 min</span></span></a></li>
+<li class="" data-lesson="ch84s6"><a href="ch84s6.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Test strategy for payments: SIT, UAT, negative testing and the test pack</span><span class="m">Video &middot; 4 min</span></span></a></li>
+<li class="" data-lesson="ch84s7"><a href="ch84s7.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Defect management: severity, triage and the defect lifecycle</span><span class="m">Video &middot; 4 min</span></span></a></li>
+<li class="current" data-lesson="ch84s8"><a href="ch84s8.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Production support and root cause analysis: keeping payments running</span><span class="m">Video &middot; 4 min</span></span></a></li></ul>
+</aside>
+<div class="lesson-main">
+<div class="studio" id="studio-studio-ch84s8">
+<div class="player">
+<div class="studio-canvas" id="studio-canvas-studio-ch84s8">
+<div class="ch-sec studio-scene-vis active" id="studio-vis-studio-ch84s8-0"><div class="beat-frames">
+<div class="beat-frame active" data-frame="0">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<defs><pattern id="bfd996" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<rect x="0" y="0" width="900" height="506" fill="url(#bfd996)"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Production</tspan> <tspan fill="#FFFFFF">support</tspan> <tspan fill="#FFFFFF">in</tspan> <tspan fill="#FFFFFF">payments</tspan></text>
+<g data-node="n0" class="bf-now" data-beat="0">
+<rect x="48" y="172" width="249" height="96" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="68" cy="192" r="11" fill="#1D4ED8"/>
+<text x="68" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="285" y="196" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="172" y="223" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Production</text>
+</g>
+<g data-node="n1" class="bf-dim" data-beat="1">
+<rect x="325" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="345" cy="192" r="11" fill="#1E3A5F"/>
+<text x="345" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="449" y="223" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Incident containment</text>
+</g>
+<g data-node="n2" class="bf-dim" data-beat="2">
+<rect x="602" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="622" cy="192" r="11" fill="#1E3A5F"/>
+<text x="622" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="726" y="223" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Five whys root cause</text>
+</g>
+<g data-node="n3" class="bf-dim" data-beat="3">
+<rect x="602" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="622" cy="332" r="11" fill="#1E3A5F"/>
+<text x="622" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="726" y="363" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Blameless post-mortem</text>
+</g>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<rect x="325" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="345" cy="332" r="11" fill="#1E3A5F"/>
+<text x="345" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="449" y="363" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Production monitoring</text>
+</g>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="48" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="68" cy="332" r="11" fill="#1E3A5F"/>
+<text x="68" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="172" y="354" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Incident simulation</text>
+<text x="172" y="372" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">acceptance criteria</text>
+</g>
+<path data-conn="c0" data-beat="0" d="M 300 220 L 310 220" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c0" data-beat="0" points="322,220 310,227 310,213" fill="#DBEAFE"/>
+<path data-conn="c1" data-beat="1" d="M 577 220 L 587 220" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c1" data-beat="1" points="599,220 587,227 587,213" fill="#DBEAFE"/>
+<path data-conn="c2" data-beat="2" d="M 726 271 L 726 290 L 726 290 L 726 297" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c2" data-beat="2" points="726,309 719,297 733,297" fill="#DBEAFE"/>
+<path data-conn="c3" data-beat="3" d="M 599 360 L 589 360" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c3" data-beat="3" points="577,360 589,353 589,367" fill="#DBEAFE"/>
+<path data-conn="c4" data-beat="4" d="M 322 360 L 312 360" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c4" data-beat="4" points="300,360 312,353 312,367" fill="#DBEAFE"/>
+<g class="bf-paydot" style="--dx:0px;--dy:0px"><circle class="bf-pulse" cx="48" cy="220" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="48" cy="220" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="450" y="444" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Production support in payments is a 24 hour discipline, because payments do not stop at 5pm.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 1 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#60A5FA"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 787" role="img" aria-label="Lesson visual, vertical layout">
+<defs><pattern id="bfd997" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="360" height="787" fill="#0B1F3D"/>
+<rect x="0" y="0" width="360" height="787" fill="url(#bfd997)"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Production</tspan> <tspan fill="#FFFFFF">support</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">in</tspan> <tspan fill="#FFFFFF">payments</tspan></text>
+<g data-node="n0" class="bf-now" data-beat="0">
+<rect x="24" y="94" width="312" height="72" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="44" cy="114" r="11" fill="#1D4ED8"/>
+<text x="44" y="118" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="324" y="118" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="180" y="132" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Production</text>
+</g>
+<line data-conn="c0" data-beat="0" x1="180" y1="169" x2="180" y2="177" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c0" data-beat="0" points="180,189 173,177 187,177" fill="#DBEAFE"/>
+<g data-node="n1" class="bf-dim" data-beat="1">
+<rect x="24" y="192" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="212" r="11" fill="#1E3A5F"/>
+<text x="44" y="216" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="180" y="230" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Incident containment</text>
+</g>
+<line data-conn="c1" data-beat="1" x1="180" y1="267" x2="180" y2="275" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c1" data-beat="1" points="180,287 173,275 187,275" fill="#DBEAFE"/>
+<g data-node="n2" class="bf-dim" data-beat="2">
+<rect x="24" y="290" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="310" r="11" fill="#1E3A5F"/>
+<text x="44" y="314" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="180" y="328" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Five whys root cause</text>
+</g>
+<line data-conn="c2" data-beat="2" x1="180" y1="365" x2="180" y2="373" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c2" data-beat="2" points="180,385 173,373 187,373" fill="#DBEAFE"/>
+<g data-node="n3" class="bf-dim" data-beat="3">
+<rect x="24" y="388" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="408" r="11" fill="#1E3A5F"/>
+<text x="44" y="412" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="180" y="426" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Blameless post-mortem</text>
+</g>
+<line data-conn="c3" data-beat="3" x1="180" y1="463" x2="180" y2="471" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c3" data-beat="3" points="180,483 173,471 187,471" fill="#DBEAFE"/>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<rect x="24" y="486" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="506" r="11" fill="#1E3A5F"/>
+<text x="44" y="510" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="180" y="524" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Production monitoring</text>
+</g>
+<line data-conn="c4" data-beat="4" x1="180" y1="561" x2="180" y2="569" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c4" data-beat="4" points="180,581 173,569 187,569" fill="#DBEAFE"/>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="24" y="584" width="312" height="92" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="604" r="11" fill="#1E3A5F"/>
+<text x="44" y="608" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="180" y="622" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Incident simulation</text>
+<text x="180" y="642" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">acceptance criteria</text>
+</g>
+<g class="bf-paydot" style="--dx:0px;--dy:0px"><circle class="bf-pulse" cx="180" cy="94" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="180" cy="94" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="180" y="696" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Production support in payments is a 24</text>
+<text x="180" y="715" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">hour discipline, because payments do</text>
+<text x="180" y="734" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">not stop at 5pm.</text>
+<text x="24" y="775" font-size="12" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 1 of 6</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="1">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<defs><pattern id="bfd998" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<rect x="0" y="0" width="900" height="506" fill="url(#bfd998)"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Incident</tspan> <tspan fill="#FFFFFF">containment</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="48" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="68" cy="192" r="11" fill="#1E3A5F"/>
+<text x="68" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="172" y="223" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Production</text>
+</g>
+<g data-node="n1" class="bf-now" data-beat="1">
+<rect x="325" y="172" width="249" height="96" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="345" cy="192" r="11" fill="#1D4ED8"/>
+<text x="345" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="562" y="196" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="449" y="223" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Incident containment</text>
+</g>
+<g data-node="n2" class="bf-dim" data-beat="2">
+<rect x="602" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="622" cy="192" r="11" fill="#1E3A5F"/>
+<text x="622" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="726" y="223" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Five whys root cause</text>
+</g>
+<g data-node="n3" class="bf-dim" data-beat="3">
+<rect x="602" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="622" cy="332" r="11" fill="#1E3A5F"/>
+<text x="622" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="726" y="363" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Blameless post-mortem</text>
+</g>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<rect x="325" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="345" cy="332" r="11" fill="#1E3A5F"/>
+<text x="345" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="449" y="363" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Production monitoring</text>
+</g>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="48" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="68" cy="332" r="11" fill="#1E3A5F"/>
+<text x="68" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="172" y="354" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Incident simulation</text>
+<text x="172" y="372" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">acceptance criteria</text>
+</g>
+<path data-conn="c0" data-beat="0" d="M 300 220 L 310 220" stroke="#60A5FA" stroke-width="3" fill="none"/><polygon data-conn="c0" data-beat="0" points="322,220 310,227 310,213" fill="#DBEAFE"/>
+<path data-conn="c1" data-beat="1" d="M 577 220 L 587 220" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c1" data-beat="1" points="599,220 587,227 587,213" fill="#DBEAFE"/>
+<path data-conn="c2" data-beat="2" d="M 726 271 L 726 290 L 726 290 L 726 297" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c2" data-beat="2" points="726,309 719,297 733,297" fill="#DBEAFE"/>
+<path data-conn="c3" data-beat="3" d="M 599 360 L 589 360" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c3" data-beat="3" points="577,360 589,353 589,367" fill="#DBEAFE"/>
+<path data-conn="c4" data-beat="4" d="M 322 360 L 312 360" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c4" data-beat="4" points="300,360 312,353 312,367" fill="#DBEAFE"/>
+<g class="bf-paydot" style="--dx:-143px;--dy:0px"><circle class="bf-pulse" cx="315" cy="220" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="315" cy="220" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="450" y="444" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The second is to contain the impact: stop new payments if necessary, queue the affected</text>
+<text x="450" y="464" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">payments, and notify the customers.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 2 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#60A5FA"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 806" role="img" aria-label="Lesson visual, vertical layout">
+<defs><pattern id="bfd999" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="360" height="806" fill="#0B1F3D"/>
+<rect x="0" y="0" width="360" height="806" fill="url(#bfd999)"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Incident</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">containment</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="24" y="94" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="114" r="11" fill="#1E3A5F"/>
+<text x="44" y="118" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="180" y="132" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Production</text>
+</g>
+<line data-conn="c0" data-beat="0" x1="180" y1="169" x2="180" y2="177" stroke="#60A5FA" stroke-width="2"/>
+<polygon data-conn="c0" data-beat="0" points="180,189 173,177 187,177" fill="#DBEAFE"/>
+<g data-node="n1" class="bf-now" data-beat="1">
+<rect x="24" y="192" width="312" height="72" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="44" cy="212" r="11" fill="#1D4ED8"/>
+<text x="44" y="216" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="324" y="216" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="180" y="230" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Incident containment</text>
+</g>
+<line data-conn="c1" data-beat="1" x1="180" y1="267" x2="180" y2="275" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c1" data-beat="1" points="180,287 173,275 187,275" fill="#DBEAFE"/>
+<g data-node="n2" class="bf-dim" data-beat="2">
+<rect x="24" y="290" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="310" r="11" fill="#1E3A5F"/>
+<text x="44" y="314" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="180" y="328" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Five whys root cause</text>
+</g>
+<line data-conn="c2" data-beat="2" x1="180" y1="365" x2="180" y2="373" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c2" data-beat="2" points="180,385 173,373 187,373" fill="#DBEAFE"/>
+<g data-node="n3" class="bf-dim" data-beat="3">
+<rect x="24" y="388" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="408" r="11" fill="#1E3A5F"/>
+<text x="44" y="412" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="180" y="426" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Blameless post-mortem</text>
+</g>
+<line data-conn="c3" data-beat="3" x1="180" y1="463" x2="180" y2="471" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c3" data-beat="3" points="180,483 173,471 187,471" fill="#DBEAFE"/>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<rect x="24" y="486" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="506" r="11" fill="#1E3A5F"/>
+<text x="44" y="510" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="180" y="524" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Production monitoring</text>
+</g>
+<line data-conn="c4" data-beat="4" x1="180" y1="561" x2="180" y2="569" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c4" data-beat="4" points="180,581 173,569 187,569" fill="#DBEAFE"/>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="24" y="584" width="312" height="92" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="604" r="11" fill="#1E3A5F"/>
+<text x="44" y="608" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="180" y="622" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Incident simulation</text>
+<text x="180" y="642" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">acceptance criteria</text>
+</g>
+<g class="bf-paydot" style="--dx:0px;--dy:-52px"><circle class="bf-pulse" cx="180" cy="182" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="180" cy="182" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="180" y="696" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The second is to contain the impact: stop</text>
+<text x="180" y="715" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">new payments if necessary, queue the</text>
+<text x="180" y="734" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">affected payments, and notify the</text>
+<text x="180" y="753" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">customers.</text>
+<text x="24" y="794" font-size="12" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 2 of 6</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="2">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<defs><pattern id="bfd1000" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<rect x="0" y="0" width="900" height="506" fill="url(#bfd1000)"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Five</tspan> <tspan fill="#FFFFFF">whys</tspan> <tspan fill="#FFFFFF">root</tspan> <tspan fill="#FFFFFF">cause</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="48" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="68" cy="192" r="11" fill="#1E3A5F"/>
+<text x="68" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="172" y="223" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Production</text>
+</g>
+<g data-node="n1" class="bf-done" data-beat="1">
+<rect x="325" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="345" cy="192" r="11" fill="#1E3A5F"/>
+<text x="345" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="449" y="223" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Incident containment</text>
+</g>
+<g data-node="n2" class="bf-now" data-beat="2">
+<rect x="602" y="172" width="249" height="96" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="622" cy="192" r="11" fill="#1D4ED8"/>
+<text x="622" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="839" y="196" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="726" y="223" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Five whys root cause</text>
+</g>
+<g data-node="n3" class="bf-dim" data-beat="3">
+<rect x="602" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="622" cy="332" r="11" fill="#1E3A5F"/>
+<text x="622" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="726" y="363" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Blameless post-mortem</text>
+</g>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<rect x="325" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="345" cy="332" r="11" fill="#1E3A5F"/>
+<text x="345" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="449" y="363" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Production monitoring</text>
+</g>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="48" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="68" cy="332" r="11" fill="#1E3A5F"/>
+<text x="68" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="172" y="354" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Incident simulation</text>
+<text x="172" y="372" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">acceptance criteria</text>
+</g>
+<path data-conn="c0" data-beat="0" d="M 300 220 L 310 220" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c0" data-beat="0" points="322,220 310,227 310,213" fill="#DBEAFE"/>
+<path data-conn="c1" data-beat="1" d="M 577 220 L 587 220" stroke="#60A5FA" stroke-width="3" fill="none"/><polygon data-conn="c1" data-beat="1" points="599,220 587,227 587,213" fill="#DBEAFE"/>
+<path data-conn="c2" data-beat="2" d="M 726 271 L 726 290 L 726 290 L 726 297" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c2" data-beat="2" points="726,309 719,297 733,297" fill="#DBEAFE"/>
+<path data-conn="c3" data-beat="3" d="M 599 360 L 589 360" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c3" data-beat="3" points="577,360 589,353 589,367" fill="#DBEAFE"/>
+<path data-conn="c4" data-beat="4" d="M 322 360 L 312 360" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c4" data-beat="4" points="300,360 312,353 312,367" fill="#DBEAFE"/>
+<g class="bf-paydot" style="--dx:-143px;--dy:0px"><circle class="bf-pulse" cx="592" cy="220" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="592" cy="220" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="450" y="444" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Why?</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 3 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#60A5FA"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 749" role="img" aria-label="Lesson visual, vertical layout">
+<defs><pattern id="bfd1001" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="360" height="749" fill="#0B1F3D"/>
+<rect x="0" y="0" width="360" height="749" fill="url(#bfd1001)"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Five</tspan> <tspan fill="#FFFFFF">whys</tspan> <tspan fill="#FFFFFF">root</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">cause</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="24" y="94" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="114" r="11" fill="#1E3A5F"/>
+<text x="44" y="118" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="180" y="132" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Production</text>
+</g>
+<line data-conn="c0" data-beat="0" x1="180" y1="169" x2="180" y2="177" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c0" data-beat="0" points="180,189 173,177 187,177" fill="#DBEAFE"/>
+<g data-node="n1" class="bf-done" data-beat="1">
+<rect x="24" y="192" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="212" r="11" fill="#1E3A5F"/>
+<text x="44" y="216" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="180" y="230" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Incident containment</text>
+</g>
+<line data-conn="c1" data-beat="1" x1="180" y1="267" x2="180" y2="275" stroke="#60A5FA" stroke-width="2"/>
+<polygon data-conn="c1" data-beat="1" points="180,287 173,275 187,275" fill="#DBEAFE"/>
+<g data-node="n2" class="bf-now" data-beat="2">
+<rect x="24" y="290" width="312" height="72" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="44" cy="310" r="11" fill="#1D4ED8"/>
+<text x="44" y="314" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="324" y="314" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="180" y="328" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Five whys root cause</text>
+</g>
+<line data-conn="c2" data-beat="2" x1="180" y1="365" x2="180" y2="373" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c2" data-beat="2" points="180,385 173,373 187,373" fill="#DBEAFE"/>
+<g data-node="n3" class="bf-dim" data-beat="3">
+<rect x="24" y="388" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="408" r="11" fill="#1E3A5F"/>
+<text x="44" y="412" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="180" y="426" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Blameless post-mortem</text>
+</g>
+<line data-conn="c3" data-beat="3" x1="180" y1="463" x2="180" y2="471" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c3" data-beat="3" points="180,483 173,471 187,471" fill="#DBEAFE"/>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<rect x="24" y="486" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="506" r="11" fill="#1E3A5F"/>
+<text x="44" y="510" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="180" y="524" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Production monitoring</text>
+</g>
+<line data-conn="c4" data-beat="4" x1="180" y1="561" x2="180" y2="569" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c4" data-beat="4" points="180,581 173,569 187,569" fill="#DBEAFE"/>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="24" y="584" width="312" height="92" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="604" r="11" fill="#1E3A5F"/>
+<text x="44" y="608" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="180" y="622" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Incident simulation</text>
+<text x="180" y="642" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">acceptance criteria</text>
+</g>
+<g class="bf-paydot" style="--dx:0px;--dy:-52px"><circle class="bf-pulse" cx="180" cy="280" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="180" cy="280" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="180" y="696" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Why?</text>
+<text x="24" y="737" font-size="12" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 3 of 6</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="3">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<defs><pattern id="bfd1002" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<rect x="0" y="0" width="900" height="506" fill="url(#bfd1002)"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Blameless</tspan> <tspan fill="#FFFFFF">post-mortem</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="48" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="68" cy="192" r="11" fill="#1E3A5F"/>
+<text x="68" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="172" y="223" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Production</text>
+</g>
+<g data-node="n1" class="bf-done" data-beat="1">
+<rect x="325" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="345" cy="192" r="11" fill="#1E3A5F"/>
+<text x="345" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="449" y="223" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Incident containment</text>
+</g>
+<g data-node="n2" class="bf-done" data-beat="2">
+<rect x="602" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="622" cy="192" r="11" fill="#1E3A5F"/>
+<text x="622" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="726" y="223" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Five whys root cause</text>
+</g>
+<g data-node="n3" class="bf-now" data-beat="3">
+<rect x="602" y="312" width="249" height="96" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="622" cy="332" r="11" fill="#1D4ED8"/>
+<text x="622" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="839" y="336" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="726" y="363" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Blameless post-mortem</text>
+</g>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<rect x="325" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="345" cy="332" r="11" fill="#1E3A5F"/>
+<text x="345" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="449" y="363" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Production monitoring</text>
+</g>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="48" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="68" cy="332" r="11" fill="#1E3A5F"/>
+<text x="68" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="172" y="354" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Incident simulation</text>
+<text x="172" y="372" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">acceptance criteria</text>
+</g>
+<path data-conn="c0" data-beat="0" d="M 300 220 L 310 220" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c0" data-beat="0" points="322,220 310,227 310,213" fill="#DBEAFE"/>
+<path data-conn="c1" data-beat="1" d="M 577 220 L 587 220" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c1" data-beat="1" points="599,220 587,227 587,213" fill="#DBEAFE"/>
+<path data-conn="c2" data-beat="2" d="M 726 271 L 726 290 L 726 290 L 726 297" stroke="#60A5FA" stroke-width="3" fill="none"/><polygon data-conn="c2" data-beat="2" points="726,309 719,297 733,297" fill="#DBEAFE"/>
+<path data-conn="c3" data-beat="3" d="M 599 360 L 589 360" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c3" data-beat="3" points="577,360 589,353 589,367" fill="#DBEAFE"/>
+<path data-conn="c4" data-beat="4" d="M 322 360 L 312 360" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c4" data-beat="4" points="300,360 312,353 312,367" fill="#DBEAFE"/>
+<g class="bf-paydot" style="--dx:0px;--dy:-82px"><circle class="bf-pulse" cx="726" cy="302" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="726" cy="302" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="450" y="444" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">A post-mortem that is written but never acted on is a ritual, not a learning exercise.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 4 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#60A5FA"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 787" role="img" aria-label="Lesson visual, vertical layout">
+<defs><pattern id="bfd1003" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="360" height="787" fill="#0B1F3D"/>
+<rect x="0" y="0" width="360" height="787" fill="url(#bfd1003)"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Blameless</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">post-mortem</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="24" y="94" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="114" r="11" fill="#1E3A5F"/>
+<text x="44" y="118" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="180" y="132" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Production</text>
+</g>
+<line data-conn="c0" data-beat="0" x1="180" y1="169" x2="180" y2="177" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c0" data-beat="0" points="180,189 173,177 187,177" fill="#DBEAFE"/>
+<g data-node="n1" class="bf-done" data-beat="1">
+<rect x="24" y="192" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="212" r="11" fill="#1E3A5F"/>
+<text x="44" y="216" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="180" y="230" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Incident containment</text>
+</g>
+<line data-conn="c1" data-beat="1" x1="180" y1="267" x2="180" y2="275" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c1" data-beat="1" points="180,287 173,275 187,275" fill="#DBEAFE"/>
+<g data-node="n2" class="bf-done" data-beat="2">
+<rect x="24" y="290" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="310" r="11" fill="#1E3A5F"/>
+<text x="44" y="314" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="180" y="328" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Five whys root cause</text>
+</g>
+<line data-conn="c2" data-beat="2" x1="180" y1="365" x2="180" y2="373" stroke="#60A5FA" stroke-width="2"/>
+<polygon data-conn="c2" data-beat="2" points="180,385 173,373 187,373" fill="#DBEAFE"/>
+<g data-node="n3" class="bf-now" data-beat="3">
+<rect x="24" y="388" width="312" height="72" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="44" cy="408" r="11" fill="#1D4ED8"/>
+<text x="44" y="412" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="324" y="412" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="180" y="426" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Blameless post-mortem</text>
+</g>
+<line data-conn="c3" data-beat="3" x1="180" y1="463" x2="180" y2="471" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c3" data-beat="3" points="180,483 173,471 187,471" fill="#DBEAFE"/>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<rect x="24" y="486" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="506" r="11" fill="#1E3A5F"/>
+<text x="44" y="510" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="180" y="524" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Production monitoring</text>
+</g>
+<line data-conn="c4" data-beat="4" x1="180" y1="561" x2="180" y2="569" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c4" data-beat="4" points="180,581 173,569 187,569" fill="#DBEAFE"/>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="24" y="584" width="312" height="92" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="604" r="11" fill="#1E3A5F"/>
+<text x="44" y="608" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="180" y="622" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Incident simulation</text>
+<text x="180" y="642" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">acceptance criteria</text>
+</g>
+<g class="bf-paydot" style="--dx:0px;--dy:-52px"><circle class="bf-pulse" cx="180" cy="378" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="180" cy="378" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="180" y="696" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">A post-mortem that is written but never</text>
+<text x="180" y="715" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">acted on is a ritual, not a learning</text>
+<text x="180" y="734" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">exercise.</text>
+<text x="24" y="775" font-size="12" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 4 of 6</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="4">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<defs><pattern id="bfd1004" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<rect x="0" y="0" width="900" height="506" fill="url(#bfd1004)"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Production</tspan> <tspan fill="#FFFFFF">monitoring</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="48" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="68" cy="192" r="11" fill="#1E3A5F"/>
+<text x="68" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="172" y="223" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Production</text>
+</g>
+<g data-node="n1" class="bf-done" data-beat="1">
+<rect x="325" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="345" cy="192" r="11" fill="#1E3A5F"/>
+<text x="345" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="449" y="223" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Incident containment</text>
+</g>
+<g data-node="n2" class="bf-done" data-beat="2">
+<rect x="602" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="622" cy="192" r="11" fill="#1E3A5F"/>
+<text x="622" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="726" y="223" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Five whys root cause</text>
+</g>
+<g data-node="n3" class="bf-done" data-beat="3">
+<rect x="602" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="622" cy="332" r="11" fill="#1E3A5F"/>
+<text x="622" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="726" y="363" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Blameless post-mortem</text>
+</g>
+<g data-node="n4" class="bf-now" data-beat="4">
+<rect x="325" y="312" width="249" height="96" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="345" cy="332" r="11" fill="#1D4ED8"/>
+<text x="345" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="562" y="336" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="449" y="363" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Production monitoring</text>
+</g>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="48" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="68" cy="332" r="11" fill="#1E3A5F"/>
+<text x="68" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="172" y="354" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Incident simulation</text>
+<text x="172" y="372" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">acceptance criteria</text>
+</g>
+<path data-conn="c0" data-beat="0" d="M 300 220 L 310 220" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c0" data-beat="0" points="322,220 310,227 310,213" fill="#DBEAFE"/>
+<path data-conn="c1" data-beat="1" d="M 577 220 L 587 220" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c1" data-beat="1" points="599,220 587,227 587,213" fill="#DBEAFE"/>
+<path data-conn="c2" data-beat="2" d="M 726 271 L 726 290 L 726 290 L 726 297" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c2" data-beat="2" points="726,309 719,297 733,297" fill="#DBEAFE"/>
+<path data-conn="c3" data-beat="3" d="M 599 360 L 589 360" stroke="#60A5FA" stroke-width="3" fill="none"/><polygon data-conn="c3" data-beat="3" points="577,360 589,353 589,367" fill="#DBEAFE"/>
+<path data-conn="c4" data-beat="4" d="M 322 360 L 312 360" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c4" data-beat="4" points="300,360 312,353 312,367" fill="#DBEAFE"/>
+<g class="bf-paydot" style="--dx:142px;--dy:0px"><circle class="bf-pulse" cx="584" cy="360" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="584" cy="360" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="450" y="444" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Monitoring is the early warning system.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 5 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#60A5FA"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 749" role="img" aria-label="Lesson visual, vertical layout">
+<defs><pattern id="bfd1005" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="360" height="749" fill="#0B1F3D"/>
+<rect x="0" y="0" width="360" height="749" fill="url(#bfd1005)"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Production</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">monitoring</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="24" y="94" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="114" r="11" fill="#1E3A5F"/>
+<text x="44" y="118" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="180" y="132" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Production</text>
+</g>
+<line data-conn="c0" data-beat="0" x1="180" y1="169" x2="180" y2="177" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c0" data-beat="0" points="180,189 173,177 187,177" fill="#DBEAFE"/>
+<g data-node="n1" class="bf-done" data-beat="1">
+<rect x="24" y="192" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="212" r="11" fill="#1E3A5F"/>
+<text x="44" y="216" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="180" y="230" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Incident containment</text>
+</g>
+<line data-conn="c1" data-beat="1" x1="180" y1="267" x2="180" y2="275" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c1" data-beat="1" points="180,287 173,275 187,275" fill="#DBEAFE"/>
+<g data-node="n2" class="bf-done" data-beat="2">
+<rect x="24" y="290" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="310" r="11" fill="#1E3A5F"/>
+<text x="44" y="314" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="180" y="328" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Five whys root cause</text>
+</g>
+<line data-conn="c2" data-beat="2" x1="180" y1="365" x2="180" y2="373" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c2" data-beat="2" points="180,385 173,373 187,373" fill="#DBEAFE"/>
+<g data-node="n3" class="bf-done" data-beat="3">
+<rect x="24" y="388" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="408" r="11" fill="#1E3A5F"/>
+<text x="44" y="412" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="180" y="426" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Blameless post-mortem</text>
+</g>
+<line data-conn="c3" data-beat="3" x1="180" y1="463" x2="180" y2="471" stroke="#60A5FA" stroke-width="2"/>
+<polygon data-conn="c3" data-beat="3" points="180,483 173,471 187,471" fill="#DBEAFE"/>
+<g data-node="n4" class="bf-now" data-beat="4">
+<rect x="24" y="486" width="312" height="72" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="44" cy="506" r="11" fill="#1D4ED8"/>
+<text x="44" y="510" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="324" y="510" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="180" y="524" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Production monitoring</text>
+</g>
+<line data-conn="c4" data-beat="4" x1="180" y1="561" x2="180" y2="569" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c4" data-beat="4" points="180,581 173,569 187,569" fill="#DBEAFE"/>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="24" y="584" width="312" height="92" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="604" r="11" fill="#1E3A5F"/>
+<text x="44" y="608" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="180" y="622" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Incident simulation</text>
+<text x="180" y="642" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">acceptance criteria</text>
+</g>
+<g class="bf-paydot" style="--dx:0px;--dy:-52px"><circle class="bf-pulse" cx="180" cy="476" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="180" cy="476" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="180" y="696" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Monitoring is the early warning system.</text>
+<text x="24" y="737" font-size="12" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 5 of 6</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="5">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<defs><pattern id="bfd1006" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<rect x="0" y="0" width="900" height="506" fill="url(#bfd1006)"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Incident</tspan> <tspan fill="#FFFFFF">simulation</tspan> <tspan fill="#FFFFFF">acceptance</tspan></text>
+<text x="48" y="126" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">criteria</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="48" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="68" cy="192" r="11" fill="#1E3A5F"/>
+<text x="68" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="172" y="223" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Production</text>
+</g>
+<g data-node="n1" class="bf-done" data-beat="1">
+<rect x="325" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="345" cy="192" r="11" fill="#1E3A5F"/>
+<text x="345" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="449" y="223" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Incident containment</text>
+</g>
+<g data-node="n2" class="bf-done" data-beat="2">
+<rect x="602" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="622" cy="192" r="11" fill="#1E3A5F"/>
+<text x="622" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="726" y="223" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Five whys root cause</text>
+</g>
+<g data-node="n3" class="bf-done" data-beat="3">
+<rect x="602" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="622" cy="332" r="11" fill="#1E3A5F"/>
+<text x="622" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="726" y="363" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Blameless post-mortem</text>
+</g>
+<g data-node="n4" class="bf-done" data-beat="4">
+<rect x="325" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="345" cy="332" r="11" fill="#1E3A5F"/>
+<text x="345" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="449" y="363" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Production monitoring</text>
+</g>
+<g data-node="n5" class="bf-now" data-beat="5">
+<rect x="48" y="312" width="249" height="96" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="68" cy="332" r="11" fill="#1D4ED8"/>
+<text x="68" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="285" y="336" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="172" y="354" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Incident simulation</text>
+<text x="172" y="372" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">acceptance criteria</text>
+</g>
+<path data-conn="c0" data-beat="0" d="M 300 220 L 310 220" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c0" data-beat="0" points="322,220 310,227 310,213" fill="#DBEAFE"/>
+<path data-conn="c1" data-beat="1" d="M 577 220 L 587 220" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c1" data-beat="1" points="599,220 587,227 587,213" fill="#DBEAFE"/>
+<path data-conn="c2" data-beat="2" d="M 726 271 L 726 290 L 726 290 L 726 297" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c2" data-beat="2" points="726,309 719,297 733,297" fill="#DBEAFE"/>
+<path data-conn="c3" data-beat="3" d="M 599 360 L 589 360" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c3" data-beat="3" points="577,360 589,353 589,367" fill="#DBEAFE"/>
+<path data-conn="c4" data-beat="4" d="M 322 360 L 312 360" stroke="#60A5FA" stroke-width="3" fill="none"/><polygon data-conn="c4" data-beat="4" points="300,360 312,353 312,367" fill="#DBEAFE"/>
+<g class="bf-paydot" style="--dx:142px;--dy:0px"><circle class="bf-pulse" cx="307" cy="360" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="307" cy="360" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="450" y="444" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The acceptance criteria must include a test where an incident is simulated end to end, from</text>
+<text x="450" y="464" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">detection to recovery, with the full timeline recorded.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 6 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#60A5FA"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 806" role="img" aria-label="Lesson visual, vertical layout">
+<defs><pattern id="bfd1007" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="360" height="806" fill="#0B1F3D"/>
+<rect x="0" y="0" width="360" height="806" fill="url(#bfd1007)"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Incident</tspan> <tspan fill="#FFFFFF">simulation</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">acceptance</tspan> <tspan fill="#FFFFFF">criteria</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="24" y="94" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="114" r="11" fill="#1E3A5F"/>
+<text x="44" y="118" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="180" y="132" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Production</text>
+</g>
+<line data-conn="c0" data-beat="0" x1="180" y1="169" x2="180" y2="177" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c0" data-beat="0" points="180,189 173,177 187,177" fill="#DBEAFE"/>
+<g data-node="n1" class="bf-done" data-beat="1">
+<rect x="24" y="192" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="212" r="11" fill="#1E3A5F"/>
+<text x="44" y="216" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="180" y="230" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Incident containment</text>
+</g>
+<line data-conn="c1" data-beat="1" x1="180" y1="267" x2="180" y2="275" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c1" data-beat="1" points="180,287 173,275 187,275" fill="#DBEAFE"/>
+<g data-node="n2" class="bf-done" data-beat="2">
+<rect x="24" y="290" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="310" r="11" fill="#1E3A5F"/>
+<text x="44" y="314" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="180" y="328" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Five whys root cause</text>
+</g>
+<line data-conn="c2" data-beat="2" x1="180" y1="365" x2="180" y2="373" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c2" data-beat="2" points="180,385 173,373 187,373" fill="#DBEAFE"/>
+<g data-node="n3" class="bf-done" data-beat="3">
+<rect x="24" y="388" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="408" r="11" fill="#1E3A5F"/>
+<text x="44" y="412" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="180" y="426" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Blameless post-mortem</text>
+</g>
+<line data-conn="c3" data-beat="3" x1="180" y1="463" x2="180" y2="471" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c3" data-beat="3" points="180,483 173,471 187,471" fill="#DBEAFE"/>
+<g data-node="n4" class="bf-done" data-beat="4">
+<rect x="24" y="486" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="506" r="11" fill="#1E3A5F"/>
+<text x="44" y="510" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="180" y="524" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Production monitoring</text>
+</g>
+<line data-conn="c4" data-beat="4" x1="180" y1="561" x2="180" y2="569" stroke="#60A5FA" stroke-width="2"/>
+<polygon data-conn="c4" data-beat="4" points="180,581 173,569 187,569" fill="#DBEAFE"/>
+<g data-node="n5" class="bf-now" data-beat="5">
+<rect x="24" y="584" width="312" height="92" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="44" cy="604" r="11" fill="#1D4ED8"/>
+<text x="44" y="608" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="324" y="608" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="180" y="622" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Incident simulation</text>
+<text x="180" y="642" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">acceptance criteria</text>
+</g>
+<g class="bf-paydot" style="--dx:0px;--dy:-52px"><circle class="bf-pulse" cx="180" cy="574" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="180" cy="574" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="180" y="696" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The acceptance criteria must include a test</text>
+<text x="180" y="715" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">where an incident is simulated end to end,</text>
+<text x="180" y="734" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">from detection to recovery, with the full</text>
+<text x="180" y="753" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">timeline recorded.</text>
+<text x="24" y="794" font-size="12" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 6 of 6</text>
+</svg>
+</div>
+</div>
+<p class="xml-caption">Flow of the explanation in this lesson.</p></div>
+<div class="playerbar">
+<div class="studio-progress"><div class="studio-markers" id="studio-markers-studio-ch84s8"></div><input type="range" id="studio-slider-studio-ch84s8" min="0" max="1000" value="0" aria-label="Lesson timeline"></div>
+<div class="ctrl-row">
+<button class="ctrl-btn" id="studio-play-studio-ch84s8" onclick="studioTogglePlay('studio-ch84s8')" aria-label="Play lesson" title="Play lesson"><span class="ctrl-ic-play"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></span><span class="ctrl-ic-pause" style="display:none"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><rect x="6" y="5" width="4" height="14" fill="currentColor"/><rect x="14" y="5" width="4" height="14" fill="currentColor"/></svg></span></button>
+<button class="ctrl-btn studio-mute-btn" id="studio-mute-studio-ch84s8" onclick="studioToggleMute('studio-ch84s8')" aria-label="Mute narration" title="Mute / unmute narration"><svg class="studio-mute-icon" viewBox="0 0 24 24" width="28" height="28" fill="currentColor" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3z"/><path class="studio-mute-waves" d="M16 8.5a5 5 0 0 1 0 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><path class="studio-mute-waves" d="M18.5 6a9 9 0 0 1 0 12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><path class="studio-mute-x" d="M16 9.5l5 5M21 9.5l-5 5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" style="display:none"/></svg></button>
+<button class="ctrl-btn" onclick="studioSkip('studio-ch84s8', -10)" aria-label="Back 10 seconds" title="Back 10 seconds"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 5a7 7 0 1 1-6.32 4.06" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M5.5 3.5v5h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><text x="12" y="16.5" font-size="8" fill="currentColor" text-anchor="middle" font-weight="700">10</text></svg></button>
+<span class="studio-time ctrl-time" id="studio-time-studio-ch84s8">0:00 / 4:16</span>
+<button class="ctrl-btn" onclick="studioSkip('studio-ch84s8', 10)" aria-label="Forward 10 seconds" title="Forward 10 seconds"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 5a7 7 0 1 0 6.32 4.06" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M18.5 3.5v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><text x="12" y="16.5" font-size="8" fill="currentColor" text-anchor="middle" font-weight="700">10</text></svg></button>
+<span class="playerbar-spacer"></span>
+<span class="player-stage" id="studio-tag-studio-ch84s8">Step 1 of 6</span>
+<button class="ctrl-btn ctrl-step" id="studio-prevscene-studio-ch84s8" onclick="studioPrevScene('studio-ch84s8')" title="Previous step" aria-label="Previous step">&lsaquo;</button>
+<button class="ctrl-btn ctrl-step" id="studio-nextscene-studio-ch84s8" onclick="studioNextScene('studio-ch84s8')" title="Next step" aria-label="Next step">&rsaquo;</button>
+<button class="ctrl-btn ctrl-speed" id="studio-speedbtn-studio-ch84s8" onclick="studioCycleSpeed('studio-ch84s8')" title="Playback speed" aria-label="Playback speed">1x</button>
+<span class="ctrl-settings-wrap"><button class="ctrl-btn" onclick="studioToggleSettings('studio-ch84s8', event)" aria-label="Player settings" title="Settings"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5 5l2.1 2.1M16.9 16.9L19 19M19 5l-2.1 2.1M7.1 16.9L5 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button><span class="ctrl-popover" id="studio-settings-studio-ch84s8" style="display:none" onclick="event.stopPropagation()"><label class="ctrl-pop-row">Volume <input type="range" min="0" max="1" step="0.1" value="1" oninput="studioSetVolume('studio-ch84s8', this.value)" style="width:110px;accent-color:#3587FC"></label><button class="studio-btn" id="studio-captions-studio-ch84s8" onclick="studioToggleCaptions('studio-ch84s8')">Captions: On</button><button class="studio-btn" onclick="studioReplayScene('studio-ch84s8')">Replay scene</button></span></span>
+<button class="ctrl-btn" onclick="studioFullscreen('studio-ch84s8')" aria-label="Fullscreen" title="Fullscreen"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+</div>
+</div>
+</div>
+<p class="studio-caption" id="studio-caption-studio-ch84s8"></p>
+<p class="studio-loading" id="studio-loading-studio-ch84s8" style="display:none">Loading narration...</p>
+<p class="studio-error" id="studio-error-studio-ch84s8" role="alert" style="display:none"></p>
+<audio id="studio-audio-studio-ch84s8" preload="auto" src="../audio/ch84s8.mp3"></audio>
+</div>
+<div class="lesson-title-row">
+<h1>Production support and root cause analysis: keeping payments running</h1>
+<button class="save-note" type="button" onclick="pfToggleNote('studio-ch84s8')" title="Save a note on this lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L8 19l-4 1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg> Save note</button>
+</div>
+<p class="lesson-meta-line">BA practice depth, Lesson 8 of 8, Narration 4:16, D14 Business analysis and professional practice</p>
+<p class="lesson-note-saved" id="studio-note-saved-studio-ch84s8" style="display:none">Note saved.</p>
+<div class="note-editor" id="studio-note-editor-studio-ch84s8" style="display:none"><textarea id="studio-note-text-studio-ch84s8" rows="3" placeholder="Write a note on this lesson..." aria-label="Lesson note"></textarea><div class="note-editor-row"><button class="studio-btn primary" onclick="pfSaveNote('studio-ch84s8')">Save note</button> <button class="studio-btn" onclick="pfToggleNote('studio-ch84s8')">Cancel</button></div></div>
+<div class="dive-deeper">
+<div class="dive-head"><button type="button" class="dive-toggle" onclick="pfToggleDive(this)" aria-expanded="true"><span class="dive-spark"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 2l2.2 6.8L21 11l-6.8 2.2L12 20l-2.2-6.8L3 11l6.8-2.2z" fill="currentColor"/></svg></span><span class="dive-title">Dive deeper on this topic</span><span class="dive-chev"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 14l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button></div>
+<div class="dive-btns"><button type="button" class="dive-btn" data-kind="practice" onclick="pfDive('studio-ch84s8', 'practice')">Give me practice questions</button><button type="button" class="dive-btn" data-kind="simple" onclick="pfDive('studio-ch84s8', 'simple')">Explain this topic in simple terms</button><button type="button" class="dive-btn" data-kind="summary" onclick="pfDive('studio-ch84s8', 'summary')">Give me a summary</button><button type="button" class="dive-btn" data-kind="example" onclick="pfDive('studio-ch84s8', 'example')">Give me real-life examples</button></div>
+<div class="dive-panel" id="dive-panel-studio-ch84s8"><div class="dive-panel-body"></div></div>
+<script type="application/json" id="pf-dive-data-studio-ch84s8">{"simple": "In plain words: Production support in payments is a 24 hour discipline, because payments do not stop at 5pm.", "summary": "Production support in payments is a 24 hour discipline, because payments do not stop at 5pm.", "example": "This lesson is conceptual. The worked examples that use it are in the lessons that follow in this chapter."}</script>
+</div>
+<div class="lesson-feedback">
+<div class="fb-icons"><button type="button" class="fb-btn" data-kind="like" onclick="pfFeedback(this,'like')" aria-label="Like this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M7 21H4a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1h3v11zm0 0h9.6a2 2 0 0 0 1.9-1.4l1.6-5A2 2 0 0 0 18.2 12H15V6.5A2.5 2.5 0 0 0 12.5 4L11 7.5 8.6 10H7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button><button type="button" class="fb-btn" data-kind="dislike" onclick="pfFeedback(this,'dislike')" aria-label="Dislike this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M17 3h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1h-3V3zm0 0H7.4a2 2 0 0 0-1.9 1.4l-1.6 5A2 2 0 0 0 5.8 12H9v5.5A2.5 2.5 0 0 0 11.5 20L13 16.5l2.4-2.5H17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button><button type="button" class="fb-btn" data-kind="flag" onclick="pfFeedback(this,'flag')" aria-label="Flag this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M6 21V4m0 1h11l-2.5 3.5L17 12H6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+<button type="button" class="go-next" onclick="goLesson('ch85s1')" title="Next: Embedded finance: payments inside another company's product">Go to next item &rarr;</button>
+</div>
+<div class="chips"><span class="chip">Reconciliation</span><span class="chip">Idempotency</span><span class="chip">Payment hub</span></div>
+<div class="card learn-card">
+<h2>What you will learn</h2>
+<p class="transcript"><b>Your objective.</b> By the end of this lesson, you will be able to explain production support and root cause analysis: keeping payments running and apply it to a real banking scenario.</p>
+<p class="transcript"><b>Why it matters.</b> For a business analyst, production support is a set of requirements: the support model, the runbook, the incident procedure, the root cause process, the reconciliation investigation procedure, and the monitoring.</p>
+<p class="transcript">Chapter objective: Learner explains how a payments business analyst gathers requirements in the domain language, writes a BRD and a functional specification, and writes user stories with Gherkin acceptance criteria. Learner maps processes in BPMN, maps data field by field from MT to MX, designs a test strategy with SIT, UAT and negative testing, manages defects by severity, and runs production support and root cause analysis.</p>
+<h3>Key learning points</h3>
+<ul id="studio-points-studio-ch84s8">
+<li>Production support in payments</li>
+<li>Incident containment</li>
+<li>Five whys root cause</li>
+<li>Blameless post-mortem</li>
+<li>Production monitoring</li>
+<li>Incident simulation acceptance criteria</li>
+</ul>
+<h3>Key terms</h3>
+<div id="studio-terms-studio-ch84s8">
+<p class="keyterm"><b>Reconciliation:</b> The process of comparing records from two sources, such as a bank statement and an internal ledger, to confirm they agree.</p>
+<p class="keyterm"><b>Idempotency:</b> The property that repeating the same request has the same effect as sending it once. In payments, an idempotency key lets a client safely retry a request after a timeout without creating a duplicate...</p>
+<p class="keyterm"><b>Payment hub:</b> A central system in a bank that receives payment instructions from all channels, validates them, applies screening and routing rules, and sends them to the correct clearing system or correspondent.</p>
+</div>
+<p class="studio-note">Payment flow diagram showing Production support and root cause analysis: keeping payments running.</p>
+</div>
+<section class="ic-lesson-section" id="pf-insights-studio-ch84s8">
+<h2>Insights and practice scenarios</h2>
+<p class="studio-note">Worked insights and practice scenarios for this lesson. Each one is a reusable PaymentForge case, so the same case may appear in more than one lesson.</p>
+<div data-ic-type="level" data-record-id="INS-026"><script type="application/json">{"level": 1, "meta": {"domain": "Product Operations", "topic": "Post-deployment stakeholder reporting", "depth": 1, "difficulty": "foundation", "insightId": "INS-026"}, "evidence": "public-post", "recordId": "INS-026", "context": "After release, stakeholders need evidence that the change is working, not just a note that it went live.", "question": "What should a post-deployment report cover?", "answer": "Adoption, incidents, defects, service levels, benefits and open risks. Report what users actually adopted, what broke, whether service levels held, whether the expected benefit is appearing, and what risks remain open with owners.", "takeaway": "A post-deployment report proves value and surfaces what still needs attention.", "check": {"answer": 0, "explanation": "Adoption and open risks show whether the change is working and what remains. Budget dates, team rosters and colours do not.", "options": ["Adoption levels and open risks with owners", "The original project budget approval date", "The names of every developer on the team", "The colour scheme of the new screens"], "question": "Which item belongs in a post-deployment report?"}}</script></div>
+<div data-ic-type="level" data-record-id="INS-063"><script type="application/json">{"level": 2, "meta": {"domain": "Professional Masterclass", "topic": "Coordinating business, dev, QA, gateway and support", "depth": 2, "difficulty": "intermediate", "insightId": "INS-063"}, "evidence": "public-post", "recordId": "INS-063", "problem": "An incident spans five teams and nobody has the whole picture.", "solution": "Establish one incident view, clear owners, evidence requests and update cadence. Coordination is the BA's job when the incident crosses teams.", "decision": {"question": "An incident spans business, dev, QA, gateway and support. How do you coordinate it?", "context": "A payment incident spans business, development, QA, gateway and support teams, and nobody has the whole picture.", "options": [{"label": "Investigate separately", "detail": "Let each team investigate separately.", "correct": false, "why": "Separate investigations produce five pictures and no whole picture, so the cause stays hidden.", "outcome": "Separate investigations produce five pictures and no whole picture, so the cause stays hidden."}, {"label": "One view, clear owners, cadence", "detail": "Establish one incident view, clear owners, evidence requests and update cadence.", "correct": true, "why": "Correct. Establish one incident view, clear owners, evidence requests and update cadence.", "outcome": "Correct. Establish one incident view, clear owners, evidence requests and update cadence."}, {"label": "Wait for the senior person", "detail": "Wait for the most senior person to take over.", "correct": false, "why": "Waiting for the most senior person delays the response while the incident continues.", "outcome": "Waiting for the most senior person delays the response while the incident continues."}, {"label": "Fix the first symptom", "detail": "Fix the first symptom found.", "correct": false, "why": "Fixing the first symptom found may address a side effect rather than the cause.", "outcome": "Fixing the first symptom found may address a side effect rather than the cause."}]}, "flow": {"steps": [{"title": "Create one incident view."}, {"title": "Assign clear owners."}, {"title": "Request evidence from each team."}, {"title": "Set the update cadence."}, {"title": "Decide actions jointly."}, {"title": "Close with a shared record."}]}, "negative": ["A team will not share evidence.", "Two teams own the same component.", "The update cadence slips."], "check": {"questions": [{"answer": 0, "explanation": "One incident view means all teams work from the same facts, instead of five separate pictures.", "options": ["All teams work from the same facts", "Each team works faster alone", "It removes the need for owners", "It shortens the incident report"], "question": "Why establish one incident view?"}, {"answer": 1, "explanation": "Clear owners stop work falling between teams. Without them, each team assumes another owns the problem.", "options": ["They make the report longer", "They stop work falling between teams", "They replace the need for evidence", "They slow the response down"], "question": "What do clear owners do in a multi-team incident?"}, {"answer": 1, "explanation": "A regular update cadence lets stakeholders know the state of the incident so they can decide.", "options": ["It fills time", "It lets stakeholders know the state so they can decide", "It proves the incident is minor", "It replaces the incident record"], "question": "Why does update cadence matter?"}]}}</script></div>
+<div data-ic-type="level" data-record-id="PAY-084"><script type="application/json">{"level": 3, "meta": {"domain": "Professional Masterclass / Feasibility & Solution Design", "topic": "Developer says an approved requirement is technically infeasible", "difficulty": "advanced", "depth": 3, "scenarioId": "PAY-084"}, "evidence": "practice-scenario", "recordId": "PAY-084", "problem": "A delivery team challenges a signed-off requirement because of platform constraints or a dependency limitation.", "decision": {"question": "How do you challenge a technical objection without becoming the solution architect?", "options": [{"label": "Defend a requirement merely because it was approved", "detail": "The scenario warns against this course of action.", "correct": false, "why": "The scenario explicitly rules this out. Do not defend a requirement merely because it was approved.", "outcome": "The case ends in a negative path: no option meets the original deadline."}, {"label": "Accept the delivered outcome and update the documentation to match it", "detail": "Treat what was built as correct and rewrite the requirement afterwards.", "why": "The scenario requires the gap to be investigated and classified, not papered over after the fact.", "outcome": "The underlying gap stays open and recurs in the next release.", "correct": false}, {"label": "Escalate to senior management without analysis or evidence", "detail": "Raise the issue immediately with no findings attached.", "why": "Escalation without analysis gives decision makers nothing to decide on. The scenario requires findings first.", "outcome": "The decision is deferred and the issue returns with the same questions unanswered.", "correct": false}, {"label": "Ask for the specific constraint and evidence", "detail": "Ask for the specific constraint and evidence.", "correct": true, "why": "This is the recommended solution in this case. Work with architecture, engineering and business to identify alternatives, trade-offs, phased delivery or process changes.", "outcome": "An achievable option is selected while preserving the essential business outcome."}]}, "solution": "Ask for the specific constraint and evidence. Work with architecture, engineering and business to identify alternatives, trade-offs, phased delivery or process changes. Compare each option against the original outcome, risk, cost, performance and compliance. Rebaseline only after accountable approval.", "flow": {"steps": [{"title": "Requirement review"}, {"title": "technical spike"}, {"title": "options assessment"}, {"title": "stakeholder decision"}, {"title": "revised design/backlog"}]}, "happy": ["An achievable option is selected while preserving the essential business outcome."], "negative": ["No option meets the original deadline", "vendor limitation", "workaround increases operational risk"], "technical": ["Do not defend a requirement merely because it was approved", "Preserve traceability from original need to agreed alternative", "Other standard named in this case: NFRs", "Other standard named in this case: interface contract", "Other standard named in this case: architecture decision record", "Other standard named in this case: revised acceptance criteria"], "accounting": ["Rebaseline only after accountable approval."], "gherkin": {"scenarios": [{"given": "engineering identifies a feasibility constraint", "when": "alternatives are evaluated with business impact", "then": "an approved solution decision and updated requirements are recorded"}]}, "check": {"questions": [{"question": "What is the recommended approach in this case?", "options": ["Defend a requirement merely because it was approved", "Accept the delivered outcome and update the documentation to match it", "Escalate to senior management without analysis or evidence", "Ask for the specific constraint and evidence"], "answer": 3, "explanation": "Ask for the specific constraint and evidence.", "whyWrong": ["The scenario explicitly rules this out. Do not defend a requirement merely because it was approved.", "The scenario requires the gap to be investigated and classified, not papered over after the fact.", "Escalation without analysis gives decision makers nothing to decide on. The scenario requires findings first.", ""]}, {"question": "Which of these is a negative path or edge case in this scenario?", "options": ["No option meets the original deadline", "The payment settles in full with no exceptions", "The ledger and the statement agree on the first attempt", "The customer receives the funds before the instruction is sent"], "answer": 0, "explanation": "The scenario lists \"No option meets the original deadline\" among its negative paths and edge cases.", "whyWrong": ["", "That describes a successful outcome, not a negative path in this scenario.", "That describes a successful outcome, not a negative path in this scenario.", "That describes a successful outcome, not a negative path in this scenario."]}, {"question": "What happens on the happy path?", "options": ["No option meets the original deadline", "An achievable option is selected while preserving the essential business outcome", "Vendor limitation", "Workaround increases operational risk"], "answer": 1, "explanation": "An achievable option is selected while preserving the essential business outcome.", "whyWrong": ["That is a failure outcome, not the happy path in this scenario.", "", "That is a failure outcome, not the happy path in this scenario.", "That is a failure outcome, not the happy path in this scenario."]}]}}</script></div>
+<div data-ic-type="level" data-record-id="PAY-092"><script type="application/json">{"level": 3, "meta": {"domain": "Professional Masterclass / Production Incident", "topic": "Critical production incident: rollback versus hotfix", "difficulty": "advanced", "depth": 3, "scenarioId": "PAY-092"}, "evidence": "practice-scenario", "recordId": "PAY-092", "problem": "A live service is failing and technology recommends rollback while the business wants service restored immediately.", "decision": {"question": "When is rollback safer than a hotfix, and when is neither safe?", "options": [{"label": "Accept the delivered outcome and update the documentation to match it", "detail": "Treat what was built as correct and rewrite the requirement afterwards.", "why": "The scenario requires the gap to be investigated and classified, not papered over after the fact.", "outcome": "The underlying gap stays open and recurs in the next release.", "correct": false}, {"label": "Escalate to senior management without analysis or evidence", "detail": "Raise the issue immediately with no findings attached.", "why": "Escalation without analysis gives decision makers nothing to decide on. The scenario requires findings first.", "outcome": "The decision is deferred and the issue returns with the same questions unanswered.", "correct": false}, {"label": "Stabilise first: assess customer, financial, operational, security and regulatory impact", "detail": "Stabilise first: assess customer, financial, operational, security and regulatory impact; stop or limit harmful processing if necessary; preserve evidence; identify decision owner.", "correct": true, "why": "This is the recommended solution in this case. Compare rollback, feature disablement, traffic diversion and hotfix based on data integrity, reversibility, validation and recovery time.", "outcome": "Service is restored through an approved recovery path and affected transactions are reconciled."}, {"label": "Rebuild the feature from scratch without a root-cause analysis", "detail": "Start again rather than finding out what went wrong.", "why": "Rebuilding without a root cause repeats the same mistake. The scenario requires the cause to be found first.", "outcome": "The rebuilt feature carries the same defect.", "correct": false}]}, "solution": "Stabilise first: assess customer, financial, operational, security and regulatory impact; stop or limit harmful processing if necessary; preserve evidence; identify decision owner. Compare rollback, feature disablement, traffic diversion and hotfix based on data integrity, reversibility, validation and recovery time. Communicate status and maintain incident log.", "flow": {"steps": [{"title": "Incident detection"}, {"title": "containment"}, {"title": "impact assessment"}, {"title": "decision"}, {"title": "recovery"}, {"title": "reconciliation"}, {"title": "RCA"}]}, "happy": ["Service is restored through an approved recovery path and affected transactions are reconciled."], "negative": ["Rollback risks data loss", "hotfix untested", "partial processing", "duplicate transactions", "dependent systems inconsistent"], "technical": ["BA supports impact clarity and business decision-making, not unilateral technical command", "Define severity, decision rights, customer comms and post-incident actions", "Other standard named in this case: Incident record", "Other standard named in this case: transaction logs", "Other standard named in this case: deployment", "Other standard named in this case: change record", "Other standard named in this case: reconciliation evidence"], "accounting": ["Define severity, decision rights, customer comms and post-incident actions."], "gherkin": {"scenarios": [{"given": "a production incident has customer impact", "when": "recovery options are assessed", "then": "the incident commander and accountable business owner select a documented option based on harm, data integrity and evidence"}]}, "check": {"questions": [{"question": "What is the recommended approach in this case?", "options": ["Accept the delivered outcome and update the documentation to match it", "Escalate to senior management without analysis or evidence", "Stabilise first: assess customer, financial, operational, security and regulatory impact", "Rebuild the feature from scratch without a root-cause analysis"], "answer": 2, "explanation": "Stabilise first: assess customer, financial, operational, security and regulatory impact; stop or limit harmful processing if necessary; preserve evidence; identify decision owner.", "whyWrong": ["The scenario requires the gap to be investigated and classified, not papered over after the fact.", "Escalation without analysis gives decision makers nothing to decide on. The scenario requires findings first.", "", "Rebuilding without a root cause repeats the same mistake. The scenario requires the cause to be found first."]}, {"question": "Which of these is a negative path or edge case in this scenario?", "options": ["The payment settles in full with no exceptions", "The ledger and the statement agree on the first attempt", "The customer receives the funds before the instruction is sent", "Rollback risks data loss"], "answer": 3, "explanation": "The scenario lists \"Rollback risks data loss\" among its negative paths and edge cases.", "whyWrong": ["That describes a successful outcome, not a negative path in this scenario.", "That describes a successful outcome, not a negative path in this scenario.", "That describes a successful outcome, not a negative path in this scenario.", ""]}, {"question": "What happens on the happy path?", "options": ["Service is restored through an approved recovery path and affected transactions are reconciled", "Rollback risks data loss", "Hotfix untested", "Partial processing"], "answer": 0, "explanation": "Service is restored through an approved recovery path and affected transactions are reconciled.", "whyWrong": ["", "That is a failure outcome, not the happy path in this scenario.", "That is a failure outcome, not the happy path in this scenario.", "That is a failure outcome, not the happy path in this scenario."]}]}}</script></div>
+<div data-ic-type="level" data-record-id="PAY-093"><script type="application/json">{"level": 3, "meta": {"domain": "Professional Masterclass / Incident & RCA", "topic": "Customer funds are affected but root cause is unknown", "difficulty": "advanced", "depth": 3, "scenarioId": "PAY-093"}, "evidence": "practice-scenario", "recordId": "PAY-093", "problem": "Customers report debits or credits that do not match displayed payment status, while the technical cause is not yet known.", "decision": {"question": "What should happen before the technical root cause is known?", "options": [{"label": "Accept the delivered outcome and update the documentation to match it", "detail": "Treat what was built as correct and rewrite the requirement afterwards.", "why": "The scenario requires the gap to be investigated and classified, not papered over after the fact.", "outcome": "The underlying gap stays open and recurs in the next release.", "correct": false}, {"label": "Escalate to senior management without analysis or evidence", "detail": "Raise the issue immediately with no findings attached.", "why": "Escalation without analysis gives decision makers nothing to decide on. The scenario requires findings first.", "outcome": "The decision is deferred and the issue returns with the same questions unanswered.", "correct": false}, {"label": "Rebuild the feature from scratch without a root-cause analysis", "detail": "Start again rather than finding out what went wrong.", "why": "Rebuilding without a root cause repeats the same mistake. The scenario requires the cause to be found first.", "outcome": "The rebuilt feature carries the same defect.", "correct": false}, {"label": "Prioritise customer and financial containment", "detail": "Prioritise customer and financial containment.", "correct": true, "why": "This is the recommended solution in this case. Identify affected population and value, stop duplicate or unsafe processing, preserve transaction evidence, reconcile ledger and external payment records, arrange approved customer remediation and run parallel technical RCA.", "outcome": "Financial exposure is bounded, affected customers are identified and remediation is controlled."}]}, "solution": "Prioritise customer and financial containment. Identify affected population and value, stop duplicate or unsafe processing, preserve transaction evidence, reconcile ledger and external payment records, arrange approved customer remediation and run parallel technical RCA.", "flow": {"steps": [{"title": "Incident bridge"}, {"title": "impact quantification"}, {"title": "payment/ledger reconciliation"}, {"title": "containment"}, {"title": "remediation"}, {"title": "RCA"}]}, "happy": ["Financial exposure is bounded, affected customers are identified and remediation is controlled."], "negative": ["Unknown in-flight state", "delayed external confirmation", "multiple rails", "partial batch impact", "duplicate compensation risk"], "technical": ["Separate containment from root-cause investigation", "Maintain an affected-transaction register and maker-checker for financial adjustments", "Other standard named in this case: Payment references", "Other standard named in this case: ledger entries", "Other standard named in this case: scheme statuses", "Other standard named in this case: incident evidence"], "accounting": ["Customers report debits or credits that do not match displayed payment status, while the technical cause is not yet known.", "Identify affected population and value, stop duplicate or unsafe processing, preserve transaction evidence, reconcile ledger and external payment records, arrange approved customer remediation and run parallel technical RCA."], "gherkin": {"scenarios": [{"given": "customer funds may be impacted and root cause is unknown", "when": "incident response starts", "then": "the team first establishes exposure and prevents further harm before pursuing detailed RCA"}]}, "check": {"questions": [{"question": "What is the recommended approach in this case?", "options": ["Accept the delivered outcome and update the documentation to match it", "Escalate to senior management without analysis or evidence", "Rebuild the feature from scratch without a root-cause analysis", "Prioritise customer and financial containment"], "answer": 3, "explanation": "Prioritise customer and financial containment.", "whyWrong": ["The scenario requires the gap to be investigated and classified, not papered over after the fact.", "Escalation without analysis gives decision makers nothing to decide on. The scenario requires findings first.", "Rebuilding without a root cause repeats the same mistake. The scenario requires the cause to be found first.", ""]}, {"question": "Which of these is a negative path or edge case in this scenario?", "options": ["Unknown in-flight state", "The payment settles in full with no exceptions", "The ledger and the statement agree on the first attempt", "The customer receives the funds before the instruction is sent"], "answer": 0, "explanation": "The scenario lists \"Unknown in-flight state\" among its negative paths and edge cases.", "whyWrong": ["", "That describes a successful outcome, not a negative path in this scenario.", "That describes a successful outcome, not a negative path in this scenario.", "That describes a successful outcome, not a negative path in this scenario."]}, {"question": "What happens on the happy path?", "options": ["Unknown in-flight state", "Financial exposure is bounded, affected customers are identified and remediation is controlled", "Delayed external confirmation", "Multiple rails"], "answer": 1, "explanation": "Financial exposure is bounded, affected customers are identified and remediation is controlled.", "whyWrong": ["That is a failure outcome, not the happy path in this scenario.", "", "That is a failure outcome, not the happy path in this scenario.", "That is a failure outcome, not the happy path in this scenario."]}]}}</script></div>
+<div data-ic-type="level" data-record-id="PAY-101"><script type="application/json">{"level": 3, "meta": {"domain": "Professional Masterclass / Knowledge Management", "topic": "Project handover occurs without adequate knowledge transfer", "difficulty": "advanced", "depth": 3, "scenarioId": "PAY-101"}, "evidence": "practice-scenario", "recordId": "PAY-101", "problem": "A new BA or support team inherits a payment process with incomplete documentation and unavailable subject-matter experts.", "decision": {"question": "How do you prove a handover is operationally complete?", "options": [{"label": "Equate document delivery with knowledge transfer", "detail": "The scenario warns against this course of action.", "correct": false, "why": "The scenario explicitly rules this out. Do not equate document delivery with knowledge transfer.", "outcome": "The case ends in a negative path: critical sme unavailable."}, {"label": "Establish service boundaries, process flows, system/context diagrams, data dictionary, known issues, operational runbooks, contacts, controls, SLAs", "detail": "Establish service boundaries, process flows, system/context diagrams, data dictionary, known issues, operational runbooks, contacts, controls, SLAs and open decisions.", "correct": true, "why": "This is the recommended solution in this case. Validate through reverse-shadowing and scenario walkthroughs; record gaps and risk owners.", "outcome": "Receiving team can explain and execute key operational scenarios independently."}, {"label": "Accept the delivered outcome and update the documentation to match it", "detail": "Treat what was built as correct and rewrite the requirement afterwards.", "why": "The scenario requires the gap to be investigated and classified, not papered over after the fact.", "outcome": "The underlying gap stays open and recurs in the next release.", "correct": false}, {"label": "Escalate to senior management without analysis or evidence", "detail": "Raise the issue immediately with no findings attached.", "why": "Escalation without analysis gives decision makers nothing to decide on. The scenario requires findings first.", "outcome": "The decision is deferred and the issue returns with the same questions unanswered.", "correct": false}]}, "solution": "Establish service boundaries, process flows, system/context diagrams, data dictionary, known issues, operational runbooks, contacts, controls, SLAs and open decisions. Validate through reverse-shadowing and scenario walkthroughs; record gaps and risk owners.", "flow": {"steps": [{"title": "Handover intake"}, {"title": "artefact review"}, {"title": "SME sessions"}, {"title": "reverse-shadowing"}, {"title": "readiness sign-off"}]}, "happy": ["Receiving team can explain and execute key operational scenarios independently."], "negative": ["Critical SME unavailable", "undocumented manual workaround", "credentials/access missing", "stale diagrams"], "technical": ["Use a structured handover checklist and evidence-based readiness criteria", "Do not equate document delivery with knowledge transfer", "Other standard named in this case: Runbooks", "Other standard named in this case: process maps", "Other standard named in this case: interface catalogue", "Other standard named in this case: decision log", "Other standard named in this case: support matrix"], "accounting": ["The ledger, the customer account and the statement must agree before the case is closed; any correction is posted as a separate, traceable entry, never by editing the original."], "gherkin": {"scenarios": [{"given": "a support team receives a handover", "when": "it completes reverse-shadowing of critical payment scenarios", "then": "unresolved knowledge gaps are logged with owners before acceptance"}]}, "check": {"questions": [{"question": "What is the recommended approach in this case?", "options": ["Equate document delivery with knowledge transfer", "Establish service boundaries, process flows, system/context diagrams, data dictionary, known issues, operational runbooks, contacts, controls, SLAs", "Accept the delivered outcome and update the documentation to match it", "Escalate to senior management without analysis or evidence"], "answer": 1, "explanation": "Establish service boundaries, process flows, system/context diagrams, data dictionary, known issues, operational runbooks, contacts, controls, SLAs and open decisions.", "whyWrong": ["The scenario explicitly rules this out. Do not equate document delivery with knowledge transfer.", "", "The scenario requires the gap to be investigated and classified, not papered over after the fact.", "Escalation without analysis gives decision makers nothing to decide on. The scenario requires findings first."]}, {"question": "Which of these is a negative path or edge case in this scenario?", "options": ["The payment settles in full with no exceptions", "The ledger and the statement agree on the first attempt", "Critical SME unavailable", "The customer receives the funds before the instruction is sent"], "answer": 2, "explanation": "The scenario lists \"Critical SME unavailable\" among its negative paths and edge cases.", "whyWrong": ["That describes a successful outcome, not a negative path in this scenario.", "That describes a successful outcome, not a negative path in this scenario.", "", "That describes a successful outcome, not a negative path in this scenario."]}, {"question": "What happens on the happy path?", "options": ["Critical SME unavailable", "Undocumented manual workaround", "Credentials/access missing", "Receiving team can explain and execute key operational scenarios independently"], "answer": 3, "explanation": "Receiving team can explain and execute key operational scenarios independently.", "whyWrong": ["That is a failure outcome, not the happy path in this scenario.", "That is a failure outcome, not the happy path in this scenario.", "That is a failure outcome, not the happy path in this scenario.", ""]}]}}</script></div>
+</section>
+<div class="fw-card" id="pf-exercise-studio-ch84s8">
+<p class="fw-label">Practise this lesson</p>
+<h2>Exercise</h2>
+<p><b>Investigate the reconciliation break described in this lesson and find its root cause.</b></p>
+<p>Use the three-way matching rule and the break categories in this lesson.</p>
+<ol class="fw-steps">
+<li><b>What to do.</b> Compare the instruction, the settlement record and the statement, name the break type, and state the corrective action.</li>
+</ol>
+<p><button class="studio-btn" id="pf-ex-btn-studio-ch84s8" onclick="pfRevealExercise('studio-ch84s8')">Show the answer</button></p>
+<div class="fw-exercise-answer" id="pf-ex-answer-studio-ch84s8">
+<p><b>Correct result.</b> A break is found by matching amount, currency, date and reference across the three sources. The root cause is a timing difference, an amount difference, a missing entry, or a duplicate, and the corrective action follows the cause.</p>
+<p><b>Why.</b> Reconciliation is the last line of defence. A break that is not investigated is money that cannot be proved.</p>
+</div>
+</div>
+<div class="fw-card" id="pf-quiz-studio-ch84s8" data-answer="3">
+<p class="fw-label">Check your understanding</p>
+<h2>Practice question</h2>
+<p><b>Which of the following best describes production support and root cause analysis: keeping payments running?</b></p>
+<button type="button" class="quiz-opt" data-idx="0" onclick="pfCheckAnswer('studio-ch84s8', this)">It is a related concept from this chapter, but it does not describe production support and root cause analysis: keeping payments running.</button>
+<button type="button" class="quiz-opt" data-idx="1" onclick="pfCheckAnswer('studio-ch84s8', this)">It is a related concept from this chapter, but it does not describe production support and root cause analysis: keeping payments running.</button>
+<button type="button" class="quiz-opt" data-idx="2" onclick="pfCheckAnswer('studio-ch84s8', this)">It is a related concept from this chapter, but it does not describe production support and root cause analysis: keeping payments running.</button>
+<button type="button" class="quiz-opt" data-idx="3" onclick="pfCheckAnswer('studio-ch84s8', this)">Production support in payments is a 24 hour discipline, because payments do not stop at 5pm</button>
+<div class="quiz-feedback" id="pf-quiz-fb-studio-ch84s8"></div>
+<script type="application/json" id="pf-quiz-data-studio-ch84s8">{"why_wrong": ["This describes a different concept from this chapter, not production support and root cause analysis: keeping payments running.", "This describes a different concept from this chapter, not production support and root cause analysis: keeping payments running.", "This describes a different concept from this chapter, not production support and root cause analysis: keeping payments running.", ""], "explanation": "Production support in payments is a 24 hour discipline, because payments do not stop at 5pm. This is the core idea of the lesson."}</script>
+</div>
+<div class="fw-card">
+<p class="fw-label">Takeaway and next step</p>
+<h2>What to remember</h2>
+<p>A post-mortem that is written but never acted on is a ritual, not a learning exercise.</p>
+<p>Follow a payment through every stage, from instruction to beneficiary credit, and note where it can stop.</p>
+<p><a class="fw-tool-link" href="../simulators/lifecycle.html">Open the Payment Lifecycle Simulator &rarr;</a></p>
+<p class="studio-note">Builds on "Defect management: severity, triage and the defect lifecycle".</p>
+</div>
+<section class="upnext" id="studio-upnext-studio-ch84s8" style="display:none" aria-label="Up next">
+<span class="tag">Up next</span>
+<h2>Up next: Embedded finance: payments inside another company's product</h2>
+<p>Lesson 1 of 7, Embedded finance and ISO 20022 data analytics, Narration 3:55</p>
+<div class="row">
+<button class="studio-btn primary" onclick="goLessonAuto('ch85s1')">Next lesson &rarr;</button>
+<button class="studio-btn" onclick="goLesson('ch84s7')">&larr; Previous lesson</button>
+<button class="studio-btn" onclick="studioReplayLesson('studio-ch84s8')">Replay this lesson</button>
+</div>
+</section>
+<div class="lesson-nav">
+<button class="studio-btn" onclick="goLesson('ch84s7')" title="Previous lesson: Defect management: severity, triage and the defect lifecycle">&larr; Previous</button>
+<button class="studio-btn" onclick="goChapterContents('ch84')">Chapter contents</button>
+<button class="studio-btn primary" onclick="goLesson('ch85s1')" title="Next lesson: Embedded finance: payments inside another company's product">Next &rarr;</button>
+</div>
+<div class="card transcript-card">
+<h2>Transcript and full text</h2>
+<details class="studio-transcript" id="studio-transcript-details-studio-ch84s8"><summary>Show transcript</summary>
+<p class="transcript" id="studio-transcript-studio-ch84s8">Production support in payments is a 24 hour discipline, because payments do not stop at 5pm. An instant payment can be sent at 3am on a Sunday, and if it fails, the customer expects it to be fixed at 3am on a Sunday. The support model must therefore include a rota, an on-call procedure, an escalation path, and a runbook for the common incidents. The runbook must state, for each incident type, the symptoms, the diagnosis steps, the workaround, and the escalation. A support team without a runbook will improvise, and improvisation in payments causes duplicate payments. Incident triage in production follows a fixed sequence. The first step is to assess the impact: how many payments are affected, what is the value, and is customer money at risk. The second is to contain the impact: stop new payments if necessary, queue the affected payments, and notify the customers. The third is to diagnose: check the logs, check the message queue, check the ledger, and identify the failing component. The fourth is to fix or work around: restart the component, route around it, or process manually. The fifth is to recover: reconcile, verify, and notify. Each step must be logged with a timestamp. The 5 whys is the simplest root cause technique, and it works well in payments. A payment was duplicated. Why? Because the retry sent the payment twice. Why? Because the idempotency key was not carried through the retry. Why? Because the retry logic was written before the idempotency requirement was added. Why? Because the requirement was added after the code was written. Why? Because the change process did not require a re-review. The root cause is the change process, not the code, and the fix is to require a re-review when a requirement changes. The analysis must go deep enough to find the process failure. A blameless post-mortem is the culture that makes root cause analysis work. The post-mortem asks what happened, what the impact was, what the timeline was, what the root cause was, and what will change. It does not ask who is to blame, because blame stops people from reporting incidents, and unreported incidents are the ones that cause the most harm. The post-mortem must be written, shared with the team, and tracked to completion, with each action owned and dated. A post-mortem that is written but never acted on is a ritual, not a learning exercise. Reconciliation investigations are the daily work of production support. When the nostro statement does not match the ledger, the analyst must find the break: a payment that was sent but not recorded, a charge that was deducted but not expected, a return that was received but not matched, or a value date that differs. The investigation follows the payment: check the message, check the ledger, check the statement, and find the point where they diverge. Each break type has a known cause and a known fix, and the analyst must know them. The investigation must be documented, because the same break will happen again. Monitoring is the early warning system. The payment hub must be monitored for throughput, for the queue depth, for the error rate, for the processing time, and for the ledger balance. An alert must fire when the queue depth exceeds a threshold, when the error rate rises, or when the ledger does not balance. The alert must go to the person who can act on it, not to a mailbox nobody reads. The monitoring must be tested, because a monitor that has never fired is a monitor that may not work when it is needed. For a business analyst, production support is a set of requirements: the support model, the runbook, the incident procedure, the root cause process, the reconciliation investigation procedure, and the monitoring. The acceptance criteria must include a test where an incident is simulated end to end, from detection to recovery, with the full timeline recorded. Last reviewed 7 November 2026. Further reading: the Site Reliability Engineering book by Google; the ITIL incident management guidance; the Bank of England operational resilience policy; the DORA incident reporting requirements, Regulation (EU) 2022/2554, Article 19.</p>
+<div id="studio-paras-studio-ch84s8">
+<p class="transcript">Production support in payments is a 24 hour discipline, because payments do not stop at 5pm. An instant payment can be sent at 3am on a Sunday, and if it fails, the customer expects it to be fixed at 3am on a Sunday. The support model must therefore include a rota, an on-call procedure, an escalation path, and a runbook for the common incidents. The runbook must state, for each incident type, the symptoms, the diagnosis steps, the workaround, and the escalation. A support team without a runbook will improvise, and improvisation in payments causes duplicate payments.</p>
+<p class="transcript">Incident triage in production follows a fixed sequence. The first step is to assess the impact: how many payments are affected, what is the value, and is customer money at risk. The second is to contain the impact: stop new payments if necessary, queue the affected payments, and notify the customers. The third is to diagnose: check the logs, check the message queue, check the ledger, and identify the failing component. The fourth is to fix or work around: restart the component, route around it, or process manually. The fifth is to recover: reconcile, verify, and notify. Each step must be logged with a timestamp.</p>
+<p class="transcript">The 5 whys is the simplest root cause technique, and it works well in payments. A payment was duplicated. Why? Because the retry sent the payment twice. Why? Because the idempotency key was not carried through the retry. Why? Because the retry logic was written before the idempotency requirement was added. Why? Because the requirement was added after the code was written. Why? Because the change process did not require a re-review. The root cause is the change process, not the code, and the fix is to require a re-review when a requirement changes. The analysis must go deep enough to find the process failure.</p>
+<p class="transcript">A blameless post-mortem is the culture that makes root cause analysis work. The post-mortem asks what happened, what the impact was, what the timeline was, what the root cause was, and what will change. It does not ask who is to blame, because blame stops people from reporting incidents, and unreported incidents are the ones that cause the most harm. The post-mortem must be written, shared with the team, and tracked to completion, with each action owned and dated. A post-mortem that is written but never acted on is a ritual, not a learning exercise.</p>
+<p class="transcript">Reconciliation investigations are the daily work of production support. When the nostro statement does not match the ledger, the analyst must find the break: a payment that was sent but not recorded, a charge that was deducted but not expected, a return that was received but not matched, or a value date that differs. The investigation follows the payment: check the message, check the ledger, check the statement, and find the point where they diverge. Each break type has a known cause and a known fix, and the analyst must know them. The investigation must be documented, because the same break will happen again.</p>
+<p class="transcript">Monitoring is the early warning system. The payment hub must be monitored for throughput, for the queue depth, for the error rate, for the processing time, and for the ledger balance. An alert must fire when the queue depth exceeds a threshold, when the error rate rises, or when the ledger does not balance. The alert must go to the person who can act on it, not to a mailbox nobody reads. The monitoring must be tested, because a monitor that has never fired is a monitor that may not work when it is needed.</p>
+<p class="transcript">For a business analyst, production support is a set of requirements: the support model, the runbook, the incident procedure, the root cause process, the reconciliation investigation procedure, and the monitoring. The acceptance criteria must include a test where an incident is simulated end to end, from detection to recovery, with the full timeline recorded. Last reviewed 7 November 2026. Further reading: the Site Reliability Engineering book by Google; the ITIL incident management guidance; the Bank of England operational resilience policy; the DORA incident reporting requirements, Regulation (EU) 2022/2554, Article 19.</p>
+</div>
+</details>
+<details class="studio-transcript"><summary>Full lesson text (all scenes)</summary><div id="studio-transcript-full-studio-ch84s8"></div></details>
+<p><button class="studio-btn primary" id="done-ch84s8" onclick="studioMarkSceneDone('studio-ch84s8')">Mark lesson complete</button> <span class="studio-note">Completing a lesson updates your progress dashboard on the homepage.</span></p>
+</div>
+<p class="studio-note">Scene timestamps are estimated by allocating the narration text proportionally across the real audio length. The audio playback position is the source of truth: pause freezes the visual, seeking restores the correct scene, replay restarts the scene animation.</p>
+</div>
+<script>window.__PA_STUDIO_QUEUE = window.__PA_STUDIO_QUEUE || []; window.__PA_STUDIO_QUEUE.push(["studio-ch84s8", {"sample_id": "studio-ch84s8", "chapter_id": "ch84", "title": "Production support and root cause analysis: keeping payments running", "domain": "D14 Business analysis and professional practice", "objective": "Learner explains how a payments business analyst gathers requirements in the domain language, writes a BRD and a functional specification, and writes user stories with Gherkin acceptance criteria. Learner maps processes in BPMN, maps data field by field from MT to MX, designs a test strategy with SIT, UAT and negative testing, manages defects by severity, and runs production support and root cause analysis.", "scenes": [{"id": "ch84s8", "section_id": "ch84s8", "title": "Production support and root cause analysis: keeping payments running", "audio": "../audio/ch84s8.mp3", "duration_sec": 256.1, "points": ["Production support in payments is a 24 hour discipline, because payments do not stop at 5pm.", "Incident triage in production follows a fixed sequence.", "The 5 whys is the simplest root cause technique, and it works well in payments.", "A blameless post-mortem is the culture that makes root cause analysis work.", "Reconciliation investigations are the daily work of production support."], "terms": [{"term": "Reconciliation", "def": "The process of comparing records from two sources, such as a bank statement and an internal ledger, to confirm they agree."}, {"term": "Idempotency", "def": "The property that repeating the same request has the same effect as sending it once. In payments, an idempotency key lets a client safely retry a request after a timeout without creating a duplicate..."}, {"term": "Payment hub", "def": "A central system in a bank that receives payment instructions from all channels, validates them, applies screening and routing rules, and sends them to the correct clearing system or correspondent."}], "transcript": "Production support in payments is a 24 hour discipline, because payments do not stop at 5pm. An instant payment can be sent at 3am on a Sunday, and if it fails, the customer expects it to be fixed at 3am on a Sunday. The support model must therefore include a rota, an on-call procedure, an escalation path, and a runbook for the common incidents. The runbook must state, for each incident type, the symptoms, the diagnosis steps, the workaround, and the escalation. A support team without a runbook will improvise, and improvisation in payments causes duplicate payments. Incident triage in production follows a fixed sequence. The first step is to assess the impact: how many payments are affected, what is the value, and is customer money at risk. The second is to contain the impact: stop new payments if necessary, queue the affected payments, and notify the customers. The third is to diagnose: check the logs, check the message queue, check the ledger, and identify the failing component. The fourth is to fix or work around: restart the component, route around it, or process manually. The fifth is to recover: reconcile, verify, and notify. Each step must be logged with a timestamp. The 5 whys is the simplest root cause technique, and it works well in payments. A payment was duplicated. Why? Because the retry sent the payment twice. Why? Because the idempotency key was not carried through the retry. Why? Because the retry logic was written before the idempotency requirement was added. Why? Because the requirement was added after the code was written. Why? Because the change process did not require a re-review. The root cause is the change process, not the code, and the fix is to require a re-review when a requirement changes. The analysis must go deep enough to find the process failure. A blameless post-mortem is the culture that makes root cause analysis work. The post-mortem asks what happened, what the impact was, what the timeline was, what the root cause was, and what will change. It does not ask who is to blame, because blame stops people from reporting incidents, and unreported incidents are the ones that cause the most harm. The post-mortem must be written, shared with the team, and tracked to completion, with each action owned and dated. A post-mortem that is written but never acted on is a ritual, not a learning exercise. Reconciliation investigations are the daily work of production support. When the nostro statement does not match the ledger, the analyst must find the break: a payment that was sent but not recorded, a charge that was deducted but not expected, a return that was received but not matched, or a value date that differs. The investigation follows the payment: check the message, check the ledger, check the statement, and find the point where they diverge. Each break type has a known cause and a known fix, and the analyst must know them. The investigation must be documented, because the same break will happen again. Monitoring is the early warning system. The payment hub must be monitored for throughput, for the queue depth, for the error rate, for the processing time, and for the ledger balance. An alert must fire when the queue depth exceeds a threshold, when the error rate rises, or when the ledger does not balance. The alert must go to the person who can act on it, not to a mailbox nobody reads. The monitoring must be tested, because a monitor that has never fired is a monitor that may not work when it is needed. For a business analyst, production support is a set of requirements: the support model, the runbook, the incident procedure, the root cause process, the reconciliation investigation procedure, and the monitoring. The acceptance criteria must include a test where an incident is simulated end to end, from detection to recovery, with the full timeline recorded. Last reviewed 7 November 2026. Further reading: the Site Reliability Engineering book by Google; the ITIL incident management guidance; the Bank of England operational resilience policy; the DORA incident reporting requirements, Regulation (EU) 2022/2554, Article 19.", "paragraphs": ["Production support in payments is a 24 hour discipline, because payments do not stop at 5pm. An instant payment can be sent at 3am on a Sunday, and if it fails, the customer expects it to be fixed at 3am on a Sunday. The support model must therefore include a rota, an on-call procedure, an escalation path, and a runbook for the common incidents. The runbook must state, for each incident type, the symptoms, the diagnosis steps, the workaround, and the escalation. A support team without a runbook will improvise, and improvisation in payments causes duplicate payments.", "Incident triage in production follows a fixed sequence. The first step is to assess the impact: how many payments are affected, what is the value, and is customer money at risk. The second is to contain the impact: stop new payments if necessary, queue the affected payments, and notify the customers. The third is to diagnose: check the logs, check the message queue, check the ledger, and identify the failing component. The fourth is to fix or work around: restart the component, route around it, or process manually. The fifth is to recover: reconcile, verify, and notify. Each step must be logged with a timestamp.", "The 5 whys is the simplest root cause technique, and it works well in payments. A payment was duplicated. Why? Because the retry sent the payment twice. Why? Because the idempotency key was not carried through the retry. Why? Because the retry logic was written before the idempotency requirement was added. Why? Because the requirement was added after the code was written. Why? Because the change process did not require a re-review. The root cause is the change process, not the code, and the fix is to require a re-review when a requirement changes. The analysis must go deep enough to find the process failure.", "A blameless post-mortem is the culture that makes root cause analysis work. The post-mortem asks what happened, what the impact was, what the timeline was, what the root cause was, and what will change. It does not ask who is to blame, because blame stops people from reporting incidents, and unreported incidents are the ones that cause the most harm. The post-mortem must be written, shared with the team, and tracked to completion, with each action owned and dated. A post-mortem that is written but never acted on is a ritual, not a learning exercise.", "Reconciliation investigations are the daily work of production support. When the nostro statement does not match the ledger, the analyst must find the break: a payment that was sent but not recorded, a charge that was deducted but not expected, a return that was received but not matched, or a value date that differs. The investigation follows the payment: check the message, check the ledger, check the statement, and find the point where they diverge. Each break type has a known cause and a known fix, and the analyst must know them. The investigation must be documented, because the same break will happen again.", "Monitoring is the early warning system. The payment hub must be monitored for throughput, for the queue depth, for the error rate, for the processing time, and for the ledger balance. An alert must fire when the queue depth exceeds a threshold, when the error rate rises, or when the ledger does not balance. The alert must go to the person who can act on it, not to a mailbox nobody reads. The monitoring must be tested, because a monitor that has never fired is a monitor that may not work when it is needed.", "For a business analyst, production support is a set of requirements: the support model, the runbook, the incident procedure, the root cause process, the reconciliation investigation procedure, and the monitoring. The acceptance criteria must include a test where an incident is simulated end to end, from detection to recovery, with the full timeline recorded. Last reviewed 7 November 2026. Further reading: the Site Reliability Engineering book by Google; the ITIL incident management guidance; the Bank of England operational resilience policy; the DORA incident reporting requirements, Regulation (EU) 2022/2554, Article 19."], "accessibility": "Payment flow diagram showing Production support and root cause analysis: keeping payments running.", "visual_type": "payment_flow", "visual_choice_reason": "default payment journey", "beats": [{"t0": 0.0, "t1": 46.7, "title": "Production support in payments", "note": "Production support in payments is a 24 hour discipline, because payments do not stop at 5pm.", "highlight_nodes": ["n0"], "highlight_conns": [], "highlight_fields": []}, {"t0": 46.7, "t1": 93.0, "title": "Incident containment", "note": "The second is to contain the impact: stop new payments if necessary, queue the affected payments, and notify the customers.", "highlight_nodes": ["n1"], "highlight_conns": ["c0"], "highlight_fields": []}, {"t0": 93.0, "t1": 141.2, "title": "Five whys root cause", "note": "Why?", "highlight_nodes": ["n2"], "highlight_conns": ["c1"], "highlight_fields": []}, {"t0": 141.2, "t1": 185.1, "title": "Blameless post-mortem", "note": "A post-mortem that is written but never acted on is a ritual, not a learning exercise.", "highlight_nodes": ["n3"], "highlight_conns": ["c2"], "highlight_fields": []}, {"t0": 185.1, "t1": 230.2, "title": "Production monitoring", "note": "Monitoring is the early warning system.", "highlight_nodes": ["n4"], "highlight_conns": ["c3"], "highlight_fields": []}, {"t0": 230.2, "t1": 256.1, "title": "Incident simulation acceptance criteria", "note": "The acceptance criteria must include a test where an incident is simulated end to end, from detection to recovery, with the full timeline recorded.", "highlight_nodes": ["n5"], "highlight_conns": ["c4"], "highlight_fields": []}], "node_ids": ["n0", "n1", "n2", "n3", "n4", "n5"], "framework": {"objective": "By the end of this lesson, you will be able to explain production support and root cause analysis: keeping payments running and apply it to a real banking scenario.", "why_matters": "For a business analyst, production support is a set of requirements: the support model, the runbook, the incident procedure, the root cause process, the reconciliation investigation procedure, and the monitoring.", "technical_example": "This lesson introduces a concept rather than a specific message, field or calculation. The technical detail is in the diagram and the key points.", "failure_recovery": "An instant payment can be sent at 3am on a Sunday, and if it fails, the customer expects it to be fixed at 3am on a Sunday. The support model must therefore include a rota, an on-call procedure, an escalation path, and a runbook for the common incidents.", "exercise": {"task": "Investigate the reconciliation break described in this lesson and find its root cause.", "info": "Use the three-way matching rule and the break categories in this lesson.", "action": "Compare the instruction, the settlement record and the statement, name the break type, and state the corrective action.", "correct": "A break is found by matching amount, currency, date and reference across the three sources. The root cause is a timing difference, an amount difference, a missing entry, or a duplicate, and the corrective action follows the cause.", "why": "Reconciliation is the last line of defence. A break that is not investigated is money that cannot be proved."}, "assessment": {"question": "Which of the following best describes production support and root cause analysis: keeping payments running?", "options": ["It is a related concept from this chapter, but it does not describe production support and root cause analysis: keeping payments running.", "It is a related concept from this chapter, but it does not describe production support and root cause analysis: keeping payments running.", "It is a related concept from this chapter, but it does not describe production support and root cause analysis: keeping payments running.", "Production support in payments is a 24 hour discipline, because payments do not stop at 5pm"], "answer": 3, "explanation": "Production support in payments is a 24 hour discipline, because payments do not stop at 5pm. This is the core idea of the lesson.", "why_wrong": ["This describes a different concept from this chapter, not production support and root cause analysis: keeping payments running.", "This describes a different concept from this chapter, not production support and root cause analysis: keeping payments running.", "This describes a different concept from this chapter, not production support and root cause analysis: keeping payments running.", ""], "source": "generated:ch84s8"}, "takeaway": "A post-mortem that is written but never acted on is a ritual, not a learning exercise.", "prereq": "ch84s7", "next": "ch85s1", "connection_note": "Builds on \"Defect management: severity, triage and the defect lifecycle\".", "tool": {"slug": "lifecycle", "label": "Payment Lifecycle Simulator", "url": "../simulators/lifecycle.html", "scenario": "Follow a payment through every stage, from instruction to beneficiary credit, and note where it can stop."}, "simple": "In plain words: Production support in payments is a 24 hour discipline, because payments do not stop at 5pm.", "summary": "Production support in payments is a 24 hour discipline, because payments do not stop at 5pm.", "example": "This lesson is conceptual. The worked examples that use it are in the lessons that follow in this chapter."}}], "chapter_title": "BA practice depth", "meta_line": "BA practice depth, Lesson 8 of 8, Narration 4:16, D14 Business analysis and professional practice", "next_id": "ch85s1", "next_title": "Embedded finance: payments inside another company's product"}]);</script>
+</div>
+<nav class="tool-rail" aria-label="Lesson tools">
+<button type="button" class="rail-tool" onclick="pfOpenTranscript('studio-ch84s8')" title="Open transcript"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M7 3h7l4 4v14H7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M14 3v4h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 12h5M10 15.5h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span>Transcript</span></button>
+<button type="button" class="rail-tool" onclick="pfToggleNote('studio-ch84s8')" title="Write a note on this lesson"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L8 19l-4 1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>Notes</span></button>
+<button type="button" class="rail-tool" onclick="pfToggleFiles('studio-ch84s8')" title="Download lesson files"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>Files</span></button>
+</nav>
+<div class="fw-files-panel" id="pf-files-studio-ch84s8" style="display:none"><b>Lesson files</b><p><a href="../audio/ch84s8.mp3" download>Download narration (MP3)</a></p><p><a href="#" onclick="pfDownloadTranscript('studio-ch84s8');return false">Download transcript (.txt)</a></p></div>
+</div>
+</div>
+</main>
+<footer><p>Payments Training Hub. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="../index.html">Home</a> &middot; <a href="../courses.html">Courses</a> &middot; <a href="../practice.html">Practice</a> &middot; <a href="../simulators.html">Simulators</a> &middot; <a href="../labs.html">Labs</a> &middot; <a href="../explorer.html">Explorer</a> &middot; <a href="../tests.html">Tests</a> &middot; <a href="../diagnostic.html">Diagnostic</a> &middot; <a href="../faq.html">Interview Ready Questions</a> &middot; <a href="../interview-prep.html">Interview Prep</a></p><p><a href="../about.html">About</a> &middot; <a href="../privacy.html">Privacy</a> &middot; <a href="../terms.html">Terms</a> &middot; <a href="../contact.html">Contact</a> &middot; <a href="../editorial-standards.html">Editorial Standards</a> &middot; <a href="../sources.html">Sources</a></p></footer>
+<script defer src="../assets/site.js"></script>
+<script defer src="../assets/bundles.js"></script>
+<script defer src="../assets/auth.js"></script>
+<script defer src="../assets/studio.js"></script>
+<script defer src="../assets/insight-components.js"></script>
+<script defer src="../assets/nav.js"></script>
+<script defer src="../assets/pf-enhance.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+if(window.PFInsight){PFInsight.init();}
+});
+</script>
+</body>
+</html>
