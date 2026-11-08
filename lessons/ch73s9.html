@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>Payment Pre-validation: checking the beneficiary before sending | Payments Training Hub</title>
+<meta name="description" content="Payment Pre-validation is the SWIFT service that lets a sending bank check the beneficiary account details before the payment is sent, so that errors...">
+<link rel="canonical" href="https://www.paymentstraininghub.in/lessons/ch73s9.html">
+<meta property="og:url" content="https://www.paymentstraininghub.in/lessons/ch73s9.html">
+<meta property="og:title" content="Payment Pre-validation: checking the beneficiary before sending | Payments Training Hub">
+<meta property="og:description" content="Payment Pre-validation is the SWIFT service that lets a sending bank check the beneficiary account details before the payment is sent, so that errors...">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.in/assets/hero/hero-poster.jpg">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.paymentstraininghub.in/index.html"}, {"@type": "ListItem", "position": 2, "name": "Claims, enquiries and case management", "item": "https://www.paymentstraininghub.in/chapters/ch73-claims-enquiries-and-case-management.html"}, {"@type": "ListItem", "position": 3, "name": "Payment Pre-validation: checking the beneficiary before sending", "item": "https://www.paymentstraininghub.in/lessons/ch73s9.html"}]}</script>
+<link rel="stylesheet" href="../assets/studio.css">
+<link rel="stylesheet" href="../assets/pf-theme.css">
+<link rel="stylesheet" href="../assets/insight-components.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="../index.html" class="brand">Payments <span>Training Hub</span></a><nav class="topnav"><a href="../index.html">Home</a> <a href="../courses.html">Courses</a> <a href="../practice.html">Practice</a> <a href="../simulators.html">Simulators</a> <a href="../labs.html">Labs</a> <a href="../explorer.html">Explorer</a> <a href="../tests.html">Tests</a></nav><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox" style="display:none"><span id="authState">Not signed in</span> <span id="authForm" style="display:none"><input id="authEmail" type="email" placeholder="Email for OTP" aria-label="Email for sign-in"> <button class="mute-btn" onclick="paAuthSendOtp()">Send code</button> <input id="authCode" type="text" placeholder="6-digit code" aria-label="One-time code" style="display:none"> <button class="mute-btn" id="authVerifyBtn" onclick="paAuthVerifyOtp()" style="display:none">Verify</button> <button class="mute-btn" onclick="paAuthGoogle()">Sign in with Google</button> </span><button class="mute-btn" id="authSignOutBtn" onclick="paAuthSignOut()" style="display:none">Sign out</button></span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<div class="lesson-page">
+<div class="lesson-shell">
+<aside class="course-rail">
+<div class="rail-head">
+<h2>Claims, enquiries and case management</h2>
+<a class="rail-close" href="../chapters/ch73-claims-enquiries-and-case-management.html" aria-label="Close and go to chapter" title="Back to chapter">&times;</a>
+</div>
+<div class="goal-card">
+<div class="goal-head"><b>Today's goal &middot; <span id="side-progress-text">0 of 10 items</span></b><span class="goal-flag"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 21V4m0 1h11l-2.5 3.5L17 12H6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="goal-chev">&#94;</span></div>
+<p class="goal-body" id="side-goal-body">Complete 3 items today to stay at a good pace!</p>
+</div>
+<ul class="lesson-list"><li class="" data-lesson="ch73s1"><a href="ch73s1.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">admi messages: the administration layer of ISO 20022</span><span class="m">Video &middot; 7 min</span></span></a></li>
+<li class="" data-lesson="ch73s2"><a href="ch73s2.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">camt.057 Notification to Receive: knowing the money is coming</span><span class="m">Video &middot; 8 min</span></span></a></li>
+<li class="" data-lesson="ch73s3"><a href="ch73s3.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">pacs.028 Payment Status Request: asking where a payment is</span><span class="m">Video &middot; 6 min</span></span></a></li>
+<li class="" data-lesson="ch73s4"><a href="ch73s4.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">camt.027 Claim Non-Receipt: when the money never arrived</span><span class="m">Video &middot; 6 min</span></span></a></li>
+<li class="" data-lesson="ch73s5"><a href="ch73s5.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">camt.087 Request to Modify Payment: fixing a payment after it was sent</span><span class="m">Video &middot; 7 min</span></span></a></li>
+<li class="" data-lesson="ch73s6"><a href="ch73s6.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Case lifecycle and stop or recall: running an investigation to closure</span><span class="m">Video &middot; 7 min</span></span></a></li>
+<li class="" data-lesson="ch73s7"><a href="ch73s7.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">gpi Instant: cross-border payments on instant rails</span><span class="m">Video &middot; 7 min</span></span></a></li>
+<li class="" data-lesson="ch73s8"><a href="ch73s8.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">SWIFT Go: low-value cross-border payments, fast and predictable</span><span class="m">Video &middot; 6 min</span></span></a></li>
+<li class="current" data-lesson="ch73s9"><a href="ch73s9.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Payment Pre-validation: checking the beneficiary before sending</span><span class="m">Video &middot; 6 min</span></span></a></li>
+<li class="" data-lesson="ch73s10"><a href="ch73s10.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Transaction Manager: the shared record of an ISO 20022 payment</span><span class="m">Video &middot; 7 min</span></span></a></li></ul>
+</aside>
+<div class="lesson-main">
+<div class="studio" id="studio-studio-ch73s9">
+<div class="player">
+<div class="studio-canvas" id="studio-canvas-studio-ch73s9">
+<div class="ch-sec studio-scene-vis active" id="studio-vis-studio-ch73s9-0"><div class="beat-frames">
+<div class="beat-frame active" data-frame="0">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<defs><pattern id="bfd524" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<rect x="0" y="0" width="900" height="506" fill="url(#bfd524)"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Payment</tspan> <tspan fill="#FFFFFF">Pre-validation</tspan> <tspan fill="#FFFFFF">service</tspan></text>
+<text x="48" y="126" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">definition</tspan></text>
+<g data-node="n0" class="bf-now" data-beat="0">
+<rect x="48" y="172" width="249" height="96" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="68" cy="192" r="11" fill="#1D4ED8"/>
+<text x="68" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="285" y="196" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="172" y="214" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Payment Pre-validation</text>
+<text x="172" y="232" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">service definition</text>
+</g>
+<g data-node="n1" class="bf-dim" data-beat="1">
+<rect x="325" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="345" cy="192" r="11" fill="#1E3A5F"/>
+<text x="345" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="449" y="223" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Pre-validation</text>
+</g>
+<g data-node="n2" class="bf-dim" data-beat="2">
+<rect x="602" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="622" cy="192" r="11" fill="#1E3A5F"/>
+<text x="622" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="726" y="223" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Pre-validation worked</text>
+</g>
+<g data-node="n3" class="bf-dim" data-beat="3">
+<rect x="602" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="622" cy="332" r="11" fill="#1E3A5F"/>
+<text x="622" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="726" y="363" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Recovery</text>
+</g>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<rect x="325" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="345" cy="332" r="11" fill="#1E3A5F"/>
+<text x="345" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="449" y="354" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Closed account</text>
+<text x="449" y="372" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">validation edge case</text>
+</g>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="48" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="68" cy="332" r="11" fill="#1E3A5F"/>
+<text x="68" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="172" y="363" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Pre-validation</text>
+</g>
+<path data-conn="c0" data-beat="0" d="M 300 220 L 310 220" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c0" data-beat="0" points="322,220 310,227 310,213" fill="#DBEAFE"/>
+<path data-conn="c1" data-beat="1" d="M 577 220 L 587 220" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c1" data-beat="1" points="599,220 587,227 587,213" fill="#DBEAFE"/>
+<path data-conn="c2" data-beat="2" d="M 726 271 L 726 290 L 726 290 L 726 297" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c2" data-beat="2" points="726,309 719,297 733,297" fill="#DBEAFE"/>
+<path data-conn="c3" data-beat="3" d="M 599 360 L 589 360" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c3" data-beat="3" points="577,360 589,353 589,367" fill="#DBEAFE"/>
+<path data-conn="c4" data-beat="4" d="M 322 360 L 312 360" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c4" data-beat="4" points="300,360 312,353 312,367" fill="#DBEAFE"/>
+<g class="bf-paydot" style="--dx:0px;--dy:0px"><circle class="bf-pulse" cx="48" cy="220" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="48" cy="220" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="450" y="444" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Payment Pre-validation is the SWIFT service that lets a sending bank check the beneficiary</text>
+<text x="450" y="464" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">account details before the payment is sent</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 1 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#60A5FA"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 854" role="img" aria-label="Lesson visual, vertical layout">
+<defs><pattern id="bfd525" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="360" height="854" fill="#0B1F3D"/>
+<rect x="0" y="0" width="360" height="854" fill="url(#bfd525)"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Payment</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">Pre-validation</tspan></text>
+<text x="24" y="96" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">service</tspan> <tspan fill="#FFFFFF">definition</tspan></text>
+<g data-node="n0" class="bf-now" data-beat="0">
+<rect x="24" y="122" width="312" height="92" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="44" cy="142" r="11" fill="#1D4ED8"/>
+<text x="44" y="146" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="324" y="146" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="180" y="160" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Payment Pre-validation</text>
+<text x="180" y="180" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">service definition</text>
+</g>
+<line data-conn="c0" data-beat="0" x1="180" y1="217" x2="180" y2="225" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c0" data-beat="0" points="180,237 173,225 187,225" fill="#DBEAFE"/>
+<g data-node="n1" class="bf-dim" data-beat="1">
+<rect x="24" y="240" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="260" r="11" fill="#1E3A5F"/>
+<text x="44" y="264" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="180" y="278" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Pre-validation</text>
+</g>
+<line data-conn="c1" data-beat="1" x1="180" y1="315" x2="180" y2="323" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c1" data-beat="1" points="180,335 173,323 187,323" fill="#DBEAFE"/>
+<g data-node="n2" class="bf-dim" data-beat="2">
+<rect x="24" y="338" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="358" r="11" fill="#1E3A5F"/>
+<text x="44" y="362" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="180" y="376" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Pre-validation worked</text>
+</g>
+<line data-conn="c2" data-beat="2" x1="180" y1="413" x2="180" y2="421" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c2" data-beat="2" points="180,433 173,421 187,421" fill="#DBEAFE"/>
+<g data-node="n3" class="bf-dim" data-beat="3">
+<rect x="24" y="436" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="456" r="11" fill="#1E3A5F"/>
+<text x="44" y="460" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="180" y="474" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Recovery</text>
+</g>
+<line data-conn="c3" data-beat="3" x1="180" y1="511" x2="180" y2="519" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c3" data-beat="3" points="180,531 173,519 187,519" fill="#DBEAFE"/>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<rect x="24" y="534" width="312" height="92" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="554" r="11" fill="#1E3A5F"/>
+<text x="44" y="558" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="180" y="572" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Closed account validation</text>
+<text x="180" y="592" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">edge case</text>
+</g>
+<line data-conn="c4" data-beat="4" x1="180" y1="629" x2="180" y2="637" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c4" data-beat="4" points="180,649 173,637 187,637" fill="#DBEAFE"/>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="24" y="652" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="672" r="11" fill="#1E3A5F"/>
+<text x="44" y="676" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="180" y="690" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Pre-validation</text>
+</g>
+<g class="bf-paydot" style="--dx:0px;--dy:0px"><circle class="bf-pulse" cx="180" cy="122" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="180" cy="122" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="180" y="744" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Payment Pre-validation is the SWIFT</text>
+<text x="180" y="763" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">service that lets a sending bank check the</text>
+<text x="180" y="782" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">beneficiary account details before the</text>
+<text x="180" y="801" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">payment is sent</text>
+<text x="24" y="842" font-size="12" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 1 of 6</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="1">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<defs><pattern id="bfd526" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<rect x="0" y="0" width="900" height="506" fill="url(#bfd526)"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Pre-validation</tspan> <tspan fill="#FFFFFF">return</tspan> <tspan fill="#FFFFFF">delays</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="48" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="68" cy="192" r="11" fill="#1E3A5F"/>
+<text x="68" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="172" y="214" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Payment Pre-validation</text>
+<text x="172" y="232" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">service definition</text>
+</g>
+<g data-node="n1" class="bf-now" data-beat="1">
+<rect x="325" y="172" width="249" height="96" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="345" cy="192" r="11" fill="#1D4ED8"/>
+<text x="345" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="562" y="196" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="449" y="223" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Pre-validation</text>
+</g>
+<g data-node="n2" class="bf-dim" data-beat="2">
+<rect x="602" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="622" cy="192" r="11" fill="#1E3A5F"/>
+<text x="622" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="726" y="223" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Pre-validation worked</text>
+</g>
+<g data-node="n3" class="bf-dim" data-beat="3">
+<rect x="602" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="622" cy="332" r="11" fill="#1E3A5F"/>
+<text x="622" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="726" y="363" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Recovery</text>
+</g>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<rect x="325" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="345" cy="332" r="11" fill="#1E3A5F"/>
+<text x="345" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="449" y="354" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Closed account</text>
+<text x="449" y="372" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">validation edge case</text>
+</g>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="48" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="68" cy="332" r="11" fill="#1E3A5F"/>
+<text x="68" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="172" y="363" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Pre-validation</text>
+</g>
+<path data-conn="c0" data-beat="0" d="M 300 220 L 310 220" stroke="#60A5FA" stroke-width="3" fill="none"/><polygon data-conn="c0" data-beat="0" points="322,220 310,227 310,213" fill="#DBEAFE"/>
+<path data-conn="c1" data-beat="1" d="M 577 220 L 587 220" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c1" data-beat="1" points="599,220 587,227 587,213" fill="#DBEAFE"/>
+<path data-conn="c2" data-beat="2" d="M 726 271 L 726 290 L 726 290 L 726 297" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c2" data-beat="2" points="726,309 719,297 733,297" fill="#DBEAFE"/>
+<path data-conn="c3" data-beat="3" d="M 599 360 L 589 360" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c3" data-beat="3" points="577,360 589,353 589,367" fill="#DBEAFE"/>
+<path data-conn="c4" data-beat="4" d="M 322 360 L 312 360" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c4" data-beat="4" points="300,360 312,353 312,367" fill="#DBEAFE"/>
+<g class="bf-paydot" style="--dx:-143px;--dy:0px"><circle class="bf-pulse" cx="315" cy="220" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="315" cy="220" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="450" y="444" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The return then takes days more, the customer is told the payment failed, and the bank pays</text>
+<text x="450" y="464" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">the cost of the investigation.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 2 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#60A5FA"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 807" role="img" aria-label="Lesson visual, vertical layout">
+<defs><pattern id="bfd527" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="360" height="807" fill="#0B1F3D"/>
+<rect x="0" y="0" width="360" height="807" fill="url(#bfd527)"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Pre-validation</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">return</tspan> <tspan fill="#FFFFFF">delays</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="24" y="94" width="312" height="92" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="114" r="11" fill="#1E3A5F"/>
+<text x="44" y="118" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="180" y="132" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Payment Pre-validation</text>
+<text x="180" y="152" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">service definition</text>
+</g>
+<line data-conn="c0" data-beat="0" x1="180" y1="189" x2="180" y2="197" stroke="#60A5FA" stroke-width="2"/>
+<polygon data-conn="c0" data-beat="0" points="180,209 173,197 187,197" fill="#DBEAFE"/>
+<g data-node="n1" class="bf-now" data-beat="1">
+<rect x="24" y="212" width="312" height="72" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="44" cy="232" r="11" fill="#1D4ED8"/>
+<text x="44" y="236" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="324" y="236" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="180" y="250" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Pre-validation</text>
+</g>
+<line data-conn="c1" data-beat="1" x1="180" y1="287" x2="180" y2="295" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c1" data-beat="1" points="180,307 173,295 187,295" fill="#DBEAFE"/>
+<g data-node="n2" class="bf-dim" data-beat="2">
+<rect x="24" y="310" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="330" r="11" fill="#1E3A5F"/>
+<text x="44" y="334" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="180" y="348" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Pre-validation worked</text>
+</g>
+<line data-conn="c2" data-beat="2" x1="180" y1="385" x2="180" y2="393" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c2" data-beat="2" points="180,405 173,393 187,393" fill="#DBEAFE"/>
+<g data-node="n3" class="bf-dim" data-beat="3">
+<rect x="24" y="408" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="428" r="11" fill="#1E3A5F"/>
+<text x="44" y="432" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="180" y="446" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Recovery</text>
+</g>
+<line data-conn="c3" data-beat="3" x1="180" y1="483" x2="180" y2="491" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c3" data-beat="3" points="180,503 173,491 187,491" fill="#DBEAFE"/>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<rect x="24" y="506" width="312" height="92" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="526" r="11" fill="#1E3A5F"/>
+<text x="44" y="530" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="180" y="544" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Closed account validation</text>
+<text x="180" y="564" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">edge case</text>
+</g>
+<line data-conn="c4" data-beat="4" x1="180" y1="601" x2="180" y2="609" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c4" data-beat="4" points="180,621 173,609 187,609" fill="#DBEAFE"/>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="24" y="624" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="644" r="11" fill="#1E3A5F"/>
+<text x="44" y="648" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="180" y="662" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Pre-validation</text>
+</g>
+<g class="bf-paydot" style="--dx:0px;--dy:-62px"><circle class="bf-pulse" cx="180" cy="202" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="180" cy="202" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="180" y="716" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The return then takes days more, the</text>
+<text x="180" y="735" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">customer is told the payment failed, and</text>
+<text x="180" y="754" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">the bank pays the cost of the investigation.</text>
+<text x="24" y="795" font-size="12" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 2 of 6</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="2">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<defs><pattern id="bfd528" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<rect x="0" y="0" width="900" height="506" fill="url(#bfd528)"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Pre-validation</tspan> <tspan fill="#FFFFFF">worked</tspan> <tspan fill="#FFFFFF">example</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="48" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="68" cy="192" r="11" fill="#1E3A5F"/>
+<text x="68" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="172" y="214" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Payment Pre-validation</text>
+<text x="172" y="232" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">service definition</text>
+</g>
+<g data-node="n1" class="bf-done" data-beat="1">
+<rect x="325" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="345" cy="192" r="11" fill="#1E3A5F"/>
+<text x="345" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="449" y="223" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Pre-validation</text>
+</g>
+<g data-node="n2" class="bf-now" data-beat="2">
+<rect x="602" y="172" width="249" height="96" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="622" cy="192" r="11" fill="#1D4ED8"/>
+<text x="622" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="839" y="196" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="726" y="223" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Pre-validation worked</text>
+</g>
+<g data-node="n3" class="bf-dim" data-beat="3">
+<rect x="602" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="622" cy="332" r="11" fill="#1E3A5F"/>
+<text x="622" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="726" y="363" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Recovery</text>
+</g>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<rect x="325" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="345" cy="332" r="11" fill="#1E3A5F"/>
+<text x="345" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="449" y="354" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Closed account</text>
+<text x="449" y="372" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">validation edge case</text>
+</g>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="48" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="68" cy="332" r="11" fill="#1E3A5F"/>
+<text x="68" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="172" y="363" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Pre-validation</text>
+</g>
+<path data-conn="c0" data-beat="0" d="M 300 220 L 310 220" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c0" data-beat="0" points="322,220 310,227 310,213" fill="#DBEAFE"/>
+<path data-conn="c1" data-beat="1" d="M 577 220 L 587 220" stroke="#60A5FA" stroke-width="3" fill="none"/><polygon data-conn="c1" data-beat="1" points="599,220 587,227 587,213" fill="#DBEAFE"/>
+<path data-conn="c2" data-beat="2" d="M 726 271 L 726 290 L 726 290 L 726 297" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c2" data-beat="2" points="726,309 719,297 733,297" fill="#DBEAFE"/>
+<path data-conn="c3" data-beat="3" d="M 599 360 L 589 360" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c3" data-beat="3" points="577,360 589,353 589,367" fill="#DBEAFE"/>
+<path data-conn="c4" data-beat="4" d="M 322 360 L 312 360" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c4" data-beat="4" points="300,360 312,353 312,367" fill="#DBEAFE"/>
+<g class="bf-paydot" style="--dx:-143px;--dy:0px"><circle class="bf-pulse" cx="592" cy="220" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="592" cy="220" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="450" y="444" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">A corporate customer in London must pay a new supplier in Tokyo JPY 4,200,000, and enters the</text>
+<text x="450" y="464" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">supplier account number and name.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 3 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#60A5FA"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 826" role="img" aria-label="Lesson visual, vertical layout">
+<defs><pattern id="bfd529" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="360" height="826" fill="#0B1F3D"/>
+<rect x="0" y="0" width="360" height="826" fill="url(#bfd529)"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Pre-validation</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">worked</tspan> <tspan fill="#FFFFFF">example</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="24" y="94" width="312" height="92" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="114" r="11" fill="#1E3A5F"/>
+<text x="44" y="118" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="180" y="132" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Payment Pre-validation</text>
+<text x="180" y="152" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">service definition</text>
+</g>
+<line data-conn="c0" data-beat="0" x1="180" y1="189" x2="180" y2="197" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c0" data-beat="0" points="180,209 173,197 187,197" fill="#DBEAFE"/>
+<g data-node="n1" class="bf-done" data-beat="1">
+<rect x="24" y="212" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="232" r="11" fill="#1E3A5F"/>
+<text x="44" y="236" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="180" y="250" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Pre-validation</text>
+</g>
+<line data-conn="c1" data-beat="1" x1="180" y1="287" x2="180" y2="295" stroke="#60A5FA" stroke-width="2"/>
+<polygon data-conn="c1" data-beat="1" points="180,307 173,295 187,295" fill="#DBEAFE"/>
+<g data-node="n2" class="bf-now" data-beat="2">
+<rect x="24" y="310" width="312" height="72" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="44" cy="330" r="11" fill="#1D4ED8"/>
+<text x="44" y="334" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="324" y="334" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="180" y="348" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Pre-validation worked</text>
+</g>
+<line data-conn="c2" data-beat="2" x1="180" y1="385" x2="180" y2="393" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c2" data-beat="2" points="180,405 173,393 187,393" fill="#DBEAFE"/>
+<g data-node="n3" class="bf-dim" data-beat="3">
+<rect x="24" y="408" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="428" r="11" fill="#1E3A5F"/>
+<text x="44" y="432" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="180" y="446" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Recovery</text>
+</g>
+<line data-conn="c3" data-beat="3" x1="180" y1="483" x2="180" y2="491" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c3" data-beat="3" points="180,503 173,491 187,491" fill="#DBEAFE"/>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<rect x="24" y="506" width="312" height="92" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="526" r="11" fill="#1E3A5F"/>
+<text x="44" y="530" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="180" y="544" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Closed account validation</text>
+<text x="180" y="564" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">edge case</text>
+</g>
+<line data-conn="c4" data-beat="4" x1="180" y1="601" x2="180" y2="609" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c4" data-beat="4" points="180,621 173,609 187,609" fill="#DBEAFE"/>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="24" y="624" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="644" r="11" fill="#1E3A5F"/>
+<text x="44" y="648" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="180" y="662" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Pre-validation</text>
+</g>
+<g class="bf-paydot" style="--dx:0px;--dy:-52px"><circle class="bf-pulse" cx="180" cy="300" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="180" cy="300" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="180" y="716" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">A corporate customer in London must pay</text>
+<text x="180" y="735" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">a new supplier in Tokyo JPY 4,200,000, and</text>
+<text x="180" y="754" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">enters the supplier account number and</text>
+<text x="180" y="773" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">name.</text>
+<text x="24" y="814" font-size="12" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 3 of 6</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="3">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<defs><pattern id="bfd530" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<rect x="0" y="0" width="900" height="506" fill="url(#bfd530)"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Recovery:</tspan> <tspan fill="#FFFFFF">clear</tspan> <tspan fill="#FFFFFF">message</tspan> <tspan fill="#FFFFFF">to</tspan> <tspan fill="#FFFFFF">customer</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="48" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="68" cy="192" r="11" fill="#1E3A5F"/>
+<text x="68" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="172" y="214" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Payment Pre-validation</text>
+<text x="172" y="232" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">service definition</text>
+</g>
+<g data-node="n1" class="bf-done" data-beat="1">
+<rect x="325" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="345" cy="192" r="11" fill="#1E3A5F"/>
+<text x="345" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="449" y="223" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Pre-validation</text>
+</g>
+<g data-node="n2" class="bf-done" data-beat="2">
+<rect x="602" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="622" cy="192" r="11" fill="#1E3A5F"/>
+<text x="622" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="726" y="223" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Pre-validation worked</text>
+</g>
+<g data-node="n3" class="bf-now" data-beat="3">
+<rect x="602" y="312" width="249" height="96" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="622" cy="332" r="11" fill="#1D4ED8"/>
+<text x="622" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="839" y="336" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="726" y="363" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Recovery</text>
+</g>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<rect x="325" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="345" cy="332" r="11" fill="#1E3A5F"/>
+<text x="345" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="449" y="354" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Closed account</text>
+<text x="449" y="372" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">validation edge case</text>
+</g>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="48" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="68" cy="332" r="11" fill="#1E3A5F"/>
+<text x="68" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="172" y="363" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Pre-validation</text>
+</g>
+<path data-conn="c0" data-beat="0" d="M 300 220 L 310 220" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c0" data-beat="0" points="322,220 310,227 310,213" fill="#DBEAFE"/>
+<path data-conn="c1" data-beat="1" d="M 577 220 L 587 220" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c1" data-beat="1" points="599,220 587,227 587,213" fill="#DBEAFE"/>
+<path data-conn="c2" data-beat="2" d="M 726 271 L 726 290 L 726 290 L 726 297" stroke="#60A5FA" stroke-width="3" fill="none"/><polygon data-conn="c2" data-beat="2" points="726,309 719,297 733,297" fill="#DBEAFE"/>
+<path data-conn="c3" data-beat="3" d="M 599 360 L 589 360" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c3" data-beat="3" points="577,360 589,353 589,367" fill="#DBEAFE"/>
+<path data-conn="c4" data-beat="4" d="M 322 360 L 312 360" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c4" data-beat="4" points="300,360 312,353 312,367" fill="#DBEAFE"/>
+<g class="bf-paydot" style="--dx:0px;--dy:-82px"><circle class="bf-pulse" cx="726" cy="302" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="726" cy="302" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="450" y="444" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The recovery is a clear message to the customer: the account could not be validated</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 4 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#60A5FA"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 835" role="img" aria-label="Lesson visual, vertical layout">
+<defs><pattern id="bfd531" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="360" height="835" fill="#0B1F3D"/>
+<rect x="0" y="0" width="360" height="835" fill="url(#bfd531)"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Recovery:</tspan> <tspan fill="#FFFFFF">clear</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">message</tspan> <tspan fill="#FFFFFF">to</tspan></text>
+<text x="24" y="96" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">customer</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="24" y="122" width="312" height="92" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="142" r="11" fill="#1E3A5F"/>
+<text x="44" y="146" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="180" y="160" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Payment Pre-validation</text>
+<text x="180" y="180" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">service definition</text>
+</g>
+<line data-conn="c0" data-beat="0" x1="180" y1="217" x2="180" y2="225" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c0" data-beat="0" points="180,237 173,225 187,225" fill="#DBEAFE"/>
+<g data-node="n1" class="bf-done" data-beat="1">
+<rect x="24" y="240" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="260" r="11" fill="#1E3A5F"/>
+<text x="44" y="264" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="180" y="278" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Pre-validation</text>
+</g>
+<line data-conn="c1" data-beat="1" x1="180" y1="315" x2="180" y2="323" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c1" data-beat="1" points="180,335 173,323 187,323" fill="#DBEAFE"/>
+<g data-node="n2" class="bf-done" data-beat="2">
+<rect x="24" y="338" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="358" r="11" fill="#1E3A5F"/>
+<text x="44" y="362" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="180" y="376" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Pre-validation worked</text>
+</g>
+<line data-conn="c2" data-beat="2" x1="180" y1="413" x2="180" y2="421" stroke="#60A5FA" stroke-width="2"/>
+<polygon data-conn="c2" data-beat="2" points="180,433 173,421 187,421" fill="#DBEAFE"/>
+<g data-node="n3" class="bf-now" data-beat="3">
+<rect x="24" y="436" width="312" height="72" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="44" cy="456" r="11" fill="#1D4ED8"/>
+<text x="44" y="460" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="324" y="460" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="180" y="474" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Recovery</text>
+</g>
+<line data-conn="c3" data-beat="3" x1="180" y1="511" x2="180" y2="519" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c3" data-beat="3" points="180,531 173,519 187,519" fill="#DBEAFE"/>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<rect x="24" y="534" width="312" height="92" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="554" r="11" fill="#1E3A5F"/>
+<text x="44" y="558" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="180" y="572" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Closed account validation</text>
+<text x="180" y="592" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">edge case</text>
+</g>
+<line data-conn="c4" data-beat="4" x1="180" y1="629" x2="180" y2="637" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c4" data-beat="4" points="180,649 173,637 187,637" fill="#DBEAFE"/>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="24" y="652" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="672" r="11" fill="#1E3A5F"/>
+<text x="44" y="676" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="180" y="690" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Pre-validation</text>
+</g>
+<g class="bf-paydot" style="--dx:0px;--dy:-52px"><circle class="bf-pulse" cx="180" cy="426" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="180" cy="426" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="180" y="744" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The recovery is a clear message to the</text>
+<text x="180" y="763" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">customer: the account could not be</text>
+<text x="180" y="782" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">validated</text>
+<text x="24" y="823" font-size="12" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 4 of 6</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="4">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<defs><pattern id="bfd532" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<rect x="0" y="0" width="900" height="506" fill="url(#bfd532)"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Closed</tspan> <tspan fill="#FFFFFF">account</tspan> <tspan fill="#FFFFFF">validation</tspan> <tspan fill="#FFFFFF">edge</tspan> <tspan fill="#FFFFFF">case</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="48" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="68" cy="192" r="11" fill="#1E3A5F"/>
+<text x="68" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="172" y="214" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Payment Pre-validation</text>
+<text x="172" y="232" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">service definition</text>
+</g>
+<g data-node="n1" class="bf-done" data-beat="1">
+<rect x="325" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="345" cy="192" r="11" fill="#1E3A5F"/>
+<text x="345" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="449" y="223" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Pre-validation</text>
+</g>
+<g data-node="n2" class="bf-done" data-beat="2">
+<rect x="602" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="622" cy="192" r="11" fill="#1E3A5F"/>
+<text x="622" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="726" y="223" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Pre-validation worked</text>
+</g>
+<g data-node="n3" class="bf-done" data-beat="3">
+<rect x="602" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="622" cy="332" r="11" fill="#1E3A5F"/>
+<text x="622" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="726" y="363" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Recovery</text>
+</g>
+<g data-node="n4" class="bf-now" data-beat="4">
+<rect x="325" y="312" width="249" height="96" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="345" cy="332" r="11" fill="#1D4ED8"/>
+<text x="345" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="562" y="336" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="449" y="354" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Closed account</text>
+<text x="449" y="372" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">validation edge case</text>
+</g>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="48" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="68" cy="332" r="11" fill="#1E3A5F"/>
+<text x="68" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="172" y="363" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Pre-validation</text>
+</g>
+<path data-conn="c0" data-beat="0" d="M 300 220 L 310 220" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c0" data-beat="0" points="322,220 310,227 310,213" fill="#DBEAFE"/>
+<path data-conn="c1" data-beat="1" d="M 577 220 L 587 220" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c1" data-beat="1" points="599,220 587,227 587,213" fill="#DBEAFE"/>
+<path data-conn="c2" data-beat="2" d="M 726 271 L 726 290 L 726 290 L 726 297" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c2" data-beat="2" points="726,309 719,297 733,297" fill="#DBEAFE"/>
+<path data-conn="c3" data-beat="3" d="M 599 360 L 589 360" stroke="#60A5FA" stroke-width="3" fill="none"/><polygon data-conn="c3" data-beat="3" points="577,360 589,353 589,367" fill="#DBEAFE"/>
+<path data-conn="c4" data-beat="4" d="M 322 360 L 312 360" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c4" data-beat="4" points="300,360 312,353 312,367" fill="#DBEAFE"/>
+<g class="bf-paydot" style="--dx:142px;--dy:0px"><circle class="bf-pulse" cx="584" cy="360" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="584" cy="360" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="450" y="444" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">A validation for an account that exists but is closed must return a clear answer, not a match,</text>
+<text x="450" y="464" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">because the payment would fail.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 5 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#60A5FA"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 835" role="img" aria-label="Lesson visual, vertical layout">
+<defs><pattern id="bfd533" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="360" height="835" fill="#0B1F3D"/>
+<rect x="0" y="0" width="360" height="835" fill="url(#bfd533)"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Closed</tspan> <tspan fill="#FFFFFF">account</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">validation</tspan> <tspan fill="#FFFFFF">edge</tspan></text>
+<text x="24" y="96" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">case</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="24" y="122" width="312" height="92" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="142" r="11" fill="#1E3A5F"/>
+<text x="44" y="146" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="180" y="160" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Payment Pre-validation</text>
+<text x="180" y="180" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">service definition</text>
+</g>
+<line data-conn="c0" data-beat="0" x1="180" y1="217" x2="180" y2="225" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c0" data-beat="0" points="180,237 173,225 187,225" fill="#DBEAFE"/>
+<g data-node="n1" class="bf-done" data-beat="1">
+<rect x="24" y="240" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="260" r="11" fill="#1E3A5F"/>
+<text x="44" y="264" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="180" y="278" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Pre-validation</text>
+</g>
+<line data-conn="c1" data-beat="1" x1="180" y1="315" x2="180" y2="323" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c1" data-beat="1" points="180,335 173,323 187,323" fill="#DBEAFE"/>
+<g data-node="n2" class="bf-done" data-beat="2">
+<rect x="24" y="338" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="358" r="11" fill="#1E3A5F"/>
+<text x="44" y="362" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="180" y="376" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Pre-validation worked</text>
+</g>
+<line data-conn="c2" data-beat="2" x1="180" y1="413" x2="180" y2="421" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c2" data-beat="2" points="180,433 173,421 187,421" fill="#DBEAFE"/>
+<g data-node="n3" class="bf-done" data-beat="3">
+<rect x="24" y="436" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="456" r="11" fill="#1E3A5F"/>
+<text x="44" y="460" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="180" y="474" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Recovery</text>
+</g>
+<line data-conn="c3" data-beat="3" x1="180" y1="511" x2="180" y2="519" stroke="#60A5FA" stroke-width="2"/>
+<polygon data-conn="c3" data-beat="3" points="180,531 173,519 187,519" fill="#DBEAFE"/>
+<g data-node="n4" class="bf-now" data-beat="4">
+<rect x="24" y="534" width="312" height="92" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="44" cy="554" r="11" fill="#1D4ED8"/>
+<text x="44" y="558" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="324" y="558" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="180" y="572" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Closed account validation</text>
+<text x="180" y="592" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">edge case</text>
+</g>
+<line data-conn="c4" data-beat="4" x1="180" y1="629" x2="180" y2="637" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c4" data-beat="4" points="180,649 173,637 187,637" fill="#DBEAFE"/>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="24" y="652" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="672" r="11" fill="#1E3A5F"/>
+<text x="44" y="676" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="180" y="690" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Pre-validation</text>
+</g>
+<g class="bf-paydot" style="--dx:0px;--dy:-52px"><circle class="bf-pulse" cx="180" cy="524" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="180" cy="524" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="180" y="744" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">A validation for an account that exists but</text>
+<text x="180" y="763" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">is closed must return a clear answer, not a</text>
+<text x="180" y="782" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">match, because the payment would fail.</text>
+<text x="24" y="823" font-size="12" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 5 of 6</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="5">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<defs><pattern id="bfd534" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<rect x="0" y="0" width="900" height="506" fill="url(#bfd534)"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Pre-validation</tspan> <tspan fill="#FFFFFF">triggers</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="48" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="68" cy="192" r="11" fill="#1E3A5F"/>
+<text x="68" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="172" y="214" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Payment Pre-validation</text>
+<text x="172" y="232" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">service definition</text>
+</g>
+<g data-node="n1" class="bf-done" data-beat="1">
+<rect x="325" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="345" cy="192" r="11" fill="#1E3A5F"/>
+<text x="345" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="449" y="223" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Pre-validation</text>
+</g>
+<g data-node="n2" class="bf-done" data-beat="2">
+<rect x="602" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="622" cy="192" r="11" fill="#1E3A5F"/>
+<text x="622" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="726" y="223" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Pre-validation worked</text>
+</g>
+<g data-node="n3" class="bf-done" data-beat="3">
+<rect x="602" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="622" cy="332" r="11" fill="#1E3A5F"/>
+<text x="622" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="726" y="363" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Recovery</text>
+</g>
+<g data-node="n4" class="bf-done" data-beat="4">
+<rect x="325" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="345" cy="332" r="11" fill="#1E3A5F"/>
+<text x="345" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="449" y="354" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Closed account</text>
+<text x="449" y="372" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">validation edge case</text>
+</g>
+<g data-node="n5" class="bf-now" data-beat="5">
+<rect x="48" y="312" width="249" height="96" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="68" cy="332" r="11" fill="#1D4ED8"/>
+<text x="68" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="285" y="336" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="172" y="363" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Pre-validation</text>
+</g>
+<path data-conn="c0" data-beat="0" d="M 300 220 L 310 220" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c0" data-beat="0" points="322,220 310,227 310,213" fill="#DBEAFE"/>
+<path data-conn="c1" data-beat="1" d="M 577 220 L 587 220" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c1" data-beat="1" points="599,220 587,227 587,213" fill="#DBEAFE"/>
+<path data-conn="c2" data-beat="2" d="M 726 271 L 726 290 L 726 290 L 726 297" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c2" data-beat="2" points="726,309 719,297 733,297" fill="#DBEAFE"/>
+<path data-conn="c3" data-beat="3" d="M 599 360 L 589 360" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c3" data-beat="3" points="577,360 589,353 589,367" fill="#DBEAFE"/>
+<path data-conn="c4" data-beat="4" d="M 322 360 L 312 360" stroke="#60A5FA" stroke-width="3" fill="none"/><polygon data-conn="c4" data-beat="4" points="300,360 312,353 312,367" fill="#DBEAFE"/>
+<g class="bf-paydot" style="--dx:142px;--dy:0px"><circle class="bf-pulse" cx="307" cy="360" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="307" cy="360" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="450" y="444" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The requirement must name the validation trigger, the match rules, the customer messages, the</text>
+<text x="450" y="464" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">timeout and the fallback when validation is unavailable.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 6 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#60A5FA"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 826" role="img" aria-label="Lesson visual, vertical layout">
+<defs><pattern id="bfd535" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="360" height="826" fill="#0B1F3D"/>
+<rect x="0" y="0" width="360" height="826" fill="url(#bfd535)"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Pre-validation</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">triggers</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="24" y="94" width="312" height="92" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="114" r="11" fill="#1E3A5F"/>
+<text x="44" y="118" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="180" y="132" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Payment Pre-validation</text>
+<text x="180" y="152" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">service definition</text>
+</g>
+<line data-conn="c0" data-beat="0" x1="180" y1="189" x2="180" y2="197" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c0" data-beat="0" points="180,209 173,197 187,197" fill="#DBEAFE"/>
+<g data-node="n1" class="bf-done" data-beat="1">
+<rect x="24" y="212" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="232" r="11" fill="#1E3A5F"/>
+<text x="44" y="236" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="180" y="250" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Pre-validation</text>
+</g>
+<line data-conn="c1" data-beat="1" x1="180" y1="287" x2="180" y2="295" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c1" data-beat="1" points="180,307 173,295 187,295" fill="#DBEAFE"/>
+<g data-node="n2" class="bf-done" data-beat="2">
+<rect x="24" y="310" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="330" r="11" fill="#1E3A5F"/>
+<text x="44" y="334" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="180" y="348" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Pre-validation worked</text>
+</g>
+<line data-conn="c2" data-beat="2" x1="180" y1="385" x2="180" y2="393" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c2" data-beat="2" points="180,405 173,393 187,393" fill="#DBEAFE"/>
+<g data-node="n3" class="bf-done" data-beat="3">
+<rect x="24" y="408" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="428" r="11" fill="#1E3A5F"/>
+<text x="44" y="432" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="180" y="446" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Recovery</text>
+</g>
+<line data-conn="c3" data-beat="3" x1="180" y1="483" x2="180" y2="491" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c3" data-beat="3" points="180,503 173,491 187,491" fill="#DBEAFE"/>
+<g data-node="n4" class="bf-done" data-beat="4">
+<rect x="24" y="506" width="312" height="92" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="526" r="11" fill="#1E3A5F"/>
+<text x="44" y="530" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="180" y="544" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Closed account validation</text>
+<text x="180" y="564" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">edge case</text>
+</g>
+<line data-conn="c4" data-beat="4" x1="180" y1="601" x2="180" y2="609" stroke="#60A5FA" stroke-width="2"/>
+<polygon data-conn="c4" data-beat="4" points="180,621 173,609 187,609" fill="#DBEAFE"/>
+<g data-node="n5" class="bf-now" data-beat="5">
+<rect x="24" y="624" width="312" height="72" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="44" cy="644" r="11" fill="#1D4ED8"/>
+<text x="44" y="648" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="324" y="648" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="180" y="662" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Pre-validation</text>
+</g>
+<g class="bf-paydot" style="--dx:0px;--dy:-62px"><circle class="bf-pulse" cx="180" cy="614" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="180" cy="614" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="180" y="716" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The requirement must name the validation</text>
+<text x="180" y="735" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">trigger, the match rules, the customer</text>
+<text x="180" y="754" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">messages, the timeout and the fallback</text>
+<text x="180" y="773" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">when validation is unavailable.</text>
+<text x="24" y="814" font-size="12" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 6 of 6</text>
+</svg>
+</div>
+</div>
+<p class="xml-caption">Flow of the explanation in this lesson.</p></div>
+<div class="playerbar">
+<div class="studio-progress"><div class="studio-markers" id="studio-markers-studio-ch73s9"></div><input type="range" id="studio-slider-studio-ch73s9" min="0" max="1000" value="0" aria-label="Lesson timeline"></div>
+<div class="ctrl-row">
+<button class="ctrl-btn" id="studio-play-studio-ch73s9" onclick="studioTogglePlay('studio-ch73s9')" aria-label="Play lesson" title="Play lesson"><span class="ctrl-ic-play"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></span><span class="ctrl-ic-pause" style="display:none"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><rect x="6" y="5" width="4" height="14" fill="currentColor"/><rect x="14" y="5" width="4" height="14" fill="currentColor"/></svg></span></button>
+<button class="ctrl-btn studio-mute-btn" id="studio-mute-studio-ch73s9" onclick="studioToggleMute('studio-ch73s9')" aria-label="Mute narration" title="Mute / unmute narration"><svg class="studio-mute-icon" viewBox="0 0 24 24" width="28" height="28" fill="currentColor" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3z"/><path class="studio-mute-waves" d="M16 8.5a5 5 0 0 1 0 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><path class="studio-mute-waves" d="M18.5 6a9 9 0 0 1 0 12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><path class="studio-mute-x" d="M16 9.5l5 5M21 9.5l-5 5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" style="display:none"/></svg></button>
+<button class="ctrl-btn" onclick="studioSkip('studio-ch73s9', -10)" aria-label="Back 10 seconds" title="Back 10 seconds"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 5a7 7 0 1 1-6.32 4.06" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M5.5 3.5v5h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><text x="12" y="16.5" font-size="8" fill="currentColor" text-anchor="middle" font-weight="700">10</text></svg></button>
+<span class="studio-time ctrl-time" id="studio-time-studio-ch73s9">0:00 / 6:04</span>
+<button class="ctrl-btn" onclick="studioSkip('studio-ch73s9', 10)" aria-label="Forward 10 seconds" title="Forward 10 seconds"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 5a7 7 0 1 0 6.32 4.06" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M18.5 3.5v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><text x="12" y="16.5" font-size="8" fill="currentColor" text-anchor="middle" font-weight="700">10</text></svg></button>
+<span class="playerbar-spacer"></span>
+<span class="player-stage" id="studio-tag-studio-ch73s9">Step 1 of 6</span>
+<button class="ctrl-btn ctrl-step" id="studio-prevscene-studio-ch73s9" onclick="studioPrevScene('studio-ch73s9')" title="Previous step" aria-label="Previous step">&lsaquo;</button>
+<button class="ctrl-btn ctrl-step" id="studio-nextscene-studio-ch73s9" onclick="studioNextScene('studio-ch73s9')" title="Next step" aria-label="Next step">&rsaquo;</button>
+<button class="ctrl-btn ctrl-speed" id="studio-speedbtn-studio-ch73s9" onclick="studioCycleSpeed('studio-ch73s9')" title="Playback speed" aria-label="Playback speed">1x</button>
+<span class="ctrl-settings-wrap"><button class="ctrl-btn" onclick="studioToggleSettings('studio-ch73s9', event)" aria-label="Player settings" title="Settings"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5 5l2.1 2.1M16.9 16.9L19 19M19 5l-2.1 2.1M7.1 16.9L5 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button><span class="ctrl-popover" id="studio-settings-studio-ch73s9" style="display:none" onclick="event.stopPropagation()"><label class="ctrl-pop-row">Volume <input type="range" min="0" max="1" step="0.1" value="1" oninput="studioSetVolume('studio-ch73s9', this.value)" style="width:110px;accent-color:#3587FC"></label><button class="studio-btn" id="studio-captions-studio-ch73s9" onclick="studioToggleCaptions('studio-ch73s9')">Captions: On</button><button class="studio-btn" onclick="studioReplayScene('studio-ch73s9')">Replay scene</button></span></span>
+<button class="ctrl-btn" onclick="studioFullscreen('studio-ch73s9')" aria-label="Fullscreen" title="Fullscreen"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+</div>
+</div>
+</div>
+<p class="studio-caption" id="studio-caption-studio-ch73s9"></p>
+<p class="studio-loading" id="studio-loading-studio-ch73s9" style="display:none">Loading narration...</p>
+<p class="studio-error" id="studio-error-studio-ch73s9" role="alert" style="display:none"></p>
+<audio id="studio-audio-studio-ch73s9" preload="auto" src="../audio/ch73s9.mp3"></audio>
+</div>
+<div class="lesson-title-row">
+<h1>Payment Pre-validation: checking the beneficiary before sending</h1>
+<button class="save-note" type="button" onclick="pfToggleNote('studio-ch73s9')" title="Save a note on this lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L8 19l-4 1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg> Save note</button>
+</div>
+<p class="lesson-meta-line">Claims, enquiries and case management, Lesson 9 of 10, Narration 6:04, D04 Messaging and standards</p>
+<p class="lesson-note-saved" id="studio-note-saved-studio-ch73s9" style="display:none">Note saved.</p>
+<div class="note-editor" id="studio-note-editor-studio-ch73s9" style="display:none"><textarea id="studio-note-text-studio-ch73s9" rows="3" placeholder="Write a note on this lesson..." aria-label="Lesson note"></textarea><div class="note-editor-row"><button class="studio-btn primary" onclick="pfSaveNote('studio-ch73s9')">Save note</button> <button class="studio-btn" onclick="pfToggleNote('studio-ch73s9')">Cancel</button></div></div>
+<div class="dive-deeper">
+<div class="dive-head"><button type="button" class="dive-toggle" onclick="pfToggleDive(this)" aria-expanded="true"><span class="dive-spark"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 2l2.2 6.8L21 11l-6.8 2.2L12 20l-2.2-6.8L3 11l6.8-2.2z" fill="currentColor"/></svg></span><span class="dive-title">Dive deeper on this topic</span><span class="dive-chev"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 14l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button></div>
+<div class="dive-btns"><button type="button" class="dive-btn" data-kind="practice" onclick="pfDive('studio-ch73s9', 'practice')">Give me practice questions</button><button type="button" class="dive-btn" data-kind="simple" onclick="pfDive('studio-ch73s9', 'simple')">Explain this topic in simple terms</button><button type="button" class="dive-btn" data-kind="summary" onclick="pfDive('studio-ch73s9', 'summary')">Give me a summary</button><button type="button" class="dive-btn" data-kind="example" onclick="pfDive('studio-ch73s9', 'example')">Give me real-life examples</button></div>
+<div class="dive-panel" id="dive-panel-studio-ch73s9"><div class="dive-panel-body"></div></div>
+<script type="application/json" id="pf-dive-data-studio-ch73s9">{"simple": "In plain words: payment Pre-validation is the SWIFT service that lets a sending bank check the beneficiary account details before the payment is sent, so that errors are caught while they are still cheap to fix. That is the whole idea in one sentence, and the rest of the lesson shows how it works in a real bank.", "summary": "Payment Pre-validation is the SWIFT service that lets a sending bank check the beneficiary account details before the payment is sent, so that errors are caught while they are still cheap to fix. Key points: Payment Pre-validation; Pre-validation return delays; Pre-validation worked example; Recovery: clear message to customer; Validation for an account that exists; Pre-validation triggers.", "example": "The validation service in the middle, operated by SWIFT, routes the request to the right beneficiary bank and returns the answer, and it must do so quickly, because a validation that takes an hour is useless for a customer waiting at a screen. On failure the validation itself can fail, for example because the beneficiary bank does not participate, and then the sending bank must decide whether to send the payment anyway, with a warning to the customer, or to block it until the details can be checked another way."}</script>
+</div>
+<div class="lesson-feedback">
+<div class="fb-icons"><button type="button" class="fb-btn" data-kind="like" onclick="pfFeedback(this,'like')" aria-label="Like this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M7 21H4a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1h3v11zm0 0h9.6a2 2 0 0 0 1.9-1.4l1.6-5A2 2 0 0 0 18.2 12H15V6.5A2.5 2.5 0 0 0 12.5 4L11 7.5 8.6 10H7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button><button type="button" class="fb-btn" data-kind="dislike" onclick="pfFeedback(this,'dislike')" aria-label="Dislike this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M17 3h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1h-3V3zm0 0H7.4a2 2 0 0 0-1.9 1.4l-1.6 5A2 2 0 0 0 5.8 12H9v5.5A2.5 2.5 0 0 0 11.5 20L13 16.5l2.4-2.5H17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button><button type="button" class="fb-btn" data-kind="flag" onclick="pfFeedback(this,'flag')" aria-label="Flag this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M6 21V4m0 1h11l-2.5 3.5L17 12H6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+<button type="button" class="go-next" onclick="goLesson('ch73s10')" title="Next: Transaction Manager: the shared record of an ISO 20022 payment">Go to next item &rarr;</button>
+</div>
+<div class="chips"><span class="chip">Return</span><span class="chip">SWIFT</span><span class="chip">IBAN</span></div>
+<div class="card learn-card">
+<h2>What you will learn</h2>
+<p class="transcript"><b>Your objective.</b> By the end of this lesson, you will be able to explain payment pre-validation: checking the beneficiary before sending. Payment Pre-validation is the SWIFT service that lets a sending bank check the beneficiary account details before the payment is sent, so that errors are caught while they are still cheap to fix.</p>
+<p class="transcript"><b>Why it matters.</b> Takeaway: pre-validation prevents failures instead of fixing them, and its value is measured in returns that never happen.</p>
+<p class="transcript">Chapter objective: Learner explains the admi administration layer and uses camt.057, pacs.028, camt.027 and camt.087 to find a missing payment, answer an enquiry and fix a payment after it was sent. Learner runs a case from opening to closure, including stop and recall, and explains gpi Instant, SWIFT Go, Payment Pre-validation and Transaction Manager.</p>
+<h3>Key learning points</h3>
+<ul id="studio-points-studio-ch73s9">
+<li>Payment Pre-validation service definition</li>
+<li>Pre-validation return delays</li>
+<li>Pre-validation worked example</li>
+<li>Recovery: clear message to customer</li>
+<li>Closed account validation edge case</li>
+<li>Pre-validation triggers</li>
+</ul>
+<h3>Key terms</h3>
+<div id="studio-terms-studio-ch73s9">
+<p class="keyterm"><b>Return:</b> A payment that is sent back to the sender after settlement because it cannot be credited to the beneficiary.</p>
+<p class="keyterm"><b>SWIFT:</b> The Society for Worldwide Interbank Financial Telecommunication, a member owned cooperative that provides secure messaging services for financial institutions.</p>
+<p class="keyterm"><b>IBAN:</b> An international bank account number that identifies a customer account in a standard format across countries.</p>
+</div>
+<p class="studio-note">Payment flow diagram showing Payment Pre-validation: checking the beneficiary before sending.</p>
+</div>
+<div class="fw-card" id="pf-exercise-studio-ch73s9">
+<p class="fw-label">Practise this lesson</p>
+<h2>Exercise</h2>
+<p><b>A corporate in London must pay a new supplier in Tokyo JPY 4,200,000, and enters the supplier name as Tokyo Trading Company Ltd. Work out what pre-validation does.</b></p>
+<p>Use Payment Pre-validation: the sending bank asks the beneficiary bank whether the account exists and the name matches, before sending.</p>
+<ol class="fw-steps">
+<li><b>What to do.</b> State the answer, the correction, and what would have happened without pre-validation.</li>
+</ol>
+<p><button class="studio-btn" id="pf-ex-btn-studio-ch73s9" onclick="pfRevealExercise('studio-ch73s9')">Show the answer</button></p>
+<div class="fw-exercise-answer" id="pf-ex-answer-studio-ch73s9">
+<p><b>Correct result.</b> The Tokyo bank replies the account exists but the name does not match, the holder is Tokyo Trading Co Ltd; the customer corrects the name, the validation passes, and the payment is credited the same day; without it the payment would have been held and returned after three days.</p>
+<p><b>Why.</b> Pre-validation moves the discovery of a data error to before the payment, when the customer can correct it in seconds.</p>
+</div>
+</div>
+<div class="fw-card" id="pf-quiz-studio-ch73s9" data-answer="0">
+<p class="fw-label">Check your understanding</p>
+<h2>Practice question</h2>
+<p><b>What does Payment Pre-validation check before a payment is sent?</b></p>
+<button type="button" class="quiz-opt" data-idx="0" onclick="pfCheckAnswer('studio-ch73s9', this)">Whether the beneficiary account exists, whether the name matches, and whether the account can receive the payment</button>
+<button type="button" class="quiz-opt" data-idx="1" onclick="pfCheckAnswer('studio-ch73s9', this)">Whether the sending bank has sufficient liquidity at the central bank</button>
+<button type="button" class="quiz-opt" data-idx="2" onclick="pfCheckAnswer('studio-ch73s9', this)">Whether the exchange rate is better than the rate offered by a fintech</button>
+<button type="button" class="quiz-opt" data-idx="3" onclick="pfCheckAnswer('studio-ch73s9', this)">Whether the payment is below the SWIFT Go low-value limit</button>
+<div class="quiz-feedback" id="pf-quiz-fb-studio-ch73s9"></div>
+<script type="application/json" id="pf-quiz-data-studio-ch73s9">{"why_wrong": ["This is the correct answer: pre-validation is a beneficiary data check.", "Liquidity is a settlement matter, not a pre-validation check.", "Exchange rates are a pricing matter, not a pre-validation check.", "The SWIFT Go limit is an eligibility rule, not a pre-validation check."], "explanation": "The lesson states pre-validation checks account existence, name match and ability to receive."}</script>
+</div>
+<div class="fw-card">
+<p class="fw-label">Takeaway and next step</p>
+<h2>What to remember</h2>
+<p>Takeaway: pre-validation prevents failures instead of fixing them, and its value is measured in returns that never happen.</p>
+<p>Follow a payment through every stage, from instruction to beneficiary credit, and note where it can stop.</p>
+<p><a class="fw-tool-link" href="../simulators/lifecycle.html">Open the Payment Lifecycle Simulator &rarr;</a></p>
+<p class="studio-note">Builds on "SWIFT Go: low-value cross-border payments, fast and predictable".</p>
+</div>
+<section class="upnext" id="studio-upnext-studio-ch73s9" style="display:none" aria-label="Up next">
+<span class="tag">Up next</span>
+<h2>Up next: Transaction Manager: the shared record of an ISO 20022 payment</h2>
+<p>Lesson 10 of 10, Claims, enquiries and case management, Narration 6:34</p>
+<div class="row">
+<button class="studio-btn primary" onclick="goLessonAuto('ch73s10')">Next lesson &rarr;</button>
+<button class="studio-btn" onclick="goLesson('ch73s8')">&larr; Previous lesson</button>
+<button class="studio-btn" onclick="studioReplayLesson('studio-ch73s9')">Replay this lesson</button>
+</div>
+</section>
+<div class="lesson-nav">
+<button class="studio-btn" onclick="goLesson('ch73s8')" title="Previous lesson: SWIFT Go: low-value cross-border payments, fast and predictable">&larr; Previous</button>
+<button class="studio-btn" onclick="goChapterContents('ch73')">Chapter contents</button>
+<button class="studio-btn primary" onclick="goLesson('ch73s10')" title="Next lesson: Transaction Manager: the shared record of an ISO 20022 payment">Next &rarr;</button>
+</div>
+<div class="card transcript-card">
+<h2>Transcript and full text</h2>
+<details class="studio-transcript" id="studio-transcript-details-studio-ch73s9"><summary>Show transcript</summary>
+<p class="transcript" id="studio-transcript-studio-ch73s9">Payment Pre-validation is the SWIFT service that lets a sending bank check the beneficiary account details before the payment is sent, so that errors are caught while they are still cheap to fix. The bank sends the beneficiary account number and name to the beneficiary bank, or to a validation service, and receives an answer saying whether the account exists, whether the name matches, and whether the account can receive the payment. It is a pre-flight check, and its value is that a payment that would have failed after it was sent, and cost a return and a resend, now fails before it is sent, and costs nothing. Source: SWIFT Payment Pre-validation service description, and SWIFT CBPR+ usage guidelines. Why pre-validation exists is that most cross-border payment failures are data failures, not money failures. The IBAN is wrong by one digit, the account is closed, the name does not match the account holder, or the account cannot receive the currency, and each of those is discovered only when the payment is rejected at the beneficiary bank, days after it was sent. The return then takes days more, the customer is told the payment failed, and the bank pays the cost of the investigation. Pre-validation moves the discovery to before the payment, when the customer is still at the screen and can correct the details in seconds, and the bank never sends a payment it knows will fail. The parties are the sending bank, which requests the validation, the beneficiary bank, which answers it, and the customer, who provides the details and corrects them when the validation fails. The validation service in the middle, operated by SWIFT, routes the request to the right beneficiary bank and returns the answer, and it must do so quickly, because a validation that takes an hour is useless for a customer waiting at a screen. The beneficiary bank must answer accurately, because a validation that says an account exists when it does not is worse than no validation at all, and the liability for a wrong answer is a commercial question the banks must agree in advance. How it works is shown by a worked example. A corporate customer in London must pay a new supplier in Tokyo JPY 4,200,000, and enters the supplier account number and name. The London bank sends a pre-validation request, and the Tokyo bank replies within seconds that the account exists but the name does not match: the account holder is Tokyo Trading Co Ltd, not Tokyo Trading Company Ltd. The customer corrects the name, the validation passes, and the payment is sent and credited the same day. Without pre-validation the payment would have been sent with the wrong name, held for investigation at the Tokyo bank, and returned after three days, and the supplier would have waited a week for money that should have arrived in a day. On success the payment is sent once, credited once, and the customer never learns that a failure was prevented, which is the quiet value of the service. On failure the validation itself can fail, for example because the beneficiary bank does not participate, and then the sending bank must decide whether to send the payment anyway, with a warning to the customer, or to block it until the details can be checked another way. The recovery is a clear message to the customer: the account could not be validated, here is why, and here is what to do, because a customer who is told only that the payment cannot be sent will call the bank, and the call costs more than the validation. The data in a pre-validation request is the beneficiary account identification, usually the IBAN or local account number, the beneficiary name, the currency, and the sending bank identification. The answer is a match result, which can be a full match, a partial match, a no match, or a cannot-validate response, and each one needs a different customer message. A BA must specify the match rules, the customer message for each result, the timeout, and what happens when the beneficiary bank does not answer, because a validation request that hangs for an hour is a customer waiting for an hour, and the business must choose the timeout, not the developer. Edge cases show the depth. A name match is not a simple string comparison, because a name can be written in different scripts, with different abbreviations, or with a legal suffix that the customer omitted, so the matching must tolerate defined variations and must say which variations it tolerates. A validation for an account that exists but is closed must return a clear answer, not a match, because the payment would fail. A validation for a payment in a currency the account cannot hold must say so, because the payment would be rejected or converted at a poor rate. Each of these is a case the BA must specify, because the developer cannot guess them. The effect on the bank is fewer returns, fewer investigations and fewer customer complaints, and the saving is measurable in the return rate, which should fall sharply after pre-validation is introduced. The effect on the customer is a payment that arrives first time, and a correction made in seconds at the screen, instead of a return discovered days later. The effect on operations is a new service to monitor, with a validation success rate, a match rate and a response time, and a manager who can see whether the service is working or whether customers are being blocked by false mismatches. What a BA, PO or SME must understand is that pre-validation is a control that prevents failures, and its value is measured in failures that do not happen, which is harder to prove than failures that are fixed. The requirement must name the validation trigger, the match rules, the customer messages, the timeout and the fallback when validation is unavailable. The test is to take one payment with a wrong beneficiary name, run it through pre-validation, and check that the customer is asked to correct it before the payment is sent, because if the payment is sent anyway, the service is decoration. Further reading: SWIFT Payment Pre-validation service description; SWIFT CBPR+ usage guidelines; Bank for International Settlements, payment system glossaries. Last reviewed 7 November 2026.</p>
+<div id="studio-paras-studio-ch73s9">
+<p class="transcript">Payment Pre-validation is the SWIFT service that lets a sending bank check the beneficiary account details before the payment is sent, so that errors are caught while they are still cheap to fix. The bank sends the beneficiary account number and name to the beneficiary bank, or to a validation service, and receives an answer saying whether the account exists, whether the name matches, and whether the account can receive the payment. It is a pre-flight check, and its value is that a payment that would have failed after it was sent, and cost a return and a resend, now fails before it is sent, and costs nothing. Source: SWIFT Payment Pre-validation service description, and SWIFT CBPR+ usage guidelines.</p>
+<p class="transcript">Why pre-validation exists is that most cross-border payment failures are data failures, not money failures. The IBAN is wrong by one digit, the account is closed, the name does not match the account holder, or the account cannot receive the currency, and each of those is discovered only when the payment is rejected at the beneficiary bank, days after it was sent. The return then takes days more, the customer is told the payment failed, and the bank pays the cost of the investigation. Pre-validation moves the discovery to before the payment, when the customer is still at the screen and can correct the details in seconds, and the bank never sends a payment it knows will fail.</p>
+<p class="transcript">The parties are the sending bank, which requests the validation, the beneficiary bank, which answers it, and the customer, who provides the details and corrects them when the validation fails. The validation service in the middle, operated by SWIFT, routes the request to the right beneficiary bank and returns the answer, and it must do so quickly, because a validation that takes an hour is useless for a customer waiting at a screen. The beneficiary bank must answer accurately, because a validation that says an account exists when it does not is worse than no validation at all, and the liability for a wrong answer is a commercial question the banks must agree in advance.</p>
+<p class="transcript">How it works is shown by a worked example. A corporate customer in London must pay a new supplier in Tokyo JPY 4,200,000, and enters the supplier account number and name. The London bank sends a pre-validation request, and the Tokyo bank replies within seconds that the account exists but the name does not match: the account holder is Tokyo Trading Co Ltd, not Tokyo Trading Company Ltd. The customer corrects the name, the validation passes, and the payment is sent and credited the same day. Without pre-validation the payment would have been sent with the wrong name, held for investigation at the Tokyo bank, and returned after three days, and the supplier would have waited a week for money that should have arrived in a day.</p>
+<p class="transcript">On success the payment is sent once, credited once, and the customer never learns that a failure was prevented, which is the quiet value of the service. On failure the validation itself can fail, for example because the beneficiary bank does not participate, and then the sending bank must decide whether to send the payment anyway, with a warning to the customer, or to block it until the details can be checked another way. The recovery is a clear message to the customer: the account could not be validated, here is why, and here is what to do, because a customer who is told only that the payment cannot be sent will call the bank, and the call costs more than the validation.</p>
+<p class="transcript">The data in a pre-validation request is the beneficiary account identification, usually the IBAN or local account number, the beneficiary name, the currency, and the sending bank identification. The answer is a match result, which can be a full match, a partial match, a no match, or a cannot-validate response, and each one needs a different customer message. A BA must specify the match rules, the customer message for each result, the timeout, and what happens when the beneficiary bank does not answer, because a validation request that hangs for an hour is a customer waiting for an hour, and the business must choose the timeout, not the developer.</p>
+<p class="transcript">Edge cases show the depth. A name match is not a simple string comparison, because a name can be written in different scripts, with different abbreviations, or with a legal suffix that the customer omitted, so the matching must tolerate defined variations and must say which variations it tolerates. A validation for an account that exists but is closed must return a clear answer, not a match, because the payment would fail. A validation for a payment in a currency the account cannot hold must say so, because the payment would be rejected or converted at a poor rate. Each of these is a case the BA must specify, because the developer cannot guess them.</p>
+<p class="transcript">The effect on the bank is fewer returns, fewer investigations and fewer customer complaints, and the saving is measurable in the return rate, which should fall sharply after pre-validation is introduced. The effect on the customer is a payment that arrives first time, and a correction made in seconds at the screen, instead of a return discovered days later. The effect on operations is a new service to monitor, with a validation success rate, a match rate and a response time, and a manager who can see whether the service is working or whether customers are being blocked by false mismatches.</p>
+<p class="transcript">What a BA, PO or SME must understand is that pre-validation is a control that prevents failures, and its value is measured in failures that do not happen, which is harder to prove than failures that are fixed. The requirement must name the validation trigger, the match rules, the customer messages, the timeout and the fallback when validation is unavailable. The test is to take one payment with a wrong beneficiary name, run it through pre-validation, and check that the customer is asked to correct it before the payment is sent, because if the payment is sent anyway, the service is decoration. Further reading: SWIFT Payment Pre-validation service description; SWIFT CBPR+ usage guidelines; Bank for International Settlements, payment system glossaries. Last reviewed 7 November 2026.</p>
+</div>
+</details>
+<details class="studio-transcript"><summary>Full lesson text (all scenes)</summary><div id="studio-transcript-full-studio-ch73s9"></div></details>
+<p><button class="studio-btn primary" id="done-ch73s9" onclick="studioMarkSceneDone('studio-ch73s9')">Mark lesson complete</button> <span class="studio-note">Completing a lesson updates your progress dashboard on the homepage.</span></p>
+</div>
+<p class="studio-note">Scene timestamps are estimated by allocating the narration text proportionally across the real audio length. The audio playback position is the source of truth: pause freezes the visual, seeking restores the correct scene, replay restarts the scene animation.</p>
+</div>
+<script>window.__PA_STUDIO_QUEUE = window.__PA_STUDIO_QUEUE || []; window.__PA_STUDIO_QUEUE.push(["studio-ch73s9", {"sample_id": "studio-ch73s9", "chapter_id": "ch73", "title": "Payment Pre-validation: checking the beneficiary before sending", "domain": "D04 Messaging and standards", "objective": "Learner explains the admi administration layer and uses camt.057, pacs.028, camt.027 and camt.087 to find a missing payment, answer an enquiry and fix a payment after it was sent. Learner runs a case from opening to closure, including stop and recall, and explains gpi Instant, SWIFT Go, Payment Pre-validation and Transaction Manager.", "scenes": [{"id": "ch73s9", "section_id": "ch73s9", "title": "Payment Pre-validation: checking the beneficiary before sending", "audio": "../audio/ch73s9.mp3", "duration_sec": 364.2, "points": ["Payment Pre-validation is the SWIFT service that lets a sending bank check the beneficiary account details before the payment is sent, so that errors are caught while they are still cheap to fix.", "Why pre-validation exists is that most cross-border payment failures are data failures, not money failures.", "The parties are the sending bank, which requests the validation, the beneficiary bank, which answers it, and the customer, who provides the details and corrects them when the validation fails.", "How it works is shown by a worked example.", "On success the payment is sent once, credited once, and the customer never learns that a failure was prevented, which is the quiet value of the service."], "terms": [{"term": "Return", "def": "A payment that is sent back to the sender after settlement because it cannot be credited to the beneficiary."}, {"term": "SWIFT", "def": "The Society for Worldwide Interbank Financial Telecommunication, a member owned cooperative that provides secure messaging services for financial institutions."}, {"term": "IBAN", "def": "An international bank account number that identifies a customer account in a standard format across countries."}], "transcript": "Payment Pre-validation is the SWIFT service that lets a sending bank check the beneficiary account details before the payment is sent, so that errors are caught while they are still cheap to fix. The bank sends the beneficiary account number and name to the beneficiary bank, or to a validation service, and receives an answer saying whether the account exists, whether the name matches, and whether the account can receive the payment. It is a pre-flight check, and its value is that a payment that would have failed after it was sent, and cost a return and a resend, now fails before it is sent, and costs nothing. Source: SWIFT Payment Pre-validation service description, and SWIFT CBPR+ usage guidelines. Why pre-validation exists is that most cross-border payment failures are data failures, not money failures. The IBAN is wrong by one digit, the account is closed, the name does not match the account holder, or the account cannot receive the currency, and each of those is discovered only when the payment is rejected at the beneficiary bank, days after it was sent. The return then takes days more, the customer is told the payment failed, and the bank pays the cost of the investigation. Pre-validation moves the discovery to before the payment, when the customer is still at the screen and can correct the details in seconds, and the bank never sends a payment it knows will fail. The parties are the sending bank, which requests the validation, the beneficiary bank, which answers it, and the customer, who provides the details and corrects them when the validation fails. The validation service in the middle, operated by SWIFT, routes the request to the right beneficiary bank and returns the answer, and it must do so quickly, because a validation that takes an hour is useless for a customer waiting at a screen. The beneficiary bank must answer accurately, because a validation that says an account exists when it does not is worse than no validation at all, and the liability for a wrong answer is a commercial question the banks must agree in advance. How it works is shown by a worked example. A corporate customer in London must pay a new supplier in Tokyo JPY 4,200,000, and enters the supplier account number and name. The London bank sends a pre-validation request, and the Tokyo bank replies within seconds that the account exists but the name does not match: the account holder is Tokyo Trading Co Ltd, not Tokyo Trading Company Ltd. The customer corrects the name, the validation passes, and the payment is sent and credited the same day. Without pre-validation the payment would have been sent with the wrong name, held for investigation at the Tokyo bank, and returned after three days, and the supplier would have waited a week for money that should have arrived in a day. On success the payment is sent once, credited once, and the customer never learns that a failure was prevented, which is the quiet value of the service. On failure the validation itself can fail, for example because the beneficiary bank does not participate, and then the sending bank must decide whether to send the payment anyway, with a warning to the customer, or to block it until the details can be checked another way. The recovery is a clear message to the customer: the account could not be validated, here is why, and here is what to do, because a customer who is told only that the payment cannot be sent will call the bank, and the call costs more than the validation. The data in a pre-validation request is the beneficiary account identification, usually the IBAN or local account number, the beneficiary name, the currency, and the sending bank identification. The answer is a match result, which can be a full match, a partial match, a no match, or a cannot-validate response, and each one needs a different customer message. A BA must specify the match rules, the customer message for each result, the timeout, and what happens when the beneficiary bank does not answer, because a validation request that hangs for an hour is a customer waiting for an hour, and the business must choose the timeout, not the developer. Edge cases show the depth. A name match is not a simple string comparison, because a name can be written in different scripts, with different abbreviations, or with a legal suffix that the customer omitted, so the matching must tolerate defined variations and must say which variations it tolerates. A validation for an account that exists but is closed must return a clear answer, not a match, because the payment would fail. A validation for a payment in a currency the account cannot hold must say so, because the payment would be rejected or converted at a poor rate. Each of these is a case the BA must specify, because the developer cannot guess them. The effect on the bank is fewer returns, fewer investigations and fewer customer complaints, and the saving is measurable in the return rate, which should fall sharply after pre-validation is introduced. The effect on the customer is a payment that arrives first time, and a correction made in seconds at the screen, instead of a return discovered days later. The effect on operations is a new service to monitor, with a validation success rate, a match rate and a response time, and a manager who can see whether the service is working or whether customers are being blocked by false mismatches. What a BA, PO or SME must understand is that pre-validation is a control that prevents failures, and its value is measured in failures that do not happen, which is harder to prove than failures that are fixed. The requirement must name the validation trigger, the match rules, the customer messages, the timeout and the fallback when validation is unavailable. The test is to take one payment with a wrong beneficiary name, run it through pre-validation, and check that the customer is asked to correct it before the payment is sent, because if the payment is sent anyway, the service is decoration. Further reading: SWIFT Payment Pre-validation service description; SWIFT CBPR+ usage guidelines; Bank for International Settlements, payment system glossaries. Last reviewed 7 November 2026.", "paragraphs": ["Payment Pre-validation is the SWIFT service that lets a sending bank check the beneficiary account details before the payment is sent, so that errors are caught while they are still cheap to fix. The bank sends the beneficiary account number and name to the beneficiary bank, or to a validation service, and receives an answer saying whether the account exists, whether the name matches, and whether the account can receive the payment. It is a pre-flight check, and its value is that a payment that would have failed after it was sent, and cost a return and a resend, now fails before it is sent, and costs nothing. Source: SWIFT Payment Pre-validation service description, and SWIFT CBPR+ usage guidelines.", "Why pre-validation exists is that most cross-border payment failures are data failures, not money failures. The IBAN is wrong by one digit, the account is closed, the name does not match the account holder, or the account cannot receive the currency, and each of those is discovered only when the payment is rejected at the beneficiary bank, days after it was sent. The return then takes days more, the customer is told the payment failed, and the bank pays the cost of the investigation. Pre-validation moves the discovery to before the payment, when the customer is still at the screen and can correct the details in seconds, and the bank never sends a payment it knows will fail.", "The parties are the sending bank, which requests the validation, the beneficiary bank, which answers it, and the customer, who provides the details and corrects them when the validation fails. The validation service in the middle, operated by SWIFT, routes the request to the right beneficiary bank and returns the answer, and it must do so quickly, because a validation that takes an hour is useless for a customer waiting at a screen. The beneficiary bank must answer accurately, because a validation that says an account exists when it does not is worse than no validation at all, and the liability for a wrong answer is a commercial question the banks must agree in advance.", "How it works is shown by a worked example. A corporate customer in London must pay a new supplier in Tokyo JPY 4,200,000, and enters the supplier account number and name. The London bank sends a pre-validation request, and the Tokyo bank replies within seconds that the account exists but the name does not match: the account holder is Tokyo Trading Co Ltd, not Tokyo Trading Company Ltd. The customer corrects the name, the validation passes, and the payment is sent and credited the same day. Without pre-validation the payment would have been sent with the wrong name, held for investigation at the Tokyo bank, and returned after three days, and the supplier would have waited a week for money that should have arrived in a day.", "On success the payment is sent once, credited once, and the customer never learns that a failure was prevented, which is the quiet value of the service. On failure the validation itself can fail, for example because the beneficiary bank does not participate, and then the sending bank must decide whether to send the payment anyway, with a warning to the customer, or to block it until the details can be checked another way. The recovery is a clear message to the customer: the account could not be validated, here is why, and here is what to do, because a customer who is told only that the payment cannot be sent will call the bank, and the call costs more than the validation.", "The data in a pre-validation request is the beneficiary account identification, usually the IBAN or local account number, the beneficiary name, the currency, and the sending bank identification. The answer is a match result, which can be a full match, a partial match, a no match, or a cannot-validate response, and each one needs a different customer message. A BA must specify the match rules, the customer message for each result, the timeout, and what happens when the beneficiary bank does not answer, because a validation request that hangs for an hour is a customer waiting for an hour, and the business must choose the timeout, not the developer.", "Edge cases show the depth. A name match is not a simple string comparison, because a name can be written in different scripts, with different abbreviations, or with a legal suffix that the customer omitted, so the matching must tolerate defined variations and must say which variations it tolerates. A validation for an account that exists but is closed must return a clear answer, not a match, because the payment would fail. A validation for a payment in a currency the account cannot hold must say so, because the payment would be rejected or converted at a poor rate. Each of these is a case the BA must specify, because the developer cannot guess them.", "The effect on the bank is fewer returns, fewer investigations and fewer customer complaints, and the saving is measurable in the return rate, which should fall sharply after pre-validation is introduced. The effect on the customer is a payment that arrives first time, and a correction made in seconds at the screen, instead of a return discovered days later. The effect on operations is a new service to monitor, with a validation success rate, a match rate and a response time, and a manager who can see whether the service is working or whether customers are being blocked by false mismatches.", "What a BA, PO or SME must understand is that pre-validation is a control that prevents failures, and its value is measured in failures that do not happen, which is harder to prove than failures that are fixed. The requirement must name the validation trigger, the match rules, the customer messages, the timeout and the fallback when validation is unavailable. The test is to take one payment with a wrong beneficiary name, run it through pre-validation, and check that the customer is asked to correct it before the payment is sent, because if the payment is sent anyway, the service is decoration. Further reading: SWIFT Payment Pre-validation service description; SWIFT CBPR+ usage guidelines; Bank for International Settlements, payment system glossaries. Last reviewed 7 November 2026."], "accessibility": "Payment flow diagram showing Payment Pre-validation: checking the beneficiary before sending.", "visual_type": "payment_flow", "visual_choice_reason": "default payment journey", "beats": [{"t0": 0.0, "t1": 63.3, "title": "Payment Pre-validation service definition", "note": "Payment Pre-validation is the SWIFT service that lets a sending bank check the beneficiary account details before the payment is sent", "highlight_nodes": ["n0"], "highlight_conns": [], "highlight_fields": []}, {"t0": 63.3, "t1": 124.5, "title": "Pre-validation return delays", "note": "The return then takes days more, the customer is told the payment failed, and the bank pays the cost of the investigation.", "highlight_nodes": ["n1"], "highlight_conns": ["c0"], "highlight_fields": []}, {"t0": 124.5, "t1": 190.2, "title": "Pre-validation worked example", "note": "A corporate customer in London must pay a new supplier in Tokyo JPY 4,200,000, and enters the supplier account number and name.", "highlight_nodes": ["n2"], "highlight_conns": ["c1"], "highlight_fields": []}, {"t0": 190.2, "t1": 261.5, "title": "Recovery: clear message to customer", "note": "The recovery is a clear message to the customer: the account could not be validated", "highlight_nodes": ["n3"], "highlight_conns": ["c2"], "highlight_fields": []}, {"t0": 261.5, "t1": 330.1, "title": "Closed account validation edge case", "note": "A validation for an account that exists but is closed must return a clear answer, not a match, because the payment would fail.", "highlight_nodes": ["n4"], "highlight_conns": ["c3"], "highlight_fields": []}, {"t0": 330.1, "t1": 364.2, "title": "Pre-validation triggers", "note": "The requirement must name the validation trigger, the match rules, the customer messages, the timeout and the fallback when validation is unavailable.", "highlight_nodes": ["n5"], "highlight_conns": ["c4"], "highlight_fields": []}], "node_ids": ["n0", "n1", "n2", "n3", "n4", "n5"], "framework": {"objective": "By the end of this lesson, you will be able to explain payment pre-validation: checking the beneficiary before sending. Payment Pre-validation is the SWIFT service that lets a sending bank check the beneficiary account details before the payment is sent, so that errors are caught while they are still cheap to fix.", "why_matters": "Takeaway: pre-validation prevents failures instead of fixing them, and its value is measured in returns that never happen.", "technical_example": "The IBAN is wrong by one digit, the account is closed, the name does not match the account holder, or the account cannot receive the currency, and each of those is discovered only when the payment is rejected at the beneficiary bank, days after it was sent.", "failure_recovery": "It is a pre-flight check, and its value is that a payment that would have failed after it was sent, and cost a return and a resend, now fails before it is sent, and costs nothing. The return then takes days more, the customer is told the payment failed, and the bank pays the cost of the investigation.", "exercise": {"task": "A corporate in London must pay a new supplier in Tokyo JPY 4,200,000, and enters the supplier name as Tokyo Trading Company Ltd. Work out what pre-validation does.", "info": "Use Payment Pre-validation: the sending bank asks the beneficiary bank whether the account exists and the name matches, before sending.", "action": "State the answer, the correction, and what would have happened without pre-validation.", "correct": "The Tokyo bank replies the account exists but the name does not match, the holder is Tokyo Trading Co Ltd; the customer corrects the name, the validation passes, and the payment is credited the same day; without it the payment would have been held and returned after three days.", "why": "Pre-validation moves the discovery of a data error to before the payment, when the customer can correct it in seconds."}, "assessment": {"question": "What does Payment Pre-validation check before a payment is sent?", "options": ["Whether the beneficiary account exists, whether the name matches, and whether the account can receive the payment", "Whether the sending bank has sufficient liquidity at the central bank", "Whether the exchange rate is better than the rate offered by a fintech", "Whether the payment is below the SWIFT Go low-value limit"], "answer": 0, "explanation": "The lesson states pre-validation checks account existence, name match and ability to receive.", "why_wrong": ["This is the correct answer: pre-validation is a beneficiary data check.", "Liquidity is a settlement matter, not a pre-validation check.", "Exchange rates are a pricing matter, not a pre-validation check.", "The SWIFT Go limit is an eligibility rule, not a pre-validation check."], "source": "lesson text"}, "takeaway": "Takeaway: pre-validation prevents failures instead of fixing them, and its value is measured in returns that never happen.", "prereq": "ch73s8", "next": "ch73s10", "connection_note": "Builds on \"SWIFT Go: low-value cross-border payments, fast and predictable\".", "tool": {"slug": "lifecycle", "label": "Payment Lifecycle Simulator", "url": "../simulators/lifecycle.html", "scenario": "Follow a payment through every stage, from instruction to beneficiary credit, and note where it can stop."}, "simple": "In plain words: payment Pre-validation is the SWIFT service that lets a sending bank check the beneficiary account details before the payment is sent, so that errors are caught while they are still cheap to fix. That is the whole idea in one sentence, and the rest of the lesson shows how it works in a real bank.", "summary": "Payment Pre-validation is the SWIFT service that lets a sending bank check the beneficiary account details before the payment is sent, so that errors are caught while they are still cheap to fix. Key points: Payment Pre-validation; Pre-validation return delays; Pre-validation worked example; Recovery: clear message to customer; Validation for an account that exists; Pre-validation triggers.", "example": "The validation service in the middle, operated by SWIFT, routes the request to the right beneficiary bank and returns the answer, and it must do so quickly, because a validation that takes an hour is useless for a customer waiting at a screen. On failure the validation itself can fail, for example because the beneficiary bank does not participate, and then the sending bank must decide whether to send the payment anyway, with a warning to the customer, or to block it until the details can be checked another way."}}], "chapter_title": "Claims, enquiries and case management", "meta_line": "Claims, enquiries and case management, Lesson 9 of 10, Narration 6:04, D04 Messaging and standards", "next_id": "ch73s10", "next_title": "Transaction Manager: the shared record of an ISO 20022 payment"}]);</script>
+</div>
+<nav class="tool-rail" aria-label="Lesson tools">
+<button type="button" class="rail-tool" onclick="pfOpenTranscript('studio-ch73s9')" title="Open transcript"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M7 3h7l4 4v14H7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M14 3v4h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 12h5M10 15.5h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span>Transcript</span></button>
+<button type="button" class="rail-tool" onclick="pfToggleNote('studio-ch73s9')" title="Write a note on this lesson"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L8 19l-4 1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>Notes</span></button>
+<button type="button" class="rail-tool" onclick="pfToggleFiles('studio-ch73s9')" title="Download lesson files"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>Files</span></button>
+</nav>
+<div class="fw-files-panel" id="pf-files-studio-ch73s9" style="display:none"><b>Lesson files</b><p><a href="../audio/ch73s9.mp3" download>Download narration (MP3)</a></p><p><a href="#" onclick="pfDownloadTranscript('studio-ch73s9');return false">Download transcript (.txt)</a></p></div>
+</div>
+</div>
+</main>
+<footer><p>Payments Training Hub. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="../index.html">Home</a> &middot; <a href="../courses.html">Courses</a> &middot; <a href="../practice.html">Practice</a> &middot; <a href="../simulators.html">Simulators</a> &middot; <a href="../labs.html">Labs</a> &middot; <a href="../explorer.html">Explorer</a> &middot; <a href="../tests.html">Tests</a> &middot; <a href="../diagnostic.html">Diagnostic</a> &middot; <a href="../faq.html">Interview Ready Questions</a> &middot; <a href="../interview-prep.html">Interview Prep</a></p><p><a href="../about.html">About</a> &middot; <a href="../privacy.html">Privacy</a> &middot; <a href="../terms.html">Terms</a> &middot; <a href="../contact.html">Contact</a> &middot; <a href="../editorial-standards.html">Editorial Standards</a> &middot; <a href="../sources.html">Sources</a></p></footer>
+<script defer src="../assets/site.js"></script>
+<script defer src="../assets/bundles.js"></script>
+<script defer src="../assets/auth.js"></script>
+<script defer src="../assets/studio.js"></script>
+<script defer src="../assets/insight-components.js"></script>
+<script defer src="../assets/nav.js"></script>
+<script defer src="../assets/pf-enhance.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+if(window.PFInsight){PFInsight.init();}
+});
+</script>
+</body>
+</html>
