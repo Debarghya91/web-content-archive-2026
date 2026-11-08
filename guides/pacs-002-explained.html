@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>pacs.002 Explained | Payments Training Hub</title>
+<meta name="description" content="**pacs.002** is the **Payment Status Report** message. It is the ISO 20022 message a bank sends to tell the previous bank what happened to a payment. The n">
+<link rel="canonical" href="https://www.paymentstraininghub.in/guides/pacs-002-explained.html">
+<meta property="og:url" content="https://www.paymentstraininghub.in/guides/pacs-002-explained.html">
+<meta property="og:title" content="pacs.002 Explained | Payments Training Hub">
+<meta property="og:description" content="**pacs.002** is the **Payment Status Report** message. It is the ISO 20022 message a bank sends to tell the previous bank what happened to a payment. The n">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.in/assets/hero/hero-poster.jpg">
+<link rel="stylesheet" href="../assets/pf-theme.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="../index.html" class="brand">Payments <span>Training Hub</span></a><nav class="topnav"><a href="../index.html">Home</a> <a href="../courses.html">Courses</a> <a href="../practice.html">Practice</a> <a href="../simulators.html">Simulators</a> <a href="../labs.html">Labs</a> <a href="../explorer.html">Explorer</a> <a href="../tests.html">Tests</a></nav><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox" style="display:none"><span id="authState">Not signed in</span> <span id="authForm" style="display:none"><input id="authEmail" type="email" placeholder="Email for OTP" aria-label="Email for sign-in"> <button class="mute-btn" onclick="paAuthSendOtp()">Send code</button> <input id="authCode" type="text" placeholder="6-digit code" aria-label="One-time code" style="display:none"> <button class="mute-btn" id="authVerifyBtn" onclick="paAuthVerifyOtp()" style="display:none">Verify</button> <button class="mute-btn" onclick="paAuthGoogle()">Sign in with Google</button> </span><button class="mute-btn" id="authSignOutBtn" onclick="paAuthSignOut()" style="display:none">Sign out</button></span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<section class="section guide-page">
+<nav class="crumbs"><a href="../index.html">Home</a> / <a href="../guides.html">Guides</a> / ISO 20022</nav>
+<h1>pacs.002 Explained</h1>
+<h2>What it is</h2>
+<p><b>pacs.002</b> is the <b>Payment Status Report</b> message. It is the ISO 20022 message a bank sends to tell the previous bank what happened to a payment. The name comes from the ISO 20022 message set: <b>pacs</b> stands for Payments Clearing and Settlement, and <b>002</b> is the status report variant.</p>
+<p>Every pacs.008 or pacs.009 that a bank sends should receive a pacs.002 in reply. The pacs.002 carries a status code and, if the payment was rejected, a reason code that explains why. It is the single most important message for payment tracking, because it is how the sending bank knows whether the payment succeeded.</p>
+<h2>Why it matters</h2>
+<p>pacs.002 matters because a payment is not done when it is sent. It is done when the receiving bank confirms it. Without the pacs.002, the sending bank does not know whether the payment was accepted, is still being processed, was settled, or was rejected. The customer cannot be told, reconciliation cannot close, and exceptions cannot be raised.</p>
+<p>It also matters because the <b>reason codes</b> in a rejected pacs.002 tell the bank exactly what to fix. A rejection for an incorrect account number needs a different fix from a rejection for a sanctions hit. A BA who can read a pacs.002 can investigate a failed payment in minutes. A BA who cannot will spend hours asking other teams.</p>
+<h2>How it works in a bank</h2>
+<p>The sending bank sends a pacs.008. The receiving bank validates it. If it passes validation, the receiving bank sends a pacs.002 with status <b>ACCP</b>, meaning accepted. As the payment moves through settlement, the receiving bank sends further pacs.002 messages: <b>ACSP</b> for accepted and settlement in process, and <b>ACSC</b> for accepted and settlement completed. If the payment fails at any stage, the receiving bank sends a pacs.002 with status <b>RJCT</b> and a reason code.</p>
+<p>The sending bank's payment hub receives each pacs.002 and updates the payment status. The channel, such as online banking, shows the customer the current status. If the payment is rejected, the hub raises an exception and the operations team repairs the instruction or contacts the customer.</p>
+<p>The pacs.002 chain is also the basis for <b>SWIFT gpi</b> tracking. Each status update is recorded against the payment's UETR, so the customer and the bank can see where the payment is at any moment.</p>
+<h2>Worked example</h2>
+<p>A bank sends a pacs.008 for a customer payment of EUR 25,000 to a supplier. The sequence is:</p>
+<ol>
+<li>The receiving bank validates the pacs.008 and sends a pacs.002 with status <b>ACCP</b>. The sending bank marks the payment as accepted.</li>
+<li>The receiving bank starts settlement and sends a pacs.002 with status <b>ACSP</b>. The sending bank marks the payment as in process.</li>
+<li>The beneficiary bank credits the supplier and the receiving bank sends a pacs.002 with status <b>ACSC</b>. The sending bank marks the payment as settled and tells the customer it is complete.</li>
+</ol>
+<p>Now the same payment, but with a wrong account number. The receiving bank cannot find the beneficiary account. It sends a pacs.002 with status <b>RJCT</b> and reason code <b>AC01</b>, meaning incorrect account number. The sending bank marks the payment as rejected, raises an exception, and contacts the customer to correct the account number. No money moved, so this is a repair and resubmit, not a return.</p>
+<h2>Technical detail</h2>
+<p>The pacs.002 has two main parts:</p>
+<ul>
+<li><b>GrpHdr</b> (Group Header): message identification (MsgId), creation date and time (CreDtTm), and the instructing and instructed agents.</li>
+<li><b>TxInfAndSts</b> (Transaction Information and Status): the original message identification (OrgnlMsgId), the original instruction identification (OrgnlInstrId), the original end to end identification (OrgnlEndToEndId), the transaction status (TxSts), and, if rejected, the status reason information (StsRsnInf) with a reason code (Rsn) and additional information (AddtlInf).</li>
+</ul>
+<p>Key statuses:</p>
+<ul>
+<li><b>ACCP</b>: Accepted. The payment passed validation and was accepted for processing.</li>
+<li><b>ACSP</b>: Accepted, Settlement in Process. The payment is being settled.</li>
+<li><b>ACSC</b>: Accepted, Settlement Completed. The payment has settled. This is the final success status.</li>
+<li><b>RJCT</b>: Rejected. The payment was not accepted. A reason code is always present.</li>
+<li><b>PART</b>: Partially Accepted. Some transactions in a batch were accepted and some were rejected.</li>
+<li><b>ACCC</b>: Accepted with Change. The payment was accepted but a field was changed, for example a charge was adjusted.</li>
+<li><b>ACTC</b>: Accepted, Technical Validation. The payment passed technical validation and is now in business validation.</li>
+</ul>
+<p>Common reason codes for RJCT:</p>
+<ul>
+<li><b>AC01</b>: Incorrect account number.</li>
+<li><b>AC04</b>: Closed account number.</li>
+<li><b>AC06</b>: Blocked account.</li>
+<li><b>AM05</b>: Duplication.</li>
+<li><b>BE04</b>: Missing creditor address.</li>
+<li><b>AG01</b>: Transaction forbidden, for example a sanctions or regulatory block.</li>
+<li><b>FF01</b>: Invalid file format.</li>
+<li><b>NARR</b>: Narrative reason, with free text explanation.</li>
+</ul>
+<h2>Common mistakes</h2>
+<p>The most common mistake is treating <b>ACCP as settlement</b>. ACCP only means the payment was accepted for processing. The money has not moved. A payment can be ACCP and still be rejected later, or stuck in settlement. Only <b>ACSC</b> means the payment has settled.</p>
+<p>Another mistake is ignoring the <b>reason code</b> on a rejection. The reason code is the diagnosis. A team that resubmits a rejected payment without reading the reason code will usually get the same rejection again.</p>
+<p>A third mistake is assuming a pacs.002 will always arrive. Sometimes it does not, because of a system failure or a timeout. The sending bank must have a process to chase a missing status, usually by sending an investigation or checking the gpi tracker, rather than assuming the payment is fine or resending it blindly.</p>
+<h2>Related lessons</h2>
+<ul>
+<li><b>pacs.008</b>: the customer credit transfer that the pacs.002 reports on.</li>
+<li><b>pacs.009</b>: the bank to bank credit transfer and its status flow.</li>
+<li><b>SWIFT gpi</b> and payment tracking with the UETR.</li>
+<li>Exception handling: how to investigate a rejected payment.</li>
+<li>Reconciliation: how pacs.002 statuses feed the ledger and the customer notification.</li>
+</ul>
+<p><a class="studio-btn" href="../guides.html">&larr; Back to all guides</a></p>
+</section>
+</main>
+<footer><p>Payments Training Hub. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="../index.html">Home</a> &middot; <a href="../courses.html">Courses</a> &middot; <a href="../practice.html">Practice</a> &middot; <a href="../simulators.html">Simulators</a> &middot; <a href="../labs.html">Labs</a> &middot; <a href="../explorer.html">Explorer</a> &middot; <a href="../tests.html">Tests</a> &middot; <a href="../diagnostic.html">Diagnostic</a> &middot; <a href="../faq.html">Interview Ready Questions</a> &middot; <a href="../interview-prep.html">Interview Prep</a></p><p><a href="../about.html">About</a> &middot; <a href="../privacy.html">Privacy</a> &middot; <a href="../terms.html">Terms</a> &middot; <a href="../contact.html">Contact</a> &middot; <a href="../editorial-standards.html">Editorial Standards</a> &middot; <a href="../sources.html">Sources</a></p></footer>
+<script defer src="../assets/site.js"></script>
+<script defer src="../assets/bundles.js"></script>
+<script defer src="../assets/auth.js"></script>
+<script defer src="../assets/nav.js"></script>
+<script defer src="../assets/pf-enhance.js"></script>
+</body>
+</html>

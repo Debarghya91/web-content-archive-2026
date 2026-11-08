@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>MT202 Explained: The General Financial Institution Transfer | Payments Training Hub</title>
+<meta name="description" content="The **MT202** is the SWIFT message a bank sends to move money to another bank for its own account. It is a **general financial institution transfer**. Unli">
+<link rel="canonical" href="https://www.paymentstraininghub.in/guides/mt202-explained.html">
+<meta property="og:url" content="https://www.paymentstraininghub.in/guides/mt202-explained.html">
+<meta property="og:title" content="MT202 Explained: The General Financial Institution Transfer | Payments Training Hub">
+<meta property="og:description" content="The **MT202** is the SWIFT message a bank sends to move money to another bank for its own account. It is a **general financial institution transfer**. Unli">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.in/assets/hero/hero-poster.jpg">
+<link rel="stylesheet" href="../assets/pf-theme.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="../index.html" class="brand">Payments <span>Training Hub</span></a><nav class="topnav"><a href="../index.html">Home</a> <a href="../courses.html">Courses</a> <a href="../practice.html">Practice</a> <a href="../simulators.html">Simulators</a> <a href="../labs.html">Labs</a> <a href="../explorer.html">Explorer</a> <a href="../tests.html">Tests</a></nav><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox" style="display:none"><span id="authState">Not signed in</span> <span id="authForm" style="display:none"><input id="authEmail" type="email" placeholder="Email for OTP" aria-label="Email for sign-in"> <button class="mute-btn" onclick="paAuthSendOtp()">Send code</button> <input id="authCode" type="text" placeholder="6-digit code" aria-label="One-time code" style="display:none"> <button class="mute-btn" id="authVerifyBtn" onclick="paAuthVerifyOtp()" style="display:none">Verify</button> <button class="mute-btn" onclick="paAuthGoogle()">Sign in with Google</button> </span><button class="mute-btn" id="authSignOutBtn" onclick="paAuthSignOut()" style="display:none">Sign out</button></span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<section class="section guide-page">
+<nav class="crumbs"><a href="../index.html">Home</a> / <a href="../guides.html">Guides</a> / SWIFT and Correspondent Banking</nav>
+<h1>MT202 Explained: The General Financial Institution Transfer</h1>
+<h2>What it is</h2>
+<p>The <b>MT202</b> is the SWIFT message a bank sends to move money to another bank for its own account. It is a <b>general financial institution transfer</b>. Unlike the MT103, which carries a customer payment, the MT202 moves funds between banks themselves. It is used for bank-to-bank transfers, funding a nostro account, settling a position, or paying another bank.</p>
+<p>The MT202 is also used as a <b>cover payment</b>. When a bank sends a customer payment by the cover method, it sends the MT103 directly to the beneficiary bank and sends an MT202 through the correspondent chain to move the funds. The standard MT202 used as cover does not carry customer details. The <b>MT202 COV</b> is the variant that does carry them, and it is the one banks must use for customer payment cover.</p>
+<h2>Why it matters</h2>
+<p>The MT202 is the message that actually moves money between banks in many cross-border payments. The MT103 is the instruction to pay the customer. The MT202 is the instruction that moves the funds to settle it. If you only understand the MT103, you understand half the payment. The MT202 explains how the money gets from one bank to another.</p>
+<p>A payments analyst who confuses the MT202 with the MT103 will misread payment flows, misdiagnose exceptions, and design wrong reconciliations. The two messages have different purposes, different fields, and different rules.</p>
+<h2>How it works in a bank</h2>
+<p>A bank needs to move funds to another bank for one of several reasons. It may need to fund its nostro account with a correspondent. It may need to settle a trade. It may need to send cover for a customer payment. In each case, the bank sends an MT202 to the receiving bank.</p>
+<p>The MT202 instructs the receiving bank to debit the sender's account and credit the specified account. The receiving bank checks the instruction, verifies the account, and moves the funds. The message does not name a customer beneficiary. It names financial institutions.</p>
+<p>When the MT202 is used as cover for a customer payment, the sender bank sends two messages. The MT103 goes directly to the beneficiary bank with the full customer payment details. The MT202 travels through the correspondent chain to move the funds. The beneficiary bank receives the MT103, waits for the funds to arrive through the correspondent chain, and then credits the beneficiary. This is faster than the serial method, because the instruction does not have to travel bank by bank.</p>
+<h2>Worked example</h2>
+<p>A bank in London, Barclays, needs to fund its nostro account with its correspondent in New York, JPMorgan Chase. Barclays holds a USD nostro account with JPMorgan. The account is running low and Barclays wants to move USD 10,000,000 into it.</p>
+<p>Barclays sends an MT202 to JPMorgan Chase. The message says: debit our account, credit our nostro account with USD 10,000,000, value date 9 November 2026. JPMorgan receives the message, checks the account, and credits the nostro account. Barclays can now use that nostro balance to settle customer payments in USD.</p>
+<p>In a second example, Barclays sends a customer payment to a beneficiary in Singapore. The customer payment is an MT103 sent directly to the beneficiary bank in Singapore. The cover is an MT202 sent through the correspondent chain. The MT202 moves USD 250,000 from Barclays to its correspondent, which forwards it to the beneficiary bank's correspondent, which credits the beneficiary bank. The beneficiary bank matches the MT103 instruction with the incoming funds and credits the customer.</p>
+<h2>Technical detail</h2>
+<p>The main MT202 fields are:</p>
+<ul>
+<li><b>Field 20, Transaction Reference Number.</b> The sender bank's unique reference for this transfer.</li>
+<li><b>Field 21, Related Reference.</b> Links this MT202 to another message, such as the MT103 it covers. This field is what ties the cover to the customer payment.</li>
+<li><b>Field 32A, Value Date, Currency Code, Interbank Settled Amount.</b> The date, currency, and amount of the transfer. Example: 261109USD10000000, means value date 9 November 2026, USD 10,000,000.</li>
+<li><b>Field 52a, Ordering Institution.</b> The bank that ordered the transfer.</li>
+<li><b>Field 53a, Sender's Correspondent.</b> The account the sender holds with the receiver.</li>
+<li><b>Field 54a, Receiver's Correspondent.</b> The account the receiver holds with the sender.</li>
+<li><b>Field 56a, Intermediary Institution.</b> A bank in the middle of the chain.</li>
+<li><b>Field 57a, Account With Institution.</b> The bank where the funds should be credited.</li>
+<li><b>Field 58a, Beneficiary Institution.</b> The financial institution that should receive the funds. In a cover payment, this is the beneficiary bank.</li>
+<li><b>Field 72, Sender to Receiver Information.</b> Extra instructions for the receiving bank.</li>
+</ul>
+<p>The key difference from the MT103 is the absence of customer fields. The MT202 has no field 50a ordering customer and no field 59a beneficiary customer. It has field 58a beneficiary institution instead. The MT202 is a bank-to-bank message.</p>
+<p>Under ISO 20022, the MT202 maps to the <b>pacs.009</b> message, which is the financial institution credit transfer. The MT202 COV maps to the pacs.009 with the underlying customer payment details included.</p>
+<h2>Common mistakes</h2>
+<ul>
+<li><b>Using an MT202 for a customer payment.</b> A customer payment must use an MT103 or pacs.008. An MT202 has no place to put the customer details, so the beneficiary bank cannot identify who should be paid.</li>
+<li><b>Using a plain MT202 as cover instead of an MT202 COV.</b> A plain MT202 carries no customer details. Intermediary banks cannot screen the payment for sanctions. Regulators require the MT202 COV for customer payment cover so that every bank in the chain can see who is sending and receiving.</li>
+<li><b>Forgetting field 21.</b> When an MT202 covers an MT103, field 21 links them. Without it, the beneficiary bank cannot match the incoming funds to the MT103 instruction, and the payment sits in a suspense account.</li>
+<li><b>Confusing the MT202 with the MT103 in reconciliation.</b> The MT202 settles between banks. The MT103 instructs the customer payment. Reconciling one against the other without understanding the difference causes false breaks.</li>
+</ul>
+<h2>Related lessons</h2>
+<ul>
+<li>The MT103 and customer credit transfers</li>
+<li>The MT202 COV and cover payments</li>
+<li>Serial versus cover payments</li>
+<li>Correspondent banking and nostro accounts</li>
+<li>The pacs.009 message in ISO 20022</li>
+</ul>
+<p><a class="studio-btn" href="../guides.html">&larr; Back to all guides</a></p>
+</section>
+</main>
+<footer><p>Payments Training Hub. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="../index.html">Home</a> &middot; <a href="../courses.html">Courses</a> &middot; <a href="../practice.html">Practice</a> &middot; <a href="../simulators.html">Simulators</a> &middot; <a href="../labs.html">Labs</a> &middot; <a href="../explorer.html">Explorer</a> &middot; <a href="../tests.html">Tests</a> &middot; <a href="../diagnostic.html">Diagnostic</a> &middot; <a href="../faq.html">Interview Ready Questions</a> &middot; <a href="../interview-prep.html">Interview Prep</a></p><p><a href="../about.html">About</a> &middot; <a href="../privacy.html">Privacy</a> &middot; <a href="../terms.html">Terms</a> &middot; <a href="../contact.html">Contact</a> &middot; <a href="../editorial-standards.html">Editorial Standards</a> &middot; <a href="../sources.html">Sources</a></p></footer>
+<script defer src="../assets/site.js"></script>
+<script defer src="../assets/bundles.js"></script>
+<script defer src="../assets/auth.js"></script>
+<script defer src="../assets/nav.js"></script>
+<script defer src="../assets/pf-enhance.js"></script>
+</body>
+</html>

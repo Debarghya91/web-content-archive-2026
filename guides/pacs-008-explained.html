@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>pacs.008 Explained | Payments Training Hub</title>
+<meta name="description" content="**pacs.008** is the **Financial Institution to Financial Institution Customer Credit Transfer** message. It is the ISO 20022 message a bank sends to anothe">
+<link rel="canonical" href="https://www.paymentstraininghub.in/guides/pacs-008-explained.html">
+<meta property="og:url" content="https://www.paymentstraininghub.in/guides/pacs-008-explained.html">
+<meta property="og:title" content="pacs.008 Explained | Payments Training Hub">
+<meta property="og:description" content="**pacs.008** is the **Financial Institution to Financial Institution Customer Credit Transfer** message. It is the ISO 20022 message a bank sends to anothe">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.in/assets/hero/hero-poster.jpg">
+<link rel="stylesheet" href="../assets/pf-theme.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="../index.html" class="brand">Payments <span>Training Hub</span></a><nav class="topnav"><a href="../index.html">Home</a> <a href="../courses.html">Courses</a> <a href="../practice.html">Practice</a> <a href="../simulators.html">Simulators</a> <a href="../labs.html">Labs</a> <a href="../explorer.html">Explorer</a> <a href="../tests.html">Tests</a></nav><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox" style="display:none"><span id="authState">Not signed in</span> <span id="authForm" style="display:none"><input id="authEmail" type="email" placeholder="Email for OTP" aria-label="Email for sign-in"> <button class="mute-btn" onclick="paAuthSendOtp()">Send code</button> <input id="authCode" type="text" placeholder="6-digit code" aria-label="One-time code" style="display:none"> <button class="mute-btn" id="authVerifyBtn" onclick="paAuthVerifyOtp()" style="display:none">Verify</button> <button class="mute-btn" onclick="paAuthGoogle()">Sign in with Google</button> </span><button class="mute-btn" id="authSignOutBtn" onclick="paAuthSignOut()" style="display:none">Sign out</button></span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<section class="section guide-page">
+<nav class="crumbs"><a href="../index.html">Home</a> / <a href="../guides.html">Guides</a> / ISO 20022</nav>
+<h1>pacs.008 Explained</h1>
+<h2>What it is</h2>
+<p><b>pacs.008</b> is the <b>Financial Institution to Financial Institution Customer Credit Transfer</b> message. It is the ISO 20022 message a bank sends to another bank to move money on behalf of a customer. The name comes from the ISO 20022 message set: <b>pacs</b> stands for Payments Clearing and Settlement, and <b>008</b> is the customer credit transfer variant.</p>
+<p>When a customer instructs a cross-border payment, their bank builds a pacs.008 and sends it to the next bank in the chain, usually a correspondent bank. That bank reads the pacs.008, applies its checks, and forwards it to the beneficiary bank. The beneficiary bank credits the customer and sends back a status report.</p>
+<h2>Why it matters</h2>
+<p>pacs.008 is the most important message in cross-border payments. It carries the full payment instruction between banks, including the amount, the parties, the charges, and the remittance information. Every cross-border customer payment that moves under ISO 20022 travels as a pacs.008.</p>
+<p>It matters for three practical reasons. First, the <b>data is rich</b>: the pacs.008 carries structured addresses, full remittance detail, and the charge option, so the receiving bank can process it without asking for more information. Second, the <b>UETR</b> (Unique End to End Transaction Reference) in the pacs.008 lets every bank and the customer track the payment across the whole chain. Third, the <b>status flow</b> is standardised: the receiving bank replies with a pacs.002, so the sender always knows whether the payment was accepted, rejected, or settled.</p>
+<h2>How it works in a bank</h2>
+<p>The payment starts with the customer's instruction, often a <b>pain.001</b> file or an online banking order. The sending bank's payment hub validates the instruction, checks sanctions and fraud rules, and builds the pacs.008.</p>
+<p>The pacs.008 is sent to the next bank through <b>SWIFT</b>. The receiving bank validates it, checks sanctions, and either forwards it or returns a rejection. Each bank in the chain does the same. When the pacs.008 reaches the beneficiary bank, that bank credits the beneficiary's account and sends a <b>pacs.002</b> status report back along the chain.</p>
+<p>The sending bank uses the pacs.002 to update the payment status in its own system and to tell the customer. The statuses are <b>ACCP</b> (accepted), <b>ACSP</b> (accepted, settlement in process), <b>ACSC</b> (accepted, settlement completed), and <b>RJCT</b> (rejected). A payment is only truly done when the ACSC arrives.</p>
+<h2>Worked example</h2>
+<p>A company in the United Kingdom pays a supplier in Japan GBP 100,000. The company instructs its UK bank. The UK bank builds a pacs.008.</p>
+<p>The pacs.008 carries:</p>
+<ul>
+<li>The debtor, the UK company, with its structured address.</li>
+<li>The creditor, the Japanese supplier, with its structured address.</li>
+<li>The instructed amount, GBP 100,000.</li>
+<li>The interbank settlement amount, the amount that will actually move between banks after any conversion.</li>
+<li>The charge bearer, <b>SHAR</b>, meaning the sender and the beneficiary share the charges.</li>
+<li>The <b>UETR</b>, a unique reference that follows the payment.</li>
+<li>The remittance information, the invoice number the supplier will use to reconcile.</li>
+</ul>
+<p>The UK bank sends the pacs.008 to its correspondent bank in Japan. The correspondent screens it and forwards it to the supplier's bank. The supplier's bank credits the supplier and sends a pacs.002 with status ACSC. The UK bank sees the ACSC, marks the payment complete, and the company sees the confirmation in online banking.</p>
+<h2>Technical detail</h2>
+<p>The pacs.008 has two main parts:</p>
+<ul>
+<li><b>GrpHdr</b> (Group Header): message identification (MsgId), creation date and time (CreDtTm), number of transactions (NbOfTxs), settlement information (SttlmInf, including the settlement method), and the instructing and instructed agents.</li>
+<li><b>CdtTrfTxInf</b> (Credit Transfer Transaction Information): payment identification (PmtId, with InstrId, EndToEndId and UETR), interbank settlement amount (IntrBkSttlmAmt), instructed amount (InstdAmt), charge bearer (ChrgBr), charges information (ChrgsInf), debtor (Dbtr), debtor account (DbtrAcct), creditor agent (CdtrAgt), creditor (Cdtr), creditor account (CdtrAcct), and remittance information (RmtInf).</li>
+</ul>
+<p>Key fields to know:</p>
+<ul>
+<li><b>UETR</b>: the Unique End to End Transaction Reference. It is a UUID, generated by the first bank in the chain, and carried unchanged by every bank. It is the primary tracking key for <b>SWIFT gpi</b>.</li>
+<li><b>IntrBkSttlmAmt</b>: the amount that settles between banks. It can differ from the instructed amount when there is a currency conversion or when charges are deducted.</li>
+<li><b>ChrgBr</b>: the charge bearer. DEBT means the debtor pays all charges (OUR), CRED means the creditor pays all charges (BEN), SHAR means charges are shared (SHA), SLEV means the charges follow the service level agreement.</li>
+<li><b>SttlmInf</b>: the settlement information, including the settlement method (INDA for instructed agent, INGA for instructed agent, CLRG for clearing system) and the settlement account.</li>
+<li><b>RmtInf</b>: the remittance information, structured or unstructured, that the beneficiary uses to reconcile the payment against an invoice or order.</li>
+</ul>
+<h2>Common mistakes</h2>
+<p>The most common mistake is confusing the <b>instructed amount</b> with the <b>interbank settlement amount</b>. They are often different. The instructed amount is what the customer asked to pay. The settlement amount is what actually moves between banks, after conversion and charges. A BA who mixes them up will misstate the payment to the customer and to reconciliation.</p>
+<p>Another mistake is dropping the <b>UETR</b>. If a bank rebuilds a pacs.008 without copying the UETR from the original instruction, the payment becomes untrackable. The gpi tracker will show a gap, and investigations become slow.</p>
+<p>A third mistake is sending a pacs.008 with incomplete <b>creditor information</b>. The beneficiary bank needs enough data to credit the right account and to pass its sanctions checks. Missing or unstructured creditor data is a leading cause of pacs.002 rejections.</p>
+<h2>Related lessons</h2>
+<ul>
+<li><b>pacs.002</b> and the payment status report.</li>
+<li><b>pain.001</b>: the customer instruction that starts the chain.</li>
+<li><b>pacs.009</b>: the bank to bank credit transfer, and how it differs from pacs.008.</li>
+<li>Serial versus cover payments and the role of pacs.008 in the cover method.</li>
+<li><b>SWIFT gpi</b> and payment tracking with the UETR.</li>
+</ul>
+<p><a class="studio-btn" href="../guides.html">&larr; Back to all guides</a></p>
+</section>
+</main>
+<footer><p>Payments Training Hub. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="../index.html">Home</a> &middot; <a href="../courses.html">Courses</a> &middot; <a href="../practice.html">Practice</a> &middot; <a href="../simulators.html">Simulators</a> &middot; <a href="../labs.html">Labs</a> &middot; <a href="../explorer.html">Explorer</a> &middot; <a href="../tests.html">Tests</a> &middot; <a href="../diagnostic.html">Diagnostic</a> &middot; <a href="../faq.html">Interview Ready Questions</a> &middot; <a href="../interview-prep.html">Interview Prep</a></p><p><a href="../about.html">About</a> &middot; <a href="../privacy.html">Privacy</a> &middot; <a href="../terms.html">Terms</a> &middot; <a href="../contact.html">Contact</a> &middot; <a href="../editorial-standards.html">Editorial Standards</a> &middot; <a href="../sources.html">Sources</a></p></footer>
+<script defer src="../assets/site.js"></script>
+<script defer src="../assets/bundles.js"></script>
+<script defer src="../assets/auth.js"></script>
+<script defer src="../assets/nav.js"></script>
+<script defer src="../assets/pf-enhance.js"></script>
+</body>
+</html>

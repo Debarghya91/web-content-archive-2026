@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>Faster Payments Explained | Payments Training Hub</title>
+<meta name="description" content="**Faster Payments** is the UK&#x27;s near real time payment system. It lets people and businesses send money between UK bank accounts in seconds, 24 hours a day">
+<link rel="canonical" href="https://www.paymentstraininghub.in/guides/faster-payments-explained.html">
+<meta property="og:url" content="https://www.paymentstraininghub.in/guides/faster-payments-explained.html">
+<meta property="og:title" content="Faster Payments Explained | Payments Training Hub">
+<meta property="og:description" content="**Faster Payments** is the UK&#x27;s near real time payment system. It lets people and businesses send money between UK bank accounts in seconds, 24 hours a day">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.in/assets/hero/hero-poster.jpg">
+<link rel="stylesheet" href="../assets/pf-theme.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="../index.html" class="brand">Payments <span>Training Hub</span></a><nav class="topnav"><a href="../index.html">Home</a> <a href="../courses.html">Courses</a> <a href="../practice.html">Practice</a> <a href="../simulators.html">Simulators</a> <a href="../labs.html">Labs</a> <a href="../explorer.html">Explorer</a> <a href="../tests.html">Tests</a></nav><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox" style="display:none"><span id="authState">Not signed in</span> <span id="authForm" style="display:none"><input id="authEmail" type="email" placeholder="Email for OTP" aria-label="Email for sign-in"> <button class="mute-btn" onclick="paAuthSendOtp()">Send code</button> <input id="authCode" type="text" placeholder="6-digit code" aria-label="One-time code" style="display:none"> <button class="mute-btn" id="authVerifyBtn" onclick="paAuthVerifyOtp()" style="display:none">Verify</button> <button class="mute-btn" onclick="paAuthGoogle()">Sign in with Google</button> </span><button class="mute-btn" id="authSignOutBtn" onclick="paAuthSignOut()" style="display:none">Sign out</button></span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<section class="section guide-page">
+<nav class="crumbs"><a href="../index.html">Home</a> / <a href="../guides.html">Guides</a> / Payment Systems and Architecture</nav>
+<h1>Faster Payments Explained</h1>
+<h2>What it is</h2>
+<p><b>Faster Payments</b> is the UK's near real time payment system. It lets people and businesses send money between UK bank accounts in seconds, 24 hours a day, 7 days a week. It is operated by <b>Pay.UK</b> and is used for personal transfers, bill payments, salary payments, and business payments.</p>
+<p>The maximum value for a single Faster Payments transaction is 1 million pounds. In practice, most banks set their own lower limits for individual customers, often between 10,000 and 100,000 pounds per payment, depending on the channel and the customer.</p>
+<p>Faster Payments is not the same as <b>CHAPS</b>. CHAPS is the UK's high value real time gross settlement system, used for large payments such as house purchases. Faster Payments is for the high volume, lower value, near real time payments that people make every day.</p>
+<h2>Why it matters</h2>
+<p>Faster Payments changed what UK customers expect from a bank. Before it launched in 2008, a bank transfer took up to three days through Bacs. Now customers expect money to arrive in seconds. A bank that cannot offer Faster Payments is at a serious competitive disadvantage.</p>
+<p>For a business analyst, Faster Payments matters because it is the default rail for most UK domestic payments, and because its design has specific features that create specific failure modes. Payments are sent in near real time, but settlement between banks happens on a deferred net basis, several times a day. That gap between the customer experience (instant) and the interbank settlement (deferred) is where many operational issues live.</p>
+<h2>How it works in a bank</h2>
+<p><b>Direct participants.</b> Banks that are direct participants in Faster Payments connect to the central infrastructure and send and receive payments directly. They hold a settlement account at the Bank of England. Smaller banks and payment firms often join as indirect participants, using a direct participant as their sponsor to access the system.</p>
+<p><b>The payment flow.</b> A customer instructs a payment through online banking, a mobile app, or a telephone call. The bank validates the instruction, checks the account and the balance, runs fraud and sanctions checks, debits the sender, and sends the payment to the Faster Payments central infrastructure. The infrastructure routes it to the receiving bank. The receiving bank validates it and credits the beneficiary, usually within seconds. The customer sees the payment arrive almost immediately.</p>
+<p><b>Settlement.</b> Although the customer experience is near real time, the banks settle between themselves on a deferred net basis. The central infrastructure calculates the net amount each bank owes or is owed, and settlement happens in cycles through the Bank of England. This means the receiving bank credits the beneficiary before it has received the funds from the sending bank. The receiving bank takes on a short settlement risk, which is managed through collateral and limits.</p>
+<p><b>Sort code and account number.</b> Faster Payments uses the UK <b>sort code</b> and <b>account number</b> to identify the beneficiary's account. The sort code identifies the bank and branch, and the account number identifies the account. The bank must validate the sort code before sending the payment.</p>
+<h2>Worked example</h2>
+<p>A customer in London sends 2,500 pounds to a friend in Manchester on a Saturday afternoon.</p>
+<p>The customer enters the friend's sort code and account number in their banking app. The bank validates the sort code, checks the balance, runs a fraud check, debits the customer, and sends the payment to the Faster Payments infrastructure. The friend's bank receives it, validates it, and credits the friend. The friend sees the money within seconds. The customer receives a confirmation.</p>
+<p>The banks settle the net amounts between themselves later, through the Bank of England. The friend's bank has already credited the friend, so it is carrying a short settlement exposure until the net settlement completes.</p>
+<p>A business example. A company pays 200 suppliers every Friday using Faster Payments. The payroll and accounts payable team uploads a file. The bank processes the payments one by one, each arriving in seconds. The suppliers are paid the same day, and the company does not need to plan three days ahead as it would with Bacs.</p>
+<p>Now a failure example. A customer sends 5,000 pounds, but the receiving bank's system is temporarily down. The payment is accepted by the sending bank but cannot be delivered. The sending bank holds the payment and retries. If the receiving bank does not recover within the time limit, the payment is returned to the sender. The customer is told the payment failed and the money is back in their account.</p>
+<h2>Technical detail</h2>
+<p><b>Limits.</b> The scheme maximum is 1 million pounds per payment. Individual banks set their own limits, which vary by channel (mobile app, online banking, branch) and by customer type (personal, business, corporate). A business analyst must know the bank's own limits, not just the scheme maximum, because the bank's limit is what the customer actually experiences.</p>
+<p><b>Availability.</b> Faster Payments runs 24 hours a day, 7 days a week. There is no cut-off and no business day. The bank's systems must be available around the clock.</p>
+<p><b>Settlement cycles.</b> Settlement between banks happens in cycles through the Bank of England. The receiving bank credits the beneficiary before settlement completes. This is different from CHAPS, where settlement is real time and final before the beneficiary is credited.</p>
+<p><b>Confirmation of Payee.</b> UK banks offer <b>Confirmation of Payee</b>, which checks the beneficiary name against the account before the payment is sent. This is similar in purpose to Verification of Payee in SEPA. It helps prevent payments to the wrong account and reduces authorised push payment fraud.</p>
+<p><b>Messages.</b> Faster Payments uses its own message format based on ISO 20022. The instruction carries the sort code, account number, amount, and reference. The bank's payment hub must map its internal format to the Faster Payments format.</p>
+<h2>Common mistakes</h2>
+<p><b>Calling Faster Payments real time settlement.</b> It is near real time for the customer, but settlement between banks is deferred net. The distinction matters for liquidity, risk, and reconciliation.</p>
+<p><b>Confusing Faster Payments with CHAPS.</b> Faster Payments is for high volume, lower value payments with a 1 million pound scheme limit. CHAPS is for high value payments with no upper limit, settled in real time through the Bank of England.</p>
+<p><b>Assuming the scheme limit is the bank's limit.</b> The scheme allows up to 1 million pounds, but most banks set much lower limits for retail customers. A customer trying to send 200,000 pounds through a mobile app will often be blocked by the bank's own limit and need to use CHAPS or a branch.</p>
+<p><b>Forgetting that the receiving bank credits before settlement.</b> The receiving bank takes on settlement risk. If the sending bank fails before settlement, the receiving bank has already paid out. This is why collateral and limits exist, and why operations teams monitor settlement exposures.</p>
+<p><b>Ignoring indirect participation.</b> Not every bank is a direct participant. Smaller banks access Faster Payments through a sponsor bank. A business analyst must know whether their bank is direct or indirect, because it changes the cut-offs, the limits, and the failure modes.</p>
+<h2>Related lessons</h2>
+<ul>
+<li>CHAPS and UK high value payments.</li>
+<li>Bacs and batch payments.</li>
+<li>Clearing vs settlement and deferred net settlement.</li>
+<li>Confirmation of Payee and fraud prevention.</li>
+<li>Payment hub architecture and routing.</li>
+</ul>
+<p><a class="studio-btn" href="../guides.html">&larr; Back to all guides</a></p>
+</section>
+</main>
+<footer><p>Payments Training Hub. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="../index.html">Home</a> &middot; <a href="../courses.html">Courses</a> &middot; <a href="../practice.html">Practice</a> &middot; <a href="../simulators.html">Simulators</a> &middot; <a href="../labs.html">Labs</a> &middot; <a href="../explorer.html">Explorer</a> &middot; <a href="../tests.html">Tests</a> &middot; <a href="../diagnostic.html">Diagnostic</a> &middot; <a href="../faq.html">Interview Ready Questions</a> &middot; <a href="../interview-prep.html">Interview Prep</a></p><p><a href="../about.html">About</a> &middot; <a href="../privacy.html">Privacy</a> &middot; <a href="../terms.html">Terms</a> &middot; <a href="../contact.html">Contact</a> &middot; <a href="../editorial-standards.html">Editorial Standards</a> &middot; <a href="../sources.html">Sources</a></p></footer>
+<script defer src="../assets/site.js"></script>
+<script defer src="../assets/bundles.js"></script>
+<script defer src="../assets/auth.js"></script>
+<script defer src="../assets/nav.js"></script>
+<script defer src="../assets/pf-enhance.js"></script>
+</body>
+</html>

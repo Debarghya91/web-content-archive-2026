@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>Clearing vs Settlement | Payments Training Hub</title>
+<meta name="description" content="**Clearing** and **settlement** are two different stages in a payment. They are often mentioned together, but they are not the same thing, and confusing th">
+<link rel="canonical" href="https://www.paymentstraininghub.in/guides/clearing-vs-settlement.html">
+<meta property="og:url" content="https://www.paymentstraininghub.in/guides/clearing-vs-settlement.html">
+<meta property="og:title" content="Clearing vs Settlement | Payments Training Hub">
+<meta property="og:description" content="**Clearing** and **settlement** are two different stages in a payment. They are often mentioned together, but they are not the same thing, and confusing th">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.in/assets/hero/hero-poster.jpg">
+<link rel="stylesheet" href="../assets/pf-theme.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="../index.html" class="brand">Payments <span>Training Hub</span></a><nav class="topnav"><a href="../index.html">Home</a> <a href="../courses.html">Courses</a> <a href="../practice.html">Practice</a> <a href="../simulators.html">Simulators</a> <a href="../labs.html">Labs</a> <a href="../explorer.html">Explorer</a> <a href="../tests.html">Tests</a></nav><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox" style="display:none"><span id="authState">Not signed in</span> <span id="authForm" style="display:none"><input id="authEmail" type="email" placeholder="Email for OTP" aria-label="Email for sign-in"> <button class="mute-btn" onclick="paAuthSendOtp()">Send code</button> <input id="authCode" type="text" placeholder="6-digit code" aria-label="One-time code" style="display:none"> <button class="mute-btn" id="authVerifyBtn" onclick="paAuthVerifyOtp()" style="display:none">Verify</button> <button class="mute-btn" onclick="paAuthGoogle()">Sign in with Google</button> </span><button class="mute-btn" id="authSignOutBtn" onclick="paAuthSignOut()" style="display:none">Sign out</button></span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<section class="section guide-page">
+<nav class="crumbs"><a href="../index.html">Home</a> / <a href="../guides.html">Guides</a> / Payment Systems and Architecture</nav>
+<h1>Clearing vs Settlement</h1>
+<h2>What it is</h2>
+<p><b>Clearing</b> and <b>settlement</b> are two different stages in a payment. They are often mentioned together, but they are not the same thing, and confusing them is one of the most common mistakes in payments.</p>
+<p><b>Clearing</b> is the exchange, validation, and sorting of payment instructions between banks. It is the process of agreeing what is owed, to whom, and by whom. <b>Settlement</b> is the actual movement of funds between banks to discharge those obligations. Clearing answers the question "what do we owe each other?" Settlement answers the question "how do we pay it?"</p>
+<p>In some systems, clearing and settlement happen almost together. In others, they happen hours or days apart. Understanding the gap between them is essential for understanding payment risk, liquidity, and reconciliation.</p>
+<h2>Why it matters</h2>
+<p>The gap between clearing and settlement is where payment risk lives. If a bank credits a beneficiary during clearing, before settlement has happened, it is taking on risk. If the sending bank fails before settlement, the receiving bank has already paid out and may not get the funds back.</p>
+<p>For a business analyst, the distinction matters because every payment design decision depends on it. The choice of clearing mechanism affects cost and speed. The choice of settlement mechanism affects risk and liquidity. A system that settles in central bank money is safer than one that settles in commercial bank money. A system that settles in real time is safer than one that settles at the end of the day.</p>
+<p>In an interview, a candidate who can explain clearing and settlement as separate stages, with a worked example showing each one, will stand out. A candidate who uses the two words interchangeably will not.</p>
+<h2>How it works in a bank</h2>
+<p><b>Clearing.</b> When a bank receives a payment instruction, it validates the instruction, checks the account, and sends it to the clearing system. The clearing system collects instructions from all participating banks, validates them, sorts them, and calculates what each bank owes. In a net settlement system, the clearing system nets the amounts off: if Bank A owes Bank B 10 million and Bank B owes Bank A 8 million, the net amount is 2 million from A to B. In a gross settlement system, there is no netting: each payment is settled in full.</p>
+<p><b>Settlement.</b> Once clearing has calculated the obligations, settlement moves the funds. In a central bank settlement system, the funds move between the banks' accounts at the central bank. In a commercial bank settlement system, the funds move between the banks' nostro accounts. Settlement can be real time (each payment settled as it is cleared) or deferred (settlement happens in batches at set times during the day).</p>
+<p><b>The bank's side.</b> The bank's payment hub sends instructions to clearing, receives clearing confirmations, and tracks which payments have cleared but not yet settled. The bank's treasury team monitors the settlement position and ensures the bank has enough funds in its settlement account. The bank's reconciliation team matches the clearing confirmations against the settlement entries and against the ledger, to make sure every payment is accounted for.</p>
+<p><b>The ledger.</b> When a payment is instructed, the bank debits the sender's account in its core banking ledger. When the payment is settled, the bank updates its settlement account. When the clearing confirmation arrives, the bank updates the payment status. These are three separate postings, at three separate times, and they must all reconcile.</p>
+<h2>Worked example</h2>
+<p>A customer in the UK sends 1,000 pounds to a friend using Faster Payments.</p>
+<p><b>Clearing.</b> The sending bank validates the instruction, debits the customer, and sends the payment to the Faster Payments central infrastructure. The infrastructure validates it and routes it to the receiving bank. The receiving bank validates it and credits the friend. The friend sees the money within seconds. This is clearing, and it is complete.</p>
+<p><b>Settlement.</b> The banks have not yet settled between themselves. The receiving bank has credited the friend, but it has not yet received the funds from the sending bank. Later in the day, the Faster Payments infrastructure calculates the net amount each bank owes. The net settlement moves through the Bank of England. Only then is settlement complete.</p>
+<p>Now the same amount sent through CHAPS.</p>
+<p><b>Clearing and settlement together.</b> The sending bank sends the payment to the Bank of England's RTGS system. The Bank of England moves the funds from the sending bank's settlement account to the receiving bank's settlement account immediately. Clearing and settlement happen in the same step, for this one payment, in full. The receiving bank then credits the beneficiary. There is no gap, and no settlement risk.</p>
+<p>A third example, from cross border payments. A company in the UK pays a supplier in the US 50,000 dollars.</p>
+<p><b>Clearing.</b> The UK bank sends a <b>pacs.008</b> through SWIFT to the US bank, possibly via a correspondent bank. Each bank in the chain validates the message and passes it on. This is clearing.</p>
+<p><b>Settlement.</b> The funds move between the banks' nostro accounts. The UK bank's nostro account at its US correspondent is debited, and the US bank's account is credited. If the payment uses the cover method, a separate <b>pacs.009</b> (or MT202) moves the funds between the correspondent banks. Settlement happens through the correspondent banking network, not through a central system. This is why cross border settlement takes longer and costs more than domestic settlement.</p>
+<h2>Technical detail</h2>
+<p><b>Types of clearing.</b> Bilateral clearing happens directly between two banks. Multilateral clearing happens through a central system that collects instructions from many banks and nets them. <b>EBA Clearing STEP2</b> is a multilateral clearing system for SEPA payments. <b>Bacs</b> is a multilateral clearing system for UK batch payments.</p>
+<p><b>Types of settlement.</b> <b>Gross settlement</b> settles each payment in full, one at a time. <b>Net settlement</b> settles only the net amount after offsetting. <b>Real time settlement</b> happens immediately. <b>Deferred settlement</b> happens in batches at set times. <b>Central bank settlement</b> moves funds between accounts at the central bank and is the safest form of settlement. <b>Commercial bank settlement</b> moves funds between nostro accounts and carries credit risk on the settlement bank.</p>
+<p><b>Finality.</b> Settlement finality means the payment cannot be reversed once settlement has happened. In an RTGS system, finality is immediate. In a deferred net settlement system, finality happens when the net settlement is complete. Before finality, a payment can still be unwound if a participant fails. This is why regulators care so much about settlement finality.</p>
+<p><b>Messages.</b> In ISO 20022, the instruction is a <b>pacs.008</b> (customer credit transfer) or <b>pacs.009</b> (bank to bank transfer). The status report is a <b>pacs.002</b>, which carries ACCP (accepted), ACSC (settlement completed), or RJCT (rejected). The statement message is <b>camt.053</b>, which the bank uses to reconcile its settlement account. The return is a <b>pacs.004</b>.</p>
+<h2>Common mistakes</h2>
+<p><b>Using clearing and settlement as synonyms.</b> They are different stages. Clearing is agreeing what is owed. Settlement is paying it. A payment can be cleared but not settled, and that gap matters.</p>
+<p><b>Saying a payment has settled when it has only cleared.</b> If the beneficiary has been credited but the interbank settlement has not happened, the payment is cleared, not settled. The receiving bank is carrying settlement risk.</p>
+<p><b>Forgetting that settlement needs funding.</b> A bank cannot settle a payment if it does not have the funds in its settlement account. This is why treasury and liquidity management are part of every payment operation.</p>
+<p><b>Assuming all settlement is in central bank money.</b> It is not. Cross border payments settle in commercial bank money through nostro accounts. Domestic payments in some countries settle through a private clearing house before the net amount settles at the central bank. The type of settlement money affects the risk.</p>
+<p><b>Ignoring the reconciliation.</b> Clearing confirmations, settlement entries, and ledger postings must all reconcile. A break between any two of them is an exception that must be investigated. A business analyst who does not understand this will not understand payment operations.</p>
+<h2>Related lessons</h2>
+<ul>
+<li>ACH vs RTGS.</li>
+<li>Payment lifecycle and its distinct stages.</li>
+<li>Nostro and vostro accounts.</li>
+<li>Correspondent banking and the cover method.</li>
+<li>Reconciliation and exception handling.</li>
+<li>ISO 20022 messages: pacs.008, pacs.002, pacs.004, camt.053.</li>
+</ul>
+<p><a class="studio-btn" href="../guides.html">&larr; Back to all guides</a></p>
+</section>
+</main>
+<footer><p>Payments Training Hub. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="../index.html">Home</a> &middot; <a href="../courses.html">Courses</a> &middot; <a href="../practice.html">Practice</a> &middot; <a href="../simulators.html">Simulators</a> &middot; <a href="../labs.html">Labs</a> &middot; <a href="../explorer.html">Explorer</a> &middot; <a href="../tests.html">Tests</a> &middot; <a href="../diagnostic.html">Diagnostic</a> &middot; <a href="../faq.html">Interview Ready Questions</a> &middot; <a href="../interview-prep.html">Interview Prep</a></p><p><a href="../about.html">About</a> &middot; <a href="../privacy.html">Privacy</a> &middot; <a href="../terms.html">Terms</a> &middot; <a href="../contact.html">Contact</a> &middot; <a href="../editorial-standards.html">Editorial Standards</a> &middot; <a href="../sources.html">Sources</a></p></footer>
+<script defer src="../assets/site.js"></script>
+<script defer src="../assets/bundles.js"></script>
+<script defer src="../assets/auth.js"></script>
+<script defer src="../assets/nav.js"></script>
+<script defer src="../assets/pf-enhance.js"></script>
+</body>
+</html>

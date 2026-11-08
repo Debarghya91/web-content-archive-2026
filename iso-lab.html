@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>ISO 20022 Message and Mapping Lab | Payments Training Hub</title>
+<meta name="description" content="14 ISO 20022 message and mapping exercises with valid and invalid XML: read, validate and map pacs, pain, camt and head messages.">
+<link rel="canonical" href="https://www.paymentstraininghub.in/iso-lab.html">
+<meta property="og:url" content="https://www.paymentstraininghub.in/iso-lab.html">
+<meta property="og:title" content="ISO 20022 Message and Mapping Lab | Payments Training Hub">
+<meta property="og:description" content="14 ISO 20022 message and mapping exercises with valid and invalid XML: read, validate and map pacs, pain, camt and head messages.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.in/assets/hero/hero-poster.jpg">
+<link rel="stylesheet" href="assets/pf-theme.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="index.html" class="brand">Payments <span>Training Hub</span></a><nav class="topnav"><a href="index.html">Home</a> <a href="courses.html">Courses</a> <a href="practice.html">Practice</a> <a href="simulators.html">Simulators</a> <a href="labs.html">Labs</a> <a href="explorer.html">Explorer</a> <a href="tests.html">Tests</a></nav><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox" style="display:none"><span id="authState">Not signed in</span> <span id="authForm" style="display:none"><input id="authEmail" type="email" placeholder="Email for OTP" aria-label="Email for sign-in"> <button class="mute-btn" onclick="paAuthSendOtp()">Send code</button> <input id="authCode" type="text" placeholder="6-digit code" aria-label="One-time code" style="display:none"> <button class="mute-btn" id="authVerifyBtn" onclick="paAuthVerifyOtp()" style="display:none">Verify</button> <button class="mute-btn" onclick="paAuthGoogle()">Sign in with Google</button> </span><button class="mute-btn" id="authSignOutBtn" onclick="paAuthSignOut()" style="display:none">Sign out</button></span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<section class="section" id="isolab">
+<h2>ISO 20022 Message and Mapping Lab</h2>
+<p>14 practical exercises. Each one gives you a real message problem, a valid XML sample and an invalid XML sample, and explains exactly why the invalid one fails. Work through the task, check your answer against the expected answer, and use the field table to see which elements are schema mandatory, optional or conditional. The XML samples and the answers start hidden so you work the problem first.</p>
+<p class="iso-progress-text" id="isoProgressText">0 of 14 exercises marked done.</p>
+<div class="lab-card" id="iso-EX-01">
+<h3>EX-01: Business Application Header versus Document</h3>
+<p><b>Concept.</b> The Business Application Header, head.001, is the envelope around an ISO 20022 business message. It carries routing and identification data only: sender, receiver, message name, message definition identifier, business service, creation time, business message identifier, and a copy duplicate flag. The Document carries the business content, such as the pacs.008 payment instruction with debtor, creditor, amount, and settlement data. A receiving system reads the header first to decide where to route the message and which schema version to validate against, without opening the payment data. Keeping routing in the header and business data in the Document lets routing, logging, and duplicate checks work the same way for every message type. The six fields shown in the valid example are the minimum routing subset, not the whole header: head.001.001.02 has 15 elements, and under CBPR+ the business service element BizSvc is mandatory and must carry swift.cbprplus.03. Other optional elements exist in the full header, such as MktPrctc (market practice) and Rltd (related business message), and are used only where the relevant usage guideline requires them.</p>
+<p><b>Task.</b> Study the valid head.001 AppHdr below and list every element it contains. Then inspect the invalid version and identify each business element that was wrongly placed inside the header. Write down, for each element, whether it belongs in the AppHdr or in the Document, and explain why a router that only reads the header must never need the amount or the creditor name.</p>
+<table class="explorer-table"><tr><th>Field</th><th>Meaning</th><th>Cardinality</th><th>Mandatory</th></tr>
+<tr><td><code>Fr</code></td><td>Sender of the business message, as a financial institution identifier</td><td>1..1</td><td>schema mandatory</td></tr>
+<tr><td><code>To</code></td><td>Receiver of the business message, as a financial institution identifier</td><td>1..1</td><td>schema mandatory</td></tr>
+<tr><td><code>BizMsgIdr</code></td><td>Unique identifier for the whole business message</td><td>1..1</td><td>schema mandatory</td></tr>
+<tr><td><code>MsgDefIdr</code></td><td>Message definition identifier, for example pacs.008.001.08</td><td>1..1</td><td>schema mandatory</td></tr>
+<tr><td><code>CreDt</code></td><td>Creation date and time of the business message, with UTC offset</td><td>1..1</td><td>schema mandatory</td></tr>
+<tr><td><code>CpyDplct</code></td><td>Flag showing whether this message is a resend of an earlier copy</td><td>0..1</td><td>optional</td></tr>
+<tr><td><code>BizSvc</code></td><td>Business service, mandatory under CBPR+ with value swift.cbprplus.03; identifies the service the message belongs to</td><td>0..1</td><td>mandatory under CBPR+</td></tr>
+</table>
+<p><button class="api-btn iso-toggle" onclick="paIsoToggle('iso-valid-EX-01', this)">Show valid XML</button> <button class="api-btn" onclick="paIsoCopy('iso-valid-EX-01', this)">Copy valid XML</button> <button class="api-btn iso-toggle" onclick="paIsoToggle('iso-invalid-EX-01', this)">Show invalid XML</button></p>
+<div id="iso-valid-EX-01" style="display:none"><p><b>Valid XML</b></p><pre class="api-pre api-resp-ok">
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;AppHdr xmlns="urn:iso:std:iso:20022:tech:xsd:head.001.001.02"&gt;
+  &lt;Fr&gt;&lt;FIId&gt;&lt;FinInstnId&gt;&lt;BICFI&gt;NWBKGB2LXXX&lt;/BICFI&gt;&lt;/FinInstnId&gt;&lt;/FIId&gt;&lt;/Fr&gt;
+  &lt;To&gt;&lt;FIId&gt;&lt;FinInstnId&gt;&lt;BICFI&gt;DEUTDEFFXXX&lt;/BICFI&gt;&lt;/FinInstnId&gt;&lt;/FIId&gt;&lt;/To&gt;
+  &lt;BizMsgIdr&gt;MSG-2026-1105-004821&lt;/BizMsgIdr&gt;
+  &lt;MsgDefIdr&gt;pacs.008.001.08&lt;/MsgDefIdr&gt;
+  &lt;BizSvc&gt;swift.cbprplus.03&lt;/BizSvc&gt;
+  &lt;CreDt&gt;2026-11-05T09:42:00+00:00&lt;/CreDt&gt;
+  &lt;CpyDplct&gt;&lt;/CpyDplct&gt;
+&lt;/AppHdr&gt;
+</pre></div>
+<div id="iso-invalid-EX-01" style="display:none"><p><b>Invalid XML</b></p><pre class="api-pre api-resp-err">
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;AppHdr xmlns="urn:iso:std:iso:20022:tech:xsd:head.001.001.02"&gt;
+  &lt;Fr&gt;&lt;FIId&gt;&lt;FinInstnId&gt;&lt;BICFI&gt;NWBKGB2LXXX&lt;/BICFI&gt;&lt;/FinInstnId&gt;&lt;/FIId&gt;&lt;/Fr&gt;
+  &lt;To&gt;&lt;FIId&gt;&lt;FinInstnId&gt;&lt;BICFI&gt;DEUTDEFFXXX&lt;/BICFI&gt;&lt;/FinInstnId&gt;&lt;/FIId&gt;&lt;/To&gt;
+  &lt;BizMsgIdr&gt;MSG-2026-1105-004821&lt;/BizMsgIdr&gt;
+  &lt;MsgDefIdr&gt;pacs.008.001.08&lt;/MsgDefIdr&gt;
+  &lt;CreDt&gt;2026-11-05T09:42:00+00:00&lt;/CreDt&gt;
+  &lt;IntrBkSttlmAmt Ccy="EUR"&gt;8750.00&lt;/IntrBkSttlmAmt&gt;
+  &lt;Cdtr&gt;&lt;Nm&gt;Schneider GmbH&lt;/Nm&gt;&lt;/Cdtr&gt;
+  &lt;Dbtr&gt;&lt;Nm&gt;Emma Wilson&lt;/Nm&gt;&lt;/Dbtr&gt;
+&lt;/AppHdr&gt;
+</pre></div>
+<p><button class="api-btn iso-toggle" onclick="paIsoToggle('iso-why-EX-01', this)">Reveal why the invalid sample fails</button> <button class="api-btn iso-toggle" onclick="paIsoToggle('iso-ans-EX-01', this)">Reveal expected answer</button></p>
+<div id="iso-why-EX-01" style="display:none"><p><b>Why the invalid sample fails.</b> This invalid example parses as XML, but it is structurally wrong because business payment data has been placed inside the header. IntrBkSttlmAmt, Cdtr, and Dbtr are Document elements, not head.001 elements, so the message fails schema validation against head.001.001.02. This is a schema rule failure, not a business rule failure. The consequence is rejection before routing: the receiver cannot validate the header, cannot trust the routing data, and must return the message for correction instead of processing the payment.</p></div>
+<div id="iso-ans-EX-01" style="display:none"><p><b>Expected answer.</b> You should conclude that the header carries only who sent the message, who should receive it, what message type it is, which version applies, which business service it belongs to, when it was created, and its unique identifier. Amount, debtor, creditor, accounts, charges, and remittance information belong only in the Document. The corrected approach is to keep the AppHdr to the routing fields shown in the valid example, including the CBPR+-mandatory BizSvc with value swift.cbprplus.03, and to place all payment data inside the pacs.008 Document, so routers, duplicate checks, and schema validation each work on the correct part. The six fields in the valid example are the minimum routing subset, not the whole head.001 header: the full header has 15 elements, and other elements such as MktPrctc and Rltd appear only where a usage guideline requires them.</p></div>
+<p><label class="iso-done-label"><input type="checkbox" class="iso-done-check" data-ex="EX-01" onchange="paIsoDone(this)"> I worked this exercise, mark it done</label></p>
+</div>
+<div class="lab-card" id="iso-EX-02">
+<h3>EX-02: InstrId, EndToEndId, TxId and UETR</h3>
+<p><b>Concept.</b> Four identifiers travel with a payment, and each has a different owner and a different job. InstrId is assigned by the instructing party and identifies one instruction inside one message. EndToEndId is chosen by the debtor, usually an invoice reference such as INV-2026-1147, and travels unchanged from debtor to creditor so the creditor can match the receipt. TxId is assigned by the instructing agent to identify the transaction in its own systems. UETR is a globally unique reference generated once for a cross border payment and carried unchanged across every bank in the chain for tracking. Reusing InstrId creates a duplicate, changing EndToEndId breaks creditor matching, and dropping UETR breaks end to end tracking.</p>
+<p><b>Task.</b> Trace all four identifiers in the valid pacs.008 below from debtor to creditor. Then examine the invalid version, where the same InstrId and the same UETR appear on two different transactions. Explain which system would flag each duplicate, what status it would return, and how you would assign fresh values that keep EndToEndId unchanged for the creditor.</p>
+<table class="explorer-table"><tr><th>Field</th><th>Meaning</th><th>Cardinality</th><th>Mandatory</th></tr>
+<tr><td><code>InstrId</code></td><td>Instruction identifier assigned by the instructing party for one instruction</td><td>0..1</td><td>business mandatory</td></tr>
+<tr><td><code>EndToEndId</code></td><td>Debtor reference that travels unchanged to the creditor for matching</td><td>0..1</td><td>business mandatory</td></tr>
+<tr><td><code>TxId</code></td><td>Transaction identifier assigned by the instructing agent for its own records</td><td>0..1</td><td>optional</td></tr>
+<tr><td><code>UETR</code></td><td>Globally unique end to end transaction reference for cross border tracking</td><td>0..1</td><td>business mandatory</td></tr>
+<tr><td><code>MsgId</code></td><td>Unique identifier for the whole message in the group header</td><td>1..1</td><td>schema mandatory</td></tr>
+</table>
+<p><button class="api-btn iso-toggle" onclick="paIsoToggle('iso-valid-EX-02', this)">Show valid XML</button> <button class="api-btn" onclick="paIsoCopy('iso-valid-EX-02', this)">Copy valid XML</button> <button class="api-btn iso-toggle" onclick="paIsoToggle('iso-invalid-EX-02', this)">Show invalid XML</button></p>
+<div id="iso-valid-EX-02" style="display:none"><p><b>Valid XML</b></p><pre class="api-pre api-resp-ok">
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;Document xmlns="urn:iso:std:iso:20022:tech:xsd:pacs.008.001.08"&gt;
+  &lt;FIToFICstmrCdtTrf&gt;
+    &lt;GrpHdr&gt;
+      &lt;MsgId&gt;MSG-2026-1105-004821&lt;/MsgId&gt;
+      &lt;CreDtTm&gt;2026-11-05T09:42:00+00:00&lt;/CreDtTm&gt;
+      &lt;NbOfTxs&gt;1&lt;/NbOfTxs&gt;
+      &lt;CtrlSum&gt;8750.00&lt;/CtrlSum&gt;
+      &lt;SttlmInf&gt;&lt;SttlmMtd&gt;INDA&lt;/SttlmMtd&gt;&lt;/SttlmInf&gt;
+    &lt;/GrpHdr&gt;
+    &lt;CdtTrfTxInf&gt;
+      &lt;PmtId&gt;&lt;InstrId&gt;INSTR-884120&lt;/InstrId&gt;&lt;EndToEndId&gt;INV-2026-1147&lt;/EndToEndId&gt;&lt;TxId&gt;TX-2026-1105-7781&lt;/TxId&gt;&lt;UETR&gt;8f2a1c4e-6b3d-4a9f-8e21-5c7d3a9b1e04&lt;/UETR&gt;&lt;/PmtId&gt;
+      &lt;IntrBkSttlmAmt Ccy="EUR"&gt;8750.00&lt;/IntrBkSttlmAmt&gt;
+      &lt;IntrBkSttlmDt&gt;2026-11-06&lt;/IntrBkSttlmDt&gt;
+      &lt;ChrgBr&gt;SHAR&lt;/ChrgBr&gt;
+      &lt;Dbtr&gt;&lt;Nm&gt;Emma Wilson&lt;/Nm&gt;&lt;PstlAdr&gt;&lt;StrtNm&gt;14 Oakfield Road&lt;/StrtNm&gt;&lt;TwnNm&gt;London&lt;/TwnNm&gt;&lt;PstCd&gt;NW3 2AB&lt;/PstCd&gt;&lt;Ctry&gt;GB&lt;/Ctry&gt;&lt;/PstlAdr&gt;&lt;/Dbtr&gt;
+      &lt;DbtrAcct&gt;&lt;Id&gt;&lt;IBAN&gt;GB29NWBK60161331926819&lt;/IBAN&gt;&lt;/Id&gt;&lt;/DbtrAcct&gt;
+      &lt;DbtrAgt&gt;&lt;FinInstnId&gt;&lt;BICFI&gt;NWBKGB2LXXX&lt;/BICFI&gt;&lt;/FinInstnId&gt;&lt;/DbtrAgt&gt;
+      &lt;CdtrAgt&gt;&lt;FinInstnId&gt;&lt;BICFI&gt;DEUTDEFFXXX&lt;/BICFI&gt;&lt;/FinInstnId&gt;&lt;/CdtrAgt&gt;
+      &lt;Cdtr&gt;&lt;Nm&gt;Schneider GmbH&lt;/Nm&gt;&lt;PstlAdr&gt;&lt;StrtNm&gt;Musterstrasse 12&lt;/StrtNm&gt;&lt;TwnNm&gt;Berlin&lt;/TwnNm&gt;&lt;PstCd&gt;10115&lt;/PstCd&gt;&lt;Ctry&gt;DE&lt;/Ctry&gt;&lt;/PstlAdr&gt;&lt;/Cdtr&gt;
+      &lt;CdtrAcct&gt;&lt;Id&gt;&lt;IBAN&gt;DE89370400440532013000&lt;/IBAN&gt;&lt;/Id&gt;&lt;/CdtrAcct&gt;
+      &lt;Purp&gt;&lt;Cd&gt;SUPP&lt;/Cd&gt;&lt;/Purp&gt;
+      &lt;RmtInf&gt;&lt;Ustrd&gt;Invoice INV-2026-1147 supplier payment&lt;/Ustrd&gt;&lt;/RmtInf&gt;
+      
+    &lt;/CdtTrfTxInf&gt;
+  &lt;/FIToFICstmrCdtTrf&gt;
+&lt;/Document&gt;
+</pre></div>
+<div id="iso-invalid-EX-02" style="display:none"><p><b>Invalid XML</b></p><pre class="api-pre api-resp-err">
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;Document xmlns="urn:iso:std:iso:20022:tech:xsd:pacs.008.001.08"&gt;
+  &lt;FIToFICstmrCdtTrf&gt;
+    &lt;GrpHdr&gt;
+      &lt;MsgId&gt;MSG-2026-1105-004822&lt;/MsgId&gt;
+      &lt;CreDtTm&gt;2026-11-05T09:42:00+00:00&lt;/CreDtTm&gt;
+      &lt;NbOfTxs&gt;2&lt;/NbOfTxs&gt;
+      &lt;CtrlSum&gt;17500.00&lt;/CtrlSum&gt;
+      &lt;SttlmInf&gt;&lt;SttlmMtd&gt;INDA&lt;/SttlmMtd&gt;&lt;/SttlmInf&gt;
+    &lt;/GrpHdr&gt;
+    &lt;CdtTrfTxInf&gt;
+      &lt;PmtId&gt;&lt;InstrId&gt;INSTR-884120&lt;/InstrId&gt;&lt;EndToEndId&gt;INV-2026-1147&lt;/EndToEndId&gt;&lt;TxId&gt;TX-2026-1105-7781&lt;/TxId&gt;&lt;UETR&gt;8f2a1c4e-6b3d-4a9f-8e21-5c7d3a9b1e04&lt;/UETR&gt;&lt;/PmtId&gt;
+      &lt;IntrBkSttlmAmt Ccy="EUR"&gt;8750.00&lt;/IntrBkSttlmAmt&gt;
+      &lt;IntrBkSttlmDt&gt;2026-11-06&lt;/IntrBkSttlmDt&gt;
+      &lt;ChrgBr&gt;SHAR&lt;/ChrgBr&gt;
+      &lt;Dbtr&gt;&lt;Nm&gt;Emma Wilson&lt;/Nm&gt;&lt;PstlAdr&gt;&lt;StrtNm&gt;14 Oakfield Road&lt;/StrtNm&gt;&lt;TwnNm&gt;London&lt;/TwnNm&gt;&lt;PstCd&gt;NW3 2AB&lt;/PstCd&gt;&lt;Ctry&gt;GB&lt;/Ctry&gt;&lt;/PstlAdr&gt;&lt;/Dbtr&gt;
+      &lt;DbtrAcct&gt;&lt;Id&gt;&lt;IBAN&gt;GB29NWBK60161331926819&lt;/IBAN&gt;&lt;/Id&gt;&lt;/DbtrAcct&gt;
+      &lt;DbtrAgt&gt;&lt;FinInstnId&gt;&lt;BICFI&gt;NWBKGB2LXXX&lt;/BICFI&gt;&lt;/FinInstnId&gt;&lt;/DbtrAgt&gt;
+      &lt;CdtrAgt&gt;&lt;FinInstnId&gt;&lt;BICFI&gt;DEUTDEFFXXX&lt;/BICFI&gt;&lt;/FinInstnId&gt;&lt;/CdtrAgt&gt;
+      &lt;Cdtr&gt;&lt;Nm&gt;Schneider GmbH&lt;/Nm&gt;&lt;PstlAdr&gt;&lt;StrtNm&gt;Musterstrasse 12&lt;/StrtNm&gt;&lt;TwnNm&gt;Berlin&lt;/TwnNm&gt;&lt;PstCd&gt;10115&lt;/PstCd&gt;&lt;Ctry&gt;DE&lt;/Ctry&gt;&lt;/PstlAdr&gt;&lt;/Cdtr&gt;
+      &lt;CdtrAcct&gt;&lt;Id&gt;&lt;IBAN&gt;DE89370400440532013000&lt;/IBAN&gt;&lt;/Id&gt;&lt;/CdtrAcct&gt;
+      &lt;Purp&gt;&lt;Cd&gt;SUPP&lt;/Cd&gt;&lt;/Purp&gt;
+      &lt;RmtInf&gt;&lt;Ustrd&gt;Invoice INV-2026-1147 supplier payment&lt;/Ustrd&gt;&lt;/RmtInf&gt;
+      
+    &lt;/CdtTrfTxInf&gt;
+    &lt;CdtTrfTxInf&gt;
+      &lt;PmtId&gt;&lt;InstrId&gt;INSTR-884120&lt;/InstrId&gt;&lt;EndToEndId&gt;INV-2026-1148&lt;/EndToEndId&gt;&lt;TxId&gt;TX-2026-1105-7782&lt;/TxId&gt;&lt;UETR&gt;8f2a1c4e-6b3d-4a9f-8e21-5c7d3a9b1e04&lt;/UETR&gt;&lt;/PmtId&gt;
+      &lt;IntrBkSttlmAmt Ccy="EUR"&gt;8750.00&lt;/IntrBkSttlmAmt&gt;
+      &lt;IntrBkSttlmDt&gt;2026-11-06&lt;/IntrBkSttlmDt&gt;
+      &lt;ChrgBr&gt;SHAR&lt;/ChrgBr&gt;
+      &lt;Dbtr&gt;&lt;Nm&gt;Emma Wilson&lt;/Nm&gt;&lt;/Dbtr&gt;
+      &lt;DbtrAgt&gt;&lt;FinInstnId&gt;&lt;BICFI&gt;NWBKGB2LXXX&lt;/BICFI&gt;&lt;/FinInstnId&gt;&lt;/DbtrAgt&gt;
+      &lt;CdtrAgt&gt;&lt;FinInstnId&gt;&lt;BICFI&gt;DEUTDEFFXXX&lt;/BICFI&gt;&lt;/FinInstnId&gt;&lt;/CdtrAgt&gt;
+      &lt;Cdtr&gt;&lt;Nm&gt;Schneider GmbH&lt;/Nm&gt;&lt;/Cdtr&gt;
+      &lt;CdtrAcct&gt;&lt;Id&gt;&lt;IBAN&gt;DE89370400440532013000&lt;/IBAN&gt;&lt;/Id&gt;&lt;/CdtrAcct&gt;
+    &lt;/CdtTrfTxInf&gt;
+  &lt;/FIToFICstmrCdtTrf&gt;
+&lt;/Document&gt;
+</pre></div>
+<p><button class="api-btn iso-toggle" onclick="paIsoToggle('iso-why-EX-02', this)">Reveal why the invalid sample fails</button> <button class="api-btn iso-toggle" onclick="paIsoToggle('iso-ans-EX-02', this)">Reveal expected answer</button></p>
+<div id="iso-why-EX-02" style="display:none"><p><b>Why the invalid sample fails.</b> This invalid example parses as XML, but it is structurally wrong in two ways. First, InstrId INSTR-884120 and the UETR are reused on two different transactions. InstrId must be unique per instructing party, and a UETR must be unique per payment, so duplicate detection treats the second transaction as a possible duplicate payment. Second, the message carries two transactions (NbOfTxs 2, CtrlSum 17,500.00). Under CBPR+ a pacs.008 carries exactly one transaction (NbOfTxs = 1); a multi-transaction pacs.008 is permitted only under other usage guidelines, such as a SEPA batch, not under CBPR+. Both failures are business rule failures enforced by duplicate and usage-guideline checks, not basic XML schema failures. The consequence is rejection or a duplicate investigation: the receiver returns a status report with a duplicate reason, settlement is held, and the creditor may be paid twice if the check is bypassed.</p></div>
+<div id="iso-ans-EX-02" style="display:none"><p><b>Expected answer.</b> You should conclude that InstrId identifies the instruction, TxId identifies the transaction for the instructing agent, EndToEndId is the debtor reference that must stay unchanged for creditor matching, and UETR is the globally unique tracking key for the whole chain. The corrected approach is to assign a fresh InstrId and a fresh TxId and UETR to the second payment, keep each EndToEndId tied to its own invoice, and never copy an identifier from one payment to another, even when debtor, creditor, amount, and date are identical. Also remember the transaction-count rule: under CBPR+ a pacs.008 carries exactly one transaction (NbOfTxs = 1), so two payments need two separate pacs.008 messages; a multi-transaction pacs.008 is permitted only under other usage guidelines, such as a SEPA batch, not under CBPR+.</p></div>
+<p><label class="iso-done-label"><input type="checkbox" class="iso-done-check" data-ex="EX-02" onchange="paIsoDone(this)"> I worked this exercise, mark it done</label></p>
+</div>
+<div class="lab-card" id="iso-EX-03">
+<h3>EX-03: Group Header versus transaction level data</h3>
+<p><b>Concept.</b> GrpHdr describes the message as a whole, while CdtTrfTxInf describes one payment inside it. The group header carries MsgId, creation time, number of transactions, control sum, and settlement information that applies to the group. Each transaction carries its own payment identification, amount, debtor, creditor, agents, charge bearer, purpose, and remittance information. In a pain.001 salary file with five thousand payments totalling EUR 8,400,000, the header states the count and the total, and the receiver checks those totals before processing any single payment. If the count or the sum does not match the transactions that follow, the whole message is rejected because a payment may have been lost or duplicated.</p>
+<p><b>Task.</b> Read the single transaction amount in the invalid pacs.008 below and compare it with its GrpHdr CtrlSum and its NbOfTxs. Write down the correct CtrlSum value, state which level each field belongs to, and explain why the receiver must check the header totals before it credits any single transaction in the group.</p>
+<table class="explorer-table"><tr><th>Field</th><th>Meaning</th><th>Cardinality</th><th>Mandatory</th></tr>
+<tr><td><code>GrpHdr.MsgId</code></td><td>Unique identifier for the whole message group</td><td>1..1</td><td>schema mandatory</td></tr>
+<tr><td><code>GrpHdr.NbOfTxs</code></td><td>Count of transactions carried in the message group</td><td>0..1</td><td>business mandatory</td></tr>
+<tr><td><code>GrpHdr.CtrlSum</code></td><td>Sum of all transaction amounts in the group</td><td>0..1</td><td>business mandatory</td></tr>
+<tr><td><code>CdtTrfTxInf.IntrBkSttlmAmt</code></td><td>Settlement amount for one single transaction</td><td>1..1</td><td>schema mandatory</td></tr>
+<tr><td><code>CdtTrfTxInf.PmtId</code></td><td>Payment identification for one single transaction</td><td>1..1</td><td>schema mandatory</td></tr>
+<tr><td><code>GrpHdr.CreDtTm</code></td><td>Creation date and time for the whole message group</td><td>1..1</td><td>schema mandatory</td></tr>
+</table>
+<p><button class="api-btn iso-toggle" onclick="paIsoToggle('iso-valid-EX-03', this)">Show valid XML</button> <button class="api-btn" onclick="paIsoCopy('iso-valid-EX-03', this)">Copy valid XML</button> <button class="api-btn iso-toggle" onclick="paIsoToggle('iso-invalid-EX-03', this)">Show invalid XML</button></p>
+<div id="iso-valid-EX-03" style="display:none"><p><b>Valid XML</b></p><pre class="api-pre api-resp-ok">
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;Document xmlns="urn:iso:std:iso:20022:tech:xsd:pacs.008.001.08"&gt;
+  &lt;FIToFICstmrCdtTrf&gt;
+    &lt;GrpHdr&gt;
+      &lt;MsgId&gt;MSG-2026-1105-004821&lt;/MsgId&gt;
+      &lt;CreDtTm&gt;2026-11-05T09:42:00+00:00&lt;/CreDtTm&gt;
+      &lt;NbOfTxs&gt;1&lt;/NbOfTxs&gt;
+      &lt;CtrlSum&gt;8750.00&lt;/CtrlSum&gt;
+      &lt;SttlmInf&gt;&lt;SttlmMtd&gt;INDA&lt;/SttlmMtd&gt;&lt;/SttlmInf&gt;
+    &lt;/GrpHdr&gt;
+    &lt;CdtTrfTxInf&gt;
+      &lt;PmtId&gt;&lt;InstrId&gt;INSTR-884120&lt;/InstrId&gt;&lt;EndToEndId&gt;INV-2026-1147&lt;/EndToEndId&gt;&lt;TxId&gt;TX-2026-1105-7781&lt;/TxId&gt;&lt;UETR&gt;8f2a1c4e-6b3d-4a9f-8e21-5c7d3a9b1e04&lt;/UETR&gt;&lt;/PmtId&gt;
+      &lt;IntrBkSttlmAmt Ccy="EUR"&gt;8750.00&lt;/IntrBkSttlmAmt&gt;
+      &lt;IntrBkSttlmDt&gt;2026-11-06&lt;/IntrBkSttlmDt&gt;
+      &lt;ChrgBr&gt;SHAR&lt;/ChrgBr&gt;
+      &lt;Dbtr&gt;&lt;Nm&gt;Emma Wilson&lt;/Nm&gt;&lt;PstlAdr&gt;&lt;StrtNm&gt;14 Oakfield Road&lt;/StrtNm&gt;&lt;TwnNm&gt;London&lt;/TwnNm&gt;&lt;PstCd&gt;NW3 2AB&lt;/PstCd&gt;&lt;Ctry&gt;GB&lt;/Ctry&gt;&lt;/PstlAdr&gt;&lt;/Dbtr&gt;
+      &lt;DbtrAcct&gt;&lt;Id&gt;&lt;IBAN&gt;GB29NWBK60161331926819&lt;/IBAN&gt;&lt;/Id&gt;&lt;/DbtrAcct&gt;
+      &lt;DbtrAgt&gt;&lt;FinInstnId&gt;&lt;BICFI&gt;NWBKGB2LXXX&lt;/BICFI&gt;&lt;/FinInstnId&gt;&lt;/DbtrAgt&gt;
+      &lt;CdtrAgt&gt;&lt;FinInstnId&gt;&lt;BICFI&gt;DEUTDEFFXXX&lt;/BICFI&gt;&lt;/FinInstnId&gt;&lt;/CdtrAgt&gt;
+      &lt;Cdtr&gt;&lt;Nm&gt;Schneider GmbH&lt;/Nm&gt;&lt;PstlAdr&gt;&lt;StrtNm&gt;Musterstrasse 12&lt;/StrtNm&gt;&lt;TwnNm&gt;Berlin&lt;/TwnNm&gt;&lt;PstCd&gt;10115&lt;/PstCd&gt;&lt;Ctry&gt;DE&lt;/Ctry&gt;&lt;/PstlAdr&gt;&lt;/Cdtr&gt;
+      &lt;CdtrAcct&gt;&lt;Id&gt;&lt;IBAN&gt;DE89370400440532013000&lt;/IBAN&gt;&lt;/Id&gt;&lt;/CdtrAcct&gt;
+      &lt;Purp&gt;&lt;Cd&gt;SUPP&lt;/Cd&gt;&lt;/Purp&gt;
+      &lt;RmtInf&gt;&lt;Ustrd&gt;Invoice INV-2026-1147 supplier payment&lt;/Ustrd&gt;&lt;/RmtInf&gt;
+      
+    &lt;/CdtTrfTxInf&gt;
+  &lt;/FIToFICstmrCdtTrf&gt;
+&lt;/Document&gt;
+</pre></div>
+<div id="iso-invalid-EX-03" style="display:none"><p><b>Invalid XML</b></p><pre class="api-pre api-resp-err">
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;Document xmlns="urn:iso:std:iso:20022:tech:xsd:pacs.008.001.08"&gt;
+  &lt;FIToFICstmrCdtTrf&gt;
+    &lt;GrpHdr&gt;
+      &lt;MsgId&gt;MSG-2026-1105-004823&lt;/MsgId&gt;
+      &lt;CreDtTm&gt;2026-11-05T09:42:00+00:00&lt;/CreDtTm&gt;
+      &lt;NbOfTxs&gt;1&lt;/NbOfTxs&gt;
+      &lt;CtrlSum&gt;9999.00&lt;/CtrlSum&gt;
+      &lt;SttlmInf&gt;&lt;SttlmMtd&gt;INDA&lt;/SttlmMtd&gt;&lt;/SttlmInf&gt;
+    &lt;/GrpHdr&gt;
+    &lt;CdtTrfTxInf&gt;
+      &lt;PmtId&gt;&lt;InstrId&gt;INSTR-884120&lt;/InstrId&gt;&lt;EndToEndId&gt;INV-2026-1147&lt;/EndToEndId&gt;&lt;TxId&gt;TX-2026-1105-7781&lt;/TxId&gt;&lt;UETR&gt;8f2a1c4e-6b3d-4a9f-8e21-5c7d3a9b1e04&lt;/UETR&gt;&lt;/PmtId&gt;
+      &lt;IntrBkSttlmAmt Ccy="EUR"&gt;8750.00&lt;/IntrBkSttlmAmt&gt;
+      &lt;IntrBkSttlmDt&gt;2026-11-06&lt;/IntrBkSttlmDt&gt;
+      &lt;ChrgBr&gt;SHAR&lt;/ChrgBr&gt;
+      &lt;Dbtr&gt;&lt;Nm&gt;Emma Wilson&lt;/Nm&gt;&lt;PstlAdr&gt;&lt;StrtNm&gt;14 Oakfield Road&lt;/StrtNm&gt;&lt;TwnNm&gt;London&lt;/TwnNm&gt;&lt;PstCd&gt;NW3 2AB&lt;/PstCd&gt;&lt;Ctry&gt;GB&lt;/Ctry&gt;&lt;/PstlAdr&gt;&lt;/Dbtr&gt;
+      &lt;DbtrAcct&gt;&lt;Id&gt;&lt;IBAN&gt;GB29NWBK60161331926819&lt;/IBAN&gt;&lt;/Id&gt;&lt;/DbtrAcct&gt;
+      &lt;DbtrAgt&gt;&lt;FinInstnId&gt;&lt;BICFI&gt;NWBKGB2LXXX&lt;/BICFI&gt;&lt;/FinInstnId&gt;&lt;/DbtrAgt&gt;
+      &lt;CdtrAgt&gt;&lt;FinInstnId&gt;&lt;BICFI&gt;DEUTDEFFXXX&lt;/BICFI&gt;&lt;/FinInstnId&gt;&lt;/CdtrAgt&gt;
+      &lt;Cdtr&gt;&lt;Nm&gt;Schneider GmbH&lt;/Nm&gt;&lt;PstlAdr&gt;&lt;StrtNm&gt;Musterstrasse 12&lt;/StrtNm&gt;&lt;TwnNm&gt;Berlin&lt;/TwnNm&gt;&lt;PstCd&gt;10115&lt;/PstCd&gt;&lt;Ctry&gt;DE&lt;/Ctry&gt;&lt;/PstlAdr&gt;&lt;/Cdtr&gt;
+      &lt;CdtrAcct&gt;&lt;Id&gt;&lt;IBAN&gt;DE89370400440532013000&lt;/IBAN&gt;&lt;/Id&gt;&lt;/CdtrAcct&gt;
+      &lt;Purp&gt;&lt;Cd&gt;SUPP&lt;/Cd&gt;&lt;/Purp&gt;
+      &lt;RmtInf&gt;&lt;Ustrd&gt;Invoice INV-2026-1147 supplier payment&lt;/Ustrd&gt;&lt;/RmtInf&gt;
+      
+    &lt;/CdtTrfTxInf&gt;
+  &lt;/FIToFICstmrCdtTrf&gt;
+&lt;/Document&gt;
+</pre></div>
+<p><button class="api-btn iso-toggle" onclick="paIsoToggle('iso-why-EX-03', this)">Reveal why the invalid sample fails</button> <button class="api-btn iso-toggle" onclick="paIsoToggle('iso-ans-EX-03', this)">Reveal expected answer</button></p>
+<div id="iso-why-EX-03" style="display:none"><p><b>Why the invalid sample fails.</b> This invalid example parses as XML, but it is structurally wrong because the group header totals do not match the transactions. NbOfTxs states one transaction while the control sum states 9999.00, yet the single transaction amount is 8750.00, so the header and the transaction level disagree. This breaks the group level integrity rule that CtrlSum must equal the sum of transaction amounts. The consequence is whole message rejection: the receiver cannot trust that the group is complete, so it rejects the file rather than risking a missing or duplicated payment.</p></div>
+<div id="iso-ans-EX-03" style="display:none"><p><b>Expected answer.</b> You should conclude that GrpHdr holds shared data for the whole message, namely MsgId, creation time, transaction count, control sum, and group settlement information, while CdtTrfTxInf holds data for one payment only. The corrected approach is to set NbOfTxs to the exact count of transactions and CtrlSum to the exact sum of their interbank settlement amounts, and to recheck both totals after any edit, addition, or removal, because a header mismatch rejects the entire group even when every transaction is individually correct.</p></div>
+<p><label class="iso-done-label"><input type="checkbox" class="iso-done-check" data-ex="EX-03" onchange="paIsoDone(this)"> I worked this exercise, mark it done</label></p>
+</div>
+<div class="lab-card" id="iso-EX-04">
+<h3>EX-04: Static and dynamic agent roles</h3>
+<p><b>Concept.</b> DbtrAgt and CdtrAgt identify the banks that hold the debtor and creditor accounts, but how those roles are fixed depends on the rail and the payment model. On a domestic rail with a fixed clearing member, the debtor agent may be static for every payment from one customer, because the same bank always sends it. On a cross border correspondent payment, the creditor agent is assigned per payment from the creditor IBAN or BIC, and an intermediary agent may be added when no direct account relationship exists. Swapping the two agents reverses the flow and sends money to the wrong bank.</p>
+<p><b>Task.</b> In the valid pacs.008 below, name the debtor agent and the creditor agent and state which account each one holds. Then inspect the invalid version, where the two BICs are swapped, and explain what would happen at settlement, which bank would debit the wrong account, and how a cover payment would need an extra intermediary agent instead of a simple swap.</p>
+<table class="explorer-table"><tr><th>Field</th><th>Meaning</th><th>Cardinality</th><th>Mandatory</th></tr>
+<tr><td><code>DbtrAgt</code></td><td>Bank holding the debtor account and sending the payment onward</td><td>1..1</td><td>schema mandatory</td></tr>
+<tr><td><code>CdtrAgt</code></td><td>Bank holding the creditor account and receiving the payment</td><td>1..1</td><td>schema mandatory</td></tr>
+<tr><td><code>IntrmyAgt1</code></td><td>Intermediary bank used when sender and receiver have no direct account link</td><td>0..1</td><td>conditional</td></tr>
+<tr><td><code>DbtrAcct</code></td><td>Account of the debtor from which funds are debited</td><td>0..1</td><td>optional</td></tr>
+<tr><td><code>CdtrAcct</code></td><td>Account of the creditor to which funds are credited</td><td>0..1</td><td>optional</td></tr>
+<tr><td><code>SttlmInf.SttlmMtd</code></td><td>Settlement method that decides which agent account moves the funds</td><td>1..1</td><td>schema mandatory</td></tr>
+</table>
+<p><button class="api-btn iso-toggle" onclick="paIsoToggle('iso-valid-EX-04', this)">Show valid XML</button> <button class="api-btn" onclick="paIsoCopy('iso-valid-EX-04', this)">Copy valid XML</button> <button class="api-btn iso-toggle" onclick="paIsoToggle('iso-invalid-EX-04', this)">Show invalid XML</button></p>
+<div id="iso-valid-EX-04" style="display:none"><p><b>Valid XML</b></p><pre class="api-pre api-resp-ok">
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;Document xmlns="urn:iso:std:iso:20022:tech:xsd:pacs.008.001.08"&gt;
+  &lt;FIToFICstmrCdtTrf&gt;
+    &lt;GrpHdr&gt;
+      &lt;MsgId&gt;MSG-2026-1105-004821&lt;/MsgId&gt;
+      &lt;CreDtTm&gt;2026-11-05T09:42:00+00:00&lt;/CreDtTm&gt;
+      &lt;NbOfTxs&gt;1&lt;/NbOfTxs&gt;
+      &lt;CtrlSum&gt;8750.00&lt;/CtrlSum&gt;
+      &lt;SttlmInf&gt;&lt;SttlmMtd&gt;INDA&lt;/SttlmMtd&gt;&lt;/SttlmInf&gt;
+    &lt;/GrpHdr&gt;
+    &lt;CdtTrfTxInf&gt;
+      &lt;PmtId&gt;&lt;InstrId&gt;INSTR-884120&lt;/InstrId&gt;&lt;EndToEndId&gt;INV-2026-1147&lt;/EndToEndId&gt;&lt;TxId&gt;TX-2026-1105-7781&lt;/TxId&gt;&lt;UETR&gt;8f2a1c4e-6b3d-4a9f-8e21-5c7d3a9b1e04&lt;/UETR&gt;&lt;/PmtId&gt;
+      &lt;IntrBkSttlmAmt Ccy="EUR"&gt;8750.00&lt;/IntrBkSttlmAmt&gt;
+      &lt;IntrBkSttlmDt&gt;2026-11-06&lt;/IntrBkSttlmDt&gt;
+      &lt;ChrgBr&gt;SHAR&lt;/ChrgBr&gt;
+      &lt;Dbtr&gt;&lt;Nm&gt;Emma Wilson&lt;/Nm&gt;&lt;PstlAdr&gt;&lt;StrtNm&gt;14 Oakfield Road&lt;/StrtNm&gt;&lt;TwnNm&gt;London&lt;/TwnNm&gt;&lt;PstCd&gt;NW3 2AB&lt;/PstCd&gt;&lt;Ctry&gt;GB&lt;/Ctry&gt;&lt;/PstlAdr&gt;&lt;/Dbtr&gt;
+      &lt;DbtrAcct&gt;&lt;Id&gt;&lt;IBAN&gt;GB29NWBK60161331926819&lt;/IBAN&gt;&lt;/Id&gt;&lt;/DbtrAcct&gt;
+      &lt;DbtrAgt&gt;&lt;FinInstnId&gt;&lt;BICFI&gt;NWBKGB2LXXX&lt;/BICFI&gt;&lt;/FinInstnId&gt;&lt;/DbtrAgt&gt;
+      &lt;CdtrAgt&gt;&lt;FinInstnId&gt;&lt;BICFI&gt;DEUTDEFFXXX&lt;/BICFI&gt;&lt;/FinInstnId&gt;&lt;/CdtrAgt&gt;
+      &lt;Cdtr&gt;&lt;Nm&gt;Schneider GmbH&lt;/Nm&gt;&lt;PstlAdr&gt;&lt;StrtNm&gt;Musterstrasse 12&lt;/StrtNm&gt;&lt;TwnNm&gt;Berlin&lt;/TwnNm&gt;&lt;PstCd&gt;10115&lt;/PstCd&gt;&lt;Ctry&gt;DE&lt;/Ctry&gt;&lt;/PstlAdr&gt;&lt;/Cdtr&gt;
+      &lt;CdtrAcct&gt;&lt;Id&gt;&lt;IBAN&gt;DE89370400440532013000&lt;/IBAN&gt;&lt;/Id&gt;&lt;/CdtrAcct&gt;
+      &lt;Purp&gt;&lt;Cd&gt;SUPP&lt;/Cd&gt;&lt;/Purp&gt;
+      &lt;RmtInf&gt;&lt;Ustrd&gt;Invoice INV-2026-1147 supplier payment&lt;/Ustrd&gt;&lt;/RmtInf&gt;
+      
+    &lt;/CdtTrfTxInf&gt;
+  &lt;/FIToFICstmrCdtTrf&gt;
+&lt;/Document&gt;
+</pre></div>
+<div id="iso-invalid-EX-04" style="display:none"><p><b>Invalid XML</b></p><pre class="api-pre api-resp-err">
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;Document xmlns="urn:iso:std:iso:20022:tech:xsd:pacs.008.001.08"&gt;
+  &lt;FIToFICstmrCdtTrf&gt;
+    &lt;GrpHdr&gt;
+      &lt;MsgId&gt;MSG-2026-1105-004824&lt;/MsgId&gt;
+      &lt;CreDtTm&gt;2026-11-05T09:42:00+00:00&lt;/CreDtTm&gt;
+      &lt;NbOfTxs&gt;1&lt;/NbOfTxs&gt;
+      &lt;CtrlSum&gt;8750.00&lt;/CtrlSum&gt;
+      &lt;SttlmInf&gt;&lt;SttlmMtd&gt;INDA&lt;/SttlmMtd&gt;&lt;/SttlmInf&gt;
+    &lt;/GrpHdr&gt;
+    &lt;CdtTrfTxInf&gt;
+      &lt;PmtId&gt;&lt;InstrId&gt;INSTR-884120&lt;/InstrId&gt;&lt;EndToEndId&gt;INV-2026-1147&lt;/EndToEndId&gt;&lt;TxId&gt;TX-2026-1105-7781&lt;/TxId&gt;&lt;UETR&gt;8f2a1c4e-6b3d-4a9f-8e21-5c7d3a9b1e04&lt;/UETR&gt;&lt;/PmtId&gt;
+      &lt;IntrBkSttlmAmt Ccy="EUR"&gt;8750.00&lt;/IntrBkSttlmAmt&gt;
+      &lt;IntrBkSttlmDt&gt;2026-11-06&lt;/IntrBkSttlmDt&gt;
+      &lt;ChrgBr&gt;SHAR&lt;/ChrgBr&gt;
+      &lt;Dbtr&gt;&lt;Nm&gt;Emma Wilson&lt;/Nm&gt;&lt;PstlAdr&gt;&lt;StrtNm&gt;14 Oakfield Road&lt;/StrtNm&gt;&lt;TwnNm&gt;London&lt;/TwnNm&gt;&lt;PstCd&gt;NW3 2AB&lt;/PstCd&gt;&lt;Ctry&gt;GB&lt;/Ctry&gt;&lt;/PstlAdr&gt;&lt;/Dbtr&gt;
+      &lt;DbtrAcct&gt;&lt;Id&gt;&lt;IBAN&gt;GB29NWBK60161331926819&lt;/IBAN&gt;&lt;/Id&gt;&lt;/DbtrAcct&gt;
+      &lt;DbtrAgt&gt;&lt;FinInstnId&gt;&lt;BICFI&gt;DEUTDEFFXXX&lt;/BICFI&gt;&lt;/FinInstnId&gt;&lt;/DbtrAgt&gt;
+      &lt;CdtrAgt&gt;&lt;FinInstnId&gt;&lt;BICFI&gt;NWBKGB2LXXX&lt;/BICFI&gt;&lt;/FinInstnId&gt;&lt;/CdtrAgt&gt;
+      &lt;Cdtr&gt;&lt;Nm&gt;Schneider GmbH&lt;/Nm&gt;&lt;PstlAdr&gt;&lt;StrtNm&gt;Musterstrasse 12&lt;/StrtNm&gt;&lt;TwnNm&gt;Berlin&lt;/TwnNm&gt;&lt;PstCd&gt;10115&lt;/PstCd&gt;&lt;Ctry&gt;DE&lt;/Ctry&gt;&lt;/PstlAdr&gt;&lt;/Cdtr&gt;
+      &lt;CdtrAcct&gt;&lt;Id&gt;&lt;IBAN&gt;DE89370400440532013000&lt;/IBAN&gt;&lt;/Id&gt;&lt;/CdtrAcct&gt;
+      &lt;Purp&gt;&lt;Cd&gt;SUPP&lt;/Cd&gt;&lt;/Purp&gt;
+      &lt;RmtInf&gt;&lt;Ustrd&gt;Invoice INV-2026-1147 supplier payment&lt;/Ustrd&gt;&lt;/RmtInf&gt;
+      
+    &lt;/CdtTrfTxInf&gt;
+  &lt;/FIToFICstmrCdtTrf&gt;
+&lt;/Document&gt;
+</pre></div>
+<p><button class="api-btn iso-toggle" onclick="paIsoToggle('iso-why-EX-04', this)">Reveal why the invalid sample fails</button> <button class="api-btn iso-toggle" onclick="paIsoToggle('iso-ans-EX-04', this)">Reveal expected answer</button></p>
+<div id="iso-why-EX-04" style="display:none"><p><b>Why the invalid sample fails.</b> This invalid example parses as XML, but it is structurally wrong because the debtor agent and creditor agent BICs have been swapped. The debtor agent is now shown as Deutsche Bank, which does not hold the debtor account, and the creditor agent is shown as NatWest, which does not hold the creditor account. This breaks the agent role rule that each agent must hold the account named beside it. The consequence is misrouting: the payment would be sent to the wrong bank, settlement would fail or credit the wrong account, and recovery would need a return and a resend.</p></div>
+<div id="iso-ans-EX-04" style="display:none"><p><b>Expected answer.</b> You should conclude that DbtrAgt is the bank holding the debtor account and sending the payment, CdtrAgt is the bank holding the creditor account and receiving it, and any intermediary agent is added only when the two banks have no direct settlement path. The corrected approach is to derive DbtrAgt from the debtor account and CdtrAgt from the creditor account or IBAN on every payment, to check the BIC against the account country and bank, and to use a cover model with a separate pacs.009 when funds must travel apart from the customer instruction.</p></div>
+<p><label class="iso-done-label"><input type="checkbox" class="iso-done-check" data-ex="EX-04" onchange="paIsoDone(this)"> I worked this exercise, mark it done</label></p>
+</div>
+<div class="lab-card" id="iso-EX-05">
+<h3>EX-05: INGA, INDA, COVE and CLRG settlement methods</h3>
+<p><b>Concept.</b> SttlmMtd states how interbank settlement moves, and each value implies a different account movement. INGA means settlement through the instructing agent, so the instructing agent debits its own account with the next bank. INDA means settlement through the instructed agent, so the instructed agent debits the account it holds for the instructing agent. CLRG means settlement through a clearing system, so funds move through the clearing house account on the settlement date. COVE means the payment is a cover, so the funds travel on a separate pacs.009 while the customer instruction travels on pacs.008. Choosing the wrong method tells the wrong bank to move money, and settlement then fails or posts to the wrong nostro account.</p>
+<p><b>Task.</b> Compare the four settlement methods in the concept and decide which one fits a direct payment from NatWest to Deutsche Bank, which one fits a payment through a clearing system, and which one fits a cover payment. Then inspect the invalid pacs.008, find the settlement method that cannot work with its stated accounts, and rewrite the SttlmInf block with the correct method and account.</p>
+<table class="explorer-table"><tr><th>Field</th><th>Meaning</th><th>Cardinality</th><th>Mandatory</th></tr>
+<tr><td><code>SttlmMtd</code></td><td>Code stating how interbank settlement will occur</td><td>1..1</td><td>schema mandatory</td></tr>
+<tr><td><code>SttlmAcct</code></td><td>Account to be used for settlement when the method requires one</td><td>0..1</td><td>conditional</td></tr>
+<tr><td><code>ClrSys</code></td><td>Clearing system used when the settlement method is CLRG</td><td>0..1</td><td>conditional</td></tr>
+<tr><td><code>IntrBkSttlmAmt</code></td><td>Amount settled between banks under the chosen method</td><td>1..1</td><td>schema mandatory</td></tr>
+<tr><td><code>IntrBkSttlmDt</code></td><td>Date on which the interbank settlement takes place</td><td>0..1</td><td>optional</td></tr>
+</table>
+<p><button class="api-btn iso-toggle" onclick="paIsoToggle('iso-valid-EX-05', this)">Show valid XML</button> <button class="api-btn" onclick="paIsoCopy('iso-valid-EX-05', this)">Copy valid XML</button> <button class="api-btn iso-toggle" onclick="paIsoToggle('iso-invalid-EX-05', this)">Show invalid XML</button></p>
+<div id="iso-valid-EX-05" style="display:none"><p><b>Valid XML</b></p><pre class="api-pre api-resp-ok">
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;Document xmlns="urn:iso:std:iso:20022:tech:xsd:pacs.008.001.08"&gt;
+  &lt;FIToFICstmrCdtTrf&gt;
+    &lt;GrpHdr&gt;
+      &lt;MsgId&gt;MSG-2026-1105-004821&lt;/MsgId&gt;
+      &lt;CreDtTm&gt;2026-11-05T09:42:00+00:00&lt;/CreDtTm&gt;
+      &lt;NbOfTxs&gt;1&lt;/NbOfTxs&gt;
+      &lt;CtrlSum&gt;8750.00&lt;/CtrlSum&gt;
+      &lt;SttlmInf&gt;&lt;SttlmMtd&gt;INDA&lt;/SttlmMtd&gt;&lt;/SttlmInf&gt;
+    &lt;/GrpHdr&gt;
+    &lt;CdtTrfTxInf&gt;
+      &lt;PmtId&gt;&lt;InstrId&gt;INSTR-884120&lt;/InstrId&gt;&lt;EndToEndId&gt;INV-2026-1147&lt;/EndToEndId&gt;&lt;TxId&gt;TX-2026-1105-7781&lt;/TxId&gt;&lt;UETR&gt;8f2a1c4e-6b3d-4a9f-8e21-5c7d3a9b1e04&lt;/UETR&gt;&lt;/PmtId&gt;
+      &lt;IntrBkSttlmAmt Ccy="EUR"&gt;8750.00&lt;/IntrBkSttlmAmt&gt;
+      &lt;IntrBkSttlmDt&gt;2026-11-06&lt;/IntrBkSttlmDt&gt;
+      &lt;ChrgBr&gt;SHAR&lt;/ChrgBr&gt;
+      &lt;Dbtr&gt;&lt;Nm&gt;Emma Wilson&lt;/Nm&gt;&lt;PstlAdr&gt;&lt;StrtNm&gt;14 Oakfield Road&lt;/StrtNm&gt;&lt;TwnNm&gt;London&lt;/TwnNm&gt;&lt;PstCd&gt;NW3 2AB&lt;/PstCd&gt;&lt;Ctry&gt;GB&lt;/Ctry&gt;&lt;/PstlAdr&gt;&lt;/Dbtr&gt;
+      &lt;DbtrAcct&gt;&lt;Id&gt;&lt;IBAN&gt;GB29NWBK60161331926819&lt;/IBAN&gt;&lt;/Id&gt;&lt;/DbtrAcct&gt;
+      &lt;DbtrAgt&gt;&lt;FinInstnId&gt;&lt;BICFI&gt;NWBKGB2LXXX&lt;/BICFI&gt;&lt;/FinInstnId&gt;&lt;/DbtrAgt&gt;
+      &lt;CdtrAgt&gt;&lt;FinInstnId&gt;&lt;BICFI&gt;DEUTDEFFXXX&lt;/BICFI&gt;&lt;/FinInstnId&gt;&lt;/CdtrAgt&gt;
+      &lt;Cdtr&gt;&lt;Nm&gt;Schneider GmbH&lt;/Nm&gt;&lt;PstlAdr&gt;&lt;StrtNm&gt;Musterstrasse 12&lt;/StrtNm&gt;&lt;TwnNm&gt;Berlin&lt;/TwnNm&gt;&lt;PstCd&gt;10115&lt;/PstCd&gt;&lt;Ctry&gt;DE&lt;/Ctry&gt;&lt;/PstlAdr&gt;&lt;/Cdtr&gt;
+      &lt;CdtrAcct&gt;&lt;Id&gt;&lt;IBAN&gt;DE89370400440532013000&lt;/IBAN&gt;&lt;/Id&gt;&lt;/CdtrAcct&gt;
+      &lt;Purp&gt;&lt;Cd&gt;SUPP&lt;/Cd&gt;&lt;/Purp&gt;
+      &lt;RmtInf&gt;&lt;Ustrd&gt;Invoice INV-2026-1147 supplier payment&lt;/Ustrd&gt;&lt;/RmtInf&gt;
+      
+    &lt;/CdtTrfTxInf&gt;
+  &lt;/FIToFICstmrCdtTrf&gt;
+&lt;/Document&gt;
+</pre></div>
+<div id="iso-invalid-EX-05" style="display:none"><p><b>Invalid XML</b></p><pre class="api-pre api-resp-err">
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;Document xmlns="urn:iso:std:iso:20022:tech:xsd:pacs.008.001.08"&gt;
+  &lt;FIToFICstmrCdtTrf&gt;
+    &lt;GrpHdr&gt;
+      &lt;MsgId&gt;MSG-2026-1105-004825&lt;/MsgId&gt;
+      &lt;CreDtTm&gt;2026-11-05T09:42:00+00:00&lt;/CreDtTm&gt;
+      &lt;NbOfTxs&gt;1&lt;/NbOfTxs&gt;
+      &lt;CtrlSum&gt;8750.00&lt;/CtrlSum&gt;
+      &lt;SttlmInf&gt;&lt;SttlmMtd&gt;CASH&lt;/SttlmMtd&gt;&lt;/SttlmInf&gt;
+    &lt;/GrpHdr&gt;
+    &lt;CdtTrfTxInf&gt;
+      &lt;PmtId&gt;&lt;InstrId&gt;INSTR-884120&lt;/InstrId&gt;&lt;EndToEndId&gt;INV-2026-1147&lt;/EndToEndId&gt;&lt;TxId&gt;TX-2026-1105-7781&lt;/TxId&gt;&lt;UETR&gt;8f2a1c4e-6b3d-4a9f-8e21-5c7d3a9b1e04&lt;/UETR&gt;&lt;/PmtId&gt;
+      &lt;IntrBkSttlmAmt Ccy="EUR"&gt;8750.00&lt;/IntrBkSttlmAmt&gt;
+      &lt;IntrBkSttlmDt&gt;2026-11-06&lt;/IntrBkSttlmDt&gt;
+      &lt;ChrgBr&gt;SHAR&lt;/ChrgBr&gt;
+      &lt;Dbtr&gt;&lt;Nm&gt;Emma Wilson&lt;/Nm&gt;&lt;PstlAdr&gt;&lt;StrtNm&gt;14 Oakfield Road&lt;/StrtNm&gt;&lt;TwnNm&gt;London&lt;/TwnNm&gt;&lt;PstCd&gt;NW3 2AB&lt;/PstCd&gt;&lt;Ctry&gt;GB&lt;/Ctry&gt;&lt;/PstlAdr&gt;&lt;/Dbtr&gt;
+      &lt;DbtrAcct&gt;&lt;Id&gt;&lt;IBAN&gt;GB29NWBK60161331926819&lt;/IBAN&gt;&lt;/Id&gt;&lt;/DbtrAcct&gt;
+      &lt;DbtrAgt&gt;&lt;FinInstnId&gt;&lt;BICFI&gt;NWBKGB2LXXX&lt;/BICFI&gt;&lt;/FinInstnId&gt;&lt;/DbtrAgt&gt;
+      &lt;CdtrAgt&gt;&lt;FinInstnId&gt;&lt;BICFI&gt;DEUTDEFFXXX&lt;/BICFI&gt;&lt;/FinInstnId&gt;&lt;/CdtrAgt&gt;
+      &lt;Cdtr&gt;&lt;Nm&gt;Schneider GmbH&lt;/Nm&gt;&lt;PstlAdr&gt;&lt;StrtNm&gt;Musterstrasse 12&lt;/StrtNm&gt;&lt;TwnNm&gt;Berlin&lt;/TwnNm&gt;&lt;PstCd&gt;10115&lt;/PstCd&gt;&lt;Ctry&gt;DE&lt;/Ctry&gt;&lt;/PstlAdr&gt;&lt;/Cdtr&gt;
+      &lt;CdtrAcct&gt;&lt;Id&gt;&lt;IBAN&gt;DE89370400440532013000&lt;/IBAN&gt;&lt;/Id&gt;&lt;/CdtrAcct&gt;
+      &lt;Purp&gt;&lt;Cd&gt;SUPP&lt;/Cd&gt;&lt;/Purp&gt;
+      &lt;RmtInf&gt;&lt;Ustrd&gt;Invoice INV-2026-1147 supplier payment&lt;/Ustrd&gt;&lt;/RmtInf&gt;
+      
+    &lt;/CdtTrfTxInf&gt;
+  &lt;/FIToFICstmrCdtTrf&gt;
+&lt;/Document&gt;
+</pre></div>
+<p><button class="api-btn iso-toggle" onclick="paIsoToggle('iso-why-EX-05', this)">Reveal why the invalid sample fails</button> <button class="api-btn iso-toggle" onclick="paIsoToggle('iso-ans-EX-05', this)">Reveal expected answer</button></p>
+<div id="iso-why-EX-05" style="display:none"><p><b>Why the invalid sample fails.</b> This invalid example parses as XML, but it fails schema validation because CASH is not a value in the settlement method code set. The allowed values include INGA, INDA, CLRG, and COVE, and any other value is rejected by the XML schema enumeration. This is a schema rule failure, not a business judgement about which valid method fits best. The consequence is immediate rejection at validation: no bank can decide which account to debit, so the payment never reaches settlement and must be corrected and resent with a valid method.</p></div>
+<div id="iso-ans-EX-05" style="display:none"><p><b>Expected answer.</b> You should conclude that INGA settles through the instructing agent account, INDA settles through the instructed agent account, CLRG settles through a clearing system, and COVE marks a cover whose funds travel separately on pacs.009. The corrected approach is to choose the method from the account relationship and the rail, to record the settlement account when the method needs one, and to use COVE only when a separate cover message exists, so each bank knows exactly which account to debit and which channel carries the funds.</p></div>
+<p><label class="iso-done-label"><input type="checkbox" class="iso-done-check" data-ex="EX-05" onchange="paIsoDone(this)"> I worked this exercise, mark it done</label></p>
+</div>
+<div class="lab-card" id="iso-EX-06">
+<h3>EX-06: Schema validation versus business validation</h3>
+<p><b>Concept.</b> Schema validation and business validation check different things, and passing one does not guarantee passing the other. Schema validation checks the message against its XSD: element order, data types, lengths, and allowed code values. A message with a correctly typed decimal amount and a valid code passes this check even when the business facts are wrong. Business validation then checks the values themselves: currency precision, IBAN check digits, working day dates, account existence, limits, sanctions screening, and duplicate checks. A payment of EUR 8,750.005 has a valid decimal type for the schema, but it fails business validation because EUR allows only two decimal places. Both layers must pass before a payment is released.</p>
+<p><b>Task.</b> Validate the valid pacs.008 below against its schema rules in your head: check element order, the decimal amount, and the SHAR code. Then do the same for the invalid version, which uses EUR 8,750.005, and decide which layer passes and which layer fails. Write down the exact business rule that fails and the corrected amount that would pass both layers.</p>
+<table class="explorer-table"><tr><th>Field</th><th>Meaning</th><th>Cardinality</th><th>Mandatory</th></tr>
+<tr><td><code>IntrBkSttlmAmt</code></td><td>Settlement amount as a decimal with a currency attribute</td><td>1..1</td><td>schema mandatory</td></tr>
+<tr><td><code>ChrgBr</code></td><td>Charge bearer code, checked against the external code set</td><td>0..1</td><td>optional</td></tr>
+<tr><td><code>IntrBkSttlmDt</code></td><td>Settlement date, checked against the currency business calendar</td><td>0..1</td><td>optional</td></tr>
+<tr><td><code>CdtrAcct.IBAN</code></td><td>Creditor IBAN, checked for format and check digits in business validation</td><td>0..1</td><td>optional</td></tr>
+<tr><td><code>Purp.Cd</code></td><td>Purpose code, checked against the published purpose code set</td><td>0..1</td><td>optional</td></tr>
+</table>
+<p><button class="api-btn iso-toggle" onclick="paIsoToggle('iso-valid-EX-06', this)">Show valid XML</button> <button class="api-btn" onclick="paIsoCopy('iso-valid-EX-06', this)">Copy valid XML</button> <button class="api-btn iso-toggle" onclick="paIsoToggle('iso-invalid-EX-06', this)">Show invalid XML</button></p>
+<div id="iso-valid-EX-06" style="display:none"><p><b>Valid XML</b></p><pre class="api-pre api-resp-ok">
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;Document xmlns="urn:iso:std:iso:20022:tech:xsd:pacs.008.001.08"&gt;
+  &lt;FIToFICstmrCdtTrf&gt;
+    &lt;GrpHdr&gt;
+      &lt;MsgId&gt;MSG-2026-1105-004821&lt;/MsgId&gt;
+      &lt;CreDtTm&gt;2026-11-05T09:42:00+00:00&lt;/CreDtTm&gt;
+      &lt;NbOfTxs&gt;1&lt;/NbOfTxs&gt;
+      &lt;CtrlSum&gt;8750.00&lt;/CtrlSum&gt;
+      &lt;SttlmInf&gt;&lt;SttlmMtd&gt;INDA&lt;/SttlmMtd&gt;&lt;/SttlmInf&gt;
+    &lt;/GrpHdr&gt;
+    &lt;CdtTrfTxInf&gt;
+      &lt;PmtId&gt;&lt;InstrId&gt;INSTR-884120&lt;/InstrId&gt;&lt;EndToEndId&gt;INV-2026-1147&lt;/EndToEndId&gt;&lt;TxId&gt;TX-2026-1105-7781&lt;/TxId&gt;&lt;UETR&gt;8f2a1c4e-6b3d-4a9f-8e21-5c7d3a9b1e04&lt;/UETR&gt;&lt;/PmtId&gt;
+      &lt;IntrBkSttlmAmt Ccy="EUR"&gt;8750.00&lt;/IntrBkSttlmAmt&gt;
+      &lt;IntrBkSttlmDt&gt;2026-11-06&lt;/IntrBkSttlmDt&gt;
+      &lt;ChrgBr&gt;SHAR&lt;/ChrgBr&gt;
+      &lt;Dbtr&gt;&lt;Nm&gt;Emma Wilson&lt;/Nm&gt;&lt;PstlAdr&gt;&lt;StrtNm&gt;14 Oakfield Road&lt;/StrtNm&gt;&lt;TwnNm&gt;London&lt;/TwnNm&gt;&lt;PstCd&gt;NW3 2AB&lt;/PstCd&gt;&lt;Ctry&gt;GB&lt;/Ctry&gt;&lt;/PstlAdr&gt;&lt;/Dbtr&gt;
+      &lt;DbtrAcct&gt;&lt;Id&gt;&lt;IBAN&gt;GB29NWBK60161331926819&lt;/IBAN&gt;&lt;/Id&gt;&lt;/DbtrAcct&gt;
+      &lt;DbtrAgt&gt;&lt;FinInstnId&gt;&lt;BICFI&gt;NWBKGB2LXXX&lt;/BICFI&gt;&lt;/FinInstnId&gt;&lt;/DbtrAgt&gt;
+      &lt;CdtrAgt&gt;&lt;FinInstnId&gt;&lt;BICFI&gt;DEUTDEFFXXX&lt;/BICFI&gt;&lt;/FinInstnId&gt;&lt;/CdtrAgt&gt;
+      &lt;Cdtr&gt;&lt;Nm&gt;Schneider GmbH&lt;/Nm&gt;&lt;PstlAdr&gt;&lt;StrtNm&gt;Musterstrasse 12&lt;/StrtNm&gt;&lt;TwnNm&gt;Berlin&lt;/TwnNm&gt;&lt;PstCd&gt;10115&lt;/PstCd&gt;&lt;Ctry&gt;DE&lt;/Ctry&gt;&lt;/PstlAdr&gt;&lt;/Cdtr&gt;
+      &lt;CdtrAcct&gt;&lt;Id&gt;&lt;IBAN&gt;DE89370400440532013000&lt;/IBAN&gt;&lt;/Id&gt;&lt;/CdtrAcct&gt;
+      &lt;Purp&gt;&lt;Cd&gt;SUPP&lt;/Cd&gt;&lt;/Purp&gt;
+      &lt;RmtInf&gt;&lt;Ustrd&gt;Invoice INV-2026-1147 supplier payment&lt;/Ustrd&gt;&lt;/RmtInf&gt;
+      
+    &lt;/CdtTrfTxInf&gt;
+  &lt;/FIToFICstmrCdtTrf&gt;
+&lt;/Document&gt;
+</pre></div>
+<div id="iso-invalid-EX-06" style="display:none"><p><b>Invalid XML</b></p><pre class="api-pre api-resp-err">
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;Document xmlns="urn:iso:std:iso:20022:tech:xsd:pacs.008.001.08"&gt;
+  &lt;FIToFICstmrCdtTrf&gt;
+    &lt;GrpHdr&gt;
+      &lt;MsgId&gt;MSG-2026-1105-004826&lt;/MsgId&gt;
+      &lt;CreDtTm&gt;2026-11-05T09:42:00+00:00&lt;/CreDtTm&gt;
+      &lt;NbOfTxs&gt;1&lt;/NbOfTxs&gt;
+      &lt;CtrlSum&gt;8750.005&lt;/CtrlSum&gt;
+      &lt;SttlmInf&gt;&lt;SttlmMtd&gt;INDA&lt;/SttlmMtd&gt;&lt;/SttlmInf&gt;
+    &lt;/GrpHdr&gt;
+    &lt;CdtTrfTxInf&gt;
+      &lt;PmtId&gt;&lt;InstrId&gt;INSTR-884120&lt;/InstrId&gt;&lt;EndToEndId&gt;INV-2026-1147&lt;/EndToEndId&gt;&lt;TxId&gt;TX-2026-1105-7781&lt;/TxId&gt;&lt;UETR&gt;8f2a1c4e-6b3d-4a9f-8e21-5c7d3a9b1e04&lt;/UETR&gt;&lt;/PmtId&gt;
+      &lt;IntrBkSttlmAmt Ccy="EUR"&gt;8750.005&lt;/IntrBkSttlmAmt&gt;
+      &lt;IntrBkSttlmDt&gt;2026-11-06&lt;/IntrBkSttlmDt&gt;
+      &lt;ChrgBr&gt;SHAR&lt;/ChrgBr&gt;
+      &lt;Dbtr&gt;&lt;Nm&gt;Emma Wilson&lt;/Nm&gt;&lt;PstlAdr&gt;&lt;StrtNm&gt;14 Oakfield Road&lt;/StrtNm&gt;&lt;TwnNm&gt;London&lt;/TwnNm&gt;&lt;PstCd&gt;NW3 2AB&lt;/PstCd&gt;&lt;Ctry&gt;GB&lt;/Ctry&gt;&lt;/PstlAdr&gt;&lt;/Dbtr&gt;
+      &lt;DbtrAcct&gt;&lt;Id&gt;&lt;IBAN&gt;GB29NWBK60161331926819&lt;/IBAN&gt;&lt;/Id&gt;&lt;/DbtrAcct&gt;
+      &lt;DbtrAgt&gt;&lt;FinInstnId&gt;&lt;BICFI&gt;NWBKGB2LXXX&lt;/BICFI&gt;&lt;/FinInstnId&gt;&lt;/DbtrAgt&gt;
+      &lt;CdtrAgt&gt;&lt;FinInstnId&gt;&lt;BICFI&gt;DEUTDEFFXXX&lt;/BICFI&gt;&lt;/FinInstnId&gt;&lt;/CdtrAgt&gt;
+      &lt;Cdtr&gt;&lt;Nm&gt;Schneider GmbH&lt;/Nm&gt;&lt;PstlAdr&gt;&lt;StrtNm&gt;Musterstrasse 12&lt;/StrtNm&gt;&lt;TwnNm&gt;Berlin&lt;/TwnNm&gt;&lt;PstCd&gt;10115&lt;/PstCd&gt;&lt;Ctry&gt;DE&lt;/Ctry&gt;&lt;/PstlAdr&gt;&lt;/Cdtr&gt;
+      &lt;CdtrAcct&gt;&lt;Id&gt;&lt;IBAN&gt;DE89370400440532013000&lt;/IBAN&gt;&lt;/Id&gt;&lt;/CdtrAcct&gt;
+      &lt;Purp&gt;&lt;Cd&gt;SUPP&lt;/Cd&gt;&lt;/Purp&gt;
+      &lt;RmtInf&gt;&lt;Ustrd&gt;Invoice INV-2026-1147 supplier payment&lt;/Ustrd&gt;&lt;/RmtInf&gt;
+      
+    &lt;/CdtTrfTxInf&gt;
+  &lt;/FIToFICstmrCdtTrf&gt;
+&lt;/Document&gt;
+</pre></div>
+<p><button class="api-btn iso-toggle" onclick="paIsoToggle('iso-why-EX-06', this)">Reveal why the invalid sample fails</button> <button class="api-btn iso-toggle" onclick="paIsoToggle('iso-ans-EX-06', this)">Reveal expected answer</button></p>
+<div id="iso-why-EX-06" style="display:none"><p><b>Why the invalid sample fails.</b> This invalid example is schema valid but business invalid, as required for this exercise. The amount 8750.005 is a valid XML decimal, the element order is correct, and SHAR is a valid code, so XSD validation passes. It fails business validation because EUR allows only two decimal places, so three decimals break the currency precision rule. This is a business rule failure, not a schema rule failure. The consequence is rejection after schema validation: the payment is held for repair, the creditor is not paid, and the sender must correct the amount to 8750.00 or 8750.01.</p></div>
+<div id="iso-ans-EX-06" style="display:none"><p><b>Expected answer.</b> You should conclude that schema validation proves structure, types, order, and code membership, while business validation proves that values make sense for the currency, account, date, and rail. The corrected approach is to run both checks in order, to fix the amount to two decimals for EUR, and never to treat a schema pass as approval to release funds. A message can be perfectly formed and still be wrong, so operations teams must check business rules, reference data, and account data after the schema check passes.</p></div>
+<p><label class="iso-done-label"><input type="checkbox" class="iso-done-check" data-ex="EX-06" onchange="paIsoDone(this)"> I worked this exercise, mark it done</label></p>
+</div>
+<div class="lab-card" id="iso-EX-07">
+<h3>EX-07: Mandatory versus optional versus conditional fields</h3>
+<p><b>Concept.</b> The same element can be mandatory, optional, or conditional depending on the rail and the scenario, so a field list without context is misleading. A mandatory field must always be present, such as MsgId and IntrBkSttlmAmt. An optional field may be present or absent, such as UltmtCdtr when creditor and ultimate creditor are the same party. A conditional field is required only when its condition is true, such as ClrSys when SttlmMtd is CLRG, under the CBPR+ Usage Guidelines for pacs.008. Conditional mandatoriness only has meaning against a named usage guideline, so always cite the guide and the exact condition. Under CBPR+, IntrBkSttlmDt is mandatory, not conditional. Professionals must read the rail guide, not just the global schema, because a pacs.008 through a clearing system without ClrSys is incomplete.</p>
+<p><b>Task.</b> List the fields in the valid pacs.008 below and mark each one as mandatory, optional, or conditional for a direct correspondent payment. Then inspect the invalid version, where SttlmMtd is CLRG but ClrSys is missing, and explain why that omission is a conditional failure, which guide states the condition, and what value you would add to fix it.</p>
+<table class="explorer-table"><tr><th>Field</th><th>Meaning</th><th>Cardinality</th><th>Mandatory</th></tr>
+<tr><td><code>GrpHdr.MsgId</code></td><td>Message identifier, always required in every message</td><td>1..1</td><td>schema mandatory</td></tr>
+<tr><td><code>ClrSys</code></td><td>Clearing system identification, required only when SttlmMtd is CLRG, per the CBPR+ Usage Guidelines for pacs.008</td><td>0..1</td><td>conditional under CBPR+ UG</td></tr>
+<tr><td><code>UltmtCdtr</code></td><td>Ultimate creditor, needed only when different from the creditor</td><td>0..1</td><td>conditional</td></tr>
+<tr><td><code>RmtInf</code></td><td>Remittance information explaining the payment to the creditor</td><td>0..1</td><td>optional</td></tr>
+<tr><td><code>Purp</code></td><td>Coded purpose of the payment for reporting and screening</td><td>0..1</td><td>optional</td></tr>
+<tr><td><code>IntrBkSttlmDt</code></td><td>Interbank settlement date, mandatory under CBPR+</td><td>1..1</td><td>mandatory under CBPR+</td></tr>
+</table>
+<p><button class="api-btn iso-toggle" onclick="paIsoToggle('iso-valid-EX-07', this)">Show valid XML</button> <button class="api-btn" onclick="paIsoCopy('iso-valid-EX-07', this)">Copy valid XML</button> <button class="api-btn iso-toggle" onclick="paIsoToggle('iso-invalid-EX-07', this)">Show invalid XML</button></p>
+<div id="iso-valid-EX-07" style="display:none"><p><b>Valid XML</b></p><pre class="api-pre api-resp-ok">
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;Document xmlns="urn:iso:std:iso:20022:tech:xsd:pacs.008.001.08"&gt;
+  &lt;FIToFICstmrCdtTrf&gt;
+    &lt;GrpHdr&gt;
+      &lt;MsgId&gt;MSG-2026-1105-004821&lt;/MsgId&gt;
+      &lt;CreDtTm&gt;2026-11-05T09:42:00+00:00&lt;/CreDtTm&gt;
+      &lt;NbOfTxs&gt;1&lt;/NbOfTxs&gt;
+      &lt;CtrlSum&gt;8750.00&lt;/CtrlSum&gt;
+      &lt;SttlmInf&gt;&lt;SttlmMtd&gt;INDA&lt;/SttlmMtd&gt;&lt;/SttlmInf&gt;
+    &lt;/GrpHdr&gt;
+    &lt;CdtTrfTxInf&gt;
+      &lt;PmtId&gt;&lt;InstrId&gt;INSTR-884120&lt;/InstrId&gt;&lt;EndToEndId&gt;INV-2026-1147&lt;/EndToEndId&gt;&lt;TxId&gt;TX-2026-1105-7781&lt;/TxId&gt;&lt;UETR&gt;8f2a1c4e-6b3d-4a9f-8e21-5c7d3a9b1e04&lt;/UETR&gt;&lt;/PmtId&gt;
+      &lt;IntrBkSttlmAmt Ccy="EUR"&gt;8750.00&lt;/IntrBkSttlmAmt&gt;
+      &lt;IntrBkSttlmDt&gt;2026-11-06&lt;/IntrBkSttlmDt&gt;
+      &lt;ChrgBr&gt;SHAR&lt;/ChrgBr&gt;
+      &lt;Dbtr&gt;&lt;Nm&gt;Emma Wilson&lt;/Nm&gt;&lt;PstlAdr&gt;&lt;StrtNm&gt;14 Oakfield Road&lt;/StrtNm&gt;&lt;TwnNm&gt;London&lt;/TwnNm&gt;&lt;PstCd&gt;NW3 2AB&lt;/PstCd&gt;&lt;Ctry&gt;GB&lt;/Ctry&gt;&lt;/PstlAdr&gt;&lt;/Dbtr&gt;
+      &lt;DbtrAcct&gt;&lt;Id&gt;&lt;IBAN&gt;GB29NWBK60161331926819&lt;/IBAN&gt;&lt;/Id&gt;&lt;/DbtrAcct&gt;
+      &lt;DbtrAgt&gt;&lt;FinInstnId&gt;&lt;BICFI&gt;NWBKGB2LXXX&lt;/BICFI&gt;&lt;/FinInstnId&gt;&lt;/DbtrAgt&gt;
+      &lt;CdtrAgt&gt;&lt;FinInstnId&gt;&lt;BICFI&gt;DEUTDEFFXXX&lt;/BICFI&gt;&lt;/FinInstnId&gt;&lt;/CdtrAgt&gt;
+      &lt;Cdtr&gt;&lt;Nm&gt;Schneider GmbH&lt;/Nm&gt;&lt;PstlAdr&gt;&lt;StrtNm&gt;Musterstrasse 12&lt;/StrtNm&gt;&lt;TwnNm&gt;Berlin&lt;/TwnNm&gt;&lt;PstCd&gt;10115&lt;/PstCd&gt;&lt;Ctry&gt;DE&lt;/Ctry&gt;&lt;/PstlAdr&gt;&lt;/Cdtr&gt;
+      &lt;CdtrAcct&gt;&lt;Id&gt;&lt;IBAN&gt;DE89370400440532013000&lt;/IBAN&gt;&lt;/Id&gt;&lt;/CdtrAcct&gt;
+      &lt;Purp&gt;&lt;Cd&gt;SUPP&lt;/Cd&gt;&lt;/Purp&gt;
+      &lt;RmtInf&gt;&lt;Ustrd&gt;Invoice INV-2026-1147 supplier payment&lt;/Ustrd&gt;&lt;/RmtInf&gt;
+      
+    &lt;/CdtTrfTxInf&gt;
+  &lt;/FIToFICstmrCdtTrf&gt;
+&lt;/Document&gt;
+</pre></div>
+<div id="iso-invalid-EX-07" style="display:none"><p><b>Invalid XML</b></p><pre class="api-pre api-resp-err">
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;Document xmlns="urn:iso:std:iso:20022:tech:xsd:pacs.008.001.08"&gt;
+  &lt;FIToFICstmrCdtTrf&gt;
+    &lt;GrpHdr&gt;
+      &lt;MsgId&gt;MSG-2026-1105-004827&lt;/MsgId&gt;
+      &lt;CreDtTm&gt;2026-11-05T09:42:00+00:00&lt;/CreDtTm&gt;
+      &lt;NbOfTxs&gt;1&lt;/NbOfTxs&gt;
+      &lt;CtrlSum&gt;8750.00&lt;/CtrlSum&gt;
+      &lt;SttlmInf&gt;&lt;SttlmMtd&gt;CLRG&lt;/SttlmMtd&gt;&lt;/SttlmInf&gt;
+    &lt;/GrpHdr&gt;
+    &lt;CdtTrfTxInf&gt;
+      &lt;PmtId&gt;&lt;InstrId&gt;INSTR-884120&lt;/InstrId&gt;&lt;EndToEndId&gt;INV-2026-1147&lt;/EndToEndId&gt;&lt;TxId&gt;TX-2026-1105-7781&lt;/TxId&gt;&lt;UETR&gt;8f2a1c4e-6b3d-4a9f-8e21-5c7d3a9b1e04&lt;/UETR&gt;&lt;/PmtId&gt;
+      &lt;IntrBkSttlmAmt Ccy="EUR"&gt;8750.00&lt;/IntrBkSttlmAmt&gt;
+      &lt;IntrBkSttlmDt&gt;2026-11-06&lt;/IntrBkSttlmDt&gt;
+      &lt;ChrgBr&gt;SHAR&lt;/ChrgBr&gt;
+      &lt;Dbtr&gt;&lt;Nm&gt;Emma Wilson&lt;/Nm&gt;&lt;PstlAdr&gt;&lt;StrtNm&gt;14 Oakfield Road&lt;/StrtNm&gt;&lt;TwnNm&gt;London&lt;/TwnNm&gt;&lt;PstCd&gt;NW3 2AB&lt;/PstCd&gt;&lt;Ctry&gt;GB&lt;/Ctry&gt;&lt;/PstlAdr&gt;&lt;/Dbtr&gt;
+      &lt;DbtrAcct&gt;&lt;Id&gt;&lt;IBAN&gt;GB29NWBK60161331926819&lt;/IBAN&gt;&lt;/Id&gt;&lt;/DbtrAcct&gt;
+      &lt;DbtrAgt&gt;&lt;FinInstnId&gt;&lt;BICFI&gt;NWBKGB2LXXX&lt;/BICFI&gt;&lt;/FinInstnId&gt;&lt;/DbtrAgt&gt;
+      &lt;CdtrAgt&gt;&lt;FinInstnId&gt;&lt;BICFI&gt;DEUTDEFFXXX&lt;/BICFI&gt;&lt;/FinInstnId&gt;&lt;/CdtrAgt&gt;
+      &lt;Cdtr&gt;&lt;Nm&gt;Schneider GmbH&lt;/Nm&gt;&lt;PstlAdr&gt;&lt;StrtNm&gt;Musterstrasse 12&lt;/StrtNm&gt;&lt;TwnNm&gt;Berlin&lt;/TwnNm&gt;&lt;PstCd&gt;10115&lt;/PstCd&gt;&lt;Ctry&gt;DE&lt;/Ctry&gt;&lt;/PstlAdr&gt;&lt;/Cdtr&gt;
+      &lt;CdtrAcct&gt;&lt;Id&gt;&lt;IBAN&gt;DE89370400440532013000&lt;/IBAN&gt;&lt;/Id&gt;&lt;/CdtrAcct&gt;
+      &lt;Purp&gt;&lt;Cd&gt;SUPP&lt;/Cd&gt;&lt;/Purp&gt;
+      &lt;RmtInf&gt;&lt;Ustrd&gt;Invoice INV-2026-1147 supplier payment&lt;/Ustrd&gt;&lt;/RmtInf&gt;
+      
+    &lt;/CdtTrfTxInf&gt;
+  &lt;/FIToFICstmrCdtTrf&gt;
+&lt;/Document&gt;
+</pre></div>
+<p><button class="api-btn iso-toggle" onclick="paIsoToggle('iso-why-EX-07', this)">Reveal why the invalid sample fails</button> <button class="api-btn iso-toggle" onclick="paIsoToggle('iso-ans-EX-07', this)">Reveal expected answer</button></p>
+<div id="iso-why-EX-07" style="display:none"><p><b>Why the invalid sample fails.</b> This invalid example parses as XML and passes the global schema, but it is structurally wrong for its stated settlement method. When SttlmMtd is CLRG, the clearing system identification becomes conditionally mandatory under the CBPR+ Usage Guidelines for pacs.008, because the receiver cannot know which clearing house should settle the payment without it. This is a conditional business rule failure, applied on top of the schema. The consequence is rejection by the rail: the payment is held for repair, settlement cannot be booked, and the sender must add the ClrSys value before resending.</p></div>
+<div id="iso-ans-EX-07" style="display:none"><p><b>Expected answer.</b> You should conclude that mandatory means always present, optional means present only when useful, and conditional means present when a stated condition is true, such as CLRG needing ClrSys under the CBPR+ Usage Guidelines for pacs.008. The corrected approach is to check the rail usage guide for every payment, to add ClrSys with the correct clearing system code when the method is CLRG, and to leave it out when the method is INGA or INDA. Remember that IntrBkSttlmDt is mandatory under CBPR+, not conditional. Never copy a field list from one rail to another without checking which conditions change, and always cite the guide that imposes each condition.</p></div>
+<p><label class="iso-done-label"><input type="checkbox" class="iso-done-check" data-ex="EX-07" onchange="paIsoDone(this)"> I worked this exercise, mark it done</label></p>
+</div>
+<div class="lab-card" id="iso-EX-08">
+<h3>EX-08: External code sets</h3>
+<p><b>Concept.</b> ISO 20022 uses external code sets, which are published lists of allowed values maintained outside the XML schema, so banks cannot invent their own codes. The charge bearer set allows only DEBT, CRED, SHAR, and SLEV. The purpose set includes SUPP for supplier payment, SALA for salary, and GDDS for goods, among others. The return reason set includes AC01 for a wrong account number, AC04 for a closed account, and MS03 for no reason specified. A value outside the set is rejected, and a value inside the set but wrong for the payment misleads the receiver. Teams must check codes against the current published list, because sets change and an old code can be retired without warning.</p>
+<p><b>Task.</b> Check the Purp code and the ChrgBr code in the valid pacs.008 below against the published sets described in the concept. Then inspect the invalid version, find the code that is not in any published set, name the set it claims to belong to, and replace it with the correct published code for a supplier payment with shared charges.</p>
+<table class="explorer-table"><tr><th>Field</th><th>Meaning</th><th>Cardinality</th><th>Mandatory</th></tr>
+<tr><td><code>Purp.Cd</code></td><td>Purpose code from the published external purpose code set</td><td>0..1</td><td>optional</td></tr>
+<tr><td><code>ChrgBr</code></td><td>Charge bearer code from the set DEBT, CRED, SHAR, SLEV</td><td>0..1</td><td>optional</td></tr>
+<tr><td><code>SttlmInf.SttlmMtd</code></td><td>Settlement method code from the published settlement method set</td><td>1..1</td><td>schema mandatory</td></tr>
+<tr><td><code>RtrRsnInf.Rsn.Cd</code></td><td>Return reason code from the published return reason set</td><td>0..1</td><td>conditional</td></tr>
+<tr><td><code>TxSts</code></td><td>Transaction status code from the published status code set</td><td>1..1</td><td>schema mandatory</td></tr>
+</table>
+<p><button class="api-btn iso-toggle" onclick="paIsoToggle('iso-valid-EX-08', this)">Show valid XML</button> <button class="api-btn" onclick="paIsoCopy('iso-valid-EX-08', this)">Copy valid XML</button> <button class="api-btn iso-toggle" onclick="paIsoToggle('iso-invalid-EX-08', this)">Show invalid XML</button></p>
+<div id="iso-valid-EX-08" style="display:none"><p><b>Valid XML</b></p><pre class="api-pre api-resp-ok">
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;Document xmlns="urn:iso:std:iso:20022:tech:xsd:pacs.008.001.08"&gt;
+  &lt;FIToFICstmrCdtTrf&gt;
+    &lt;GrpHdr&gt;
+      &lt;MsgId&gt;MSG-2026-1105-004821&lt;/MsgId&gt;
+      &lt;CreDtTm&gt;2026-11-05T09:42:00+00:00&lt;/CreDtTm&gt;
+      &lt;NbOfTxs&gt;1&lt;/NbOfTxs&gt;
+      &lt;CtrlSum&gt;8750.00&lt;/CtrlSum&gt;
+      &lt;SttlmInf&gt;&lt;SttlmMtd&gt;INDA&lt;/SttlmMtd&gt;&lt;/SttlmInf&gt;
+    &lt;/GrpHdr&gt;
+    &lt;CdtTrfTxInf&gt;
+      &lt;PmtId&gt;&lt;InstrId&gt;INSTR-884120&lt;/InstrId&gt;&lt;EndToEndId&gt;INV-2026-1147&lt;/EndToEndId&gt;&lt;TxId&gt;TX-2026-1105-7781&lt;/TxId&gt;&lt;UETR&gt;8f2a1c4e-6b3d-4a9f-8e21-5c7d3a9b1e04&lt;/UETR&gt;&lt;/PmtId&gt;
+      &lt;IntrBkSttlmAmt Ccy="EUR"&gt;8750.00&lt;/IntrBkSttlmAmt&gt;
+      &lt;IntrBkSttlmDt&gt;2026-11-06&lt;/IntrBkSttlmDt&gt;
+      &lt;ChrgBr&gt;SHAR&lt;/ChrgBr&gt;
+      &lt;Dbtr&gt;&lt;Nm&gt;Emma Wilson&lt;/Nm&gt;&lt;PstlAdr&gt;&lt;StrtNm&gt;14 Oakfield Road&lt;/StrtNm&gt;&lt;TwnNm&gt;London&lt;/TwnNm&gt;&lt;PstCd&gt;NW3 2AB&lt;/PstCd&gt;&lt;Ctry&gt;GB&lt;/Ctry&gt;&lt;/PstlAdr&gt;&lt;/Dbtr&gt;
+      &lt;DbtrAcct&gt;&lt;Id&gt;&lt;IBAN&gt;GB29NWBK60161331926819&lt;/IBAN&gt;&lt;/Id&gt;&lt;/DbtrAcct&gt;
+      &lt;DbtrAgt&gt;&lt;FinInstnId&gt;&lt;BICFI&gt;NWBKGB2LXXX&lt;/BICFI&gt;&lt;/FinInstnId&gt;&lt;/DbtrAgt&gt;
+      &lt;CdtrAgt&gt;&lt;FinInstnId&gt;&lt;BICFI&gt;DEUTDEFFXXX&lt;/BICFI&gt;&lt;/FinInstnId&gt;&lt;/CdtrAgt&gt;
+      &lt;Cdtr&gt;&lt;Nm&gt;Schneider GmbH&lt;/Nm&gt;&lt;PstlAdr&gt;&lt;StrtNm&gt;Musterstrasse 12&lt;/StrtNm&gt;&lt;TwnNm&gt;Berlin&lt;/TwnNm&gt;&lt;PstCd&gt;10115&lt;/PstCd&gt;&lt;Ctry&gt;DE&lt;/Ctry&gt;&lt;/PstlAdr&gt;&lt;/Cdtr&gt;
+      &lt;CdtrAcct&gt;&lt;Id&gt;&lt;IBAN&gt;DE89370400440532013000&lt;/IBAN&gt;&lt;/Id&gt;&lt;/CdtrAcct&gt;
+      &lt;Purp&gt;&lt;Cd&gt;SUPP&lt;/Cd&gt;&lt;/Purp&gt;
+      &lt;RmtInf&gt;&lt;Ustrd&gt;Invoice INV-2026-1147 supplier payment&lt;/Ustrd&gt;&lt;/RmtInf&gt;
+      
+    &lt;/CdtTrfTxInf&gt;
+  &lt;/FIToFICstmrCdtTrf&gt;
+&lt;/Document&gt;
+</pre></div>
+<div id="iso-invalid-EX-08" style="display:none"><p><b>Invalid XML</b></p><pre class="api-pre api-resp-err">
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;Document xmlns="urn:iso:std:iso:20022:tech:xsd:pacs.008.001.08"&gt;
+  &lt;FIToFICstmrCdtTrf&gt;
+    &lt;GrpHdr&gt;
+      &lt;MsgId&gt;MSG-2026-1105-004828&lt;/MsgId&gt;
+      &lt;CreDtTm&gt;2026-11-05T09:42:00+00:00&lt;/CreDtTm&gt;
+      &lt;NbOfTxs&gt;1&lt;/NbOfTxs&gt;
+      &lt;CtrlSum&gt;8750.00&lt;/CtrlSum&gt;
+      &lt;SttlmInf&gt;&lt;SttlmMtd&gt;INDA&lt;/SttlmMtd&gt;&lt;/SttlmInf&gt;
+    &lt;/GrpHdr&gt;
+    &lt;CdtTrfTxInf&gt;
+      &lt;PmtId&gt;&lt;InstrId&gt;INSTR-884120&lt;/InstrId&gt;&lt;EndToEndId&gt;INV-2026-1147&lt;/EndToEndId&gt;&lt;TxId&gt;TX-2026-1105-7781&lt;/TxId&gt;&lt;UETR&gt;8f2a1c4e-6b3d-4a9f-8e21-5c7d3a9b1e04&lt;/UETR&gt;&lt;/PmtId&gt;
+      &lt;IntrBkSttlmAmt Ccy="EUR"&gt;8750.00&lt;/IntrBkSttlmAmt&gt;
+      &lt;IntrBkSttlmDt&gt;2026-11-06&lt;/IntrBkSttlmDt&gt;
+      &lt;ChrgBr&gt;SHAR&lt;/ChrgBr&gt;
+      &lt;Dbtr&gt;&lt;Nm&gt;Emma Wilson&lt;/Nm&gt;&lt;PstlAdr&gt;&lt;StrtNm&gt;14 Oakfield Road&lt;/StrtNm&gt;&lt;TwnNm&gt;London&lt;/TwnNm&gt;&lt;PstCd&gt;NW3 2AB&lt;/PstCd&gt;&lt;Ctry&gt;GB&lt;/Ctry&gt;&lt;/PstlAdr&gt;&lt;/Dbtr&gt;
+      &lt;DbtrAcct&gt;&lt;Id&gt;&lt;IBAN&gt;GB29NWBK60161331926819&lt;/IBAN&gt;&lt;/Id&gt;&lt;/DbtrAcct&gt;
+      &lt;DbtrAgt&gt;&lt;FinInstnId&gt;&lt;BICFI&gt;NWBKGB2LXXX&lt;/BICFI&gt;&lt;/FinInstnId&gt;&lt;/DbtrAgt&gt;
+      &lt;CdtrAgt&gt;&lt;FinInstnId&gt;&lt;BICFI&gt;DEUTDEFFXXX&lt;/BICFI&gt;&lt;/FinInstnId&gt;&lt;/CdtrAgt&gt;
+      &lt;Cdtr&gt;&lt;Nm&gt;Schneider GmbH&lt;/Nm&gt;&lt;PstlAdr&gt;&lt;StrtNm&gt;Musterstrasse 12&lt;/StrtNm&gt;&lt;TwnNm&gt;Berlin&lt;/TwnNm&gt;&lt;PstCd&gt;10115&lt;/PstCd&gt;&lt;Ctry&gt;DE&lt;/Ctry&gt;&lt;/PstlAdr&gt;&lt;/Cdtr&gt;
+      &lt;CdtrAcct&gt;&lt;Id&gt;&lt;IBAN&gt;DE89370400440532013000&lt;/IBAN&gt;&lt;/Id&gt;&lt;/CdtrAcct&gt;
+      &lt;Purp&gt;&lt;Cd&gt;SUPPLIER&lt;/Cd&gt;&lt;/Purp&gt;
+      &lt;RmtInf&gt;&lt;Ustrd&gt;Invoice INV-2026-1147 supplier payment&lt;/Ustrd&gt;&lt;/RmtInf&gt;
+      
+    &lt;/CdtTrfTxInf&gt;
+  &lt;/FIToFICstmrCdtTrf&gt;
+&lt;/Document&gt;
+</pre></div>
+<p><button class="api-btn iso-toggle" onclick="paIsoToggle('iso-why-EX-08', this)">Reveal why the invalid sample fails</button> <button class="api-btn iso-toggle" onclick="paIsoToggle('iso-ans-EX-08', this)">Reveal expected answer</button></p>
+<div id="iso-why-EX-08" style="display:none"><p><b>Why the invalid sample fails.</b> This invalid example parses as XML, but it fails schema validation because SUPPLIER is not a value in the external purpose code set. The published set uses SUPP for a supplier payment, and the schema enumeration rejects any other spelling, however clear it looks to a human reader. This is a schema rule failure, because the code set is enforced through the schema code list. The consequence is rejection at validation: the receiver cannot classify the payment for reporting or screening, so the sender must replace SUPPLIER with SUPP and resend.</p></div>
+<div id="iso-ans-EX-08" style="display:none"><p><b>Expected answer.</b> You should conclude that external code sets are fixed published lists, that only their exact codes are accepted, and that a descriptive word is not a substitute for the code. The corrected approach is to map every business description to its published code before sending, to check the current list when a code is retired or added, and to test with the exact code values, so a supplier payment uses SUPP and shared charges use SHAR, with no invented spellings in either field.</p></div>
+<p><label class="iso-done-label"><input type="checkbox" class="iso-done-check" data-ex="EX-08" onchange="paIsoDone(this)"> I worked this exercise, mark it done</label></p>
+</div>
+<div class="lab-card" id="iso-EX-09">
+<h3>EX-09: Currency precision</h3>
+<p><b>Concept.</b> Amounts in ISO 20022 are decimal values with a currency code, never floating point numbers, because floating point arithmetic can introduce tiny errors that leave ledgers out of balance. Each currency has a fixed number of minor units: EUR, GBP, and USD use two decimals, JPY uses zero decimals, and BHD, KWD, and OMR use three decimals. A payment of JPY 125,000 is valid, while JPY 125,000.50 is not, and BHD 1,250.500 is valid while BHD 1,250.50 is incomplete. The canonical model stores the amount as a decimal with its currency attached and validates the decimal count against the currency table before release, so rounding rules are the same in every system that touches the payment.</p>
+<p><b>Task.</b> State the minor unit count for EUR, JPY, and BHD from the concept. Then inspect the invalid pacs.008, where a JPY amount was written with a comma and two decimals, and explain why that format fails, what the correct JPY amount should look like, and why a decimal type must never be replaced by a floating point number in code.</p>
+<table class="explorer-table"><tr><th>Field</th><th>Meaning</th><th>Cardinality</th><th>Mandatory</th></tr>
+<tr><td><code>IntrBkSttlmAmt</code></td><td>Settlement amount as a decimal value with a currency attribute</td><td>1..1</td><td>schema mandatory</td></tr>
+<tr><td><code>IntrBkSttlmAmt.Ccy</code></td><td>Three letter currency code that fixes the allowed decimal places</td><td>1..1</td><td>schema mandatory</td></tr>
+<tr><td><code>InstdAmt</code></td><td>Instructed amount from the customer, with currency and precision rules</td><td>1..1</td><td>schema mandatory</td></tr>
+<tr><td><code>ChrgsInf.Amt</code></td><td>Charge amount, validated against the same currency precision table</td><td>0..1</td><td>optional</td></tr>
+<tr><td><code>CtrlSum</code></td><td>Group control sum, summed in the same currency and precision</td><td>0..1</td><td>business mandatory</td></tr>
+</table>
+<p><button class="api-btn iso-toggle" onclick="paIsoToggle('iso-valid-EX-09', this)">Show valid XML</button> <button class="api-btn" onclick="paIsoCopy('iso-valid-EX-09', this)">Copy valid XML</button> <button class="api-btn iso-toggle" onclick="paIsoToggle('iso-invalid-EX-09', this)">Show invalid XML</button></p>
+<div id="iso-valid-EX-09" style="display:none"><p><b>Valid XML</b></p><pre class="api-pre api-resp-ok">
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;Document xmlns="urn:iso:std:iso:20022:tech:xsd:pacs.008.001.08"&gt;
+  &lt;FIToFICstmrCdtTrf&gt;
+    &lt;GrpHdr&gt;
+      &lt;MsgId&gt;MSG-2026-1105-004829&lt;/MsgId&gt;
+      &lt;CreDtTm&gt;2026-11-05T09:42:00+00:00&lt;/CreDtTm&gt;
+      &lt;NbOfTxs&gt;1&lt;/NbOfTxs&gt;
+      &lt;CtrlSum&gt;125000&lt;/CtrlSum&gt;
+      &lt;SttlmInf&gt;&lt;SttlmMtd&gt;INDA&lt;/SttlmMtd&gt;&lt;/SttlmInf&gt;
+    &lt;/GrpHdr&gt;
+    &lt;CdtTrfTxInf&gt;
+      &lt;PmtId&gt;&lt;InstrId&gt;INSTR-884120&lt;/InstrId&gt;&lt;EndToEndId&gt;INV-2026-1147&lt;/EndToEndId&gt;&lt;TxId&gt;TX-2026-1105-7781&lt;/TxId&gt;&lt;UETR&gt;8f2a1c4e-6b3d-4a9f-8e21-5c7d3a9b1e04&lt;/UETR&gt;&lt;/PmtId&gt;
+      &lt;IntrBkSttlmAmt Ccy="JPY"&gt;125000&lt;/IntrBkSttlmAmt&gt;
+      &lt;IntrBkSttlmDt&gt;2026-11-06&lt;/IntrBkSttlmDt&gt;
+      &lt;ChrgBr&gt;SHAR&lt;/ChrgBr&gt;
+      &lt;Dbtr&gt;&lt;Nm&gt;Emma Wilson&lt;/Nm&gt;&lt;PstlAdr&gt;&lt;StrtNm&gt;14 Oakfield Road&lt;/StrtNm&gt;&lt;TwnNm&gt;London&lt;/TwnNm&gt;&lt;PstCd&gt;NW3 2AB&lt;/PstCd&gt;&lt;Ctry&gt;GB&lt;/Ctry&gt;&lt;/PstlAdr&gt;&lt;/Dbtr&gt;
+      &lt;DbtrAcct&gt;&lt;Id&gt;&lt;IBAN&gt;GB29NWBK60161331926819&lt;/IBAN&gt;&lt;/Id&gt;&lt;/DbtrAcct&gt;
+      &lt;DbtrAgt&gt;&lt;FinInstnId&gt;&lt;BICFI&gt;NWBKGB2LXXX&lt;/BICFI&gt;&lt;/FinInstnId&gt;&lt;/DbtrAgt&gt;
+      &lt;CdtrAgt&gt;&lt;FinInstnId&gt;&lt;BICFI&gt;DEUTDEFFXXX&lt;/BICFI&gt;&lt;/FinInstnId&gt;&lt;/CdtrAgt&gt;
+      &lt;Cdtr&gt;&lt;Nm&gt;Schneider GmbH&lt;/Nm&gt;&lt;PstlAdr&gt;&lt;StrtNm&gt;Musterstrasse 12&lt;/StrtNm&gt;&lt;TwnNm&gt;Berlin&lt;/TwnNm&gt;&lt;PstCd&gt;10115&lt;/PstCd&gt;&lt;Ctry&gt;DE&lt;/Ctry&gt;&lt;/PstlAdr&gt;&lt;/Cdtr&gt;
+      &lt;CdtrAcct&gt;&lt;Id&gt;&lt;IBAN&gt;DE89370400440532013000&lt;/IBAN&gt;&lt;/Id&gt;&lt;/CdtrAcct&gt;
+      &lt;Purp&gt;&lt;Cd&gt;SUPP&lt;/Cd&gt;&lt;/Purp&gt;
+      &lt;RmtInf&gt;&lt;Ustrd&gt;Invoice INV-2026-1147 supplier payment&lt;/Ustrd&gt;&lt;/RmtInf&gt;
+      
+    &lt;/CdtTrfTxInf&gt;
+  &lt;/FIToFICstmrCdtTrf&gt;
+&lt;/Document&gt;
+</pre></div>
+<div id="iso-invalid-EX-09" style="display:none"><p><b>Invalid XML</b></p><pre class="api-pre api-resp-err">
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;Document xmlns="urn:iso:std:iso:20022:tech:xsd:pacs.008.001.08"&gt;
+  &lt;FIToFICstmrCdtTrf&gt;
+    &lt;GrpHdr&gt;
+      &lt;MsgId&gt;MSG-2026-1105-004830&lt;/MsgId&gt;
+      &lt;CreDtTm&gt;2026-11-05T09:42:00+00:00&lt;/CreDtTm&gt;
+      &lt;NbOfTxs&gt;1&lt;/NbOfTxs&gt;
+      &lt;CtrlSum&gt;125,000.50&lt;/CtrlSum&gt;
+      &lt;SttlmInf&gt;&lt;SttlmMtd&gt;INDA&lt;/SttlmMtd&gt;&lt;/SttlmInf&gt;
+    &lt;/GrpHdr&gt;
+    &lt;CdtTrfTxInf&gt;
+      &lt;PmtId&gt;&lt;InstrId&gt;INSTR-884120&lt;/InstrId&gt;&lt;EndToEndId&gt;INV-2026-1147&lt;/EndToEndId&gt;&lt;TxId&gt;TX-2026-1105-7781&lt;/TxId&gt;&lt;UETR&gt;8f2a1c4e-6b3d-4a9f-8e21-5c7d3a9b1e04&lt;/UETR&gt;&lt;/PmtId&gt;
+      &lt;IntrBkSttlmAmt Ccy="JPY"&gt;125,000.50&lt;/IntrBkSttlmAmt&gt;
+      &lt;IntrBkSttlmDt&gt;2026-11-06&lt;/IntrBkSttlmDt&gt;
+      &lt;ChrgBr&gt;SHAR&lt;/ChrgBr&gt;
+      &lt;Dbtr&gt;&lt;Nm&gt;Emma Wilson&lt;/Nm&gt;&lt;PstlAdr&gt;&lt;StrtNm&gt;14 Oakfield Road&lt;/StrtNm&gt;&lt;TwnNm&gt;London&lt;/TwnNm&gt;&lt;PstCd&gt;NW3 2AB&lt;/PstCd&gt;&lt;Ctry&gt;GB&lt;/Ctry&gt;&lt;/PstlAdr&gt;&lt;/Dbtr&gt;
+      &lt;DbtrAcct&gt;&lt;Id&gt;&lt;IBAN&gt;GB29NWBK60161331926819&lt;/IBAN&gt;&lt;/Id&gt;&lt;/DbtrAcct&gt;
+      &lt;DbtrAgt&gt;&lt;FinInstnId&gt;&lt;BICFI&gt;NWBKGB2LXXX&lt;/BICFI&gt;&lt;/FinInstnId&gt;&lt;/DbtrAgt&gt;
+      &lt;CdtrAgt&gt;&lt;FinInstnId&gt;&lt;BICFI&gt;DEUTDEFFXXX&lt;/BICFI&gt;&lt;/FinInstnId&gt;&lt;/CdtrAgt&gt;
+      &lt;Cdtr&gt;&lt;Nm&gt;Schneider GmbH&lt;/Nm&gt;&lt;PstlAdr&gt;&lt;StrtNm&gt;Musterstrasse 12&lt;/StrtNm&gt;&lt;TwnNm&gt;Berlin&lt;/TwnNm&gt;&lt;PstCd&gt;10115&lt;/PstCd&gt;&lt;Ctry&gt;DE&lt;/Ctry&gt;&lt;/PstlAdr&gt;&lt;/Cdtr&gt;
+      &lt;CdtrAcct&gt;&lt;Id&gt;&lt;IBAN&gt;DE89370400440532013000&lt;/IBAN&gt;&lt;/Id&gt;&lt;/CdtrAcct&gt;
+      &lt;Purp&gt;&lt;Cd&gt;SUPP&lt;/Cd&gt;&lt;/Purp&gt;
+      &lt;RmtInf&gt;&lt;Ustrd&gt;Invoice INV-2026-1147 supplier payment&lt;/Ustrd&gt;&lt;/RmtInf&gt;
+      
+    &lt;/CdtTrfTxInf&gt;
+  &lt;/FIToFICstmrCdtTrf&gt;
+&lt;/Document&gt;
+</pre></div>
+<p><button class="api-btn iso-toggle" onclick="paIsoToggle('iso-why-EX-09', this)">Reveal why the invalid sample fails</button> <button class="api-btn iso-toggle" onclick="paIsoToggle('iso-ans-EX-09', this)">Reveal expected answer</button></p>
+<div id="iso-why-EX-09" style="display:none"><p><b>Why the invalid sample fails.</b> This invalid example parses as XML, but it fails schema validation because the amount value 125,000.50 is not a valid XML decimal: a decimal type rejects the comma separator. It also breaks the currency precision rule, because JPY allows zero decimal places, so two decimals are wrong. This is a schema rule failure for the format, with a business rule failure for the precision. The consequence is rejection at validation, and if the comma were stripped silently the payment could settle for the wrong amount, so the sender must send 125000 with no comma and no decimals.</p></div>
+<div id="iso-ans-EX-09" style="display:none"><p><b>Expected answer.</b> You should conclude that EUR needs two decimals, JPY needs zero, and BHD needs three, and that amounts must be stored as decimals with the currency code attached, never as floats. The corrected approach is to look up the minor unit count from the currency table for every payment, to format JPY 125000 with no decimal point, EUR 8750.00 with two decimals, and BHD 1250.500 with three, and to reject any amount whose decimal count does not match its currency before the payment is released.</p></div>
+<p><label class="iso-done-label"><input type="checkbox" class="iso-done-check" data-ex="EX-09" onchange="paIsoDone(this)"> I worked this exercise, mark it done</label></p>
+</div>
+<div class="lab-card" id="iso-EX-10">
+<h3>EX-10: UTC offsets</h3>
+<p><b>Concept.</b> Every ISO 20022 timestamp carries a UTC offset, such as 2026-11-05T09:42:00+00:00 for London in winter or 2026-11-05T15:12:00+05:30 for Kolkata, so the receiving system knows the exact instant the event happened. Without an offset, the same clock reading could mean morning in London, afternoon in Mumbai, or evening in Singapore, and cutoff checks, value dating, and audit trails would all be ambiguous. A missing offset can push a payment past a cutoff, a wrong offset can record a release an hour early or late, and an audit trail without offsets cannot prove the order of events. Timestamps must therefore be stored with their offset, converted to UTC for comparison, and displayed in local time only for human reading.</p>
+<p><b>Task.</b> Read the CreDtTm in the valid pacs.008 below and convert it to UTC and to Kolkata time. Then inspect the invalid version, where the timestamp uses a space instead of the letter T and carries no offset, and explain which cutoff and audit checks would fail, and how you would rewrite the timestamp correctly for a 09:42 London event in November.</p>
+<table class="explorer-table"><tr><th>Field</th><th>Meaning</th><th>Cardinality</th><th>Mandatory</th></tr>
+<tr><td><code>GrpHdr.CreDtTm</code></td><td>Creation date and time of the message, with UTC offset</td><td>1..1</td><td>schema mandatory</td></tr>
+<tr><td><code>IntrBkSttlmDt</code></td><td>Settlement date, interpreted with the settlement centre calendar</td><td>0..1</td><td>optional</td></tr>
+<tr><td><code>AccptncDtTm</code></td><td>Acceptance date and time reported in a status message, with offset</td><td>0..1</td><td>optional</td></tr>
+<tr><td><code>ReqdExctnDt</code></td><td>Requested execution date from the customer instruction</td><td>1..1</td><td>schema mandatory</td></tr>
+<tr><td><code>CreDtTm</code></td><td>Creation timestamp in the business header, with UTC offset</td><td>1..1</td><td>schema mandatory</td></tr>
+</table>
+<p><button class="api-btn iso-toggle" onclick="paIsoToggle('iso-valid-EX-10', this)">Show valid XML</button> <button class="api-btn" onclick="paIsoCopy('iso-valid-EX-10', this)">Copy valid XML</button> <button class="api-btn iso-toggle" onclick="paIsoToggle('iso-invalid-EX-10', this)">Show invalid XML</button></p>
+<div id="iso-valid-EX-10" style="display:none"><p><b>Valid XML</b></p><pre class="api-pre api-resp-ok">
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;Document xmlns="urn:iso:std:iso:20022:tech:xsd:pacs.008.001.08"&gt;
+  &lt;FIToFICstmrCdtTrf&gt;
+    &lt;GrpHdr&gt;
+      &lt;MsgId&gt;MSG-2026-1105-004821&lt;/MsgId&gt;
+      &lt;CreDtTm&gt;2026-11-05T09:42:00+00:00&lt;/CreDtTm&gt;
+      &lt;NbOfTxs&gt;1&lt;/NbOfTxs&gt;
+      &lt;CtrlSum&gt;8750.00&lt;/CtrlSum&gt;
+      &lt;SttlmInf&gt;&lt;SttlmMtd&gt;INDA&lt;/SttlmMtd&gt;&lt;/SttlmInf&gt;
+    &lt;/GrpHdr&gt;
+    &lt;CdtTrfTxInf&gt;
+      &lt;PmtId&gt;&lt;InstrId&gt;INSTR-884120&lt;/InstrId&gt;&lt;EndToEndId&gt;INV-2026-1147&lt;/EndToEndId&gt;&lt;TxId&gt;TX-2026-1105-7781&lt;/TxId&gt;&lt;UETR&gt;8f2a1c4e-6b3d-4a9f-8e21-5c7d3a9b1e04&lt;/UETR&gt;&lt;/PmtId&gt;
+      &lt;IntrBkSttlmAmt Ccy="EUR"&gt;8750.00&lt;/IntrBkSttlmAmt&gt;
+      &lt;IntrBkSttlmDt&gt;2026-11-06&lt;/IntrBkSttlmDt&gt;
+      &lt;ChrgBr&gt;SHAR&lt;/ChrgBr&gt;
+      &lt;Dbtr&gt;&lt;Nm&gt;Emma Wilson&lt;/Nm&gt;&lt;PstlAdr&gt;&lt;StrtNm&gt;14 Oakfield Road&lt;/StrtNm&gt;&lt;TwnNm&gt;London&lt;/TwnNm&gt;&lt;PstCd&gt;NW3 2AB&lt;/PstCd&gt;&lt;Ctry&gt;GB&lt;/Ctry&gt;&lt;/PstlAdr&gt;&lt;/Dbtr&gt;
+      &lt;DbtrAcct&gt;&lt;Id&gt;&lt;IBAN&gt;GB29NWBK60161331926819&lt;/IBAN&gt;&lt;/Id&gt;&lt;/DbtrAcct&gt;
+      &lt;DbtrAgt&gt;&lt;FinInstnId&gt;&lt;BICFI&gt;NWBKGB2LXXX&lt;/BICFI&gt;&lt;/FinInstnId&gt;&lt;/DbtrAgt&gt;
+      &lt;CdtrAgt&gt;&lt;FinInstnId&gt;&lt;BICFI&gt;DEUTDEFFXXX&lt;/BICFI&gt;&lt;/FinInstnId&gt;&lt;/CdtrAgt&gt;
+      &lt;Cdtr&gt;&lt;Nm&gt;Schneider GmbH&lt;/Nm&gt;&lt;PstlAdr&gt;&lt;StrtNm&gt;Musterstrasse 12&lt;/StrtNm&gt;&lt;TwnNm&gt;Berlin&lt;/TwnNm&gt;&lt;PstCd&gt;10115&lt;/PstCd&gt;&lt;Ctry&gt;DE&lt;/Ctry&gt;&lt;/PstlAdr&gt;&lt;/Cdtr&gt;
+      &lt;CdtrAcct&gt;&lt;Id&gt;&lt;IBAN&gt;DE89370400440532013000&lt;/IBAN&gt;&lt;/Id&gt;&lt;/CdtrAcct&gt;
+      &lt;Purp&gt;&lt;Cd&gt;SUPP&lt;/Cd&gt;&lt;/Purp&gt;
+      &lt;RmtInf&gt;&lt;Ustrd&gt;Invoice INV-2026-1147 supplier payment&lt;/Ustrd&gt;&lt;/RmtInf&gt;
+      
+    &lt;/CdtTrfTxInf&gt;
+  &lt;/FIToFICstmrCdtTrf&gt;
+&lt;/Document&gt;
+</pre></div>
+<div id="iso-invalid-EX-10" style="display:none"><p><b>Invalid XML</b></p><pre class="api-pre api-resp-err">
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;Document xmlns="urn:iso:std:iso:20022:tech:xsd:pacs.008.001.08"&gt;
+  &lt;FIToFICstmrCdtTrf&gt;
+    &lt;GrpHdr&gt;
+      &lt;MsgId&gt;MSG-2026-1105-004831&lt;/MsgId&gt;
+      &lt;CreDtTm&gt;2026-11-05 09:42:00&lt;/CreDtTm&gt;
+      &lt;NbOfTxs&gt;1&lt;/NbOfTxs&gt;
+      &lt;CtrlSum&gt;8750.00&lt;/CtrlSum&gt;
+      &lt;SttlmInf&gt;&lt;SttlmMtd&gt;INDA&lt;/SttlmMtd&gt;&lt;/SttlmInf&gt;
+    &lt;/GrpHdr&gt;
+    &lt;CdtTrfTxInf&gt;
+      &lt;PmtId&gt;&lt;InstrId&gt;INSTR-884120&lt;/InstrId&gt;&lt;EndToEndId&gt;INV-2026-1147&lt;/EndToEndId&gt;&lt;TxId&gt;TX-2026-1105-7781&lt;/TxId&gt;&lt;UETR&gt;8f2a1c4e-6b3d-4a9f-8e21-5c7d3a9b1e04&lt;/UETR&gt;&lt;/PmtId&gt;
+      &lt;IntrBkSttlmAmt Ccy="EUR"&gt;8750.00&lt;/IntrBkSttlmAmt&gt;
+      &lt;IntrBkSttlmDt&gt;2026-11-06&lt;/IntrBkSttlmDt&gt;
+      &lt;ChrgBr&gt;SHAR&lt;/ChrgBr&gt;
+      &lt;Dbtr&gt;&lt;Nm&gt;Emma Wilson&lt;/Nm&gt;&lt;PstlAdr&gt;&lt;StrtNm&gt;14 Oakfield Road&lt;/StrtNm&gt;&lt;TwnNm&gt;London&lt;/TwnNm&gt;&lt;PstCd&gt;NW3 2AB&lt;/PstCd&gt;&lt;Ctry&gt;GB&lt;/Ctry&gt;&lt;/PstlAdr&gt;&lt;/Dbtr&gt;
+      &lt;DbtrAcct&gt;&lt;Id&gt;&lt;IBAN&gt;GB29NWBK60161331926819&lt;/IBAN&gt;&lt;/Id&gt;&lt;/DbtrAcct&gt;
+      &lt;DbtrAgt&gt;&lt;FinInstnId&gt;&lt;BICFI&gt;NWBKGB2LXXX&lt;/BICFI&gt;&lt;/FinInstnId&gt;&lt;/DbtrAgt&gt;
+      &lt;CdtrAgt&gt;&lt;FinInstnId&gt;&lt;BICFI&gt;DEUTDEFFXXX&lt;/BICFI&gt;&lt;/FinInstnId&gt;&lt;/CdtrAgt&gt;
+      &lt;Cdtr&gt;&lt;Nm&gt;Schneider GmbH&lt;/Nm&gt;&lt;PstlAdr&gt;&lt;StrtNm&gt;Musterstrasse 12&lt;/StrtNm&gt;&lt;TwnNm&gt;Berlin&lt;/TwnNm&gt;&lt;PstCd&gt;10115&lt;/PstCd&gt;&lt;Ctry&gt;DE&lt;/Ctry&gt;&lt;/PstlAdr&gt;&lt;/Cdtr&gt;
+      &lt;CdtrAcct&gt;&lt;Id&gt;&lt;IBAN&gt;DE89370400440532013000&lt;/IBAN&gt;&lt;/Id&gt;&lt;/CdtrAcct&gt;
+      &lt;Purp&gt;&lt;Cd&gt;SUPP&lt;/Cd&gt;&lt;/Purp&gt;
+      &lt;RmtInf&gt;&lt;Ustrd&gt;Invoice INV-2026-1147 supplier payment&lt;/Ustrd&gt;&lt;/RmtInf&gt;
+      
+    &lt;/CdtTrfTxInf&gt;
+  &lt;/FIToFICstmrCdtTrf&gt;
+&lt;/Document&gt;
+</pre></div>
+<p><button class="api-btn iso-toggle" onclick="paIsoToggle('iso-why-EX-10', this)">Reveal why the invalid sample fails</button> <button class="api-btn iso-toggle" onclick="paIsoToggle('iso-ans-EX-10', this)">Reveal expected answer</button></p>
+<div id="iso-why-EX-10" style="display:none"><p><b>Why the invalid sample fails.</b> This invalid example fails on two separate layers, and they must not be confused. First, the creation timestamp 2026-11-05 09:42:00 uses a space instead of the letter T between date and time, so it is not a valid XML dateTime: this is a schema failure, and the message is rejected at validation before any business check. Second, the timestamp carries no UTC offset. A missing offset is not itself an XSD schema failure for this element, because the base schema permits a dateTime without an offset; it is a usage-guideline and business failure, because the receiving system cannot tell whether 09:42 meant London, Kolkata, or Singapore time. The consequence is rejection at validation for the missing T, and, if the offset alone were missing, rejection or repair under the usage guideline, because cutoff checks and audit ordering would be unreliable without an offset.</p></div>
+<div id="iso-ans-EX-10" style="display:none"><p><b>Expected answer.</b> You should conclude that every timestamp needs the T separator and a UTC offset, that 09:42 in London in November is 09:42:00+00:00, and that the same instant is 15:12 in Kolkata at plus 05:30. Keep the two failures separate: a missing T is a schema failure, while a missing offset is a usage-guideline and business failure, not a schema failure, because the base schema permits a dateTime without an offset. The corrected approach is to store timestamps with their offset at creation, to convert to UTC when comparing times across centres, to check cutoffs in the settlement centre local time, and never to accept a timestamp without an offset, however plausible the clock reading looks on its own.</p></div>
+<p><label class="iso-done-label"><input type="checkbox" class="iso-done-check" data-ex="EX-10" onchange="paIsoDone(this)"> I worked this exercise, mark it done</label></p>
+</div>
+<div class="lab-card" id="iso-EX-11">
+<h3>EX-11: Version compatibility</h3>
+<p><b>Concept.</b> A message name such as pacs.008.001.08 carries its version in the last segment, and the version decides which fields exist and which rules apply. The current version for cross border payments under CBPR+ and for SEPA is pacs.008.001.08, after coexistence with MT messages ended on 22 November 2025. An older version such as pacs.008.001.02 has a different structure, fewer fields, and different usage rules, so a counterparty that has moved to version 08 cannot process it as if it were version 08. Sending the wrong version is not a typing error: it is a compatibility failure, and the receiving system must reject it even when every business field looks correct, because it cannot trust the missing fields.</p>
+<p><b>Task.</b> Compare the namespace in the valid pacs.008.001.08 below with the namespace in the invalid pacs.008.001.02 below. List three things that can differ between versions, explain why the receiver cannot simply treat the older message as version 08, and write the migration steps a bank should follow before it switches a counterparty to the new version.</p>
+<table class="explorer-table"><tr><th>Field</th><th>Meaning</th><th>Cardinality</th><th>Mandatory</th></tr>
+<tr><td><code>MsgDefIdr</code></td><td>Message definition identifier stating family, number, and version</td><td>1..1</td><td>schema mandatory</td></tr>
+<tr><td><code>Document namespace</code></td><td>XML namespace that fixes which schema version validates the message</td><td>1..1</td><td>schema mandatory</td></tr>
+<tr><td><code>PmtId.UETR</code></td><td>Tracking reference present in current versions and absent in some older ones</td><td>0..1</td><td>business mandatory</td></tr>
+<tr><td><code>GrpHdr.MsgId</code></td><td>Message identifier, whose uniqueness rules can change by version</td><td>1..1</td><td>schema mandatory</td></tr>
+<tr><td><code>SttlmInf</code></td><td>Settlement information, whose allowed values can change by version</td><td>1..1</td><td>schema mandatory</td></tr>
+</table>
+<p><button class="api-btn iso-toggle" onclick="paIsoToggle('iso-valid-EX-11', this)">Show valid XML</button> <button class="api-btn" onclick="paIsoCopy('iso-valid-EX-11', this)">Copy valid XML</button> <button class="api-btn iso-toggle" onclick="paIsoToggle('iso-invalid-EX-11', this)">Show invalid XML</button></p>
+<div id="iso-valid-EX-11" style="display:none"><p><b>Valid XML</b></p><pre class="api-pre api-resp-ok">
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;Document xmlns="urn:iso:std:iso:20022:tech:xsd:pacs.008.001.08"&gt;
+  &lt;FIToFICstmrCdtTrf&gt;
+    &lt;GrpHdr&gt;
+      &lt;MsgId&gt;MSG-2026-1105-004821&lt;/MsgId&gt;
+      &lt;CreDtTm&gt;2026-11-05T09:42:00+00:00&lt;/CreDtTm&gt;
+      &lt;NbOfTxs&gt;1&lt;/NbOfTxs&gt;
+      &lt;CtrlSum&gt;8750.00&lt;/CtrlSum&gt;
+      &lt;SttlmInf&gt;&lt;SttlmMtd&gt;INDA&lt;/SttlmMtd&gt;&lt;/SttlmInf&gt;
+    &lt;/GrpHdr&gt;
+    &lt;CdtTrfTxInf&gt;
+      &lt;PmtId&gt;&lt;InstrId&gt;INSTR-884120&lt;/InstrId&gt;&lt;EndToEndId&gt;INV-2026-1147&lt;/EndToEndId&gt;&lt;TxId&gt;TX-2026-1105-7781&lt;/TxId&gt;&lt;UETR&gt;8f2a1c4e-6b3d-4a9f-8e21-5c7d3a9b1e04&lt;/UETR&gt;&lt;/PmtId&gt;
+      &lt;IntrBkSttlmAmt Ccy="EUR"&gt;8750.00&lt;/IntrBkSttlmAmt&gt;
+      &lt;IntrBkSttlmDt&gt;2026-11-06&lt;/IntrBkSttlmDt&gt;
+      &lt;ChrgBr&gt;SHAR&lt;/ChrgBr&gt;
+      &lt;Dbtr&gt;&lt;Nm&gt;Emma Wilson&lt;/Nm&gt;&lt;PstlAdr&gt;&lt;StrtNm&gt;14 Oakfield Road&lt;/StrtNm&gt;&lt;TwnNm&gt;London&lt;/TwnNm&gt;&lt;PstCd&gt;NW3 2AB&lt;/PstCd&gt;&lt;Ctry&gt;GB&lt;/Ctry&gt;&lt;/PstlAdr&gt;&lt;/Dbtr&gt;
+      &lt;DbtrAcct&gt;&lt;Id&gt;&lt;IBAN&gt;GB29NWBK60161331926819&lt;/IBAN&gt;&lt;/Id&gt;&lt;/DbtrAcct&gt;
+      &lt;DbtrAgt&gt;&lt;FinInstnId&gt;&lt;BICFI&gt;NWBKGB2LXXX&lt;/BICFI&gt;&lt;/FinInstnId&gt;&lt;/DbtrAgt&gt;
+      &lt;CdtrAgt&gt;&lt;FinInstnId&gt;&lt;BICFI&gt;DEUTDEFFXXX&lt;/BICFI&gt;&lt;/FinInstnId&gt;&lt;/CdtrAgt&gt;
+      &lt;Cdtr&gt;&lt;Nm&gt;Schneider GmbH&lt;/Nm&gt;&lt;PstlAdr&gt;&lt;StrtNm&gt;Musterstrasse 12&lt;/StrtNm&gt;&lt;TwnNm&gt;Berlin&lt;/TwnNm&gt;&lt;PstCd&gt;10115&lt;/PstCd&gt;&lt;Ctry&gt;DE&lt;/Ctry&gt;&lt;/PstlAdr&gt;&lt;/Cdtr&gt;
+      &lt;CdtrAcct&gt;&lt;Id&gt;&lt;IBAN&gt;DE89370400440532013000&lt;/IBAN&gt;&lt;/Id&gt;&lt;/CdtrAcct&gt;
+      &lt;Purp&gt;&lt;Cd&gt;SUPP&lt;/Cd&gt;&lt;/Purp&gt;
+      &lt;RmtInf&gt;&lt;Ustrd&gt;Invoice INV-2026-1147 supplier payment&lt;/Ustrd&gt;&lt;/RmtInf&gt;
+      
+    &lt;/CdtTrfTxInf&gt;
+  &lt;/FIToFICstmrCdtTrf&gt;
+&lt;/Document&gt;
+</pre></div>
+<div id="iso-invalid-EX-11" style="display:none"><p><b>Invalid XML</b></p><pre class="api-pre api-resp-err">
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;Document xmlns="urn:iso:std:iso:20022:tech:xsd:pacs.008.001.02"&gt;
+  &lt;FIToFICstmrCdtTrf&gt;
+    &lt;GrpHdr&gt;
+      &lt;MsgId&gt;MSG-2026-1105-004832&lt;/MsgId&gt;
+      &lt;CreDtTm&gt;2026-11-05T09:42:00+00:00&lt;/CreDtTm&gt;
+      &lt;NbOfTxs&gt;1&lt;/NbOfTxs&gt;
+      &lt;CtrlSum&gt;8750.00&lt;/CtrlSum&gt;
+      &lt;SttlmInf&gt;&lt;SttlmMtd&gt;INDA&lt;/SttlmMtd&gt;&lt;/SttlmInf&gt;
+    &lt;/GrpHdr&gt;
+    &lt;CdtTrfTxInf&gt;
+      &lt;PmtId&gt;&lt;InstrId&gt;INSTR-884120&lt;/InstrId&gt;&lt;EndToEndId&gt;INV-2026-1147&lt;/EndToEndId&gt;&lt;TxId&gt;TX-2026-1105-7781&lt;/TxId&gt;&lt;UETR&gt;8f2a1c4e-6b3d-4a9f-8e21-5c7d3a9b1e04&lt;/UETR&gt;&lt;/PmtId&gt;
+      &lt;IntrBkSttlmAmt Ccy="EUR"&gt;8750.00&lt;/IntrBkSttlmAmt&gt;
+      &lt;IntrBkSttlmDt&gt;2026-11-06&lt;/IntrBkSttlmDt&gt;
+      &lt;ChrgBr&gt;SHAR&lt;/ChrgBr&gt;
+      &lt;Dbtr&gt;&lt;Nm&gt;Emma Wilson&lt;/Nm&gt;&lt;PstlAdr&gt;&lt;StrtNm&gt;14 Oakfield Road&lt;/StrtNm&gt;&lt;TwnNm&gt;London&lt;/TwnNm&gt;&lt;PstCd&gt;NW3 2AB&lt;/PstCd&gt;&lt;Ctry&gt;GB&lt;/Ctry&gt;&lt;/PstlAdr&gt;&lt;/Dbtr&gt;
+      &lt;DbtrAcct&gt;&lt;Id&gt;&lt;IBAN&gt;GB29NWBK60161331926819&lt;/IBAN&gt;&lt;/Id&gt;&lt;/DbtrAcct&gt;
+      &lt;DbtrAgt&gt;&lt;FinInstnId&gt;&lt;BICFI&gt;NWBKGB2LXXX&lt;/BICFI&gt;&lt;/FinInstnId&gt;&lt;/DbtrAgt&gt;
+      &lt;CdtrAgt&gt;&lt;FinInstnId&gt;&lt;BICFI&gt;DEUTDEFFXXX&lt;/BICFI&gt;&lt;/FinInstnId&gt;&lt;/CdtrAgt&gt;
+      &lt;Cdtr&gt;&lt;Nm&gt;Schneider GmbH&lt;/Nm&gt;&lt;PstlAdr&gt;&lt;StrtNm&gt;Musterstrasse 12&lt;/StrtNm&gt;&lt;TwnNm&gt;Berlin&lt;/TwnNm&gt;&lt;PstCd&gt;10115&lt;/PstCd&gt;&lt;Ctry&gt;DE&lt;/Ctry&gt;&lt;/PstlAdr&gt;&lt;/Cdtr&gt;
+      &lt;CdtrAcct&gt;&lt;Id&gt;&lt;IBAN&gt;DE89370400440532013000&lt;/IBAN&gt;&lt;/Id&gt;&lt;/CdtrAcct&gt;
+      &lt;Purp&gt;&lt;Cd&gt;SUPP&lt;/Cd&gt;&lt;/Purp&gt;
+      &lt;RmtInf&gt;&lt;Ustrd&gt;Invoice INV-2026-1147 supplier payment&lt;/Ustrd&gt;&lt;/RmtInf&gt;
+      
+    &lt;/CdtTrfTxInf&gt;
+  &lt;/FIToFICstmrCdtTrf&gt;
+&lt;/Document&gt;
+</pre></div>
+<p><button class="api-btn iso-toggle" onclick="paIsoToggle('iso-why-EX-11', this)">Reveal why the invalid sample fails</button> <button class="api-btn iso-toggle" onclick="paIsoToggle('iso-ans-EX-11', this)">Reveal expected answer</button></p>
+<div id="iso-why-EX-11" style="display:none"><p><b>Why the invalid sample fails.</b> This invalid example is schema valid but business invalid, as required for this exercise. The document is well formed and valid against the pacs.008.001.02 schema, so its own XSD check passes. It fails business and market practice validation because the counterparty and the CBPR+ guide require pacs.008.001.08 in 2026, after coexistence ended on 22 November 2025. This is a business rule failure, not a schema rule failure. The consequence is rejection by version: the receiver cannot accept fields and rules from a retired version, so the sender must rebuild the message in version 08.</p></div>
+<div id="iso-ans-EX-11" style="display:none"><p><b>Expected answer.</b> You should conclude that the version in the namespace and in MsgDefIdr must match the version the counterparty expects, that version 08 is current for CBPR+ and SEPA in 2026, and that older versions are retired after coexistence ends. The corrected approach is to check the counterparty version before sending, to test the new version in a test window, to update mappings for any new or changed fields, and to keep the old version only until the agreed cutover date, after which it must be rejected, not accepted as a favour.</p></div>
+<p><label class="iso-done-label"><input type="checkbox" class="iso-done-check" data-ex="EX-11" onchange="paIsoDone(this)"> I worked this exercise, mark it done</label></p>
+</div>
+<div class="lab-card" id="iso-EX-12">
+<h3>EX-12: Data truncation and lossy mapping</h3>
+<p><b>Concept.</b> Mapping MT103 field 70 to pacs.008 remittance information is lossy, because the two formats hold different amounts of text in different shapes. MT103 field 70 allows four lines of 35 characters, a total of 140 characters of free text, often mixing an invoice number, a description, and a month in one block. Pacs.008 unstructured remittance information also allows 140 characters, while structured remittance information splits the data into coded references, invoice numbers, and dates that a creditor system can match automatically. If copying the free text and cutting it at the limit loses the invoice number at the end, the creditor cannot reconcile the receipt. The safe mapping extracts the invoice reference first and records what was shortened.</p>
+<p><b>Task.</b> Read the MT103 field 70 text in the concept, which is INV-2024-0988 payment for consulting services October 2024, from a pre-migration MT103, and map it to pacs.008 remittance information. Then inspect the invalid version, where the unstructured text exceeds 140 characters, and explain what would be lost by truncation, how structured remittance information would preserve the invoice number, and what to log when text must be shortened.</p>
+<table class="explorer-table"><tr><th>Field</th><th>Meaning</th><th>Cardinality</th><th>Mandatory</th></tr>
+<tr><td><code>RmtInf.Ustrd</code></td><td>Unstructured remittance text, limited to 140 characters</td><td>0..1</td><td>optional</td></tr>
+<tr><td><code>RmtInf.Strd</code></td><td>Structured remittance data with coded invoice references</td><td>0..n</td><td>optional</td></tr>
+<tr><td><code>EndToEndId</code></td><td>Debtor reference copied from the invoice number for creditor matching</td><td>0..1</td><td>business mandatory</td></tr>
+<tr><td><code>MT103 field 70</code></td><td>Source remittance text, four lines of 35 characters in MT format</td><td>0..1</td><td>optional</td></tr>
+<tr><td><code>Purp</code></td><td>Purpose code that survives mapping even when free text is shortened</td><td>0..1</td><td>optional</td></tr>
+</table>
+<p><button class="api-btn iso-toggle" onclick="paIsoToggle('iso-valid-EX-12', this)">Show valid XML</button> <button class="api-btn" onclick="paIsoCopy('iso-valid-EX-12', this)">Copy valid XML</button> <button class="api-btn iso-toggle" onclick="paIsoToggle('iso-invalid-EX-12', this)">Show invalid XML</button></p>
+<div id="iso-valid-EX-12" style="display:none"><p><b>Valid XML</b></p><pre class="api-pre api-resp-ok">
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;Document xmlns="urn:iso:std:iso:20022:tech:xsd:pacs.008.001.08"&gt;
+  &lt;FIToFICstmrCdtTrf&gt;
+    &lt;GrpHdr&gt;
+      &lt;MsgId&gt;MSG-2026-1105-004821&lt;/MsgId&gt;
+      &lt;CreDtTm&gt;2026-11-05T09:42:00+00:00&lt;/CreDtTm&gt;
+      &lt;NbOfTxs&gt;1&lt;/NbOfTxs&gt;
+      &lt;CtrlSum&gt;8750.00&lt;/CtrlSum&gt;
+      &lt;SttlmInf&gt;&lt;SttlmMtd&gt;INDA&lt;/SttlmMtd&gt;&lt;/SttlmInf&gt;
+    &lt;/GrpHdr&gt;
+    &lt;CdtTrfTxInf&gt;
+      &lt;PmtId&gt;&lt;InstrId&gt;INSTR-884120&lt;/InstrId&gt;&lt;EndToEndId&gt;INV-2026-1147&lt;/EndToEndId&gt;&lt;TxId&gt;TX-2026-1105-7781&lt;/TxId&gt;&lt;UETR&gt;8f2a1c4e-6b3d-4a9f-8e21-5c7d3a9b1e04&lt;/UETR&gt;&lt;/PmtId&gt;
+      &lt;IntrBkSttlmAmt Ccy="EUR"&gt;8750.00&lt;/IntrBkSttlmAmt&gt;
+      &lt;IntrBkSttlmDt&gt;2026-11-06&lt;/IntrBkSttlmDt&gt;
+      &lt;ChrgBr&gt;SHAR&lt;/ChrgBr&gt;
+      &lt;Dbtr&gt;&lt;Nm&gt;Emma Wilson&lt;/Nm&gt;&lt;PstlAdr&gt;&lt;StrtNm&gt;14 Oakfield Road&lt;/StrtNm&gt;&lt;TwnNm&gt;London&lt;/TwnNm&gt;&lt;PstCd&gt;NW3 2AB&lt;/PstCd&gt;&lt;Ctry&gt;GB&lt;/Ctry&gt;&lt;/PstlAdr&gt;&lt;/Dbtr&gt;
+      &lt;DbtrAcct&gt;&lt;Id&gt;&lt;IBAN&gt;GB29NWBK60161331926819&lt;/IBAN&gt;&lt;/Id&gt;&lt;/DbtrAcct&gt;
+      &lt;DbtrAgt&gt;&lt;FinInstnId&gt;&lt;BICFI&gt;NWBKGB2LXXX&lt;/BICFI&gt;&lt;/FinInstnId&gt;&lt;/DbtrAgt&gt;
+      &lt;CdtrAgt&gt;&lt;FinInstnId&gt;&lt;BICFI&gt;DEUTDEFFXXX&lt;/BICFI&gt;&lt;/FinInstnId&gt;&lt;/CdtrAgt&gt;
+      &lt;Cdtr&gt;&lt;Nm&gt;Schneider GmbH&lt;/Nm&gt;&lt;PstlAdr&gt;&lt;StrtNm&gt;Musterstrasse 12&lt;/StrtNm&gt;&lt;TwnNm&gt;Berlin&lt;/TwnNm&gt;&lt;PstCd&gt;10115&lt;/PstCd&gt;&lt;Ctry&gt;DE&lt;/Ctry&gt;&lt;/PstlAdr&gt;&lt;/Cdtr&gt;
+      &lt;CdtrAcct&gt;&lt;Id&gt;&lt;IBAN&gt;DE89370400440532013000&lt;/IBAN&gt;&lt;/Id&gt;&lt;/CdtrAcct&gt;
+      &lt;Purp&gt;&lt;Cd&gt;SUPP&lt;/Cd&gt;&lt;/Purp&gt;
+      &lt;RmtInf&gt;&lt;Ustrd&gt;Invoice INV-2026-0988 consulting Oct 2026&lt;/Ustrd&gt;&lt;/RmtInf&gt;
+      
+    &lt;/CdtTrfTxInf&gt;
+  &lt;/FIToFICstmrCdtTrf&gt;
+&lt;/Document&gt;
+</pre></div>
+<div id="iso-invalid-EX-12" style="display:none"><p><b>Invalid XML</b></p><pre class="api-pre api-resp-err">
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;Document xmlns="urn:iso:std:iso:20022:tech:xsd:pacs.008.001.08"&gt;
+  &lt;FIToFICstmrCdtTrf&gt;
+    &lt;GrpHdr&gt;
+      &lt;MsgId&gt;MSG-2026-1105-004833&lt;/MsgId&gt;
+      &lt;CreDtTm&gt;2026-11-05T09:42:00+00:00&lt;/CreDtTm&gt;
+      &lt;NbOfTxs&gt;1&lt;/NbOfTxs&gt;
+      &lt;CtrlSum&gt;8750.00&lt;/CtrlSum&gt;
+      &lt;SttlmInf&gt;&lt;SttlmMtd&gt;INDA&lt;/SttlmMtd&gt;&lt;/SttlmInf&gt;
+    &lt;/GrpHdr&gt;
+    &lt;CdtTrfTxInf&gt;
+      &lt;PmtId&gt;&lt;InstrId&gt;INSTR-884120&lt;/InstrId&gt;&lt;EndToEndId&gt;INV-2026-1147&lt;/EndToEndId&gt;&lt;TxId&gt;TX-2026-1105-7781&lt;/TxId&gt;&lt;UETR&gt;8f2a1c4e-6b3d-4a9f-8e21-5c7d3a9b1e04&lt;/UETR&gt;&lt;/PmtId&gt;
+      &lt;IntrBkSttlmAmt Ccy="EUR"&gt;8750.00&lt;/IntrBkSttlmAmt&gt;
+      &lt;IntrBkSttlmDt&gt;2026-11-06&lt;/IntrBkSttlmDt&gt;
+      &lt;ChrgBr&gt;SHAR&lt;/ChrgBr&gt;
+      &lt;Dbtr&gt;&lt;Nm&gt;Emma Wilson&lt;/Nm&gt;&lt;PstlAdr&gt;&lt;StrtNm&gt;14 Oakfield Road&lt;/StrtNm&gt;&lt;TwnNm&gt;London&lt;/TwnNm&gt;&lt;PstCd&gt;NW3 2AB&lt;/PstCd&gt;&lt;Ctry&gt;GB&lt;/Ctry&gt;&lt;/PstlAdr&gt;&lt;/Dbtr&gt;
+      &lt;DbtrAcct&gt;&lt;Id&gt;&lt;IBAN&gt;GB29NWBK60161331926819&lt;/IBAN&gt;&lt;/Id&gt;&lt;/DbtrAcct&gt;
+      &lt;DbtrAgt&gt;&lt;FinInstnId&gt;&lt;BICFI&gt;NWBKGB2LXXX&lt;/BICFI&gt;&lt;/FinInstnId&gt;&lt;/DbtrAgt&gt;
+      &lt;CdtrAgt&gt;&lt;FinInstnId&gt;&lt;BICFI&gt;DEUTDEFFXXX&lt;/BICFI&gt;&lt;/FinInstnId&gt;&lt;/CdtrAgt&gt;
+      &lt;Cdtr&gt;&lt;Nm&gt;Schneider GmbH&lt;/Nm&gt;&lt;PstlAdr&gt;&lt;StrtNm&gt;Musterstrasse 12&lt;/StrtNm&gt;&lt;TwnNm&gt;Berlin&lt;/TwnNm&gt;&lt;PstCd&gt;10115&lt;/PstCd&gt;&lt;Ctry&gt;DE&lt;/Ctry&gt;&lt;/PstlAdr&gt;&lt;/Cdtr&gt;
+      &lt;CdtrAcct&gt;&lt;Id&gt;&lt;IBAN&gt;DE89370400440532013000&lt;/IBAN&gt;&lt;/Id&gt;&lt;/CdtrAcct&gt;
+      &lt;Purp&gt;&lt;Cd&gt;SUPP&lt;/Cd&gt;&lt;/Purp&gt;
+      &lt;RmtInf&gt;&lt;Ustrd&gt;Invoice INV-2026-0988 payment for consulting services October 2026 plus additional narrative text about the contract and the delivery schedule and the agreed payment terms for this supplier account&lt;/Ustrd&gt;&lt;/RmtInf&gt;
+      
+    &lt;/CdtTrfTxInf&gt;
+  &lt;/FIToFICstmrCdtTrf&gt;
+&lt;/Document&gt;
+</pre></div>
+<p><button class="api-btn iso-toggle" onclick="paIsoToggle('iso-why-EX-12', this)">Reveal why the invalid sample fails</button> <button class="api-btn iso-toggle" onclick="paIsoToggle('iso-ans-EX-12', this)">Reveal expected answer</button></p>
+<div id="iso-why-EX-12" style="display:none"><p><b>Why the invalid sample fails.</b> This invalid example parses as XML, but it fails schema validation because the unstructured remittance text exceeds the 140 character limit for Ustrd. The long narrative was copied from MT103 field 70 without shortening, so the schema length rule rejects it. This is a schema rule failure caused by lossy mapping. The consequence is rejection at validation, and silent truncation would be worse, because cutting the text at 140 characters could remove the invoice number and leave the creditor unable to match the payment.</p></div>
+<div id="iso-ans-EX-12" style="display:none"><p><b>Expected answer.</b> You should conclude that MT103 field 70 and pacs.008 Ustrd both allow 140 characters, that structured remittance information preserves invoice numbers better than free text, and that truncation must never cut a reference. The corrected approach is to extract INV-2024-0988 into the end to end reference and into structured remittance data first, to shorten only descriptive words, to log every shortening with the original text, and to reject the mapping for manual review when the reference itself does not fit.</p></div>
+<p><label class="iso-done-label"><input type="checkbox" class="iso-done-check" data-ex="EX-12" onchange="paIsoDone(this)"> I worked this exercise, mark it done</label></p>
+</div>
+<div class="lab-card" id="iso-EX-13">
+<h3>EX-13: Partial batch rejection</h3>
+<p><b>Concept.</b> A pain.001 batch can be partially accepted: some transactions pass validation and settle, while one fails and is rejected, and the status report must show that split exactly. The bank sends pain.002 to the customer, or pacs.002 between banks, with a group status of PART for partially accepted, then one TxInfAndSts block per transaction with its own status and reason code. A failed transaction with reason AC01 for a wrong account number does not stop the other transactions, and the customer resends only the failed item with a fresh instruction identifier. Treating the whole batch as rejected would delay good payments, while treating it as fully accepted would hide the failure and leave a supplier unpaid without explanation.</p>
+<p><b>Task.</b> Study the valid pacs.002 below, which reports a group of three transactions as PART, with two accepted and one rejected for AC01. Then inspect the invalid version, which reports the whole group as RJCT with no per transaction detail, and explain which transactions would wrongly be held, what the customer would resend in error, and how to rewrite the report correctly.</p>
+<table class="explorer-table"><tr><th>Field</th><th>Meaning</th><th>Cardinality</th><th>Mandatory</th></tr>
+<tr><td><code>OrgnlGrpInfAndSts.GrpSts</code></td><td>Group status, ACCP, RJCT, or PART for a partial batch</td><td>0..1</td><td>business mandatory</td></tr>
+<tr><td><code>TxInfAndSts.TxSts</code></td><td>Status of one single transaction, such as ACCP or RJCT</td><td>1..1</td><td>schema mandatory</td></tr>
+<tr><td><code>TxInfAndSts.OrgnlInstrId</code></td><td>Original instruction identifier linking the status to one payment</td><td>1..1</td><td>schema mandatory</td></tr>
+<tr><td><code>StsRsnInf.Rsn.Cd</code></td><td>Reason code for a rejection, such as AC01 for a wrong account</td><td>0..1</td><td>conditional</td></tr>
+<tr><td><code>OrgnlEndToEndId</code></td><td>Original end to end reference copied into the status report</td><td>0..1</td><td>optional</td></tr>
+</table>
+<p><button class="api-btn iso-toggle" onclick="paIsoToggle('iso-valid-EX-13', this)">Show valid XML</button> <button class="api-btn" onclick="paIsoCopy('iso-valid-EX-13', this)">Copy valid XML</button> <button class="api-btn iso-toggle" onclick="paIsoToggle('iso-invalid-EX-13', this)">Show invalid XML</button></p>
+<div id="iso-valid-EX-13" style="display:none"><p><b>Valid XML</b></p><pre class="api-pre api-resp-ok">
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;Document xmlns="urn:iso:std:iso:20022:tech:xsd:pacs.002.001.10"&gt;
+  &lt;FIToFIPmtStsRpt&gt;
+    &lt;GrpHdr&gt;&lt;MsgId&gt;MSG-2026-1105-005100&lt;/MsgId&gt;&lt;CreDtTm&gt;2026-11-05T11:20:00+00:00&lt;/CreDtTm&gt;&lt;/GrpHdr&gt;
+    &lt;OrgnlGrpInfAndSts&gt;&lt;OrgnlMsgId&gt;MSG-2026-1105-004821&lt;/OrgnlMsgId&gt;&lt;OrgnlMsgNmId&gt;pacs.008.001.08&lt;/OrgnlMsgNmId&gt;&lt;GrpSts&gt;PART&lt;/GrpSts&gt;&lt;/OrgnlGrpInfAndSts&gt;
+    &lt;TxInfAndSts&gt;&lt;OrgnlInstrId&gt;INSTR-884120&lt;/OrgnlInstrId&gt;&lt;OrgnlEndToEndId&gt;INV-2026-1147&lt;/OrgnlEndToEndId&gt;&lt;TxSts&gt;ACCP&lt;/TxSts&gt;&lt;/TxInfAndSts&gt;
+    &lt;TxInfAndSts&gt;&lt;OrgnlInstrId&gt;INSTR-884121&lt;/OrgnlInstrId&gt;&lt;OrgnlEndToEndId&gt;INV-2026-1148&lt;/OrgnlEndToEndId&gt;&lt;TxSts&gt;ACCP&lt;/TxSts&gt;&lt;/TxInfAndSts&gt;
+    &lt;TxInfAndSts&gt;&lt;OrgnlInstrId&gt;INSTR-884122&lt;/OrgnlInstrId&gt;&lt;OrgnlEndToEndId&gt;INV-2026-1149&lt;/OrgnlEndToEndId&gt;&lt;TxSts&gt;RJCT&lt;/TxSts&gt;&lt;StsRsnInf&gt;&lt;Rsn&gt;&lt;Cd&gt;AC01&lt;/Cd&gt;&lt;/Rsn&gt;&lt;AddtlInf&gt;Wrong creditor account number&lt;/AddtlInf&gt;&lt;/StsRsnInf&gt;&lt;/TxInfAndSts&gt;
+  &lt;/FIToFIPmtStsRpt&gt;
+&lt;/Document&gt;
+</pre></div>
+<div id="iso-invalid-EX-13" style="display:none"><p><b>Invalid XML</b></p><pre class="api-pre api-resp-err">
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;Document xmlns="urn:iso:std:iso:20022:tech:xsd:pacs.002.001.10"&gt;
+  &lt;FIToFIPmtStsRpt&gt;
+    &lt;GrpHdr&gt;&lt;MsgId&gt;MSG-2026-1105-005101&lt;/MsgId&gt;&lt;CreDtTm&gt;2026-11-05T11:20:00+00:00&lt;/CreDtTm&gt;&lt;/GrpHdr&gt;
+    &lt;OrgnlGrpInfAndSts&gt;&lt;OrgnlMsgId&gt;MSG-2026-1105-004821&lt;/OrgnlMsgId&gt;&lt;OrgnlMsgNmId&gt;pacs.008.001.08&lt;/OrgnlMsgNmId&gt;&lt;GrpSts&gt;RJCT&lt;/GrpSts&gt;&lt;/OrgnlGrpInfAndSts&gt;
+  &lt;/FIToFIPmtStsRpt&gt;
+&lt;/Document&gt;
+</pre></div>
+<p><button class="api-btn iso-toggle" onclick="paIsoToggle('iso-why-EX-13', this)">Reveal why the invalid sample fails</button> <button class="api-btn iso-toggle" onclick="paIsoToggle('iso-ans-EX-13', this)">Reveal expected answer</button></p>
+<div id="iso-why-EX-13" style="display:none"><p><b>Why the invalid sample fails.</b> This invalid example parses as XML, but it is structurally wrong because it reports the whole group as RJCT when only one of three transactions failed. The group status should be PART, with two ACCP blocks and one RJCT block carrying reason AC01, so the receiver knows exactly which payment failed. This breaks the partial acceptance reporting rule, a business rule about status accuracy. The consequence is that two good payments would be treated as rejected, the customer would resend them and risk duplicate payment, and the real failure would have no reason code to fix.</p></div>
+<div id="iso-ans-EX-13" style="display:none"><p><b>Expected answer.</b> You should conclude that a partial batch uses group status PART, that each transaction needs its own TxInfAndSts with ACCP or RJCT, and that a rejection always needs a reason code such as AC01. The corrected approach is to settle the two accepted transactions, to hold only the rejected one, to resend only that item with a fresh instruction identifier after fixing the account number, and to reconcile the status counts against the original batch totals before closing the case.</p></div>
+<p><label class="iso-done-label"><input type="checkbox" class="iso-done-check" data-ex="EX-13" onchange="paIsoDone(this)"> I worked this exercise, mark it done</label></p>
+</div>
+<div class="lab-card" id="iso-EX-14">
+<h3>EX-14: pain.001 to canonical model to pacs.008 transformation</h3>
+<p><b>Concept.</b> A customer payment travels in three shapes: pain.001 from the customer to the bank, a canonical payment record inside the bank, and pacs.008 from the bank to the next bank. Emma Wilson sends pain.001 to pay Schneider GmbH EUR 8,750.00 for invoice INV-2026-1147, with execution date 6 November 2026, charge bearer SHAR, and debtor account GB29 NWBK 6016 1331 9268 19. This payment is sent via CBPR+ correspondent banking, not SEPA, and SHAR is the charge bearer for this CBPR+ payment. The same payment sent as a SEPA credit transfer would use SLEV instead, because SEPA permits only SLEV; the charge bearer depends on the rail, so always state which rail the example uses before judging whether a charge bearer is correct. The bank builds one canonical record, PAY-2026-1105-004821, with debtor, creditor, accounts, amount, currency, purpose SUPP, and end to end reference, then validates, enriches, and screens it. The canonical record then produces pacs.008 with the same instruction identifier, end to end reference, amount, parties, and purpose, so every value in the final message traces back to the original instruction.</p>
+<p><b>Task.</b> Using the Emma Wilson example in the concept, study the reference canonical record and the complete mapping table provided with this exercise. For each row, check the pain.001 field, its canonical record field, and its pacs.008 field, and note the transformation rule, the validation outcome, and the data loss or truncation risk. Pay attention to the lossy rows: the postal address is restructured into named elements, unstructured remittance text may be simplified, and the canonical record holds internal-only fields (canonical payment identifier, internal status, screening result) that never appear in pacs.008, while the pacs.008 group header fields are created by the sending bank and do not come from pain.001. Then inspect the invalid pacs.008, where the end to end reference was replaced and the charge bearer was changed, and explain which creditor matching and fee outcome would break, and how to restore the correct mapping.</p>
+<table class="explorer-table"><tr><th>Field</th><th>Meaning</th><th>Cardinality</th><th>Mandatory</th></tr>
+<tr><td><code>pain.001 Dbtr Nm to pacs.008 Dbtr Nm</code></td><td>Debtor name from customer instruction to interbank message, unchanged</td><td>1..1</td><td>schema mandatory</td></tr>
+<tr><td><code>pain.001 CdtrAcct IBAN to pacs.008 CdtrAcct IBAN</code></td><td>Creditor IBAN from customer instruction to interbank message, unchanged</td><td>1..1</td><td>schema mandatory</td></tr>
+<tr><td><code>pain.001 InstdAmt to pacs.008 IntrBkSttlmAmt</code></td><td>Instructed amount mapped to interbank settlement amount, same currency</td><td>1..1</td><td>schema mandatory</td></tr>
+<tr><td><code>pain.001 EndToEndId to pacs.008 EndToEndId</code></td><td>End to end reference carried unchanged for creditor matching</td><td>0..1</td><td>business mandatory</td></tr>
+<tr><td><code>pain.001 ChrgBr to pacs.008 ChrgBr</code></td><td>Charge bearer mapped from customer code to interbank code, same outcome</td><td>0..1</td><td>optional</td></tr>
+<tr><td><code>Canonical payment identifier</code></td><td>Internal canonical identifier linking all three layers for audit</td><td>1..1</td><td>business mandatory</td></tr>
+</table>
+<p><button class="api-btn iso-toggle" onclick="paIsoToggle('iso-valid-EX-14', this)">Show valid XML</button> <button class="api-btn" onclick="paIsoCopy('iso-valid-EX-14', this)">Copy valid XML</button> <button class="api-btn iso-toggle" onclick="paIsoToggle('iso-invalid-EX-14', this)">Show invalid XML</button></p>
+<div id="iso-valid-EX-14" style="display:none"><p><b>Valid XML</b></p><pre class="api-pre api-resp-ok">
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;Document xmlns="urn:iso:std:iso:20022:tech:xsd:pacs.008.001.08"&gt;
+  &lt;FIToFICstmrCdtTrf&gt;
+    &lt;GrpHdr&gt;
+      &lt;MsgId&gt;MSG-2026-1105-004821&lt;/MsgId&gt;
+      &lt;CreDtTm&gt;2026-11-05T09:42:00+00:00&lt;/CreDtTm&gt;
+      &lt;NbOfTxs&gt;1&lt;/NbOfTxs&gt;
+      &lt;CtrlSum&gt;8750.00&lt;/CtrlSum&gt;
+      &lt;SttlmInf&gt;&lt;SttlmMtd&gt;INDA&lt;/SttlmMtd&gt;&lt;/SttlmInf&gt;
+    &lt;/GrpHdr&gt;
+    &lt;CdtTrfTxInf&gt;
+      &lt;PmtId&gt;&lt;InstrId&gt;INSTR-884120&lt;/InstrId&gt;&lt;EndToEndId&gt;INV-2026-1147&lt;/EndToEndId&gt;&lt;TxId&gt;TX-2026-1105-7781&lt;/TxId&gt;&lt;UETR&gt;8f2a1c4e-6b3d-4a9f-8e21-5c7d3a9b1e04&lt;/UETR&gt;&lt;/PmtId&gt;
+      &lt;IntrBkSttlmAmt Ccy="EUR"&gt;8750.00&lt;/IntrBkSttlmAmt&gt;
+      &lt;IntrBkSttlmDt&gt;2026-11-06&lt;/IntrBkSttlmDt&gt;
+      &lt;ChrgBr&gt;SHAR&lt;/ChrgBr&gt;
+      &lt;Dbtr&gt;&lt;Nm&gt;Emma Wilson&lt;/Nm&gt;&lt;PstlAdr&gt;&lt;StrtNm&gt;14 Oakfield Road&lt;/StrtNm&gt;&lt;TwnNm&gt;London&lt;/TwnNm&gt;&lt;PstCd&gt;NW3 2AB&lt;/PstCd&gt;&lt;Ctry&gt;GB&lt;/Ctry&gt;&lt;/PstlAdr&gt;&lt;/Dbtr&gt;
+      &lt;DbtrAcct&gt;&lt;Id&gt;&lt;IBAN&gt;GB29NWBK60161331926819&lt;/IBAN&gt;&lt;/Id&gt;&lt;/DbtrAcct&gt;
+      &lt;DbtrAgt&gt;&lt;FinInstnId&gt;&lt;BICFI&gt;NWBKGB2LXXX&lt;/BICFI&gt;&lt;/FinInstnId&gt;&lt;/DbtrAgt&gt;
+      &lt;CdtrAgt&gt;&lt;FinInstnId&gt;&lt;BICFI&gt;DEUTDEFFXXX&lt;/BICFI&gt;&lt;/FinInstnId&gt;&lt;/CdtrAgt&gt;
+      &lt;Cdtr&gt;&lt;Nm&gt;Schneider GmbH&lt;/Nm&gt;&lt;PstlAdr&gt;&lt;StrtNm&gt;Musterstrasse 12&lt;/StrtNm&gt;&lt;TwnNm&gt;Berlin&lt;/TwnNm&gt;&lt;PstCd&gt;10115&lt;/PstCd&gt;&lt;Ctry&gt;DE&lt;/Ctry&gt;&lt;/PstlAdr&gt;&lt;/Cdtr&gt;
+      &lt;CdtrAcct&gt;&lt;Id&gt;&lt;IBAN&gt;DE89370400440532013000&lt;/IBAN&gt;&lt;/Id&gt;&lt;/CdtrAcct&gt;
+      &lt;Purp&gt;&lt;Cd&gt;SUPP&lt;/Cd&gt;&lt;/Purp&gt;
+      &lt;RmtInf&gt;&lt;Ustrd&gt;Invoice INV-2026-1147 supplier payment&lt;/Ustrd&gt;&lt;/RmtInf&gt;
+      
+    &lt;/CdtTrfTxInf&gt;
+  &lt;/FIToFICstmrCdtTrf&gt;
+&lt;/Document&gt;
+</pre></div>
+<div id="iso-invalid-EX-14" style="display:none"><p><b>Invalid XML</b></p><pre class="api-pre api-resp-err">
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;Document xmlns="urn:iso:std:iso:20022:tech:xsd:pacs.008.001.08"&gt;
+  &lt;FIToFICstmrCdtTrf&gt;
+    &lt;GrpHdr&gt;
+      &lt;MsgId&gt;MSG-2026-1105-004834&lt;/MsgId&gt;
+      &lt;CreDtTm&gt;2026-11-05T09:42:00+00:00&lt;/CreDtTm&gt;
+      &lt;NbOfTxs&gt;1&lt;/NbOfTxs&gt;
+      &lt;CtrlSum&gt;8750.00&lt;/CtrlSum&gt;
+      &lt;SttlmInf&gt;&lt;SttlmMtd&gt;INDA&lt;/SttlmMtd&gt;&lt;/SttlmInf&gt;
+    &lt;/GrpHdr&gt;
+    &lt;CdtTrfTxInf&gt;
+      &lt;PmtId&gt;&lt;InstrId&gt;INSTR-884120&lt;/InstrId&gt;&lt;EndToEndId&gt;INSTR-884120&lt;/EndToEndId&gt;&lt;TxId&gt;TX-2026-1105-7781&lt;/TxId&gt;&lt;UETR&gt;8f2a1c4e-6b3d-4a9f-8e21-5c7d3a9b1e04&lt;/UETR&gt;&lt;/PmtId&gt;
+      &lt;IntrBkSttlmAmt Ccy="EUR"&gt;8750.00&lt;/IntrBkSttlmAmt&gt;
+      &lt;IntrBkSttlmDt&gt;2026-11-06&lt;/IntrBkSttlmDt&gt;
+      &lt;ChrgBr&gt;DEBT&lt;/ChrgBr&gt;
+      &lt;Dbtr&gt;&lt;Nm&gt;Emma Wilson&lt;/Nm&gt;&lt;PstlAdr&gt;&lt;StrtNm&gt;14 Oakfield Road&lt;/StrtNm&gt;&lt;TwnNm&gt;London&lt;/TwnNm&gt;&lt;PstCd&gt;NW3 2AB&lt;/PstCd&gt;&lt;Ctry&gt;GB&lt;/Ctry&gt;&lt;/PstlAdr&gt;&lt;/Dbtr&gt;
+      &lt;DbtrAcct&gt;&lt;Id&gt;&lt;IBAN&gt;GB29NWBK60161331926819&lt;/IBAN&gt;&lt;/Id&gt;&lt;/DbtrAcct&gt;
+      &lt;DbtrAgt&gt;&lt;FinInstnId&gt;&lt;BICFI&gt;NWBKGB2LXXX&lt;/BICFI&gt;&lt;/FinInstnId&gt;&lt;/DbtrAgt&gt;
+      &lt;CdtrAgt&gt;&lt;FinInstnId&gt;&lt;BICFI&gt;DEUTDEFFXXX&lt;/BICFI&gt;&lt;/FinInstnId&gt;&lt;/CdtrAgt&gt;
+      &lt;Cdtr&gt;&lt;Nm&gt;Schneider GmbH&lt;/Nm&gt;&lt;PstlAdr&gt;&lt;StrtNm&gt;Musterstrasse 12&lt;/StrtNm&gt;&lt;TwnNm&gt;Berlin&lt;/TwnNm&gt;&lt;PstCd&gt;10115&lt;/PstCd&gt;&lt;Ctry&gt;DE&lt;/Ctry&gt;&lt;/PstlAdr&gt;&lt;/Cdtr&gt;
+      &lt;CdtrAcct&gt;&lt;Id&gt;&lt;IBAN&gt;DE89370400440532013000&lt;/IBAN&gt;&lt;/Id&gt;&lt;/CdtrAcct&gt;
+      &lt;Purp&gt;&lt;Cd&gt;SUPP&lt;/Cd&gt;&lt;/Purp&gt;
+      &lt;RmtInf&gt;&lt;Ustrd&gt;Invoice INV-2026-1147 supplier payment&lt;/Ustrd&gt;&lt;/RmtInf&gt;
+      
+    &lt;/CdtTrfTxInf&gt;
+  &lt;/FIToFICstmrCdtTrf&gt;
+&lt;/Document&gt;
+</pre></div>
+<p><button class="api-btn iso-toggle" onclick="paIsoToggle('iso-why-EX-14', this)">Reveal why the invalid sample fails</button> <button class="api-btn iso-toggle" onclick="paIsoToggle('iso-ans-EX-14', this)">Reveal expected answer</button></p>
+<div id="iso-why-EX-14" style="display:none"><p><b>Why the invalid sample fails.</b> This invalid example parses as XML, but it is structurally wrong because the transformation broke two mappings. EndToEndId was replaced with the instruction identifier INSTR-884120, so the creditor can no longer match the payment to invoice INV-2026-1147, and ChrgBr was changed from SHAR to DEBT, so the fee outcome no longer matches the customer instruction. This breaks the mapping rule that end to end reference and charge bearer must pass unchanged through the canonical model. The consequence is failed creditor reconciliation and a wrong fee charge, followed by a query and a possible return. Note the rail: this example is a CBPR+ correspondent banking payment, where SHAR is correct; the same payment sent as SEPA would use SLEV, because SEPA permits only SLEV.</p></div>
+<div id="iso-ans-EX-14" style="display:none"><p><b>Expected answer.</b> You should conclude that pain.001, the canonical record, and pacs.008 must carry the same debtor, creditor, accounts, amount, currency, execution date, purpose, end to end reference, and charge bearer, with only the message identifier and agent fields changing by layer. The corrected approach is to build a controlled mapping table, to validate the canonical record before release, to enrich the BIC and country code without changing customer data, and to check every pacs.008 value against the canonical record, so a value that cannot be traced back is treated as a mapping gap, not sent. Always name the rail first: this example is CBPR+ correspondent banking, so SHAR is correct here; the same payment as SEPA would use SLEV.</p></div>
+<p><label class="iso-done-label"><input type="checkbox" class="iso-done-check" data-ex="EX-14" onchange="paIsoDone(this)"> I worked this exercise, mark it done</label></p>
+</div>
+</section>
+</main>
+<footer><p>Payments Training Hub. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="index.html">Home</a> &middot; <a href="courses.html">Courses</a> &middot; <a href="practice.html">Practice</a> &middot; <a href="simulators.html">Simulators</a> &middot; <a href="labs.html">Labs</a> &middot; <a href="explorer.html">Explorer</a> &middot; <a href="tests.html">Tests</a> &middot; <a href="diagnostic.html">Diagnostic</a> &middot; <a href="faq.html">Interview Ready Questions</a> &middot; <a href="interview-prep.html">Interview Prep</a></p><p><a href="about.html">About</a> &middot; <a href="privacy.html">Privacy</a> &middot; <a href="terms.html">Terms</a> &middot; <a href="contact.html">Contact</a> &middot; <a href="editorial-standards.html">Editorial Standards</a> &middot; <a href="sources.html">Sources</a></p></footer>
+<script defer src="assets/site.js"></script>
+<script defer src="assets/bundles.js"></script>
+<script defer src="assets/auth.js"></script>
+<script defer src="assets/nav.js"></script>
+<script defer src="assets/pf-enhance.js"></script>
+</body>
+</html>

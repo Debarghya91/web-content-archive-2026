@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>pacs.004 Explained | Payments Training Hub</title>
+<meta name="description" content="**pacs.004** is the **Payment Return** message. It is the ISO 20022 message a bank sends to return funds that have already settled. The name comes from the">
+<link rel="canonical" href="https://www.paymentstraininghub.in/guides/pacs-004-explained.html">
+<meta property="og:url" content="https://www.paymentstraininghub.in/guides/pacs-004-explained.html">
+<meta property="og:title" content="pacs.004 Explained | Payments Training Hub">
+<meta property="og:description" content="**pacs.004** is the **Payment Return** message. It is the ISO 20022 message a bank sends to return funds that have already settled. The name comes from the">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.in/assets/hero/hero-poster.jpg">
+<link rel="stylesheet" href="../assets/pf-theme.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="../index.html" class="brand">Payments <span>Training Hub</span></a><nav class="topnav"><a href="../index.html">Home</a> <a href="../courses.html">Courses</a> <a href="../practice.html">Practice</a> <a href="../simulators.html">Simulators</a> <a href="../labs.html">Labs</a> <a href="../explorer.html">Explorer</a> <a href="../tests.html">Tests</a></nav><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox" style="display:none"><span id="authState">Not signed in</span> <span id="authForm" style="display:none"><input id="authEmail" type="email" placeholder="Email for OTP" aria-label="Email for sign-in"> <button class="mute-btn" onclick="paAuthSendOtp()">Send code</button> <input id="authCode" type="text" placeholder="6-digit code" aria-label="One-time code" style="display:none"> <button class="mute-btn" id="authVerifyBtn" onclick="paAuthVerifyOtp()" style="display:none">Verify</button> <button class="mute-btn" onclick="paAuthGoogle()">Sign in with Google</button> </span><button class="mute-btn" id="authSignOutBtn" onclick="paAuthSignOut()" style="display:none">Sign out</button></span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<section class="section guide-page">
+<nav class="crumbs"><a href="../index.html">Home</a> / <a href="../guides.html">Guides</a> / ISO 20022</nav>
+<h1>pacs.004 Explained</h1>
+<h2>What it is</h2>
+<p><b>pacs.004</b> is the <b>Payment Return</b> message. It is the ISO 20022 message a bank sends to return funds that have already settled. The name comes from the ISO 20022 message set: <b>pacs</b> stands for Payments Clearing and Settlement, and <b>004</b> is the payment return variant.</p>
+<p>A return is different from a rejection. A rejection happens before settlement, when no money has moved. A return happens after settlement, when the money has already been credited and now needs to come back. The pacs.004 is a real payment in reverse: it moves funds from the beneficiary bank back to the sending bank.</p>
+<h2>Why it matters</h2>
+<p>pacs.004 matters because settled payments sometimes need to come back. The beneficiary account may be closed, the beneficiary may have returned the goods, the payment may have been sent in error, or a recall may have been accepted. In all these cases, the money cannot simply be cancelled. It has to travel back through the payment chain, and the pacs.004 is the message that moves it.</p>
+<p>It also matters because returns are slower and more expensive than rejections. A rejection is a status report and costs nothing. A return is a new settlement instruction with its own charges, its own cut-off, and its own timeline. A BA who understands this can set correct customer expectations and avoid promising a same day refund when the return will take days.</p>
+<h2>How it works in a bank</h2>
+<p>The return is initiated by the beneficiary bank, or by an intermediary bank, after settlement. The bank builds a pacs.004 that references the original payment, including the original <b>UETR</b>, the original message identification, and the original instruction identification. This linkage is what lets both banks reconcile the return against the original payment.</p>
+<p>The pacs.004 travels back along the same chain the original payment took, but in reverse. If the original went from bank A to bank B to bank C to bank D, the return goes from bank D to bank C to bank B to bank A. Each bank debits the account it credited and forwards the return.</p>
+<p>The amount returned can differ from the original amount, because return charges may be deducted along the way. The sending bank reconciles the variance and tells the customer what was returned and what was deducted.</p>
+<h2>Worked example</h2>
+<p>A customer pays a supplier EUR 10,000. The payment settles and the supplier is credited. The next day, the supplier realises the goods were never shipped and agrees to return the money.</p>
+<p>The supplier's bank initiates a pacs.004. The message carries the original payment references, the return identification, the returned amount EUR 10,000, and the return reason code. The supplier's bank debits the supplier and sends the pacs.004 to the next bank in the chain.</p>
+<p>Each bank in the chain debits the account it credited and forwards the pacs.004. The original sending bank receives the pacs.004, credits the customer's account, and sends a <b>pacs.002</b> confirming the return was accepted and settled. The customer sees the EUR 10,000 back in their account, less any return charges that were deducted.</p>
+<p>If the return had been initiated by a <b>recall</b>, the flow is slightly different. The sending bank first sends a <b>camt.056</b> cancellation request. The beneficiary bank decides whether to accept. If it accepts, it replies with a <b>camt.029</b> and then initiates the pacs.004. The pacs.004 is the message that actually moves the money.</p>
+<h2>Technical detail</h2>
+<p>The pacs.004 has two main parts:</p>
+<ul>
+<li><b>GrpHdr</b> (Group Header): message identification (MsgId), creation date and time (CreDtTm), number of transactions (NbOfTxs), settlement information (SttlmInf), and the instructing and instructed agents.</li>
+<li><b>TxInf</b> (Transaction Information): payment identification (PmtId, with InstrId, EndToEndId and UETR), returned interbank settlement amount (RtrdIntrBkSttlmAmt), charge bearer (ChrgBr), charges information (ChrgsInf), debtor (Dbtr), debtor account (DbtrAcct), creditor agent (CdtrAgt), creditor (Cdtr), creditor account (CdtrAcct), return reason information (RtrRsnInf), and the original transaction reference (OrgnlTxRef).</li>
+</ul>
+<p>Key fields to know:</p>
+<ul>
+<li><b>RtrdIntrBkSttlmAmt</b>: the returned interbank settlement amount. This is the amount actually coming back, which may be less than the original if charges were deducted.</li>
+<li><b>RtrRsnInf</b>: the return reason information, with a reason code. Common codes include DUPL for duplicate payment, AC04 for closed account, and CUST for a customer request.</li>
+<li><b>OrgnlTxRef</b>: the original transaction reference, carrying the original message identification, instruction identification, and UETR. This is what links the return to the original payment for reconciliation.</li>
+<li><b>RtrId</b>: the return identification, a unique reference for the return itself.</li>
+</ul>
+<h2>Common mistakes</h2>
+<p>The most common mistake is trying to use a <b>pacs.002</b> to return a settled payment. A pacs.002 is only a status report. It informs, it never settles. Once settlement has happened, only a pacs.004 can move the money back. A team that sends a pacs.002 expecting a refund will wait forever.</p>
+<p>Another mistake is assuming the returned amount will equal the original amount. Return charges are often deducted by intermediary banks. The customer should be told the expected returned amount, and the variance, before the return is initiated.</p>
+<p>A third mistake is initiating a return without checking whether the beneficiary bank has already released the funds. If the beneficiary has already spent the money, the return will fail and the bank will need to pursue a different route, such as a commercial claim.</p>
+<h2>Related lessons</h2>
+<ul>
+<li><b>pacs.002</b>: the status report, and why it cannot return a settled payment.</li>
+<li><b>pacs.008</b>: the customer credit transfer that the pacs.004 returns.</li>
+<li><b>camt.056 and camt.029</b>: the cancellation request and the response that precede a recall return.</li>
+<li>Exception handling: recalls, returns, and the difference between them.</li>
+<li>Reconciliation: how returns are matched to original payments.</li>
+</ul>
+<p><a class="studio-btn" href="../guides.html">&larr; Back to all guides</a></p>
+</section>
+</main>
+<footer><p>Payments Training Hub. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="../index.html">Home</a> &middot; <a href="../courses.html">Courses</a> &middot; <a href="../practice.html">Practice</a> &middot; <a href="../simulators.html">Simulators</a> &middot; <a href="../labs.html">Labs</a> &middot; <a href="../explorer.html">Explorer</a> &middot; <a href="../tests.html">Tests</a> &middot; <a href="../diagnostic.html">Diagnostic</a> &middot; <a href="../faq.html">Interview Ready Questions</a> &middot; <a href="../interview-prep.html">Interview Prep</a></p><p><a href="../about.html">About</a> &middot; <a href="../privacy.html">Privacy</a> &middot; <a href="../terms.html">Terms</a> &middot; <a href="../contact.html">Contact</a> &middot; <a href="../editorial-standards.html">Editorial Standards</a> &middot; <a href="../sources.html">Sources</a></p></footer>
+<script defer src="../assets/site.js"></script>
+<script defer src="../assets/bundles.js"></script>
+<script defer src="../assets/auth.js"></script>
+<script defer src="../assets/nav.js"></script>
+<script defer src="../assets/pf-enhance.js"></script>
+</body>
+</html>

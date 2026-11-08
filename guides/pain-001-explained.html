@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>pain.001 Explained | Payments Training Hub</title>
+<meta name="description" content="**pain.001** is the **Customer Credit Transfer Initiation** message. It is the message a customer uses to tell their bank to make a credit transfer. The na">
+<link rel="canonical" href="https://www.paymentstraininghub.in/guides/pain-001-explained.html">
+<meta property="og:url" content="https://www.paymentstraininghub.in/guides/pain-001-explained.html">
+<meta property="og:title" content="pain.001 Explained | Payments Training Hub">
+<meta property="og:description" content="**pain.001** is the **Customer Credit Transfer Initiation** message. It is the message a customer uses to tell their bank to make a credit transfer. The na">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.in/assets/hero/hero-poster.jpg">
+<link rel="stylesheet" href="../assets/pf-theme.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="../index.html" class="brand">Payments <span>Training Hub</span></a><nav class="topnav"><a href="../index.html">Home</a> <a href="../courses.html">Courses</a> <a href="../practice.html">Practice</a> <a href="../simulators.html">Simulators</a> <a href="../labs.html">Labs</a> <a href="../explorer.html">Explorer</a> <a href="../tests.html">Tests</a></nav><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox" style="display:none"><span id="authState">Not signed in</span> <span id="authForm" style="display:none"><input id="authEmail" type="email" placeholder="Email for OTP" aria-label="Email for sign-in"> <button class="mute-btn" onclick="paAuthSendOtp()">Send code</button> <input id="authCode" type="text" placeholder="6-digit code" aria-label="One-time code" style="display:none"> <button class="mute-btn" id="authVerifyBtn" onclick="paAuthVerifyOtp()" style="display:none">Verify</button> <button class="mute-btn" onclick="paAuthGoogle()">Sign in with Google</button> </span><button class="mute-btn" id="authSignOutBtn" onclick="paAuthSignOut()" style="display:none">Sign out</button></span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<section class="section guide-page">
+<nav class="crumbs"><a href="../index.html">Home</a> / <a href="../guides.html">Guides</a> / ISO 20022</nav>
+<h1>pain.001 Explained</h1>
+<h2>What it is</h2>
+<p><b>pain.001</b> is the <b>Customer Credit Transfer Initiation</b> message. It is the message a customer uses to tell their bank to make a credit transfer. The name comes from the ISO 20022 message set: <b>pain</b> stands for Payment Initiation, and <b>001</b> is the credit transfer initiation variant.</p>
+<p>A corporate customer sends a pain.001 to its bank, usually as a file containing many payments, or as a single payment from an online banking or ERP system. A retail customer does not normally see pain.001, because their bank builds it internally from the online banking instruction. But the message is the same: it is the instruction that starts a credit transfer.</p>
+<h2>Why it matters</h2>
+<p>pain.001 matters because it is the first message in the payment chain. Everything downstream depends on it being correct. If the debtor account is wrong, the payment debits the wrong account. If the creditor details are incomplete, the payment fails at the beneficiary bank. If the amount or currency is wrong, the customer is charged incorrectly.</p>
+<p>It also matters because it is where <b>validation</b> happens. The bank checks the pain.001 against its rules before it accepts the instruction. A payment that fails validation here is rejected cheaply, before any money moves. A payment that passes validation here but is wrong will cost far more to fix later, through a return or a recall.</p>
+<h2>How it works in a bank</h2>
+<p>The customer creates the pain.001 in their own system, often an ERP or treasury management system, and sends it to the bank through a secure channel such as <b>SWIFT FileAct</b>, <b>host to host</b>, or an <b>API</b>. The bank receives the file and validates it in stages.</p>
+<p>First comes <b>technical validation</b>: does the XML match the pain.001 schema, are all mandatory elements present, are the formats correct. Then comes <b>business validation</b>: does the debtor account exist and belong to this customer, is the account funded, is the creditor information complete, does the payment breach any limit or cut-off.</p>
+<p>If validation passes, the bank accepts the instruction and returns a <b>pain.002</b> status report. The pain.002 tells the customer whether each payment was accepted or rejected, and why. The bank then processes the accepted payments, builds the interbank messages such as <b>pacs.008</b>, and sends them onward.</p>
+<h2>Worked example</h2>
+<p>A corporate customer, a manufacturer, needs to pay 40 suppliers on Friday. Its treasury system generates a pain.001 file with 40 credit transfer instructions.</p>
+<p>Each instruction has a <b>Payment Information</b> block (PmtInf) for the debit side, and a <b>Credit Transfer Transaction Information</b> block (CdtTrfTxInf) for each payment. The PmtInf carries the debtor, the debtor account, the requested execution date, and the payment method. Each CdtTrfTxInf carries the creditor, the creditor account, the instructed amount, and the remittance information with the invoice number.</p>
+<p>The bank receives the file at 9 am. It validates all 40 payments. 39 pass. One fails because the creditor account number is two digits short. The bank returns a pain.002 showing 39 accepted and 1 rejected, with the reason code. The customer corrects the one payment and resubmits it. The 39 accepted payments are processed and the suppliers are paid on Friday.</p>
+<h2>Technical detail</h2>
+<p>The pain.001 has three main parts:</p>
+<ul>
+<li><b>GrpHdr</b> (Group Header): message identification (MsgId), creation date and time (CreDtTm), number of transactions (NbOfTxs), control sum (CtrlSum), and the initiating party (InitgPty).</li>
+<li><b>PmtInf</b> (Payment Information): payment information identification (PmtInfId), payment method (PmtMtd, usually TRF for credit transfer), batch booking indicator (BtchBookg), number of transactions, control sum, requested execution date (ReqdExctnDt), debtor (Dbtr), debtor account (DbtrAcct), and debtor agent (DbtrAgt).</li>
+<li><b>CdtTrfTxInf</b> (Credit Transfer Transaction Information): payment identification (PmtId, with InstrId and EndToEndId), instructed amount (InstdAmt), charge bearer (ChrgBr), creditor agent (CdtrAgt), creditor (Cdtr), creditor account (CdtrAcct), and remittance information (RmtInf).</li>
+</ul>
+<p>Key fields to know:</p>
+<ul>
+<li><b>InstrId</b>: the instruction identification, unique per payment, assigned by the customer. It identifies the instruction within the file.</li>
+<li><b>EndToEndId</b>: the end to end identification, carried through the whole payment chain to the beneficiary bank. It is how the beneficiary reconciles the payment.</li>
+<li><b>BtchBookg</b>: whether the bank should book the debit as one batch entry or as individual entries. True means one batch debit, false means one debit per payment.</li>
+<li><b>ReqdExctnDt</b>: the date the customer wants the payment executed. The bank uses this for value dating and cut-off checks.</li>
+</ul>
+<h2>Common mistakes</h2>
+<p>The most common mistake is reusing an <b>InstrId</b> across payments. The instruction identification must be unique within the file, and ideally unique across files, because the bank uses it to detect duplicates. A reused InstrId can cause a payment to be rejected as a duplicate, or worse, to be processed twice if the duplicate check is weak.</p>
+<p>Another mistake is putting the wrong value in <b>EndToEndId</b>. Some customers put "NOTPROVIDED" when they do not have a reference. That is valid, but it means the beneficiary cannot reconcile automatically. Always put the real invoice or order reference in EndToEndId when one exists.</p>
+<p>A third mistake is ignoring the <b>pain.002</b> response. The customer must read the pain.002 and act on rejections. A payment that was rejected in pain.002 will never be processed, and the customer will only discover this when the supplier complains.</p>
+<h2>Related lessons</h2>
+<ul>
+<li>The payment lifecycle: how an instruction becomes a settled payment.</li>
+<li><b>pain.002</b> and the customer payment status report.</li>
+<li><b>pacs.008</b>: the interbank message the bank builds from the pain.001.</li>
+<li>Validation rules and cut-off times in payment processing.</li>
+<li>Bulk payment files and straight through processing.</li>
+</ul>
+<p><a class="studio-btn" href="../guides.html">&larr; Back to all guides</a></p>
+</section>
+</main>
+<footer><p>Payments Training Hub. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="../index.html">Home</a> &middot; <a href="../courses.html">Courses</a> &middot; <a href="../practice.html">Practice</a> &middot; <a href="../simulators.html">Simulators</a> &middot; <a href="../labs.html">Labs</a> &middot; <a href="../explorer.html">Explorer</a> &middot; <a href="../tests.html">Tests</a> &middot; <a href="../diagnostic.html">Diagnostic</a> &middot; <a href="../faq.html">Interview Ready Questions</a> &middot; <a href="../interview-prep.html">Interview Prep</a></p><p><a href="../about.html">About</a> &middot; <a href="../privacy.html">Privacy</a> &middot; <a href="../terms.html">Terms</a> &middot; <a href="../contact.html">Contact</a> &middot; <a href="../editorial-standards.html">Editorial Standards</a> &middot; <a href="../sources.html">Sources</a></p></footer>
+<script defer src="../assets/site.js"></script>
+<script defer src="../assets/bundles.js"></script>
+<script defer src="../assets/auth.js"></script>
+<script defer src="../assets/nav.js"></script>
+<script defer src="../assets/pf-enhance.js"></script>
+</body>
+</html>

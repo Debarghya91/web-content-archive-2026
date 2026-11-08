@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>ISO 20022 Explained | Payments Training Hub</title>
+<meta name="description" content="**ISO 20022** is an international standard for exchanging financial messages between banks and other financial institutions. It defines a common language f">
+<link rel="canonical" href="https://www.paymentstraininghub.in/guides/iso-20022-explained.html">
+<meta property="og:url" content="https://www.paymentstraininghub.in/guides/iso-20022-explained.html">
+<meta property="og:title" content="ISO 20022 Explained | Payments Training Hub">
+<meta property="og:description" content="**ISO 20022** is an international standard for exchanging financial messages between banks and other financial institutions. It defines a common language f">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.in/assets/hero/hero-poster.jpg">
+<link rel="stylesheet" href="../assets/pf-theme.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="../index.html" class="brand">Payments <span>Training Hub</span></a><nav class="topnav"><a href="../index.html">Home</a> <a href="../courses.html">Courses</a> <a href="../practice.html">Practice</a> <a href="../simulators.html">Simulators</a> <a href="../labs.html">Labs</a> <a href="../explorer.html">Explorer</a> <a href="../tests.html">Tests</a></nav><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox" style="display:none"><span id="authState">Not signed in</span> <span id="authForm" style="display:none"><input id="authEmail" type="email" placeholder="Email for OTP" aria-label="Email for sign-in"> <button class="mute-btn" onclick="paAuthSendOtp()">Send code</button> <input id="authCode" type="text" placeholder="6-digit code" aria-label="One-time code" style="display:none"> <button class="mute-btn" id="authVerifyBtn" onclick="paAuthVerifyOtp()" style="display:none">Verify</button> <button class="mute-btn" onclick="paAuthGoogle()">Sign in with Google</button> </span><button class="mute-btn" id="authSignOutBtn" onclick="paAuthSignOut()" style="display:none">Sign out</button></span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<section class="section guide-page">
+<nav class="crumbs"><a href="../index.html">Home</a> / <a href="../guides.html">Guides</a> / ISO 20022</nav>
+<h1>ISO 20022 Explained</h1>
+<h2>What it is</h2>
+<p><b>ISO 20022</b> is an international standard for exchanging financial messages between banks and other financial institutions. It defines a common language for payments, securities, trade, cards and foreign exchange. The messages are written in <b>XML</b>, a structured text format that machines can read and validate.</p>
+<p>Before ISO 20022, banks used <b>SWIFT MT messages</b>. MT messages are fixed text blocks with numbered fields, such as field 59 for the beneficiary. They work, but they carry limited data and every bank interprets some fields slightly differently. ISO 20022 replaces that with rich, structured data. A payment message can carry the full remittance information, the structured address of both parties, the charge details, and the purpose of the payment, all in named XML elements.</p>
+<p>The standard is maintained by the <b>ISO 20022 Registration Authority</b> and the <b>Standards Evaluation Groups</b>. SWIFT is the registration authority for the payments messages. The messages used in payments are called <b>MX messages</b>, to distinguish them from the older <b>MT messages</b>.</p>
+<h2>Why it matters</h2>
+<p>ISO 20022 matters because payments carry more data than they used to. Regulators want structured addresses and full remittance detail so that <b>sanctions screening</b> and <b>anti-money laundering</b> checks work properly. Corporates want their payments reconciled automatically, which needs structured remittance references. Banks want straight through processing, which needs data that does not have to be re-keyed or guessed at.</p>
+<p>The standard also matters because it is now the global direction of travel. <b>SWIFT</b> moved cross-border payments to ISO 20022 through <b>CBPR+</b>, the Cross-Border Payments and Reporting Plus programme. Domestic systems moved too: the euro area uses ISO 20022 for <b>SEPA</b>, the United States uses it for <b>Fedwire</b> and the <b>RTP network</b>, and the United Kingdom uses it for <b>CHAPS</b>. A payments professional who does not understand ISO 20022 cannot work on modern payment systems.</p>
+<h2>How it works in a bank</h2>
+<p>A payment starts in a channel, such as online banking or a corporate file upload. The channel sends an instruction to the <b>payment hub</b>. The hub validates the instruction, checks sanctions and fraud rules, and builds the payment message. For a cross-border customer payment, the hub builds a <b>pacs.008</b>. For a bank to bank payment, it builds a <b>pacs.009</b>. For a customer instruction coming in, the message is a <b>pain.001</b>.</p>
+<p>The message travels to the next bank or clearing system. Each bank that handles the payment reads the structured data, applies its own checks, and forwards it. When the payment settles, the receiving bank sends back a <b>pacs.002</b> status report. The statuses tell the sender whether the payment was accepted, rejected, or settled. The full cycle is instruction, processing, clearing, settlement, status, and reconciliation, and ISO 20022 gives each stage a message.</p>
+<p>Inside the bank, the same standard is used for statements and investigations. <b>camt.053</b> is the end of day statement, <b>camt.054</b> is a debit or credit notification, <b>camt.056</b> is a cancellation request, and <b>camt.029</b> is the response to an investigation.</p>
+<h2>Worked example</h2>
+<p>A corporate customer in London pays a supplier in Singapore EUR 50,000. The corporate uploads a file to its bank. The bank's hub validates the instruction and builds a <b>pain.001</b> internally, then creates a <b>pacs.008</b> to send to its correspondent bank.</p>
+<p>The pacs.008 carries the debtor (the corporate), the creditor (the supplier), the instructed amount EUR 50,000, the interbank settlement amount, the charge option <b>SHA</b>, and the <b>UETR</b>, a unique end to end transaction reference that follows the payment across every bank. It also carries the structured address of both parties and the invoice number as remittance information.</p>
+<p>The correspondent bank receives the pacs.008, screens it, and forwards it to the supplier's bank. The supplier's bank credits the supplier and sends a <b>pacs.002</b> with status <b>ACSC</b>, meaning accepted and settlement completed. The sending bank updates the payment status and the corporate sees the payment as completed in online banking. The whole chain used one message standard, so no data was lost or re-keyed at any hop.</p>
+<h2>Technical detail</h2>
+<p>ISO 20022 messages have a fixed structure. Every message has a <b>Group Header</b> (GrpHdr) with a message identification, creation date and time, and the number of transactions. Then come one or more transaction blocks, each with the parties, accounts, amounts, and references.</p>
+<p>Key elements in payment messages:</p>
+<ul>
+<li><b>MsgId</b>: the unique identification of the message, assigned by the sender.</li>
+<li><b>CreDtTm</b>: the date and time the message was created.</li>
+<li><b>NbOfTxs</b>: the number of transactions in the message.</li>
+<li><b>UETR</b>: the Unique End to End Transaction Reference, a UUID that follows a payment across all banks.</li>
+<li><b>InstrId</b>: the instruction identification, assigned by the instructing party.</li>
+<li><b>EndToEndId</b>: the end to end identification, carried through the whole payment chain.</li>
+<li><b>InstdAmt</b>: the instructed amount and currency.</li>
+<li><b>IntrBkSttlmAmt</b>: the interbank settlement amount and currency.</li>
+<li><b>ChrgBr</b>: the charge bearer, one of DEBT, CRED, SHAR or SLEV, corresponding to the OUR, BEN, SHA and SLEV charge options.</li>
+</ul>
+<p>The messages are defined by <b>XML schemas</b> (XSD files). A message that does not match the schema is rejected by the receiving system. This strict validation is one reason ISO 20022 reduces errors compared with MT messages, where a badly formatted field could slip through.</p>
+<h2>Common mistakes</h2>
+<p>The most common mistake is treating ISO 20022 as just a new format for the same data. It is not. The standard expects richer data, especially structured addresses and full remittance information. Banks that map MT fields mechanically into MX elements without enriching the data lose the benefit and often fail validation.</p>
+<p>Another mistake is assuming the migration is only a technology change. It is a data and process change. Static data must be cleaned, customer addresses must be structured, and operations teams must learn to read XML messages and the new status codes.</p>
+<p>A third mistake is underestimating the <b>UETR</b>. It is the key to tracking a payment across banks. If a bank does not store and forward the UETR, its payment tracking and investigation capability breaks.</p>
+<h2>Related lessons</h2>
+<ul>
+<li>The payment lifecycle and how messages flow from instruction to settlement.</li>
+<li><b>pacs.008</b> in detail: structure, key elements, status flow.</li>
+<li><b>pacs.002</b> in detail: status codes and reason codes.</li>
+<li>MT to MX migration: what changed and how banks mapped MT103 to pacs.008.</li>
+<li><b>CBPR+</b> and the cross-border migration timeline.</li>
+</ul>
+<p><a class="studio-btn" href="../guides.html">&larr; Back to all guides</a></p>
+</section>
+</main>
+<footer><p>Payments Training Hub. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="../index.html">Home</a> &middot; <a href="../courses.html">Courses</a> &middot; <a href="../practice.html">Practice</a> &middot; <a href="../simulators.html">Simulators</a> &middot; <a href="../labs.html">Labs</a> &middot; <a href="../explorer.html">Explorer</a> &middot; <a href="../tests.html">Tests</a> &middot; <a href="../diagnostic.html">Diagnostic</a> &middot; <a href="../faq.html">Interview Ready Questions</a> &middot; <a href="../interview-prep.html">Interview Prep</a></p><p><a href="../about.html">About</a> &middot; <a href="../privacy.html">Privacy</a> &middot; <a href="../terms.html">Terms</a> &middot; <a href="../contact.html">Contact</a> &middot; <a href="../editorial-standards.html">Editorial Standards</a> &middot; <a href="../sources.html">Sources</a></p></footer>
+<script defer src="../assets/site.js"></script>
+<script defer src="../assets/bundles.js"></script>
+<script defer src="../assets/auth.js"></script>
+<script defer src="../assets/nav.js"></script>
+<script defer src="../assets/pf-enhance.js"></script>
+</body>
+</html>

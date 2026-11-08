@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>Payment Hub Architecture | Payments Training Hub</title>
+<meta name="description" content="A **payment hub** is the central system in a bank that receives payment instructions from all channels, validates them, enriches them, routes them to the r">
+<link rel="canonical" href="https://www.paymentstraininghub.in/guides/payment-hub-architecture.html">
+<meta property="og:url" content="https://www.paymentstraininghub.in/guides/payment-hub-architecture.html">
+<meta property="og:title" content="Payment Hub Architecture | Payments Training Hub">
+<meta property="og:description" content="A **payment hub** is the central system in a bank that receives payment instructions from all channels, validates them, enriches them, routes them to the r">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.in/assets/hero/hero-poster.jpg">
+<link rel="stylesheet" href="../assets/pf-theme.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="../index.html" class="brand">Payments <span>Training Hub</span></a><nav class="topnav"><a href="../index.html">Home</a> <a href="../courses.html">Courses</a> <a href="../practice.html">Practice</a> <a href="../simulators.html">Simulators</a> <a href="../labs.html">Labs</a> <a href="../explorer.html">Explorer</a> <a href="../tests.html">Tests</a></nav><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox" style="display:none"><span id="authState">Not signed in</span> <span id="authForm" style="display:none"><input id="authEmail" type="email" placeholder="Email for OTP" aria-label="Email for sign-in"> <button class="mute-btn" onclick="paAuthSendOtp()">Send code</button> <input id="authCode" type="text" placeholder="6-digit code" aria-label="One-time code" style="display:none"> <button class="mute-btn" id="authVerifyBtn" onclick="paAuthVerifyOtp()" style="display:none">Verify</button> <button class="mute-btn" onclick="paAuthGoogle()">Sign in with Google</button> </span><button class="mute-btn" id="authSignOutBtn" onclick="paAuthSignOut()" style="display:none">Sign out</button></span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<section class="section guide-page">
+<nav class="crumbs"><a href="../index.html">Home</a> / <a href="../guides.html">Guides</a> / Payment Systems and Architecture</nav>
+<h1>Payment Hub Architecture</h1>
+<h2>What it is</h2>
+<p>A <b>payment hub</b> is the central system in a bank that receives payment instructions from all channels, validates them, enriches them, routes them to the right clearing system, and tracks them through to settlement and reconciliation. It is the single place where every payment in the bank passes through, regardless of whether it started in a mobile app, a branch, a corporate file, or an API.</p>
+<p>The hub sits between the <b>channels</b> (where customers instruct payments) and the <b>clearing systems</b> (where payments are settled). Below the hub are the <b>core banking system</b> (which holds the accounts), the <b>nostro accounts</b> (which fund cross border payments), and the <b>ledger</b> (which records everything). Around the hub are the supporting services: sanctions screening, fraud detection, liquidity management, and the <b>exceptions</b> function.</p>
+<p>A bank without a hub has separate payment systems for each channel and each rail. A payment from a mobile app goes through one system, a payment from a corporate file goes through another, and a payment from a branch goes through a third. This is expensive, inconsistent, and hard to control. A hub replaces that fragmentation with one consistent flow.</p>
+<h2>Why it matters</h2>
+<p>The payment hub is the most important system in a bank's payment architecture. Every payment decision, every control, and every customer experience depends on it. If the hub is well designed, the bank can add a new channel or a new clearing system without rebuilding everything. If it is poorly designed, every change is a project, every new product is slow, and every failure affects all payments.</p>
+<p>For a business analyst, the hub matters because it is where most payment requirements land. A new payment product, a new clearing system, a new regulatory requirement, or a new fraud control will all require a change to the hub. Understanding the hub's architecture is the foundation for working on any payment change in a large bank.</p>
+<p>For an interview candidate, the hub is the most common system design topic. Interviewers ask candidates to design a hub, to explain how a payment flows through it, and to describe what happens when a component fails. A candidate who can draw the hub and walk through a payment end to end will do well.</p>
+<h2>How it works in a bank</h2>
+<p><b>The layers.</b> A typical bank payment hub has five layers.</p>
+<p><b>1. Channels.</b> These are where the customer instructs the payment: mobile app, online banking, branch, telephone, corporate file upload, and API. Each channel collects the instruction and sends it to the hub in its own format.</p>
+<p><b>2. The hub.</b> The hub receives the instruction, validates it, and enriches it. Validation checks the account, the amount, the currency, the value date, and the mandatory fields. Enrichment adds the data the downstream systems need: the routing, the charge options, the settlement method, and the compliance flags. The hub then routes the payment to the right clearing system or the right correspondent bank. It also tracks the payment status and sends status updates back to the channel.</p>
+<p><b>3. Core banking.</b> The core banking system holds the customer accounts. The hub asks the core to debit the sender and, for incoming payments, to credit the beneficiary. The core also provides the account data the hub needs for validation.</p>
+<p><b>4. Clearing and settlement.</b> The hub connects to each clearing system the bank uses: Faster Payments, CHAPS, Bacs, SEPA, SWIFT, and others. Each connection has its own message format, its own cut-off, and its own settlement arrangement. The hub translates the internal payment instruction into the format each clearing system needs.</p>
+<p><b>5. Supporting services.</b> Sanctions screening checks the payment against sanctions lists. Fraud detection scores the payment for fraud risk. Liquidity management checks the bank has enough funds in its settlement accounts. The exceptions function handles payments that fail validation, are rejected by clearing, or need manual repair.</p>
+<p><b>The flow in words.</b> A customer instructs a payment in the mobile app. The app sends it to the hub. The hub validates it, runs sanctions and fraud checks, debits the account through the core, enriches it with routing data, and sends it to the clearing system. The clearing system processes it and sends back a status. The hub updates the payment status and tells the mobile app. If anything fails, the payment goes to the exceptions queue for a human to review.</p>
+<h2>Worked example</h2>
+<p>A large UK bank processes 2 million payments a day through its hub.</p>
+<p><b>A domestic payment.</b> A customer sends 500 pounds to a friend using Faster Payments. The mobile app sends the instruction to the hub. The hub validates the sort code and account number, runs a fraud check, debits the customer through the core, and routes the payment to Faster Payments. The payment arrives in seconds. The hub receives the confirmation and updates the status. Total time: a few seconds.</p>
+<p><b>A cross border payment.</b> A corporate customer pays a supplier in Singapore 100,000 dollars. The corporate banking portal sends the instruction to the hub. The hub validates it, runs sanctions screening, checks the nostro account balance, debits the customer, and builds a <b>pacs.008</b>. The hub sends the pacs.008 through SWIFT to the correspondent bank. The correspondent bank processes it and sends back a <b>pacs.002</b>. The hub updates the status and tells the corporate portal. Total time: a few hours to a day, depending on the correspondent chain.</p>
+<p><b>An exception.</b> A payment is rejected by the clearing system because the beneficiary account number is invalid. The hub receives the rejection, marks the payment as failed, reverses the debit through the core, and sends the payment to the exceptions queue. An operations analyst reviews it, contacts the customer for the correct account number, repairs the payment, and resubmits it. The hub tracks the repair and the resubmission.</p>
+<h2>Technical detail</h2>
+<p><b>Message transformation.</b> The hub receives instructions in many formats: JSON from an API, a file from a corporate customer, an internal format from a channel. It must transform each one into a standard internal format, and then transform that into the format each clearing system needs. Under CBPR+, the standard is ISO 20022. The hub builds <b>pacs.008</b> for customer payments, <b>pacs.009</b> for bank to bank payments, and <b>pain.001</b> for customer instructions.</p>
+<p><b>Routing.</b> The hub decides which clearing system and which correspondent bank to use, based on the currency, the amount, the destination country, the value date, and the cost. This decision is driven by a <b>routing table</b>, which is static data maintained by the payments team. A wrong routing entry sends payments to the wrong place.</p>
+<p><b>Status tracking.</b> The hub tracks every payment through its lifecycle: received, validated, debited, sent to clearing, accepted, settled, credited, or failed. Each status change is recorded with a timestamp. The hub exposes these statuses to channels, to operations, and to customers through tracking services such as SWIFT gpi.</p>
+<p><b>Idempotency.</b> If a channel sends the same instruction twice, the hub must recognise the duplicate and process it only once. This is done with an <b>idempotency key</b>, a unique identifier that the hub checks before processing. Without this, a retry after a timeout would create a duplicate payment.</p>
+<p><b>High availability.</b> The hub is a critical system. It must be available 24 hours a day, 7 days a week. Banks run the hub in an active-active configuration across two data centres, so that if one data centre fails, the other takes over without interrupting payments.</p>
+<h2>Common mistakes</h2>
+<p><b>Building a hub per channel.</b> This defeats the purpose. The hub must be a single shared service. If each channel has its own payment logic, the bank has not built a hub, it has built several disconnected systems.</p>
+<p><b>Skipping the exceptions design.</b> Every hub needs an exceptions function. Payments will fail, and someone must handle them. A hub designed without a repair queue, a return process, and a recall process will leave operations teams working with spreadsheets and manual workarounds.</p>
+<p><b>Hardcoding routing.</b> Routing rules change. A new correspondent bank, a new clearing system, or a change in cut-off times should be a data change, not a code change. Routing must be driven by static data that the payments team can maintain.</p>
+<p><b>Ignoring idempotency.</b> If the hub cannot detect duplicate instructions, a retry after a timeout will create a duplicate payment. This is one of the most common and most expensive hub defects.</p>
+<p><b>Designing for business hours only.</b> Payments arrive at all hours, especially instant payments. The hub, its supporting services, and its monitoring must all run around the clock.</p>
+<h2>Related lessons</h2>
+<ul>
+<li>Payment routing and orchestration.</li>
+<li>Payment lifecycle and its distinct stages.</li>
+<li>ISO 20022 messages: pacs.008, pacs.009, pacs.002, pain.001.</li>
+<li>Clearing and settlement.</li>
+<li>Payment exception handling.</li>
+<li>Intraday liquidity and nostro funding.</li>
+</ul>
+<p><a class="studio-btn" href="../guides.html">&larr; Back to all guides</a></p>
+</section>
+</main>
+<footer><p>Payments Training Hub. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="../index.html">Home</a> &middot; <a href="../courses.html">Courses</a> &middot; <a href="../practice.html">Practice</a> &middot; <a href="../simulators.html">Simulators</a> &middot; <a href="../labs.html">Labs</a> &middot; <a href="../explorer.html">Explorer</a> &middot; <a href="../tests.html">Tests</a> &middot; <a href="../diagnostic.html">Diagnostic</a> &middot; <a href="../faq.html">Interview Ready Questions</a> &middot; <a href="../interview-prep.html">Interview Prep</a></p><p><a href="../about.html">About</a> &middot; <a href="../privacy.html">Privacy</a> &middot; <a href="../terms.html">Terms</a> &middot; <a href="../contact.html">Contact</a> &middot; <a href="../editorial-standards.html">Editorial Standards</a> &middot; <a href="../sources.html">Sources</a></p></footer>
+<script defer src="../assets/site.js"></script>
+<script defer src="../assets/bundles.js"></script>
+<script defer src="../assets/auth.js"></script>
+<script defer src="../assets/nav.js"></script>
+<script defer src="../assets/pf-enhance.js"></script>
+</body>
+</html>

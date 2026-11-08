@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>Payment Routing | Payments Training Hub</title>
+<meta name="description" content="**Payment routing** is the process of deciding which path a payment takes from the sending bank to the receiving bank. The route determines which clearing">
+<link rel="canonical" href="https://www.paymentstraininghub.in/guides/payment-routing.html">
+<meta property="og:url" content="https://www.paymentstraininghub.in/guides/payment-routing.html">
+<meta property="og:title" content="Payment Routing | Payments Training Hub">
+<meta property="og:description" content="**Payment routing** is the process of deciding which path a payment takes from the sending bank to the receiving bank. The route determines which clearing">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.in/assets/hero/hero-poster.jpg">
+<link rel="stylesheet" href="../assets/pf-theme.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="../index.html" class="brand">Payments <span>Training Hub</span></a><nav class="topnav"><a href="../index.html">Home</a> <a href="../courses.html">Courses</a> <a href="../practice.html">Practice</a> <a href="../simulators.html">Simulators</a> <a href="../labs.html">Labs</a> <a href="../explorer.html">Explorer</a> <a href="../tests.html">Tests</a></nav><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox" style="display:none"><span id="authState">Not signed in</span> <span id="authForm" style="display:none"><input id="authEmail" type="email" placeholder="Email for OTP" aria-label="Email for sign-in"> <button class="mute-btn" onclick="paAuthSendOtp()">Send code</button> <input id="authCode" type="text" placeholder="6-digit code" aria-label="One-time code" style="display:none"> <button class="mute-btn" id="authVerifyBtn" onclick="paAuthVerifyOtp()" style="display:none">Verify</button> <button class="mute-btn" onclick="paAuthGoogle()">Sign in with Google</button> </span><button class="mute-btn" id="authSignOutBtn" onclick="paAuthSignOut()" style="display:none">Sign out</button></span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<section class="section guide-page">
+<nav class="crumbs"><a href="../index.html">Home</a> / <a href="../guides.html">Guides</a> / Payment Systems and Architecture</nav>
+<h1>Payment Routing</h1>
+<h2>What it is</h2>
+<p><b>Payment routing</b> is the process of deciding which path a payment takes from the sending bank to the receiving bank. The route determines which clearing system, which correspondent bank, and which settlement account are used. Routing is driven by <b>routing tables</b> and <b>static data</b> maintained by the bank's payments team.</p>
+<p>Every payment has a route. A domestic payment in the UK might route through Faster Payments or CHAPS. A euro payment might route through SEPA or SWIFT. A cross border payment might route through one correspondent bank or a chain of three. The routing decision is made by the payment hub, based on the payment's characteristics and the bank's routing rules.</p>
+<h2>Why it matters</h2>
+<p>Routing decides the cost, the speed, and the reliability of a payment. A payment routed through the wrong correspondent costs more and takes longer. A payment routed to a clearing system that is closed for the day will wait until the next business day. A payment routed to a bank that has no relationship with the beneficiary's bank will be rejected.</p>
+<p>For a business analyst, routing matters because it is where business rules meet payment operations. The routing table is a business asset. It encodes the bank's commercial agreements, its regulatory obligations, and its operational preferences. Getting it wrong means failed payments, unhappy customers, and lost money.</p>
+<p>In an interview, routing questions test whether a candidate understands how a payment actually gets from one bank to another, not just in theory but in the specific systems and static data that make it happen.</p>
+<h2>How it works in a bank</h2>
+<p><b>Routing tables.</b> A routing table maps payment characteristics to a route. The characteristics include the currency, the destination country, the beneficiary bank's BIC, the amount, the value date, and the payment type. The route specifies the clearing system, the correspondent bank, the settlement account, and the message format. Routing tables are stored as static data in the payment hub, and they are maintained by the payments operations team.</p>
+<p><b>Static data.</b> Routing depends on static data: the list of correspondent banks and their BICs, the list of clearing systems and their cut-off times, the settlement accounts and their balances, the charge options for each corridor, and the currency cut-offs. Static data must be accurate and up to date. A wrong BIC in static data will send payments to the wrong bank. An out of date cut-off will cause payments to miss their value date.</p>
+<p><b>The routing decision.</b> When a payment arrives at the hub, the hub looks up the routing table. It checks the currency first, then the destination, then the amount, then the value date. It finds the matching route and applies it. If no route matches, the payment goes to a <b>repair queue</b> for a human to review. If more than one route matches, the hub applies the priority order defined in the table.</p>
+<p><b>Repair queues.</b> Payments that cannot be routed automatically go to a repair queue. An operations analyst reviews the payment, corrects the data (for example, a missing BIC or an invalid account number), and resubmits it. The repair queue is a critical operational function. A bank with a large repair queue has a data quality problem, a routing table problem, or both.</p>
+<p><b>Serial vs cover.</b> For cross border payments, the routing decision includes whether to use the <b>serial method</b> (the payment instruction and the funds travel together through the chain) or the <b>cover method</b> (the instruction goes directly to the beneficiary's bank, and the funds move separately through correspondent banks). The cover method uses a <b>pacs.009</b> (or MT202) for the funds leg and a <b>pacs.008</b> (or MT103) for the instruction leg. The choice affects speed, cost, and transparency.</p>
+<h2>Worked example</h2>
+<p>A bank in the UK needs to send a payment of 50,000 US dollars to a supplier in Japan.</p>
+<p><b>The routing decision.</b> The hub checks the routing table. Currency is USD. Destination is Japan. The beneficiary bank's BIC is known. The table says: for USD to Japan, use correspondent bank X in New York, via SWIFT, with the cover method. The hub builds a pacs.008 for the instruction, which goes directly to the beneficiary's bank in Japan. The hub builds a pacs.009 for the cover, which goes to correspondent bank X. Correspondent bank X moves the funds to the beneficiary's bank. The beneficiary is credited.</p>
+<p><b>A routing failure.</b> The same payment, but the beneficiary bank's BIC is not in the routing table. The hub cannot determine the route. The payment goes to the repair queue. An operations analyst looks up the BIC, adds it to the routing table, and resubmits the payment. The payment then routes correctly.</p>
+<p><b>A static data failure.</b> The routing table says the cut-off for USD payments to Japan is 2pm. The payment is instructed at 3pm. The hub routes it, but the correspondent bank will not process it until the next business day. The customer was promised same day value, but the payment will arrive a day late. The root cause is that the routing table's cut-off is wrong, or the channel did not check the cut-off before accepting the instruction. Either way, the customer is unhappy, and the bank must fix the data or the process.</p>
+<h2>Technical detail</h2>
+<p><b>BIC routing.</b> The <b>Bank Identifier Code (BIC)</b> identifies the beneficiary's bank. The routing table uses the BIC to determine the correspondent bank and the clearing system. If the BIC is missing or invalid, the payment cannot be routed. The bank must either derive the BIC from the IBAN (for SEPA payments) or ask the customer for it.</p>
+<p><b>Currency routing.</b> The currency determines the clearing system and the settlement account. A euro payment routes through SEPA or through a euro correspondent. A dollar payment routes through a dollar correspondent. A payment in a currency the bank does not support cannot be routed and goes to repair.</p>
+<p><b>Amount based routing.</b> Some banks route by amount. A payment under a threshold goes through a low cost rail. A payment above the threshold goes through a high value rail. For example, a UK payment under 10,000 pounds might route through Faster Payments, while a payment above 10,000 pounds routes through CHAPS. The thresholds are business rules stored in the routing table.</p>
+<p><b>Value date routing.</b> The value date determines whether the payment can be sent today or must wait. If the value date is today and the cut-off has passed, the payment must be held until the next business day, or the customer must be told the value date will be later than requested.</p>
+<p><b>Message mapping.</b> Once the route is chosen, the hub builds the message in the format the route requires. A payment routed through SWIFT needs a pacs.008 or pacs.009. A payment routed through SEPA needs a pacs.008. A payment routed through a domestic system needs that system's format. The hub must map its internal data to each format correctly.</p>
+<h2>Common mistakes</h2>
+<p><b>Treating routing as a technical detail.</b> Routing is a business decision. It determines cost, speed, and customer experience. The routing table should be owned by the business, not just by IT.</p>
+<p><b>Letting static data go stale.</b> Correspondent banks change. Cut-off times change. BICs change. If the routing table is not maintained, payments will fail. Static data needs a regular review process and a clear owner.</p>
+<p><b>No repair process.</b> Some payments will always fail routing. A bank without a well run repair queue will leave payments stuck and customers uninformed. The repair queue needs staffing, targets, and escalation.</p>
+<p><b>Ignoring the cover method.</b> For cross border payments, the choice between serial and cover affects the speed, the cost, and the transparency of the payment. A business analyst who does not understand the difference will not understand correspondent banking.</p>
+<p><b>Hardcoding routes.</b> Routes change. A new correspondent, a new clearing system, or a change in a commercial agreement should be a data change in the routing table, not a code release. If routes are hardcoded, the bank cannot adapt quickly.</p>
+<h2>Related lessons</h2>
+<ul>
+<li>Payment hub architecture.</li>
+<li>Payment orchestration.</li>
+<li>Correspondent banking and the cover method.</li>
+<li>Serial vs cover payments.</li>
+<li>Clearing and settlement.</li>
+<li>Payment exception handling and repair queues.</li>
+</ul>
+<p><a class="studio-btn" href="../guides.html">&larr; Back to all guides</a></p>
+</section>
+</main>
+<footer><p>Payments Training Hub. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="../index.html">Home</a> &middot; <a href="../courses.html">Courses</a> &middot; <a href="../practice.html">Practice</a> &middot; <a href="../simulators.html">Simulators</a> &middot; <a href="../labs.html">Labs</a> &middot; <a href="../explorer.html">Explorer</a> &middot; <a href="../tests.html">Tests</a> &middot; <a href="../diagnostic.html">Diagnostic</a> &middot; <a href="../faq.html">Interview Ready Questions</a> &middot; <a href="../interview-prep.html">Interview Prep</a></p><p><a href="../about.html">About</a> &middot; <a href="../privacy.html">Privacy</a> &middot; <a href="../terms.html">Terms</a> &middot; <a href="../contact.html">Contact</a> &middot; <a href="../editorial-standards.html">Editorial Standards</a> &middot; <a href="../sources.html">Sources</a></p></footer>
+<script defer src="../assets/site.js"></script>
+<script defer src="../assets/bundles.js"></script>
+<script defer src="../assets/auth.js"></script>
+<script defer src="../assets/nav.js"></script>
+<script defer src="../assets/pf-enhance.js"></script>
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>MT to MX Migration | Payments Training Hub</title>
+<meta name="description" content="**MT to MX migration** is the move from **SWIFT MT messages** to **ISO 20022 MX messages** for cross-border payments and reporting. MT messages are the old">
+<link rel="canonical" href="https://www.paymentstraininghub.in/guides/mt-to-mx-migration.html">
+<meta property="og:url" content="https://www.paymentstraininghub.in/guides/mt-to-mx-migration.html">
+<meta property="og:title" content="MT to MX Migration | Payments Training Hub">
+<meta property="og:description" content="**MT to MX migration** is the move from **SWIFT MT messages** to **ISO 20022 MX messages** for cross-border payments and reporting. MT messages are the old">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.in/assets/hero/hero-poster.jpg">
+<link rel="stylesheet" href="../assets/pf-theme.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="../index.html" class="brand">Payments <span>Training Hub</span></a><nav class="topnav"><a href="../index.html">Home</a> <a href="../courses.html">Courses</a> <a href="../practice.html">Practice</a> <a href="../simulators.html">Simulators</a> <a href="../labs.html">Labs</a> <a href="../explorer.html">Explorer</a> <a href="../tests.html">Tests</a></nav><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox" style="display:none"><span id="authState">Not signed in</span> <span id="authForm" style="display:none"><input id="authEmail" type="email" placeholder="Email for OTP" aria-label="Email for sign-in"> <button class="mute-btn" onclick="paAuthSendOtp()">Send code</button> <input id="authCode" type="text" placeholder="6-digit code" aria-label="One-time code" style="display:none"> <button class="mute-btn" id="authVerifyBtn" onclick="paAuthVerifyOtp()" style="display:none">Verify</button> <button class="mute-btn" onclick="paAuthGoogle()">Sign in with Google</button> </span><button class="mute-btn" id="authSignOutBtn" onclick="paAuthSignOut()" style="display:none">Sign out</button></span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<section class="section guide-page">
+<nav class="crumbs"><a href="../index.html">Home</a> / <a href="../guides.html">Guides</a> / ISO 20022</nav>
+<h1>MT to MX Migration</h1>
+<h2>What it is</h2>
+<p><b>MT to MX migration</b> is the move from <b>SWIFT MT messages</b> to <b>ISO 20022 MX messages</b> for cross-border payments and reporting. MT messages are the older SWIFT format: fixed text blocks with numbered fields, such as field 59 for the beneficiary. MX messages are the newer ISO 20022 format: structured XML with named elements.</p>
+<p>The migration is driven by <b>CBPR+</b>, the Cross-Border Payments and Reporting Plus programme, which is SWIFT's framework for moving the cross-border community to ISO 20022. The programme started in November 2022 with a coexistence period, during which banks could send either MT or MX messages. The coexistence period was extended, and the migration continues as banks complete their own cutovers.</p>
+<h2>Why it matters</h2>
+<p>The migration matters because MT messages cannot carry the data that modern payments need. MT fields are short, unstructured, and interpreted differently by different banks. A beneficiary address in field 59 can be four lines of free text, and each bank parses it differently. That causes sanctions screening failures, reconciliation breaks, and manual repair.</p>
+<p>MX messages carry structured data. The beneficiary address is broken into named elements: street, town, country, postcode. The remittance information is structured. The charge details are explicit. This reduces errors, improves straight through processing, and gives regulators and compliance teams the data they need.</p>
+<p>The migration also matters because it is mandatory. Banks that do not migrate cannot send or receive cross-border payments in the new format, and their counterparties will stop accepting MT messages. A bank that is late to migrate is a bank that cannot do business.</p>
+<h2>How it works in a bank</h2>
+<p>A bank migrates in stages. First it builds the ability to <b>receive</b> MX messages, so it can process incoming pacs.008 payments. Then it builds the ability to <b>send</b> MX messages, so it can originate pacs.008 payments. Then it migrates its <b>reporting</b>, replacing MT940 and MT950 statements with camt.053, and MT900 and MT910 notifications with camt.054.</p>
+<p>The core work is <b>mapping</b>: defining how each MT field translates into an MX element, and back again during the coexistence period. The bank also has to enrich its data, because MX messages need structured addresses and full remittance detail that MT messages did not carry. Static data must be cleaned, customer records must be updated, and operations teams must be trained to read XML messages and the new status codes.</p>
+<p>The bank tests the migration in a test environment, then runs a pilot with a small number of counterparties, then cuts over corridor by corridor. Each cutover is a controlled event with a rollback plan, because a failed cutover stops payments.</p>
+<h2>Worked example</h2>
+<p>A bank sends a customer payment to a correspondent. Under MT, the bank sends an <b>MT103</b> with field 59 carrying the beneficiary name and address in four lines of free text, and field 70 carrying the remittance information as free text.</p>
+<p>Under MX, the bank sends a <b>pacs.008</b>. The beneficiary name is in the Cdtr/Nm element. The address is structured: StrtNm for the street, TwnNm for the town, CtryOfRes for the country, PstCd for the postcode. The remittance information is in RmtInf, with the invoice number in a structured element that the beneficiary can reconcile automatically.</p>
+<p>The correspondent bank receives the pacs.008, reads the structured address, runs its sanctions screening against the structured fields, and forwards the payment. The beneficiary bank credits the supplier and sends a pacs.002 with status ACSC. The whole chain used structured data, so no bank had to guess at the address or re-key the remittance information.</p>
+<h2>Technical detail</h2>
+<p>The main MT to MX mappings for payments:</p>
+<p>| MT message | MX message | What it does |</p>
+<p>|---|---|---|</p>
+<p>| MT103 | pacs.008 | Customer credit transfer |</p>
+<p>| MT202 | pacs.009 | Bank to bank credit transfer |</p>
+<p>| MT202 COV | pacs.008 | Cover payment, the customer instruction travels as pacs.008 and the funds as pacs.009 |</p>
+<p>| MT101 | pain.001 | Customer credit transfer initiation, request for transfer |</p>
+<p>| MT900 | camt.054 | Confirmation of debit |</p>
+<p>| MT910 | camt.054 | Confirmation of credit |</p>
+<p>| MT940 | camt.053 | Customer statement message |</p>
+<p>| MT950 | camt.053 | Statement message |</p>
+<p>| MT199 | camt.056 or camt.029 | Free format message, used for investigations and cancellations |</p>
+<p>| MT192 | camt.056 | Request for cancellation |</p>
+<p>Key mapping challenges:</p>
+<ul>
+<li><b>Field 59 (beneficiary) in MT103</b> maps to the Cdtr block in pacs.008, but the MT field is free text and the MX block is structured. The bank must parse the free text into street, town, country and postcode, which is often imperfect.</li>
+<li><b>Field 70 (remittance information) in MT103</b> maps to RmtInf in pacs.008. The MT field is 140 characters of free text. The MX element can be structured, with the invoice number, the reference, and the amount broken out.</li>
+<li><b>Field 32A (value date, currency, amount) in MT103</b> maps to IntrBkSttlmAmt in pacs.008, with the value date carried separately.</li>
+<li><b>Field 71A (charge details) in MT103</b> maps to ChrgBr in pacs.008. OUR becomes DEBT, BEN becomes CRED, SHA becomes SHAR.</li>
+<li><b>Field 20 (transaction reference) in MT103</b> maps to InstrId and EndToEndId in pacs.008, and the UETR is new in MX with no MT equivalent.</li>
+</ul>
+<h2>Common mistakes</h2>
+<p>The most common mistake is a <b>mechanical mapping</b> that copies MT free text into MX unstructured elements without enriching the data. The bank ends up sending MX messages that carry MT quality data, and it gains nothing from the migration. The structured address fields are left empty or filled with the same free text.</p>
+<p>Another mistake is underestimating the <b>static data</b> work. Structured addresses need clean customer data. Many banks discover during migration that their customer records have incomplete or inconsistent addresses, and they have to run a data remediation programme before they can send valid pacs.008 messages.</p>
+<p>A third mistake is testing only the <b>happy path</b>. Migration testing must cover rejections, returns, recalls, and investigations, because those flows use different messages and different reason codes in MX. A bank that only tests successful payments will fail on its first exception.</p>
+<p>A fourth mistake is forgetting the <b>coexistence</b> period. During coexistence, a bank must handle both MT and MX messages, and must translate between them. The translation layer is a source of errors, especially for fields that have no direct equivalent.</p>
+<h2>Related lessons</h2>
+<ul>
+<li><b>ISO 20022 explained</b>: the standard and why it replaced MT.</li>
+<li><b>pacs.008</b> in detail: structure, key elements, status flow.</li>
+<li><b>pacs.009</b> in detail: bank to bank transfers and the cover method.</li>
+<li><b>camt messages</b>: camt.053, camt.054, camt.056 and camt.029.</li>
+<li><b>CBPR+</b> and the cross-border migration timeline.</li>
+<li>Serial versus cover payments and how the mapping differs.</li>
+</ul>
+<p><a class="studio-btn" href="../guides.html">&larr; Back to all guides</a></p>
+</section>
+</main>
+<footer><p>Payments Training Hub. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="../index.html">Home</a> &middot; <a href="../courses.html">Courses</a> &middot; <a href="../practice.html">Practice</a> &middot; <a href="../simulators.html">Simulators</a> &middot; <a href="../labs.html">Labs</a> &middot; <a href="../explorer.html">Explorer</a> &middot; <a href="../tests.html">Tests</a> &middot; <a href="../diagnostic.html">Diagnostic</a> &middot; <a href="../faq.html">Interview Ready Questions</a> &middot; <a href="../interview-prep.html">Interview Prep</a></p><p><a href="../about.html">About</a> &middot; <a href="../privacy.html">Privacy</a> &middot; <a href="../terms.html">Terms</a> &middot; <a href="../contact.html">Contact</a> &middot; <a href="../editorial-standards.html">Editorial Standards</a> &middot; <a href="../sources.html">Sources</a></p></footer>
+<script defer src="../assets/site.js"></script>
+<script defer src="../assets/bundles.js"></script>
+<script defer src="../assets/auth.js"></script>
+<script defer src="../assets/nav.js"></script>
+<script defer src="../assets/pf-enhance.js"></script>
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>Payment Exception Handling | Payments Training Hub</title>
+<meta name="description" content="**Payment exception handling** is the process of dealing with payments that do not complete normally. An exception is any payment that fails validation, is">
+<link rel="canonical" href="https://www.paymentstraininghub.in/guides/payment-exception-handling.html">
+<meta property="og:url" content="https://www.paymentstraininghub.in/guides/payment-exception-handling.html">
+<meta property="og:title" content="Payment Exception Handling | Payments Training Hub">
+<meta property="og:description" content="**Payment exception handling** is the process of dealing with payments that do not complete normally. An exception is any payment that fails validation, is">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.in/assets/hero/hero-poster.jpg">
+<link rel="stylesheet" href="../assets/pf-theme.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="../index.html" class="brand">Payments <span>Training Hub</span></a><nav class="topnav"><a href="../index.html">Home</a> <a href="../courses.html">Courses</a> <a href="../practice.html">Practice</a> <a href="../simulators.html">Simulators</a> <a href="../labs.html">Labs</a> <a href="../explorer.html">Explorer</a> <a href="../tests.html">Tests</a></nav><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox" style="display:none"><span id="authState">Not signed in</span> <span id="authForm" style="display:none"><input id="authEmail" type="email" placeholder="Email for OTP" aria-label="Email for sign-in"> <button class="mute-btn" onclick="paAuthSendOtp()">Send code</button> <input id="authCode" type="text" placeholder="6-digit code" aria-label="One-time code" style="display:none"> <button class="mute-btn" id="authVerifyBtn" onclick="paAuthVerifyOtp()" style="display:none">Verify</button> <button class="mute-btn" onclick="paAuthGoogle()">Sign in with Google</button> </span><button class="mute-btn" id="authSignOutBtn" onclick="paAuthSignOut()" style="display:none">Sign out</button></span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<section class="section guide-page">
+<nav class="crumbs"><a href="../index.html">Home</a> / <a href="../guides.html">Guides</a> / Payment Systems and Architecture</nav>
+<h1>Payment Exception Handling</h1>
+<h2>What it is</h2>
+<p><b>Payment exception handling</b> is the process of dealing with payments that do not complete normally. An exception is any payment that fails validation, is rejected by a clearing system, is returned, is recalled, is delayed, is duplicated, or is stuck in an unknown state. Exceptions are a normal part of payment operations. A bank that processes millions of payments a day will have thousands of exceptions. The quality of a bank's exception handling determines how quickly customers get their money back, how much manual work operations teams do, and how much the bank loses to errors.</p>
+<p>The exception lifecycle has five stages: <b>detection</b> (finding the exception), <b>classification</b> (understanding what type it is), <b>investigation</b> (finding the root cause), <b>resolution</b> (fixing it: repair, return, recall, or reverse), and <b>prevention</b> (changing something so it does not happen again).</p>
+<h2>Why it matters</h2>
+<p>Exceptions are where customers form their opinion of a bank. A payment that arrives on time is forgotten. A payment that goes missing, is delayed, or is sent to the wrong account is remembered. How the bank handles the exception, how quickly it responds, how clearly it communicates, and whether it fixes the root cause, is what separates a good bank from a bad one.</p>
+<p>For a business analyst, exception handling matters because it is a large part of the daily work in payment operations, and because many payment projects are driven by exception reduction. A bank that reduces its exception rate by 10 percent saves significant operational cost and improves customer satisfaction.</p>
+<p>In an interview, exception handling is the most tested topic in payments. Interviewers give candidates a scenario, a payment that vanished, a duplicate payment, a rejection, a recall, and ask what they would do. The candidate who can walk through the exception lifecycle step by step, naming the messages and the systems, will do well.</p>
+<h2>How it works in a bank</h2>
+<p><b>Detection.</b> Exceptions are detected in several ways. The payment hub flags a payment that fails validation. A clearing system sends back a rejection. A reconciliation break shows a payment that was debited but never credited. A customer calls to say their payment has not arrived. An automated monitor alerts when a payment has been stuck for too long. Detection must be fast, because the longer an exception sits, the worse it gets.</p>
+<p><b>Classification.</b> Once detected, the exception is classified by type. Common types include: a <b>rejection</b> (the payment was refused before settlement), a <b>return</b> (the payment settled but needs to come back), a <b>recall</b> (the sender wants the money back after it was credited), a <b>duplicate</b> (the same payment was sent twice), a <b>repair</b> (the payment has bad data that needs fixing), a <b>timeout</b> (the status is unknown), and a <b>missing payment</b> (the payment was debited but never credited). Each type has a different resolution path.</p>
+<p><b>Investigation.</b> The operations analyst investigates the exception. They start with the <b>UETR</b> (the globally unique identifier) and trace the payment through the hub logs, the clearing confirmations, and the settlement entries. They identify where the payment stopped and why. They check whether other payments are affected by the same root cause. Investigation must be thorough, because fixing the symptom without finding the cause means the exception will recur.</p>
+<p><b>Resolution.</b> The resolution depends on the type.</p>
+<ul>
+<li>A <b>rejection</b> (pacs.002 RJCT, before settlement): repair the data and resubmit as a new instruction. No money moved, so there is nothing to return.</li>
+<li>A <b>return</b> (after settlement): send a <b>pacs.004</b> to move the funds back. The return follows the original payment chain in reverse.</li>
+<li>A <b>recall</b> (after the beneficiary was credited): send a <b>camt.056</b> cancellation request to the beneficiary's bank. The beneficiary's bank decides whether to accept it and responds with a <b>camt.029</b>. If accepted, the funds move back through a pacs.004. A recall is a request, not a command. The beneficiary's bank can refuse.</li>
+<li>A <b>duplicate</b>: identify which payment is the genuine one and which is the duplicate. Return the duplicate through a pacs.004. Fix the root cause (usually a missing idempotency check or a blind retry).</li>
+<li>A <b>timeout</b> (status unknown): send an investigation message to find out whether the payment settled. Do not blindly retry. Only act once the status is known.</li>
+<li>A <b>missing payment</b>: trace the payment using the UETR, check each hop in the chain, and identify where it stopped. If the payment was debited but never left the bank, reverse the debit. If it left the bank but never arrived, raise an investigation with the correspondent bank.</li>
+</ul>
+<p><b>Prevention.</b> After resolution, the bank must prevent recurrence. This might mean fixing a validation rule, correcting static data, adding a regression test, improving monitoring, or changing a process. Prevention is the stage most often skipped, and it is the stage that matters most. A bank that fixes exceptions one by one without addressing root causes will have the same exceptions again next week.</p>
+<h2>Worked example</h2>
+<p>A customer sends 125,000 pounds to a supplier. The customer's account is debited, but the supplier never receives the money, and there is no rejection and no return. The payment has vanished.</p>
+<p><b>Detection.</b> The customer calls the bank three days later to ask where the money is. The operations team also notices a reconciliation break: a debit with no matching credit.</p>
+<p><b>Classification.</b> This is a missing payment. The money left the customer's account but did not reach the beneficiary.</p>
+<p><b>Investigation.</b> The analyst traces the payment using the UETR. The hub logs show the payment was sent to the correspondent bank. The correspondent bank's confirmation shows it was received. The next hop shows the payment was sent to the beneficiary's bank. The beneficiary's bank has no record of receiving it. The payment is stuck between the correspondent bank and the beneficiary's bank.</p>
+<p>The analyst contacts the correspondent bank and asks for the status. The correspondent bank confirms it sent the payment, but to the wrong account, because of a data mapping error in their system. The funds are sitting in a suspense account at the beneficiary's bank.</p>
+<p><b>Resolution.</b> The correspondent bank corrects the mapping and re-sends the payment to the correct account. The beneficiary is credited. The bank tells the customer what happened and confirms the payment has arrived.</p>
+<p><b>Prevention.</b> The bank raises the mapping error with the correspondent bank and asks for confirmation that it has been fixed. The bank adds a reconciliation check that flags any payment that has been sent but not confirmed as received within 24 hours. The bank reviews its own mapping for similar errors.</p>
+<p>A second example, shorter. A payment is rejected with a pacs.002 RJCT and reason code AC01 (incorrect account number). The bank reads the reason code, tells the customer the account number was wrong, and asks for the correct one. The customer provides it. The bank repairs the payment and resubmits it as a new instruction with a new message ID, keeping the same UETR. The payment succeeds.</p>
+<h2>Technical detail</h2>
+<p><b>Messages.</b> The key exception messages are: <b>pacs.002</b> (status report, including RJCT), <b>pacs.004</b> (return), <b>camt.056</b> (cancellation request), <b>camt.029</b> (resolution of investigation, the response to a camt.056), and the investigation message used to chase a missing payment or an unknown status. Each message has a specific role, and using the wrong one is a common error. A pacs.002 cannot move money. A pacs.004 cannot be used before settlement. A camt.056 is a request, not an instruction.</p>
+<p><b>Reason codes.</b> When a payment is rejected, the pacs.002 carries a reason code that explains why. Common codes include AC01 (incorrect account number), AC04 (closed account), AM05 (duplication), BE04 (missing creditor address), and RR04 (regulatory reason). The operations team must understand these codes, because they determine the fix.</p>
+<p><b>The UETR.</b> The <b>Unique End to End Transaction Reference</b> is the single most important tool in exception handling. It is a globally unique identifier that follows the payment across all banks and systems. When investigating a payment, the analyst starts with the UETR and asks each bank in the chain for the status of that UETR. Without the UETR, tracing a payment across banks is slow and unreliable.</p>
+<p><b>Suspense accounts.</b> When a bank receives funds it cannot match to an account, it holds them in a <b>suspense account</b>. The operations team must review the suspense account daily and match the funds to the correct payment. A suspense account that grows is a sign of a data quality or mapping problem.</p>
+<p><b>Timelines.</b> Exceptions have timelines. A return must be processed within a set period. A recall has a response deadline. A customer complaint has a regulatory deadline for resolution. The operations team must track these deadlines, because missing them can lead to regulatory findings and customer compensation.</p>
+<h2>Common mistakes</h2>
+<p><b>Using pacs.002 to move money.</b> A pacs.002 is a status report. It informs, it never settles. If a payment has already settled and needs to come back, the correct message is a pacs.004, not a pacs.002.</p>
+<p><b>Blindly retrying after a timeout.</b> A timeout means the status is unknown. Retrying without checking can create a duplicate payment. The correct action is to investigate first, then act based on the result.</p>
+<p><b>Treating a recall as a command.</b> A recall (camt.056) is a request to the beneficiary's bank. The beneficiary's bank decides whether to accept it. If the funds have already been withdrawn, the recall will be refused, and the sender must pursue other recovery options.</p>
+<p><b>Fixing the symptom, not the cause.</b> Repairing one payment without fixing the validation rule, the static data, or the mapping error that caused it means the same exception will happen again. Every exception should end with a prevention action.</p>
+<p><b>Not telling the customer.</b> A customer whose payment has failed needs to know what happened, what the bank is doing about it, and when it will be resolved. Silence is the worst response. Clear, honest communication is part of exception handling.</p>
+<h2>Related lessons</h2>
+<ul>
+<li>Payment lifecycle and its distinct stages.</li>
+<li>ISO 20022 messages: pacs.002, pacs.004, camt.056, camt.029.</li>
+<li>Clearing vs settlement.</li>
+<li>Reconciliation and investigations.</li>
+<li>UETR and transaction identifiers.</li>
+<li>Payment routing and repair queues.</li>
+</ul>
+<p><a class="studio-btn" href="../guides.html">&larr; Back to all guides</a></p>
+</section>
+</main>
+<footer><p>Payments Training Hub. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="../index.html">Home</a> &middot; <a href="../courses.html">Courses</a> &middot; <a href="../practice.html">Practice</a> &middot; <a href="../simulators.html">Simulators</a> &middot; <a href="../labs.html">Labs</a> &middot; <a href="../explorer.html">Explorer</a> &middot; <a href="../tests.html">Tests</a> &middot; <a href="../diagnostic.html">Diagnostic</a> &middot; <a href="../faq.html">Interview Ready Questions</a> &middot; <a href="../interview-prep.html">Interview Prep</a></p><p><a href="../about.html">About</a> &middot; <a href="../privacy.html">Privacy</a> &middot; <a href="../terms.html">Terms</a> &middot; <a href="../contact.html">Contact</a> &middot; <a href="../editorial-standards.html">Editorial Standards</a> &middot; <a href="../sources.html">Sources</a></p></footer>
+<script defer src="../assets/site.js"></script>
+<script defer src="../assets/bundles.js"></script>
+<script defer src="../assets/auth.js"></script>
+<script defer src="../assets/nav.js"></script>
+<script defer src="../assets/pf-enhance.js"></script>
+</body>
+</html>

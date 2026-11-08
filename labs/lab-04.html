@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>LAB-04: Specify a Payment Initiation API for a Corporate Channel | Payments Training Hub</title>
+<meta name="description" content="A corporate banking channel needs an API that lets treasury systems initiate payments directly, without a person typing each instruction into a screen....">
+<link rel="canonical" href="https://www.paymentstraininghub.in/labs/lab-04.html">
+<meta property="og:url" content="https://www.paymentstraininghub.in/labs/lab-04.html">
+<meta property="og:title" content="LAB-04: Specify a Payment Initiation API for a Corporate Channel | Payments Training Hub">
+<meta property="og:description" content="A corporate banking channel needs an API that lets treasury systems initiate payments directly, without a person typing each instruction into a screen....">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.in/assets/hero/hero-poster.jpg">
+<link rel="stylesheet" href="../assets/pf-theme.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="../index.html" class="brand">Payments <span>Training Hub</span></a><nav class="topnav"><a href="../index.html">Home</a> <a href="../courses.html">Courses</a> <a href="../practice.html">Practice</a> <a href="../simulators.html">Simulators</a> <a href="../labs.html">Labs</a> <a href="../explorer.html">Explorer</a> <a href="../tests.html">Tests</a></nav><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox" style="display:none"><span id="authState">Not signed in</span> <span id="authForm" style="display:none"><input id="authEmail" type="email" placeholder="Email for OTP" aria-label="Email for sign-in"> <button class="mute-btn" onclick="paAuthSendOtp()">Send code</button> <input id="authCode" type="text" placeholder="6-digit code" aria-label="One-time code" style="display:none"> <button class="mute-btn" id="authVerifyBtn" onclick="paAuthVerifyOtp()" style="display:none">Verify</button> <button class="mute-btn" onclick="paAuthGoogle()">Sign in with Google</button> </span><button class="mute-btn" id="authSignOutBtn" onclick="paAuthSignOut()" style="display:none">Sign out</button></span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<nav class="crumbs"><a href="../index.html">Home</a> / <a href="../labs.html">Labs</a> / Specify a Payment Initiation API for a Corporate Channel</nav>
+<section class="section" id="lab">
+<h2>LAB-04: Specify a Payment Initiation API for a Corporate Channel</h2>
+<p><i>API analysis</i></p>
+<p>A corporate banking channel needs an API that lets treasury systems initiate payments directly, without a person typing each instruction into a screen. The API must be easy to integrate, safe against duplicate payments, and clear about what went wrong when a request fails. In this lab you analyse and specify a payment initiation API from the business need down to the contract. You will define the endpoints, the HTTP methods, the request and response schemas, the authentication model, the error codes, and the rules for idempotency, correlation IDs, timeouts and retries. You will also write the OpenAPI contract that the corporate integration team builds against. By the end of the lab you will have an API specification that is complete enough to hand to a developer and a corporate customer without a follow-up meeting.</p>
+<div class="lab-progress"><div class="lab-progress-fill" id="lab-fill-LAB-04"></div></div>
+<p class="lab-progress-text" id="lab-text-LAB-04">0 of 5 steps done. Tick each step as you finish it, your progress is saved in this browser.</p>
+<ol class="lab-steps">
+<li class="lab-step"><label><input type="checkbox" class="lab-step-check" data-lab="LAB-04" data-step="0" onchange="paLabToggle(this)"> <b>Define the business need and the scope.</b></label><p class="lab-step-detail">Interview the corporate channel team and two corporate customers to learn what they need: single payments, bulk payments, payment status, and cancellation. Define the business rules, such as the daily limit of 250,000 dollars per customer, the cutoff times per currency, and the approval workflow for payments above 100,000 dollars. Agree the success criteria, including the target adoption in the first year and the maximum time from request to acceptance. Write the scope so that account information and reporting are clearly out of scope for this first release.</p></li>
+<li class="lab-step"><label><input type="checkbox" class="lab-step-check" data-lab="LAB-04" data-step="1" onchange="paLabToggle(this)"> <b>Design the endpoints and methods.</b></label><p class="lab-step-detail">Design the endpoints: a POST to create a payment initiation, a GET to retrieve a payment by its identifier, a GET to list payments with filters, and a POST to cancel a payment that has not yet executed. Choose the HTTP methods and the resource names carefully, keeping them consistent and readable. State the query parameters, the path parameters and the pagination rules for the list endpoint. Review the endpoint design with a developer and a corporate integrator to confirm it matches how treasury systems actually call APIs.</p></li>
+<li class="lab-step"><label><input type="checkbox" class="lab-step-check" data-lab="LAB-04" data-step="2" onchange="paLabToggle(this)"> <b>Write the request and response schemas.</b></label><p class="lab-step-detail">Write the request and response schemas for each endpoint, naming every field, its data type, its length, whether it is mandatory, and its validation rule. Include the debtor account, the creditor name and account, the amount and currency, the execution date and the remittance information. Define the response for success, for validation failure and for a payment that is accepted but not yet executed. Use realistic examples in every schema, with fictional accounts and amounts, so that integrators can copy them into their test code.</p></li>
+<li class="lab-step"><label><input type="checkbox" class="lab-step-check" data-lab="LAB-04" data-step="3" onchange="paLabToggle(this)"> <b>Define auth, error codes and rate limits.</b></label><p class="lab-step-detail">Choose the authentication and authorisation model, for example OAuth 2.0 with client credentials for system to system access and scoped permissions per corporate customer. Define the error codes, separating technical errors, such as 400 for a malformed request and 401 for a bad token, from business errors, such as insufficient funds and limit exceeded. State the error response body, with a machine readable code, a human readable message and a correlation ID. Agree the rate limits and the behaviour when a limit is exceeded.</p></li>
+<li class="lab-step"><label><input type="checkbox" class="lab-step-check" data-lab="LAB-04" data-step="4" onchange="paLabToggle(this)"> <b>Design idempotency, correlation, timeouts and retries.</b></label><p class="lab-step-detail">Write the rules that make the API safe: an idempotency key on every POST, so that a retried request never creates a duplicate payment, and a correlation ID that travels through every system so that a failed payment can be traced end to end. Define the timeout for each endpoint, the retry policy for the caller, and the behaviour when the bank system is temporarily unavailable, including a 503 response and a status poll. Record these rules in the specification and test them in the sandbox before sign off.</p></li>
+</ol>
+<p><button class="api-btn" onclick="paLabReset('LAB-04')">Reset this lab checklist</button></p>
+<p><b>Templates.</b></p><ul>
+<li>API specification template: overview, endpoints, schemas, authentication, error codes and service levels.</li>
+<li>OpenAPI contract template: paths, operations, components, examples and security scheme for the service.</li>
+<li>Error code catalogue template: HTTP status, business code, message, cause and recommended caller action.</li>
+<li>Idempotency and retry design note template: key generation, storage period, duplicate response, timeouts and retry limits.</li>
+</ul>
+<p><b>Worked example.</b> Cedarwood Bank, a fictional bank in Toronto, is opening a payment initiation API for its corporate channel so that treasury teams can pay suppliers without logging into internet banking. The API offers a POST endpoint that accepts a single payment initiation with debtor account, creditor name and IBAN, amount and currency, and an optional execution date. A corporate treasury system at a fictional manufacturer, Maple Foods, submits a payment of 120,000 Canadian dollars to a supplier in Chicago. The request carries an idempotency key and a correlation ID, and the bank returns a 202 response with a payment identifier and a status of accepted. When the same request is sent again with the same idempotency key, the bank returns the original response instead of creating a second payment, so the supplier is not paid twice. A second request with an amount above the daily limit of 250,000 dollars is rejected with a 422 error and a clear business error code. The API specification, written in OpenAPI, is reviewed by the corporate integration team, tested in a sandbox with 50 sample payments, and signed off before the first production call.</p>
+<p><b>Deliverables.</b></p><ul>
+<li>API specification for the payment initiation service with endpoints, schemas and error codes</li>
+<li>OpenAPI contract with request and response examples for every endpoint</li>
+<li>Idempotency, correlation ID, timeout and retry design note</li>
+<li>Non-functional requirements note covering rate limits, security and availability</li>
+</ul>
+</section>
+</main>
+<footer><p>Payments Training Hub. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="../index.html">Home</a> &middot; <a href="../courses.html">Courses</a> &middot; <a href="../practice.html">Practice</a> &middot; <a href="../simulators.html">Simulators</a> &middot; <a href="../labs.html">Labs</a> &middot; <a href="../explorer.html">Explorer</a> &middot; <a href="../tests.html">Tests</a> &middot; <a href="../diagnostic.html">Diagnostic</a> &middot; <a href="../faq.html">Interview Ready Questions</a> &middot; <a href="../interview-prep.html">Interview Prep</a></p><p><a href="../about.html">About</a> &middot; <a href="../privacy.html">Privacy</a> &middot; <a href="../terms.html">Terms</a> &middot; <a href="../contact.html">Contact</a> &middot; <a href="../editorial-standards.html">Editorial Standards</a> &middot; <a href="../sources.html">Sources</a></p></footer>
+<script defer src="../assets/site.js"></script>
+<script defer src="../assets/bundles.js"></script>
+<script defer src="../assets/auth.js"></script>
+<script defer src="../assets/nav.js"></script>
+<script defer src="../assets/pf-enhance.js"></script>
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>Serial vs Cover Payments: Two Ways to Move Money Across Borders | Payments Training Hub</title>
+<meta name="description" content="When a bank sends a cross-border payment, the funds have to travel from the sender bank to the beneficiary bank. There are two ways to do this: the **seria">
+<link rel="canonical" href="https://www.paymentstraininghub.in/guides/serial-vs-cover-payments.html">
+<meta property="og:url" content="https://www.paymentstraininghub.in/guides/serial-vs-cover-payments.html">
+<meta property="og:title" content="Serial vs Cover Payments: Two Ways to Move Money Across Borders | Payments Training Hub">
+<meta property="og:description" content="When a bank sends a cross-border payment, the funds have to travel from the sender bank to the beneficiary bank. There are two ways to do this: the **seria">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.in/assets/hero/hero-poster.jpg">
+<link rel="stylesheet" href="../assets/pf-theme.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="../index.html" class="brand">Payments <span>Training Hub</span></a><nav class="topnav"><a href="../index.html">Home</a> <a href="../courses.html">Courses</a> <a href="../practice.html">Practice</a> <a href="../simulators.html">Simulators</a> <a href="../labs.html">Labs</a> <a href="../explorer.html">Explorer</a> <a href="../tests.html">Tests</a></nav><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox" style="display:none"><span id="authState">Not signed in</span> <span id="authForm" style="display:none"><input id="authEmail" type="email" placeholder="Email for OTP" aria-label="Email for sign-in"> <button class="mute-btn" onclick="paAuthSendOtp()">Send code</button> <input id="authCode" type="text" placeholder="6-digit code" aria-label="One-time code" style="display:none"> <button class="mute-btn" id="authVerifyBtn" onclick="paAuthVerifyOtp()" style="display:none">Verify</button> <button class="mute-btn" onclick="paAuthGoogle()">Sign in with Google</button> </span><button class="mute-btn" id="authSignOutBtn" onclick="paAuthSignOut()" style="display:none">Sign out</button></span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<section class="section guide-page">
+<nav class="crumbs"><a href="../index.html">Home</a> / <a href="../guides.html">Guides</a> / SWIFT and Correspondent Banking</nav>
+<h1>Serial vs Cover Payments: Two Ways to Move Money Across Borders</h1>
+<h2>What it is</h2>
+<p>When a bank sends a cross-border payment, the funds have to travel from the sender bank to the beneficiary bank. There are two ways to do this: the <b>serial method</b> and the <b>cover method</b>. The choice affects speed, cost, transparency, and risk.</p>
+<p>In the <b>serial method</b>, a single message travels from bank to bank along the chain. Each bank receives the payment instruction, deducts its charges if any, and forwards the remaining amount to the next bank. The instruction and the funds travel together, hop by hop, until they reach the beneficiary bank.</p>
+<p>In the <b>cover method</b>, two messages travel separately. The payment instruction (the MT103 or pacs.008) goes directly from the sender bank to the beneficiary bank. The funds travel separately through the correspondent banking chain, carried by a cover message (the MT202 COV or pacs.009). The beneficiary bank receives the instruction first, then waits for the funds to arrive, matches them, and credits the beneficiary.</p>
+<h2>Why it matters</h2>
+<p>The serial versus cover choice is one of the most important decisions in cross-border payment design. It affects how fast the beneficiary gets paid, how much the payment costs, how transparent the payment is to regulators, and how easy it is to investigate when something goes wrong.</p>
+<p>Interviewers at large banks ask about serial versus cover regularly. They want to know whether you understand the trade-offs, not just the definitions. A strong answer explains when you would use each method and why.</p>
+<h2>How it works in a bank</h2>
+<h3>The serial method</h3>
+<p>A customer in the United Kingdom pays a supplier in Thailand. The sender bank in London does not have a direct relationship with the beneficiary bank in Bangkok. The payment must pass through intermediary banks.</p>
+<p>The sender bank sends an MT103 to the first intermediary bank. The MT103 carries the full payment details: ordering customer, beneficiary, amount, charges, and remittance information. The first intermediary bank reads the MT103, checks it against sanctions lists, deducts its charges if the charge option allows, and forwards the MT103 to the next bank. Each bank in the chain does the same. The last bank in the chain is the beneficiary bank. It receives the MT103, credits the beneficiary, and the payment is complete.</p>
+<p>The serial method is simple and transparent. Every bank in the chain sees the full payment details. Every bank can screen the payment. The downside is speed. Each hop adds time. A payment through three intermediary banks can take two or three days. Each bank may also deduct charges, so the beneficiary may receive less than the instructed amount.</p>
+<h3>The cover method</h3>
+<p>The same customer pays the same supplier, but the sender bank uses the cover method. The sender bank sends the MT103 directly to the beneficiary bank in Bangkok. The MT103 arrives quickly, often within hours. The beneficiary bank now knows a payment is coming, but it has not yet received the funds.</p>
+<p>Separately, the sender bank sends an MT202 COV through the correspondent chain. The MT202 COV moves the funds from the sender bank to its correspondent, then to the next correspondent, then to the beneficiary bank. The MT202 COV carries fields 50a and 59a, so every bank in the chain can see the ordering customer and the beneficiary. This is the transparency requirement that makes the cover method acceptable to regulators.</p>
+<p>The beneficiary bank receives the funds, matches them to the MT103 using the reference in field 21, and credits the beneficiary. The cover method is faster than the serial method, because the instruction does not have to wait at each hop. The beneficiary bank can also prepare the credit in advance, since it receives the MT103 early.</p>
+<h2>Worked example: serial</h2>
+<p>A company in Germany pays EUR 50,000 to a supplier in Brazil. The sender bank is Commerzbank Frankfurt. The beneficiary bank is Itau Sao Paulo. There is no direct relationship, so the payment goes through two intermediary banks: a correspondent in New York and a correspondent in Sao Paulo.</p>
+<p>Commerzbank sends an MT103 to the New York correspondent for EUR 50,000. The New York correspondent deducts EUR 15 in charges and forwards EUR 49,985 to the Sao Paulo correspondent. The Sao Paulo correspondent deducts EUR 10 and forwards EUR 49,975 to Itau. Itau credits the supplier EUR 49,975. The payment took three days. The supplier received EUR 25 less than the instructed amount because of intermediary charges.</p>
+<h2>Worked example: cover</h2>
+<p>The same company pays the same supplier, but Commerzbank uses the cover method. Commerzbank sends an MT103 directly to Itau Sao Paulo for EUR 50,000. Itau receives the instruction on day one and knows the payment is coming.</p>
+<p>Commerzbank also sends an MT202 COV through its correspondent chain. The MT202 COV carries the funds and the customer details in fields 50a and 59a. The funds arrive at Itau on day two. Itau matches the MT202 COV to the MT103 and credits the supplier EUR 50,000, less any charges agreed in the charge option. The payment is faster, and the supplier knows the full amount in advance.</p>
+<h2>Technical detail</h2>
+<p>The key differences are:</p>
+<p>| Aspect | Serial method | Cover method |</p>
+<p>|---|---|---|</p>
+<p>| Messages | One MT103 travels bank by bank | MT103 direct to beneficiary bank, MT202 COV through the chain |</p>
+<p>| Speed | Slower, each hop adds delay | Faster, instruction arrives early |</p>
+<p>| Transparency | Every bank sees full details | Every bank sees full details only if MT202 COV is used |</p>
+<p>| Charges | Each intermediary may deduct | Charges are in the cover chain |</p>
+<p>| Matching | No matching needed, the message is the funds | Beneficiary bank must match MT103 to MT202 COV |</p>
+<p>| Risk | Payment can stall at any hop | Funds and instruction can arrive at different times |</p>
+<p>The sanctions angle is critical. In the serial method, every bank sees the full payment details because the MT103 carries them. In the cover method, the intermediary banks only see the details if the sender uses an MT202 COV. A plain MT202 carries no customer details, so intermediary banks cannot screen the payment. This is why regulators require the MT202 COV for customer payment cover. A bank that sends a plain MT202 as cover is breaking the rules.</p>
+<p>Under ISO 20022, the serial method uses the pacs.008 travelling bank by bank. The cover method uses the pacs.008 sent directly to the beneficiary bank and the pacs.009 carrying the funds through the chain, with the underlying customer details included.</p>
+<h2>Common mistakes</h2>
+<ul>
+<li><b>Using a plain MT202 as cover.</b> This is the most serious mistake. The intermediary banks cannot screen the payment. Always use MT202 COV for customer payment cover.</li>
+<li><b>Choosing serial when speed matters.</b> If the customer needs same-day or next-day payment, the serial method through multiple intermediaries will be too slow. Use cover.</li>
+<li><b>Choosing cover without a matching process.</b> The beneficiary bank must match the MT103 to the MT202 COV. If the references do not match, the payment sits in a suspense account. Always populate field 21 correctly.</li>
+<li><b>Assuming cover is always cheaper.</b> The cover method can involve correspondent charges at each hop, just like serial. Compare the total cost, not just the speed.</li>
+<li><b>Forgetting that charges differ.</b> In the serial method, each intermediary deducts its charges from the amount. In the cover method, the charges depend on the charge option (OUR, SHA, BEN) and the correspondent agreements. The beneficiary may receive a different amount under each method.</li>
+</ul>
+<h2>Related lessons</h2>
+<ul>
+<li>The MT103 and customer credit transfers</li>
+<li>The MT202 and the MT202 COV</li>
+<li>Correspondent banking and nostro accounts</li>
+<li>Sanctions screening in payments</li>
+<li>The pacs.008 and pacs.009 messages in ISO 20022</li>
+</ul>
+<p><a class="studio-btn" href="../guides.html">&larr; Back to all guides</a></p>
+</section>
+</main>
+<footer><p>Payments Training Hub. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="../index.html">Home</a> &middot; <a href="../courses.html">Courses</a> &middot; <a href="../practice.html">Practice</a> &middot; <a href="../simulators.html">Simulators</a> &middot; <a href="../labs.html">Labs</a> &middot; <a href="../explorer.html">Explorer</a> &middot; <a href="../tests.html">Tests</a> &middot; <a href="../diagnostic.html">Diagnostic</a> &middot; <a href="../faq.html">Interview Ready Questions</a> &middot; <a href="../interview-prep.html">Interview Prep</a></p><p><a href="../about.html">About</a> &middot; <a href="../privacy.html">Privacy</a> &middot; <a href="../terms.html">Terms</a> &middot; <a href="../contact.html">Contact</a> &middot; <a href="../editorial-standards.html">Editorial Standards</a> &middot; <a href="../sources.html">Sources</a></p></footer>
+<script defer src="../assets/site.js"></script>
+<script defer src="../assets/bundles.js"></script>
+<script defer src="../assets/auth.js"></script>
+<script defer src="../assets/nav.js"></script>
+<script defer src="../assets/pf-enhance.js"></script>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>RTP Explained | Payments Training Hub</title>
+<meta name="description" content="**RTP** (Real Time Payments) is the real time payment system for the United States, operated by **The Clearing House (TCH)**. It lets banks send and receiv">
+<link rel="canonical" href="https://www.paymentstraininghub.in/guides/rtp-explained.html">
+<meta property="og:url" content="https://www.paymentstraininghub.in/guides/rtp-explained.html">
+<meta property="og:title" content="RTP Explained | Payments Training Hub">
+<meta property="og:description" content="**RTP** (Real Time Payments) is the real time payment system for the United States, operated by **The Clearing House (TCH)**. It lets banks send and receiv">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.in/assets/hero/hero-poster.jpg">
+<link rel="stylesheet" href="../assets/pf-theme.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="../index.html" class="brand">Payments <span>Training Hub</span></a><nav class="topnav"><a href="../index.html">Home</a> <a href="../courses.html">Courses</a> <a href="../practice.html">Practice</a> <a href="../simulators.html">Simulators</a> <a href="../labs.html">Labs</a> <a href="../explorer.html">Explorer</a> <a href="../tests.html">Tests</a></nav><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox" style="display:none"><span id="authState">Not signed in</span> <span id="authForm" style="display:none"><input id="authEmail" type="email" placeholder="Email for OTP" aria-label="Email for sign-in"> <button class="mute-btn" onclick="paAuthSendOtp()">Send code</button> <input id="authCode" type="text" placeholder="6-digit code" aria-label="One-time code" style="display:none"> <button class="mute-btn" id="authVerifyBtn" onclick="paAuthVerifyOtp()" style="display:none">Verify</button> <button class="mute-btn" onclick="paAuthGoogle()">Sign in with Google</button> </span><button class="mute-btn" id="authSignOutBtn" onclick="paAuthSignOut()" style="display:none">Sign out</button></span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<section class="section guide-page">
+<nav class="crumbs"><a href="../index.html">Home</a> / <a href="../guides.html">Guides</a> / Payment Systems and Architecture</nav>
+<h1>RTP Explained</h1>
+<h2>What it is</h2>
+<p><b>RTP</b> (Real Time Payments) is the real time payment system for the United States, operated by <b>The Clearing House (TCH)</b>. It lets banks send and receive payments in real time, 24 hours a day, 7 days a week, with immediate confirmation and final settlement.</p>
+<p>The transaction limit for RTP is 10 million dollars. This was raised from 1 million dollars on 9 February 2025, reflecting the growing use of RTP for larger business payments. RTP is separate from <b>FedNow</b>, which is the Federal Reserve's real time payment system. Both are real time payment systems in the US, but they are operated by different organisations and banks may connect to one or both.</p>
+<h2>Why it matters</h2>
+<p>The US was late to real time payments compared to the UK, Europe, and India. RTP, launched in 2017, and FedNow, launched in 2023, changed that. Businesses can now pay suppliers instantly, workers can receive wages in real time, and consumers can send money to each other immediately, at any time.</p>
+<p>For a business analyst, RTP matters because it is the system that many US banks and fintechs are building on, and because it has features that older US payment systems do not. It carries rich remittance data, it supports request for payment, and it settles in real time with finality. Understanding RTP is essential for anyone working on US payments.</p>
+<h2>How it works in a bank</h2>
+<p><b>The parties.</b> An RTP payment involves the sender, the receiver, the sending bank, the receiving bank, and The Clearing House as the operator. The banks connect to the RTP network and hold a prefunded account at the Federal Reserve to support settlement.</p>
+<p><b>The payment flow.</b> A customer instructs a payment through online banking, a mobile app, or a corporate file. The bank validates the instruction, checks the account and the balance, runs fraud and sanctions checks, and sends the payment to the RTP network. The receiving bank validates it, checks the account, and credits the receiver. The receiving bank sends back a confirmation, and the sending bank confirms the payment to the customer. The whole flow takes seconds.</p>
+<p><b>Settlement.</b> RTP settles in real time through the prefunded accounts that banks hold at the Federal Reserve. Each payment is settled individually as it is processed. Settlement is final. The banks must manage their prefunded balances, topping them up when they run low, so that payments are not delayed.</p>
+<p><b>Request for payment.</b> RTP supports a request for payment feature. A biller can send a request to a customer, and the customer can approve or reject it from their banking app. This is used for bill payments, where the customer wants to control the exact timing and amount of each payment.</p>
+<p><b>Remittance data.</b> RTP messages can carry rich remittance information, such as invoice numbers, purchase order references, and line item detail. This helps the receiver reconcile the payment automatically, which is a major advantage over older US payment systems that carry very little data.</p>
+<h2>Worked example</h2>
+<p>A company in Chicago pays a supplier in New York 250,000 dollars for an urgent delivery.</p>
+<p>The company's finance team enters the payment in their banking portal, with the invoice number in the remittance data. The bank validates the instruction, checks the balance, runs a sanctions screen, and sends the payment to the RTP network. The supplier's bank receives it, validates it, and credits the supplier. The supplier's bank sends back a confirmation. The company receives a confirmation within seconds. The supplier can match the payment against the invoice automatically using the remittance data.</p>
+<p>The amount, 250,000 dollars, is well within the 10 million dollar limit. Under the old limit of 1 million dollars it would also have been possible, but a payment of 5 million dollars would not have been possible before the limit was raised on 9 February 2025.</p>
+<p>A second example. A gig economy worker finishes a shift at 11pm on a Saturday and wants to be paid immediately. Their employer uses RTP. The employer sends the wages through RTP, and the worker's bank credits the worker within seconds, even though it is late on a Saturday night. Under the old ACH system, the worker would have waited until Monday or Tuesday.</p>
+<p>A failure example. A customer sends a payment, but the receiving bank's system is temporarily unavailable. The payment is not delivered. The sending bank receives a rejection, reverses the debit, and tells the customer the payment failed. The customer can retry once the receiving bank is back online.</p>
+<h2>Technical detail</h2>
+<p><b>The limit.</b> The RTP transaction limit is 10 million dollars, raised from 1 million dollars on 9 February 2025. Banks may set their own lower limits for their customers. The limit applies per payment, not per day.</p>
+<p><b>Settlement.</b> RTP uses prefunded accounts at the Federal Reserve. Each participating bank holds funds in its account. When a payment is processed, the funds move between the banks' prefunded accounts in real time. This is different from Fedwire, which settles directly in central bank accounts, and from ACH, which settles on a deferred net basis.</p>
+<p><b>Messages.</b> RTP uses ISO 20022 messages. The credit transfer is a <b>pacs.008</b>. Status reports use <b>pacs.002</b>. The message format is aligned with the ISO 20022 standard used by FedNow and by cross border payments, which makes it easier for banks to reuse their ISO 20022 capability.</p>
+<p><b>Availability.</b> RTP runs 24 hours a day, 7 days a week, 365 days a year. There are no cut-offs and no business days. Banks must operate their RTP capability around the clock, including their liquidity management, their sanctions screening, and their exception handling.</p>
+<p><b>FedNow vs RTP.</b> FedNow is the Federal Reserve's real time payment system, launched in 2023. RTP is operated by The Clearing House, a private organisation owned by large US banks. Both offer real time payments. A bank may connect to one or both. The transaction limit for FedNow is also 10 million dollars, raised in November 2025 from 500,000 dollars. The two systems are not interoperable: a payment sent on RTP cannot be received on FedNow, and vice versa.</p>
+<h2>Common mistakes</h2>
+<p><b>Confusing RTP with FedNow.</b> They are two separate real time payment systems in the US. They are operated by different organisations, and they do not connect to each other. A business analyst must know which one their bank uses.</p>
+<p><b>Calling RTP a card network.</b> It is not. RTP moves money directly between bank accounts. It does not use card rails.</p>
+<p><b>Assuming the old 1 million dollar limit still applies.</b> The limit was raised to 10 million dollars on 9 February 2025. A business analyst who still quotes 1 million dollars will give wrong advice on large payments.</p>
+<p><b>Forgetting prefunding.</b> RTP settlement depends on prefunded accounts at the Federal Reserve. A bank that runs out of prefunded balance cannot send payments until it tops up. Liquidity management is a real operational task for RTP, not an afterthought.</p>
+<p><b>Ignoring the remittance data.</b> One of RTP's biggest advantages is rich remittance data. A payment that carries only an amount and no invoice reference wastes this capability and creates manual reconciliation work for the receiver.</p>
+<h2>Related lessons</h2>
+<ul>
+<li>FedNow and US real time payments.</li>
+<li>ISO 20022 messages: pacs.008, pacs.002.</li>
+<li>Clearing and settlement.</li>
+<li>Payment exception handling and timeouts.</li>
+<li>Real time payments and instant payment systems.</li>
+</ul>
+<p><a class="studio-btn" href="../guides.html">&larr; Back to all guides</a></p>
+</section>
+</main>
+<footer><p>Payments Training Hub. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="../index.html">Home</a> &middot; <a href="../courses.html">Courses</a> &middot; <a href="../practice.html">Practice</a> &middot; <a href="../simulators.html">Simulators</a> &middot; <a href="../labs.html">Labs</a> &middot; <a href="../explorer.html">Explorer</a> &middot; <a href="../tests.html">Tests</a> &middot; <a href="../diagnostic.html">Diagnostic</a> &middot; <a href="../faq.html">Interview Ready Questions</a> &middot; <a href="../interview-prep.html">Interview Prep</a></p><p><a href="../about.html">About</a> &middot; <a href="../privacy.html">Privacy</a> &middot; <a href="../terms.html">Terms</a> &middot; <a href="../contact.html">Contact</a> &middot; <a href="../editorial-standards.html">Editorial Standards</a> &middot; <a href="../sources.html">Sources</a></p></footer>
+<script defer src="../assets/site.js"></script>
+<script defer src="../assets/bundles.js"></script>
+<script defer src="../assets/auth.js"></script>
+<script defer src="../assets/nav.js"></script>
+<script defer src="../assets/pf-enhance.js"></script>
+</body>
+</html>

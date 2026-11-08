@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>MT103 Explained: The Single Customer Credit Transfer | Payments Training Hub</title>
+<meta name="description" content="The **MT103** is the SWIFT message a bank sends to move money for a customer to another bank. It is a **single customer credit transfer**. When a person or">
+<link rel="canonical" href="https://www.paymentstraininghub.in/guides/mt103-explained.html">
+<meta property="og:url" content="https://www.paymentstraininghub.in/guides/mt103-explained.html">
+<meta property="og:title" content="MT103 Explained: The Single Customer Credit Transfer | Payments Training Hub">
+<meta property="og:description" content="The **MT103** is the SWIFT message a bank sends to move money for a customer to another bank. It is a **single customer credit transfer**. When a person or">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.in/assets/hero/hero-poster.jpg">
+<link rel="stylesheet" href="../assets/pf-theme.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="../index.html" class="brand">Payments <span>Training Hub</span></a><nav class="topnav"><a href="../index.html">Home</a> <a href="../courses.html">Courses</a> <a href="../practice.html">Practice</a> <a href="../simulators.html">Simulators</a> <a href="../labs.html">Labs</a> <a href="../explorer.html">Explorer</a> <a href="../tests.html">Tests</a></nav><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox" style="display:none"><span id="authState">Not signed in</span> <span id="authForm" style="display:none"><input id="authEmail" type="email" placeholder="Email for OTP" aria-label="Email for sign-in"> <button class="mute-btn" onclick="paAuthSendOtp()">Send code</button> <input id="authCode" type="text" placeholder="6-digit code" aria-label="One-time code" style="display:none"> <button class="mute-btn" id="authVerifyBtn" onclick="paAuthVerifyOtp()" style="display:none">Verify</button> <button class="mute-btn" onclick="paAuthGoogle()">Sign in with Google</button> </span><button class="mute-btn" id="authSignOutBtn" onclick="paAuthSignOut()" style="display:none">Sign out</button></span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<section class="section guide-page">
+<nav class="crumbs"><a href="../index.html">Home</a> / <a href="../guides.html">Guides</a> / SWIFT and Correspondent Banking</nav>
+<h1>MT103 Explained: The Single Customer Credit Transfer</h1>
+<h2>What it is</h2>
+<p>The <b>MT103</b> is the SWIFT message a bank sends to move money for a customer to another bank. It is a <b>single customer credit transfer</b>. When a person or a company asks their bank to pay someone in another country, the bank sends an MT103 to the next bank in the chain. The message carries the instruction to pay, the amount, the currency, who is sending, and who should receive the money.</p>
+<p>The MT103 is the workhorse of cross-border customer payments. It is used for trade payments, supplier payments, salary transfers, and personal remittances. Under the CBPR+ programme, the MT103 is being replaced by the ISO 20022 <b>pacs.008</b> message, but the MT103 is still widely used during the migration period and in markets that have not yet moved to ISO 20022.</p>
+<p>The MT103 is an instruction, not a settlement. It tells the receiving bank to pay the beneficiary. The actual movement of funds between banks happens separately, through settlement accounts.</p>
+<h2>Why it matters</h2>
+<p>Every cross-border customer payment your bank sends will use an MT103 or its ISO 20022 equivalent, the pacs.008. If you work in payments, you will read MT103 messages daily. You need to know what each field means, because the fields decide whether the payment goes straight through or stops for repair.</p>
+<p>A wrong field can delay a payment by days. A missing beneficiary account number, a wrong charge instruction, or a truncated name can send the payment to an exceptions queue. Knowing the MT103 field by field is a core skill for a payments business analyst, operations analyst, or product owner.</p>
+<h2>How it works in a bank</h2>
+<p>A customer gives a payment instruction through a channel: online banking, a branch, a file upload, or an API. The payment hub validates the instruction, checks sanctions lists, and checks the account balance. If the payment is cross-border and the beneficiary bank is reached through SWIFT, the hub builds an MT103.</p>
+<p>The MT103 travels from the sender bank to the next bank in the chain. That bank may be the beneficiary bank itself, or an intermediary bank, or a correspondent bank. Each bank in the chain reads the fields, checks the payment against its own sanctions and compliance rules, and forwards it. The last bank in the chain credits the beneficiary account.</p>
+<p>Two methods exist for moving the funds behind the instruction: the <b>serial method</b> and the <b>cover method</b>. In the serial method, the MT103 itself travels bank by bank and the funds move with it. In the cover method, the MT103 goes directly to the beneficiary bank while a separate <b>MT202 COV</b> moves the funds through the correspondent chain. The cover method is faster, but it requires the MT202 COV to carry the full customer details so every bank in the chain can screen the payment.</p>
+<h2>Worked example</h2>
+<p>A manufacturer in Germany pays a supplier in Japan. The manufacturer, Muller GmbH, owes JPY 5,000,000 for invoice INV-2026-1187. Muller instructs its bank, Deutsche Bank Frankfurt, to pay the supplier, Tanaka Trading Co, which banks with MUFG Tokyo.</p>
+<p>The payment instruction contains:</p>
+<ul>
+<li>Ordering customer: Muller GmbH, Frankfurt, account DE89 3700 0000 0123 4567 89</li>
+<li>Beneficiary: Tanaka Trading Co, Tokyo, account JP12 3456 7890 1234 5678 9012</li>
+<li>Amount: JPY 5,000,000</li>
+<li>Value date: 9 November 2026</li>
+<li>Charge option: SHA, so sender and beneficiary each pay their own bank charges</li>
+<li>Remittance information: invoice INV-2026-1187</li>
+</ul>
+<p>Deutsche Bank sends an MT103 to MUFG Tokyo. MUFG reads the fields, checks the beneficiary account, and credits JPY 5,000,000 to Tanaka Trading Co on the value date. The invoice reference travels in field 70 so the supplier can match the payment to the invoice.</p>
+<h2>Technical detail</h2>
+<p>The main MT103 fields are:</p>
+<ul>
+<li><b>Field 20, Transaction Reference Number.</b> The sender bank's unique reference for this payment. It is 16 characters maximum. Every bank in the chain uses it to track the payment.</li>
+<li><b>Field 23B, Bank Operation Code.</b> Tells the receiving bank what kind of transfer this is. CRED means a normal credit transfer. SPAY means a SWIFT payment. SPRI means a priority payment.</li>
+<li><b>Field 32A, Value Date, Currency Code, Interbank Settled Amount.</b> The date the funds should be available, the currency, and the amount that settles between banks. Example: 261109JPY5000000, means value date 9 November 2026, JPY 5,000,000.</li>
+<li><b>Field 33B, Currency Code, Instructed Amount.</b> The currency and amount the customer instructed, which can differ from field 32A if charges or currency conversion apply.</li>
+<li><b>Field 50a, Ordering Customer.</b> The customer who ordered the payment. Field 50K carries the name and address. Field 50F is used when the ordering customer is a financial institution.</li>
+<li><b>Field 52a, Ordering Institution.</b> The bank that ordered the payment, if it is different from the sender of the message.</li>
+<li><b>Field 53a, Sender's Correspondent.</b> The account the sender holds with the receiver, used for settlement.</li>
+<li><b>Field 54a, Receiver's Correspondent.</b> The account the receiver holds with the sender.</li>
+<li><b>Field 56a, Intermediary Institution.</b> A bank in the middle of the chain that the payment passes through.</li>
+<li><b>Field 57a, Account With Institution.</b> The bank where the beneficiary holds an account, if it is different from the receiver.</li>
+<li><b>Field 59a, Beneficiary Customer.</b> The person or company who should receive the money. Field 59 carries the name, address, and account number. This field is mandatory. A payment cannot settle without a valid beneficiary.</li>
+<li><b>Field 70, Remittance Information.</b> The reason for the payment, such as an invoice number. Limited to four lines of 35 characters.</li>
+<li><b>Field 71A, Details of Charges.</b> Who pays the charges. OUR means the sender pays all charges. SHA means sender and beneficiary share charges. BEN means the beneficiary pays all charges.</li>
+<li><b>Field 72, Sender to Receiver Information.</b> Extra instructions for the receiving bank, such as a code for the type of payment.</li>
+</ul>
+<p>The pacs.008 equivalent maps these fields directly. Field 20 maps to the instruction identification. Field 32A maps to the interbank settlement amount and date. Field 50a maps to the debtor. Field 59a maps to the creditor. Field 70 maps to the remittance information. Field 71A maps to the charge bearer.</p>
+<h2>Common mistakes</h2>
+<ul>
+<li><b>Leaving field 59 blank or incomplete.</b> A payment with no beneficiary account number will stop at the first bank. Always validate the beneficiary account before sending.</li>
+<li><b>Using the wrong charge option.</b> If the customer agreed to OUR and the message says SHA, the beneficiary receives less than expected and complains. Confirm the charge option with the customer.</li>
+<li><b>Truncating the beneficiary name.</b> Field 59 has limited space. A truncated name can fail sanctions screening or fail to match the account. Use the full legal name.</li>
+<li><b>Confusing field 32A and field 33B.</b> Field 32A is the amount that settles between banks. Field 33B is the amount the customer instructed. They differ when charges are deducted or currency is converted. Mixing them up causes reconciliation breaks.</li>
+<li><b>Sending an MT103 when a pacs.008 is required.</b> In corridors that have migrated to CBPR+, the receiving bank may reject an MT103. Check the corridor migration status before choosing the message type.</li>
+</ul>
+<h2>Related lessons</h2>
+<ul>
+<li>Cross-border payments and the payment chain</li>
+<li>Serial versus cover payments</li>
+<li>The pacs.008 message in ISO 20022</li>
+<li>Correspondent banking and nostro accounts</li>
+<li>Payment exceptions and repair</li>
+</ul>
+<p><a class="studio-btn" href="../guides.html">&larr; Back to all guides</a></p>
+</section>
+</main>
+<footer><p>Payments Training Hub. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="../index.html">Home</a> &middot; <a href="../courses.html">Courses</a> &middot; <a href="../practice.html">Practice</a> &middot; <a href="../simulators.html">Simulators</a> &middot; <a href="../labs.html">Labs</a> &middot; <a href="../explorer.html">Explorer</a> &middot; <a href="../tests.html">Tests</a> &middot; <a href="../diagnostic.html">Diagnostic</a> &middot; <a href="../faq.html">Interview Ready Questions</a> &middot; <a href="../interview-prep.html">Interview Prep</a></p><p><a href="../about.html">About</a> &middot; <a href="../privacy.html">Privacy</a> &middot; <a href="../terms.html">Terms</a> &middot; <a href="../contact.html">Contact</a> &middot; <a href="../editorial-standards.html">Editorial Standards</a> &middot; <a href="../sources.html">Sources</a></p></footer>
+<script defer src="../assets/site.js"></script>
+<script defer src="../assets/bundles.js"></script>
+<script defer src="../assets/auth.js"></script>
+<script defer src="../assets/nav.js"></script>
+<script defer src="../assets/pf-enhance.js"></script>
+</body>
+</html>

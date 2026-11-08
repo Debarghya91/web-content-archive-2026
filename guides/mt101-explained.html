@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>MT101 Explained: The Request for Transfer | Payments Training Hub</title>
+<meta name="description" content="The **MT101** is the SWIFT message a customer or a bank sends to instruct another bank to debit an account and make one or more payments. It is a **request">
+<link rel="canonical" href="https://www.paymentstraininghub.in/guides/mt101-explained.html">
+<meta property="og:url" content="https://www.paymentstraininghub.in/guides/mt101-explained.html">
+<meta property="og:title" content="MT101 Explained: The Request for Transfer | Payments Training Hub">
+<meta property="og:description" content="The **MT101** is the SWIFT message a customer or a bank sends to instruct another bank to debit an account and make one or more payments. It is a **request">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.in/assets/hero/hero-poster.jpg">
+<link rel="stylesheet" href="../assets/pf-theme.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="../index.html" class="brand">Payments <span>Training Hub</span></a><nav class="topnav"><a href="../index.html">Home</a> <a href="../courses.html">Courses</a> <a href="../practice.html">Practice</a> <a href="../simulators.html">Simulators</a> <a href="../labs.html">Labs</a> <a href="../explorer.html">Explorer</a> <a href="../tests.html">Tests</a></nav><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox" style="display:none"><span id="authState">Not signed in</span> <span id="authForm" style="display:none"><input id="authEmail" type="email" placeholder="Email for OTP" aria-label="Email for sign-in"> <button class="mute-btn" onclick="paAuthSendOtp()">Send code</button> <input id="authCode" type="text" placeholder="6-digit code" aria-label="One-time code" style="display:none"> <button class="mute-btn" id="authVerifyBtn" onclick="paAuthVerifyOtp()" style="display:none">Verify</button> <button class="mute-btn" onclick="paAuthGoogle()">Sign in with Google</button> </span><button class="mute-btn" id="authSignOutBtn" onclick="paAuthSignOut()" style="display:none">Sign out</button></span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<section class="section guide-page">
+<nav class="crumbs"><a href="../index.html">Home</a> / <a href="../guides.html">Guides</a> / SWIFT and Correspondent Banking</nav>
+<h1>MT101 Explained: The Request for Transfer</h1>
+<h2>What it is</h2>
+<p>The <b>MT101</b> is the SWIFT message a customer or a bank sends to instruct another bank to debit an account and make one or more payments. It is a <b>request for transfer</b>. Unlike the MT103, which is a single payment instruction from one bank to another, the MT101 is an instruction from a customer to their bank, or from one bank to another bank, to execute payments on their behalf.</p>
+<p>The MT101 is most commonly used for <b>bulk payments</b>. A company that needs to pay hundreds of suppliers, or pay salaries to thousands of employees, sends a single MT101 containing many individual payment instructions. The bank reads the MT101, debits the company account, and executes each payment.</p>
+<p>The MT101 is also used by banks to instruct other banks to make payments from an account the instructing bank holds with them. It is a versatile message, but it is less common than the MT103 in everyday cross-border payments.</p>
+<h2>Why it matters</h2>
+<p>Bulk payments are a large part of corporate banking. A multinational company paying suppliers in ten countries, or a payroll provider paying employees across borders, will use an MT101 or a similar bulk instruction. If you work in corporate payments, transaction banking, or payment operations, you will encounter the MT101.</p>
+<p>The MT101 is also a useful message to understand because it shows how SWIFT separates the instruction from the execution. The MT101 is the instruction. The bank that receives it then creates the individual MT103 or pacs.008 messages to execute each payment. Understanding this separation helps you design payment systems and investigate exceptions.</p>
+<h2>How it works in a bank</h2>
+<p>A corporate customer prepares a payment file. The file lists each payment: beneficiary, account, amount, currency, value date, and reference. The customer sends the file to their bank, or the bank's system converts the file into an MT101.</p>
+<p>The MT101 contains a header with the total number of payments and the total amount, followed by one transaction block per payment. Each block carries the beneficiary details, the amount, and the remittance information.</p>
+<p>The receiving bank validates the MT101. It checks that the total amount matches the sum of the individual payments. It checks that the ordering customer has enough funds. It screens each beneficiary against sanctions lists. If everything passes, the bank debits the customer account and executes each payment, usually by sending an MT103 or pacs.008 for each one.</p>
+<p>If a single payment in the MT101 fails validation, the bank has a choice. It can reject the whole MT101, or it can execute the valid payments and reject the failed one. The bank's policy and the customer's agreement decide which approach applies. Either way, the bank must tell the customer what happened to each payment.</p>
+<h2>Worked example</h2>
+<p>A company in France, Dubois SA, needs to pay 50 suppliers in different countries. The total is EUR 250,000. Dubois SA sends the payment details to its bank, BNP Paribas, in a file. BNP Paribas converts the file into an MT101.</p>
+<p>The MT101 header says: 50 transactions, total EUR 250,000, requested execution date 9 November 2026, ordering customer Dubois SA, account FR76 3000 4028 3798 7654 3210 985.</p>
+<p>Each transaction block carries one supplier payment. Transaction 1: pay EUR 5,000 to Schmidt GmbH in Germany, account DE89 3700 0000 0123 4567 89, reference invoice INV-2026-771. Transaction 2: pay EUR 3,200 to Rossi SpA in Italy, account IT60 X054 2811 1010 0000 0123 456, reference invoice INV-2026-772. And so on for all 50 suppliers.</p>
+<p>BNP Paribas validates the MT101. The total of the 50 transactions is EUR 250,000, which matches the header. Dubois SA has enough funds. All 50 beneficiaries pass sanctions screening. BNP Paribas debits EUR 250,000 from the Dubois SA account and sends an MT103 or pacs.008 for each supplier payment.</p>
+<h2>Technical detail</h2>
+<p>The main MT101 fields are:</p>
+<ul>
+<li><b>Field 20, Transaction Reference Number.</b> The sender's unique reference for the whole MT101 message.</li>
+<li><b>Field 28D, Message Index and Total.</b> The sequence number of this MT101 and the total number of MT101 messages in the batch. Format: 1/1 means the first and only message.</li>
+<li><b>Field 30, Requested Execution Date.</b> The date the sender wants the payments executed.</li>
+<li><b>Field 50a, Ordering Customer.</b> The customer who ordered the payments. Field 50K carries the name and address.</li>
+<li><b>Field 52a, Ordering Institution.</b> The bank that ordered the payments, if different from the sender.</li>
+<li><b>Field 21, Transaction Reference Number.</b> The reference for each individual payment inside the MT101. Each transaction block has its own field 21.</li>
+<li><b>Field 32B, Currency Code and Transaction Amount.</b> The currency and amount of each individual payment.</li>
+<li><b>Field 57a, Account With Institution.</b> The bank where the beneficiary holds an account.</li>
+<li><b>Field 59a, Beneficiary Customer.</b> The person or company who should receive each individual payment.</li>
+<li><b>Field 70, Remittance Information.</b> The reason for each individual payment, such as an invoice number.</li>
+<li><b>Field 71A, Details of Charges.</b> Who pays the charges for each individual payment. OUR, SHA, or BEN.</li>
+</ul>
+<p>The MT101 can also carry field 23, a code that tells the receiving bank how to handle the payments, and field 36, the exchange rate if currency conversion is needed.</p>
+<p>Under ISO 20022, the MT101 maps to the <b>pain.001</b> message, which is the customer credit transfer initiation. The pain.001 carries the same structure: a header with the total, and one transaction block per payment.</p>
+<h2>Common mistakes</h2>
+<ul>
+<li><b>Header total not matching the sum of transactions.</b> If the total in the header does not match the sum of the individual payments, the receiving bank will reject the whole MT101. Always reconcile the total before sending.</li>
+<li><b>One bad payment blocking the whole batch.</b> If a single beneficiary fails sanctions screening, some banks reject the entire MT101. Agree the policy with the bank in advance: reject the whole file, or execute the valid payments and report the failed one.</li>
+<li><b>Missing beneficiary account numbers.</b> A bulk file with incomplete beneficiary details causes many individual exceptions. Validate every beneficiary account before building the MT101.</li>
+<li><b>Wrong execution date.</b> If the requested execution date is a holiday in the beneficiary country, payments may be delayed. Check the value date calendar for each currency and country.</li>
+</ul>
+<h2>Related lessons</h2>
+<ul>
+<li>Bulk payments and payment files</li>
+<li>The pain.001 message in ISO 20022</li>
+<li>The MT103 and customer credit transfers</li>
+<li>Sanctions screening in payments</li>
+<li>Payment exceptions and repair</li>
+</ul>
+<p><a class="studio-btn" href="../guides.html">&larr; Back to all guides</a></p>
+</section>
+</main>
+<footer><p>Payments Training Hub. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="../index.html">Home</a> &middot; <a href="../courses.html">Courses</a> &middot; <a href="../practice.html">Practice</a> &middot; <a href="../simulators.html">Simulators</a> &middot; <a href="../labs.html">Labs</a> &middot; <a href="../explorer.html">Explorer</a> &middot; <a href="../tests.html">Tests</a> &middot; <a href="../diagnostic.html">Diagnostic</a> &middot; <a href="../faq.html">Interview Ready Questions</a> &middot; <a href="../interview-prep.html">Interview Prep</a></p><p><a href="../about.html">About</a> &middot; <a href="../privacy.html">Privacy</a> &middot; <a href="../terms.html">Terms</a> &middot; <a href="../contact.html">Contact</a> &middot; <a href="../editorial-standards.html">Editorial Standards</a> &middot; <a href="../sources.html">Sources</a></p></footer>
+<script defer src="../assets/site.js"></script>
+<script defer src="../assets/bundles.js"></script>
+<script defer src="../assets/auth.js"></script>
+<script defer src="../assets/nav.js"></script>
+<script defer src="../assets/pf-enhance.js"></script>
+</body>
+</html>

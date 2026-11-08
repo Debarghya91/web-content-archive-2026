@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>camt Messages Explained | Payments Training Hub</title>
+<meta name="description" content="**camt** messages are the ISO 20022 messages for **cash management**. The name comes from Cash Management, and the messages cover account statements, notif">
+<link rel="canonical" href="https://www.paymentstraininghub.in/guides/camt-messages-explained.html">
+<meta property="og:url" content="https://www.paymentstraininghub.in/guides/camt-messages-explained.html">
+<meta property="og:title" content="camt Messages Explained | Payments Training Hub">
+<meta property="og:description" content="**camt** messages are the ISO 20022 messages for **cash management**. The name comes from Cash Management, and the messages cover account statements, notif">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.in/assets/hero/hero-poster.jpg">
+<link rel="stylesheet" href="../assets/pf-theme.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="../index.html" class="brand">Payments <span>Training Hub</span></a><nav class="topnav"><a href="../index.html">Home</a> <a href="../courses.html">Courses</a> <a href="../practice.html">Practice</a> <a href="../simulators.html">Simulators</a> <a href="../labs.html">Labs</a> <a href="../explorer.html">Explorer</a> <a href="../tests.html">Tests</a></nav><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox" style="display:none"><span id="authState">Not signed in</span> <span id="authForm" style="display:none"><input id="authEmail" type="email" placeholder="Email for OTP" aria-label="Email for sign-in"> <button class="mute-btn" onclick="paAuthSendOtp()">Send code</button> <input id="authCode" type="text" placeholder="6-digit code" aria-label="One-time code" style="display:none"> <button class="mute-btn" id="authVerifyBtn" onclick="paAuthVerifyOtp()" style="display:none">Verify</button> <button class="mute-btn" onclick="paAuthGoogle()">Sign in with Google</button> </span><button class="mute-btn" id="authSignOutBtn" onclick="paAuthSignOut()" style="display:none">Sign out</button></span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<section class="section guide-page">
+<nav class="crumbs"><a href="../index.html">Home</a> / <a href="../guides.html">Guides</a> / ISO 20022</nav>
+<h1>camt Messages Explained</h1>
+<h2>What it is</h2>
+<p><b>camt</b> messages are the ISO 20022 messages for <b>cash management</b>. The name comes from Cash Management, and the messages cover account statements, notifications, investigations and cancellations. While <b>pacs</b> messages move payments and <b>pain</b> messages initiate them, camt messages tell banks what happened to the money.</p>
+<p>The five camt messages a payments professional must know are <b>camt.052</b>, <b>camt.053</b>, <b>camt.054</b>, <b>camt.056</b> and <b>camt.029</b>. Each has a distinct job, and confusing them is a common source of errors.</p>
+<h2>Why it matters</h2>
+<p>camt messages matter because they are how a bank knows its own position. The statement tells the bank what was debited and credited. The notification tells it a payment has arrived. The cancellation request is how it asks for money back. The investigation response is how it resolves a query. Without camt messages, a bank would be blind to its own accounts.</p>
+<p>They also matter for <b>reconciliation</b>. The bank's ledger is compared against the camt.053 statement every day. Any difference is a break that must be investigated. The camt.054 notification is what triggers the credit to a customer account. The camt.056 and camt.029 are what make recalls work. A BA who does not understand camt messages cannot work on reconciliation, investigations or returns.</p>
+<h2>How it works in a bank</h2>
+<p>Each camt message has a specific place in the daily cycle.</p>
+<p><b>camt.052</b>, the Bank to Customer Account Report, is sent intraday. It gives the current balance and the transactions so far today. A corporate treasurer uses it to see the intraday position and to decide whether to move funds.</p>
+<p><b>camt.053</b>, the Bank to Customer Statement, is sent at end of day. It is the formal statement of account, with the opening balance, every debit and credit, and the closing balance. The bank's reconciliation team compares it against the ledger. Any break is investigated the next morning.</p>
+<p><b>camt.054</b>, the Bank to Customer Debit Credit Notification, is sent when a specific debit or credit happens. It tells the customer, or the bank's own system, that a payment has been debited or credited. It is the trigger for crediting a beneficiary account and for notifying the customer.</p>
+<p><b>camt.056</b>, the FI to FI Payment Cancellation Request, is sent when a bank wants a payment cancelled or recalled. It goes to the next bank in the chain, which forwards it to the beneficiary bank.</p>
+<p><b>camt.029</b>, the Resolution of Investigation, is the reply to a camt.056 and to other investigation messages. It tells the requesting bank whether the cancellation was accepted or rejected, and why.</p>
+<h2>Worked example</h2>
+<p>A corporate customer has an account at a bank. During the day, it receives a camt.052 at midday showing a balance of EUR 500,000 and 12 transactions so far. At 3 pm, a large payment of EUR 200,000 is credited. The bank sends a camt.054 notification for that credit, and the customer's treasury system updates the balance.</p>
+<p>At end of day, the bank sends a camt.053 statement. It shows the opening balance, all 13 debits and credits, and the closing balance of EUR 700,000. The customer's reconciliation system compares the statement against its own ledger. Everything matches.</p>
+<p>The next morning, the customer realises one payment was sent in error. It asks its bank to recall it. The bank sends a camt.056 to the beneficiary bank. The beneficiary bank checks whether the funds are still available and replies with a camt.029 accepting the cancellation. The beneficiary bank then initiates a <b>pacs.004</b> return, and the money comes back.</p>
+<h2>Technical detail</h2>
+<p>Each camt message has its own structure, but they share common elements:</p>
+<ul>
+<li><b>camt.052</b> (Account Report): Group Header, Report (Rpt) with account identification, balance, and entries. Each entry has an amount, a credit or debit indicator, a status, a booking date, a value date, and a transaction reference. It is intraday and can be sent multiple times a day.</li>
+<li><b>camt.053</b> (Statement): Group Header, Statement (Stmt) with account identification, opening balance, entries, and closing balance. Each entry is the same as in camt.052. It is end of day and is the formal record.</li>
+<li><b>camt.054</b> (Debit Credit Notification): Group Header, Notification (Ntfctn) with account identification and entries. Each entry is a single debit or credit. It is sent in real time when a transaction posts.</li>
+<li><b>camt.056</b> (Cancellation Request): Group Header, Underlying Transaction (Undrlyg) with the original message identification, instruction identification, and UETR, and the cancellation reason (CxlRsnInf). The reason code tells the beneficiary bank why the cancellation is requested.</li>
+<li><b>camt.029</b> (Resolution of Investigation): Group Header, Resolution (Rsltn) with the investigation identification, the status (accepted or rejected), and the reason. It is the answer to a camt.056.</li>
+</ul>
+<p>Key fields to know:</p>
+<ul>
+<li><b>Acct</b>: the account identification, usually an IBAN.</li>
+<li><b>Bal</b>: the balance, with a type (opening, closing, interim) and an amount.</li>
+<li><b>Ntry</b>: the entry, one debit or credit, with amount, credit or debit indicator, status, booking date and value date.</li>
+<li><b>UETR</b>: the Unique End to End Transaction Reference, carried in camt.056 so the beneficiary bank can identify the payment to be cancelled.</li>
+</ul>
+<h2>Common mistakes</h2>
+<p>The most common mistake is confusing <b>camt.052 with camt.053</b>. The 052 is an intraday report and can change during the day. The 053 is the end of day statement and is the formal record. Reconciling against the 052 instead of the 053 will produce false breaks.</p>
+<p>Another mistake is treating a <b>camt.054 as a payment</b>. It is only a notification. It tells you a debit or credit happened. It does not move money. The money moved through a pacs.008 or pacs.009, and the camt.054 is the notification that it arrived.</p>
+<p>A third mistake is sending a <b>camt.056</b> and assuming the money will come back. The camt.056 is only a request. The beneficiary bank decides whether to accept it. The money only moves if the beneficiary bank accepts and then initiates a <b>pacs.004</b>. A recall is a request, not a command.</p>
+<h2>Related lessons</h2>
+<ul>
+<li><b>pacs.008</b> and <b>pacs.009</b>: the payment messages that camt messages report on.</li>
+<li><b>pacs.002</b>: the status report, and how it differs from a camt notification.</li>
+<li><b>pacs.004</b>: the payment return that follows an accepted cancellation.</li>
+<li>Reconciliation: how the bank compares its ledger against the camt.053 statement.</li>
+<li>Investigations and recalls: the full camt.056 to camt.029 to pacs.004 flow.</li>
+</ul>
+<p><a class="studio-btn" href="../guides.html">&larr; Back to all guides</a></p>
+</section>
+</main>
+<footer><p>Payments Training Hub. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="../index.html">Home</a> &middot; <a href="../courses.html">Courses</a> &middot; <a href="../practice.html">Practice</a> &middot; <a href="../simulators.html">Simulators</a> &middot; <a href="../labs.html">Labs</a> &middot; <a href="../explorer.html">Explorer</a> &middot; <a href="../tests.html">Tests</a> &middot; <a href="../diagnostic.html">Diagnostic</a> &middot; <a href="../faq.html">Interview Ready Questions</a> &middot; <a href="../interview-prep.html">Interview Prep</a></p><p><a href="../about.html">About</a> &middot; <a href="../privacy.html">Privacy</a> &middot; <a href="../terms.html">Terms</a> &middot; <a href="../contact.html">Contact</a> &middot; <a href="../editorial-standards.html">Editorial Standards</a> &middot; <a href="../sources.html">Sources</a></p></footer>
+<script defer src="../assets/site.js"></script>
+<script defer src="../assets/bundles.js"></script>
+<script defer src="../assets/auth.js"></script>
+<script defer src="../assets/nav.js"></script>
+<script defer src="../assets/pf-enhance.js"></script>
+</body>
+</html>

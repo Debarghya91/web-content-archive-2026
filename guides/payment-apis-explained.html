@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>Payment APIs Explained | Payments Training Hub</title>
+<meta name="description" content="A **payment API** (Application Programming Interface) lets one system ask another system to do something with a payment, using a defined set of requests an">
+<link rel="canonical" href="https://www.paymentstraininghub.in/guides/payment-apis-explained.html">
+<meta property="og:url" content="https://www.paymentstraininghub.in/guides/payment-apis-explained.html">
+<meta property="og:title" content="Payment APIs Explained | Payments Training Hub">
+<meta property="og:description" content="A **payment API** (Application Programming Interface) lets one system ask another system to do something with a payment, using a defined set of requests an">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.in/assets/hero/hero-poster.jpg">
+<link rel="stylesheet" href="../assets/pf-theme.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="../index.html" class="brand">Payments <span>Training Hub</span></a><nav class="topnav"><a href="../index.html">Home</a> <a href="../courses.html">Courses</a> <a href="../practice.html">Practice</a> <a href="../simulators.html">Simulators</a> <a href="../labs.html">Labs</a> <a href="../explorer.html">Explorer</a> <a href="../tests.html">Tests</a></nav><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox" style="display:none"><span id="authState">Not signed in</span> <span id="authForm" style="display:none"><input id="authEmail" type="email" placeholder="Email for OTP" aria-label="Email for sign-in"> <button class="mute-btn" onclick="paAuthSendOtp()">Send code</button> <input id="authCode" type="text" placeholder="6-digit code" aria-label="One-time code" style="display:none"> <button class="mute-btn" id="authVerifyBtn" onclick="paAuthVerifyOtp()" style="display:none">Verify</button> <button class="mute-btn" onclick="paAuthGoogle()">Sign in with Google</button> </span><button class="mute-btn" id="authSignOutBtn" onclick="paAuthSignOut()" style="display:none">Sign out</button></span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<section class="section guide-page">
+<nav class="crumbs"><a href="../index.html">Home</a> / <a href="../guides.html">Guides</a> / Payment Systems and Architecture</nav>
+<h1>Payment APIs Explained</h1>
+<h2>What it is</h2>
+<p>A <b>payment API</b> (Application Programming Interface) lets one system ask another system to do something with a payment, using a defined set of requests and responses over the internet. Instead of uploading a file or typing into a screen, a customer, a partner, or an internal system sends a structured request to the bank's API, and the bank responds with a structured result.</p>
+<p>Payment APIs are used for <b>payment initiation</b> (starting a payment), <b>status enquiry</b> (asking where a payment is), <b>account information</b> (checking a balance or a statement), and <b>webhooks</b> (receiving a notification when something changes). They are the foundation of open banking, of embedded finance, and of most modern fintech products.</p>
+<p>A payment API is not a single thing. It is a set of endpoints, each of which does one job, with defined request and response formats, authentication rules, and error handling.</p>
+<h2>Why it matters</h2>
+<p>APIs are how modern payments work. A marketplace that pays its sellers, an app that lets users send money, a corporate treasury system that initiates hundreds of payments a day: all of these use payment APIs. A bank that does not offer APIs cannot serve these customers.</p>
+<p>For a business analyst, APIs matter because they are where the business requirements meet the technical implementation. The API contract, what the caller sends, what the bank returns, what happens when something is wrong, is a business document as much as a technical one. A business analyst who cannot read an API specification and explain it to a stakeholder cannot work on modern payment products.</p>
+<p>In an interview, API questions test whether a candidate understands how systems actually connect, not just how they work in isolation.</p>
+<h2>How it works in a bank</h2>
+<p><b>Payment initiation.</b> A caller sends a request to the bank's payment initiation endpoint. The request contains the debtor account, the creditor account, the amount, the currency, the value date, and a reference. The request also carries an <b>idempotency key</b>, a unique identifier that the bank uses to detect duplicate requests. The bank validates the request, checks the account and the balance, runs fraud and sanctions checks, and creates the payment. The bank responds with a payment identifier and a status, usually "accepted" or "pending".</p>
+<p><b>Status enquiry.</b> The caller can ask the bank for the status of a payment using the payment identifier. The bank responds with the current status: accepted, settled, rejected, or failed. The status comes from the payment hub, which tracks the payment through its lifecycle.</p>
+<p><b>Webhooks.</b> Instead of the caller asking repeatedly whether a payment has completed, the bank can send a <b>webhook</b>, a notification pushed to the caller's system when the payment status changes. The caller provides a URL, and the bank sends a message to that URL when the payment is accepted, settled, or rejected. Webhooks are more efficient than polling, but they require the caller to have a system that can receive them reliably.</p>
+<p><b>Authentication.</b> Payment APIs use strong authentication. The caller authenticates with a client certificate (mutual TLS) and an OAuth token. The token proves the caller is who they claim to be and has permission to initiate payments. Without valid authentication, the API rejects the request.</p>
+<p><b>Idempotency.</b> If a caller sends the same request twice, for example because the first response was lost, the bank must not create two payments. The idempotency key solves this. The bank stores the key with the payment. If a request arrives with a key that has already been used, the bank returns the original response instead of creating a new payment.</p>
+<h2>Worked example</h2>
+<p>A marketplace needs to pay 200 sellers every Friday.</p>
+<p><b>The API call.</b> The marketplace's system sends a payment initiation request to the bank's API for each seller. The request includes the seller's account, the amount, the currency, and an idempotency key (a unique value for each payment, such as "payout-2026-11-07-seller-123"). The bank validates each request, debits the marketplace's account, and creates the payments. The bank responds with a payment identifier for each one.</p>
+<p><b>The status.</b> The marketplace wants to know when each payment is complete. Instead of asking the bank 200 times, it registers a webhook URL. When each payment settles, the bank sends a webhook to the marketplace with the payment identifier and the new status. The marketplace updates its own records and notifies the sellers.</p>
+<p><b>A failure.</b> One payment is rejected because the seller's account number is invalid. The bank returns an error in the API response: a business error code and a message explaining the problem. The marketplace logs the error, flags the seller's account for review, and does not retry the payment until the account details are corrected.</p>
+<p><b>A duplicate.</b> The marketplace's system times out while waiting for a response to one payment. It retries the same request with the same idempotency key. The bank recognises the key, sees that the payment was already created, and returns the original response. No duplicate payment is created.</p>
+<h2>Technical detail</h2>
+<p><b>Request and response format.</b> Most modern payment APIs use JSON over HTTPS. The request is a JSON object with named fields. The response is a JSON object with the result, a status, and either the payment details or an error. Older bank APIs may use XML, and ISO 20022 defines XML message formats for payment initiation (<b>pain.001</b>) and status reporting (<b>pain.002</b>).</p>
+<p><b>Error handling.</b> API errors fall into two types. A <b>technical error</b> means the request could not be processed: the authentication failed, the request was malformed, or the system was unavailable. The caller should fix the technical problem and retry. A <b>business error</b> means the request was understood but the payment cannot proceed: the account has insufficient funds, the beneficiary account is invalid, or the payment breaches a limit. The caller should not retry a business error without fixing the underlying problem.</p>
+<p><b>HTTP status codes.</b> A successful payment initiation returns 200 or 201. A bad request returns 400. An authentication failure returns 401. A forbidden action returns 403. A payment that cannot be found returns 404. A rate limit returns 429. A server error returns 500. The caller must handle each code correctly.</p>
+<p><b>Rate limiting.</b> Banks limit how many API calls a caller can make in a given period. If the caller exceeds the limit, the bank returns a 429 response. The caller must slow down and retry later, with exponential backoff, rather than hammering the API.</p>
+<p><b>Versioning.</b> APIs change over time. The bank versions its API so that existing callers are not broken when a new version is released. The version is usually in the URL (for example, /v1/payments) or in a header. Callers should pin to a version and test before upgrading.</p>
+<h2>Common mistakes</h2>
+<p><b>Retrying without an idempotency key.</b> If a caller retries a payment initiation without an idempotency key, the bank may create a duplicate payment. Every payment initiation request must carry a unique idempotency key.</p>
+<p><b>Polling instead of webhooks.</b> Asking the bank for a payment status every few seconds wastes resources and is slower than receiving a webhook. Use webhooks where the bank supports them.</p>
+<p><b>Treating a timeout as a failure.</b> A timeout means the response was lost, not that the payment failed. The correct action is to check the status using the payment identifier or the idempotency key, not to blindly retry.</p>
+<p><b>Ignoring error codes.</b> An API returns structured error codes for a reason. A caller that treats all errors the same will retry business errors that will never succeed and will miss technical errors that should be retried.</p>
+<p><b>No authentication.</b> Payment APIs require strong authentication. A design that calls a payment API without mutual TLS or OAuth is not secure and will not be approved by the bank's security team.</p>
+<h2>Related lessons</h2>
+<ul>
+<li>Payment hub architecture and integration.</li>
+<li>ISO 20022 messages: pain.001, pain.002, pacs.008, pacs.002.</li>
+<li>Idempotency and duplicate prevention.</li>
+<li>Payment exception handling.</li>
+<li>API security and authentication.</li>
+</ul>
+<p><a class="studio-btn" href="../guides.html">&larr; Back to all guides</a></p>
+</section>
+</main>
+<footer><p>Payments Training Hub. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="../index.html">Home</a> &middot; <a href="../courses.html">Courses</a> &middot; <a href="../practice.html">Practice</a> &middot; <a href="../simulators.html">Simulators</a> &middot; <a href="../labs.html">Labs</a> &middot; <a href="../explorer.html">Explorer</a> &middot; <a href="../tests.html">Tests</a> &middot; <a href="../diagnostic.html">Diagnostic</a> &middot; <a href="../faq.html">Interview Ready Questions</a> &middot; <a href="../interview-prep.html">Interview Prep</a></p><p><a href="../about.html">About</a> &middot; <a href="../privacy.html">Privacy</a> &middot; <a href="../terms.html">Terms</a> &middot; <a href="../contact.html">Contact</a> &middot; <a href="../editorial-standards.html">Editorial Standards</a> &middot; <a href="../sources.html">Sources</a></p></footer>
+<script defer src="../assets/site.js"></script>
+<script defer src="../assets/bundles.js"></script>
+<script defer src="../assets/auth.js"></script>
+<script defer src="../assets/nav.js"></script>
+<script defer src="../assets/pf-enhance.js"></script>
+</body>
+</html>

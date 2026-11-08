@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>Payment Failure Investigation Lab | Payments Academy | Payments Training Hub</title>
+<meta name="description" content="Payment Failure Investigation Lab: a payment failed. Read the record, find the likely root cause and pick the next investigation step, scored against...">
+<link rel="canonical" href="https://www.paymentstraininghub.in/investigation-lab.html">
+<meta property="og:url" content="https://www.paymentstraininghub.in/investigation-lab.html">
+<meta property="og:title" content="Payment Failure Investigation Lab | Payments Academy | Payments Training Hub">
+<meta property="og:description" content="Payment Failure Investigation Lab: a payment failed. Read the record, find the likely root cause and pick the next investigation step, scored against...">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.in/assets/hero/hero-poster.jpg">
+
+<link rel="stylesheet" href="assets/site.css">
+<link rel="stylesheet" href="assets/pf-theme.css">
+<link rel="stylesheet" href="assets/pf-features.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="index.html" class="brand">Payments <span>Academy</span></a><nav class="topnav"><a href="index.html">Home</a> <a href="courses.html">Courses</a> <a href="tests.html">Tests</a> <a href="simulators.html">Simulators</a> <a href="practice.html">Practice</a> <a href="payment.html">Payment</a></nav><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox" style="display:none"><span id="authState">Not signed in</span> <span id="authForm" style="display:none"><input id="authEmail" type="email" placeholder="Email for OTP" aria-label="Email for sign-in"> <button class="mute-btn" onclick="paAuthSendOtp()">Send code</button> <input id="authCode" type="text" placeholder="6-digit code" aria-label="One-time code" style="display:none"> <button class="mute-btn" id="authVerifyBtn" onclick="paAuthVerifyOtp()" style="display:none">Verify</button> <button class="mute-btn" onclick="paAuthGoogle()">Sign in with Google</button> </span><button class="mute-btn" id="authSignOutBtn" onclick="paAuthSignOut()" style="display:none">Sign out</button></span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<div class="pf-feature">
+<nav class="crumbs"><a href="index.html">Home</a> / <a href="practice.html">Practice</a> / Payment Failure Investigation Lab</nav>
+<h1>Payment Failure Investigation Lab</h1>
+<p class="lede">Investigate why a payment failed. Seven cases, one for each failure type: validation, account checks, screening, payment orchestration, routing, clearing and settlement. Read the transaction record, reveal the evidence step by step, identify the root cause, choose the next step, and compare your answers with the reference solution. All data is synthetic and for education only. Nothing here connects to a real banking system and nothing moves real money.</p>
+<div class="pf-note"><b>How to play.</b> Pick a case below. Read the transaction record, the timeline and the system logs. Reveal the evidence items in any order, each one you examine earns 5 points the first time (4 items, 20 points per case). Then answer both decisions: the likely root cause and the appropriate next step. Each correct decision earns 20 points. The reference solution appears after both decisions. Total per case is 60 points. Your best score is saved in this browser only.</div>
+<p id="overallBest" class="pf-tag">Best score: not attempted yet</p>
+
+<div id="caseList">
+<h2>Case files</h2>
+<div class="pf-grid">
+<article class="pf-card"><span class="pf-tag">Easy</span><h3>Validation failure: rejected pacs.008</h3><p>A pacs.008 is rejected at validation before it reaches screening or clearing.</p><p><b>EUR 18,400.00</b> &middot; SEPA Credit Transfer &middot; Status RJCT</p><p id="best-validation">Best: not attempted yet</p><div class="pf-btnrow"><button type="button" class="pf-btn" data-case-open="validation">Open case LAB-01</button></div></article>
+<article class="pf-card"><span class="pf-tag">Easy</span><h3>Account checks failure: closed debtor account</h3><p>A payment fails at debtor account validation. The account cannot be debited.</p><p><b>GBP 27,600.00</b> &middot; Faster Payments &middot; Status RJCT</p><p id="best-account">Best: not attempted yet</p><div class="pf-btnrow"><button type="button" class="pf-btn" data-case-open="account">Open case LAB-02</button></div></article>
+<article class="pf-card amber"><span class="pf-tag amber">Medium</span><h3>Screening hold: possible sanctions name match</h3><p>A payment is held after sanctions screening returns a possible name match.</p><p><b>USD 63,900.00</b> &middot; SWIFT gpi &middot; Status ACSP, held</p><p id="best-screening">Best: not attempted yet</p><div class="pf-btnrow"><button type="button" class="pf-btn" data-case-open="screening">Open case LAB-03</button></div></article>
+<article class="pf-card amber"><span class="pf-tag amber">Medium</span><h3>Orchestration failure: wrong clearing channel</h3><p>A same-day EUR payment was sent to a next-day batch instead of the instant rail.</p><p><b>EUR 85,000.00</b> &middot; SEPA batch &middot; Status ACSP, wrong channel</p><p id="best-orchestration">Best: not attempted yet</p><div class="pf-btnrow"><button type="button" class="pf-btn" data-case-open="orchestration">Open case LAB-04</button></div></article>
+<article class="pf-card"><span class="pf-tag red">Hard</span><h3>Routing failure: wrong intermediary bank</h3><p>A cross-border USD payment went to the wrong intermediary bank.</p><p><b>USD 142,500.00</b> &middot; SWIFT gpi &middot; Settlement unconfirmed</p><p id="best-routing">Best: not attempted yet</p><div class="pf-btnrow"><button type="button" class="pf-btn" data-case-open="routing">Open case LAB-05</button></div></article>
+<article class="pf-card indigo"><span class="pf-tag amber">Medium</span><h3>Clearing failure: SEPA rejection AC01</h3><p>A SEPA credit transfer is rejected at clearing with reason code AC01.</p><p><b>EUR 120,000.00</b> &middot; SEPA &middot; Status RJCT, reason AC01</p><p id="best-clearing">Best: not attempted yet</p><div class="pf-btnrow"><button type="button" class="pf-btn" data-case-open="clearing">Open case LAB-06</button></div></article>
+<article class="pf-card"><span class="pf-tag red">Hard</span><h3>Settlement failure: insufficient nostro liquidity</h3><p>A payment fails at settlement because the nostro account lacks liquidity at the settlement window.</p><p><b>USD 250,000.00</b> &middot; SWIFT gpi &middot; Status RJCT at settlement</p><p id="best-settlement">Best: not attempted yet</p><div class="pf-btnrow"><button type="button" class="pf-btn" data-case-open="settlement">Open case LAB-07</button></div></article>
+</div>
+</div>
+
+<div id="casePanel" style="display:none">
+<h2 id="cTitle">Case</h2>
+<p class="lede" id="cScenario"></p>
+<h3>Transaction record</h3>
+<div class="pf-tablewrap"><table><tbody id="cTxn"></tbody></table></div>
+<h3>Event timeline</h3>
+<ul class="pf-timeline" id="cTimeline"></ul>
+<h3>System logs</h3>
+<pre class="pf-log" id="cLog"></pre>
+<h3>Investigation: reveal the evidence</h3>
+<p>Reveal the evidence items in any order. Each item you examine earns 5 points the first time. Every item adds a concrete fact, and all the evidence is consistent with the true root cause.</p>
+<div class="pf-btnrow" id="cEvidence"></div>
+<div class="pf-fb" id="evidenceFinding" style="display:none"></div>
+<h3>Decisions</h3>
+<p>Answer both decisions: the likely root cause, then the appropriate next step. Each correct decision earns 20 points. Once answered, a decision cannot be changed in this attempt. Use Reset to try again.</p>
+<div id="cDecisions"></div>
+<h3>Your score</h3>
+<div class="pf-score" id="scoreBar"></div>
+<p id="scoreText">Score 0 of 60 points. Evidence items earn 5 points each, correct decisions earn 20 points each.</p>
+<div class="pf-note" id="cReference" style="display:none"></div>
+<div class="pf-btnrow"><button type="button" class="pf-btn amber" id="resetBtn">Reset case</button><button type="button" class="pf-btn secondary" id="backBtn">Back to case files</button></div>
+</div>
+
+<div class="pf-note"><b>Teaching note.</b> These cases are simplified for learning. Real validation, screening, clearing and settlement behaviour varies by bank, scheme and system, and real cases involve more checks, approvals and audit steps than shown here. Status codes used include ACCP (accepted), ACSP (accepted, settlement in process) and RJCT (rejected). Reason codes used include AC01 (incorrect account number) and AC04 (closed account). Check current scheme rules before relying on any of this in live work.</div>
+<div class="pf-btnrow"><button type="button" class="pf-btn danger" id="resetAllBtn">Reset Investigation Lab progress</button> <a class="pf-btn secondary" href="practice.html">Back to Practice</a></div>
+</div>
+</main>
+<footer><p>Payments Academy. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="index.html">Home</a> &middot; <a href="courses.html">Courses</a> &middot; <a href="payment.html">Payment</a> &middot; <a href="tests.html">Tests</a> &middot; <a href="diagnostic.html">Diagnostic</a> &middot; <a href="practice.html">Practice</a> &middot; <a href="faq.html">700 Questions</a></p></footer>
+<script src="assets/site.js"></script>
+<script src="assets/auth.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/pf-enhance.js"></script>
+<script src="assets/pf-features.js"></script>
+<script src="assets/investigation-lab.js"></script>
+</body>
+</html>

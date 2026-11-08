@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>LAB-02: Redesign the Payment Exception Repair Process | Payments Training Hub</title>
+<meta name="description" content="When a payment cannot be processed straight through, it lands in an exception queue where operations staff must repair it, return it or reject it. In...">
+<link rel="canonical" href="https://www.paymentstraininghub.in/labs/lab-02.html">
+<meta property="og:url" content="https://www.paymentstraininghub.in/labs/lab-02.html">
+<meta property="og:title" content="LAB-02: Redesign the Payment Exception Repair Process | Payments Training Hub">
+<meta property="og:description" content="When a payment cannot be processed straight through, it lands in an exception queue where operations staff must repair it, return it or reject it. In...">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.in/assets/hero/hero-poster.jpg">
+<link rel="stylesheet" href="../assets/pf-theme.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="../index.html" class="brand">Payments <span>Training Hub</span></a><nav class="topnav"><a href="../index.html">Home</a> <a href="../courses.html">Courses</a> <a href="../practice.html">Practice</a> <a href="../simulators.html">Simulators</a> <a href="../labs.html">Labs</a> <a href="../explorer.html">Explorer</a> <a href="../tests.html">Tests</a></nav><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox" style="display:none"><span id="authState">Not signed in</span> <span id="authForm" style="display:none"><input id="authEmail" type="email" placeholder="Email for OTP" aria-label="Email for sign-in"> <button class="mute-btn" onclick="paAuthSendOtp()">Send code</button> <input id="authCode" type="text" placeholder="6-digit code" aria-label="One-time code" style="display:none"> <button class="mute-btn" id="authVerifyBtn" onclick="paAuthVerifyOtp()" style="display:none">Verify</button> <button class="mute-btn" onclick="paAuthGoogle()">Sign in with Google</button> </span><button class="mute-btn" id="authSignOutBtn" onclick="paAuthSignOut()" style="display:none">Sign out</button></span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<nav class="crumbs"><a href="../index.html">Home</a> / <a href="../labs.html">Labs</a> / Redesign the Payment Exception Repair Process</nav>
+<section class="section" id="lab">
+<h2>LAB-02: Redesign the Payment Exception Repair Process</h2>
+<p><i>Process modelling</i></p>
+<p>When a payment cannot be processed straight through, it lands in an exception queue where operations staff must repair it, return it or reject it. In many banks that queue is slow, opaque and full of rework, because nobody has mapped the process end to end. In this lab you model the as-is exception repair process, measure where time is lost, and design a to-be process that clears most exceptions on first touch. You will draw a BPMN diagram with clear swimlanes, add sequence diagrams for the system interactions, and model the exception flows for the most common failure types. You will also define the controls, the handoffs and the service levels for each step. By the end of the lab you will have a process design that operations can run, technology can build, and management can measure.</p>
+<div class="lab-progress"><div class="lab-progress-fill" id="lab-fill-LAB-02"></div></div>
+<p class="lab-progress-text" id="lab-text-LAB-02">0 of 5 steps done. Tick each step as you finish it, your progress is saved in this browser.</p>
+<ol class="lab-steps">
+<li class="lab-step"><label><input type="checkbox" class="lab-step-check" data-lab="LAB-02" data-step="0" onchange="paLabToggle(this)"> <b>Map the as-is process with operations.</b></label><p class="lab-step-detail">Spend time with the repair team and watch them work exceptions. Record every step, every system, every handoff and every wait. Note the five most common exception reasons, such as missing beneficiary account, invalid currency, sanction screening alert and amount mismatch. Measure the average age of an exception, the number of touches per case and the share that are resolved on first contact. Draw the as-is BPMN diagram with swimlanes for customer, operations, compliance and technology, and get the team to confirm the map is accurate before you change anything.</p></li>
+<li class="lab-step"><label><input type="checkbox" class="lab-step-check" data-lab="LAB-02" data-step="1" onchange="paLabToggle(this)"> <b>Find the waste and the root causes.</b></label><p class="lab-step-detail">Analyse the as-is map for the wastes: waiting for a customer reply, re-keying data between systems, duplicate screening checks, and cases that bounce between teams because ownership is unclear. For each waste, ask why it happens five times until you reach a root cause you can fix, such as no repair template or no IBAN check. Quantify the cost of each root cause in hours per week and in aged exceptions, so the redesign is argued with numbers, and agree the top three causes with the operations manager.</p></li>
+<li class="lab-step"><label><input type="checkbox" class="lab-step-check" data-lab="LAB-02" data-step="2" onchange="paLabToggle(this)"> <b>Design the to-be process in BPMN.</b></label><p class="lab-step-detail">Draw the to-be BPMN diagram with the same swimlanes. Build in auto repair for the simplest cases, such as a missing charge code from a default table, and a single repair screen showing the payment, the error and the suggested fix. Add clear decision points: repair, return to sender, escalate to compliance, or reject. Define a service level for each path, for example four hours for a data repair and one business day for a compliance escalation, and agree the service levels with the teams who must meet them.</p></li>
+<li class="lab-step"><label><input type="checkbox" class="lab-step-check" data-lab="LAB-02" data-step="3" onchange="paLabToggle(this)"> <b>Model the system interactions with sequence diagrams.</b></label><p class="lab-step-detail">For the three most important flows, draw sequence diagrams that show the messages between the payment hub, the screening system, the core banking system and the repair workstation. Show the order of calls, the data passed at each step, and the response or timeout for each call. Include the status update to the customer at each major step, so the customer is never left guessing. Walk the diagrams through with a developer and a tester, and correct any step where the diagram assumes a system can do something it cannot.</p></li>
+<li class="lab-step"><label><input type="checkbox" class="lab-step-check" data-lab="LAB-02" data-step="4" onchange="paLabToggle(this)"> <b>Define exception flows, controls and measures.</b></label><p class="lab-step-detail">Write a separate exception flow for each of the five most common failure types, stating the trigger, the owner, the steps, the time limit and the escalation path. Add controls: a four-eyes check for any repair above 50,000 dollars, a full audit trail of every change, and a daily ageing report. Define the measures that will prove the redesign worked, such as straight through processing rate, first touch resolution, average exception age and rework rate. Present the to-be design to operations and compliance for sign off.</p></li>
+</ol>
+<p><button class="api-btn" onclick="paLabReset('LAB-02')">Reset this lab checklist</button></p>
+<p><b>Templates.</b></p><ul>
+<li>BPMN process map template: swimlanes, start and end events, tasks, gateways, exception paths and service levels.</li>
+<li>Sequence diagram template: actors, systems, message order, request and response payloads, timeouts and error returns.</li>
+<li>Exception flow card template: trigger, owner, steps, time limit, escalation path and closure evidence.</li>
+<li>Process measures dashboard template: definitions, targets, data source and reporting frequency for each measure.</li>
+</ul>
+<p><b>Worked example.</b> Harborline Bank, a fictional bank in Singapore, takes an average of 26 hours to clear a payment exception, and 40 percent of cases need three or more touches. The analyst maps the as-is process and finds that repair staff re-key beneficiary data from the payment hub into the core banking screen, wait for a customer reply by email, and re-screen every repaired payment manually. The redesign introduces a single repair screen that shows the pacs.008 message, the validation error and the suggested correction together, plus an auto repair rule that fills a missing charge bearer code from the customer profile. A payment of 18,000 Singapore dollars to a supplier in Hong Kong arrives with an incomplete beneficiary address. The system flags it, the repair screen suggests the address from the standing instruction, the operator confirms it in one click, and the payment is released within 40 minutes. The pilot shows first touch resolution rising from 45 percent to 78 percent, average exception age falling from 26 hours to 6 hours, and rework falling by half. Operations signs off the to-be design and asks for the same approach on the returns process next.</p>
+<p><b>Deliverables.</b></p><ul>
+<li>As-is BPMN process map with measured timings and the five most common exception reasons</li>
+<li>To-be BPMN process map with swimlanes, decision points and agreed service levels</li>
+<li>Sequence diagrams for the three most important repair flows</li>
+<li>Exception flow cards and a measures dashboard for the redesigned process</li>
+</ul>
+</section>
+</main>
+<footer><p>Payments Training Hub. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="../index.html">Home</a> &middot; <a href="../courses.html">Courses</a> &middot; <a href="../practice.html">Practice</a> &middot; <a href="../simulators.html">Simulators</a> &middot; <a href="../labs.html">Labs</a> &middot; <a href="../explorer.html">Explorer</a> &middot; <a href="../tests.html">Tests</a> &middot; <a href="../diagnostic.html">Diagnostic</a> &middot; <a href="../faq.html">Interview Ready Questions</a> &middot; <a href="../interview-prep.html">Interview Prep</a></p><p><a href="../about.html">About</a> &middot; <a href="../privacy.html">Privacy</a> &middot; <a href="../terms.html">Terms</a> &middot; <a href="../contact.html">Contact</a> &middot; <a href="../editorial-standards.html">Editorial Standards</a> &middot; <a href="../sources.html">Sources</a></p></footer>
+<script defer src="../assets/site.js"></script>
+<script defer src="../assets/bundles.js"></script>
+<script defer src="../assets/auth.js"></script>
+<script defer src="../assets/nav.js"></script>
+<script defer src="../assets/pf-enhance.js"></script>
+</body>
+</html>

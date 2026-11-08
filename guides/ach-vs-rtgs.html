@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>ACH vs RTGS | Payments Training Hub</title>
+<meta name="description" content="**ACH** (Automated Clearing House) and **RTGS** (Real Time Gross Settlement) are two different ways of moving money between banks. They solve the same prob">
+<link rel="canonical" href="https://www.paymentstraininghub.in/guides/ach-vs-rtgs.html">
+<meta property="og:url" content="https://www.paymentstraininghub.in/guides/ach-vs-rtgs.html">
+<meta property="og:title" content="ACH vs RTGS | Payments Training Hub">
+<meta property="og:description" content="**ACH** (Automated Clearing House) and **RTGS** (Real Time Gross Settlement) are two different ways of moving money between banks. They solve the same prob">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.in/assets/hero/hero-poster.jpg">
+<link rel="stylesheet" href="../assets/pf-theme.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="../index.html" class="brand">Payments <span>Training Hub</span></a><nav class="topnav"><a href="../index.html">Home</a> <a href="../courses.html">Courses</a> <a href="../practice.html">Practice</a> <a href="../simulators.html">Simulators</a> <a href="../labs.html">Labs</a> <a href="../explorer.html">Explorer</a> <a href="../tests.html">Tests</a></nav><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox" style="display:none"><span id="authState">Not signed in</span> <span id="authForm" style="display:none"><input id="authEmail" type="email" placeholder="Email for OTP" aria-label="Email for sign-in"> <button class="mute-btn" onclick="paAuthSendOtp()">Send code</button> <input id="authCode" type="text" placeholder="6-digit code" aria-label="One-time code" style="display:none"> <button class="mute-btn" id="authVerifyBtn" onclick="paAuthVerifyOtp()" style="display:none">Verify</button> <button class="mute-btn" onclick="paAuthGoogle()">Sign in with Google</button> </span><button class="mute-btn" id="authSignOutBtn" onclick="paAuthSignOut()" style="display:none">Sign out</button></span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<section class="section guide-page">
+<nav class="crumbs"><a href="../index.html">Home</a> / <a href="../guides.html">Guides</a> / Payment Systems and Architecture</nav>
+<h1>ACH vs RTGS</h1>
+<h2>What it is</h2>
+<p><b>ACH</b> (Automated Clearing House) and <b>RTGS</b> (Real Time Gross Settlement) are two different ways of moving money between banks. They solve the same problem, getting funds from one bank account to another, but they do it in opposite ways.</p>
+<p>An <b>ACH</b> system collects payment instructions over a period, batches them together, nets the amounts off against each other, and settles the net result later. An <b>RTGS</b> system settles each payment individually, in real time, as soon as it is received.</p>
+<p>In the US, the main ACH operator is <b>Nacha</b>, and the main RTGS system is <b>Fedwire</b>, run by the Federal Reserve. In the UK, <b>Bacs</b> is the ACH equivalent and <b>CHAPS</b> is the RTGS system. In India, <b>NEFT</b> is a deferred net settlement system (similar in spirit to ACH) and <b>RTGS</b> is the real time gross settlement system, both run by the Reserve Bank of India.</p>
+<h2>Why it matters</h2>
+<p>Choosing between ACH and RTGS is one of the first decisions in any payment design. The choice decides when the beneficiary gets the money, how much liquidity the bank needs, what the payment costs, and what happens if something goes wrong.</p>
+<p>A salary run for 5,000 employees does not need real time settlement. A house purchase for 800,000 pounds does. A business analyst who cannot explain this difference will design the wrong product, and a candidate who confuses the two in an interview will be marked down.</p>
+<p>The distinction also matters for risk. In an RTGS system, settlement is final the moment the payment is processed. In an ACH system, there is a window between instruction and settlement, and that window carries credit risk and operational risk.</p>
+<h2>How it works in a bank</h2>
+<p><b>ACH flow.</b> A customer or a corporate submits a payment file, often through online banking or a bulk upload. The bank validates the file, debits the sender, and sends the instructions to the ACH operator. The operator collects instructions from all banks, sorts them, and calculates the net amount each bank owes or is owed. At settlement time, the net amounts move between the banks' settlement accounts. The beneficiary bank then credits the beneficiary. The whole cycle can take one to three business days depending on the scheme.</p>
+<p><b>RTGS flow.</b> A customer submits a high value payment. The bank validates it, checks the sender has enough funds or intraday liquidity, debits the sender, and sends the payment to the central bank's RTGS system. The central bank moves the funds from the sending bank's settlement account to the receiving bank's settlement account immediately, one payment at a time, in full. There is no netting. The receiving bank credits the beneficiary, usually within minutes. Settlement is final and irrevocable.</p>
+<p><b>The bank's side.</b> For ACH, the bank needs a batch processing capability, a file interface to the operator, and a reconciliation process that matches the net settlement against the individual instructions. For RTGS, the bank needs a real time connection to the central bank, intraday liquidity management, and a queue to hold payments when funds are short. Most large banks run both, and the <b>payment hub</b> decides which rail a payment takes based on amount, currency, value date, and cut-off.</p>
+<h2>Worked example</h2>
+<p>A company in the US pays 2,000 employees their monthly salary, a total of 8 million dollars.</p>
+<p><b>Via ACH.</b> The payroll team uploads a file on Monday. The bank validates it and sends it to the ACH operator. The operator nets the instructions. On Wednesday, the net settlement moves between banks, and employees see the money in their accounts. The cost per payment is a few cents. The company planned the run days ahead, so the delay does not matter.</p>
+<p><b>Via RTGS.</b> The same company needs to pay a supplier 2 million dollars today for an urgent delivery. The payment goes through Fedwire. The bank checks liquidity, sends the instruction, and the Federal Reserve moves the funds immediately. The supplier's bank credits the supplier within the hour. The cost is much higher than ACH, but the supplier is paid the same day and the settlement is final.</p>
+<p>A second example from India. A customer transfers 50,000 rupees to a friend. The bank routes it through NEFT, which settles in hourly batches and runs 24 hours a day, 7 days a week since December 2020. The friend receives it within a couple of hours. If the same customer needed to transfer 5 lakh rupees urgently for a property payment, the bank would route it through RTGS, which settles in real time with a minimum of 2 lakh rupees and no upper limit.</p>
+<h2>Technical detail</h2>
+<p><b>ACH characteristics.</b> Batch processing, deferred net settlement, low cost per transaction, high volume, settlement typically T+1 to T+3, returns possible (an ACH debit can be returned, for example for insufficient funds or a closed account), and a defined return window.</p>
+<p><b>RTGS characteristics.</b> Real time processing, gross settlement (each payment settled in full, no netting), high cost per transaction, low volume, settlement finality, irrevocable once settled, and a need for intraday liquidity. The sending bank must have the funds in its central bank settlement account at the moment the payment is processed. If it does not, the payment waits in a queue until funds arrive, or the bank borrows intraday liquidity from the central bank.</p>
+<p><b>Message types.</b> In the US, ACH uses Nacha file formats. Fedwire uses its own format, and is migrating to ISO 20022. In the UK, Bacs uses its own file format and CHAPS uses ISO 20022. In India, NEFT and RTGS use the Reserve Bank's message formats. Under CBPR+, cross border high value payments use ISO 20022 messages such as <b>pacs.008</b> for the customer credit transfer and <b>pacs.009</b> for the bank to bank transfer.</p>
+<p><b>Liquidity.</b> RTGS consumes intraday liquidity because each payment is settled in full immediately. Banks manage this with a liquidity queue, prioritisation, and intraday borrowing. ACH is kinder on liquidity because only the net amount moves at settlement, but it creates a settlement risk window.</p>
+<h2>Common mistakes</h2>
+<p><b>Treating ACH and RTGS as interchangeable.</b> They are not. They differ in timing, finality, cost, liquidity, and reversibility. A payment that needs same day finality must not go through ACH.</p>
+<p><b>Saying ACH is real time.</b> It is not. Even same day ACH still settles in batches, not one payment at a time in real time.</p>
+<p><b>Forgetting the return window.</b> ACH payments, especially debits, can be returned after settlement. RTGS payments cannot be recalled once settled. If a customer asks for a payment back, the process is completely different for each rail.</p>
+<p><b>Confusing clearing and settlement.</b> Clearing is the exchange and validation of instructions. Settlement is the movement of funds. In ACH, clearing and settlement happen at different times. In RTGS, they happen together for each payment.</p>
+<p><b>Ignoring cut-offs.</b> Both systems have cut-off times. A payment submitted after cut-off waits for the next window. A business analyst must map every cut-off that affects a payment, or customers will be promised a value date the bank cannot meet.</p>
+<h2>Related lessons</h2>
+<ul>
+<li>Payment lifecycle and the stages of a payment.</li>
+<li>Clearing and settlement.</li>
+<li>Payment hub architecture and routing.</li>
+<li>Intraday liquidity and nostro funding.</li>
+<li>CHAPS, Faster Payments, NEFT, and RTGS in the domestic payment systems chapters.</li>
+</ul>
+<p><a class="studio-btn" href="../guides.html">&larr; Back to all guides</a></p>
+</section>
+</main>
+<footer><p>Payments Training Hub. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="../index.html">Home</a> &middot; <a href="../courses.html">Courses</a> &middot; <a href="../practice.html">Practice</a> &middot; <a href="../simulators.html">Simulators</a> &middot; <a href="../labs.html">Labs</a> &middot; <a href="../explorer.html">Explorer</a> &middot; <a href="../tests.html">Tests</a> &middot; <a href="../diagnostic.html">Diagnostic</a> &middot; <a href="../faq.html">Interview Ready Questions</a> &middot; <a href="../interview-prep.html">Interview Prep</a></p><p><a href="../about.html">About</a> &middot; <a href="../privacy.html">Privacy</a> &middot; <a href="../terms.html">Terms</a> &middot; <a href="../contact.html">Contact</a> &middot; <a href="../editorial-standards.html">Editorial Standards</a> &middot; <a href="../sources.html">Sources</a></p></footer>
+<script defer src="../assets/site.js"></script>
+<script defer src="../assets/bundles.js"></script>
+<script defer src="../assets/auth.js"></script>
+<script defer src="../assets/nav.js"></script>
+<script defer src="../assets/pf-enhance.js"></script>
+</body>
+</html>

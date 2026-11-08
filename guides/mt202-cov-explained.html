@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>MT202 COV Explained: The Cover Payment with Full Transparency | Payments Training Hub</title>
+<meta name="description" content="The **MT202 COV** is the SWIFT message a bank sends to move funds as cover for a customer payment, with the full customer details included. COV stands for">
+<link rel="canonical" href="https://www.paymentstraininghub.in/guides/mt202-cov-explained.html">
+<meta property="og:url" content="https://www.paymentstraininghub.in/guides/mt202-cov-explained.html">
+<meta property="og:title" content="MT202 COV Explained: The Cover Payment with Full Transparency | Payments Training Hub">
+<meta property="og:description" content="The **MT202 COV** is the SWIFT message a bank sends to move funds as cover for a customer payment, with the full customer details included. COV stands for">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.in/assets/hero/hero-poster.jpg">
+<link rel="stylesheet" href="../assets/pf-theme.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="../index.html" class="brand">Payments <span>Training Hub</span></a><nav class="topnav"><a href="../index.html">Home</a> <a href="../courses.html">Courses</a> <a href="../practice.html">Practice</a> <a href="../simulators.html">Simulators</a> <a href="../labs.html">Labs</a> <a href="../explorer.html">Explorer</a> <a href="../tests.html">Tests</a></nav><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox" style="display:none"><span id="authState">Not signed in</span> <span id="authForm" style="display:none"><input id="authEmail" type="email" placeholder="Email for OTP" aria-label="Email for sign-in"> <button class="mute-btn" onclick="paAuthSendOtp()">Send code</button> <input id="authCode" type="text" placeholder="6-digit code" aria-label="One-time code" style="display:none"> <button class="mute-btn" id="authVerifyBtn" onclick="paAuthVerifyOtp()" style="display:none">Verify</button> <button class="mute-btn" onclick="paAuthGoogle()">Sign in with Google</button> </span><button class="mute-btn" id="authSignOutBtn" onclick="paAuthSignOut()" style="display:none">Sign out</button></span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<section class="section guide-page">
+<nav class="crumbs"><a href="../index.html">Home</a> / <a href="../guides.html">Guides</a> / SWIFT and Correspondent Banking</nav>
+<h1>MT202 COV Explained: The Cover Payment with Full Transparency</h1>
+<h2>What it is</h2>
+<p>The <b>MT202 COV</b> is the SWIFT message a bank sends to move funds as cover for a customer payment, with the full customer details included. COV stands for cover. The MT202 COV is a variant of the MT202. The difference is that the MT202 COV carries fields 50a (ordering customer) and 59a (beneficiary customer), so every bank in the chain can see who is sending the money and who is receiving it.</p>
+<p>The MT202 COV exists because of a transparency problem. In the cover method, the customer payment instruction (the MT103) goes directly to the beneficiary bank, while the funds travel separately through the correspondent chain. The intermediary banks moving the funds could not see the customer details. They were moving money blind. Regulators and the Wolfsberg Group said this was unacceptable, because banks must be able to screen every payment they handle for sanctions and financial crime. The MT202 COV was the answer: the cover message must carry the same customer information as the MT103.</p>
+<h2>Why it matters</h2>
+<p>The MT202 COV is now the standard for cover payments. A bank that sends a plain MT202 as cover for a customer payment is breaking the rules. Intermediary banks may reject the payment, hold it for investigation, or report the sender. The MT202 COV is not optional. It is a compliance requirement.</p>
+<p>For a payments professional, the MT202 COV is the message where operations, compliance, and technology meet. You need to understand it to design payment flows, to investigate exceptions, and to answer interview questions about transparency and sanctions.</p>
+<h2>How it works in a bank</h2>
+<p>A customer instructs a payment to a beneficiary in another country. The sender bank decides to use the cover method. It sends two messages.</p>
+<p>First, it sends the <b>MT103</b> directly to the beneficiary bank. The MT103 carries the full instruction: ordering customer, beneficiary, amount, value date, charges, and remittance information.</p>
+<p>Second, it sends the <b>MT202 COV</b> through the correspondent chain. The MT202 COV carries the funds and also carries fields 50a and 59a, so each intermediary bank can see the ordering customer and the beneficiary. Each intermediary bank screens the payment against sanctions lists. If the payment passes, the bank forwards it. If it hits a sanctions list, the bank holds it and investigates.</p>
+<p>The beneficiary bank receives the MT103 and the funds. It matches them using the reference in field 21 of the MT202 COV, which links to the MT103. Once matched, it credits the beneficiary account.</p>
+<h2>Worked example</h2>
+<p>A company in the United Kingdom, Smith Ltd, pays a supplier in India, Patel Exports, USD 100,000. Smith Ltd banks with NatWest in London. Patel Exports banks with HDFC Bank in Mumbai. NatWest does not have a direct relationship with HDFC Bank, so it uses the cover method.</p>
+<p>NatWest sends an MT103 directly to HDFC Bank in Mumbai. The MT103 says: pay USD 100,000 to Patel Exports, account number 50100234567890, value date 9 November 2026, charge option SHA, reference invoice INV-2026-4421.</p>
+<p>NatWest also sends an MT202 COV through its correspondent chain. The MT202 COV says: move USD 100,000 to HDFC Bank, value date 9 November 2026. Field 50a names Smith Ltd as the ordering customer. Field 59a names Patel Exports as the beneficiary. Field 21 links the MT202 COV to the MT103.</p>
+<p>The MT202 COV travels from NatWest to its US dollar correspondent, then to HDFC Bank's US dollar correspondent, then to HDFC Bank. Each bank screens the payment. The customer details are visible at every hop. HDFC Bank receives the MT103 and the funds, matches them, and credits Patel Exports.</p>
+<h2>Technical detail</h2>
+<p>The MT202 COV uses the same fields as the MT202, plus the two customer fields:</p>
+<ul>
+<li><b>Field 20, Transaction Reference Number.</b> The sender bank's unique reference.</li>
+<li><b>Field 21, Related Reference.</b> Links the MT202 COV to the MT103 it covers. This is how the beneficiary bank matches the funds to the instruction.</li>
+<li><b>Field 32A, Value Date, Currency Code, Interbank Settled Amount.</b> The date, currency, and amount of the cover.</li>
+<li><b>Field 50a, Ordering Customer.</b> The customer who ordered the underlying payment. This field is mandatory in an MT202 COV and absent in a plain MT202. Field 50K carries the name and address.</li>
+<li><b>Field 52a, Ordering Institution.</b> The bank that ordered the cover.</li>
+<li><b>Field 56a, Intermediary Institution.</b> A bank in the middle of the chain.</li>
+<li><b>Field 57a, Account With Institution.</b> The bank where the funds should be credited.</li>
+<li><b>Field 58a, Beneficiary Institution.</b> The financial institution that should receive the funds. In a cover payment, this is the beneficiary bank.</li>
+<li><b>Field 59a, Beneficiary Customer.</b> The customer who should receive the underlying payment. This field is mandatory in an MT202 COV and absent in a plain MT202. Field 59 carries the name, address, and account number.</li>
+<li><b>Field 72, Sender to Receiver Information.</b> Extra instructions for the receiving bank.</li>
+</ul>
+<p>The key rule: in an MT202 COV, fields 50a and 59a must be present and must match the MT103. If they are missing or do not match, the payment will be held for investigation.</p>
+<p>Under ISO 20022, the MT202 COV maps to the <b>pacs.009</b> with the underlying customer credit transfer information included. The pacs.009 carries the debtor and creditor details in the same way.</p>
+<h2>Common mistakes</h2>
+<ul>
+<li><b>Sending a plain MT202 as cover.</b> This is the most serious mistake. The intermediary banks cannot see the customer details and cannot screen the payment. The payment may be rejected, and the sender bank may face regulatory action. Always use MT202 COV for customer payment cover.</li>
+<li><b>Fields 50a and 59a not matching the MT103.</b> If the ordering customer or beneficiary in the MT202 COV differs from the MT103, the beneficiary bank cannot match the two messages. The payment sits in an exceptions queue while operations investigates.</li>
+<li><b>Forgetting field 21.</b> Without the related reference, the beneficiary bank has no link between the MT202 COV and the MT103. Matching becomes manual and slow.</li>
+<li><b>Truncating customer names in fields 50a and 59a.</b> Truncated names can fail sanctions screening or fail to match the MT103. Use the full legal name in both messages.</li>
+</ul>
+<h2>Related lessons</h2>
+<ul>
+<li>The MT103 and customer credit transfers</li>
+<li>The MT202 and bank-to-bank transfers</li>
+<li>Serial versus cover payments</li>
+<li>Sanctions screening in payments</li>
+<li>Correspondent banking and nostro accounts</li>
+<li>The pacs.009 message in ISO 20022</li>
+</ul>
+<p><a class="studio-btn" href="../guides.html">&larr; Back to all guides</a></p>
+</section>
+</main>
+<footer><p>Payments Training Hub. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="../index.html">Home</a> &middot; <a href="../courses.html">Courses</a> &middot; <a href="../practice.html">Practice</a> &middot; <a href="../simulators.html">Simulators</a> &middot; <a href="../labs.html">Labs</a> &middot; <a href="../explorer.html">Explorer</a> &middot; <a href="../tests.html">Tests</a> &middot; <a href="../diagnostic.html">Diagnostic</a> &middot; <a href="../faq.html">Interview Ready Questions</a> &middot; <a href="../interview-prep.html">Interview Prep</a></p><p><a href="../about.html">About</a> &middot; <a href="../privacy.html">Privacy</a> &middot; <a href="../terms.html">Terms</a> &middot; <a href="../contact.html">Contact</a> &middot; <a href="../editorial-standards.html">Editorial Standards</a> &middot; <a href="../sources.html">Sources</a></p></footer>
+<script defer src="../assets/site.js"></script>
+<script defer src="../assets/bundles.js"></script>
+<script defer src="../assets/auth.js"></script>
+<script defer src="../assets/nav.js"></script>
+<script defer src="../assets/pf-enhance.js"></script>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>SEPA Instant Explained | Payments Training Hub</title>
+<meta name="description" content="**SEPA Instant Credit Transfer (SCT Inst)** is the instant payment scheme for euro payments. A payment instructed under SCT Inst must reach the payee&#x27;s ban">
+<link rel="canonical" href="https://www.paymentstraininghub.in/guides/sepa-instant-explained.html">
+<meta property="og:url" content="https://www.paymentstraininghub.in/guides/sepa-instant-explained.html">
+<meta property="og:title" content="SEPA Instant Explained | Payments Training Hub">
+<meta property="og:description" content="**SEPA Instant Credit Transfer (SCT Inst)** is the instant payment scheme for euro payments. A payment instructed under SCT Inst must reach the payee&#x27;s ban">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.in/assets/hero/hero-poster.jpg">
+<link rel="stylesheet" href="../assets/pf-theme.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="../index.html" class="brand">Payments <span>Training Hub</span></a><nav class="topnav"><a href="../index.html">Home</a> <a href="../courses.html">Courses</a> <a href="../practice.html">Practice</a> <a href="../simulators.html">Simulators</a> <a href="../labs.html">Labs</a> <a href="../explorer.html">Explorer</a> <a href="../tests.html">Tests</a></nav><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox" style="display:none"><span id="authState">Not signed in</span> <span id="authForm" style="display:none"><input id="authEmail" type="email" placeholder="Email for OTP" aria-label="Email for sign-in"> <button class="mute-btn" onclick="paAuthSendOtp()">Send code</button> <input id="authCode" type="text" placeholder="6-digit code" aria-label="One-time code" style="display:none"> <button class="mute-btn" id="authVerifyBtn" onclick="paAuthVerifyOtp()" style="display:none">Verify</button> <button class="mute-btn" onclick="paAuthGoogle()">Sign in with Google</button> </span><button class="mute-btn" id="authSignOutBtn" onclick="paAuthSignOut()" style="display:none">Sign out</button></span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<section class="section guide-page">
+<nav class="crumbs"><a href="../index.html">Home</a> / <a href="../guides.html">Guides</a> / Payment Systems and Architecture</nav>
+<h1>SEPA Instant Explained</h1>
+<h2>What it is</h2>
+<p><b>SEPA Instant Credit Transfer (SCT Inst)</b> is the instant payment scheme for euro payments. A payment instructed under SCT Inst must reach the payee's bank within 10 seconds, 24 hours a day, 7 days a week, 365 days a year. There is no cut-off, no business day, and no waiting until morning.</p>
+<p>SCT Inst is governed by a rulebook from the <b>European Payments Council (EPC)</b>. The settlement happens through <b>TIPS</b> (TARGET Instant Payment Settlement), the Eurosystem's instant settlement service, or through other clearing and settlement mechanisms that support instant payments.</p>
+<p>The <b>Instant Payments Regulation, Regulation (EU) 2024/886</b>, makes instant payments mandatory for banks in the euro area. It also makes <b>Verification of Payee (VoP)</b> mandatory, so the payer is shown the name matching the account before the payment is sent.</p>
+<p>The SCT Inst amount cap was removed by the 2025 rulebook. Previously, SCT Inst payments were capped at 100,000 euros. From 5 October 2025, there is no scheme-level cap, although individual banks may still set their own limits.</p>
+<h2>Why it matters</h2>
+<p>Instant payments change what customers expect. A person sending money to a friend, a business paying a supplier, or a company settling an invoice now expects the money to arrive in seconds, not the next business day. Banks that cannot offer instant payments lose customers to banks and fintechs that can.</p>
+<p>For a business analyst, SCT Inst matters because it is the hardest payment scheme to implement well. Ten seconds is not a lot of time. Every step, validation, sanctions screening, fraud check, liquidity check, message building, sending, and confirmation, must complete inside that window. A failure at any step means the payment is rejected or left in an uncertain state, and the bank must handle that gracefully.</p>
+<p>The regulation matters too. Regulation (EU) 2024/886 is law, not a scheme rule. Banks that do not comply face regulatory action. A business analyst working on instant payments must know the regulation's deadlines and requirements, not just the scheme rulebook.</p>
+<h2>How it works in a bank</h2>
+<p><b>The 10 second flow.</b> A customer instructs an instant payment through a mobile app. The bank validates the instruction, checks the account and the balance, runs sanctions screening and fraud checks, and builds a <b>pacs.008</b> message. The pacs.008 is sent to the clearing and settlement mechanism. The payee's bank receives it, validates it, checks the account, and credits the payee. The payee's bank sends back a confirmation, and the payer's bank confirms the payment to the customer. All of this must complete within 10 seconds.</p>
+<p><b>Verification of Payee.</b> Before the payment is sent, the payer's bank checks the payee name against the account. The bank sends the payee's IBAN and name to the payee's bank, which responds with a match, a close match, or no match. If there is no match, the payer is warned and can choose whether to proceed. VoP became mandatory on 9 October 2025. It is one of the most effective fraud prevention measures in payments, because it stops payments to the wrong account before the money moves.</p>
+<p><b>TIPS settlement.</b> When the payment goes through TIPS, the Eurosystem moves the funds between the two banks' central bank accounts in real time. Settlement is final the moment it happens. The banks do not need to prefund a separate account for each payment; they hold liquidity in their TIPS account, and TIPS settles each payment as it arrives.</p>
+<p><b>Timeouts.</b> If the confirmation does not arrive within the time limit, the payment is in an uncertain state. The bank must not simply retry, because a blind retry can create a duplicate payment. Instead, the bank sends an investigation message to find out whether the payment settled. Only when the status is known does the bank decide the next step: confirm success to the customer, or reverse the debit if the payment did not settle.</p>
+<h2>Worked example</h2>
+<p>A customer in the Netherlands sends 500 euros to a friend in Germany on a Sunday evening.</p>
+<p>The customer enters the friend's IBAN and name in their banking app. The bank runs Verification of Payee. The payee's bank confirms the name matches the account. The customer confirms the payment.</p>
+<p>The bank debits the customer, builds a pacs.008, and sends it to TIPS. TIPS settles the payment between the two banks' accounts. The friend's bank credits the friend's account. The friend receives a notification within seconds. The whole flow takes about 3 seconds.</p>
+<p>Now the same payment, but the friend's bank is slow to respond. The payer's bank does not receive a confirmation within the timeout. The bank does not retry blindly. It sends an investigation to the payee's bank asking for the status. The payee's bank confirms the payment was credited. The payer's bank then confirms success to the customer. If instead the investigation showed the payment had not settled, the payer's bank would reverse the debit and tell the customer the payment failed.</p>
+<p>A business example. A company in France pays a supplier in Italy 80,000 euros for an urgent delivery on a Friday evening. Under the old SCT scheme, the payment would arrive on Monday. Under SCT Inst, the supplier is credited within seconds, and the delivery goes ahead on Saturday. The amount is above the old 100,000 euro cap? No, 80,000 euros is below it, but the point is that the cap no longer applies at all. A payment of 150,000 euros would also be possible now, subject to the bank's own limits.</p>
+<h2>Technical detail</h2>
+<p><b>The 10 second rule.</b> The SCT Inst rulebook requires the full execution, from the payer's instruction to the payee's credit, to complete within 10 seconds. This is a scheme requirement. The Instant Payments Regulation sets the same expectation in law.</p>
+<p><b>Messages.</b> The instruction is a pacs.008. The status report is a pacs.002, which carries ACCP (accepted), ACSC (settlement completed), or RJCT (rejected). A recall uses camt.056. A return uses pacs.004. The investigation message is used when the status is unknown after a timeout.</p>
+<p><b>Verification of Payee.</b> VoP checks the payee name against the account holder name. The result is a match, a close match (the name is similar but not identical), or no match. The payer sees the result and decides whether to proceed. VoP is mandatory for banks in the euro area under Regulation (EU) 2024/886.</p>
+<p><b>Regulation (EU) 2024/886.</b> This regulation requires banks in the euro area to offer instant payments, to charge no more for an instant payment than for a standard credit transfer, to screen for sanctions, and to offer Verification of Payee. It applies in stages, with the main obligations effective from 2025.</p>
+<p><b>The cap removal.</b> The 2025 SCT Inst rulebook removed the 100,000 euro scheme cap with effect from 5 October 2025. Banks may still apply their own limits for risk management, but the scheme no longer imposes one.</p>
+<h2>Common mistakes</h2>
+<p><b>Treating a timeout as a failure.</b> A timeout means the status is unknown, not that the payment failed. The correct action is an investigation, not a blind retry. A blind retry can create a duplicate payment.</p>
+<p><b>Forgetting Verification of Payee.</b> VoP is mandatory. A bank that sends an instant payment without checking the payee name is in breach of the regulation and is exposed to fraud.</p>
+<p><b>Assuming the old 100,000 euro cap still applies.</b> It does not. The 2025 rulebook removed it. A business analyst who still quotes the cap will give wrong advice.</p>
+<p><b>Designing for business hours only.</b> SCT Inst runs 24 hours a day, 7 days a week. The bank's systems, its liquidity, its sanctions screening, and its operations team must all work around the clock. A payment can arrive at 3 in the morning on a public holiday.</p>
+<p><b>Ignoring the 10 second budget.</b> Every component in the chain must be fast. A sanctions screen that takes 8 seconds leaves no time for anything else. Performance testing must cover the full end to end flow, not just individual components.</p>
+<h2>Related lessons</h2>
+<ul>
+<li>SEPA and the SCT scheme.</li>
+<li>ISO 20022 messages: pacs.008, pacs.002, pacs.004, camt.056.</li>
+<li>Verification of Payee and fraud prevention.</li>
+<li>Payment exception handling and timeouts.</li>
+<li>Clearing and settlement through TIPS.</li>
+</ul>
+<p><a class="studio-btn" href="../guides.html">&larr; Back to all guides</a></p>
+</section>
+</main>
+<footer><p>Payments Training Hub. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="../index.html">Home</a> &middot; <a href="../courses.html">Courses</a> &middot; <a href="../practice.html">Practice</a> &middot; <a href="../simulators.html">Simulators</a> &middot; <a href="../labs.html">Labs</a> &middot; <a href="../explorer.html">Explorer</a> &middot; <a href="../tests.html">Tests</a> &middot; <a href="../diagnostic.html">Diagnostic</a> &middot; <a href="../faq.html">Interview Ready Questions</a> &middot; <a href="../interview-prep.html">Interview Prep</a></p><p><a href="../about.html">About</a> &middot; <a href="../privacy.html">Privacy</a> &middot; <a href="../terms.html">Terms</a> &middot; <a href="../contact.html">Contact</a> &middot; <a href="../editorial-standards.html">Editorial Standards</a> &middot; <a href="../sources.html">Sources</a></p></footer>
+<script defer src="../assets/site.js"></script>
+<script defer src="../assets/bundles.js"></script>
+<script defer src="../assets/auth.js"></script>
+<script defer src="../assets/nav.js"></script>
+<script defer src="../assets/pf-enhance.js"></script>
+</body>
+</html>

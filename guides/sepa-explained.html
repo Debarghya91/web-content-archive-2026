@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>SEPA Explained | Payments Training Hub</title>
+<meta name="description" content="**SEPA** (Single Euro Payments Area) is the system that lets euro payments move between bank accounts across Europe as easily as domestic payments move ins">
+<link rel="canonical" href="https://www.paymentstraininghub.in/guides/sepa-explained.html">
+<meta property="og:url" content="https://www.paymentstraininghub.in/guides/sepa-explained.html">
+<meta property="og:title" content="SEPA Explained | Payments Training Hub">
+<meta property="og:description" content="**SEPA** (Single Euro Payments Area) is the system that lets euro payments move between bank accounts across Europe as easily as domestic payments move ins">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.in/assets/hero/hero-poster.jpg">
+<link rel="stylesheet" href="../assets/pf-theme.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="../index.html" class="brand">Payments <span>Training Hub</span></a><nav class="topnav"><a href="../index.html">Home</a> <a href="../courses.html">Courses</a> <a href="../practice.html">Practice</a> <a href="../simulators.html">Simulators</a> <a href="../labs.html">Labs</a> <a href="../explorer.html">Explorer</a> <a href="../tests.html">Tests</a></nav><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox" style="display:none"><span id="authState">Not signed in</span> <span id="authForm" style="display:none"><input id="authEmail" type="email" placeholder="Email for OTP" aria-label="Email for sign-in"> <button class="mute-btn" onclick="paAuthSendOtp()">Send code</button> <input id="authCode" type="text" placeholder="6-digit code" aria-label="One-time code" style="display:none"> <button class="mute-btn" id="authVerifyBtn" onclick="paAuthVerifyOtp()" style="display:none">Verify</button> <button class="mute-btn" onclick="paAuthGoogle()">Sign in with Google</button> </span><button class="mute-btn" id="authSignOutBtn" onclick="paAuthSignOut()" style="display:none">Sign out</button></span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<section class="section guide-page">
+<nav class="crumbs"><a href="../index.html">Home</a> / <a href="../guides.html">Guides</a> / Payment Systems and Architecture</nav>
+<h1>SEPA Explained</h1>
+<h2>What it is</h2>
+<p><b>SEPA</b> (Single Euro Payments Area) is the system that lets euro payments move between bank accounts across Europe as easily as domestic payments move inside one country. It covers 36 countries: the 27 EU member states plus the UK, Norway, Iceland, Liechtenstein, Switzerland, Monaco, San Marino, Andorra, and Vatican City.</p>
+<p>SEPA has two main instruments. <b>SCT</b> (SEPA Credit Transfer) moves money from a payer to a payee. <b>SDD</b> (SEPA Direct Debit) lets a payee pull money from a payer's account with a mandate. Both are governed by rulebooks published by the <b>European Payments Council (EPC)</b>.</p>
+<p>SEPA is not a single system run by one operator. It is a set of rules, standards, and schemes. Banks and payment service providers implement the schemes, and clearing and settlement mechanisms (CSMs) such as <b>EBA Clearing STEP2</b> and the Eurosystem's <b>TARGET Services</b> move the funds.</p>
+<h2>Why it matters</h2>
+<p>Before SEPA, a euro payment from Germany to France was a cross border payment: slow, expensive, and full of manual work. SEPA made it a domestic-style payment. For any bank operating in Europe, SEPA is the default rail for euro payments.</p>
+<p>For a business analyst, SEPA matters because it is the largest harmonised payment area in the world, and because its rules are precise. The SCT rulebook defines exactly which fields are mandatory, what the execution time must be, and what happens when a payment fails. The SDD rulebook defines mandates, refund rights, and timelines. Getting these rules wrong means rejected payments, customer complaints, and regulatory findings.</p>
+<p>SEPA also matters because it is the foundation for instant payments in Europe through <b>SCT Inst</b>, which is covered in its own guide.</p>
+<h2>How it works in a bank</h2>
+<p><b>SCT flow.</b> A customer instructs a credit transfer through online banking, a mobile app, or a file upload. The bank validates the instruction, checks the <b>IBAN</b> (International Bank Account Number) and the <b>BIC</b> (Bank Identifier Code), debits the payer, and creates a <b>pacs.008</b> message. The pacs.008 travels to the payee's bank, either directly or through a clearing and settlement mechanism. The payee's bank validates it and credits the payee. Under the SCT rulebook, the maximum execution time is one business day, and in practice most SCT payments arrive the same day or the next business day.</p>
+<p><b>SDD flow.</b> A company, for example a utility provider, wants to collect a monthly bill by direct debit. The customer signs a <b>mandate</b> authorising the company to pull funds. The company sends a direct debit instruction (a <b>pain.008</b> message) to its bank, which forwards it through the clearing mechanism to the customer's bank. The customer's bank debits the account and the company is credited. The customer has a right to a refund: 8 weeks for an authorised debit, 13 months for an unauthorised debit.</p>
+<p><b>The bank's side.</b> The bank needs a SEPA engine that builds and validates pacs.008 and pain.008 messages, checks IBANs, applies the SCT and SDD rulebooks, and connects to one or more clearing and settlement mechanisms. It also needs a mandate management system for SDD, a return and refund process (using <b>pacs.004</b> for returns), and a recall process (using <b>camt.056</b>). The bank must also handle <b>R-transactions</b>: rejects, returns, refunds, and recalls, each with its own message and timeline.</p>
+<h2>Worked example</h2>
+<p>A company in France pays a supplier in Germany 25,000 euros for an invoice.</p>
+<p>The company's finance team enters the payment in their banking portal. The bank validates the IBAN (DE89 3704 0044 0532 0130 00), checks the amount and the value date, debits the company's account, and builds a pacs.008. The pacs.008 carries the <b>EndToEndId</b> (the invoice number), the debtor and creditor names and accounts, and the amount.</p>
+<p>The pacs.008 goes to the clearing mechanism, which routes it to the supplier's bank in Germany. The supplier's bank validates the message, checks the account, and credits the supplier. The supplier sees the payment the next business day at the latest, and can match it against the invoice using the EndToEndId.</p>
+<p>If the IBAN had been wrong, the supplier's bank would reject the payment with a <b>pacs.002</b> carrying an RJCT status and a reason code. The company's bank would then inform the company, and the payment would need to be repaired and resubmitted.</p>
+<p>A second example. A telecom company in Spain collects 40 euros a month from a customer by direct debit. The customer signed a mandate when they took out the contract. Each month, the telecom sends a pain.008 to its bank. The customer's bank debits the account and the telecom is credited. If the customer disputes the debit, they can claim a refund from their bank within 8 weeks, no questions asked, and the bank must return the funds.</p>
+<h2>Technical detail</h2>
+<p><b>SCT key facts.</b> Currency is euro only. Maximum execution time is one business day. The message is pacs.008. The return message is pacs.004. The status report is pacs.002. The character set is Latin. The IBAN is mandatory. The BIC was mandatory in early SEPA but is now optional in most cases because the IBAN alone identifies the bank.</p>
+<p><b>SDD key facts.</b> Two schemes exist: <b>SDD Core</b> (for consumers and businesses) and <b>SDD B2B</b> (for business to business, with shorter timelines and no refund right for authorised debits). The mandate is the legal basis. The pain.008 is the instruction message. The debtor bank must present the direct debit to the customer in advance (pre-notification, usually 14 days before, or a shorter period agreed in the mandate).</p>
+<p><b>EPC rulebooks.</b> The EPC publishes the SCT rulebook, the SDD Core rulebook, and the SDD B2B rulebook. Each rulebook is updated annually. The 2025 rulebooks introduced the removal of the SCT Inst amount cap and made Verification of Payee mandatory. Banks must track rulebook versions and implement changes before the effective date.</p>
+<p><b>Clearing and settlement.</b> SEPA payments are cleared and settled through CSMs. EBA Clearing's STEP2 is the largest private CSM. The Eurosystem's TARGET Services provide central bank settlement. A bank connects to one or more CSMs, and the choice affects cost, reach, and cut-off times.</p>
+<h2>Common mistakes</h2>
+<p><b>Calling SEPA a single system.</b> It is a set of schemes and rulebooks, not one system. The clearing and settlement happens through separate mechanisms.</p>
+<p><b>Confusing SCT and SDD.</b> SCT is a push payment (the payer sends money). SDD is a pull payment (the payee collects money with a mandate). The risks, the messages, and the refund rights are completely different.</p>
+<p><b>Forgetting the refund right on SDD.</b> A customer can claim a refund on an authorised direct debit within 8 weeks. A bank that does not honour this is in breach of the scheme rules.</p>
+<p><b>Assuming the BIC is always required.</b> The IBAN alone is enough in most SEPA countries now. Asking a customer for a BIC when it is not needed creates friction and errors.</p>
+<p><b>Ignoring rulebook versions.</b> The SCT and SDD rulebooks change every year. A bank that implements an old version will produce messages that other banks reject.</p>
+<h2>Related lessons</h2>
+<ul>
+<li>SEPA Instant and the Instant Payments Regulation.</li>
+<li>ISO 20022 messages: pacs.008, pacs.002, pacs.004, pain.008.</li>
+<li>Clearing and settlement mechanisms.</li>
+<li>IBAN validation and account identification.</li>
+<li>Cross border payments and correspondent banking.</li>
+</ul>
+<p><a class="studio-btn" href="../guides.html">&larr; Back to all guides</a></p>
+</section>
+</main>
+<footer><p>Payments Training Hub. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="../index.html">Home</a> &middot; <a href="../courses.html">Courses</a> &middot; <a href="../practice.html">Practice</a> &middot; <a href="../simulators.html">Simulators</a> &middot; <a href="../labs.html">Labs</a> &middot; <a href="../explorer.html">Explorer</a> &middot; <a href="../tests.html">Tests</a> &middot; <a href="../diagnostic.html">Diagnostic</a> &middot; <a href="../faq.html">Interview Ready Questions</a> &middot; <a href="../interview-prep.html">Interview Prep</a></p><p><a href="../about.html">About</a> &middot; <a href="../privacy.html">Privacy</a> &middot; <a href="../terms.html">Terms</a> &middot; <a href="../contact.html">Contact</a> &middot; <a href="../editorial-standards.html">Editorial Standards</a> &middot; <a href="../sources.html">Sources</a></p></footer>
+<script defer src="../assets/site.js"></script>
+<script defer src="../assets/bundles.js"></script>
+<script defer src="../assets/auth.js"></script>
+<script defer src="../assets/nav.js"></script>
+<script defer src="../assets/pf-enhance.js"></script>
+</body>
+</html>

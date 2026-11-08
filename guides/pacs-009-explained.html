@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>pacs.009 Explained | Payments Training Hub</title>
+<meta name="description" content="**pacs.009** is the **Financial Institution to Financial Institution Credit Transfer** message. It is the ISO 20022 message a bank sends to another bank to">
+<link rel="canonical" href="https://www.paymentstraininghub.in/guides/pacs-009-explained.html">
+<meta property="og:url" content="https://www.paymentstraininghub.in/guides/pacs-009-explained.html">
+<meta property="og:title" content="pacs.009 Explained | Payments Training Hub">
+<meta property="og:description" content="**pacs.009** is the **Financial Institution to Financial Institution Credit Transfer** message. It is the ISO 20022 message a bank sends to another bank to">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.in/assets/hero/hero-poster.jpg">
+<link rel="stylesheet" href="../assets/pf-theme.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="../index.html" class="brand">Payments <span>Training Hub</span></a><nav class="topnav"><a href="../index.html">Home</a> <a href="../courses.html">Courses</a> <a href="../practice.html">Practice</a> <a href="../simulators.html">Simulators</a> <a href="../labs.html">Labs</a> <a href="../explorer.html">Explorer</a> <a href="../tests.html">Tests</a></nav><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox" style="display:none"><span id="authState">Not signed in</span> <span id="authForm" style="display:none"><input id="authEmail" type="email" placeholder="Email for OTP" aria-label="Email for sign-in"> <button class="mute-btn" onclick="paAuthSendOtp()">Send code</button> <input id="authCode" type="text" placeholder="6-digit code" aria-label="One-time code" style="display:none"> <button class="mute-btn" id="authVerifyBtn" onclick="paAuthVerifyOtp()" style="display:none">Verify</button> <button class="mute-btn" onclick="paAuthGoogle()">Sign in with Google</button> </span><button class="mute-btn" id="authSignOutBtn" onclick="paAuthSignOut()" style="display:none">Sign out</button></span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<section class="section guide-page">
+<nav class="crumbs"><a href="../index.html">Home</a> / <a href="../guides.html">Guides</a> / ISO 20022</nav>
+<h1>pacs.009 Explained</h1>
+<h2>What it is</h2>
+<p><b>pacs.009</b> is the <b>Financial Institution to Financial Institution Credit Transfer</b> message. It is the ISO 20022 message a bank sends to another bank to move its own money, or money on behalf of another bank, where there is no underlying customer payment. The name comes from the ISO 20022 message set: <b>pacs</b> stands for Payments Clearing and Settlement, and <b>009</b> is the bank to bank credit transfer variant.</p>
+<p>The key difference from <b>pacs.008</b> is that pacs.009 has no customer behind it. It moves money between financial institutions. Typical uses are a bank funding its own account at another bank, a bank settling a position, a cover payment moving funds to support a customer payment, and a bank paying another bank for a service.</p>
+<h2>Why it matters</h2>
+<p>pacs.009 matters because banks move large amounts of their own money every day, and those movements need the same rigour as customer payments. A nostro funding payment that is late or wrong leaves the bank unable to settle customer payments. A cover payment that does not match its customer payment creates a reconciliation break.</p>
+<p>It also matters because the <b>serial versus cover</b> distinction in cross-border payments depends on it. In the cover method, the customer payment instruction travels as a pacs.008, and the actual funds move separately as a pacs.009. If the two messages do not reconcile, the payment is stuck. A BA who does not understand pacs.009 cannot investigate cover payment failures.</p>
+<h2>How it works in a bank</h2>
+<p>A bank's treasury or payments operations team initiates a pacs.009. The reason is usually a funding need, a settlement obligation, or a cover instruction linked to a customer payment.</p>
+<p>The payment hub builds the pacs.009 and sends it through <b>SWIFT</b> to the receiving bank. The receiving bank credits the stated account and returns a <b>pacs.002</b> status report. The statuses are the same as for pacs.008: <b>ACCP</b>, <b>ACSP</b>, <b>ACSC</b> and <b>RJCT</b>.</p>
+<p>When a pacs.009 is a cover payment, it carries a reference to the underlying customer payment. The receiving bank uses that reference to match the cover funds to the pacs.008 instruction it received separately. This matching is called <b>cover reconciliation</b>, and it is a common source of exceptions when the references do not align.</p>
+<h2>Worked example</h2>
+<p>A bank in London needs to fund its US dollar nostro account in New York by USD 5 million before the afternoon cut-off, because it has a large volume of dollar payments to settle that day.</p>
+<p>The treasury team instructs a pacs.009. The message carries the debtor, the London bank, the creditor, the New York bank, the instructed amount USD 5 million, and the interbank settlement amount USD 5 million. There is no customer, no remittance information, and no charge bearer in the customer sense. The settlement method is instructed agent, and the settlement account is the London bank's account at the New York bank.</p>
+<p>The New York bank receives the pacs.009, credits the London bank's nostro account, and returns a pacs.002 with status <b>ACSC</b>. The London bank's treasury sees the nostro balance rise by USD 5 million and can now settle the afternoon's dollar payments.</p>
+<h2>Technical detail</h2>
+<p>The pacs.009 has two main parts:</p>
+<ul>
+<li><b>GrpHdr</b> (Group Header): message identification (MsgId), creation date and time (CreDtTm), number of transactions (NbOfTxs), settlement information (SttlmInf), and the instructing and instructed agents.</li>
+<li><b>CdtTrfTxInf</b> (Credit Transfer Transaction Information): payment identification (PmtId, with InstrId, EndToEndId and UETR), interbank settlement amount (IntrBkSttlmAmt), debtor (Dbtr), debtor account (DbtrAcct), creditor agent (CdtrAgt), creditor (Cdtr), creditor account (CdtrAcct), and any related remittance or reference information.</li>
+</ul>
+<p>Key differences from pacs.008:</p>
+<ul>
+<li><b>No customer parties</b>: pacs.009 has a debtor and a creditor, but they are financial institutions, not customers. There is no separate debtor and creditor customer block.</li>
+<li><b>No instructed amount in the customer sense</b>: the interbank settlement amount is the amount. There is no customer instructed amount to convert from.</li>
+<li><b>No charge bearer</b>: charges between banks are handled by agreement, not by a customer charge option. The message does not carry a ChrgBr of OUR, SHA or BEN in the customer sense.</li>
+<li><b>UETR</b>: the pacs.009 still carries a UETR, so the bank to bank movement can be tracked, but it is a different UETR from any related customer payment.</li>
+</ul>
+<h2>Common mistakes</h2>
+<p>The most common mistake is using a <b>pacs.009 where a pacs.008 is required</b>, or the reverse. A customer payment must travel as a pacs.008, because the beneficiary bank needs the customer data to credit the right account and to run sanctions checks. A bank's own funding movement must travel as a pacs.009, because there is no customer. Sending the wrong message type causes a rejection or, worse, a misrouted payment.</p>
+<p>Another mistake is failing to link a <b>cover pacs.009</b> to its pacs.008. The cover payment must carry a reference that lets the receiving bank match it to the customer instruction. Without that link, the cover funds sit unallocated and the customer payment is not released.</p>
+<p>A third mistake is treating a pacs.009 as low risk because it has no customer. Bank to bank payments are high value and time critical. A failed nostro funding pacs.009 can stop a bank settling any payments in that currency for the rest of the day.</p>
+<h2>Related lessons</h2>
+<ul>
+<li><b>pacs.008</b>: the customer credit transfer, and how it differs from pacs.009.</li>
+<li>Serial versus cover payments: how pacs.008 and pacs.009 work together.</li>
+<li><b>Nostro and vostro accounts</b> and how banks fund them.</li>
+<li><b>pacs.002</b> and the payment status report.</li>
+<li>Liquidity and treasury management in payments.</li>
+</ul>
+<p><a class="studio-btn" href="../guides.html">&larr; Back to all guides</a></p>
+</section>
+</main>
+<footer><p>Payments Training Hub. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="../index.html">Home</a> &middot; <a href="../courses.html">Courses</a> &middot; <a href="../practice.html">Practice</a> &middot; <a href="../simulators.html">Simulators</a> &middot; <a href="../labs.html">Labs</a> &middot; <a href="../explorer.html">Explorer</a> &middot; <a href="../tests.html">Tests</a> &middot; <a href="../diagnostic.html">Diagnostic</a> &middot; <a href="../faq.html">Interview Ready Questions</a> &middot; <a href="../interview-prep.html">Interview Prep</a></p><p><a href="../about.html">About</a> &middot; <a href="../privacy.html">Privacy</a> &middot; <a href="../terms.html">Terms</a> &middot; <a href="../contact.html">Contact</a> &middot; <a href="../editorial-standards.html">Editorial Standards</a> &middot; <a href="../sources.html">Sources</a></p></footer>
+<script defer src="../assets/site.js"></script>
+<script defer src="../assets/bundles.js"></script>
+<script defer src="../assets/auth.js"></script>
+<script defer src="../assets/nav.js"></script>
+<script defer src="../assets/pf-enhance.js"></script>
+</body>
+</html>
