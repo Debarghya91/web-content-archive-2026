@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>Settlement failures: what happens when a bank cannot settle | Payments Training Hub</title>
+<meta name="description" content="A settlement failure is the event in which a participant cannot meet its settlement obligation at the settlement moment, and it is the scenario that...">
+<link rel="canonical" href="https://www.paymentstraininghub.in/lessons/ch77s6.html">
+<meta property="og:url" content="https://www.paymentstraininghub.in/lessons/ch77s6.html">
+<meta property="og:title" content="Settlement failures: what happens when a bank cannot settle | Payments Training Hub">
+<meta property="og:description" content="A settlement failure is the event in which a participant cannot meet its settlement obligation at the settlement moment, and it is the scenario that...">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.in/assets/hero/hero-poster.jpg">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.paymentstraininghub.in/index.html"}, {"@type": "ListItem", "position": 2, "name": "Settlement design and failure", "item": "https://www.paymentstraininghub.in/chapters/ch77-settlement-design-and-failure.html"}, {"@type": "ListItem", "position": 3, "name": "Settlement failures: what happens when a bank cannot settle", "item": "https://www.paymentstraininghub.in/lessons/ch77s6.html"}]}</script>
+<link rel="stylesheet" href="../assets/studio.css">
+<link rel="stylesheet" href="../assets/pf-theme.css">
+<link rel="stylesheet" href="../assets/insight-components.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="../index.html" class="brand">Payments <span>Training Hub</span></a><nav class="topnav"><a href="../index.html">Home</a> <a href="../courses.html">Courses</a> <a href="../practice.html">Practice</a> <a href="../simulators.html">Simulators</a> <a href="../labs.html">Labs</a> <a href="../explorer.html">Explorer</a> <a href="../tests.html">Tests</a></nav><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox" style="display:none"><span id="authState">Not signed in</span> <span id="authForm" style="display:none"><input id="authEmail" type="email" placeholder="Email for OTP" aria-label="Email for sign-in"> <button class="mute-btn" onclick="paAuthSendOtp()">Send code</button> <input id="authCode" type="text" placeholder="6-digit code" aria-label="One-time code" style="display:none"> <button class="mute-btn" id="authVerifyBtn" onclick="paAuthVerifyOtp()" style="display:none">Verify</button> <button class="mute-btn" onclick="paAuthGoogle()">Sign in with Google</button> </span><button class="mute-btn" id="authSignOutBtn" onclick="paAuthSignOut()" style="display:none">Sign out</button></span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<div class="lesson-page">
+<div class="lesson-shell">
+<aside class="course-rail">
+<div class="rail-head">
+<h2>Settlement design and failure</h2>
+<a class="rail-close" href="../chapters/ch77-settlement-design-and-failure.html" aria-label="Close and go to chapter" title="Back to chapter">&times;</a>
+</div>
+<div class="goal-card">
+<div class="goal-head"><b>Today's goal &middot; <span id="side-progress-text">0 of 8 items</span></b><span class="goal-flag"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 21V4m0 1h11l-2.5 3.5L17 12H6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="goal-chev">&#94;</span></div>
+<p class="goal-body" id="side-goal-body">Complete 3 items today to stay at a good pace!</p>
+</div>
+<ul class="lesson-list"><li class="" data-lesson="ch77s1"><a href="ch77s1.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Settlement cycle design: choosing when and how often to settle</span><span class="m">Video &middot; 6 min</span></span></a></li>
+<li class="" data-lesson="ch77s2"><a href="ch77s2.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Liquidity optimisation: queues, offsets and how banks fund a settlement day</span><span class="m">Video &middot; 6 min</span></span></a></li>
+<li class="" data-lesson="ch77s3"><a href="ch77s3.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Gridlock and how it is resolved</span><span class="m">Video &middot; 6 min</span></span></a></li>
+<li class="" data-lesson="ch77s4"><a href="ch77s4.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Intraday credit and collateral at the central bank</span><span class="m">Video &middot; 5 min</span></span></a></li>
+<li class="" data-lesson="ch77s5"><a href="ch77s5.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Central bank accounts: how settlement actually happens</span><span class="m">Video &middot; 6 min</span></span></a></li>
+<li class="current" data-lesson="ch77s6"><a href="ch77s6.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Settlement failures: what happens when a bank cannot settle</span><span class="m">Video &middot; 7 min</span></span></a></li>
+<li class="" data-lesson="ch77s7"><a href="ch77s7.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">The default waterfall: who pays when a participant fails</span><span class="m">Video &middot; 6 min</span></span></a></li>
+<li class="" data-lesson="ch77s8"><a href="ch77s8.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Designing a settlement system: a BA checklist from requirements to go-live</span><span class="m">Video &middot; 6 min</span></span></a></li></ul>
+</aside>
+<div class="lesson-main">
+<div class="studio" id="studio-studio-ch77s6">
+<div class="player">
+<div class="studio-canvas" id="studio-canvas-studio-ch77s6">
+<div class="ch-sec studio-scene-vis active" id="studio-vis-studio-ch77s6-0"><div class="beat-frames">
+<div class="beat-frame active" data-frame="0">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Settlement</tspan> <tspan fill="#FFFFFF">failure</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">STARTED</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Settlement failure</tspan><tspan fill="#CBD5E1"> - event in which a participant cannot meet its</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="0.55">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Delay versus exclusion</tspan><tspan fill="#CBD5E1"> - Delaying punishes the healthy banks</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="0.55">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="13" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Failure sequence timeline</tspan><tspan fill="#CBD5E1"> - practice the failure sequence runs like this.</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Exclusion recomputation</tspan><tspan fill="#CBD5E1"> - Four banks in a cycle: A sends 120</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="13" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Exposure review after failure</tspan><tspan fill="#CBD5E1"> - other participants must also review their</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="13" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Settlement failure test cases</tspan><tspan fill="#CBD5E1"> - You must also write test cases for each</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="128" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">A settlement failure is the event in which a participant cannot meet its settlement obligation at</text>
+<text x="450" y="476" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">the settlement moment</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 1 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 733" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="733" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Settlement</tspan> <tspan fill="#FFFFFF">failure</tspan></text>
+<rect x="24" y="58" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="76" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">STARTED</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="92" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="111" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Settlement failure</text>
+<text x="180" y="129" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">event in which a participant cannot meet its</text>
+<text x="180" y="147" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="0.55">
+<rect x="24" y="164" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="183" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Delay versus</text>
+<text x="180" y="201" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">exclusion</text>
+<text x="180" y="219" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Delaying punishes the healthy banks</text>
+<text x="180" y="237" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="0.55">
+<rect x="24" y="256" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="275" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Failure sequence</text>
+<text x="180" y="293" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">timeline</text>
+<text x="180" y="311" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">practice the failure sequence runs like this.</text>
+<text x="180" y="329" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="24" y="348" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="367" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Exclusion</text>
+<text x="180" y="385" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">recomputation</text>
+<text x="180" y="403" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Four banks in a cycle: A sends 120</text>
+<text x="180" y="421" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="24" y="440" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="459" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Exposure review</text>
+<text x="180" y="477" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">after failure</text>
+<text x="180" y="495" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">other participants must also review their</text>
+<text x="180" y="513" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="532" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="551" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Settlement failure</text>
+<text x="180" y="569" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">test cases</text>
+<text x="180" y="587" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">You must also write test cases for each</text>
+<text x="180" y="605" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="632" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">A settlement failure is the event in which a</text>
+<text x="180" y="651" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">participant cannot meet its settlement</text>
+<text x="180" y="670" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">obligation at the settlement moment</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="1">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Delay</tspan> <tspan fill="#FFFFFF">versus</tspan> <tspan fill="#FFFFFF">exclusion</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Settlement failure</tspan><tspan fill="#CBD5E1"> - event in which a participant cannot meet its</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Delay versus exclusion</tspan><tspan fill="#CBD5E1"> - Delaying punishes the healthy banks</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="0.55">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="13" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Failure sequence timeline</tspan><tspan fill="#CBD5E1"> - practice the failure sequence runs like this.</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Exclusion recomputation</tspan><tspan fill="#CBD5E1"> - Four banks in a cycle: A sends 120</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="13" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Exposure review after failure</tspan><tspan fill="#CBD5E1"> - other participants must also review their</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="13" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Settlement failure test cases</tspan><tspan fill="#CBD5E1"> - You must also write test cases for each</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="257" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Delaying punishes the healthy banks, because their customers do not get credited, while</text>
+<text x="450" y="476" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">excluding changes every other bank net position</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 2 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 780" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="780" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Delay</tspan> <tspan fill="#FFFFFF">versus</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">exclusion</tspan></text>
+<rect x="24" y="86" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="104" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="120" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="139" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Settlement failure</text>
+<text x="180" y="157" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">event in which a participant cannot meet its</text>
+<text x="180" y="175" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="192" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="211" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Delay versus</text>
+<text x="180" y="229" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">exclusion</text>
+<text x="180" y="247" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Delaying punishes the healthy banks</text>
+<text x="180" y="265" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="0.55">
+<rect x="24" y="284" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="303" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Failure sequence</text>
+<text x="180" y="321" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">timeline</text>
+<text x="180" y="339" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">practice the failure sequence runs like this.</text>
+<text x="180" y="357" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="24" y="376" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="395" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Exclusion</text>
+<text x="180" y="413" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">recomputation</text>
+<text x="180" y="431" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Four banks in a cycle: A sends 120</text>
+<text x="180" y="449" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="24" y="468" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="487" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Exposure review</text>
+<text x="180" y="505" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">after failure</text>
+<text x="180" y="523" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">other participants must also review their</text>
+<text x="180" y="541" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="560" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="579" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Settlement failure</text>
+<text x="180" y="597" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">test cases</text>
+<text x="180" y="615" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">You must also write test cases for each</text>
+<text x="180" y="633" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="660" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Delaying punishes the healthy banks,</text>
+<text x="180" y="679" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">because their customers do not get</text>
+<text x="180" y="698" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">credited, while excluding changes every</text>
+<text x="180" y="717" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">other bank net position</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="2">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Failure</tspan> <tspan fill="#FFFFFF">sequence</tspan> <tspan fill="#FFFFFF">timeline</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Settlement failure</tspan><tspan fill="#CBD5E1"> - event in which a participant cannot meet its</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Delay versus exclusion</tspan><tspan fill="#CBD5E1"> - Delaying punishes the healthy banks</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="13" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Failure sequence timeline</tspan><tspan fill="#CBD5E1"> - practice the failure sequence runs like this.</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Exclusion recomputation</tspan><tspan fill="#CBD5E1"> - Four banks in a cycle: A sends 120</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="13" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Exposure review after failure</tspan><tspan fill="#CBD5E1"> - other participants must also review their</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="13" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Settlement failure test cases</tspan><tspan fill="#CBD5E1"> - You must also write test cases for each</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="386" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">In practice the failure sequence runs like this.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 3 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 742" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="742" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Failure</tspan> <tspan fill="#FFFFFF">sequence</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">timeline</tspan></text>
+<rect x="24" y="86" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="104" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="120" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="139" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Settlement failure</text>
+<text x="180" y="157" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">event in which a participant cannot meet its</text>
+<text x="180" y="175" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="192" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="211" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Delay versus</text>
+<text x="180" y="229" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">exclusion</text>
+<text x="180" y="247" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Delaying punishes the healthy banks</text>
+<text x="180" y="265" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="1">
+<rect x="24" y="284" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="303" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Failure sequence</text>
+<text x="180" y="321" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">timeline</text>
+<text x="180" y="339" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">practice the failure sequence runs like this.</text>
+<text x="180" y="357" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="24" y="376" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="395" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Exclusion</text>
+<text x="180" y="413" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">recomputation</text>
+<text x="180" y="431" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Four banks in a cycle: A sends 120</text>
+<text x="180" y="449" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="24" y="468" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="487" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Exposure review</text>
+<text x="180" y="505" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">after failure</text>
+<text x="180" y="523" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">other participants must also review their</text>
+<text x="180" y="541" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="560" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="579" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Settlement failure</text>
+<text x="180" y="597" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">test cases</text>
+<text x="180" y="615" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">You must also write test cases for each</text>
+<text x="180" y="633" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="660" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">In practice the failure sequence runs</text>
+<text x="180" y="679" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">like this.</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="3">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Exclusion</tspan> <tspan fill="#FFFFFF">recomputation</tspan> <tspan fill="#FFFFFF">example</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Settlement failure</tspan><tspan fill="#CBD5E1"> - event in which a participant cannot meet its</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Delay versus exclusion</tspan><tspan fill="#CBD5E1"> - Delaying punishes the healthy banks</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="13" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Failure sequence timeline</tspan><tspan fill="#CBD5E1"> - practice the failure sequence runs like this.</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Exclusion recomputation</tspan><tspan fill="#CBD5E1"> - Four banks in a cycle: A sends 120</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="13" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Exposure review after failure</tspan><tspan fill="#CBD5E1"> - other participants must also review their</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="13" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Settlement failure test cases</tspan><tspan fill="#CBD5E1"> - You must also write test cases for each</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="514" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Four banks in a cycle: A sends 120 and receives 95 (net debit 25)</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 4 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 770" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="770" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Exclusion</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">recomputation</tspan></text>
+<text x="24" y="96" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">example</tspan></text>
+<rect x="24" y="114" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="132" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="148" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="167" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Settlement failure</text>
+<text x="180" y="185" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">event in which a participant cannot meet its</text>
+<text x="180" y="203" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="220" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="239" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Delay versus</text>
+<text x="180" y="257" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">exclusion</text>
+<text x="180" y="275" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Delaying punishes the healthy banks</text>
+<text x="180" y="293" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="1">
+<rect x="24" y="312" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="331" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Failure sequence</text>
+<text x="180" y="349" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">timeline</text>
+<text x="180" y="367" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">practice the failure sequence runs like this.</text>
+<text x="180" y="385" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="1">
+<rect x="24" y="404" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="423" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Exclusion</text>
+<text x="180" y="441" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">recomputation</text>
+<text x="180" y="459" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Four banks in a cycle: A sends 120</text>
+<text x="180" y="477" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="24" y="496" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="515" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Exposure review</text>
+<text x="180" y="533" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">after failure</text>
+<text x="180" y="551" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">other participants must also review their</text>
+<text x="180" y="569" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="588" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="607" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Settlement failure</text>
+<text x="180" y="625" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">test cases</text>
+<text x="180" y="643" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">You must also write test cases for each</text>
+<text x="180" y="661" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="688" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Four banks in a cycle: A sends 120 and</text>
+<text x="180" y="707" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">receives 95 (net debit 25)</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="4">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Exposure</tspan> <tspan fill="#FFFFFF">review</tspan> <tspan fill="#FFFFFF">after</tspan> <tspan fill="#FFFFFF">failure</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Settlement failure</tspan><tspan fill="#CBD5E1"> - event in which a participant cannot meet its</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Delay versus exclusion</tspan><tspan fill="#CBD5E1"> - Delaying punishes the healthy banks</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="13" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Failure sequence timeline</tspan><tspan fill="#CBD5E1"> - practice the failure sequence runs like this.</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Exclusion recomputation</tspan><tspan fill="#CBD5E1"> - Four banks in a cycle: A sends 120</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n4" data-beat="4">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="13" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Exposure review after failure</tspan><tspan fill="#CBD5E1"> - other participants must also review their</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="13" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Settlement failure test cases</tspan><tspan fill="#CBD5E1"> - You must also write test cases for each</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="643" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The other participants must also review their exposure: a bank that had a large net credit from</text>
+<text x="450" y="476" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">the failing bank has learned that its expected receipts are not certain</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 5 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 780" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="780" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Exposure</tspan> <tspan fill="#FFFFFF">review</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">after</tspan> <tspan fill="#FFFFFF">failure</tspan></text>
+<rect x="24" y="86" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="104" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="120" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="139" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Settlement failure</text>
+<text x="180" y="157" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">event in which a participant cannot meet its</text>
+<text x="180" y="175" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="192" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="211" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Delay versus</text>
+<text x="180" y="229" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">exclusion</text>
+<text x="180" y="247" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Delaying punishes the healthy banks</text>
+<text x="180" y="265" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="1">
+<rect x="24" y="284" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="303" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Failure sequence</text>
+<text x="180" y="321" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">timeline</text>
+<text x="180" y="339" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">practice the failure sequence runs like this.</text>
+<text x="180" y="357" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="1">
+<rect x="24" y="376" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="395" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Exclusion</text>
+<text x="180" y="413" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">recomputation</text>
+<text x="180" y="431" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Four banks in a cycle: A sends 120</text>
+<text x="180" y="449" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="1">
+<rect x="24" y="468" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="487" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Exposure review</text>
+<text x="180" y="505" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">after failure</text>
+<text x="180" y="523" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">other participants must also review their</text>
+<text x="180" y="541" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="560" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="579" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Settlement failure</text>
+<text x="180" y="597" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">test cases</text>
+<text x="180" y="615" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">You must also write test cases for each</text>
+<text x="180" y="633" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="660" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The other participants must also review</text>
+<text x="180" y="679" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">their exposure: a bank that had a large net</text>
+<text x="180" y="698" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">credit from the failing bank has learned</text>
+<text x="180" y="717" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">that its expected receipts are not certain</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="5">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Settlement</tspan> <tspan fill="#FFFFFF">failure</tspan> <tspan fill="#FFFFFF">test</tspan> <tspan fill="#FFFFFF">cases</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">COMPLETE</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Settlement failure</tspan><tspan fill="#CBD5E1"> - event in which a participant cannot meet its</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Delay versus exclusion</tspan><tspan fill="#CBD5E1"> - Delaying punishes the healthy banks</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="13" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Failure sequence timeline</tspan><tspan fill="#CBD5E1"> - practice the failure sequence runs like this.</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Exclusion recomputation</tspan><tspan fill="#CBD5E1"> - Four banks in a cycle: A sends 120</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n4" data-beat="4">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="13" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Exposure review after failure</tspan><tspan fill="#CBD5E1"> - other participants must also review their</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n5" data-beat="5">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="13" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Settlement failure test cases</tspan><tspan fill="#CBD5E1"> - You must also write test cases for each</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">You must also write test cases for each failure cause: a liquidity failure, an operational failure,</text>
+<text x="450" y="476" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">and a solvency failure, and verify that the system behaves correctly in each.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 6 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#45A4FF"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 799" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="799" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Settlement</tspan> <tspan fill="#FFFFFF">failure</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">test</tspan> <tspan fill="#FFFFFF">cases</tspan></text>
+<rect x="24" y="86" width="312" height="26" rx="8" fill="#0C1626" stroke="#2DD4BF" stroke-width="1.5"/>
+<text x="180" y="104" text-anchor="middle" font-size="12" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">COMPLETE</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="120" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="139" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Settlement failure</text>
+<text x="180" y="157" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">event in which a participant cannot meet its</text>
+<text x="180" y="175" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="192" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="211" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Delay versus</text>
+<text x="180" y="229" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">exclusion</text>
+<text x="180" y="247" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Delaying punishes the healthy banks</text>
+<text x="180" y="265" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="1">
+<rect x="24" y="284" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="303" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Failure sequence</text>
+<text x="180" y="321" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">timeline</text>
+<text x="180" y="339" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">practice the failure sequence runs like this.</text>
+<text x="180" y="357" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="1">
+<rect x="24" y="376" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="395" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Exclusion</text>
+<text x="180" y="413" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">recomputation</text>
+<text x="180" y="431" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Four banks in a cycle: A sends 120</text>
+<text x="180" y="449" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="1">
+<rect x="24" y="468" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="487" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Exposure review</text>
+<text x="180" y="505" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">after failure</text>
+<text x="180" y="523" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">other participants must also review their</text>
+<text x="180" y="541" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="1">
+<rect x="24" y="560" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="579" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Settlement failure</text>
+<text x="180" y="597" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">test cases</text>
+<text x="180" y="615" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">You must also write test cases for each</text>
+<text x="180" y="633" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<text x="180" y="660" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">You must also write test cases for each</text>
+<text x="180" y="679" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">failure cause: a liquidity failure, an</text>
+<text x="180" y="698" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">operational failure, and a solvency failure,</text>
+<text x="180" y="717" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">and verify that the system behaves</text>
+<text x="180" y="736" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">correctly in each.</text>
+</svg>
+</div>
+</div>
+<p class="xml-caption">Flow of the explanation in this lesson.</p></div>
+<div class="playerbar">
+<div class="studio-progress"><div class="studio-markers" id="studio-markers-studio-ch77s6"></div><input type="range" id="studio-slider-studio-ch77s6" min="0" max="1000" value="0" aria-label="Lesson timeline"></div>
+<div class="ctrl-row">
+<button class="ctrl-btn" id="studio-play-studio-ch77s6" onclick="studioTogglePlay('studio-ch77s6')" aria-label="Play lesson" title="Play lesson"><span class="ctrl-ic-play"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></span><span class="ctrl-ic-pause" style="display:none"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><rect x="6" y="5" width="4" height="14" fill="currentColor"/><rect x="14" y="5" width="4" height="14" fill="currentColor"/></svg></span></button>
+<button class="ctrl-btn studio-mute-btn" id="studio-mute-studio-ch77s6" onclick="studioToggleMute('studio-ch77s6')" aria-label="Mute narration" title="Mute / unmute narration"><svg class="studio-mute-icon" viewBox="0 0 24 24" width="28" height="28" fill="currentColor" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3z"/><path class="studio-mute-waves" d="M16 8.5a5 5 0 0 1 0 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><path class="studio-mute-waves" d="M18.5 6a9 9 0 0 1 0 12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><path class="studio-mute-x" d="M16 9.5l5 5M21 9.5l-5 5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" style="display:none"/></svg></button>
+<button class="ctrl-btn" onclick="studioSkip('studio-ch77s6', -10)" aria-label="Back 10 seconds" title="Back 10 seconds"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 5a7 7 0 1 1-6.32 4.06" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M5.5 3.5v5h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><text x="12" y="16.5" font-size="8" fill="currentColor" text-anchor="middle" font-weight="700">10</text></svg></button>
+<span class="studio-time ctrl-time" id="studio-time-studio-ch77s6">0:00 / 6:37</span>
+<button class="ctrl-btn" onclick="studioSkip('studio-ch77s6', 10)" aria-label="Forward 10 seconds" title="Forward 10 seconds"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 5a7 7 0 1 0 6.32 4.06" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M18.5 3.5v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><text x="12" y="16.5" font-size="8" fill="currentColor" text-anchor="middle" font-weight="700">10</text></svg></button>
+<span class="playerbar-spacer"></span>
+<span class="player-stage" id="studio-tag-studio-ch77s6">Step 1 of 6</span>
+<button class="ctrl-btn ctrl-step" id="studio-prevscene-studio-ch77s6" onclick="studioPrevScene('studio-ch77s6')" title="Previous step" aria-label="Previous step">&lsaquo;</button>
+<button class="ctrl-btn ctrl-step" id="studio-nextscene-studio-ch77s6" onclick="studioNextScene('studio-ch77s6')" title="Next step" aria-label="Next step">&rsaquo;</button>
+<button class="ctrl-btn ctrl-speed" id="studio-speedbtn-studio-ch77s6" onclick="studioCycleSpeed('studio-ch77s6')" title="Playback speed" aria-label="Playback speed">1x</button>
+<span class="ctrl-settings-wrap"><button class="ctrl-btn" onclick="studioToggleSettings('studio-ch77s6', event)" aria-label="Player settings" title="Settings"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5 5l2.1 2.1M16.9 16.9L19 19M19 5l-2.1 2.1M7.1 16.9L5 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button><span class="ctrl-popover" id="studio-settings-studio-ch77s6" style="display:none" onclick="event.stopPropagation()"><label class="ctrl-pop-row">Volume <input type="range" min="0" max="1" step="0.1" value="1" oninput="studioSetVolume('studio-ch77s6', this.value)" style="width:110px;accent-color:#3587FC"></label><button class="studio-btn" id="studio-captions-studio-ch77s6" onclick="studioToggleCaptions('studio-ch77s6')">Captions: On</button><button class="studio-btn" onclick="studioReplayScene('studio-ch77s6')">Replay scene</button></span></span>
+<button class="ctrl-btn" onclick="studioFullscreen('studio-ch77s6')" aria-label="Fullscreen" title="Fullscreen"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+</div>
+</div>
+</div>
+<p class="studio-caption" id="studio-caption-studio-ch77s6"></p>
+<p class="studio-loading" id="studio-loading-studio-ch77s6" style="display:none">Loading narration...</p>
+<p class="studio-error" id="studio-error-studio-ch77s6" role="alert" style="display:none"></p>
+<audio id="studio-audio-studio-ch77s6" preload="auto" src="../audio/ch77s6.mp3"></audio>
+</div>
+<div class="lesson-title-row">
+<h1>Settlement failures: what happens when a bank cannot settle</h1>
+<button class="save-note" type="button" onclick="pfToggleNote('studio-ch77s6')" title="Save a note on this lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L8 19l-4 1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg> Save note</button>
+</div>
+<p class="lesson-meta-line">Settlement design and failure, Lesson 6 of 8, Narration 6:37, D07 Clearing, settlement and liquidity</p>
+<p class="lesson-note-saved" id="studio-note-saved-studio-ch77s6" style="display:none">Note saved.</p>
+<div class="note-editor" id="studio-note-editor-studio-ch77s6" style="display:none"><textarea id="studio-note-text-studio-ch77s6" rows="3" placeholder="Write a note on this lesson..." aria-label="Lesson note"></textarea><div class="note-editor-row"><button class="studio-btn primary" onclick="pfSaveNote('studio-ch77s6')">Save note</button> <button class="studio-btn" onclick="pfToggleNote('studio-ch77s6')">Cancel</button></div></div>
+<div class="dive-deeper">
+<div class="dive-head"><button type="button" class="dive-toggle" onclick="pfToggleDive(this)" aria-expanded="true"><span class="dive-spark"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 2l2.2 6.8L21 11l-6.8 2.2L12 20l-2.2-6.8L3 11l6.8-2.2z" fill="currentColor"/></svg></span><span class="dive-title">Dive deeper on this topic</span><span class="dive-chev"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 14l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button></div>
+<div class="dive-btns"><button type="button" class="dive-btn" data-kind="practice" onclick="pfDive('studio-ch77s6', 'practice')">Give me practice questions</button><button type="button" class="dive-btn" data-kind="simple" onclick="pfDive('studio-ch77s6', 'simple')">Explain this topic in simple terms</button><button type="button" class="dive-btn" data-kind="summary" onclick="pfDive('studio-ch77s6', 'summary')">Give me a summary</button><button type="button" class="dive-btn" data-kind="example" onclick="pfDive('studio-ch77s6', 'example')">Give me real-life examples</button></div>
+<div class="dive-panel" id="dive-panel-studio-ch77s6"><div class="dive-panel-body"></div></div>
+<script type="application/json" id="pf-dive-data-studio-ch77s6">{"simple": "In plain words: A settlement failure is the event in which a participant cannot meet its settlement obligation at the settlement moment, and it is the scenario that every payment system operator plans for most carefully.", "summary": "A settlement failure is the event in which a participant cannot meet its settlement obligation at the settlement moment, and it is the scenario that every payment system operator plans for most carefully.", "example": "Delaying punishes the healthy banks, because their customers do not get credited, while excluding changes every other bank net position and may turn a bank that expected a credit into a net debtor. The central bank may also intervene, for example by providing emergency liquidity against collateral, or by suspending the failing bank from the system."}</script>
+</div>
+<div class="lesson-feedback">
+<div class="fb-icons"><button type="button" class="fb-btn" data-kind="like" onclick="pfFeedback(this,'like')" aria-label="Like this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M7 21H4a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1h3v11zm0 0h9.6a2 2 0 0 0 1.9-1.4l1.6-5A2 2 0 0 0 18.2 12H15V6.5A2.5 2.5 0 0 0 12.5 4L11 7.5 8.6 10H7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button><button type="button" class="fb-btn" data-kind="dislike" onclick="pfFeedback(this,'dislike')" aria-label="Dislike this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M17 3h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1h-3V3zm0 0H7.4a2 2 0 0 0-1.9 1.4l-1.6 5A2 2 0 0 0 5.8 12H9v5.5A2.5 2.5 0 0 0 11.5 20L13 16.5l2.4-2.5H17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button><button type="button" class="fb-btn" data-kind="flag" onclick="pfFeedback(this,'flag')" aria-label="Flag this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M6 21V4m0 1h11l-2.5 3.5L17 12H6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+<button type="button" class="go-next" onclick="goLesson('ch77s7')" title="Next: The default waterfall: who pays when a participant fails">Go to next item &rarr;</button>
+</div>
+<div class="chips"><span class="chip">Reconciliation</span><span class="chip">Settlement</span><span class="chip">Liquidity</span></div>
+<div class="card learn-card">
+<h2>What you will learn</h2>
+<p class="transcript"><b>Your objective.</b> By the end of this lesson, you will be able to explain settlement failures: what happens when a bank cannot settle and apply it to a real banking scenario.</p>
+<p class="transcript"><b>Why it matters.</b> For a business analyst, settlement failure is a requirements and testing subject.</p>
+<p class="transcript">Chapter objective: Learner explains how settlement cycles are designed, how liquidity is optimised with queues and offsets, and how gridlock is detected and resolved. Learner describes intraday credit and collateral, the central bank accounts used in settlement, what happens when a participant cannot settle, and the order of the default waterfall.</p>
+<h3>Key learning points</h3>
+<ul id="studio-points-studio-ch77s6">
+<li>Settlement failure</li>
+<li>Delay versus exclusion</li>
+<li>Failure sequence timeline</li>
+<li>Exclusion recomputation example</li>
+<li>Exposure review after failure</li>
+<li>Settlement failure test cases</li>
+</ul>
+<h3>Key terms</h3>
+<div id="studio-terms-studio-ch77s6">
+<p class="keyterm"><b>Reconciliation:</b> The process of comparing records from two sources, such as a bank statement and an internal ledger, to confirm they agree.</p>
+<p class="keyterm"><b>Settlement:</b> The final movement of funds between banks to discharge obligations created by cleared payments. Settlement is usually made in central bank money or through correspondent accounts.</p>
+<p class="keyterm"><b>Liquidity:</b> Cash or assets that a bank can use immediately to meet payment obligations. Banks manage liquidity by forecasting inflows and outflows, funding nostro and settlement accounts, and using central bank...</p>
+</div>
+<p class="studio-note">Clearing and settlement timeline showing Settlement failures: what happens when a bank cannot settle.</p>
+</div>
+<div class="fw-card" id="pf-exercise-studio-ch77s6">
+<p class="fw-label">Practise this lesson</p>
+<h2>Exercise</h2>
+<p><b>Decide which settlement model fits the scenario in this lesson and explain why.</b></p>
+<p>Use the settlement models, the liquidity trade-off and the finality rules in this lesson.</p>
+<ol class="fw-steps">
+<li><b>What to do.</b> Name the model, state when settlement becomes final, and explain what happens if the sending bank does not have enough liquidity.</li>
+</ol>
+<p><button class="studio-btn" id="pf-ex-btn-studio-ch77s6" onclick="pfRevealExercise('studio-ch77s6')">Show the answer</button></p>
+<div class="fw-exercise-answer" id="pf-ex-answer-studio-ch77s6">
+<p><b>Correct result.</b> Real time gross settlement settles each payment individually in central bank money with immediate finality, but it needs liquidity for every payment. Deferred net settlement nets payments and settles the net position, which needs less liquidity but leaves settlement risk until the net settles.</p>
+<p><b>Why.</b> Settlement is where money actually moves. The model decides the risk, the liquidity need, and when the payment is truly final.</p>
+</div>
+</div>
+<div class="fw-card" id="pf-quiz-studio-ch77s6" data-answer="0">
+<p class="fw-label">Check your understanding</p>
+<h2>Practice question</h2>
+<p><b>Which of the following best describes settlement failures: what happens when a bank cannot settle?</b></p>
+<button type="button" class="quiz-opt" data-idx="0" onclick="pfCheckAnswer('studio-ch77s6', this)">A settlement failure is the event in which a participant cannot meet its settlement obligation at the settlement moment, and it is the scenario that every payment system operator plans for most carefully</button>
+<button type="button" class="quiz-opt" data-idx="1" onclick="pfCheckAnswer('studio-ch77s6', this)">It is a related concept from this chapter, but it does not describe settlement failures: what happens when a bank cannot settle.</button>
+<button type="button" class="quiz-opt" data-idx="2" onclick="pfCheckAnswer('studio-ch77s6', this)">It is a related concept from this chapter, but it does not describe settlement failures: what happens when a bank cannot settle.</button>
+<button type="button" class="quiz-opt" data-idx="3" onclick="pfCheckAnswer('studio-ch77s6', this)">It is a related concept from this chapter, but it does not describe settlement failures: what happens when a bank cannot settle.</button>
+<div class="quiz-feedback" id="pf-quiz-fb-studio-ch77s6"></div>
+<script type="application/json" id="pf-quiz-data-studio-ch77s6">{"why_wrong": ["", "This describes a different concept from this chapter, not settlement failures: what happens when a bank cannot settle.", "This describes a different concept from this chapter, not settlement failures: what happens when a bank cannot settle.", "This describes a different concept from this chapter, not settlement failures: what happens when a bank cannot settle."], "explanation": "A settlement failure is the event in which a participant cannot meet its settlement obligation at the settlement moment, and it is the scenario that every payment system operator plans for most carefully. This is the core idea of the lesson."}</script>
+</div>
+<div class="fw-card">
+<p class="fw-label">Takeaway and next step</p>
+<h2>What to remember</h2>
+<p>For a business analyst, settlement failure is a requirements and testing subject.</p>
+<p>Follow EUR 25 through every stage, from instruction to beneficiary credit, and note where it can stop.</p>
+<p><a class="fw-tool-link" href="../simulators/lifecycle.html">Open the Payment Lifecycle Simulator &rarr;</a></p>
+<p class="studio-note">Builds on "Central bank accounts: how settlement actually happens".</p>
+</div>
+<section class="upnext" id="studio-upnext-studio-ch77s6" style="display:none" aria-label="Up next">
+<span class="tag">Up next</span>
+<h2>Up next: The default waterfall: who pays when a participant fails</h2>
+<p>Lesson 7 of 8, Settlement design and failure, Narration 6:01</p>
+<div class="row">
+<button class="studio-btn primary" onclick="goLessonAuto('ch77s7')">Next lesson &rarr;</button>
+<button class="studio-btn" onclick="goLesson('ch77s5')">&larr; Previous lesson</button>
+<button class="studio-btn" onclick="studioReplayLesson('studio-ch77s6')">Replay this lesson</button>
+</div>
+</section>
+<div class="lesson-nav">
+<button class="studio-btn" onclick="goLesson('ch77s5')" title="Previous lesson: Central bank accounts: how settlement actually happens">&larr; Previous</button>
+<button class="studio-btn" onclick="goChapterContents('ch77')">Chapter contents</button>
+<button class="studio-btn primary" onclick="goLesson('ch77s7')" title="Next lesson: The default waterfall: who pays when a participant fails">Next &rarr;</button>
+</div>
+<div class="card transcript-card">
+<h2>Transcript and full text</h2>
+<details class="studio-transcript" id="studio-transcript-details-studio-ch77s6"><summary>Show transcript</summary>
+<p class="transcript" id="studio-transcript-studio-ch77s6">A settlement failure is the event in which a participant cannot meet its settlement obligation at the settlement moment, and it is the scenario that every payment system operator plans for most carefully. The failure may be a liquidity failure, where the bank has the money but cannot access it in time, or a solvency failure, where the bank does not have the money at all, or an operational failure, where the bank systems are down and it cannot send the instruction. The three causes have very different consequences, and the operator must be able to distinguish them quickly, because the response to a liquidity problem is to provide time or credit, while the response to a solvency problem is to exclude the bank and protect the other participants. Why settlement failures matter is that they are the point at which a single bank problem becomes a system problem. In a deferred net settlement system, if one bank fails to fund its net debit position, the settlement cannot complete as calculated, and the operator must either delay settlement for everyone or exclude the failing bank and recompute. Delaying punishes the healthy banks, because their customers do not get credited, while excluding changes every other bank net position and may turn a bank that expected a credit into a net debtor. The PFMI requires operators to have a default management procedure that is tested regularly, and the Bank of England and the European Central Bank both publish their procedures. The parties are the failing bank, the other participants, the system operator, and the central bank. The operator detects the failure when the funding deadline passes without the funds arriving, or when the central bank reports that the settlement instruction cannot be executed. The operator then follows the default procedure in the rulebook, which typically gives the failing bank a short grace period, then excludes it, recomputes the net positions, and settles the remainder. The central bank may also intervene, for example by providing emergency liquidity against collateral, or by suspending the failing bank from the system. The regulator is notified, and the incident is recorded as a reportable event. In practice the failure sequence runs like this. At 15:00 the settlement cycle closes and the net positions are computed. Bank A has a net debit of EUR 25 million and must fund it by 15:30. At 15:30 the funds have not arrived, so the operator calls Bank A treasury and gives a 30-minute grace period. At 16:00 the funds still have not arrived, so the operator declares a settlement failure, excludes Bank A payments from the cycle, and recomputes the net positions for the remaining banks. Bank B, which expected a EUR 30 million credit, now has a EUR 5 million debit, because EUR 35 million of the payments it expected to receive came from Bank A. Bank B must now fund EUR 5 million by 16:30, or it too will fail. The settlement completes at 17:00, two hours late, and every bank that was affected must explain the delay to its customers. The remaining EUR 55 million of Bank A's sent payments went to participants outside this four-bank cycle, so they are settled separately and are not part of the recomputation. A worked example shows why exclusion changes everything. Four banks in a cycle: A sends 120 and receives 95 (net debit 25), B sends 80 and receives 110 (net credit 30), C sends 60 and receives 55 (net debit 5), D sends 40 and receives 40 (net zero). If A fails and is excluded, the payments involving A are removed. B now sends 80 and receives 75 (because 35 of its receipts came from A), so its net position flips from a 30 credit to a 5 debit. C sends 60 and receives 55, but 20 of its receipts came from A, so it now sends 60 and receives 35, a 25 debit. D sends 40 and receives 40, but 10 of its receipts came from A, so it now sends 40 and receives 30, a 10 debit. The total net debit is now 40, and the operator must collect it from three banks that did not expect to pay. What happens after the failure is as important as the failure itself. The operator must investigate the cause, report to the regulator, and review whether the default procedure worked. The failing bank must explain why it could not fund, and if the cause was a liquidity problem, it must show how it will prevent a recurrence. If the cause was solvency, the bank may be suspended from the system and its payments may be returned. The other participants must also review their exposure: a bank that had a large net credit from the failing bank has learned that its expected receipts are not certain, and it may change its own liquidity management or its credit limits on that counterparty. The operational and accounting implications are severe. A settlement failure creates a backlog of unsettled payments, each of which must be tracked, and the reconciliation team must be able to show the status of every payment in the failed cycle. On the ledger, payments that were exchanged but not settled remain in the clearing account, and the bank must decide whether to credit its customers anyway, which creates exposure, or to hold the credit until settlement, which creates customer complaints. The treasury team must also manage the unexpected funding requirement, because a bank that expected a credit and now owes money must find liquidity at short notice. For a business analyst, settlement failure is a requirements and testing subject. You must specify the funding deadline, the grace period, the exclusion procedure, the recomputation logic, the notification requirements, and the reporting. You must also write test cases for each failure cause: a liquidity failure, an operational failure, and a solvency failure, and verify that the system behaves correctly in each. A common gap is failing to specify what happens to payments that were already credited to customers before the settlement failed, because that is the point at which the bank takes a real loss. Takeaway: a settlement failure is not a single bank problem, it rewrites every other bank position in the cycle, and the default procedure is the most important page in the rulebook. Further reading: the BIS Principles for Financial Market Infrastructures (PFMI) for default management; the Bank of England CHAPS default procedures; the ECB TARGET guideline on settlement failure. Last reviewed 7 November 2026.</p>
+<div id="studio-paras-studio-ch77s6">
+<p class="transcript">A settlement failure is the event in which a participant cannot meet its settlement obligation at the settlement moment, and it is the scenario that every payment system operator plans for most carefully. The failure may be a liquidity failure, where the bank has the money but cannot access it in time, or a solvency failure, where the bank does not have the money at all, or an operational failure, where the bank systems are down and it cannot send the instruction. The three causes have very different consequences, and the operator must be able to distinguish them quickly, because the response to a liquidity problem is to provide time or credit, while the response to a solvency problem is to exclude the bank and protect the other participants.</p>
+<p class="transcript">Why settlement failures matter is that they are the point at which a single bank problem becomes a system problem. In a deferred net settlement system, if one bank fails to fund its net debit position, the settlement cannot complete as calculated, and the operator must either delay settlement for everyone or exclude the failing bank and recompute. Delaying punishes the healthy banks, because their customers do not get credited, while excluding changes every other bank net position and may turn a bank that expected a credit into a net debtor. The PFMI requires operators to have a default management procedure that is tested regularly, and the Bank of England and the European Central Bank both publish their procedures.</p>
+<p class="transcript">The parties are the failing bank, the other participants, the system operator, and the central bank. The operator detects the failure when the funding deadline passes without the funds arriving, or when the central bank reports that the settlement instruction cannot be executed. The operator then follows the default procedure in the rulebook, which typically gives the failing bank a short grace period, then excludes it, recomputes the net positions, and settles the remainder. The central bank may also intervene, for example by providing emergency liquidity against collateral, or by suspending the failing bank from the system. The regulator is notified, and the incident is recorded as a reportable event.</p>
+<p class="transcript">In practice the failure sequence runs like this. At 15:00 the settlement cycle closes and the net positions are computed. Bank A has a net debit of EUR 25 million and must fund it by 15:30. At 15:30 the funds have not arrived, so the operator calls Bank A treasury and gives a 30-minute grace period. At 16:00 the funds still have not arrived, so the operator declares a settlement failure, excludes Bank A payments from the cycle, and recomputes the net positions for the remaining banks.</p>
+<p class="transcript">Bank B, which expected a EUR 30 million credit, now has a EUR 5 million debit, because EUR 35 million of the payments it expected to receive came from Bank A. Bank B must now fund EUR 5 million by 16:30, or it too will fail. The settlement completes at 17:00, two hours late, and every bank that was affected must explain the delay to its customers. The remaining EUR 55 million of Bank A's sent payments went to participants outside this four-bank cycle, so they are settled separately and are not part of the recomputation.</p>
+<p class="transcript">A worked example shows why exclusion changes everything. Four banks in a cycle: A sends 120 and receives 95 (net debit 25), B sends 80 and receives 110 (net credit 30), C sends 60 and receives 55 (net debit 5), D sends 40 and receives 40 (net zero). If A fails and is excluded, the payments involving A are removed. B now sends 80 and receives 75 (because 35 of its receipts came from A), so its net position flips from a 30 credit to a 5 debit. C sends 60 and receives 55, but 20 of its receipts came from A, so it now sends 60 and receives 35, a 25 debit. D sends 40 and receives 40, but 10 of its receipts came from A, so it now sends 40 and receives 30, a 10 debit. The total net debit is now 40, and the operator must collect it from three banks that did not expect to pay.</p>
+<p class="transcript">What happens after the failure is as important as the failure itself. The operator must investigate the cause, report to the regulator, and review whether the default procedure worked. The failing bank must explain why it could not fund, and if the cause was a liquidity problem, it must show how it will prevent a recurrence. If the cause was solvency, the bank may be suspended from the system and its payments may be returned. The other participants must also review their exposure: a bank that had a large net credit from the failing bank has learned that its expected receipts are not certain, and it may change its own liquidity management or its credit limits on that counterparty.</p>
+<p class="transcript">The operational and accounting implications are severe. A settlement failure creates a backlog of unsettled payments, each of which must be tracked, and the reconciliation team must be able to show the status of every payment in the failed cycle. On the ledger, payments that were exchanged but not settled remain in the clearing account, and the bank must decide whether to credit its customers anyway, which creates exposure, or to hold the credit until settlement, which creates customer complaints. The treasury team must also manage the unexpected funding requirement, because a bank that expected a credit and now owes money must find liquidity at short notice.</p>
+<p class="transcript">For a business analyst, settlement failure is a requirements and testing subject. You must specify the funding deadline, the grace period, the exclusion procedure, the recomputation logic, the notification requirements, and the reporting. You must also write test cases for each failure cause: a liquidity failure, an operational failure, and a solvency failure, and verify that the system behaves correctly in each. A common gap is failing to specify what happens to payments that were already credited to customers before the settlement failed, because that is the point at which the bank takes a real loss.</p>
+<p class="transcript">Takeaway: a settlement failure is not a single bank problem, it rewrites every other bank position in the cycle, and the default procedure is the most important page in the rulebook. Further reading: the BIS Principles for Financial Market Infrastructures (PFMI) for default management; the Bank of England CHAPS default procedures; the ECB TARGET guideline on settlement failure. Last reviewed 7 November 2026.</p>
+</div>
+</details>
+<details class="studio-transcript"><summary>Full lesson text (all scenes)</summary><div id="studio-transcript-full-studio-ch77s6"></div></details>
+<p><button class="studio-btn primary" id="done-ch77s6" onclick="studioMarkSceneDone('studio-ch77s6')">Mark lesson complete</button> <span class="studio-note">Completing a lesson updates your progress dashboard on the homepage.</span></p>
+</div>
+<p class="studio-note">Scene timestamps are estimated by allocating the narration text proportionally across the real audio length. The audio playback position is the source of truth: pause freezes the visual, seeking restores the correct scene, replay restarts the scene animation.</p>
+</div>
+<script>window.__PA_STUDIO_QUEUE = window.__PA_STUDIO_QUEUE || []; window.__PA_STUDIO_QUEUE.push(["studio-ch77s6", {"sample_id": "studio-ch77s6", "chapter_id": "ch77", "title": "Settlement failures: what happens when a bank cannot settle", "domain": "D07 Clearing, settlement and liquidity", "objective": "Learner explains how settlement cycles are designed, how liquidity is optimised with queues and offsets, and how gridlock is detected and resolved. Learner describes intraday credit and collateral, the central bank accounts used in settlement, what happens when a participant cannot settle, and the order of the default waterfall.", "scenes": [{"id": "ch77s6", "section_id": "ch77s6", "title": "Settlement failures: what happens when a bank cannot settle", "audio": "../audio/ch77s6.mp3", "duration_sec": 397.7, "points": ["A settlement failure is the event in which a participant cannot meet its settlement obligation at the settlement moment, and it is the scenario that every payment system operator plans for most carefully.", "Why settlement failures matter is that they are the point at which a single bank problem becomes a system problem.", "The parties are the failing bank, the other participants, the system operator, and the central bank.", "In practice the failure sequence runs like this.", "Bank B, which expected a EUR 30 million credit, now has a EUR 5 million debit, because EUR 35 million of the payments it expected to receive came from Bank A."], "terms": [{"term": "Reconciliation", "def": "The process of comparing records from two sources, such as a bank statement and an internal ledger, to confirm they agree."}, {"term": "Settlement", "def": "The final movement of funds between banks to discharge obligations created by cleared payments. Settlement is usually made in central bank money or through correspondent accounts."}, {"term": "Liquidity", "def": "Cash or assets that a bank can use immediately to meet payment obligations. Banks manage liquidity by forecasting inflows and outflows, funding nostro and settlement accounts, and using central bank..."}], "transcript": "A settlement failure is the event in which a participant cannot meet its settlement obligation at the settlement moment, and it is the scenario that every payment system operator plans for most carefully. The failure may be a liquidity failure, where the bank has the money but cannot access it in time, or a solvency failure, where the bank does not have the money at all, or an operational failure, where the bank systems are down and it cannot send the instruction. The three causes have very different consequences, and the operator must be able to distinguish them quickly, because the response to a liquidity problem is to provide time or credit, while the response to a solvency problem is to exclude the bank and protect the other participants. Why settlement failures matter is that they are the point at which a single bank problem becomes a system problem. In a deferred net settlement system, if one bank fails to fund its net debit position, the settlement cannot complete as calculated, and the operator must either delay settlement for everyone or exclude the failing bank and recompute. Delaying punishes the healthy banks, because their customers do not get credited, while excluding changes every other bank net position and may turn a bank that expected a credit into a net debtor. The PFMI requires operators to have a default management procedure that is tested regularly, and the Bank of England and the European Central Bank both publish their procedures. The parties are the failing bank, the other participants, the system operator, and the central bank. The operator detects the failure when the funding deadline passes without the funds arriving, or when the central bank reports that the settlement instruction cannot be executed. The operator then follows the default procedure in the rulebook, which typically gives the failing bank a short grace period, then excludes it, recomputes the net positions, and settles the remainder. The central bank may also intervene, for example by providing emergency liquidity against collateral, or by suspending the failing bank from the system. The regulator is notified, and the incident is recorded as a reportable event. In practice the failure sequence runs like this. At 15:00 the settlement cycle closes and the net positions are computed. Bank A has a net debit of EUR 25 million and must fund it by 15:30. At 15:30 the funds have not arrived, so the operator calls Bank A treasury and gives a 30-minute grace period. At 16:00 the funds still have not arrived, so the operator declares a settlement failure, excludes Bank A payments from the cycle, and recomputes the net positions for the remaining banks. Bank B, which expected a EUR 30 million credit, now has a EUR 5 million debit, because EUR 35 million of the payments it expected to receive came from Bank A. Bank B must now fund EUR 5 million by 16:30, or it too will fail. The settlement completes at 17:00, two hours late, and every bank that was affected must explain the delay to its customers. The remaining EUR 55 million of Bank A's sent payments went to participants outside this four-bank cycle, so they are settled separately and are not part of the recomputation. A worked example shows why exclusion changes everything. Four banks in a cycle: A sends 120 and receives 95 (net debit 25), B sends 80 and receives 110 (net credit 30), C sends 60 and receives 55 (net debit 5), D sends 40 and receives 40 (net zero). If A fails and is excluded, the payments involving A are removed. B now sends 80 and receives 75 (because 35 of its receipts came from A), so its net position flips from a 30 credit to a 5 debit. C sends 60 and receives 55, but 20 of its receipts came from A, so it now sends 60 and receives 35, a 25 debit. D sends 40 and receives 40, but 10 of its receipts came from A, so it now sends 40 and receives 30, a 10 debit. The total net debit is now 40, and the operator must collect it from three banks that did not expect to pay. What happens after the failure is as important as the failure itself. The operator must investigate the cause, report to the regulator, and review whether the default procedure worked. The failing bank must explain why it could not fund, and if the cause was a liquidity problem, it must show how it will prevent a recurrence. If the cause was solvency, the bank may be suspended from the system and its payments may be returned. The other participants must also review their exposure: a bank that had a large net credit from the failing bank has learned that its expected receipts are not certain, and it may change its own liquidity management or its credit limits on that counterparty. The operational and accounting implications are severe. A settlement failure creates a backlog of unsettled payments, each of which must be tracked, and the reconciliation team must be able to show the status of every payment in the failed cycle. On the ledger, payments that were exchanged but not settled remain in the clearing account, and the bank must decide whether to credit its customers anyway, which creates exposure, or to hold the credit until settlement, which creates customer complaints. The treasury team must also manage the unexpected funding requirement, because a bank that expected a credit and now owes money must find liquidity at short notice. For a business analyst, settlement failure is a requirements and testing subject. You must specify the funding deadline, the grace period, the exclusion procedure, the recomputation logic, the notification requirements, and the reporting. You must also write test cases for each failure cause: a liquidity failure, an operational failure, and a solvency failure, and verify that the system behaves correctly in each. A common gap is failing to specify what happens to payments that were already credited to customers before the settlement failed, because that is the point at which the bank takes a real loss. Takeaway: a settlement failure is not a single bank problem, it rewrites every other bank position in the cycle, and the default procedure is the most important page in the rulebook. Further reading: the BIS Principles for Financial Market Infrastructures (PFMI) for default management; the Bank of England CHAPS default procedures; the ECB TARGET guideline on settlement failure. Last reviewed 7 November 2026.", "paragraphs": ["A settlement failure is the event in which a participant cannot meet its settlement obligation at the settlement moment, and it is the scenario that every payment system operator plans for most carefully. The failure may be a liquidity failure, where the bank has the money but cannot access it in time, or a solvency failure, where the bank does not have the money at all, or an operational failure, where the bank systems are down and it cannot send the instruction. The three causes have very different consequences, and the operator must be able to distinguish them quickly, because the response to a liquidity problem is to provide time or credit, while the response to a solvency problem is to exclude the bank and protect the other participants.", "Why settlement failures matter is that they are the point at which a single bank problem becomes a system problem. In a deferred net settlement system, if one bank fails to fund its net debit position, the settlement cannot complete as calculated, and the operator must either delay settlement for everyone or exclude the failing bank and recompute. Delaying punishes the healthy banks, because their customers do not get credited, while excluding changes every other bank net position and may turn a bank that expected a credit into a net debtor. The PFMI requires operators to have a default management procedure that is tested regularly, and the Bank of England and the European Central Bank both publish their procedures.", "The parties are the failing bank, the other participants, the system operator, and the central bank. The operator detects the failure when the funding deadline passes without the funds arriving, or when the central bank reports that the settlement instruction cannot be executed. The operator then follows the default procedure in the rulebook, which typically gives the failing bank a short grace period, then excludes it, recomputes the net positions, and settles the remainder. The central bank may also intervene, for example by providing emergency liquidity against collateral, or by suspending the failing bank from the system. The regulator is notified, and the incident is recorded as a reportable event.", "In practice the failure sequence runs like this. At 15:00 the settlement cycle closes and the net positions are computed. Bank A has a net debit of EUR 25 million and must fund it by 15:30. At 15:30 the funds have not arrived, so the operator calls Bank A treasury and gives a 30-minute grace period. At 16:00 the funds still have not arrived, so the operator declares a settlement failure, excludes Bank A payments from the cycle, and recomputes the net positions for the remaining banks.", "Bank B, which expected a EUR 30 million credit, now has a EUR 5 million debit, because EUR 35 million of the payments it expected to receive came from Bank A. Bank B must now fund EUR 5 million by 16:30, or it too will fail. The settlement completes at 17:00, two hours late, and every bank that was affected must explain the delay to its customers. The remaining EUR 55 million of Bank A's sent payments went to participants outside this four-bank cycle, so they are settled separately and are not part of the recomputation.", "A worked example shows why exclusion changes everything. Four banks in a cycle: A sends 120 and receives 95 (net debit 25), B sends 80 and receives 110 (net credit 30), C sends 60 and receives 55 (net debit 5), D sends 40 and receives 40 (net zero). If A fails and is excluded, the payments involving A are removed. B now sends 80 and receives 75 (because 35 of its receipts came from A), so its net position flips from a 30 credit to a 5 debit. C sends 60 and receives 55, but 20 of its receipts came from A, so it now sends 60 and receives 35, a 25 debit. D sends 40 and receives 40, but 10 of its receipts came from A, so it now sends 40 and receives 30, a 10 debit. The total net debit is now 40, and the operator must collect it from three banks that did not expect to pay.", "What happens after the failure is as important as the failure itself. The operator must investigate the cause, report to the regulator, and review whether the default procedure worked. The failing bank must explain why it could not fund, and if the cause was a liquidity problem, it must show how it will prevent a recurrence. If the cause was solvency, the bank may be suspended from the system and its payments may be returned. The other participants must also review their exposure: a bank that had a large net credit from the failing bank has learned that its expected receipts are not certain, and it may change its own liquidity management or its credit limits on that counterparty.", "The operational and accounting implications are severe. A settlement failure creates a backlog of unsettled payments, each of which must be tracked, and the reconciliation team must be able to show the status of every payment in the failed cycle. On the ledger, payments that were exchanged but not settled remain in the clearing account, and the bank must decide whether to credit its customers anyway, which creates exposure, or to hold the credit until settlement, which creates customer complaints. The treasury team must also manage the unexpected funding requirement, because a bank that expected a credit and now owes money must find liquidity at short notice.", "For a business analyst, settlement failure is a requirements and testing subject. You must specify the funding deadline, the grace period, the exclusion procedure, the recomputation logic, the notification requirements, and the reporting. You must also write test cases for each failure cause: a liquidity failure, an operational failure, and a solvency failure, and verify that the system behaves correctly in each. A common gap is failing to specify what happens to payments that were already credited to customers before the settlement failed, because that is the point at which the bank takes a real loss.", "Takeaway: a settlement failure is not a single bank problem, it rewrites every other bank position in the cycle, and the default procedure is the most important page in the rulebook. Further reading: the BIS Principles for Financial Market Infrastructures (PFMI) for default management; the Bank of England CHAPS default procedures; the ECB TARGET guideline on settlement failure. Last reviewed 7 November 2026."], "accessibility": "Clearing and settlement timeline showing Settlement failures: what happens when a bank cannot settle.", "visual_type": "timeline", "visual_choice_reason": "clearing or settlement heading", "beats": [{"t0": 0.0, "t1": 69.1, "title": "Settlement failure", "note": "A settlement failure is the event in which a participant cannot meet its settlement obligation at the settlement moment", "highlight_nodes": ["n0"], "highlight_conns": [], "highlight_fields": []}, {"t0": 69.1, "t1": 137.2, "title": "Delay versus exclusion", "note": "Delaying punishes the healthy banks, because their customers do not get credited, while excluding changes every other bank net position", "highlight_nodes": ["n1"], "highlight_conns": ["c0"], "highlight_fields": []}, {"t0": 137.2, "t1": 204.1, "title": "Failure sequence timeline", "note": "In practice the failure sequence runs like this.", "highlight_nodes": ["n2"], "highlight_conns": ["c1"], "highlight_fields": []}, {"t0": 204.1, "t1": 275.9, "title": "Exclusion recomputation example", "note": "Four banks in a cycle: A sends 120 and receives 95 (net debit 25)", "highlight_nodes": ["n3"], "highlight_conns": ["c2"], "highlight_fields": []}, {"t0": 275.9, "t1": 348.8, "title": "Exposure review after failure", "note": "The other participants must also review their exposure: a bank that had a large net credit from the failing bank has learned that its expected receipts are not certain", "highlight_nodes": ["n4"], "highlight_conns": ["c3"], "highlight_fields": []}, {"t0": 348.8, "t1": 397.7, "title": "Settlement failure test cases", "note": "You must also write test cases for each failure cause: a liquidity failure, an operational failure, and a solvency failure, and verify that the system behaves correctly in each.", "highlight_nodes": ["n5"], "highlight_conns": ["c4"], "highlight_fields": []}], "node_ids": ["n0", "n1", "n2", "n3", "n4", "n5"], "framework": {"objective": "By the end of this lesson, you will be able to explain settlement failures: what happens when a bank cannot settle and apply it to a real banking scenario.", "why_matters": "For a business analyst, settlement failure is a requirements and testing subject.", "technical_example": "At 15:00 the settlement cycle closes and the net positions are computed.", "failure_recovery": "A settlement failure creates a backlog of unsettled payments, each of which must be tracked, and the reconciliation team must be able to show the status of every payment in the failed cycle. You must also write test cases for each failure cause: a liquidity failure, an operational failure, and a solvency failure, and verify that the system behaves correctly in each.", "exercise": {"task": "Decide which settlement model fits the scenario in this lesson and explain why.", "info": "Use the settlement models, the liquidity trade-off and the finality rules in this lesson.", "action": "Name the model, state when settlement becomes final, and explain what happens if the sending bank does not have enough liquidity.", "correct": "Real time gross settlement settles each payment individually in central bank money with immediate finality, but it needs liquidity for every payment. Deferred net settlement nets payments and settles the net position, which needs less liquidity but leaves settlement risk until the net settles.", "why": "Settlement is where money actually moves. The model decides the risk, the liquidity need, and when the payment is truly final."}, "assessment": {"question": "Which of the following best describes settlement failures: what happens when a bank cannot settle?", "options": ["A settlement failure is the event in which a participant cannot meet its settlement obligation at the settlement moment, and it is the scenario that every payment system operator plans for most carefully", "It is a related concept from this chapter, but it does not describe settlement failures: what happens when a bank cannot settle.", "It is a related concept from this chapter, but it does not describe settlement failures: what happens when a bank cannot settle.", "It is a related concept from this chapter, but it does not describe settlement failures: what happens when a bank cannot settle."], "answer": 0, "explanation": "A settlement failure is the event in which a participant cannot meet its settlement obligation at the settlement moment, and it is the scenario that every payment system operator plans for most carefully. This is the core idea of the lesson.", "why_wrong": ["", "This describes a different concept from this chapter, not settlement failures: what happens when a bank cannot settle.", "This describes a different concept from this chapter, not settlement failures: what happens when a bank cannot settle.", "This describes a different concept from this chapter, not settlement failures: what happens when a bank cannot settle."], "source": "generated:ch77s6"}, "takeaway": "For a business analyst, settlement failure is a requirements and testing subject.", "prereq": "ch77s5", "next": "ch77s7", "connection_note": "Builds on \"Central bank accounts: how settlement actually happens\".", "tool": {"slug": "lifecycle", "label": "Payment Lifecycle Simulator", "url": "../simulators/lifecycle.html", "scenario": "Follow EUR 25 through every stage, from instruction to beneficiary credit, and note where it can stop."}, "simple": "In plain words: A settlement failure is the event in which a participant cannot meet its settlement obligation at the settlement moment, and it is the scenario that every payment system operator plans for most carefully.", "summary": "A settlement failure is the event in which a participant cannot meet its settlement obligation at the settlement moment, and it is the scenario that every payment system operator plans for most carefully.", "example": "Delaying punishes the healthy banks, because their customers do not get credited, while excluding changes every other bank net position and may turn a bank that expected a credit into a net debtor. The central bank may also intervene, for example by providing emergency liquidity against collateral, or by suspending the failing bank from the system."}}], "chapter_title": "Settlement design and failure", "meta_line": "Settlement design and failure, Lesson 6 of 8, Narration 6:37, D07 Clearing, settlement and liquidity", "next_id": "ch77s7", "next_title": "The default waterfall: who pays when a participant fails"}]);</script>
+</div>
+<nav class="tool-rail" aria-label="Lesson tools">
+<button type="button" class="rail-tool" onclick="pfOpenTranscript('studio-ch77s6')" title="Open transcript"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M7 3h7l4 4v14H7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M14 3v4h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 12h5M10 15.5h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span>Transcript</span></button>
+<button type="button" class="rail-tool" onclick="pfToggleNote('studio-ch77s6')" title="Write a note on this lesson"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L8 19l-4 1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>Notes</span></button>
+<button type="button" class="rail-tool" onclick="pfToggleFiles('studio-ch77s6')" title="Download lesson files"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>Files</span></button>
+</nav>
+<div class="fw-files-panel" id="pf-files-studio-ch77s6" style="display:none"><b>Lesson files</b><p><a href="../audio/ch77s6.mp3" download>Download narration (MP3)</a></p><p><a href="#" onclick="pfDownloadTranscript('studio-ch77s6');return false">Download transcript (.txt)</a></p></div>
+</div>
+</div>
+</main>
+<footer><p>Payments Training Hub. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="../index.html">Home</a> &middot; <a href="../courses.html">Courses</a> &middot; <a href="../practice.html">Practice</a> &middot; <a href="../simulators.html">Simulators</a> &middot; <a href="../labs.html">Labs</a> &middot; <a href="../explorer.html">Explorer</a> &middot; <a href="../tests.html">Tests</a> &middot; <a href="../diagnostic.html">Diagnostic</a> &middot; <a href="../faq.html">Interview Ready Questions</a> &middot; <a href="../interview-prep.html">Interview Prep</a></p><p><a href="../about.html">About</a> &middot; <a href="../privacy.html">Privacy</a> &middot; <a href="../terms.html">Terms</a> &middot; <a href="../contact.html">Contact</a> &middot; <a href="../editorial-standards.html">Editorial Standards</a> &middot; <a href="../sources.html">Sources</a></p></footer>
+<script defer src="../assets/site.js"></script>
+<script defer src="../assets/bundles.js"></script>
+<script defer src="../assets/auth.js"></script>
+<script defer src="../assets/studio.js"></script>
+<script defer src="../assets/insight-components.js"></script>
+<script defer src="../assets/nav.js"></script>
+<script defer src="../assets/pf-enhance.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+if(window.PFInsight){PFInsight.init();}
+});
+</script>
+</body>
+</html>

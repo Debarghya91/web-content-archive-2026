@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>The default waterfall: who pays when a participant fails | Payments Training Hub</title>
+<meta name="description" content="The default waterfall is the ordered list of resources that a payment system uses to cover the loss when a participant fails to settle, and it is the...">
+<link rel="canonical" href="https://www.paymentstraininghub.in/lessons/ch77s7.html">
+<meta property="og:url" content="https://www.paymentstraininghub.in/lessons/ch77s7.html">
+<meta property="og:title" content="The default waterfall: who pays when a participant fails | Payments Training Hub">
+<meta property="og:description" content="The default waterfall is the ordered list of resources that a payment system uses to cover the loss when a participant fails to settle, and it is the...">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.in/assets/hero/hero-poster.jpg">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.paymentstraininghub.in/index.html"}, {"@type": "ListItem", "position": 2, "name": "Settlement design and failure", "item": "https://www.paymentstraininghub.in/chapters/ch77-settlement-design-and-failure.html"}, {"@type": "ListItem", "position": 3, "name": "The default waterfall: who pays when a participant fails", "item": "https://www.paymentstraininghub.in/lessons/ch77s7.html"}]}</script>
+<link rel="stylesheet" href="../assets/studio.css">
+<link rel="stylesheet" href="../assets/pf-theme.css">
+<link rel="stylesheet" href="../assets/insight-components.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="../index.html" class="brand">Payments <span>Training Hub</span></a><nav class="topnav"><a href="../index.html">Home</a> <a href="../courses.html">Courses</a> <a href="../practice.html">Practice</a> <a href="../simulators.html">Simulators</a> <a href="../labs.html">Labs</a> <a href="../explorer.html">Explorer</a> <a href="../tests.html">Tests</a></nav><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox" style="display:none"><span id="authState">Not signed in</span> <span id="authForm" style="display:none"><input id="authEmail" type="email" placeholder="Email for OTP" aria-label="Email for sign-in"> <button class="mute-btn" onclick="paAuthSendOtp()">Send code</button> <input id="authCode" type="text" placeholder="6-digit code" aria-label="One-time code" style="display:none"> <button class="mute-btn" id="authVerifyBtn" onclick="paAuthVerifyOtp()" style="display:none">Verify</button> <button class="mute-btn" onclick="paAuthGoogle()">Sign in with Google</button> </span><button class="mute-btn" id="authSignOutBtn" onclick="paAuthSignOut()" style="display:none">Sign out</button></span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<div class="lesson-page">
+<div class="lesson-shell">
+<aside class="course-rail">
+<div class="rail-head">
+<h2>Settlement design and failure</h2>
+<a class="rail-close" href="../chapters/ch77-settlement-design-and-failure.html" aria-label="Close and go to chapter" title="Back to chapter">&times;</a>
+</div>
+<div class="goal-card">
+<div class="goal-head"><b>Today's goal &middot; <span id="side-progress-text">0 of 8 items</span></b><span class="goal-flag"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 21V4m0 1h11l-2.5 3.5L17 12H6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="goal-chev">&#94;</span></div>
+<p class="goal-body" id="side-goal-body">Complete 3 items today to stay at a good pace!</p>
+</div>
+<ul class="lesson-list"><li class="" data-lesson="ch77s1"><a href="ch77s1.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Settlement cycle design: choosing when and how often to settle</span><span class="m">Video &middot; 6 min</span></span></a></li>
+<li class="" data-lesson="ch77s2"><a href="ch77s2.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Liquidity optimisation: queues, offsets and how banks fund a settlement day</span><span class="m">Video &middot; 6 min</span></span></a></li>
+<li class="" data-lesson="ch77s3"><a href="ch77s3.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Gridlock and how it is resolved</span><span class="m">Video &middot; 6 min</span></span></a></li>
+<li class="" data-lesson="ch77s4"><a href="ch77s4.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Intraday credit and collateral at the central bank</span><span class="m">Video &middot; 5 min</span></span></a></li>
+<li class="" data-lesson="ch77s5"><a href="ch77s5.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Central bank accounts: how settlement actually happens</span><span class="m">Video &middot; 6 min</span></span></a></li>
+<li class="" data-lesson="ch77s6"><a href="ch77s6.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Settlement failures: what happens when a bank cannot settle</span><span class="m">Video &middot; 7 min</span></span></a></li>
+<li class="current" data-lesson="ch77s7"><a href="ch77s7.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">The default waterfall: who pays when a participant fails</span><span class="m">Video &middot; 6 min</span></span></a></li>
+<li class="" data-lesson="ch77s8"><a href="ch77s8.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Designing a settlement system: a BA checklist from requirements to go-live</span><span class="m">Video &middot; 6 min</span></span></a></li></ul>
+</aside>
+<div class="lesson-main">
+<div class="studio" id="studio-studio-ch77s7">
+<div class="player">
+<div class="studio-canvas" id="studio-canvas-studio-ch77s7">
+<div class="ch-sec studio-scene-vis active" id="studio-vis-studio-ch77s7-0"><div class="beat-frames">
+<div class="beat-frame active" data-frame="0">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<defs><pattern id="bfd800" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<rect x="0" y="0" width="900" height="506" fill="url(#bfd800)"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Default</tspan> <tspan fill="#FFFFFF">waterfall</tspan></text>
+<g data-node="n0" class="bf-now" data-beat="0">
+<rect x="48" y="172" width="249" height="96" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="68" cy="192" r="11" fill="#1D4ED8"/>
+<text x="68" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="285" y="196" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="172" y="223" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Default waterfall</text>
+</g>
+<g data-node="n1" class="bf-dim" data-beat="1">
+<rect x="325" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="345" cy="192" r="11" fill="#1E3A5F"/>
+<text x="345" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="449" y="214" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Loss allocation without a</text>
+<text x="449" y="232" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">waterfall</text>
+</g>
+<g data-node="n2" class="bf-dim" data-beat="2">
+<rect x="602" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="622" cy="192" r="11" fill="#1E3A5F"/>
+<text x="622" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="726" y="223" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Waterfall level order</text>
+</g>
+<g data-node="n3" class="bf-dim" data-beat="3">
+<rect x="602" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="622" cy="332" r="11" fill="#1E3A5F"/>
+<text x="622" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="726" y="354" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Margin and default fund</text>
+<text x="726" y="372" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">drawdown</text>
+</g>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<rect x="325" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="345" cy="332" r="11" fill="#1E3A5F"/>
+<text x="345" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="449" y="363" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Annual stress testing</text>
+</g>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="48" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="68" cy="332" r="11" fill="#1E3A5F"/>
+<text x="68" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="172" y="354" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Waterfall specification</text>
+<text x="172" y="372" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">requirements</text>
+</g>
+<path data-conn="c0" data-beat="0" d="M 300 220 L 310 220" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c0" data-beat="0" points="322,220 310,227 310,213" fill="#DBEAFE"/>
+<path data-conn="c1" data-beat="1" d="M 577 220 L 587 220" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c1" data-beat="1" points="599,220 587,227 587,213" fill="#DBEAFE"/>
+<path data-conn="c2" data-beat="2" d="M 726 271 L 726 290 L 726 290 L 726 297" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c2" data-beat="2" points="726,309 719,297 733,297" fill="#DBEAFE"/>
+<path data-conn="c3" data-beat="3" d="M 599 360 L 589 360" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c3" data-beat="3" points="577,360 589,353 589,367" fill="#DBEAFE"/>
+<path data-conn="c4" data-beat="4" d="M 322 360 L 312 360" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c4" data-beat="4" points="300,360 312,353 312,367" fill="#DBEAFE"/>
+<g class="bf-paydot" style="--dx:0px;--dy:0px"><circle class="bf-pulse" cx="48" cy="220" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="48" cy="220" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="450" y="444" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The default waterfall is the ordered list of resources that a payment system uses to cover the</text>
+<text x="450" y="464" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">loss when a participant fails to settle</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 1 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#60A5FA"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 818" role="img" aria-label="Lesson visual, vertical layout">
+<defs><pattern id="bfd801" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="360" height="818" fill="#0B1F3D"/>
+<rect x="0" y="0" width="360" height="818" fill="url(#bfd801)"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Default</tspan> <tspan fill="#FFFFFF">waterfall</tspan></text>
+<g data-node="n0" class="bf-now" data-beat="0">
+<rect x="24" y="66" width="312" height="72" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="44" cy="86" r="11" fill="#1D4ED8"/>
+<text x="44" y="90" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="324" y="90" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="180" y="104" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Default waterfall</text>
+</g>
+<line data-conn="c0" data-beat="0" x1="180" y1="141" x2="180" y2="149" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c0" data-beat="0" points="180,161 173,149 187,149" fill="#DBEAFE"/>
+<g data-node="n1" class="bf-dim" data-beat="1">
+<rect x="24" y="164" width="312" height="92" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="184" r="11" fill="#1E3A5F"/>
+<text x="44" y="188" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="180" y="202" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Loss allocation without a</text>
+<text x="180" y="222" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">waterfall</text>
+</g>
+<line data-conn="c1" data-beat="1" x1="180" y1="259" x2="180" y2="267" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c1" data-beat="1" points="180,279 173,267 187,267" fill="#DBEAFE"/>
+<g data-node="n2" class="bf-dim" data-beat="2">
+<rect x="24" y="282" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="302" r="11" fill="#1E3A5F"/>
+<text x="44" y="306" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="180" y="320" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Waterfall level order</text>
+</g>
+<line data-conn="c2" data-beat="2" x1="180" y1="357" x2="180" y2="365" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c2" data-beat="2" points="180,377 173,365 187,365" fill="#DBEAFE"/>
+<g data-node="n3" class="bf-dim" data-beat="3">
+<rect x="24" y="380" width="312" height="92" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="400" r="11" fill="#1E3A5F"/>
+<text x="44" y="404" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="180" y="418" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Margin and default fund</text>
+<text x="180" y="438" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">drawdown</text>
+</g>
+<line data-conn="c3" data-beat="3" x1="180" y1="475" x2="180" y2="483" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c3" data-beat="3" points="180,495 173,483 187,483" fill="#DBEAFE"/>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<rect x="24" y="498" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="518" r="11" fill="#1E3A5F"/>
+<text x="44" y="522" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="180" y="536" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Annual stress testing</text>
+</g>
+<line data-conn="c4" data-beat="4" x1="180" y1="573" x2="180" y2="581" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c4" data-beat="4" points="180,593 173,581 187,581" fill="#DBEAFE"/>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="24" y="596" width="312" height="92" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="616" r="11" fill="#1E3A5F"/>
+<text x="44" y="620" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="180" y="634" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Waterfall specification</text>
+<text x="180" y="654" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">requirements</text>
+</g>
+<g class="bf-paydot" style="--dx:0px;--dy:0px"><circle class="bf-pulse" cx="180" cy="66" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="180" cy="66" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="180" y="708" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The default waterfall is the ordered list of</text>
+<text x="180" y="727" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">resources that a payment system uses to</text>
+<text x="180" y="746" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">cover the loss when a participant fails to</text>
+<text x="180" y="765" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">settle</text>
+<text x="24" y="806" font-size="12" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 1 of 6</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="1">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<defs><pattern id="bfd802" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<rect x="0" y="0" width="900" height="506" fill="url(#bfd802)"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Loss</tspan> <tspan fill="#FFFFFF">allocation</tspan> <tspan fill="#FFFFFF">without</tspan> <tspan fill="#FFFFFF">a</tspan> <tspan fill="#FFFFFF">waterfall</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="48" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="68" cy="192" r="11" fill="#1E3A5F"/>
+<text x="68" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="172" y="223" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Default waterfall</text>
+</g>
+<g data-node="n1" class="bf-now" data-beat="1">
+<rect x="325" y="172" width="249" height="96" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="345" cy="192" r="11" fill="#1D4ED8"/>
+<text x="345" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="562" y="196" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="449" y="214" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Loss allocation without a</text>
+<text x="449" y="232" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">waterfall</text>
+</g>
+<g data-node="n2" class="bf-dim" data-beat="2">
+<rect x="602" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="622" cy="192" r="11" fill="#1E3A5F"/>
+<text x="622" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="726" y="223" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Waterfall level order</text>
+</g>
+<g data-node="n3" class="bf-dim" data-beat="3">
+<rect x="602" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="622" cy="332" r="11" fill="#1E3A5F"/>
+<text x="622" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="726" y="354" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Margin and default fund</text>
+<text x="726" y="372" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">drawdown</text>
+</g>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<rect x="325" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="345" cy="332" r="11" fill="#1E3A5F"/>
+<text x="345" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="449" y="363" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Annual stress testing</text>
+</g>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="48" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="68" cy="332" r="11" fill="#1E3A5F"/>
+<text x="68" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="172" y="354" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Waterfall specification</text>
+<text x="172" y="372" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">requirements</text>
+</g>
+<path data-conn="c0" data-beat="0" d="M 300 220 L 310 220" stroke="#60A5FA" stroke-width="3" fill="none"/><polygon data-conn="c0" data-beat="0" points="322,220 310,227 310,213" fill="#DBEAFE"/>
+<path data-conn="c1" data-beat="1" d="M 577 220 L 587 220" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c1" data-beat="1" points="599,220 587,227 587,213" fill="#DBEAFE"/>
+<path data-conn="c2" data-beat="2" d="M 726 271 L 726 290 L 726 290 L 726 297" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c2" data-beat="2" points="726,309 719,297 733,297" fill="#DBEAFE"/>
+<path data-conn="c3" data-beat="3" d="M 599 360 L 589 360" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c3" data-beat="3" points="577,360 589,353 589,367" fill="#DBEAFE"/>
+<path data-conn="c4" data-beat="4" d="M 322 360 L 312 360" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c4" data-beat="4" points="300,360 312,353 312,367" fill="#DBEAFE"/>
+<g class="bf-paydot" style="--dx:-143px;--dy:0px"><circle class="bf-pulse" cx="315" cy="220" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="315" cy="220" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="450" y="444" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Without a waterfall, the loss would fall arbitrarily on whichever banks happened to be owed</text>
+<text x="450" y="464" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">money, which would be unfair and would discourage participation.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 2 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#60A5FA"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 846" role="img" aria-label="Lesson visual, vertical layout">
+<defs><pattern id="bfd803" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="360" height="846" fill="#0B1F3D"/>
+<rect x="0" y="0" width="360" height="846" fill="url(#bfd803)"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Loss</tspan> <tspan fill="#FFFFFF">allocation</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">without</tspan> <tspan fill="#FFFFFF">a</tspan> <tspan fill="#FFFFFF">waterfall</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="24" y="94" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="114" r="11" fill="#1E3A5F"/>
+<text x="44" y="118" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="180" y="132" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Default waterfall</text>
+</g>
+<line data-conn="c0" data-beat="0" x1="180" y1="169" x2="180" y2="177" stroke="#60A5FA" stroke-width="2"/>
+<polygon data-conn="c0" data-beat="0" points="180,189 173,177 187,177" fill="#DBEAFE"/>
+<g data-node="n1" class="bf-now" data-beat="1">
+<rect x="24" y="192" width="312" height="92" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="44" cy="212" r="11" fill="#1D4ED8"/>
+<text x="44" y="216" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="324" y="216" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="180" y="230" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Loss allocation without a</text>
+<text x="180" y="250" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">waterfall</text>
+</g>
+<line data-conn="c1" data-beat="1" x1="180" y1="287" x2="180" y2="295" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c1" data-beat="1" points="180,307 173,295 187,295" fill="#DBEAFE"/>
+<g data-node="n2" class="bf-dim" data-beat="2">
+<rect x="24" y="310" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="330" r="11" fill="#1E3A5F"/>
+<text x="44" y="334" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="180" y="348" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Waterfall level order</text>
+</g>
+<line data-conn="c2" data-beat="2" x1="180" y1="385" x2="180" y2="393" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c2" data-beat="2" points="180,405 173,393 187,393" fill="#DBEAFE"/>
+<g data-node="n3" class="bf-dim" data-beat="3">
+<rect x="24" y="408" width="312" height="92" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="428" r="11" fill="#1E3A5F"/>
+<text x="44" y="432" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="180" y="446" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Margin and default fund</text>
+<text x="180" y="466" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">drawdown</text>
+</g>
+<line data-conn="c3" data-beat="3" x1="180" y1="503" x2="180" y2="511" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c3" data-beat="3" points="180,523 173,511 187,511" fill="#DBEAFE"/>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<rect x="24" y="526" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="546" r="11" fill="#1E3A5F"/>
+<text x="44" y="550" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="180" y="564" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Annual stress testing</text>
+</g>
+<line data-conn="c4" data-beat="4" x1="180" y1="601" x2="180" y2="609" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c4" data-beat="4" points="180,621 173,609 187,609" fill="#DBEAFE"/>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="24" y="624" width="312" height="92" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="644" r="11" fill="#1E3A5F"/>
+<text x="44" y="648" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="180" y="662" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Waterfall specification</text>
+<text x="180" y="682" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">requirements</text>
+</g>
+<g class="bf-paydot" style="--dx:0px;--dy:-52px"><circle class="bf-pulse" cx="180" cy="182" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="180" cy="182" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="180" y="736" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Without a waterfall, the loss would fall</text>
+<text x="180" y="755" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">arbitrarily on whichever banks happened</text>
+<text x="180" y="774" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">to be owed money, which would be unfair</text>
+<text x="180" y="793" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">and would discourage participation.</text>
+<text x="24" y="834" font-size="12" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 2 of 6</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="2">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<defs><pattern id="bfd804" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<rect x="0" y="0" width="900" height="506" fill="url(#bfd804)"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Waterfall</tspan> <tspan fill="#FFFFFF">level</tspan> <tspan fill="#FFFFFF">order</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="48" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="68" cy="192" r="11" fill="#1E3A5F"/>
+<text x="68" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="172" y="223" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Default waterfall</text>
+</g>
+<g data-node="n1" class="bf-done" data-beat="1">
+<rect x="325" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="345" cy="192" r="11" fill="#1E3A5F"/>
+<text x="345" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="449" y="214" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Loss allocation without a</text>
+<text x="449" y="232" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">waterfall</text>
+</g>
+<g data-node="n2" class="bf-now" data-beat="2">
+<rect x="602" y="172" width="249" height="96" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="622" cy="192" r="11" fill="#1D4ED8"/>
+<text x="622" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="839" y="196" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="726" y="223" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Waterfall level order</text>
+</g>
+<g data-node="n3" class="bf-dim" data-beat="3">
+<rect x="602" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="622" cy="332" r="11" fill="#1E3A5F"/>
+<text x="622" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="726" y="354" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Margin and default fund</text>
+<text x="726" y="372" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">drawdown</text>
+</g>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<rect x="325" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="345" cy="332" r="11" fill="#1E3A5F"/>
+<text x="345" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="449" y="363" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Annual stress testing</text>
+</g>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="48" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="68" cy="332" r="11" fill="#1E3A5F"/>
+<text x="68" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="172" y="354" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Waterfall specification</text>
+<text x="172" y="372" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">requirements</text>
+</g>
+<path data-conn="c0" data-beat="0" d="M 300 220 L 310 220" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c0" data-beat="0" points="322,220 310,227 310,213" fill="#DBEAFE"/>
+<path data-conn="c1" data-beat="1" d="M 577 220 L 587 220" stroke="#60A5FA" stroke-width="3" fill="none"/><polygon data-conn="c1" data-beat="1" points="599,220 587,227 587,213" fill="#DBEAFE"/>
+<path data-conn="c2" data-beat="2" d="M 726 271 L 726 290 L 726 290 L 726 297" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c2" data-beat="2" points="726,309 719,297 733,297" fill="#DBEAFE"/>
+<path data-conn="c3" data-beat="3" d="M 599 360 L 589 360" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c3" data-beat="3" points="577,360 589,353 589,367" fill="#DBEAFE"/>
+<path data-conn="c4" data-beat="4" d="M 322 360 L 312 360" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c4" data-beat="4" points="300,360 312,353 312,367" fill="#DBEAFE"/>
+<g class="bf-paydot" style="--dx:-143px;--dy:0px"><circle class="bf-pulse" cx="592" cy="220" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="592" cy="220" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="450" y="444" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Each level is consumed in full before the next is touched, and the order is fixed in the rulebook.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 3 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#60A5FA"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 827" role="img" aria-label="Lesson visual, vertical layout">
+<defs><pattern id="bfd805" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="360" height="827" fill="#0B1F3D"/>
+<rect x="0" y="0" width="360" height="827" fill="url(#bfd805)"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Waterfall</tspan> <tspan fill="#FFFFFF">level</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">order</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="24" y="94" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="114" r="11" fill="#1E3A5F"/>
+<text x="44" y="118" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="180" y="132" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Default waterfall</text>
+</g>
+<line data-conn="c0" data-beat="0" x1="180" y1="169" x2="180" y2="177" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c0" data-beat="0" points="180,189 173,177 187,177" fill="#DBEAFE"/>
+<g data-node="n1" class="bf-done" data-beat="1">
+<rect x="24" y="192" width="312" height="92" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="212" r="11" fill="#1E3A5F"/>
+<text x="44" y="216" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="180" y="230" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Loss allocation without a</text>
+<text x="180" y="250" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">waterfall</text>
+</g>
+<line data-conn="c1" data-beat="1" x1="180" y1="287" x2="180" y2="295" stroke="#60A5FA" stroke-width="2"/>
+<polygon data-conn="c1" data-beat="1" points="180,307 173,295 187,295" fill="#DBEAFE"/>
+<g data-node="n2" class="bf-now" data-beat="2">
+<rect x="24" y="310" width="312" height="72" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="44" cy="330" r="11" fill="#1D4ED8"/>
+<text x="44" y="334" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="324" y="334" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="180" y="348" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Waterfall level order</text>
+</g>
+<line data-conn="c2" data-beat="2" x1="180" y1="385" x2="180" y2="393" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c2" data-beat="2" points="180,405 173,393 187,393" fill="#DBEAFE"/>
+<g data-node="n3" class="bf-dim" data-beat="3">
+<rect x="24" y="408" width="312" height="92" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="428" r="11" fill="#1E3A5F"/>
+<text x="44" y="432" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="180" y="446" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Margin and default fund</text>
+<text x="180" y="466" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">drawdown</text>
+</g>
+<line data-conn="c3" data-beat="3" x1="180" y1="503" x2="180" y2="511" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c3" data-beat="3" points="180,523 173,511 187,511" fill="#DBEAFE"/>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<rect x="24" y="526" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="546" r="11" fill="#1E3A5F"/>
+<text x="44" y="550" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="180" y="564" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Annual stress testing</text>
+</g>
+<line data-conn="c4" data-beat="4" x1="180" y1="601" x2="180" y2="609" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c4" data-beat="4" points="180,621 173,609 187,609" fill="#DBEAFE"/>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="24" y="624" width="312" height="92" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="644" r="11" fill="#1E3A5F"/>
+<text x="44" y="648" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="180" y="662" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Waterfall specification</text>
+<text x="180" y="682" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">requirements</text>
+</g>
+<g class="bf-paydot" style="--dx:0px;--dy:-62px"><circle class="bf-pulse" cx="180" cy="300" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="180" cy="300" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="180" y="736" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Each level is consumed in full before</text>
+<text x="180" y="755" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">the next is touched, and the order is</text>
+<text x="180" y="774" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">fixed in the rulebook.</text>
+<text x="24" y="815" font-size="12" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 3 of 6</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="3">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<defs><pattern id="bfd806" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<rect x="0" y="0" width="900" height="506" fill="url(#bfd806)"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Margin</tspan> <tspan fill="#FFFFFF">and</tspan> <tspan fill="#FFFFFF">default</tspan> <tspan fill="#FFFFFF">fund</tspan> <tspan fill="#FFFFFF">drawdown</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="48" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="68" cy="192" r="11" fill="#1E3A5F"/>
+<text x="68" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="172" y="223" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Default waterfall</text>
+</g>
+<g data-node="n1" class="bf-done" data-beat="1">
+<rect x="325" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="345" cy="192" r="11" fill="#1E3A5F"/>
+<text x="345" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="449" y="214" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Loss allocation without a</text>
+<text x="449" y="232" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">waterfall</text>
+</g>
+<g data-node="n2" class="bf-done" data-beat="2">
+<rect x="602" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="622" cy="192" r="11" fill="#1E3A5F"/>
+<text x="622" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="726" y="223" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Waterfall level order</text>
+</g>
+<g data-node="n3" class="bf-now" data-beat="3">
+<rect x="602" y="312" width="249" height="96" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="622" cy="332" r="11" fill="#1D4ED8"/>
+<text x="622" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="839" y="336" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="726" y="354" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Margin and default fund</text>
+<text x="726" y="372" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">drawdown</text>
+</g>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<rect x="325" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="345" cy="332" r="11" fill="#1E3A5F"/>
+<text x="345" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="449" y="363" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Annual stress testing</text>
+</g>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="48" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="68" cy="332" r="11" fill="#1E3A5F"/>
+<text x="68" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="172" y="354" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Waterfall specification</text>
+<text x="172" y="372" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">requirements</text>
+</g>
+<path data-conn="c0" data-beat="0" d="M 300 220 L 310 220" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c0" data-beat="0" points="322,220 310,227 310,213" fill="#DBEAFE"/>
+<path data-conn="c1" data-beat="1" d="M 577 220 L 587 220" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c1" data-beat="1" points="599,220 587,227 587,213" fill="#DBEAFE"/>
+<path data-conn="c2" data-beat="2" d="M 726 271 L 726 290 L 726 290 L 726 297" stroke="#60A5FA" stroke-width="3" fill="none"/><polygon data-conn="c2" data-beat="2" points="726,309 719,297 733,297" fill="#DBEAFE"/>
+<path data-conn="c3" data-beat="3" d="M 599 360 L 589 360" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c3" data-beat="3" points="577,360 589,353 589,367" fill="#DBEAFE"/>
+<path data-conn="c4" data-beat="4" d="M 322 360 L 312 360" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c4" data-beat="4" points="300,360 312,353 312,367" fill="#DBEAFE"/>
+<g class="bf-paydot" style="--dx:0px;--dy:-82px"><circle class="bf-pulse" cx="726" cy="302" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="726" cy="302" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="450" y="444" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Its margin is EUR 5 million, so EUR 20 million remains.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 4 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#60A5FA"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 808" role="img" aria-label="Lesson visual, vertical layout">
+<defs><pattern id="bfd807" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="360" height="808" fill="#0B1F3D"/>
+<rect x="0" y="0" width="360" height="808" fill="url(#bfd807)"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Margin</tspan> <tspan fill="#FFFFFF">and</tspan> <tspan fill="#FFFFFF">default</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">fund</tspan> <tspan fill="#FFFFFF">drawdown</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="24" y="94" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="114" r="11" fill="#1E3A5F"/>
+<text x="44" y="118" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="180" y="132" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Default waterfall</text>
+</g>
+<line data-conn="c0" data-beat="0" x1="180" y1="169" x2="180" y2="177" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c0" data-beat="0" points="180,189 173,177 187,177" fill="#DBEAFE"/>
+<g data-node="n1" class="bf-done" data-beat="1">
+<rect x="24" y="192" width="312" height="92" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="212" r="11" fill="#1E3A5F"/>
+<text x="44" y="216" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="180" y="230" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Loss allocation without a</text>
+<text x="180" y="250" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">waterfall</text>
+</g>
+<line data-conn="c1" data-beat="1" x1="180" y1="287" x2="180" y2="295" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c1" data-beat="1" points="180,307 173,295 187,295" fill="#DBEAFE"/>
+<g data-node="n2" class="bf-done" data-beat="2">
+<rect x="24" y="310" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="330" r="11" fill="#1E3A5F"/>
+<text x="44" y="334" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="180" y="348" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Waterfall level order</text>
+</g>
+<line data-conn="c2" data-beat="2" x1="180" y1="385" x2="180" y2="393" stroke="#60A5FA" stroke-width="2"/>
+<polygon data-conn="c2" data-beat="2" points="180,405 173,393 187,393" fill="#DBEAFE"/>
+<g data-node="n3" class="bf-now" data-beat="3">
+<rect x="24" y="408" width="312" height="92" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="44" cy="428" r="11" fill="#1D4ED8"/>
+<text x="44" y="432" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="324" y="432" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="180" y="446" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Margin and default fund</text>
+<text x="180" y="466" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">drawdown</text>
+</g>
+<line data-conn="c3" data-beat="3" x1="180" y1="503" x2="180" y2="511" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c3" data-beat="3" points="180,523 173,511 187,511" fill="#DBEAFE"/>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<rect x="24" y="526" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="546" r="11" fill="#1E3A5F"/>
+<text x="44" y="550" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="180" y="564" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Annual stress testing</text>
+</g>
+<line data-conn="c4" data-beat="4" x1="180" y1="601" x2="180" y2="609" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c4" data-beat="4" points="180,621 173,609 187,609" fill="#DBEAFE"/>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="24" y="624" width="312" height="92" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="644" r="11" fill="#1E3A5F"/>
+<text x="44" y="648" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="180" y="662" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Waterfall specification</text>
+<text x="180" y="682" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">requirements</text>
+</g>
+<g class="bf-paydot" style="--dx:0px;--dy:-52px"><circle class="bf-pulse" cx="180" cy="398" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="180" cy="398" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="180" y="736" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Its margin is EUR 5 million, so EUR 20</text>
+<text x="180" y="755" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">million remains.</text>
+<text x="24" y="796" font-size="12" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 4 of 6</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="4">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<defs><pattern id="bfd808" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<rect x="0" y="0" width="900" height="506" fill="url(#bfd808)"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Annual</tspan> <tspan fill="#FFFFFF">stress</tspan> <tspan fill="#FFFFFF">testing</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="48" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="68" cy="192" r="11" fill="#1E3A5F"/>
+<text x="68" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="172" y="223" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Default waterfall</text>
+</g>
+<g data-node="n1" class="bf-done" data-beat="1">
+<rect x="325" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="345" cy="192" r="11" fill="#1E3A5F"/>
+<text x="345" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="449" y="214" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Loss allocation without a</text>
+<text x="449" y="232" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">waterfall</text>
+</g>
+<g data-node="n2" class="bf-done" data-beat="2">
+<rect x="602" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="622" cy="192" r="11" fill="#1E3A5F"/>
+<text x="622" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="726" y="223" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Waterfall level order</text>
+</g>
+<g data-node="n3" class="bf-done" data-beat="3">
+<rect x="602" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="622" cy="332" r="11" fill="#1E3A5F"/>
+<text x="622" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="726" y="354" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Margin and default fund</text>
+<text x="726" y="372" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">drawdown</text>
+</g>
+<g data-node="n4" class="bf-now" data-beat="4">
+<rect x="325" y="312" width="249" height="96" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="345" cy="332" r="11" fill="#1D4ED8"/>
+<text x="345" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="562" y="336" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="449" y="363" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Annual stress testing</text>
+</g>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="48" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="68" cy="332" r="11" fill="#1E3A5F"/>
+<text x="68" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="172" y="354" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Waterfall specification</text>
+<text x="172" y="372" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">requirements</text>
+</g>
+<path data-conn="c0" data-beat="0" d="M 300 220 L 310 220" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c0" data-beat="0" points="322,220 310,227 310,213" fill="#DBEAFE"/>
+<path data-conn="c1" data-beat="1" d="M 577 220 L 587 220" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c1" data-beat="1" points="599,220 587,227 587,213" fill="#DBEAFE"/>
+<path data-conn="c2" data-beat="2" d="M 726 271 L 726 290 L 726 290 L 726 297" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c2" data-beat="2" points="726,309 719,297 733,297" fill="#DBEAFE"/>
+<path data-conn="c3" data-beat="3" d="M 599 360 L 589 360" stroke="#60A5FA" stroke-width="3" fill="none"/><polygon data-conn="c3" data-beat="3" points="577,360 589,353 589,367" fill="#DBEAFE"/>
+<path data-conn="c4" data-beat="4" d="M 322 360 L 312 360" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c4" data-beat="4" points="300,360 312,353 312,367" fill="#DBEAFE"/>
+<g class="bf-paydot" style="--dx:142px;--dy:0px"><circle class="bf-pulse" cx="584" cy="360" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="584" cy="360" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="450" y="444" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The operator must run a stress test at least annually</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 5 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#60A5FA"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 808" role="img" aria-label="Lesson visual, vertical layout">
+<defs><pattern id="bfd809" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="360" height="808" fill="#0B1F3D"/>
+<rect x="0" y="0" width="360" height="808" fill="url(#bfd809)"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Annual</tspan> <tspan fill="#FFFFFF">stress</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">testing</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="24" y="94" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="114" r="11" fill="#1E3A5F"/>
+<text x="44" y="118" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="180" y="132" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Default waterfall</text>
+</g>
+<line data-conn="c0" data-beat="0" x1="180" y1="169" x2="180" y2="177" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c0" data-beat="0" points="180,189 173,177 187,177" fill="#DBEAFE"/>
+<g data-node="n1" class="bf-done" data-beat="1">
+<rect x="24" y="192" width="312" height="92" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="212" r="11" fill="#1E3A5F"/>
+<text x="44" y="216" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="180" y="230" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Loss allocation without a</text>
+<text x="180" y="250" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">waterfall</text>
+</g>
+<line data-conn="c1" data-beat="1" x1="180" y1="287" x2="180" y2="295" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c1" data-beat="1" points="180,307 173,295 187,295" fill="#DBEAFE"/>
+<g data-node="n2" class="bf-done" data-beat="2">
+<rect x="24" y="310" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="330" r="11" fill="#1E3A5F"/>
+<text x="44" y="334" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="180" y="348" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Waterfall level order</text>
+</g>
+<line data-conn="c2" data-beat="2" x1="180" y1="385" x2="180" y2="393" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c2" data-beat="2" points="180,405 173,393 187,393" fill="#DBEAFE"/>
+<g data-node="n3" class="bf-done" data-beat="3">
+<rect x="24" y="408" width="312" height="92" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="428" r="11" fill="#1E3A5F"/>
+<text x="44" y="432" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="180" y="446" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Margin and default fund</text>
+<text x="180" y="466" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">drawdown</text>
+</g>
+<line data-conn="c3" data-beat="3" x1="180" y1="503" x2="180" y2="511" stroke="#60A5FA" stroke-width="2"/>
+<polygon data-conn="c3" data-beat="3" points="180,523 173,511 187,511" fill="#DBEAFE"/>
+<g data-node="n4" class="bf-now" data-beat="4">
+<rect x="24" y="526" width="312" height="72" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="44" cy="546" r="11" fill="#1D4ED8"/>
+<text x="44" y="550" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="324" y="550" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="180" y="564" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Annual stress testing</text>
+</g>
+<line data-conn="c4" data-beat="4" x1="180" y1="601" x2="180" y2="609" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c4" data-beat="4" points="180,621 173,609 187,609" fill="#DBEAFE"/>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="24" y="624" width="312" height="92" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="644" r="11" fill="#1E3A5F"/>
+<text x="44" y="648" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="180" y="662" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Waterfall specification</text>
+<text x="180" y="682" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">requirements</text>
+</g>
+<g class="bf-paydot" style="--dx:0px;--dy:-62px"><circle class="bf-pulse" cx="180" cy="516" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="180" cy="516" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="180" y="736" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The operator must run a stress test at</text>
+<text x="180" y="755" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">least annually</text>
+<text x="24" y="796" font-size="12" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 5 of 6</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="5">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<defs><pattern id="bfd810" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<rect x="0" y="0" width="900" height="506" fill="url(#bfd810)"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Waterfall</tspan> <tspan fill="#FFFFFF">specification</tspan> <tspan fill="#FFFFFF">requirements</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="48" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="68" cy="192" r="11" fill="#1E3A5F"/>
+<text x="68" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="172" y="223" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Default waterfall</text>
+</g>
+<g data-node="n1" class="bf-done" data-beat="1">
+<rect x="325" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="345" cy="192" r="11" fill="#1E3A5F"/>
+<text x="345" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="449" y="214" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Loss allocation without a</text>
+<text x="449" y="232" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">waterfall</text>
+</g>
+<g data-node="n2" class="bf-done" data-beat="2">
+<rect x="602" y="172" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="622" cy="192" r="11" fill="#1E3A5F"/>
+<text x="622" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="726" y="223" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Waterfall level order</text>
+</g>
+<g data-node="n3" class="bf-done" data-beat="3">
+<rect x="602" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="622" cy="332" r="11" fill="#1E3A5F"/>
+<text x="622" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="726" y="354" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Margin and default fund</text>
+<text x="726" y="372" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">drawdown</text>
+</g>
+<g data-node="n4" class="bf-done" data-beat="4">
+<rect x="325" y="312" width="249" height="96" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="345" cy="332" r="11" fill="#1E3A5F"/>
+<text x="345" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="449" y="363" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Annual stress testing</text>
+</g>
+<g data-node="n5" class="bf-now" data-beat="5">
+<rect x="48" y="312" width="249" height="96" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="68" cy="332" r="11" fill="#1D4ED8"/>
+<text x="68" y="336" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="285" y="336" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="172" y="354" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Waterfall specification</text>
+<text x="172" y="372" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">requirements</text>
+</g>
+<path data-conn="c0" data-beat="0" d="M 300 220 L 310 220" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c0" data-beat="0" points="322,220 310,227 310,213" fill="#DBEAFE"/>
+<path data-conn="c1" data-beat="1" d="M 577 220 L 587 220" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c1" data-beat="1" points="599,220 587,227 587,213" fill="#DBEAFE"/>
+<path data-conn="c2" data-beat="2" d="M 726 271 L 726 290 L 726 290 L 726 297" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c2" data-beat="2" points="726,309 719,297 733,297" fill="#DBEAFE"/>
+<path data-conn="c3" data-beat="3" d="M 599 360 L 589 360" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c3" data-beat="3" points="577,360 589,353 589,367" fill="#DBEAFE"/>
+<path data-conn="c4" data-beat="4" d="M 322 360 L 312 360" stroke="#60A5FA" stroke-width="3" fill="none"/><polygon data-conn="c4" data-beat="4" points="300,360 312,353 312,367" fill="#DBEAFE"/>
+<g class="bf-paydot" style="--dx:142px;--dy:0px"><circle class="bf-pulse" cx="307" cy="360" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="307" cy="360" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="450" y="444" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">You must specify the levels of the waterfall, the size of the default fund, the contribution</text>
+<text x="450" y="464" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">formula, the assessment cap, the replenishment deadline, and the reporting.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 6 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#60A5FA"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 893" role="img" aria-label="Lesson visual, vertical layout">
+<defs><pattern id="bfd811" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="360" height="893" fill="#0B1F3D"/>
+<rect x="0" y="0" width="360" height="893" fill="url(#bfd811)"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Waterfall</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">specification</tspan></text>
+<text x="24" y="96" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">requirements</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="24" y="122" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="142" r="11" fill="#1E3A5F"/>
+<text x="44" y="146" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="180" y="160" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Default waterfall</text>
+</g>
+<line data-conn="c0" data-beat="0" x1="180" y1="197" x2="180" y2="205" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c0" data-beat="0" points="180,217 173,205 187,205" fill="#DBEAFE"/>
+<g data-node="n1" class="bf-done" data-beat="1">
+<rect x="24" y="220" width="312" height="92" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="240" r="11" fill="#1E3A5F"/>
+<text x="44" y="244" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="180" y="258" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Loss allocation without a</text>
+<text x="180" y="278" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">waterfall</text>
+</g>
+<line data-conn="c1" data-beat="1" x1="180" y1="315" x2="180" y2="323" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c1" data-beat="1" points="180,335 173,323 187,323" fill="#DBEAFE"/>
+<g data-node="n2" class="bf-done" data-beat="2">
+<rect x="24" y="338" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="358" r="11" fill="#1E3A5F"/>
+<text x="44" y="362" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="180" y="376" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Waterfall level order</text>
+</g>
+<line data-conn="c2" data-beat="2" x1="180" y1="413" x2="180" y2="421" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c2" data-beat="2" points="180,433 173,421 187,421" fill="#DBEAFE"/>
+<g data-node="n3" class="bf-done" data-beat="3">
+<rect x="24" y="436" width="312" height="92" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="456" r="11" fill="#1E3A5F"/>
+<text x="44" y="460" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="180" y="474" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Margin and default fund</text>
+<text x="180" y="494" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">drawdown</text>
+</g>
+<line data-conn="c3" data-beat="3" x1="180" y1="531" x2="180" y2="539" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c3" data-beat="3" points="180,551 173,539 187,539" fill="#DBEAFE"/>
+<g data-node="n4" class="bf-done" data-beat="4">
+<rect x="24" y="554" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="574" r="11" fill="#1E3A5F"/>
+<text x="44" y="578" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="180" y="592" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Annual stress testing</text>
+</g>
+<line data-conn="c4" data-beat="4" x1="180" y1="629" x2="180" y2="637" stroke="#60A5FA" stroke-width="2"/>
+<polygon data-conn="c4" data-beat="4" points="180,649 173,637 187,637" fill="#DBEAFE"/>
+<g data-node="n5" class="bf-now" data-beat="5">
+<rect x="24" y="652" width="312" height="92" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="44" cy="672" r="11" fill="#1D4ED8"/>
+<text x="44" y="676" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="324" y="676" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="180" y="690" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Waterfall specification</text>
+<text x="180" y="710" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">requirements</text>
+</g>
+<g class="bf-paydot" style="--dx:0px;--dy:-52px"><circle class="bf-pulse" cx="180" cy="642" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="180" cy="642" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="180" y="764" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">You must specify the levels of the waterfall,</text>
+<text x="180" y="783" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">the size of the default fund, the</text>
+<text x="180" y="802" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">contribution formula, the assessment cap,</text>
+<text x="180" y="821" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">the replenishment deadline, and the</text>
+<text x="180" y="840" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">reporting.</text>
+<text x="24" y="881" font-size="12" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 6 of 6</text>
+</svg>
+</div>
+</div>
+<p class="xml-caption">Flow of the explanation in this lesson.</p></div>
+<div class="playerbar">
+<div class="studio-progress"><div class="studio-markers" id="studio-markers-studio-ch77s7"></div><input type="range" id="studio-slider-studio-ch77s7" min="0" max="1000" value="0" aria-label="Lesson timeline"></div>
+<div class="ctrl-row">
+<button class="ctrl-btn" id="studio-play-studio-ch77s7" onclick="studioTogglePlay('studio-ch77s7')" aria-label="Play lesson" title="Play lesson"><span class="ctrl-ic-play"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></span><span class="ctrl-ic-pause" style="display:none"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><rect x="6" y="5" width="4" height="14" fill="currentColor"/><rect x="14" y="5" width="4" height="14" fill="currentColor"/></svg></span></button>
+<button class="ctrl-btn studio-mute-btn" id="studio-mute-studio-ch77s7" onclick="studioToggleMute('studio-ch77s7')" aria-label="Mute narration" title="Mute / unmute narration"><svg class="studio-mute-icon" viewBox="0 0 24 24" width="28" height="28" fill="currentColor" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3z"/><path class="studio-mute-waves" d="M16 8.5a5 5 0 0 1 0 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><path class="studio-mute-waves" d="M18.5 6a9 9 0 0 1 0 12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><path class="studio-mute-x" d="M16 9.5l5 5M21 9.5l-5 5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" style="display:none"/></svg></button>
+<button class="ctrl-btn" onclick="studioSkip('studio-ch77s7', -10)" aria-label="Back 10 seconds" title="Back 10 seconds"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 5a7 7 0 1 1-6.32 4.06" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M5.5 3.5v5h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><text x="12" y="16.5" font-size="8" fill="currentColor" text-anchor="middle" font-weight="700">10</text></svg></button>
+<span class="studio-time ctrl-time" id="studio-time-studio-ch77s7">0:00 / 6:01</span>
+<button class="ctrl-btn" onclick="studioSkip('studio-ch77s7', 10)" aria-label="Forward 10 seconds" title="Forward 10 seconds"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 5a7 7 0 1 0 6.32 4.06" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M18.5 3.5v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><text x="12" y="16.5" font-size="8" fill="currentColor" text-anchor="middle" font-weight="700">10</text></svg></button>
+<span class="playerbar-spacer"></span>
+<span class="player-stage" id="studio-tag-studio-ch77s7">Step 1 of 6</span>
+<button class="ctrl-btn ctrl-step" id="studio-prevscene-studio-ch77s7" onclick="studioPrevScene('studio-ch77s7')" title="Previous step" aria-label="Previous step">&lsaquo;</button>
+<button class="ctrl-btn ctrl-step" id="studio-nextscene-studio-ch77s7" onclick="studioNextScene('studio-ch77s7')" title="Next step" aria-label="Next step">&rsaquo;</button>
+<button class="ctrl-btn ctrl-speed" id="studio-speedbtn-studio-ch77s7" onclick="studioCycleSpeed('studio-ch77s7')" title="Playback speed" aria-label="Playback speed">1x</button>
+<span class="ctrl-settings-wrap"><button class="ctrl-btn" onclick="studioToggleSettings('studio-ch77s7', event)" aria-label="Player settings" title="Settings"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5 5l2.1 2.1M16.9 16.9L19 19M19 5l-2.1 2.1M7.1 16.9L5 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button><span class="ctrl-popover" id="studio-settings-studio-ch77s7" style="display:none" onclick="event.stopPropagation()"><label class="ctrl-pop-row">Volume <input type="range" min="0" max="1" step="0.1" value="1" oninput="studioSetVolume('studio-ch77s7', this.value)" style="width:110px;accent-color:#3587FC"></label><button class="studio-btn" id="studio-captions-studio-ch77s7" onclick="studioToggleCaptions('studio-ch77s7')">Captions: On</button><button class="studio-btn" onclick="studioReplayScene('studio-ch77s7')">Replay scene</button></span></span>
+<button class="ctrl-btn" onclick="studioFullscreen('studio-ch77s7')" aria-label="Fullscreen" title="Fullscreen"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+</div>
+</div>
+</div>
+<p class="studio-caption" id="studio-caption-studio-ch77s7"></p>
+<p class="studio-loading" id="studio-loading-studio-ch77s7" style="display:none">Loading narration...</p>
+<p class="studio-error" id="studio-error-studio-ch77s7" role="alert" style="display:none"></p>
+<audio id="studio-audio-studio-ch77s7" preload="auto" src="../audio/ch77s7.mp3"></audio>
+</div>
+<div class="lesson-title-row">
+<h1>The default waterfall: who pays when a participant fails</h1>
+<button class="save-note" type="button" onclick="pfToggleNote('studio-ch77s7')" title="Save a note on this lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L8 19l-4 1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg> Save note</button>
+</div>
+<p class="lesson-meta-line">Settlement design and failure, Lesson 7 of 8, Narration 6:01, D07 Clearing, settlement and liquidity</p>
+<p class="lesson-note-saved" id="studio-note-saved-studio-ch77s7" style="display:none">Note saved.</p>
+<div class="note-editor" id="studio-note-editor-studio-ch77s7" style="display:none"><textarea id="studio-note-text-studio-ch77s7" rows="3" placeholder="Write a note on this lesson..." aria-label="Lesson note"></textarea><div class="note-editor-row"><button class="studio-btn primary" onclick="pfSaveNote('studio-ch77s7')">Save note</button> <button class="studio-btn" onclick="pfToggleNote('studio-ch77s7')">Cancel</button></div></div>
+<div class="dive-deeper">
+<div class="dive-head"><button type="button" class="dive-toggle" onclick="pfToggleDive(this)" aria-expanded="true"><span class="dive-spark"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 2l2.2 6.8L21 11l-6.8 2.2L12 20l-2.2-6.8L3 11l6.8-2.2z" fill="currentColor"/></svg></span><span class="dive-title">Dive deeper on this topic</span><span class="dive-chev"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 14l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button></div>
+<div class="dive-btns"><button type="button" class="dive-btn" data-kind="practice" onclick="pfDive('studio-ch77s7', 'practice')">Give me practice questions</button><button type="button" class="dive-btn" data-kind="simple" onclick="pfDive('studio-ch77s7', 'simple')">Explain this topic in simple terms</button><button type="button" class="dive-btn" data-kind="summary" onclick="pfDive('studio-ch77s7', 'summary')">Give me a summary</button><button type="button" class="dive-btn" data-kind="example" onclick="pfDive('studio-ch77s7', 'example')">Give me real-life examples</button></div>
+<div class="dive-panel" id="dive-panel-studio-ch77s7"><div class="dive-panel-body"></div></div>
+<script type="application/json" id="pf-dive-data-studio-ch77s7">{"simple": "In plain words: The default waterfall is the ordered list of resources that a payment system uses to cover the loss when a participant fails to settle, and it is the last line of defence before the loss falls on the surviving participants.", "summary": "The default waterfall is the ordered list of resources that a payment system uses to cover the loss when a participant fails to settle, and it is the last line of defence before the loss falls on the surviving participants.", "example": "If Bank A fails to pay its EUR 25 million net debit, the banks that expected to receive that money are EUR 25 million short. Bank A defaults on a EUR 25 million net debit."}</script>
+</div>
+<div class="lesson-feedback">
+<div class="fb-icons"><button type="button" class="fb-btn" data-kind="like" onclick="pfFeedback(this,'like')" aria-label="Like this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M7 21H4a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1h3v11zm0 0h9.6a2 2 0 0 0 1.9-1.4l1.6-5A2 2 0 0 0 18.2 12H15V6.5A2.5 2.5 0 0 0 12.5 4L11 7.5 8.6 10H7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button><button type="button" class="fb-btn" data-kind="dislike" onclick="pfFeedback(this,'dislike')" aria-label="Dislike this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M17 3h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1h-3V3zm0 0H7.4a2 2 0 0 0-1.9 1.4l-1.6 5A2 2 0 0 0 5.8 12H9v5.5A2.5 2.5 0 0 0 11.5 20L13 16.5l2.4-2.5H17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button><button type="button" class="fb-btn" data-kind="flag" onclick="pfFeedback(this,'flag')" aria-label="Flag this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M6 21V4m0 1h11l-2.5 3.5L17 12H6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+<button type="button" class="go-next" onclick="goLesson('ch77s8')" title="Next: Designing a settlement system: a BA checklist from requirements to go-live">Go to next item &rarr;</button>
+</div>
+<div class="chips"><span class="chip">Settlement</span><span class="chip">Liquidity</span></div>
+<div class="card learn-card">
+<h2>What you will learn</h2>
+<p class="transcript"><b>Your objective.</b> By the end of this lesson, you will be able to explain default waterfall: who pays when a participant fails and apply it to a real banking scenario.</p>
+<p class="transcript"><b>Why it matters.</b> For a business analyst, the default waterfall is a rules and reporting subject.</p>
+<p class="transcript">Chapter objective: Learner explains how settlement cycles are designed, how liquidity is optimised with queues and offsets, and how gridlock is detected and resolved. Learner describes intraday credit and collateral, the central bank accounts used in settlement, what happens when a participant cannot settle, and the order of the default waterfall.</p>
+<h3>Key learning points</h3>
+<ul id="studio-points-studio-ch77s7">
+<li>Default waterfall</li>
+<li>Loss allocation without a waterfall</li>
+<li>Waterfall level order</li>
+<li>Margin and default fund drawdown</li>
+<li>Annual stress testing</li>
+<li>Waterfall specification requirements</li>
+</ul>
+<h3>Key terms</h3>
+<div id="studio-terms-studio-ch77s7">
+<p class="keyterm"><b>Settlement:</b> The final movement of funds between banks to discharge obligations created by cleared payments. Settlement is usually made in central bank money or through correspondent accounts.</p>
+<p class="keyterm"><b>Liquidity:</b> Cash or assets that a bank can use immediately to meet payment obligations. Banks manage liquidity by forecasting inflows and outflows, funding nostro and settlement accounts, and using central bank...</p>
+</div>
+<p class="studio-note">Payment flow diagram showing The default waterfall: who pays when a participant fails.</p>
+</div>
+<div class="fw-card" id="pf-exercise-studio-ch77s7">
+<p class="fw-label">Practise this lesson</p>
+<h2>Exercise</h2>
+<p><b>Apply the concept in this lesson to a real banking scenario.</b></p>
+<p>Use the definition, the example and the key points in this lesson.</p>
+<ol class="fw-steps">
+<li><b>What to do.</b> Explain the concept in your own words, give a banking example with an amount, and state what goes wrong if it is misunderstood.</li>
+</ol>
+<p><button class="studio-btn" id="pf-ex-btn-studio-ch77s7" onclick="pfRevealExercise('studio-ch77s7')">Show the answer</button></p>
+<div class="fw-exercise-answer" id="pf-ex-answer-studio-ch77s7">
+<p><b>Correct result.</b> A correct answer names the concept accurately, uses a realistic banking example with a concrete amount, and identifies the consequence of getting it wrong.</p>
+<p><b>Why.</b> Understanding is not memorising a definition. It is being able to explain it, apply it, and spot the failure it prevents.</p>
+</div>
+</div>
+<div class="fw-card" id="pf-quiz-studio-ch77s7" data-answer="0">
+<p class="fw-label">Check your understanding</p>
+<h2>Practice question</h2>
+<p><b>Which of the following best describes default waterfall: who pays when a participant fails?</b></p>
+<button type="button" class="quiz-opt" data-idx="0" onclick="pfCheckAnswer('studio-ch77s7', this)">The default waterfall is the ordered list of resources that a payment system uses to cover the loss when a participant fails to settle, and it is the last line of defence before the loss falls on the surviving participants</button>
+<button type="button" class="quiz-opt" data-idx="1" onclick="pfCheckAnswer('studio-ch77s7', this)">It is a related concept from this chapter, but it does not describe default waterfall: who pays when a participant fails.</button>
+<button type="button" class="quiz-opt" data-idx="2" onclick="pfCheckAnswer('studio-ch77s7', this)">It is a related concept from this chapter, but it does not describe default waterfall: who pays when a participant fails.</button>
+<button type="button" class="quiz-opt" data-idx="3" onclick="pfCheckAnswer('studio-ch77s7', this)">It is a related concept from this chapter, but it does not describe default waterfall: who pays when a participant fails.</button>
+<div class="quiz-feedback" id="pf-quiz-fb-studio-ch77s7"></div>
+<script type="application/json" id="pf-quiz-data-studio-ch77s7">{"why_wrong": ["", "This describes a different concept from this chapter, not default waterfall: who pays when a participant fails.", "This describes a different concept from this chapter, not default waterfall: who pays when a participant fails.", "This describes a different concept from this chapter, not default waterfall: who pays when a participant fails."], "explanation": "The default waterfall is the ordered list of resources that a payment system uses to cover the loss when a participant fails to settle, and it is the last line of defence before the loss falls on the surviving participants. This is the core idea of the lesson."}</script>
+</div>
+<div class="fw-card">
+<p class="fw-label">Takeaway and next step</p>
+<h2>What to remember</h2>
+<p>This has never happened in a major payment system, but it is the scenario that stress tests are designed for.</p>
+<p>Follow EUR 25 through every stage, from instruction to beneficiary credit, and note where it can stop.</p>
+<p><a class="fw-tool-link" href="../simulators/lifecycle.html">Open the Payment Lifecycle Simulator &rarr;</a></p>
+<p class="studio-note">Builds on "Settlement failures: what happens when a bank cannot settle".</p>
+</div>
+<section class="upnext" id="studio-upnext-studio-ch77s7" style="display:none" aria-label="Up next">
+<span class="tag">Up next</span>
+<h2>Up next: Designing a settlement system: a BA checklist from requirements to go-live</h2>
+<p>Lesson 8 of 8, Settlement design and failure, Narration 6:24</p>
+<div class="row">
+<button class="studio-btn primary" onclick="goLessonAuto('ch77s8')">Next lesson &rarr;</button>
+<button class="studio-btn" onclick="goLesson('ch77s6')">&larr; Previous lesson</button>
+<button class="studio-btn" onclick="studioReplayLesson('studio-ch77s7')">Replay this lesson</button>
+</div>
+</section>
+<div class="lesson-nav">
+<button class="studio-btn" onclick="goLesson('ch77s6')" title="Previous lesson: Settlement failures: what happens when a bank cannot settle">&larr; Previous</button>
+<button class="studio-btn" onclick="goChapterContents('ch77')">Chapter contents</button>
+<button class="studio-btn primary" onclick="goLesson('ch77s8')" title="Next lesson: Designing a settlement system: a BA checklist from requirements to go-live">Next &rarr;</button>
+</div>
+<div class="card transcript-card">
+<h2>Transcript and full text</h2>
+<details class="studio-transcript" id="studio-transcript-details-studio-ch77s7"><summary>Show transcript</summary>
+<p class="transcript" id="studio-transcript-studio-ch77s7">The default waterfall is the ordered list of resources that a payment system uses to cover the loss when a participant fails to settle, and it is the last line of defence before the loss falls on the surviving participants. The name comes from the way the resources are consumed in sequence, like water falling from one level to the next: first the failing participant own resources, then the system default fund, then assessments on the surviving participants, and finally, in some systems, a central bank backstop. The waterfall is defined in the system rulebook, and every participant agrees to it when it joins. The PFMI requires that the waterfall be sufficient to cover the default of the largest participant, and the operator must test this regularly. Why the waterfall exists is that a settlement failure creates a real financial loss, not just a delay. If Bank A fails to pay its EUR 25 million net debit, the banks that expected to receive that money are EUR 25 million short. Someone must bear that loss, and the waterfall decides who. Without a waterfall, the loss would fall arbitrarily on whichever banks happened to be owed money, which would be unfair and would discourage participation. With a waterfall, the loss is allocated in a known order, the participants can price the risk, and the system can continue operating. The Bank of England and the European Central Bank both require their systems to have a waterfall that is transparent and tested. The parties are the defaulting participant, the system operator, the surviving participants, and in some systems the central bank. The waterfall typically has four levels. First, the defaulting participant margin or collateral, which is money it has already posted to the system. Second, the default fund, which is a pool of money contributed by all participants in advance. Third, an assessment, which is a call for additional money from the surviving participants, usually capped at a multiple of their default fund contribution. Fourth, in some systems, a central bank liquidity facility or a loss-sharing agreement. Each level is consumed in full before the next is touched, and the order is fixed in the rulebook. In practice the waterfall is applied like this. Bank A defaults on a EUR 25 million net debit. The operator first uses Bank A margin of EUR 5 million, leaving EUR 20 million. It then draws EUR 12 million from the default fund, leaving EUR 8 million. It then levies an assessment on the surviving participants: if there are four survivors and the assessment is pro rata to their default fund contributions, each pays EUR 2 million. The loss is fully covered, and the system settles. The default fund must then be replenished, usually within a defined period, so that the system is protected against the next default. The operator publishes a default report showing how the waterfall was applied, so that every participant can see what happened. A worked example shows the arithmetic. The default fund holds EUR 50 million, contributed by ten participants at EUR 5 million each. Bank A defaults on EUR 25 million. Its margin is EUR 5 million, so EUR 20 million remains. The default fund covers EUR 20 million, falling to EUR 30 million. No assessment is needed, because the fund was sufficient. But if Bank A had defaulted on EUR 60 million, the margin of EUR 5 million and the entire default fund of EUR 50 million would be consumed, leaving EUR 5 million, which would be covered by an assessment of EUR 500,000 on each of the ten surviving participants. The assessment is capped in the rulebook, typically at one or two times the default fund contribution, so no participant faces an unlimited call. What happens when the waterfall is exhausted is the extreme case that the PFMI calls a uncovered loss. If the default is so large that the margin, the default fund and the maximum assessment together cannot cover it, the system must either suspend settlement, which freezes the whole market, or the central bank must intervene. This has never happened in a major payment system, but it is the scenario that stress tests are designed for. The operator must run a stress test at least annually, simulating the default of the largest participant under stressed market conditions, and must publish the results to the participants and the regulator. If the test shows the waterfall is insufficient, the operator must increase the default fund or the assessment cap. The operational and accounting implications are that the finance team must manage the default fund contributions, the risk team must monitor the largest exposure, and the operations team must be ready to execute the waterfall at short notice. On the ledger, a default fund contribution is an asset of the participant, and a draw on the fund is a loss that must be recognised. An assessment is a liability that must be paid within the deadline in the rulebook, usually one business day. The accounting team must also track the replenishment obligation, because the default fund must be restored to its full size before the next settlement cycle. For a business analyst, the default waterfall is a rules and reporting subject. You must specify the levels of the waterfall, the size of the default fund, the contribution formula, the assessment cap, the replenishment deadline, and the reporting. You must also specify the stress test scenarios and the frequency, and the procedure for notifying participants when the waterfall is used. A common gap is failing to specify the replenishment obligation, which leaves the system unprotected after the first default. Takeaway: the waterfall turns an unpredictable loss into a known allocation, and the size of the default fund is the system risk appetite expressed in money. Further reading: the BIS Principles for Financial Market Infrastructures (PFMI) for the default waterfall and stress testing; the Bank of England Financial Market Infrastructure supervision; the ECB TARGET default fund arrangements. Last reviewed 7 November 2026.</p>
+<div id="studio-paras-studio-ch77s7">
+<p class="transcript">The default waterfall is the ordered list of resources that a payment system uses to cover the loss when a participant fails to settle, and it is the last line of defence before the loss falls on the surviving participants. The name comes from the way the resources are consumed in sequence, like water falling from one level to the next: first the failing participant own resources, then the system default fund, then assessments on the surviving participants, and finally, in some systems, a central bank backstop. The waterfall is defined in the system rulebook, and every participant agrees to it when it joins. The PFMI requires that the waterfall be sufficient to cover the default of the largest participant, and the operator must test this regularly.</p>
+<p class="transcript">Why the waterfall exists is that a settlement failure creates a real financial loss, not just a delay. If Bank A fails to pay its EUR 25 million net debit, the banks that expected to receive that money are EUR 25 million short. Someone must bear that loss, and the waterfall decides who. Without a waterfall, the loss would fall arbitrarily on whichever banks happened to be owed money, which would be unfair and would discourage participation. With a waterfall, the loss is allocated in a known order, the participants can price the risk, and the system can continue operating. The Bank of England and the European Central Bank both require their systems to have a waterfall that is transparent and tested.</p>
+<p class="transcript">The parties are the defaulting participant, the system operator, the surviving participants, and in some systems the central bank. The waterfall typically has four levels. First, the defaulting participant margin or collateral, which is money it has already posted to the system. Second, the default fund, which is a pool of money contributed by all participants in advance. Third, an assessment, which is a call for additional money from the surviving participants, usually capped at a multiple of their default fund contribution. Fourth, in some systems, a central bank liquidity facility or a loss-sharing agreement. Each level is consumed in full before the next is touched, and the order is fixed in the rulebook.</p>
+<p class="transcript">In practice the waterfall is applied like this. Bank A defaults on a EUR 25 million net debit. The operator first uses Bank A margin of EUR 5 million, leaving EUR 20 million. It then draws EUR 12 million from the default fund, leaving EUR 8 million. It then levies an assessment on the surviving participants: if there are four survivors and the assessment is pro rata to their default fund contributions, each pays EUR 2 million. The loss is fully covered, and the system settles. The default fund must then be replenished, usually within a defined period, so that the system is protected against the next default. The operator publishes a default report showing how the waterfall was applied, so that every participant can see what happened.</p>
+<p class="transcript">A worked example shows the arithmetic. The default fund holds EUR 50 million, contributed by ten participants at EUR 5 million each. Bank A defaults on EUR 25 million. Its margin is EUR 5 million, so EUR 20 million remains. The default fund covers EUR 20 million, falling to EUR 30 million. No assessment is needed, because the fund was sufficient. But if Bank A had defaulted on EUR 60 million, the margin of EUR 5 million and the entire default fund of EUR 50 million would be consumed, leaving EUR 5 million, which would be covered by an assessment of EUR 500,000 on each of the ten surviving participants. The assessment is capped in the rulebook, typically at one or two times the default fund contribution, so no participant faces an unlimited call.</p>
+<p class="transcript">What happens when the waterfall is exhausted is the extreme case that the PFMI calls a uncovered loss. If the default is so large that the margin, the default fund and the maximum assessment together cannot cover it, the system must either suspend settlement, which freezes the whole market, or the central bank must intervene. This has never happened in a major payment system, but it is the scenario that stress tests are designed for. The operator must run a stress test at least annually, simulating the default of the largest participant under stressed market conditions, and must publish the results to the participants and the regulator. If the test shows the waterfall is insufficient, the operator must increase the default fund or the assessment cap.</p>
+<p class="transcript">The operational and accounting implications are that the finance team must manage the default fund contributions, the risk team must monitor the largest exposure, and the operations team must be ready to execute the waterfall at short notice. On the ledger, a default fund contribution is an asset of the participant, and a draw on the fund is a loss that must be recognised. An assessment is a liability that must be paid within the deadline in the rulebook, usually one business day. The accounting team must also track the replenishment obligation, because the default fund must be restored to its full size before the next settlement cycle.</p>
+<p class="transcript">For a business analyst, the default waterfall is a rules and reporting subject. You must specify the levels of the waterfall, the size of the default fund, the contribution formula, the assessment cap, the replenishment deadline, and the reporting. You must also specify the stress test scenarios and the frequency, and the procedure for notifying participants when the waterfall is used. A common gap is failing to specify the replenishment obligation, which leaves the system unprotected after the first default.</p>
+<p class="transcript">Takeaway: the waterfall turns an unpredictable loss into a known allocation, and the size of the default fund is the system risk appetite expressed in money. Further reading: the BIS Principles for Financial Market Infrastructures (PFMI) for the default waterfall and stress testing; the Bank of England Financial Market Infrastructure supervision; the ECB TARGET default fund arrangements. Last reviewed 7 November 2026.</p>
+</div>
+</details>
+<details class="studio-transcript"><summary>Full lesson text (all scenes)</summary><div id="studio-transcript-full-studio-ch77s7"></div></details>
+<p><button class="studio-btn primary" id="done-ch77s7" onclick="studioMarkSceneDone('studio-ch77s7')">Mark lesson complete</button> <span class="studio-note">Completing a lesson updates your progress dashboard on the homepage.</span></p>
+</div>
+<p class="studio-note">Scene timestamps are estimated by allocating the narration text proportionally across the real audio length. The audio playback position is the source of truth: pause freezes the visual, seeking restores the correct scene, replay restarts the scene animation.</p>
+</div>
+<script>window.__PA_STUDIO_QUEUE = window.__PA_STUDIO_QUEUE || []; window.__PA_STUDIO_QUEUE.push(["studio-ch77s7", {"sample_id": "studio-ch77s7", "chapter_id": "ch77", "title": "The default waterfall: who pays when a participant fails", "domain": "D07 Clearing, settlement and liquidity", "objective": "Learner explains how settlement cycles are designed, how liquidity is optimised with queues and offsets, and how gridlock is detected and resolved. Learner describes intraday credit and collateral, the central bank accounts used in settlement, what happens when a participant cannot settle, and the order of the default waterfall.", "scenes": [{"id": "ch77s7", "section_id": "ch77s7", "title": "The default waterfall: who pays when a participant fails", "audio": "../audio/ch77s7.mp3", "duration_sec": 361.7, "points": ["The default waterfall is the ordered list of resources that a payment system uses to cover the loss when a participant fails to settle, and it is the last line of defence before the loss falls on the surviving...", "Why the waterfall exists is that a settlement failure creates a real financial loss, not just a delay.", "The parties are the defaulting participant, the system operator, the surviving participants, and in some systems the central bank.", "In practice the waterfall is applied like this.", "A worked example shows the arithmetic."], "terms": [{"term": "Settlement", "def": "The final movement of funds between banks to discharge obligations created by cleared payments. Settlement is usually made in central bank money or through correspondent accounts."}, {"term": "Liquidity", "def": "Cash or assets that a bank can use immediately to meet payment obligations. Banks manage liquidity by forecasting inflows and outflows, funding nostro and settlement accounts, and using central bank..."}], "transcript": "The default waterfall is the ordered list of resources that a payment system uses to cover the loss when a participant fails to settle, and it is the last line of defence before the loss falls on the surviving participants. The name comes from the way the resources are consumed in sequence, like water falling from one level to the next: first the failing participant own resources, then the system default fund, then assessments on the surviving participants, and finally, in some systems, a central bank backstop. The waterfall is defined in the system rulebook, and every participant agrees to it when it joins. The PFMI requires that the waterfall be sufficient to cover the default of the largest participant, and the operator must test this regularly. Why the waterfall exists is that a settlement failure creates a real financial loss, not just a delay. If Bank A fails to pay its EUR 25 million net debit, the banks that expected to receive that money are EUR 25 million short. Someone must bear that loss, and the waterfall decides who. Without a waterfall, the loss would fall arbitrarily on whichever banks happened to be owed money, which would be unfair and would discourage participation. With a waterfall, the loss is allocated in a known order, the participants can price the risk, and the system can continue operating. The Bank of England and the European Central Bank both require their systems to have a waterfall that is transparent and tested. The parties are the defaulting participant, the system operator, the surviving participants, and in some systems the central bank. The waterfall typically has four levels. First, the defaulting participant margin or collateral, which is money it has already posted to the system. Second, the default fund, which is a pool of money contributed by all participants in advance. Third, an assessment, which is a call for additional money from the surviving participants, usually capped at a multiple of their default fund contribution. Fourth, in some systems, a central bank liquidity facility or a loss-sharing agreement. Each level is consumed in full before the next is touched, and the order is fixed in the rulebook. In practice the waterfall is applied like this. Bank A defaults on a EUR 25 million net debit. The operator first uses Bank A margin of EUR 5 million, leaving EUR 20 million. It then draws EUR 12 million from the default fund, leaving EUR 8 million. It then levies an assessment on the surviving participants: if there are four survivors and the assessment is pro rata to their default fund contributions, each pays EUR 2 million. The loss is fully covered, and the system settles. The default fund must then be replenished, usually within a defined period, so that the system is protected against the next default. The operator publishes a default report showing how the waterfall was applied, so that every participant can see what happened. A worked example shows the arithmetic. The default fund holds EUR 50 million, contributed by ten participants at EUR 5 million each. Bank A defaults on EUR 25 million. Its margin is EUR 5 million, so EUR 20 million remains. The default fund covers EUR 20 million, falling to EUR 30 million. No assessment is needed, because the fund was sufficient. But if Bank A had defaulted on EUR 60 million, the margin of EUR 5 million and the entire default fund of EUR 50 million would be consumed, leaving EUR 5 million, which would be covered by an assessment of EUR 500,000 on each of the ten surviving participants. The assessment is capped in the rulebook, typically at one or two times the default fund contribution, so no participant faces an unlimited call. What happens when the waterfall is exhausted is the extreme case that the PFMI calls a uncovered loss. If the default is so large that the margin, the default fund and the maximum assessment together cannot cover it, the system must either suspend settlement, which freezes the whole market, or the central bank must intervene. This has never happened in a major payment system, but it is the scenario that stress tests are designed for. The operator must run a stress test at least annually, simulating the default of the largest participant under stressed market conditions, and must publish the results to the participants and the regulator. If the test shows the waterfall is insufficient, the operator must increase the default fund or the assessment cap. The operational and accounting implications are that the finance team must manage the default fund contributions, the risk team must monitor the largest exposure, and the operations team must be ready to execute the waterfall at short notice. On the ledger, a default fund contribution is an asset of the participant, and a draw on the fund is a loss that must be recognised. An assessment is a liability that must be paid within the deadline in the rulebook, usually one business day. The accounting team must also track the replenishment obligation, because the default fund must be restored to its full size before the next settlement cycle. For a business analyst, the default waterfall is a rules and reporting subject. You must specify the levels of the waterfall, the size of the default fund, the contribution formula, the assessment cap, the replenishment deadline, and the reporting. You must also specify the stress test scenarios and the frequency, and the procedure for notifying participants when the waterfall is used. A common gap is failing to specify the replenishment obligation, which leaves the system unprotected after the first default. Takeaway: the waterfall turns an unpredictable loss into a known allocation, and the size of the default fund is the system risk appetite expressed in money. Further reading: the BIS Principles for Financial Market Infrastructures (PFMI) for the default waterfall and stress testing; the Bank of England Financial Market Infrastructure supervision; the ECB TARGET default fund arrangements. Last reviewed 7 November 2026.", "paragraphs": ["The default waterfall is the ordered list of resources that a payment system uses to cover the loss when a participant fails to settle, and it is the last line of defence before the loss falls on the surviving participants. The name comes from the way the resources are consumed in sequence, like water falling from one level to the next: first the failing participant own resources, then the system default fund, then assessments on the surviving participants, and finally, in some systems, a central bank backstop. The waterfall is defined in the system rulebook, and every participant agrees to it when it joins. The PFMI requires that the waterfall be sufficient to cover the default of the largest participant, and the operator must test this regularly.", "Why the waterfall exists is that a settlement failure creates a real financial loss, not just a delay. If Bank A fails to pay its EUR 25 million net debit, the banks that expected to receive that money are EUR 25 million short. Someone must bear that loss, and the waterfall decides who. Without a waterfall, the loss would fall arbitrarily on whichever banks happened to be owed money, which would be unfair and would discourage participation. With a waterfall, the loss is allocated in a known order, the participants can price the risk, and the system can continue operating. The Bank of England and the European Central Bank both require their systems to have a waterfall that is transparent and tested.", "The parties are the defaulting participant, the system operator, the surviving participants, and in some systems the central bank. The waterfall typically has four levels. First, the defaulting participant margin or collateral, which is money it has already posted to the system. Second, the default fund, which is a pool of money contributed by all participants in advance. Third, an assessment, which is a call for additional money from the surviving participants, usually capped at a multiple of their default fund contribution. Fourth, in some systems, a central bank liquidity facility or a loss-sharing agreement. Each level is consumed in full before the next is touched, and the order is fixed in the rulebook.", "In practice the waterfall is applied like this. Bank A defaults on a EUR 25 million net debit. The operator first uses Bank A margin of EUR 5 million, leaving EUR 20 million. It then draws EUR 12 million from the default fund, leaving EUR 8 million. It then levies an assessment on the surviving participants: if there are four survivors and the assessment is pro rata to their default fund contributions, each pays EUR 2 million. The loss is fully covered, and the system settles. The default fund must then be replenished, usually within a defined period, so that the system is protected against the next default. The operator publishes a default report showing how the waterfall was applied, so that every participant can see what happened.", "A worked example shows the arithmetic. The default fund holds EUR 50 million, contributed by ten participants at EUR 5 million each. Bank A defaults on EUR 25 million. Its margin is EUR 5 million, so EUR 20 million remains. The default fund covers EUR 20 million, falling to EUR 30 million. No assessment is needed, because the fund was sufficient. But if Bank A had defaulted on EUR 60 million, the margin of EUR 5 million and the entire default fund of EUR 50 million would be consumed, leaving EUR 5 million, which would be covered by an assessment of EUR 500,000 on each of the ten surviving participants. The assessment is capped in the rulebook, typically at one or two times the default fund contribution, so no participant faces an unlimited call.", "What happens when the waterfall is exhausted is the extreme case that the PFMI calls a uncovered loss. If the default is so large that the margin, the default fund and the maximum assessment together cannot cover it, the system must either suspend settlement, which freezes the whole market, or the central bank must intervene. This has never happened in a major payment system, but it is the scenario that stress tests are designed for. The operator must run a stress test at least annually, simulating the default of the largest participant under stressed market conditions, and must publish the results to the participants and the regulator. If the test shows the waterfall is insufficient, the operator must increase the default fund or the assessment cap.", "The operational and accounting implications are that the finance team must manage the default fund contributions, the risk team must monitor the largest exposure, and the operations team must be ready to execute the waterfall at short notice. On the ledger, a default fund contribution is an asset of the participant, and a draw on the fund is a loss that must be recognised. An assessment is a liability that must be paid within the deadline in the rulebook, usually one business day. The accounting team must also track the replenishment obligation, because the default fund must be restored to its full size before the next settlement cycle.", "For a business analyst, the default waterfall is a rules and reporting subject. You must specify the levels of the waterfall, the size of the default fund, the contribution formula, the assessment cap, the replenishment deadline, and the reporting. You must also specify the stress test scenarios and the frequency, and the procedure for notifying participants when the waterfall is used. A common gap is failing to specify the replenishment obligation, which leaves the system unprotected after the first default.", "Takeaway: the waterfall turns an unpredictable loss into a known allocation, and the size of the default fund is the system risk appetite expressed in money. Further reading: the BIS Principles for Financial Market Infrastructures (PFMI) for the default waterfall and stress testing; the Bank of England Financial Market Infrastructure supervision; the ECB TARGET default fund arrangements. Last reviewed 7 November 2026."], "accessibility": "Payment flow diagram showing The default waterfall: who pays when a participant fails.", "visual_type": "payment_flow", "visual_choice_reason": "default payment journey", "beats": [{"t0": 0.0, "t1": 62.9, "title": "Default waterfall", "note": "The default waterfall is the ordered list of resources that a payment system uses to cover the loss when a participant fails to settle", "highlight_nodes": ["n0"], "highlight_conns": [], "highlight_fields": []}, {"t0": 62.9, "t1": 125.3, "title": "Loss allocation without a waterfall", "note": "Without a waterfall, the loss would fall arbitrarily on whichever banks happened to be owed money, which would be unfair and would discourage participation.", "highlight_nodes": ["n1"], "highlight_conns": ["c0"], "highlight_fields": []}, {"t0": 125.3, "t1": 185.7, "title": "Waterfall level order", "note": "Each level is consumed in full before the next is touched, and the order is fixed in the rulebook.", "highlight_nodes": ["n2"], "highlight_conns": ["c1"], "highlight_fields": []}, {"t0": 185.7, "t1": 247.3, "title": "Margin and default fund drawdown", "note": "Its margin is EUR 5 million, so EUR 20 million remains.", "highlight_nodes": ["n3"], "highlight_conns": ["c2"], "highlight_fields": []}, {"t0": 247.3, "t1": 310.3, "title": "Annual stress testing", "note": "The operator must run a stress test at least annually", "highlight_nodes": ["n4"], "highlight_conns": ["c3"], "highlight_fields": []}, {"t0": 310.3, "t1": 361.7, "title": "Waterfall specification requirements", "note": "You must specify the levels of the waterfall, the size of the default fund, the contribution formula, the assessment cap, the replenishment deadline, and the reporting.", "highlight_nodes": ["n5"], "highlight_conns": ["c4"], "highlight_fields": []}], "node_ids": ["n0", "n1", "n2", "n3", "n4", "n5"], "framework": {"objective": "By the end of this lesson, you will be able to explain default waterfall: who pays when a participant fails and apply it to a real banking scenario.", "why_matters": "For a business analyst, the default waterfall is a rules and reporting subject.", "technical_example": "If Bank A fails to pay its EUR 25 million net debit, the banks that expected to receive that money are EUR 25 million short.", "failure_recovery": "The default waterfall is the ordered list of resources that a payment system uses to cover the loss when a participant fails to settle, and it is the last line of defence before the loss falls on the surviving participants. Each level is consumed in full before the next is touched, and the order is fixed in the rulebook.", "exercise": {"task": "Apply the concept in this lesson to a real banking scenario.", "info": "Use the definition, the example and the key points in this lesson.", "action": "Explain the concept in your own words, give a banking example with an amount, and state what goes wrong if it is misunderstood.", "correct": "A correct answer names the concept accurately, uses a realistic banking example with a concrete amount, and identifies the consequence of getting it wrong.", "why": "Understanding is not memorising a definition. It is being able to explain it, apply it, and spot the failure it prevents."}, "assessment": {"question": "Which of the following best describes default waterfall: who pays when a participant fails?", "options": ["The default waterfall is the ordered list of resources that a payment system uses to cover the loss when a participant fails to settle, and it is the last line of defence before the loss falls on the surviving participants", "It is a related concept from this chapter, but it does not describe default waterfall: who pays when a participant fails.", "It is a related concept from this chapter, but it does not describe default waterfall: who pays when a participant fails.", "It is a related concept from this chapter, but it does not describe default waterfall: who pays when a participant fails."], "answer": 0, "explanation": "The default waterfall is the ordered list of resources that a payment system uses to cover the loss when a participant fails to settle, and it is the last line of defence before the loss falls on the surviving participants. This is the core idea of the lesson.", "why_wrong": ["", "This describes a different concept from this chapter, not default waterfall: who pays when a participant fails.", "This describes a different concept from this chapter, not default waterfall: who pays when a participant fails.", "This describes a different concept from this chapter, not default waterfall: who pays when a participant fails."], "source": "generated:ch77s7"}, "takeaway": "This has never happened in a major payment system, but it is the scenario that stress tests are designed for.", "prereq": "ch77s6", "next": "ch77s8", "connection_note": "Builds on \"Settlement failures: what happens when a bank cannot settle\".", "tool": {"slug": "lifecycle", "label": "Payment Lifecycle Simulator", "url": "../simulators/lifecycle.html", "scenario": "Follow EUR 25 through every stage, from instruction to beneficiary credit, and note where it can stop."}, "simple": "In plain words: The default waterfall is the ordered list of resources that a payment system uses to cover the loss when a participant fails to settle, and it is the last line of defence before the loss falls on the surviving participants.", "summary": "The default waterfall is the ordered list of resources that a payment system uses to cover the loss when a participant fails to settle, and it is the last line of defence before the loss falls on the surviving participants.", "example": "If Bank A fails to pay its EUR 25 million net debit, the banks that expected to receive that money are EUR 25 million short. Bank A defaults on a EUR 25 million net debit."}}], "chapter_title": "Settlement design and failure", "meta_line": "Settlement design and failure, Lesson 7 of 8, Narration 6:01, D07 Clearing, settlement and liquidity", "next_id": "ch77s8", "next_title": "Designing a settlement system: a BA checklist from requirements to go-live"}]);</script>
+</div>
+<nav class="tool-rail" aria-label="Lesson tools">
+<button type="button" class="rail-tool" onclick="pfOpenTranscript('studio-ch77s7')" title="Open transcript"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M7 3h7l4 4v14H7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M14 3v4h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 12h5M10 15.5h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span>Transcript</span></button>
+<button type="button" class="rail-tool" onclick="pfToggleNote('studio-ch77s7')" title="Write a note on this lesson"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L8 19l-4 1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>Notes</span></button>
+<button type="button" class="rail-tool" onclick="pfToggleFiles('studio-ch77s7')" title="Download lesson files"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>Files</span></button>
+</nav>
+<div class="fw-files-panel" id="pf-files-studio-ch77s7" style="display:none"><b>Lesson files</b><p><a href="../audio/ch77s7.mp3" download>Download narration (MP3)</a></p><p><a href="#" onclick="pfDownloadTranscript('studio-ch77s7');return false">Download transcript (.txt)</a></p></div>
+</div>
+</div>
+</main>
+<footer><p>Payments Training Hub. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="../index.html">Home</a> &middot; <a href="../courses.html">Courses</a> &middot; <a href="../practice.html">Practice</a> &middot; <a href="../simulators.html">Simulators</a> &middot; <a href="../labs.html">Labs</a> &middot; <a href="../explorer.html">Explorer</a> &middot; <a href="../tests.html">Tests</a> &middot; <a href="../diagnostic.html">Diagnostic</a> &middot; <a href="../faq.html">Interview Ready Questions</a> &middot; <a href="../interview-prep.html">Interview Prep</a></p><p><a href="../about.html">About</a> &middot; <a href="../privacy.html">Privacy</a> &middot; <a href="../terms.html">Terms</a> &middot; <a href="../contact.html">Contact</a> &middot; <a href="../editorial-standards.html">Editorial Standards</a> &middot; <a href="../sources.html">Sources</a></p></footer>
+<script defer src="../assets/site.js"></script>
+<script defer src="../assets/bundles.js"></script>
+<script defer src="../assets/auth.js"></script>
+<script defer src="../assets/studio.js"></script>
+<script defer src="../assets/insight-components.js"></script>
+<script defer src="../assets/nav.js"></script>
+<script defer src="../assets/pf-enhance.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+if(window.PFInsight){PFInsight.init();}
+});
+</script>
+</body>
+</html>
