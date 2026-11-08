@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>Resilience at Scale: Transactions, Breakers and Recovery | Payments Training Hub</title>
+<meta name="description" content="Distributed transactions are the hardest problem in hub design, because a payment touches many systems that cannot share one database transaction. A...">
+<link rel="canonical" href="https://www.paymentstraininghub.in/lessons/ch48s6.html">
+<meta property="og:url" content="https://www.paymentstraininghub.in/lessons/ch48s6.html">
+<meta property="og:title" content="Resilience at Scale: Transactions, Breakers and Recovery | Payments Training Hub">
+<meta property="og:description" content="Distributed transactions are the hardest problem in hub design, because a payment touches many systems that cannot share one database transaction. A...">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.in/assets/hero/hero-poster.jpg">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.paymentstraininghub.in/index.html"}, {"@type": "ListItem", "position": 2, "name": "Payment Hub: Enterprise Architecture", "item": "https://www.paymentstraininghub.in/chapters/ch48-payment-hub-enterprise-architecture.html"}, {"@type": "ListItem", "position": 3, "name": "Resilience at Scale: Transactions, Breakers and Recovery", "item": "https://www.paymentstraininghub.in/lessons/ch48s6.html"}]}</script>
+<link rel="stylesheet" href="../assets/studio.css">
+<link rel="stylesheet" href="../assets/pf-theme.css">
+<link rel="stylesheet" href="../assets/insight-components.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="../index.html" class="brand">Payments <span>Training Hub</span></a><nav class="topnav"><a href="../index.html">Home</a> <a href="../courses.html">Courses</a> <a href="../practice.html">Practice</a> <a href="../simulators.html">Simulators</a> <a href="../labs.html">Labs</a> <a href="../explorer.html">Explorer</a> <a href="../tests.html">Tests</a></nav><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox" style="display:none"><span id="authState">Not signed in</span> <span id="authForm" style="display:none"><input id="authEmail" type="email" placeholder="Email for OTP" aria-label="Email for sign-in"> <button class="mute-btn" onclick="paAuthSendOtp()">Send code</button> <input id="authCode" type="text" placeholder="6-digit code" aria-label="One-time code" style="display:none"> <button class="mute-btn" id="authVerifyBtn" onclick="paAuthVerifyOtp()" style="display:none">Verify</button> <button class="mute-btn" onclick="paAuthGoogle()">Sign in with Google</button> </span><button class="mute-btn" id="authSignOutBtn" onclick="paAuthSignOut()" style="display:none">Sign out</button></span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<div class="lesson-page">
+<div class="lesson-shell">
+<aside class="course-rail">
+<div class="rail-head">
+<h2>Payment Hub: Enterprise Architecture</h2>
+<a class="rail-close" href="../chapters/ch48-payment-hub-enterprise-architecture.html" aria-label="Close and go to chapter" title="Back to chapter">&times;</a>
+</div>
+<div class="goal-card">
+<div class="goal-head"><b>Today's goal &middot; <span id="side-progress-text">0 of 10 items</span></b><span class="goal-flag"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 21V4m0 1h11l-2.5 3.5L17 12H6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="goal-chev">&#94;</span></div>
+<p class="goal-body" id="side-goal-body">Complete 3 items today to stay at a good pace!</p>
+</div>
+<ul class="lesson-list"><li class="" data-lesson="ch48s1"><a href="ch48s1.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Hub components: what a hub is and what it contains</span><span class="m">Video &middot; 6 min</span></span></a></li>
+<li class="" data-lesson="ch48s2"><a href="ch48s2.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Components 1 to 6: From Channel to Screening</span><span class="m">Video &middot; 5 min</span></span></a></li>
+<li class="" data-lesson="ch48s3"><a href="ch48s3.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Components 7 to 12: From Fraud Checks to Clearing</span><span class="m">Video &middot; 5 min</span></span></a></li>
+<li class="" data-lesson="ch48s4"><a href="ch48s4.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Components 13 to 18: From Settlement to Audit</span><span class="m">Video &middot; 4 min</span></span></a></li>
+<li class="" data-lesson="ch48s5"><a href="ch48s5.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Architecture Patterns: Sync, Async, Events and Idempotency</span><span class="m">Video &middot; 4 min</span></span></a></li>
+<li class="current" data-lesson="ch48s6"><a href="ch48s6.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Resilience at Scale: Transactions, Breakers and Recovery</span><span class="m">Video &middot; 4 min</span></span></a></li>
+<li class="" data-lesson="ch48s7"><a href="ch48s7.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Capstone Exercise: Draw the Hub</span><span class="m">Video &middot; 4 min</span></span></a></li>
+<li class="" data-lesson="ch48s8"><a href="ch48s8.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Cloud and deployment architecture for payment platforms</span><span class="m">Video &middot; 4 min</span></span></a></li>
+<li class="" data-lesson="ch48s9"><a href="ch48s9.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Hub operations: running a payment hub day to day</span><span class="m">Video &middot; 7 min</span></span></a></li>
+<li class="" data-lesson="ch48s10"><a href="ch48s10.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Hub operations: running a hub day to day</span><span class="m">Video &middot; 6 min</span></span></a></li></ul>
+</aside>
+<div class="lesson-main">
+<div class="studio" id="studio-studio-ch48s6">
+<div class="player">
+<div class="studio-canvas" id="studio-canvas-studio-ch48s6">
+<div class="ch-sec studio-scene-vis active" id="studio-vis-studio-ch48s6-0"><div class="beat-frames">
+<div class="beat-frame active" data-frame="0">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Distributed</tspan> <tspan fill="#FFFFFF">transactions</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">STARTED</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Distributed transactions</tspan><tspan fill="#CBD5E1"> - hardest problem in hub design</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="0.55">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Circuit breakers stop a failing dependency</tspan><tspan fill="#CBD5E1"> - from dragging the whole hub</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="0.55">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Component</tspan><tspan fill="#CBD5E1"> - Each component runs on at least two</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Large bank</tspan><tspan fill="#CBD5E1"> - sets a recovery time objective of 2 hours</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">End to end processing</tspan><tspan fill="#CBD5E1"> - domestic instant payment must complete</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Mature hub</tspan><tspan fill="#CBD5E1"> - runs these tests monthly and tracks two results</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="128" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Distributed transactions are the hardest problem in hub design, because a payment touches</text>
+<text x="450" y="476" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">many systems that cannot share one database transaction.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 1 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 740" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="740" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Distributed</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">transactions</tspan></text>
+<rect x="24" y="86" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="104" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">STARTED</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="120" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="139" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Distributed</text>
+<text x="180" y="157" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">transactions</text>
+<text x="180" y="175" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">hardest problem in hub design</text>
+<text x="180" y="193" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="0.55">
+<rect x="24" y="212" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="231" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Circuit breakers stop</text>
+<text x="180" y="249" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">a failing dependency</text>
+<text x="180" y="267" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">from dragging the whole hub down with it.</text>
+<text x="180" y="285" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="0.55">
+<rect x="24" y="304" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="323" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Component</text>
+<text x="180" y="341" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Each component runs on at least two</text>
+<text x="180" y="359" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="24" y="376" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="395" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Large bank</text>
+<text x="180" y="413" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">sets a recovery time objective of 2 hours</text>
+<text x="180" y="431" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="24" y="448" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="467" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">End to end</text>
+<text x="180" y="485" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">processing</text>
+<text x="180" y="503" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">domestic instant payment must complete</text>
+<text x="180" y="521" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="540" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="559" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Mature hub</text>
+<text x="180" y="577" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">runs these tests monthly and tracks two</text>
+<text x="180" y="595" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="620" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Distributed transactions are the hardest</text>
+<text x="180" y="639" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">problem in hub design, because a payment</text>
+<text x="180" y="658" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">touches many systems that cannot share</text>
+<text x="180" y="677" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">one database transaction.</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="1">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Circuit</tspan> <tspan fill="#FFFFFF">breakers</tspan> <tspan fill="#FFFFFF">stop</tspan> <tspan fill="#FFFFFF">a</tspan> <tspan fill="#FFFFFF">failing</tspan></text>
+<text x="48" y="126" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">dependency</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Distributed transactions</tspan><tspan fill="#CBD5E1"> - hardest problem in hub design</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Circuit breakers stop a failing dependency</tspan><tspan fill="#CBD5E1"> - from dragging the whole hub</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="0.55">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Component</tspan><tspan fill="#CBD5E1"> - Each component runs on at least two</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Large bank</tspan><tspan fill="#CBD5E1"> - sets a recovery time objective of 2 hours</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">End to end processing</tspan><tspan fill="#CBD5E1"> - domestic instant payment must complete</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Mature hub</tspan><tspan fill="#CBD5E1"> - runs these tests monthly and tracks two results</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="257" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Circuit breakers stop a failing dependency from dragging the whole hub down with it.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 2 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 749" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="749" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Circuit</tspan> <tspan fill="#FFFFFF">breakers</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">stop</tspan> <tspan fill="#FFFFFF">a</tspan> <tspan fill="#FFFFFF">failing</tspan></text>
+<text x="24" y="96" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">dependency</tspan></text>
+<rect x="24" y="114" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="132" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="148" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="167" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Distributed</text>
+<text x="180" y="185" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">transactions</text>
+<text x="180" y="203" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">hardest problem in hub design</text>
+<text x="180" y="221" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="240" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="259" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Circuit breakers stop</text>
+<text x="180" y="277" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">a failing dependency</text>
+<text x="180" y="295" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">from dragging the whole hub down with it.</text>
+<text x="180" y="313" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="0.55">
+<rect x="24" y="332" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="351" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Component</text>
+<text x="180" y="369" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Each component runs on at least two</text>
+<text x="180" y="387" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="24" y="404" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="423" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Large bank</text>
+<text x="180" y="441" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">sets a recovery time objective of 2 hours</text>
+<text x="180" y="459" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="24" y="476" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="495" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">End to end</text>
+<text x="180" y="513" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">processing</text>
+<text x="180" y="531" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">domestic instant payment must complete</text>
+<text x="180" y="549" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="568" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="587" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Mature hub</text>
+<text x="180" y="605" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">runs these tests monthly and tracks two</text>
+<text x="180" y="623" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="648" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Circuit breakers stop a failing</text>
+<text x="180" y="667" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">dependency from dragging the whole</text>
+<text x="180" y="686" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">hub down with it.</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="2">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Component</tspan> <tspan fill="#FFFFFF">runs</tspan> <tspan fill="#FFFFFF">on</tspan> <tspan fill="#FFFFFF">at</tspan> <tspan fill="#FFFFFF">least</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Distributed transactions</tspan><tspan fill="#CBD5E1"> - hardest problem in hub design</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Circuit breakers stop a failing dependency</tspan><tspan fill="#CBD5E1"> - from dragging the whole hub</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Component</tspan><tspan fill="#CBD5E1"> - Each component runs on at least two</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Large bank</tspan><tspan fill="#CBD5E1"> - sets a recovery time objective of 2 hours</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">End to end processing</tspan><tspan fill="#CBD5E1"> - domestic instant payment must complete</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Mature hub</tspan><tspan fill="#CBD5E1"> - runs these tests monthly and tracks two results</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="386" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Each component runs on at least two instances across two availability zones, databases replicate</text>
+<text x="450" y="476" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">synchronously to a standby, and load balancers route around failed instances in seconds.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 3 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 759" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="759" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Component</tspan> <tspan fill="#FFFFFF">runs</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">on</tspan> <tspan fill="#FFFFFF">at</tspan> <tspan fill="#FFFFFF">least</tspan></text>
+<rect x="24" y="86" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="104" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="120" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="139" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Distributed</text>
+<text x="180" y="157" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">transactions</text>
+<text x="180" y="175" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">hardest problem in hub design</text>
+<text x="180" y="193" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="212" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="231" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Circuit breakers stop</text>
+<text x="180" y="249" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">a failing dependency</text>
+<text x="180" y="267" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">from dragging the whole hub down with it.</text>
+<text x="180" y="285" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="1">
+<rect x="24" y="304" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="323" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Component</text>
+<text x="180" y="341" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Each component runs on at least two</text>
+<text x="180" y="359" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="24" y="376" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="395" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Large bank</text>
+<text x="180" y="413" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">sets a recovery time objective of 2 hours</text>
+<text x="180" y="431" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="24" y="448" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="467" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">End to end</text>
+<text x="180" y="485" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">processing</text>
+<text x="180" y="503" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">domestic instant payment must complete</text>
+<text x="180" y="521" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="540" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="559" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Mature hub</text>
+<text x="180" y="577" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">runs these tests monthly and tracks two</text>
+<text x="180" y="595" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="620" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Each component runs on at least two</text>
+<text x="180" y="639" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">instances across two availability zones,</text>
+<text x="180" y="658" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">databases replicate synchronously to a</text>
+<text x="180" y="677" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">standby, and load balancers route around</text>
+<text x="180" y="696" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">failed instances in seconds.</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="3">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Large</tspan> <tspan fill="#FFFFFF">bank</tspan> <tspan fill="#FFFFFF">typically</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Distributed transactions</tspan><tspan fill="#CBD5E1"> - hardest problem in hub design</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Circuit breakers stop a failing dependency</tspan><tspan fill="#CBD5E1"> - from dragging the whole hub</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Component</tspan><tspan fill="#CBD5E1"> - Each component runs on at least two</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Large bank</tspan><tspan fill="#CBD5E1"> - sets a recovery time objective of 2 hours</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">End to end processing</tspan><tspan fill="#CBD5E1"> - domestic instant payment must complete</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Mature hub</tspan><tspan fill="#CBD5E1"> - runs these tests monthly and tracks two results</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="514" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">A large bank typically sets a recovery time objective of 2 hours and a recovery point objective of</text>
+<text x="450" y="476" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">5 minutes for its payment hub, with a hot standby site that can take over automatically.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 4 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 759" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="759" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Large</tspan> <tspan fill="#FFFFFF">bank</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">typically</tspan></text>
+<rect x="24" y="86" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="104" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="120" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="139" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Distributed</text>
+<text x="180" y="157" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">transactions</text>
+<text x="180" y="175" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">hardest problem in hub design</text>
+<text x="180" y="193" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="212" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="231" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Circuit breakers stop</text>
+<text x="180" y="249" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">a failing dependency</text>
+<text x="180" y="267" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">from dragging the whole hub down with it.</text>
+<text x="180" y="285" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="1">
+<rect x="24" y="304" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="323" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Component</text>
+<text x="180" y="341" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Each component runs on at least two</text>
+<text x="180" y="359" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="1">
+<rect x="24" y="376" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="395" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Large bank</text>
+<text x="180" y="413" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">sets a recovery time objective of 2 hours</text>
+<text x="180" y="431" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="24" y="448" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="467" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">End to end</text>
+<text x="180" y="485" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">processing</text>
+<text x="180" y="503" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">domestic instant payment must complete</text>
+<text x="180" y="521" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="540" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="559" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Mature hub</text>
+<text x="180" y="577" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">runs these tests monthly and tracks two</text>
+<text x="180" y="595" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="620" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">A large bank typically sets a recovery time</text>
+<text x="180" y="639" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">objective of 2 hours and a recovery point</text>
+<text x="180" y="658" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">objective of 5 minutes for its payment hub,</text>
+<text x="180" y="677" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">with a hot standby site that can take over</text>
+<text x="180" y="696" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">automatically.</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="4">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">End</tspan> <tspan fill="#FFFFFF">to</tspan> <tspan fill="#FFFFFF">end</tspan> <tspan fill="#FFFFFF">processing</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Distributed transactions</tspan><tspan fill="#CBD5E1"> - hardest problem in hub design</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Circuit breakers stop a failing dependency</tspan><tspan fill="#CBD5E1"> - from dragging the whole hub</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Component</tspan><tspan fill="#CBD5E1"> - Each component runs on at least two</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Large bank</tspan><tspan fill="#CBD5E1"> - sets a recovery time objective of 2 hours</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n4" data-beat="4">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">End to end processing</tspan><tspan fill="#CBD5E1"> - domestic instant payment must complete</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Mature hub</tspan><tspan fill="#CBD5E1"> - runs these tests monthly and tracks two results</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="643" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">End to end processing for a domestic instant payment must complete in under 5 seconds</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 5 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 721" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="721" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">End</tspan> <tspan fill="#FFFFFF">to</tspan> <tspan fill="#FFFFFF">end</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">processing</tspan></text>
+<rect x="24" y="86" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="104" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="120" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="139" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Distributed</text>
+<text x="180" y="157" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">transactions</text>
+<text x="180" y="175" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">hardest problem in hub design</text>
+<text x="180" y="193" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="212" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="231" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Circuit breakers stop</text>
+<text x="180" y="249" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">a failing dependency</text>
+<text x="180" y="267" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">from dragging the whole hub down with it.</text>
+<text x="180" y="285" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="1">
+<rect x="24" y="304" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="323" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Component</text>
+<text x="180" y="341" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Each component runs on at least two</text>
+<text x="180" y="359" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="1">
+<rect x="24" y="376" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="395" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Large bank</text>
+<text x="180" y="413" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">sets a recovery time objective of 2 hours</text>
+<text x="180" y="431" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="1">
+<rect x="24" y="448" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="467" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">End to end</text>
+<text x="180" y="485" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">processing</text>
+<text x="180" y="503" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">domestic instant payment must complete</text>
+<text x="180" y="521" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="540" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="559" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Mature hub</text>
+<text x="180" y="577" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">runs these tests monthly and tracks two</text>
+<text x="180" y="595" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="620" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">End to end processing for a domestic</text>
+<text x="180" y="639" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">instant payment must complete in</text>
+<text x="180" y="658" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">under 5 seconds</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="5">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Mature</tspan> <tspan fill="#FFFFFF">hub</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">COMPLETE</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Distributed transactions</tspan><tspan fill="#CBD5E1"> - hardest problem in hub design</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Circuit breakers stop a failing dependency</tspan><tspan fill="#CBD5E1"> - from dragging the whole hub</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Component</tspan><tspan fill="#CBD5E1"> - Each component runs on at least two</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Large bank</tspan><tspan fill="#CBD5E1"> - sets a recovery time objective of 2 hours</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n4" data-beat="4">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">End to end processing</tspan><tspan fill="#CBD5E1"> - domestic instant payment must complete</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n5" data-beat="5">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Mature hub</tspan><tspan fill="#CBD5E1"> - runs these tests monthly and tracks two results</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">A mature hub runs these tests monthly and tracks two results, namely the percentage of payments</text>
+<text x="450" y="476" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">that completed without manual intervention and the time to detect each injected failure.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 6 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#45A4FF"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 731" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="731" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Mature</tspan> <tspan fill="#FFFFFF">hub</tspan></text>
+<rect x="24" y="58" width="312" height="26" rx="8" fill="#0C1626" stroke="#2DD4BF" stroke-width="1.5"/>
+<text x="180" y="76" text-anchor="middle" font-size="12" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">COMPLETE</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="92" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="111" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Distributed</text>
+<text x="180" y="129" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">transactions</text>
+<text x="180" y="147" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">hardest problem in hub design</text>
+<text x="180" y="165" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="184" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="203" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Circuit breakers stop</text>
+<text x="180" y="221" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">a failing dependency</text>
+<text x="180" y="239" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">from dragging the whole hub down with it.</text>
+<text x="180" y="257" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="1">
+<rect x="24" y="276" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="295" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Component</text>
+<text x="180" y="313" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Each component runs on at least two</text>
+<text x="180" y="331" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="1">
+<rect x="24" y="348" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="367" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Large bank</text>
+<text x="180" y="385" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">sets a recovery time objective of 2 hours</text>
+<text x="180" y="403" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="1">
+<rect x="24" y="420" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="439" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">End to end</text>
+<text x="180" y="457" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">processing</text>
+<text x="180" y="475" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">domestic instant payment must complete</text>
+<text x="180" y="493" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="1">
+<rect x="24" y="512" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="531" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Mature hub</text>
+<text x="180" y="549" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">runs these tests monthly and tracks two</text>
+<text x="180" y="567" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<text x="180" y="592" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">A mature hub runs these tests monthly</text>
+<text x="180" y="611" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">and tracks two results, namely the</text>
+<text x="180" y="630" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">percentage of payments that completed</text>
+<text x="180" y="649" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">without manual intervention and the time</text>
+<text x="180" y="668" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">to detect each injected failure.</text>
+</svg>
+</div>
+</div>
+<p class="xml-caption">Flow of the explanation in this lesson.</p></div>
+<div class="playerbar">
+<div class="studio-progress"><div class="studio-markers" id="studio-markers-studio-ch48s6"></div><input type="range" id="studio-slider-studio-ch48s6" min="0" max="1000" value="0" aria-label="Lesson timeline"></div>
+<div class="ctrl-row">
+<button class="ctrl-btn" id="studio-play-studio-ch48s6" onclick="studioTogglePlay('studio-ch48s6')" aria-label="Play lesson" title="Play lesson"><span class="ctrl-ic-play"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></span><span class="ctrl-ic-pause" style="display:none"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><rect x="6" y="5" width="4" height="14" fill="currentColor"/><rect x="14" y="5" width="4" height="14" fill="currentColor"/></svg></span></button>
+<button class="ctrl-btn studio-mute-btn" id="studio-mute-studio-ch48s6" onclick="studioToggleMute('studio-ch48s6')" aria-label="Mute narration" title="Mute / unmute narration"><svg class="studio-mute-icon" viewBox="0 0 24 24" width="28" height="28" fill="currentColor" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3z"/><path class="studio-mute-waves" d="M16 8.5a5 5 0 0 1 0 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><path class="studio-mute-waves" d="M18.5 6a9 9 0 0 1 0 12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><path class="studio-mute-x" d="M16 9.5l5 5M21 9.5l-5 5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" style="display:none"/></svg></button>
+<button class="ctrl-btn" onclick="studioSkip('studio-ch48s6', -10)" aria-label="Back 10 seconds" title="Back 10 seconds"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 5a7 7 0 1 1-6.32 4.06" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M5.5 3.5v5h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><text x="12" y="16.5" font-size="8" fill="currentColor" text-anchor="middle" font-weight="700">10</text></svg></button>
+<span class="studio-time ctrl-time" id="studio-time-studio-ch48s6">0:00 / 4:13</span>
+<button class="ctrl-btn" onclick="studioSkip('studio-ch48s6', 10)" aria-label="Forward 10 seconds" title="Forward 10 seconds"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 5a7 7 0 1 0 6.32 4.06" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M18.5 3.5v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><text x="12" y="16.5" font-size="8" fill="currentColor" text-anchor="middle" font-weight="700">10</text></svg></button>
+<span class="playerbar-spacer"></span>
+<span class="player-stage" id="studio-tag-studio-ch48s6">Step 1 of 6</span>
+<button class="ctrl-btn ctrl-step" id="studio-prevscene-studio-ch48s6" onclick="studioPrevScene('studio-ch48s6')" title="Previous step" aria-label="Previous step">&lsaquo;</button>
+<button class="ctrl-btn ctrl-step" id="studio-nextscene-studio-ch48s6" onclick="studioNextScene('studio-ch48s6')" title="Next step" aria-label="Next step">&rsaquo;</button>
+<button class="ctrl-btn ctrl-speed" id="studio-speedbtn-studio-ch48s6" onclick="studioCycleSpeed('studio-ch48s6')" title="Playback speed" aria-label="Playback speed">1x</button>
+<span class="ctrl-settings-wrap"><button class="ctrl-btn" onclick="studioToggleSettings('studio-ch48s6', event)" aria-label="Player settings" title="Settings"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5 5l2.1 2.1M16.9 16.9L19 19M19 5l-2.1 2.1M7.1 16.9L5 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button><span class="ctrl-popover" id="studio-settings-studio-ch48s6" style="display:none" onclick="event.stopPropagation()"><label class="ctrl-pop-row">Volume <input type="range" min="0" max="1" step="0.1" value="1" oninput="studioSetVolume('studio-ch48s6', this.value)" style="width:110px;accent-color:#3587FC"></label><button class="studio-btn" id="studio-captions-studio-ch48s6" onclick="studioToggleCaptions('studio-ch48s6')">Captions: On</button><button class="studio-btn" onclick="studioReplayScene('studio-ch48s6')">Replay scene</button></span></span>
+<button class="ctrl-btn" onclick="studioFullscreen('studio-ch48s6')" aria-label="Fullscreen" title="Fullscreen"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+</div>
+</div>
+</div>
+<p class="studio-caption" id="studio-caption-studio-ch48s6"></p>
+<p class="studio-loading" id="studio-loading-studio-ch48s6" style="display:none">Loading narration...</p>
+<p class="studio-error" id="studio-error-studio-ch48s6" role="alert" style="display:none"></p>
+<audio id="studio-audio-studio-ch48s6" preload="auto" src="../audio/ch48s6.mp3"></audio>
+</div>
+<div class="lesson-title-row">
+<h1>Resilience at Scale: Transactions, Breakers and Recovery</h1>
+<button class="save-note" type="button" onclick="pfToggleNote('studio-ch48s6')" title="Save a note on this lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L8 19l-4 1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg> Save note</button>
+</div>
+<p class="lesson-meta-line">Payment Hub: Enterprise Architecture, Lesson 6 of 10, Narration 4:13, D09 Payment architecture and technology</p>
+<p class="lesson-note-saved" id="studio-note-saved-studio-ch48s6" style="display:none">Note saved.</p>
+<div class="note-editor" id="studio-note-editor-studio-ch48s6" style="display:none"><textarea id="studio-note-text-studio-ch48s6" rows="3" placeholder="Write a note on this lesson..." aria-label="Lesson note"></textarea><div class="note-editor-row"><button class="studio-btn primary" onclick="pfSaveNote('studio-ch48s6')">Save note</button> <button class="studio-btn" onclick="pfToggleNote('studio-ch48s6')">Cancel</button></div></div>
+<div class="dive-deeper">
+<div class="dive-head"><button type="button" class="dive-toggle" onclick="pfToggleDive(this)" aria-expanded="true"><span class="dive-spark"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 2l2.2 6.8L21 11l-6.8 2.2L12 20l-2.2-6.8L3 11l6.8-2.2z" fill="currentColor"/></svg></span><span class="dive-title">Dive deeper on this topic</span><span class="dive-chev"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 14l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button></div>
+<div class="dive-btns"><button type="button" class="dive-btn" data-kind="practice" onclick="pfDive('studio-ch48s6', 'practice')">Give me practice questions</button><button type="button" class="dive-btn" data-kind="simple" onclick="pfDive('studio-ch48s6', 'simple')">Explain this topic in simple terms</button><button type="button" class="dive-btn" data-kind="summary" onclick="pfDive('studio-ch48s6', 'summary')">Give me a summary</button><button type="button" class="dive-btn" data-kind="example" onclick="pfDive('studio-ch48s6', 'example')">Give me real-life examples</button></div>
+<div class="dive-panel" id="dive-panel-studio-ch48s6"><div class="dive-panel-body"></div></div>
+<script type="application/json" id="pf-dive-data-studio-ch48s6">{"simple": "In plain words: distributed transactions are the hardest problem in hub design, because a payment touches many systems that cannot share one database transaction. That is the whole idea in one sentence, and the rest of the lesson shows how it works in a real bank.", "summary": "Distributed transactions are the hardest problem in hub design, because a payment touches many systems that cannot share one database transaction. Key points: Distributed transactions; Circuit breakers stop a failing dependency; Component runs on at least; Large bank typically; End to end processing; Mature hub.", "example": "If failures pass a threshold, for example 50 percent of calls failing in 60 seconds, the breaker opens and calls fail fast instead of waiting for a timeout. Each component needs its own latency budget, for example 200 milliseconds for fraud scoring and 500 milliseconds for sanctions screening, so that the total stays inside the customer promise even at peak load."}</script>
+</div>
+<div class="lesson-feedback">
+<div class="fb-icons"><button type="button" class="fb-btn" data-kind="like" onclick="pfFeedback(this,'like')" aria-label="Like this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M7 21H4a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1h3v11zm0 0h9.6a2 2 0 0 0 1.9-1.4l1.6-5A2 2 0 0 0 18.2 12H15V6.5A2.5 2.5 0 0 0 12.5 4L11 7.5 8.6 10H7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button><button type="button" class="fb-btn" data-kind="dislike" onclick="pfFeedback(this,'dislike')" aria-label="Dislike this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M17 3h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1h-3V3zm0 0H7.4a2 2 0 0 0-1.9 1.4l-1.6 5A2 2 0 0 0 5.8 12H9v5.5A2.5 2.5 0 0 0 11.5 20L13 16.5l2.4-2.5H17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button><button type="button" class="fb-btn" data-kind="flag" onclick="pfFeedback(this,'flag')" aria-label="Flag this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M6 21V4m0 1h11l-2.5 3.5L17 12H6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+<button type="button" class="go-next" onclick="goLesson('ch48s7')" title="Next: Capstone Exercise: Draw the Hub">Go to next item &rarr;</button>
+</div>
+<div class="chips"><span class="chip">Sanctions screening</span><span class="chip">Circuit breaker</span><span class="chip">Fraud scoring</span></div>
+<div class="card learn-card">
+<h2>What you will learn</h2>
+<p class="transcript"><b>Your objective.</b> By the end of this lesson, you will be able to explain resilience at scale: transactions, breakers and recovery. Distributed transactions are the hardest problem in hub design, because a payment touches many systems that cannot share one database transaction.</p>
+<p class="transcript"><b>Why it matters.</b> Disaster recovery is the plan for losing a whole data centre, and it is measured with two numbers every analyst should know.</p>
+<p class="transcript">Chapter objective: Learner designs enterprise payment hub architecture for a large bank, integrating channels, rails, screening, liquidity, and operations into one governed, scalable platform. Learner practises this skill on realistic banking cases, explaining the reasoning clearly and using correct terminology throughout the work.</p>
+<h3>Key learning points</h3>
+<ul id="studio-points-studio-ch48s6">
+<li>Distributed transactions</li>
+<li>Circuit breakers stop a failing dependency</li>
+<li>Component runs on at least</li>
+<li>Large bank typically</li>
+<li>End to end processing</li>
+<li>Mature hub</li>
+</ul>
+<h3>Key terms</h3>
+<div id="studio-terms-studio-ch48s6">
+<p class="keyterm"><b>Sanctions screening:</b> Checking payment parties, countries and references against sanctions lists published by governments and international bodies.</p>
+<p class="keyterm"><b>Circuit breaker:</b> A resilience pattern that stops calling a failing service after a set number of failures, giving it time to recover.</p>
+<p class="keyterm"><b>Fraud scoring:</b> A risk score assigned to a payment based on factors such as amount, location, device, velocity and customer history.</p>
+</div>
+<p class="studio-note">Banking architecture diagram showing Resilience at Scale: Transactions, Breakers and Recovery.</p>
+</div>
+<section class="ic-lesson-section" id="pf-insights-studio-ch48s6">
+<h2>Insights and practice scenarios</h2>
+<p class="studio-note">Worked insights and practice scenarios for this lesson. Each one is a reusable PaymentForge case, so the same case may appear in more than one lesson.</p>
+<div data-ic-type="level" data-record-id="INS-114"><script type="application/json">{"level": 3, "meta": {"domain": "Architecture & Non-functional Requirements", "topic": "Throughput increase: five clients add ten million transactions monthly", "depth": 3, "difficulty": "advanced", "insightId": "INS-114"}, "evidence": "url-pending", "recordId": "INS-114", "problem": "Meridian Bank has signed five new corporate clients, and together they are forecast to add ten million transactions a month to the payment platform. That is roughly 330,000 extra transactions a day on average, but the new clients are payroll and supplier-payment businesses whose files land in concentrated morning windows, so the peak load is far higher than the average suggests. The current platform was sized for the existing book, and its busiest hour already runs at about 70 percent of measured capacity. The chief operating officer wants a straight answer: can the platform absorb the growth, what breaks first, and what must change before the first new client goes live.\n\nThe risk is not only slow processing. If the payment engine saturates, files queue, value-date promises slip, and the repair and reconciliation teams face a backlog they cannot clear the same day. If a downstream dependency such as sanctions screening or the ledger slows under load, latency grows across every payment, including those of existing clients. A retry storm makes it worse: channels that time out resubmit, and each resubmission adds load to a system that is already saturated, turning a capacity problem into an outage.\n\nThe business analyst must translate a commercial forecast, ten million transactions a month from five clients, into engineering requirements that can be tested: transactions per second at average, peak and burst, end-to-end latency, queue depth, storage growth, and the recovery objectives if a component fails under load. The answer has to be evidence from load testing, not an assertion that the platform should cope.", "solution": "Start with a capacity model, not a guess. Take the ten million monthly transactions and derive the average daily volume, then model the peak hour and the burst minute from the new clients' file patterns, because payroll and supplier files arrive in concentrated windows. Add the amplification factors that load tests often miss: retry traffic when channels time out, duplicate submissions, screening re-runs after repair, and reconciliation reads. For each component in the chain, channel, gateway, orchestration, screening, engine, connectors and ledger, record the measured throughput, the latency at that throughput, and the point at which latency degrades, so the model identifies the first bottleneck rather than assuming the engine is the constraint.\n\nSecond, load-test the complete chain, not individual services in isolation. Run the agreed average, peak and stress profiles end to end with realistic payload sizes and realistic dependency latency, and measure throughput, latency percentiles, queue depth, error rate and resource use. Define the scaling thresholds and the headroom policy in advance, for example that the platform must sustain peak load at no more than 60 percent of measured capacity, and define graceful degradation: which traffic is shed first, how back-pressure is applied to channels, and what customers are told when degradation starts.\n\nThird, onboard in stages and make go-live conditional on evidence. Bring the first client live, measure actual peak behaviour against the model, and only then onboard the next. Put queue-depth and latency alerts, circuit breakers and dead-letter handling in place before the first go-live, and agree recovery objectives for each component so a failure under load has a rehearsed recovery path. Report the capacity position weekly to the chief operating officer in the same numbers every time, so growth is tracked against the model rather than discovered in an incident.", "decision": {"question": "You are the business analyst for Meridian Bank. Five new clients will add ten million transactions a month, concentrated in morning peaks. The platform already runs at 70 percent of measured capacity in its busiest hour. The chief operating officer asks for your recommendation before the first client goes live.", "context": "", "options": [{"label": "A", "detail": "Build a capacity model from average, peak and burst volumes, load-test the complete chain, and onboard in stages against agreed throughput and latency thresholds with defined degradation behaviour.", "correct": true}, {"label": "B", "detail": "Ask the new clients to spread their files evenly across 24 hours and change nothing on the platform.", "correct": false}, {"label": "C", "detail": "Onboard all five clients at once and monitor the platform in production, scaling reactively if it slows.", "correct": false}, {"label": "D", "detail": "Increase the timeout on every channel so slow payments are not noticed by customers.", "correct": false}]}, "decisionRationale": "Option A is correct because it converts the forecast into testable non-functional requirements, proves the platform against them with load testing, and de-risks go-live with staged onboarding and agreed degradation behaviour. Option C risks an outage for existing clients as well as new ones. Option B is not in the bank's control, since client file timing follows their business cycles. Option D hides latency instead of fixing capacity and increases the risk of duplicate submissions.", "flow": {"steps": [{"title": "Submits a payment file in the morning peak window", "actor": "Corporate client", "note": "Corporate banking channel"}, {"title": "Authenticates, rate-limits and applies back-pressure when the platform is saturated", "actor": "API gateway", "note": "API gateway"}, {"title": "Splits the file into individual payment instructions with correlation IDs", "actor": "Orchestration service", "note": "Orchestration service"}, {"title": "Runs sanctions and fraud screening within its latency budget", "actor": "Screening service", "note": "Screening service"}, {"title": "Validates, routes and executes payments in priority order", "actor": "Payment engine", "note": "Payment engine"}, {"title": "Delivers messages to the clearing system and handles acknowledgements", "actor": "Clearing connector", "note": "Clearing connector"}, {"title": "Posts accounting entries and updates balances", "actor": "Ledger service", "note": "Core ledger"}, {"title": "Tracks throughput, latency, queue depth and error rate against thresholds and alerts Operations", "actor": "Monitoring service", "note": "Monitoring and alerting"}]}, "happy": ["The capacity model predicts the peak load from the five new clients, load testing proves the complete chain sustains it within latency targets, and staged onboarding confirms the model in production. Morning files process within their value-date windows, queue depth stays within limits, latency stays within target percentiles, and existing clients see no degradation."], "negative": [{"title": "Dependency saturation", "detail": "The screening service slows under peak load and latency grows across every payment. Apply back-pressure at the gateway, shed lower-priority traffic first under the agreed degradation policy, alert Operations, and scale or fail over the screening service."}, {"title": "Retry storm", "detail": "Channels time out and resubmit the same payments, multiplying the load on a saturated platform. Enforce idempotency keys so retries do not create duplicate work, return a pending state instead of timing out silently, and apply circuit breakers to the retrying channel."}, {"title": "Queue growth beyond recovery", "detail": "The durable queue grows faster than the engine can drain it and value dates are at risk. Prioritise by value date and SLA, notify affected customers early, pause lower-priority intake, and reconcile every queued item after recovery."}, {"title": "Database contention", "detail": "Concurrent writes to the ledger and status store contend and throughput collapses. Identify the contention in load-test evidence, apply the agreed scaling or partitioning change, and do not onboard the next client until the bottleneck is proven resolved."}, {"title": "Failover capacity insufficient", "detail": "A component fails at peak and the standby cannot carry the load. Test failover under peak load, not only at idle, and keep the recovery objective and the degraded-service communication plan rehearsed."}], "technical": ["Define non-functional requirements as numbers: average, peak and burst transactions per second, end-to-end latency percentiles, maximum queue depth, maximum queue age, storage growth per million transactions, and recovery time and recovery point objectives. Use durable queues with a defined retention and dead-letter policy, and correlation IDs that survive every hop so a single payment can be traced under load. Make every submission idempotent so retries and replays cannot create duplicate payments. Instrument each component with throughput, latency, queue depth, error rate and resource metrics on a common dashboard, and set alerts on thresholds that are agreed in advance, not discovered during an incident. Keep load-test evidence versioned with the configuration it was run against, so a later change can be compared with the baseline."], "messages": [{"message": "pain.001", "title": "Customer file carrying the batch of payment instructions that drives the volume", "fields": [{"tag": "Batch control total and item count, used to verify the file was received complete", "name": "Batch control total and item count, used to verify the file was received complete", "relevant": true}, {"tag": "Instruction identification per item, used for idempotency and tracing", "name": "Instruction identification per item, used for idempotency and tracing", "relevant": true}, {"tag": "Instructed amount and currency per item", "name": "Instructed amount and currency per item", "relevant": true}]}, {"message": "pacs.008", "title": "Interbank customer credit transfer generated per executed payment", "fields": [{"tag": "End-to-end identification carried from the original instruction", "name": "End-to-end identification carried from the original instruction", "relevant": true}, {"tag": "Interbank settlement amount and date", "name": "Interbank settlement amount and date", "relevant": true}, {"tag": "Creditor account and agent", "name": "Creditor account and agent", "relevant": true}]}, {"message": "pacs.002", "title": "Payment status report confirming acceptance, execution or rejection per item", "fields": [{"tag": "Original instruction identification", "name": "Original instruction identification", "relevant": true}, {"tag": "Transaction status", "name": "Transaction status", "relevant": true}, {"tag": "Status reason code where applicable", "name": "Status reason code where applicable", "relevant": true}]}], "accounting": ["Ten million extra transactions a month increases ledger posting volume, statement generation, reconciliation matching and storage proportionally, so Finance and Operations must size those processes for the same peak, not just the average. The batch control total for each file must reconcile to executed, rejected and queued items every day, and any item that is queued past its value date must be reported to the customer with a revised timing. Operations works from queue-depth and ageing dashboards with agreed escalation thresholds, and Treasury must confirm that settlement liquidity covers the higher peak-day outflows. If degradation is triggered, the agreed order of shedding and the customer communication must be followed, and every shed or delayed item must be reconciled after recovery."], "gherkin": {"scenarios": [{"given": "forecast peak load from the five new clients", "when": "the system is tested at the agreed stress level", "then": "throughput and latency remain within the approved thresholds"}, {"given": "the clearing connector is unavailable at peak", "when": "queue depth crosses the agreed threshold", "then": "alerts and controlled back-pressure are activated"}, {"given": "a channel submission that times out under load", "when": "the client retries with the same idempotency key", "then": "no duplicate payment is created"}, {"given": "a component failure during peak load", "when": "failover is triggered", "then": "the standby sustains the agreed degraded throughput within the recovery objective"}]}, "check": {"questions": [{"answer": 0, "explanation": "Payroll and supplier files land in concentrated windows, so the platform must be sized for the peak hour and burst minute, not the monthly average divided by thirty days.", "options": ["Because files arrive in concentrated peaks and bursts, so peak and burst load are far higher than the average", "Because the average ignores the number of clients", "Because averages do not include weekends", "Because averages are hard to calculate"], "question": "Why is the average daily volume not enough to size a payment platform?"}, {"answer": 0, "explanation": "When channels time out and resubmit, the same work arrives twice or more, which deepens the saturation and can turn a slowdown into an outage. Idempotency and pending states prevent this.", "options": ["Each timed-out submission is sent again, multiplying load on a system that is already saturated", "Retries bypass screening", "Retries use a different message format", "Retries are slower than new payments"], "question": "What makes a retry storm dangerous during saturation?"}, {"answer": 3, "explanation": "Bottlenecks hide in dependencies, so the whole chain must be tested together at realistic peak and stress levels with realistic payload sizes and dependency latency.", "options": ["Only the database", "One service in isolation at low volume", "Only the user interface", "The complete chain end to end at average, peak and stress profiles with realistic payloads"], "question": "What should load testing cover to be meaningful for this growth?"}, {"answer": 1, "explanation": "Graceful degradation is a pre-agreed policy for what is shed first, how back-pressure is applied and what customers are told, so a capacity breach is controlled rather than chaotic.", "options": ["Turning off monitoring during peaks", "A defined order for shedding lower-priority traffic and applying back-pressure when capacity is exceeded", "Letting the platform fail silently", "Asking customers to wait without telling them"], "question": "What is graceful degradation in this context?"}, {"answer": 0, "explanation": "Staged onboarding turns the capacity model into measured evidence. If the first client behaves differently from the forecast, the plan can be corrected before the remaining load arrives.", "options": ["So actual peak behaviour can be measured against the model after each client before adding the next", "Because the clients prefer it", "To delay revenue", "To avoid load testing"], "question": "Why onboard the five clients in stages rather than all at once?"}]}}</script></div>
+</section>
+<div class="fw-card" id="pf-exercise-studio-ch48s6">
+<p class="fw-label">Practise this lesson</p>
+<h2>Exercise</h2>
+<p><b>Investigate the reconciliation break described in this lesson and find its root cause.</b></p>
+<p>Use the three-way matching rule and the break categories in this lesson.</p>
+<ol class="fw-steps">
+<li><b>What to do.</b> Compare the instruction, the settlement record and the statement, name the break type, and state the corrective action.</li>
+</ol>
+<p><button class="studio-btn" id="pf-ex-btn-studio-ch48s6" onclick="pfRevealExercise('studio-ch48s6')">Show the answer</button></p>
+<div class="fw-exercise-answer" id="pf-ex-answer-studio-ch48s6">
+<p><b>Correct result.</b> A break is found by matching amount, currency, date and reference across the three sources. The root cause is a timing difference, an amount difference, a missing entry, or a duplicate, and the corrective action follows the cause.</p>
+<p><b>Why.</b> Reconciliation is the last line of defence. A break that is not investigated is money that cannot be proved.</p>
+</div>
+</div>
+<div class="fw-card" id="pf-quiz-studio-ch48s6" data-answer="1">
+<p class="fw-label">Check your understanding</p>
+<h2>Practice question</h2>
+<p><b>Which of the following best describes resilience at scale: transactions, breakers and recovery?</b></p>
+<button type="button" class="quiz-opt" data-idx="0" onclick="pfCheckAnswer('studio-ch48s6', this)">A payment hub is not a payment gateway, and confusing the two causes real design errors</button>
+<button type="button" class="quiz-opt" data-idx="1" onclick="pfCheckAnswer('studio-ch48s6', this)">Distributed transactions are the hardest problem in hub design, because a payment touches many systems that cannot share one database transaction</button>
+<button type="button" class="quiz-opt" data-idx="2" onclick="pfCheckAnswer('studio-ch48s6', this)">A large bank rarely processes payments through one system</button>
+<button type="button" class="quiz-opt" data-idx="3" onclick="pfCheckAnswer('studio-ch48s6', this)">A payment hub is a single central platform that receives payment instructions from every channel, applies common controls once, and then routes each payment to the right clearing system or correspondent bank</button>
+<div class="quiz-feedback" id="pf-quiz-fb-studio-ch48s6"></div>
+<script type="application/json" id="pf-quiz-data-studio-ch48s6">{"why_wrong": ["This describes a different concept from this chapter, not resilience at scale: transactions, breakers and recovery.", "", "This describes a different concept from this chapter, not resilience at scale: transactions, breakers and recovery.", "This describes a different concept from this chapter, not resilience at scale: transactions, breakers and recovery."], "explanation": "Distributed transactions are the hardest problem in hub design, because a payment touches many systems that cannot share one database transaction. This is the core idea of the lesson."}</script>
+</div>
+<div class="fw-card">
+<p class="fw-label">Takeaway and next step</p>
+<h2>What to remember</h2>
+<p>If a test shows that a single database failure blocks all payments for 20 minutes, the design has a flaw that a diagram would never reveal.</p>
+<p>Send a payment through the hub and watch it pass each component named in this lesson.</p>
+<p><a class="fw-tool-link" href="../simulators/hub.html">Open the Payment Hub Architecture Simulator &rarr;</a></p>
+<p class="studio-note">Builds on "Architecture Patterns: Sync, Async, Events and Idempotency".</p>
+</div>
+<section class="upnext" id="studio-upnext-studio-ch48s6" style="display:none" aria-label="Up next">
+<span class="tag">Up next</span>
+<h2>Up next: Capstone Exercise: Draw the Hub</h2>
+<p>Lesson 7 of 10, Payment Hub: Enterprise Architecture, Narration 4:05</p>
+<div class="row">
+<button class="studio-btn primary" onclick="goLessonAuto('ch48s7')">Next lesson &rarr;</button>
+<button class="studio-btn" onclick="goLesson('ch48s5')">&larr; Previous lesson</button>
+<button class="studio-btn" onclick="studioReplayLesson('studio-ch48s6')">Replay this lesson</button>
+</div>
+</section>
+<div class="lesson-nav">
+<button class="studio-btn" onclick="goLesson('ch48s5')" title="Previous lesson: Architecture Patterns: Sync, Async, Events and Idempotency">&larr; Previous</button>
+<button class="studio-btn" onclick="goChapterContents('ch48')">Chapter contents</button>
+<button class="studio-btn primary" onclick="goLesson('ch48s7')" title="Next lesson: Capstone Exercise: Draw the Hub">Next &rarr;</button>
+</div>
+<div class="card transcript-card">
+<h2>Transcript and full text</h2>
+<details class="studio-transcript" id="studio-transcript-details-studio-ch48s6"><summary>Show transcript</summary>
+<p class="transcript" id="studio-transcript-studio-ch48s6">Distributed transactions are the hardest problem in hub design, because a payment touches many systems that cannot share one database transaction. A classic two phase commit across the hub, core banking and a clearing system would lock resources, fail slowly and couple every system to every other. Modern hubs therefore use the saga pattern, where each step has a compensating action that undoes it if a later step fails. If settlement fails after the customer account was debited, the saga runs a compensation that credits the account back and marks the payment as failed. The design must record every step durably, so a crash halfway through a saga can be resumed or compensated without losing money. Circuit breakers stop a failing dependency from dragging the whole hub down with it. A circuit breaker monitors calls to a service, such as the sanctions screening provider, and counts failures over a rolling window. If failures pass a threshold, for example 50 percent of calls failing in 60 seconds, the breaker opens and calls fail fast instead of waiting for a timeout. The hub can then queue payments for screening, use a cached result where policy allows, or route to a fallback provider. After a cool down period, the breaker allows a few trial calls, and closes again only when the service recovers. Without breakers, one slow vendor can exhaust every thread in the hub. High availability means designing the hub so that no single failure stops payments, and it starts with removing single points of failure. Each component runs on at least two instances across two availability zones, databases replicate synchronously to a standby, and load balancers route around failed instances in seconds. A well designed hub targets 99.95 percent availability, which allows about 22 minutes of downtime per month, and measures it from the customer perspective, not from a single server. Health checks must test real dependencies, such as a database write and a screening call, because a service that reports healthy while its database is down is worse than one that reports failure. Disaster recovery is the plan for losing a whole data centre, and it is measured with two numbers every analyst should know. Recovery time objective is how long recovery may take, and recovery point objective is how much data may be lost. A large bank typically sets a recovery time objective of 2 hours and a recovery point objective of 5 minutes for its payment hub, with a hot standby site that can take over automatically. That means at most 5 minutes of payment data may need to be replayed, and the hub must be back within 2 hours. These targets are tested with full failover exercises at least twice a year, because an untested recovery plan is only a document. Volumes and performance budgets decide whether the architecture is real or only a diagram. A large retail bank hub may process 3 million payments a day, with peaks of 1,200 payments per second at 9 in the morning when salary files and standing orders fire together. End to end processing for a domestic instant payment must complete in under 5 seconds, while a cross border SWIFT payment may allow 30 seconds for screening and routing before the customer sees a sent status. Each component needs its own latency budget, for example 200 milliseconds for fraud scoring and 500 milliseconds for sanctions screening, so that the total stays inside the customer promise even at peak load. Resilience must be proven, not assumed, and that means deliberate failure testing in production like conditions. Chaos testing introduces controlled failures, such as killing a fraud engine instance, delaying a core banking response by 3 seconds, or cutting connectivity to one availability zone, and then measures whether payments still complete and whether alerts fire correctly. A mature hub runs these tests monthly and tracks two results, namely the percentage of payments that completed without manual intervention and the time to detect each injected failure. If a test shows that a single database failure blocks all payments for 20 minutes, the design has a flaw that a diagram would never reveal.</p>
+<div id="studio-paras-studio-ch48s6">
+<p class="transcript">Distributed transactions are the hardest problem in hub design, because a payment touches many systems that cannot share one database transaction. A classic two phase commit across the hub, core banking and a clearing system would lock resources, fail slowly and couple every system to every other. Modern hubs therefore use the saga pattern, where each step has a compensating action that undoes it if a later step fails. If settlement fails after the customer account was debited, the saga runs a compensation that credits the account back and marks the payment as failed. The design must record every step durably, so a crash halfway through a saga can be resumed or compensated without losing money.</p>
+<p class="transcript">Circuit breakers stop a failing dependency from dragging the whole hub down with it. A circuit breaker monitors calls to a service, such as the sanctions screening provider, and counts failures over a rolling window. If failures pass a threshold, for example 50 percent of calls failing in 60 seconds, the breaker opens and calls fail fast instead of waiting for a timeout. The hub can then queue payments for screening, use a cached result where policy allows, or route to a fallback provider. After a cool down period, the breaker allows a few trial calls, and closes again only when the service recovers. Without breakers, one slow vendor can exhaust every thread in the hub.</p>
+<p class="transcript">High availability means designing the hub so that no single failure stops payments, and it starts with removing single points of failure. Each component runs on at least two instances across two availability zones, databases replicate synchronously to a standby, and load balancers route around failed instances in seconds. A well designed hub targets 99.95 percent availability, which allows about 22 minutes of downtime per month, and measures it from the customer perspective, not from a single server. Health checks must test real dependencies, such as a database write and a screening call, because a service that reports healthy while its database is down is worse than one that reports failure.</p>
+<p class="transcript">Disaster recovery is the plan for losing a whole data centre, and it is measured with two numbers every analyst should know. Recovery time objective is how long recovery may take, and recovery point objective is how much data may be lost. A large bank typically sets a recovery time objective of 2 hours and a recovery point objective of 5 minutes for its payment hub, with a hot standby site that can take over automatically. That means at most 5 minutes of payment data may need to be replayed, and the hub must be back within 2 hours. These targets are tested with full failover exercises at least twice a year, because an untested recovery plan is only a document.</p>
+<p class="transcript">Volumes and performance budgets decide whether the architecture is real or only a diagram. A large retail bank hub may process 3 million payments a day, with peaks of 1,200 payments per second at 9 in the morning when salary files and standing orders fire together. End to end processing for a domestic instant payment must complete in under 5 seconds, while a cross border SWIFT payment may allow 30 seconds for screening and routing before the customer sees a sent status. Each component needs its own latency budget, for example 200 milliseconds for fraud scoring and 500 milliseconds for sanctions screening, so that the total stays inside the customer promise even at peak load.</p>
+<p class="transcript">Resilience must be proven, not assumed, and that means deliberate failure testing in production like conditions. Chaos testing introduces controlled failures, such as killing a fraud engine instance, delaying a core banking response by 3 seconds, or cutting connectivity to one availability zone, and then measures whether payments still complete and whether alerts fire correctly. A mature hub runs these tests monthly and tracks two results, namely the percentage of payments that completed without manual intervention and the time to detect each injected failure. If a test shows that a single database failure blocks all payments for 20 minutes, the design has a flaw that a diagram would never reveal.</p>
+</div>
+</details>
+<details class="studio-transcript"><summary>Full lesson text (all scenes)</summary><div id="studio-transcript-full-studio-ch48s6"></div></details>
+<p><button class="studio-btn primary" id="done-ch48s6" onclick="studioMarkSceneDone('studio-ch48s6')">Mark lesson complete</button> <span class="studio-note">Completing a lesson updates your progress dashboard on the homepage.</span></p>
+</div>
+<p class="studio-note">Scene timestamps are estimated by allocating the narration text proportionally across the real audio length. The audio playback position is the source of truth: pause freezes the visual, seeking restores the correct scene, replay restarts the scene animation.</p>
+</div>
+<script>window.__PA_STUDIO_QUEUE = window.__PA_STUDIO_QUEUE || []; window.__PA_STUDIO_QUEUE.push(["studio-ch48s6", {"sample_id": "studio-ch48s6", "chapter_id": "ch48", "title": "Resilience at Scale: Transactions, Breakers and Recovery", "domain": "D09 Payment architecture and technology", "objective": "Learner designs enterprise payment hub architecture for a large bank, integrating channels, rails, screening, liquidity, and operations into one governed, scalable platform. Learner practises this skill on realistic banking cases, explaining the reasoning clearly and using correct terminology throughout the work.", "scenes": [{"id": "ch48s6", "section_id": "ch48s6", "title": "Resilience at Scale: Transactions, Breakers and Recovery", "audio": "../audio/ch48s6.mp3", "duration_sec": 253.0, "points": ["Distributed transactions are the hardest problem in hub design, because a payment touches many systems that cannot share one database transaction.", "Circuit breakers stop a failing dependency from dragging the whole hub down with it.", "High availability means designing the hub so that no single failure stops payments, and it starts with removing single points of failure.", "Disaster recovery is the plan for losing a whole data centre, and it is measured with two numbers every analyst should know.", "Volumes and performance budgets decide whether the architecture is real or only a diagram."], "terms": [{"term": "Sanctions screening", "def": "Checking payment parties, countries and references against sanctions lists published by governments and international bodies."}, {"term": "Circuit breaker", "def": "A resilience pattern that stops calling a failing service after a set number of failures, giving it time to recover."}, {"term": "Fraud scoring", "def": "A risk score assigned to a payment based on factors such as amount, location, device, velocity and customer history."}], "transcript": "Distributed transactions are the hardest problem in hub design, because a payment touches many systems that cannot share one database transaction. A classic two phase commit across the hub, core banking and a clearing system would lock resources, fail slowly and couple every system to every other. Modern hubs therefore use the saga pattern, where each step has a compensating action that undoes it if a later step fails. If settlement fails after the customer account was debited, the saga runs a compensation that credits the account back and marks the payment as failed. The design must record every step durably, so a crash halfway through a saga can be resumed or compensated without losing money. Circuit breakers stop a failing dependency from dragging the whole hub down with it. A circuit breaker monitors calls to a service, such as the sanctions screening provider, and counts failures over a rolling window. If failures pass a threshold, for example 50 percent of calls failing in 60 seconds, the breaker opens and calls fail fast instead of waiting for a timeout. The hub can then queue payments for screening, use a cached result where policy allows, or route to a fallback provider. After a cool down period, the breaker allows a few trial calls, and closes again only when the service recovers. Without breakers, one slow vendor can exhaust every thread in the hub. High availability means designing the hub so that no single failure stops payments, and it starts with removing single points of failure. Each component runs on at least two instances across two availability zones, databases replicate synchronously to a standby, and load balancers route around failed instances in seconds. A well designed hub targets 99.95 percent availability, which allows about 22 minutes of downtime per month, and measures it from the customer perspective, not from a single server. Health checks must test real dependencies, such as a database write and a screening call, because a service that reports healthy while its database is down is worse than one that reports failure. Disaster recovery is the plan for losing a whole data centre, and it is measured with two numbers every analyst should know. Recovery time objective is how long recovery may take, and recovery point objective is how much data may be lost. A large bank typically sets a recovery time objective of 2 hours and a recovery point objective of 5 minutes for its payment hub, with a hot standby site that can take over automatically. That means at most 5 minutes of payment data may need to be replayed, and the hub must be back within 2 hours. These targets are tested with full failover exercises at least twice a year, because an untested recovery plan is only a document. Volumes and performance budgets decide whether the architecture is real or only a diagram. A large retail bank hub may process 3 million payments a day, with peaks of 1,200 payments per second at 9 in the morning when salary files and standing orders fire together. End to end processing for a domestic instant payment must complete in under 5 seconds, while a cross border SWIFT payment may allow 30 seconds for screening and routing before the customer sees a sent status. Each component needs its own latency budget, for example 200 milliseconds for fraud scoring and 500 milliseconds for sanctions screening, so that the total stays inside the customer promise even at peak load. Resilience must be proven, not assumed, and that means deliberate failure testing in production like conditions. Chaos testing introduces controlled failures, such as killing a fraud engine instance, delaying a core banking response by 3 seconds, or cutting connectivity to one availability zone, and then measures whether payments still complete and whether alerts fire correctly. A mature hub runs these tests monthly and tracks two results, namely the percentage of payments that completed without manual intervention and the time to detect each injected failure. If a test shows that a single database failure blocks all payments for 20 minutes, the design has a flaw that a diagram would never reveal.", "paragraphs": ["Distributed transactions are the hardest problem in hub design, because a payment touches many systems that cannot share one database transaction. A classic two phase commit across the hub, core banking and a clearing system would lock resources, fail slowly and couple every system to every other. Modern hubs therefore use the saga pattern, where each step has a compensating action that undoes it if a later step fails. If settlement fails after the customer account was debited, the saga runs a compensation that credits the account back and marks the payment as failed. The design must record every step durably, so a crash halfway through a saga can be resumed or compensated without losing money.", "Circuit breakers stop a failing dependency from dragging the whole hub down with it. A circuit breaker monitors calls to a service, such as the sanctions screening provider, and counts failures over a rolling window. If failures pass a threshold, for example 50 percent of calls failing in 60 seconds, the breaker opens and calls fail fast instead of waiting for a timeout. The hub can then queue payments for screening, use a cached result where policy allows, or route to a fallback provider. After a cool down period, the breaker allows a few trial calls, and closes again only when the service recovers. Without breakers, one slow vendor can exhaust every thread in the hub.", "High availability means designing the hub so that no single failure stops payments, and it starts with removing single points of failure. Each component runs on at least two instances across two availability zones, databases replicate synchronously to a standby, and load balancers route around failed instances in seconds. A well designed hub targets 99.95 percent availability, which allows about 22 minutes of downtime per month, and measures it from the customer perspective, not from a single server. Health checks must test real dependencies, such as a database write and a screening call, because a service that reports healthy while its database is down is worse than one that reports failure.", "Disaster recovery is the plan for losing a whole data centre, and it is measured with two numbers every analyst should know. Recovery time objective is how long recovery may take, and recovery point objective is how much data may be lost. A large bank typically sets a recovery time objective of 2 hours and a recovery point objective of 5 minutes for its payment hub, with a hot standby site that can take over automatically. That means at most 5 minutes of payment data may need to be replayed, and the hub must be back within 2 hours. These targets are tested with full failover exercises at least twice a year, because an untested recovery plan is only a document.", "Volumes and performance budgets decide whether the architecture is real or only a diagram. A large retail bank hub may process 3 million payments a day, with peaks of 1,200 payments per second at 9 in the morning when salary files and standing orders fire together. End to end processing for a domestic instant payment must complete in under 5 seconds, while a cross border SWIFT payment may allow 30 seconds for screening and routing before the customer sees a sent status. Each component needs its own latency budget, for example 200 milliseconds for fraud scoring and 500 milliseconds for sanctions screening, so that the total stays inside the customer promise even at peak load.", "Resilience must be proven, not assumed, and that means deliberate failure testing in production like conditions. Chaos testing introduces controlled failures, such as killing a fraud engine instance, delaying a core banking response by 3 seconds, or cutting connectivity to one availability zone, and then measures whether payments still complete and whether alerts fire correctly. A mature hub runs these tests monthly and tracks two results, namely the percentage of payments that completed without manual intervention and the time to detect each injected failure. If a test shows that a single database failure blocks all payments for 20 minutes, the design has a flaw that a diagram would never reveal."], "accessibility": "Banking architecture diagram showing Resilience at Scale: Transactions, Breakers and Recovery.", "visual_type": "architecture", "visual_choice_reason": "architecture chapter", "beats": [{"t0": 0.0, "t1": 43.0, "title": "Distributed transactions", "note": "Distributed transactions are the hardest problem in hub design, because a payment touches many systems that cannot share one database transaction.", "highlight_nodes": ["n0"], "highlight_conns": [], "highlight_fields": []}, {"t0": 43.0, "t1": 92.8, "title": "Circuit breakers stop a failing dependency", "note": "Circuit breakers stop a failing dependency from dragging the whole hub down with it.", "highlight_nodes": ["n1"], "highlight_conns": ["c0"], "highlight_fields": []}, {"t0": 92.8, "t1": 141.8, "title": "Component runs on at least", "note": "Each component runs on at least two instances across two availability zones, databases replicate synchronously to a standby, and load balancers route around failed instances in seconds.", "highlight_nodes": ["n2"], "highlight_conns": ["c1"], "highlight_fields": []}, {"t0": 141.8, "t1": 184.3, "title": "Large bank typically", "note": "A large bank typically sets a recovery time objective of 2 hours and a recovery point objective of 5 minutes for its payment hub, with a hot standby site that can take over automatically.", "highlight_nodes": ["n3"], "highlight_conns": ["c2"], "highlight_fields": []}, {"t0": 184.3, "t1": 233.2, "title": "End to end processing", "note": "End to end processing for a domestic instant payment must complete in under 5 seconds", "highlight_nodes": ["n4"], "highlight_conns": ["c3"], "highlight_fields": []}, {"t0": 233.2, "t1": 253.0, "title": "Mature hub", "note": "A mature hub runs these tests monthly and tracks two results, namely the percentage of payments that completed without manual intervention and the time to detect each injected failure.", "highlight_nodes": ["n5"], "highlight_conns": ["c4"], "highlight_fields": []}], "framework": {"objective": "By the end of this lesson, you will be able to explain resilience at scale: transactions, breakers and recovery. Distributed transactions are the hardest problem in hub design, because a payment touches many systems that cannot share one database transaction.", "why_matters": "Disaster recovery is the plan for losing a whole data centre, and it is measured with two numbers every analyst should know.", "technical_example": "Sanctions screening: Checking payment parties, countries and references against sanctions lists published by governments and international bodies.", "failure_recovery": "Chaos testing introduces controlled failures, such as killing a fraud engine instance, delaying a core banking response by 3 seconds, or cutting connectivity to one availability zone, and then measures whether payments still complete and whether alerts fire correctly.", "exercise": {"task": "Investigate the reconciliation break described in this lesson and find its root cause.", "info": "Use the three-way matching rule and the break categories in this lesson.", "action": "Compare the instruction, the settlement record and the statement, name the break type, and state the corrective action.", "correct": "A break is found by matching amount, currency, date and reference across the three sources. The root cause is a timing difference, an amount difference, a missing entry, or a duplicate, and the corrective action follows the cause.", "why": "Reconciliation is the last line of defence. A break that is not investigated is money that cannot be proved."}, "assessment": {"question": "Which of the following best describes resilience at scale: transactions, breakers and recovery?", "options": ["A payment hub is not a payment gateway, and confusing the two causes real design errors", "Distributed transactions are the hardest problem in hub design, because a payment touches many systems that cannot share one database transaction", "A large bank rarely processes payments through one system", "A payment hub is a single central platform that receives payment instructions from every channel, applies common controls once, and then routes each payment to the right clearing system or correspondent bank"], "answer": 1, "explanation": "Distributed transactions are the hardest problem in hub design, because a payment touches many systems that cannot share one database transaction. This is the core idea of the lesson.", "why_wrong": ["This describes a different concept from this chapter, not resilience at scale: transactions, breakers and recovery.", "", "This describes a different concept from this chapter, not resilience at scale: transactions, breakers and recovery.", "This describes a different concept from this chapter, not resilience at scale: transactions, breakers and recovery."], "source": "generated:ch48s6"}, "takeaway": "If a test shows that a single database failure blocks all payments for 20 minutes, the design has a flaw that a diagram would never reveal.", "prereq": "ch48s5", "next": "ch48s7", "connection_note": "Builds on \"Architecture Patterns: Sync, Async, Events and Idempotency\".", "tool": {"slug": "hub", "label": "Payment Hub Architecture Simulator", "url": "../simulators/hub.html", "scenario": "Send a payment through the hub and watch it pass each component named in this lesson."}, "simple": "In plain words: distributed transactions are the hardest problem in hub design, because a payment touches many systems that cannot share one database transaction. That is the whole idea in one sentence, and the rest of the lesson shows how it works in a real bank.", "summary": "Distributed transactions are the hardest problem in hub design, because a payment touches many systems that cannot share one database transaction. Key points: Distributed transactions; Circuit breakers stop a failing dependency; Component runs on at least; Large bank typically; End to end processing; Mature hub.", "example": "If failures pass a threshold, for example 50 percent of calls failing in 60 seconds, the breaker opens and calls fail fast instead of waiting for a timeout. Each component needs its own latency budget, for example 200 milliseconds for fraud scoring and 500 milliseconds for sanctions screening, so that the total stays inside the customer promise even at peak load."}}], "chapter_title": "Payment Hub: Enterprise Architecture", "meta_line": "Payment Hub: Enterprise Architecture, Lesson 6 of 10, Narration 4:13, D09 Payment architecture and technology", "next_id": "ch48s7", "next_title": "Capstone Exercise: Draw the Hub"}]);</script>
+</div>
+<nav class="tool-rail" aria-label="Lesson tools">
+<button type="button" class="rail-tool" onclick="pfOpenTranscript('studio-ch48s6')" title="Open transcript"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M7 3h7l4 4v14H7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M14 3v4h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 12h5M10 15.5h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span>Transcript</span></button>
+<button type="button" class="rail-tool" onclick="pfToggleNote('studio-ch48s6')" title="Write a note on this lesson"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L8 19l-4 1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>Notes</span></button>
+<button type="button" class="rail-tool" onclick="pfToggleFiles('studio-ch48s6')" title="Download lesson files"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>Files</span></button>
+</nav>
+<div class="fw-files-panel" id="pf-files-studio-ch48s6" style="display:none"><b>Lesson files</b><p><a href="../audio/ch48s6.mp3" download>Download narration (MP3)</a></p><p><a href="#" onclick="pfDownloadTranscript('studio-ch48s6');return false">Download transcript (.txt)</a></p></div>
+</div>
+</div>
+</main>
+<footer><p>Payments Training Hub. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="../index.html">Home</a> &middot; <a href="../courses.html">Courses</a> &middot; <a href="../practice.html">Practice</a> &middot; <a href="../simulators.html">Simulators</a> &middot; <a href="../labs.html">Labs</a> &middot; <a href="../explorer.html">Explorer</a> &middot; <a href="../tests.html">Tests</a> &middot; <a href="../diagnostic.html">Diagnostic</a> &middot; <a href="../faq.html">Interview Ready Questions</a> &middot; <a href="../interview-prep.html">Interview Prep</a></p><p><a href="../about.html">About</a> &middot; <a href="../privacy.html">Privacy</a> &middot; <a href="../terms.html">Terms</a> &middot; <a href="../contact.html">Contact</a> &middot; <a href="../editorial-standards.html">Editorial Standards</a> &middot; <a href="../sources.html">Sources</a></p></footer>
+<script defer src="../assets/site.js"></script>
+<script defer src="../assets/bundles.js"></script>
+<script defer src="../assets/auth.js"></script>
+<script defer src="../assets/studio.js"></script>
+<script defer src="../assets/insight-components.js"></script>
+<script defer src="../assets/nav.js"></script>
+<script defer src="../assets/pf-enhance.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+if(window.PFInsight){PFInsight.init();}
+});
+</script>
+</body>
+</html>
