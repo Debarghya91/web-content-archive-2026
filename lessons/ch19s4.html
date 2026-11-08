@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>Gridlock and How Systems Resolve It | Payments Training Hub</title>
+<meta name="description" content="Gridlock is a situation where several banks are each waiting for funds from another bank in the group, and no bank can settle its queued payments...">
+<link rel="canonical" href="https://www.paymentstraininghub.in/lessons/ch19s4.html">
+<meta property="og:url" content="https://www.paymentstraininghub.in/lessons/ch19s4.html">
+<meta property="og:title" content="Gridlock and How Systems Resolve It | Payments Training Hub">
+<meta property="og:description" content="Gridlock is a situation where several banks are each waiting for funds from another bank in the group, and no bank can settle its queued payments...">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.in/assets/hero/hero-poster.jpg">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.paymentstraininghub.in/index.html"}, {"@type": "ListItem", "position": 2, "name": "Liquidity Management", "item": "https://www.paymentstraininghub.in/chapters/ch19-liquidity-management.html"}, {"@type": "ListItem", "position": 3, "name": "Gridlock and How Systems Resolve It", "item": "https://www.paymentstraininghub.in/lessons/ch19s4.html"}]}</script>
+<link rel="stylesheet" href="../assets/studio.css">
+<link rel="stylesheet" href="../assets/pf-theme.css">
+<link rel="stylesheet" href="../assets/insight-components.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="../index.html" class="brand">Payments <span>Training Hub</span></a><nav class="topnav"><a href="../index.html">Home</a> <a href="../courses.html">Courses</a> <a href="../practice.html">Practice</a> <a href="../simulators.html">Simulators</a> <a href="../labs.html">Labs</a> <a href="../explorer.html">Explorer</a> <a href="../tests.html">Tests</a></nav><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox" style="display:none"><span id="authState">Not signed in</span> <span id="authForm" style="display:none"><input id="authEmail" type="email" placeholder="Email for OTP" aria-label="Email for sign-in"> <button class="mute-btn" onclick="paAuthSendOtp()">Send code</button> <input id="authCode" type="text" placeholder="6-digit code" aria-label="One-time code" style="display:none"> <button class="mute-btn" id="authVerifyBtn" onclick="paAuthVerifyOtp()" style="display:none">Verify</button> <button class="mute-btn" onclick="paAuthGoogle()">Sign in with Google</button> </span><button class="mute-btn" id="authSignOutBtn" onclick="paAuthSignOut()" style="display:none">Sign out</button></span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<div class="lesson-page">
+<div class="lesson-shell">
+<aside class="course-rail">
+<div class="rail-head">
+<h2>Liquidity Management</h2>
+<a class="rail-close" href="../chapters/ch19-liquidity-management.html" aria-label="Close and go to chapter" title="Back to chapter">&times;</a>
+</div>
+<div class="goal-card">
+<div class="goal-head"><b>Today's goal &middot; <span id="side-progress-text">0 of 7 items</span></b><span class="goal-flag"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 21V4m0 1h11l-2.5 3.5L17 12H6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="goal-chev">&#94;</span></div>
+<p class="goal-body" id="side-goal-body">Complete 3 items today to stay at a good pace!</p>
+</div>
+<ul class="lesson-list"><li class="" data-lesson="ch19s1"><a href="ch19s1.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Why Liquidity Is the Lifeblood of Settlement</span><span class="m">Video &middot; 4 min</span></span></a></li>
+<li class="" data-lesson="ch19s2"><a href="ch19s2.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Intraday Liquidity and Central Bank Accounts</span><span class="m">Video &middot; 4 min</span></span></a></li>
+<li class="" data-lesson="ch19s3"><a href="ch19s3.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Liquidity Saving Mechanisms and Queuing</span><span class="m">Video &middot; 4 min</span></span></a></li>
+<li class="current" data-lesson="ch19s4"><a href="ch19s4.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Gridlock and How Systems Resolve It</span><span class="m">Video &middot; 4 min</span></span></a></li>
+<li class="" data-lesson="ch19s5"><a href="ch19s5.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Liquidity Pools and Shared Arrangements</span><span class="m">Video &middot; 3 min</span></span></a></li>
+<li class="" data-lesson="ch19s6"><a href="ch19s6.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Central Bank Facilities and Collateral</span><span class="m">Video &middot; 3 min</span></span></a></li>
+<li class="" data-lesson="ch19s7"><a href="ch19s7.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">How Banks Manage Liquidity Day to Day</span><span class="m">Video &middot; 5 min</span></span></a></li></ul>
+</aside>
+<div class="lesson-main">
+<div class="studio" id="studio-studio-ch19s4">
+<div class="player">
+<div class="studio-canvas" id="studio-canvas-studio-ch19s4">
+<div class="ch-sec studio-scene-vis active" id="studio-vis-studio-ch19s4-0"><div class="beat-frames">
+<div class="beat-frame active" data-frame="0">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Gridlock:</tspan> <tspan fill="#FFFFFF">situation</tspan> <tspan fill="#FFFFFF">where</tspan> <tspan fill="#FFFFFF">several</tspan></text>
+<text x="48" y="126" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">banks</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">STARTED</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Gridlock</tspan><tspan fill="#CBD5E1"> - each waiting for funds from another bank</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="0.55">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Cycle-based gridlock resolution</tspan><tspan fill="#CBD5E1"> - system looks for a cycle of queued</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="0.55">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Coordinating with major counterparties</tspan><tspan fill="#CBD5E1"> - Spreading payments through the</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Gridlock resolution algorithm finds</tspan><tspan fill="#CBD5E1"> - cycle</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">T2 the operator also</tspan><tspan fill="#CBD5E1"> - bilateral and multilateral offsetting</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">BA</tspan><tspan fill="#CBD5E1"> - also capture the liquidity saving features</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="128" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Gridlock is a situation where several banks are each waiting for funds from another bank in the</text>
+<text x="450" y="476" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">group, and no bank can settle its queued payments because each one is waiting for the next.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 1 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 787" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="787" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Gridlock:</tspan> <tspan fill="#FFFFFF">situation</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">where</tspan> <tspan fill="#FFFFFF">several</tspan></text>
+<text x="24" y="96" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">banks</tspan></text>
+<rect x="24" y="114" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="132" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">STARTED</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="148" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="167" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Gridlock</text>
+<text x="180" y="185" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">each waiting for funds from another bank</text>
+<text x="180" y="203" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="0.55">
+<rect x="24" y="220" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="239" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Cycle-based gridlock</text>
+<text x="180" y="257" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">resolution</text>
+<text x="180" y="275" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">system looks for a cycle of queued payments</text>
+<text x="180" y="293" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="0.55">
+<rect x="24" y="312" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="331" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Coordinating with</text>
+<text x="180" y="349" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">major counterparties</text>
+<text x="180" y="367" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Spreading payments through the day</text>
+<text x="180" y="385" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="24" y="404" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="423" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Gridlock resolution</text>
+<text x="180" y="441" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">algorithm finds</text>
+<text x="180" y="459" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">cycle</text>
+<text x="180" y="477" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="24" y="496" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="515" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">T2 the operator also</text>
+<text x="180" y="533" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">bilateral and multilateral offsetting</text>
+<text x="180" y="551" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="568" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="587" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">BA</text>
+<text x="180" y="605" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">also capture the liquidity saving features</text>
+<text x="180" y="623" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="648" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Gridlock is a situation where several banks</text>
+<text x="180" y="667" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">are each waiting for funds from another</text>
+<text x="180" y="686" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">bank in the group, and no bank can settle</text>
+<text x="180" y="705" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">its queued payments because each one is</text>
+<text x="180" y="724" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">waiting for the next.</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="1">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Cycle-based</tspan> <tspan fill="#FFFFFF">gridlock</tspan> <tspan fill="#FFFFFF">resolution</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Gridlock</tspan><tspan fill="#CBD5E1"> - each waiting for funds from another bank</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Cycle-based gridlock resolution</tspan><tspan fill="#CBD5E1"> - system looks for a cycle of queued</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="0.55">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Coordinating with major counterparties</tspan><tspan fill="#CBD5E1"> - Spreading payments through the</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Gridlock resolution algorithm finds</tspan><tspan fill="#CBD5E1"> - cycle</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">T2 the operator also</tspan><tspan fill="#CBD5E1"> - bilateral and multilateral offsetting</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">BA</tspan><tspan fill="#CBD5E1"> - also capture the liquidity saving features</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="257" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The system looks for a cycle of queued payments where each bank's outgoing payments are</text>
+<text x="450" y="476" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">covered by its incoming payments within the set, and then settles the whole set simultaneously.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 2 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 759" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="759" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Cycle-based</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">gridlock</tspan> <tspan fill="#FFFFFF">resolution</tspan></text>
+<rect x="24" y="86" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="104" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="120" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="139" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Gridlock</text>
+<text x="180" y="157" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">each waiting for funds from another bank</text>
+<text x="180" y="175" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="192" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="211" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Cycle-based gridlock</text>
+<text x="180" y="229" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">resolution</text>
+<text x="180" y="247" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">system looks for a cycle of queued payments</text>
+<text x="180" y="265" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="0.55">
+<rect x="24" y="284" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="303" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Coordinating with</text>
+<text x="180" y="321" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">major counterparties</text>
+<text x="180" y="339" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Spreading payments through the day</text>
+<text x="180" y="357" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="24" y="376" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="395" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Gridlock resolution</text>
+<text x="180" y="413" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">algorithm finds</text>
+<text x="180" y="431" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">cycle</text>
+<text x="180" y="449" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="24" y="468" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="487" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">T2 the operator also</text>
+<text x="180" y="505" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">bilateral and multilateral offsetting</text>
+<text x="180" y="523" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="540" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="559" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">BA</text>
+<text x="180" y="577" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">also capture the liquidity saving features</text>
+<text x="180" y="595" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="620" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The system looks for a cycle of queued</text>
+<text x="180" y="639" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">payments where each bank's outgoing</text>
+<text x="180" y="658" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">payments are covered by its incoming</text>
+<text x="180" y="677" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">payments within the set, and then settles</text>
+<text x="180" y="696" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">the whole set simultaneously.</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="2">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Coordinating</tspan> <tspan fill="#FFFFFF">with</tspan> <tspan fill="#FFFFFF">major</tspan></text>
+<text x="48" y="126" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">counterparties</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Gridlock</tspan><tspan fill="#CBD5E1"> - each waiting for funds from another bank</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Cycle-based gridlock resolution</tspan><tspan fill="#CBD5E1"> - system looks for a cycle of queued</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Coordinating with major counterparties</tspan><tspan fill="#CBD5E1"> - Spreading payments through the</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Gridlock resolution algorithm finds</tspan><tspan fill="#CBD5E1"> - cycle</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">T2 the operator also</tspan><tspan fill="#CBD5E1"> - bilateral and multilateral offsetting</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">BA</tspan><tspan fill="#CBD5E1"> - also capture the liquidity saving features</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="386" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Spreading payments through the day, coordinating with major counterparties, and using</text>
+<text x="450" y="476" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">liquidity forecasts to time large payments all reduce the risk.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 3 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 768" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="768" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Coordinating</tspan> <tspan fill="#FFFFFF">with</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">major</tspan></text>
+<text x="24" y="96" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">counterparties</tspan></text>
+<rect x="24" y="114" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="132" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="148" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="167" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Gridlock</text>
+<text x="180" y="185" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">each waiting for funds from another bank</text>
+<text x="180" y="203" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="220" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="239" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Cycle-based gridlock</text>
+<text x="180" y="257" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">resolution</text>
+<text x="180" y="275" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">system looks for a cycle of queued payments</text>
+<text x="180" y="293" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="1">
+<rect x="24" y="312" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="331" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Coordinating with</text>
+<text x="180" y="349" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">major counterparties</text>
+<text x="180" y="367" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Spreading payments through the day</text>
+<text x="180" y="385" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="24" y="404" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="423" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Gridlock resolution</text>
+<text x="180" y="441" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">algorithm finds</text>
+<text x="180" y="459" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">cycle</text>
+<text x="180" y="477" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="24" y="496" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="515" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">T2 the operator also</text>
+<text x="180" y="533" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">bilateral and multilateral offsetting</text>
+<text x="180" y="551" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="568" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="587" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">BA</text>
+<text x="180" y="605" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">also capture the liquidity saving features</text>
+<text x="180" y="623" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="648" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Spreading payments through the day,</text>
+<text x="180" y="667" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">coordinating with major counterparties,</text>
+<text x="180" y="686" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">and using liquidity forecasts to time large</text>
+<text x="180" y="705" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">payments all reduce the risk.</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="3">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Gridlock</tspan> <tspan fill="#FFFFFF">resolution</tspan> <tspan fill="#FFFFFF">algorithm</tspan> <tspan fill="#FFFFFF">finds</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Gridlock</tspan><tspan fill="#CBD5E1"> - each waiting for funds from another bank</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Cycle-based gridlock resolution</tspan><tspan fill="#CBD5E1"> - system looks for a cycle of queued</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Coordinating with major counterparties</tspan><tspan fill="#CBD5E1"> - Spreading payments through the</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Gridlock resolution algorithm finds</tspan><tspan fill="#CBD5E1"> - cycle</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">T2 the operator also</tspan><tspan fill="#CBD5E1"> - bilateral and multilateral offsetting</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">BA</tspan><tspan fill="#CBD5E1"> - also capture the liquidity saving features</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="514" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The gridlock resolution algorithm finds the cycle</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 4 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 702" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="702" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Gridlock</tspan> <tspan fill="#FFFFFF">resolution</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">algorithm</tspan> <tspan fill="#FFFFFF">finds</tspan></text>
+<rect x="24" y="86" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="104" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="120" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="139" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Gridlock</text>
+<text x="180" y="157" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">each waiting for funds from another bank</text>
+<text x="180" y="175" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="192" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="211" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Cycle-based gridlock</text>
+<text x="180" y="229" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">resolution</text>
+<text x="180" y="247" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">system looks for a cycle of queued payments</text>
+<text x="180" y="265" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="1">
+<rect x="24" y="284" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="303" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Coordinating with</text>
+<text x="180" y="321" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">major counterparties</text>
+<text x="180" y="339" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Spreading payments through the day</text>
+<text x="180" y="357" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="1">
+<rect x="24" y="376" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="395" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Gridlock resolution</text>
+<text x="180" y="413" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">algorithm finds</text>
+<text x="180" y="431" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">cycle</text>
+<text x="180" y="449" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="24" y="468" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="487" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">T2 the operator also</text>
+<text x="180" y="505" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">bilateral and multilateral offsetting</text>
+<text x="180" y="523" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="540" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="559" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">BA</text>
+<text x="180" y="577" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">also capture the liquidity saving features</text>
+<text x="180" y="595" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="620" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The gridlock resolution algorithm finds</text>
+<text x="180" y="639" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">the cycle</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="4">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">T2</tspan> <tspan fill="#FFFFFF">the</tspan> <tspan fill="#FFFFFF">operator</tspan> <tspan fill="#FFFFFF">also</tspan> <tspan fill="#FFFFFF">has</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Gridlock</tspan><tspan fill="#CBD5E1"> - each waiting for funds from another bank</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Cycle-based gridlock resolution</tspan><tspan fill="#CBD5E1"> - system looks for a cycle of queued</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Coordinating with major counterparties</tspan><tspan fill="#CBD5E1"> - Spreading payments through the</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Gridlock resolution algorithm finds</tspan><tspan fill="#CBD5E1"> - cycle</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n4" data-beat="4">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">T2 the operator also</tspan><tspan fill="#CBD5E1"> - bilateral and multilateral offsetting</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">BA</tspan><tspan fill="#CBD5E1"> - also capture the liquidity saving features</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="643" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">In T2 the operator also has bilateral and multilateral offsetting, which settles two banks against</text>
+<text x="450" y="476" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">each other before running the full resolution.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 5 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 740" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="740" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">T2</tspan> <tspan fill="#FFFFFF">the</tspan> <tspan fill="#FFFFFF">operator</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">also</tspan> <tspan fill="#FFFFFF">has</tspan></text>
+<rect x="24" y="86" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="104" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="120" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="139" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Gridlock</text>
+<text x="180" y="157" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">each waiting for funds from another bank</text>
+<text x="180" y="175" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="192" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="211" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Cycle-based gridlock</text>
+<text x="180" y="229" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">resolution</text>
+<text x="180" y="247" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">system looks for a cycle of queued payments</text>
+<text x="180" y="265" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="1">
+<rect x="24" y="284" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="303" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Coordinating with</text>
+<text x="180" y="321" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">major counterparties</text>
+<text x="180" y="339" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Spreading payments through the day</text>
+<text x="180" y="357" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="1">
+<rect x="24" y="376" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="395" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Gridlock resolution</text>
+<text x="180" y="413" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">algorithm finds</text>
+<text x="180" y="431" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">cycle</text>
+<text x="180" y="449" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="1">
+<rect x="24" y="468" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="487" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">T2 the operator also</text>
+<text x="180" y="505" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">bilateral and multilateral offsetting</text>
+<text x="180" y="523" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="540" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="559" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">BA</text>
+<text x="180" y="577" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">also capture the liquidity saving features</text>
+<text x="180" y="595" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="620" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">In T2 the operator also has bilateral and</text>
+<text x="180" y="639" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">multilateral offsetting, which settles two</text>
+<text x="180" y="658" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">banks against each other before running</text>
+<text x="180" y="677" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">the full resolution.</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="5">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">BA</tspan> <tspan fill="#FFFFFF">should</tspan> <tspan fill="#FFFFFF">capture</tspan> <tspan fill="#FFFFFF">the</tspan> <tspan fill="#FFFFFF">liquidity</tspan></text>
+<text x="48" y="126" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">saving</tspan> <tspan fill="#FFFFFF">features</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">COMPLETE</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Gridlock</tspan><tspan fill="#CBD5E1"> - each waiting for funds from another bank</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Cycle-based gridlock resolution</tspan><tspan fill="#CBD5E1"> - system looks for a cycle of queued</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Coordinating with major counterparties</tspan><tspan fill="#CBD5E1"> - Spreading payments through the</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Gridlock resolution algorithm finds</tspan><tspan fill="#CBD5E1"> - cycle</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n4" data-beat="4">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">T2 the operator also</tspan><tspan fill="#CBD5E1"> - bilateral and multilateral offsetting</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n5" data-beat="5">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">BA</tspan><tspan fill="#CBD5E1"> - also capture the liquidity saving features</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The BA should also capture the liquidity saving features the bank uses, such as offsetting,</text>
+<text x="450" y="476" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">prioritisation and reservation, because each one changes how the queue behaves.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 6 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#45A4FF"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 787" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="787" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">BA</tspan> <tspan fill="#FFFFFF">should</tspan> <tspan fill="#FFFFFF">capture</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">the</tspan> <tspan fill="#FFFFFF">liquidity</tspan> <tspan fill="#FFFFFF">saving</tspan></text>
+<text x="24" y="96" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">features</tspan></text>
+<rect x="24" y="114" width="312" height="26" rx="8" fill="#0C1626" stroke="#2DD4BF" stroke-width="1.5"/>
+<text x="180" y="132" text-anchor="middle" font-size="12" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">COMPLETE</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="148" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="167" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Gridlock</text>
+<text x="180" y="185" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">each waiting for funds from another bank</text>
+<text x="180" y="203" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="220" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="239" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Cycle-based gridlock</text>
+<text x="180" y="257" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">resolution</text>
+<text x="180" y="275" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">system looks for a cycle of queued payments</text>
+<text x="180" y="293" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="1">
+<rect x="24" y="312" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="331" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Coordinating with</text>
+<text x="180" y="349" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">major counterparties</text>
+<text x="180" y="367" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Spreading payments through the day</text>
+<text x="180" y="385" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="1">
+<rect x="24" y="404" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="423" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Gridlock resolution</text>
+<text x="180" y="441" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">algorithm finds</text>
+<text x="180" y="459" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">cycle</text>
+<text x="180" y="477" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="1">
+<rect x="24" y="496" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="515" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">T2 the operator also</text>
+<text x="180" y="533" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">bilateral and multilateral offsetting</text>
+<text x="180" y="551" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="1">
+<rect x="24" y="568" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="587" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">BA</text>
+<text x="180" y="605" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">also capture the liquidity saving features</text>
+<text x="180" y="623" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<text x="180" y="648" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The BA should also capture the liquidity</text>
+<text x="180" y="667" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">saving features the bank uses, such as</text>
+<text x="180" y="686" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">offsetting, prioritisation and reservation,</text>
+<text x="180" y="705" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">because each one changes how the queue</text>
+<text x="180" y="724" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">behaves.</text>
+</svg>
+</div>
+</div>
+<p class="xml-caption">Flow of the explanation in this lesson.</p></div>
+<div class="playerbar">
+<div class="studio-progress"><div class="studio-markers" id="studio-markers-studio-ch19s4"></div><input type="range" id="studio-slider-studio-ch19s4" min="0" max="1000" value="0" aria-label="Lesson timeline"></div>
+<div class="ctrl-row">
+<button class="ctrl-btn" id="studio-play-studio-ch19s4" onclick="studioTogglePlay('studio-ch19s4')" aria-label="Play lesson" title="Play lesson"><span class="ctrl-ic-play"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></span><span class="ctrl-ic-pause" style="display:none"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><rect x="6" y="5" width="4" height="14" fill="currentColor"/><rect x="14" y="5" width="4" height="14" fill="currentColor"/></svg></span></button>
+<button class="ctrl-btn studio-mute-btn" id="studio-mute-studio-ch19s4" onclick="studioToggleMute('studio-ch19s4')" aria-label="Mute narration" title="Mute / unmute narration"><svg class="studio-mute-icon" viewBox="0 0 24 24" width="28" height="28" fill="currentColor" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3z"/><path class="studio-mute-waves" d="M16 8.5a5 5 0 0 1 0 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><path class="studio-mute-waves" d="M18.5 6a9 9 0 0 1 0 12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><path class="studio-mute-x" d="M16 9.5l5 5M21 9.5l-5 5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" style="display:none"/></svg></button>
+<button class="ctrl-btn" onclick="studioSkip('studio-ch19s4', -10)" aria-label="Back 10 seconds" title="Back 10 seconds"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 5a7 7 0 1 1-6.32 4.06" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M5.5 3.5v5h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><text x="12" y="16.5" font-size="8" fill="currentColor" text-anchor="middle" font-weight="700">10</text></svg></button>
+<span class="studio-time ctrl-time" id="studio-time-studio-ch19s4">0:00 / 4:13</span>
+<button class="ctrl-btn" onclick="studioSkip('studio-ch19s4', 10)" aria-label="Forward 10 seconds" title="Forward 10 seconds"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 5a7 7 0 1 0 6.32 4.06" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M18.5 3.5v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><text x="12" y="16.5" font-size="8" fill="currentColor" text-anchor="middle" font-weight="700">10</text></svg></button>
+<span class="playerbar-spacer"></span>
+<span class="player-stage" id="studio-tag-studio-ch19s4">Step 1 of 6</span>
+<button class="ctrl-btn ctrl-step" id="studio-prevscene-studio-ch19s4" onclick="studioPrevScene('studio-ch19s4')" title="Previous step" aria-label="Previous step">&lsaquo;</button>
+<button class="ctrl-btn ctrl-step" id="studio-nextscene-studio-ch19s4" onclick="studioNextScene('studio-ch19s4')" title="Next step" aria-label="Next step">&rsaquo;</button>
+<button class="ctrl-btn ctrl-speed" id="studio-speedbtn-studio-ch19s4" onclick="studioCycleSpeed('studio-ch19s4')" title="Playback speed" aria-label="Playback speed">1x</button>
+<span class="ctrl-settings-wrap"><button class="ctrl-btn" onclick="studioToggleSettings('studio-ch19s4', event)" aria-label="Player settings" title="Settings"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5 5l2.1 2.1M16.9 16.9L19 19M19 5l-2.1 2.1M7.1 16.9L5 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button><span class="ctrl-popover" id="studio-settings-studio-ch19s4" style="display:none" onclick="event.stopPropagation()"><label class="ctrl-pop-row">Volume <input type="range" min="0" max="1" step="0.1" value="1" oninput="studioSetVolume('studio-ch19s4', this.value)" style="width:110px;accent-color:#3587FC"></label><button class="studio-btn" id="studio-captions-studio-ch19s4" onclick="studioToggleCaptions('studio-ch19s4')">Captions: On</button><button class="studio-btn" onclick="studioReplayScene('studio-ch19s4')">Replay scene</button></span></span>
+<button class="ctrl-btn" onclick="studioFullscreen('studio-ch19s4')" aria-label="Fullscreen" title="Fullscreen"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+</div>
+</div>
+</div>
+<p class="studio-caption" id="studio-caption-studio-ch19s4"></p>
+<p class="studio-loading" id="studio-loading-studio-ch19s4" style="display:none">Loading narration...</p>
+<p class="studio-error" id="studio-error-studio-ch19s4" role="alert" style="display:none"></p>
+<audio id="studio-audio-studio-ch19s4" preload="auto" src="../audio/ch19s4.mp3"></audio>
+</div>
+<div class="lesson-title-row">
+<h1>Gridlock and How Systems Resolve It</h1>
+<button class="save-note" type="button" onclick="pfToggleNote('studio-ch19s4')" title="Save a note on this lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L8 19l-4 1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg> Save note</button>
+</div>
+<p class="lesson-meta-line">Liquidity Management, Lesson 4 of 7, Narration 4:13, D07 Clearing, settlement and liquidity</p>
+<p class="lesson-note-saved" id="studio-note-saved-studio-ch19s4" style="display:none">Note saved.</p>
+<div class="note-editor" id="studio-note-editor-studio-ch19s4" style="display:none"><textarea id="studio-note-text-studio-ch19s4" rows="3" placeholder="Write a note on this lesson..." aria-label="Lesson note"></textarea><div class="note-editor-row"><button class="studio-btn primary" onclick="pfSaveNote('studio-ch19s4')">Save note</button> <button class="studio-btn" onclick="pfToggleNote('studio-ch19s4')">Cancel</button></div></div>
+<div class="dive-deeper">
+<div class="dive-head"><button type="button" class="dive-toggle" onclick="pfToggleDive(this)" aria-expanded="true"><span class="dive-spark"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 2l2.2 6.8L21 11l-6.8 2.2L12 20l-2.2-6.8L3 11l6.8-2.2z" fill="currentColor"/></svg></span><span class="dive-title">Dive deeper on this topic</span><span class="dive-chev"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 14l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button></div>
+<div class="dive-btns"><button type="button" class="dive-btn" data-kind="practice" onclick="pfDive('studio-ch19s4', 'practice')">Give me practice questions</button><button type="button" class="dive-btn" data-kind="simple" onclick="pfDive('studio-ch19s4', 'simple')">Explain this topic in simple terms</button><button type="button" class="dive-btn" data-kind="summary" onclick="pfDive('studio-ch19s4', 'summary')">Give me a summary</button><button type="button" class="dive-btn" data-kind="example" onclick="pfDive('studio-ch19s4', 'example')">Give me real-life examples</button></div>
+<div class="dive-panel" id="dive-panel-studio-ch19s4"><div class="dive-panel-body"></div></div>
+<script type="application/json" id="pf-dive-data-studio-ch19s4">{"simple": "In plain words: gridlock is a situation where several banks are each waiting for funds from another bank in the group, and no bank can settle its queued payments because each one is waiting for the next. That is the whole idea in one sentence, and the rest of the lesson shows how it works in a real bank.", "summary": "Gridlock is a situation where several banks are each waiting for funds from another bank in the group, and no bank can settle its queued payments because each one is waiting for the next. Key points: Gridlock: situation where several banks; Gridlock stalemate; Cycle-based gridlock resolution; Gridlock resolution typically runs automatically; Coordinating with major counterparties.", "example": "This lesson is conceptual. The worked examples that use it are in the lessons that follow in this chapter."}</script>
+</div>
+<div class="lesson-feedback">
+<div class="fb-icons"><button type="button" class="fb-btn" data-kind="like" onclick="pfFeedback(this,'like')" aria-label="Like this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M7 21H4a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1h3v11zm0 0h9.6a2 2 0 0 0 1.9-1.4l1.6-5A2 2 0 0 0 18.2 12H15V6.5A2.5 2.5 0 0 0 12.5 4L11 7.5 8.6 10H7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button><button type="button" class="fb-btn" data-kind="dislike" onclick="pfFeedback(this,'dislike')" aria-label="Dislike this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M17 3h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1h-3V3zm0 0H7.4a2 2 0 0 0-1.9 1.4l-1.6 5A2 2 0 0 0 5.8 12H9v5.5A2.5 2.5 0 0 0 11.5 20L13 16.5l2.4-2.5H17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button><button type="button" class="fb-btn" data-kind="flag" onclick="pfFeedback(this,'flag')" aria-label="Flag this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M6 21V4m0 1h11l-2.5 3.5L17 12H6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+<button type="button" class="go-next" onclick="goLesson('ch19s5')" title="Next: Liquidity Pools and Shared Arrangements">Go to next item &rarr;</button>
+</div>
+<div class="chips"><span class="chip">Liquidity</span><span class="chip">Netting</span><span class="chip">Capture</span></div>
+<div class="card learn-card">
+<h2>What you will learn</h2>
+<p class="transcript"><b>Your objective.</b> By the end of this lesson, you will be able to explain gridlock and how systems resolve it. Gridlock is a situation where several banks are each waiting for funds from another bank in the group, and no bank can settle its queued payments because each one is waiting for the next.</p>
+<p class="transcript"><b>Why it matters.</b> For a business analyst, gridlock is a reminder that payment systems are networks, and the behaviour of one participant affects all the others.</p>
+<p class="transcript">Chapter objective: Learner manages intraday liquidity, explains funding sources, queues, and gridlock, and calculates a bank liquidity position from opening balance, inflows, outflows, and reserves. Learner applies this skill in realistic banking scenarios, with clear examples and correct terminology throughout.</p>
+<h3>Key learning points</h3>
+<ul id="studio-points-studio-ch19s4">
+<li>Gridlock: situation where several banks</li>
+<li>Cycle-based gridlock resolution</li>
+<li>Coordinating with major counterparties</li>
+<li>Gridlock resolution algorithm finds</li>
+<li>T2 the operator also has</li>
+<li>BA should capture the liquidity saving features</li>
+</ul>
+<h3>Key terms</h3>
+<div id="studio-terms-studio-ch19s4">
+<p class="keyterm"><b>Liquidity:</b> Cash or assets that a bank can use immediately to meet payment obligations. Banks manage liquidity by forecasting inflows and outflows, funding nostro and settlement accounts, and using central bank...</p>
+<p class="keyterm"><b>Netting:</b> The process of offsetting mutual payment obligations between banks so only the net amount is settled. Netting reduces the number of payments and the liquidity needed. It can be bilateral between two...</p>
+<p class="keyterm"><b>Capture:</b> The step in a card transaction where the merchant collects the authorised amount from the issuer, usually when goods are shipped.</p>
+</div>
+<p class="studio-note">Payment flow diagram showing Gridlock and How Systems Resolve It.</p>
+</div>
+<div class="fw-card" id="pf-exercise-studio-ch19s4">
+<p class="fw-label">Practise this lesson</p>
+<h2>Exercise</h2>
+<p><b>Work out what the beneficiary receives for a $10,000 payment under OUR, SHA and BEN.</b></p>
+<p>Use the charge arrangement rules in this lesson and the correspondent and beneficiary bank fees named in the lesson.</p>
+<ol class="fw-steps">
+<li><b>What to do.</b> Calculate the amount credited under each of the three arrangements and state who pays each fee.</li>
+</ol>
+<p><button class="studio-btn" id="pf-ex-btn-studio-ch19s4" onclick="pfRevealExercise('studio-ch19s4')">Show the answer</button></p>
+<div class="fw-exercise-answer" id="pf-ex-answer-studio-ch19s4">
+<p><b>Correct result.</b> Under OUR the sender pays all charges and the beneficiary receives the full amount. Under SHA the sender pays the sending charges and the beneficiary pays the receiving charges. Under BEN the beneficiary pays all charges and receives the amount less all fees.</p>
+<p><b>Why.</b> The charge arrangement decides who pays and how much arrives. A customer who was promised the full amount and receives less will complain, and the complaint lands on the analyst.</p>
+</div>
+</div>
+<div class="fw-card" id="pf-quiz-studio-ch19s4" data-answer="3">
+<p class="fw-label">Check your understanding</p>
+<h2>Practice question</h2>
+<p><b>Which of the following best describes gridlock and how systems resolve it?</b></p>
+<button type="button" class="quiz-opt" data-idx="0" onclick="pfCheckAnswer('studio-ch19s4', this)">Liquidity, in the context of payment systems, is the ready availability of funds in a bank's central bank account to settle payments as they fall due</button>
+<button type="button" class="quiz-opt" data-idx="1" onclick="pfCheckAnswer('studio-ch19s4', this)">For a business analyst, liquidity management is where payment operations meet treasury</button>
+<button type="button" class="quiz-opt" data-idx="2" onclick="pfCheckAnswer('studio-ch19s4', this)">The scale of the challenge is easy to underestimate</button>
+<button type="button" class="quiz-opt" data-idx="3" onclick="pfCheckAnswer('studio-ch19s4', this)">Gridlock is a situation where several banks are each waiting for funds from another bank in the group, and no bank can settle its queued payments because each one is waiting for the next</button>
+<div class="quiz-feedback" id="pf-quiz-fb-studio-ch19s4"></div>
+<script type="application/json" id="pf-quiz-data-studio-ch19s4">{"why_wrong": ["This describes a different concept from this chapter, not gridlock and how systems resolve it.", "This describes a different concept from this chapter, not gridlock and how systems resolve it.", "This describes a different concept from this chapter, not gridlock and how systems resolve it.", ""], "explanation": "Gridlock is a situation where several banks are each waiting for funds from another bank in the group, and no bank can settle its queued payments because each one is waiting for the next. This is the core idea of the lesson."}</script>
+</div>
+<div class="fw-card">
+<p class="fw-label">Takeaway and next step</p>
+<h2>What to remember</h2>
+<p>For a business analyst, gridlock is a reminder that payment systems are networks, and the behaviour of one participant affects all the others.</p>
+<p>Settle a payment like the one in this lesson and watch the liquidity and finality behaviour.</p>
+<p><a class="fw-tool-link" href="../simulators/t2-tips.html">Open the T2/TIPS Simulator &rarr;</a></p>
+<p class="studio-note">Builds on "Liquidity Saving Mechanisms and Queuing".</p>
+</div>
+<section class="upnext" id="studio-upnext-studio-ch19s4" style="display:none" aria-label="Up next">
+<span class="tag">Up next</span>
+<h2>Up next: Liquidity Pools and Shared Arrangements</h2>
+<p>Lesson 5 of 7, Liquidity Management, Narration 3:20</p>
+<div class="row">
+<button class="studio-btn primary" onclick="goLessonAuto('ch19s5')">Next lesson &rarr;</button>
+<button class="studio-btn" onclick="goLesson('ch19s3')">&larr; Previous lesson</button>
+<button class="studio-btn" onclick="studioReplayLesson('studio-ch19s4')">Replay this lesson</button>
+</div>
+</section>
+<div class="lesson-nav">
+<button class="studio-btn" onclick="goLesson('ch19s3')" title="Previous lesson: Liquidity Saving Mechanisms and Queuing">&larr; Previous</button>
+<button class="studio-btn" onclick="goChapterContents('ch19')">Chapter contents</button>
+<button class="studio-btn primary" onclick="goLesson('ch19s5')" title="Next lesson: Liquidity Pools and Shared Arrangements">Next &rarr;</button>
+</div>
+<div class="card transcript-card">
+<h2>Transcript and full text</h2>
+<details class="studio-transcript" id="studio-transcript-details-studio-ch19s4"><summary>Show transcript</summary>
+<p class="transcript" id="studio-transcript-studio-ch19s4">Gridlock is a situation where several banks are each waiting for funds from another bank in the group, and no bank can settle its queued payments because each one is waiting for the next. Imagine Bank A waiting for funds from Bank B, Bank B waiting for funds from Bank C, and Bank C waiting for funds from Bank A. Each bank has enough incoming payments to cover its outgoing payments, but none of them can move first. The system is stuck, even though the overall position is sound. Gridlock is a real risk in RTGS systems, and it tends to appear on busy days or when a large participant is delayed. Payment systems resolve gridlock with a process called gridlock resolution, which searches the queues for a set of payments that can settle together. The system looks for a cycle of queued payments where each bank's outgoing payments are covered by its incoming payments within the set, and then settles the whole set simultaneously. This requires the system to have a complete view of all queued payments and all account balances, and to be able to calculate whether a proposed set can settle safely. Gridlock resolution typically runs automatically at intervals, and it can also be triggered manually by the system operator when queues build up. Banks can also help prevent gridlock by managing their payment submission behaviour. Sending large payments early in the day, before incoming funds have arrived, increases the chance of queuing and gridlock. Spreading payments through the day, coordinating with major counterparties, and using liquidity forecasts to time large payments all reduce the risk. Some systems also encourage good behaviour by publishing queue information or by charging for excessive queuing. For a business analyst, gridlock is a reminder that payment systems are networks, and the behaviour of one participant affects all the others. Take a concrete gridlock in T2 on a busy morning. Bank A owes Bank B EUR 120 million, Bank B owes Bank C EUR 100 million, Bank C owes Bank A EUR 110 million, and each bank holds only EUR 30 million in its T2 account. No single payment can settle, because each bank is short of the amount it owes, yet the circle as a whole is sound: total inflows of EUR 330 million cover total outflows of EUR 330 million. The gridlock resolution algorithm finds the cycle, checks that every bank can cover its net position inside the set, and settles all three payments simultaneously, moving EUR 120 million, EUR 100 million and EUR 110 million in one atomic step. Without the algorithm, the three payments would sit in the queue until fresh funds arrived, possibly for hours. Gridlock resolution can fail, and operations must know what happens then. If the algorithm cannot find a settling set because one bank in the cycle is short even after netting, the payments stay queued and the system tries again at the next cycle, usually every few minutes. The operator can intervene by releasing a payment manually, by asking a bank to fund its account, or by splitting a large payment into smaller ones that can settle. In T2 the operator also has bilateral and multilateral offsetting, which settles two banks against each other before running the full resolution. A bank that repeatedly causes gridlock may face higher charges or a call from the central bank, because its payment behaviour is a risk to the whole system. For a business analyst, gridlock is a requirements topic, not just a theory topic. The hub must show operations the queue depth per bank, the age of the oldest queued payment, and which payments are blocked by gridlock rather than by a simple lack of funds. Test scenarios must include a three bank cycle, a cycle that cannot settle, and a cycle that resolves only after a funding payment arrives. The BA should also capture the liquidity saving features the bank uses, such as offsetting, prioritisation and reservation, because each one changes how the queue behaves. A payment product that cannot explain why a payment is queued will generate calls from customers and from counterparties, and the queue display is where that explanation starts.</p>
+<div id="studio-paras-studio-ch19s4">
+<p class="transcript">Gridlock is a situation where several banks are each waiting for funds from another bank in the group, and no bank can settle its queued payments because each one is waiting for the next. Imagine Bank A waiting for funds from Bank B, Bank B waiting for funds from Bank C, and Bank C waiting for funds from Bank A. Each bank has enough incoming payments to cover its outgoing payments, but none of them can move first. The system is stuck, even though the overall position is sound. Gridlock is a real risk in RTGS systems, and it tends to appear on busy days or when a large participant is delayed.</p>
+<p class="transcript">Payment systems resolve gridlock with a process called gridlock resolution, which searches the queues for a set of payments that can settle together. The system looks for a cycle of queued payments where each bank's outgoing payments are covered by its incoming payments within the set, and then settles the whole set simultaneously. This requires the system to have a complete view of all queued payments and all account balances, and to be able to calculate whether a proposed set can settle safely. Gridlock resolution typically runs automatically at intervals, and it can also be triggered manually by the system operator when queues build up.</p>
+<p class="transcript">Banks can also help prevent gridlock by managing their payment submission behaviour. Sending large payments early in the day, before incoming funds have arrived, increases the chance of queuing and gridlock. Spreading payments through the day, coordinating with major counterparties, and using liquidity forecasts to time large payments all reduce the risk. Some systems also encourage good behaviour by publishing queue information or by charging for excessive queuing. For a business analyst, gridlock is a reminder that payment systems are networks, and the behaviour of one participant affects all the others.</p>
+<p class="transcript">Take a concrete gridlock in T2 on a busy morning. Bank A owes Bank B EUR 120 million, Bank B owes Bank C EUR 100 million, Bank C owes Bank A EUR 110 million, and each bank holds only EUR 30 million in its T2 account. No single payment can settle, because each bank is short of the amount it owes, yet the circle as a whole is sound: total inflows of EUR 330 million cover total outflows of EUR 330 million. The gridlock resolution algorithm finds the cycle, checks that every bank can cover its net position inside the set, and settles all three payments simultaneously, moving EUR 120 million, EUR 100 million and EUR 110 million in one atomic step. Without the algorithm, the three payments would sit in the queue until fresh funds arrived, possibly for hours.</p>
+<p class="transcript">Gridlock resolution can fail, and operations must know what happens then. If the algorithm cannot find a settling set because one bank in the cycle is short even after netting, the payments stay queued and the system tries again at the next cycle, usually every few minutes. The operator can intervene by releasing a payment manually, by asking a bank to fund its account, or by splitting a large payment into smaller ones that can settle. In T2 the operator also has bilateral and multilateral offsetting, which settles two banks against each other before running the full resolution. A bank that repeatedly causes gridlock may face higher charges or a call from the central bank, because its payment behaviour is a risk to the whole system.</p>
+<p class="transcript">For a business analyst, gridlock is a requirements topic, not just a theory topic. The hub must show operations the queue depth per bank, the age of the oldest queued payment, and which payments are blocked by gridlock rather than by a simple lack of funds. Test scenarios must include a three bank cycle, a cycle that cannot settle, and a cycle that resolves only after a funding payment arrives. The BA should also capture the liquidity saving features the bank uses, such as offsetting, prioritisation and reservation, because each one changes how the queue behaves. A payment product that cannot explain why a payment is queued will generate calls from customers and from counterparties, and the queue display is where that explanation starts.</p>
+</div>
+</details>
+<details class="studio-transcript"><summary>Full lesson text (all scenes)</summary><div id="studio-transcript-full-studio-ch19s4"></div></details>
+<p><button class="studio-btn primary" id="done-ch19s4" onclick="studioMarkSceneDone('studio-ch19s4')">Mark lesson complete</button> <span class="studio-note">Completing a lesson updates your progress dashboard on the homepage.</span></p>
+</div>
+<p class="studio-note">Scene timestamps are estimated by allocating the narration text proportionally across the real audio length. The audio playback position is the source of truth: pause freezes the visual, seeking restores the correct scene, replay restarts the scene animation.</p>
+</div>
+<script>window.__PA_STUDIO_QUEUE = window.__PA_STUDIO_QUEUE || []; window.__PA_STUDIO_QUEUE.push(["studio-ch19s4", {"sample_id": "studio-ch19s4", "chapter_id": "ch19", "title": "Gridlock and How Systems Resolve It", "domain": "D07 Clearing, settlement and liquidity", "objective": "Learner manages intraday liquidity, explains funding sources, queues, and gridlock, and calculates a bank liquidity position from opening balance, inflows, outflows, and reserves. Learner applies this skill in realistic banking scenarios, with clear examples and correct terminology throughout.", "scenes": [{"id": "ch19s4", "section_id": "ch19s4", "title": "Gridlock and How Systems Resolve It", "audio": "../audio/ch19s4.mp3", "duration_sec": 253.7, "points": ["Gridlock is a situation where several banks are each waiting for funds from another bank in the group, and no bank can settle its queued payments because each one is waiting for the next.", "Payment systems resolve gridlock with a process called gridlock resolution, which searches the queues for a set of payments that can settle together.", "Banks can also help prevent gridlock by managing their payment submission behaviour.", "Take a concrete gridlock in T2 on a busy morning.", "Gridlock resolution can fail, and operations must know what happens then."], "terms": [{"term": "Liquidity", "def": "Cash or assets that a bank can use immediately to meet payment obligations. Banks manage liquidity by forecasting inflows and outflows, funding nostro and settlement accounts, and using central bank..."}, {"term": "Netting", "def": "The process of offsetting mutual payment obligations between banks so only the net amount is settled. Netting reduces the number of payments and the liquidity needed. It can be bilateral between two..."}, {"term": "Capture", "def": "The step in a card transaction where the merchant collects the authorised amount from the issuer, usually when goods are shipped."}], "transcript": "Gridlock is a situation where several banks are each waiting for funds from another bank in the group, and no bank can settle its queued payments because each one is waiting for the next. Imagine Bank A waiting for funds from Bank B, Bank B waiting for funds from Bank C, and Bank C waiting for funds from Bank A. Each bank has enough incoming payments to cover its outgoing payments, but none of them can move first. The system is stuck, even though the overall position is sound. Gridlock is a real risk in RTGS systems, and it tends to appear on busy days or when a large participant is delayed. Payment systems resolve gridlock with a process called gridlock resolution, which searches the queues for a set of payments that can settle together. The system looks for a cycle of queued payments where each bank's outgoing payments are covered by its incoming payments within the set, and then settles the whole set simultaneously. This requires the system to have a complete view of all queued payments and all account balances, and to be able to calculate whether a proposed set can settle safely. Gridlock resolution typically runs automatically at intervals, and it can also be triggered manually by the system operator when queues build up. Banks can also help prevent gridlock by managing their payment submission behaviour. Sending large payments early in the day, before incoming funds have arrived, increases the chance of queuing and gridlock. Spreading payments through the day, coordinating with major counterparties, and using liquidity forecasts to time large payments all reduce the risk. Some systems also encourage good behaviour by publishing queue information or by charging for excessive queuing. For a business analyst, gridlock is a reminder that payment systems are networks, and the behaviour of one participant affects all the others. Take a concrete gridlock in T2 on a busy morning. Bank A owes Bank B EUR 120 million, Bank B owes Bank C EUR 100 million, Bank C owes Bank A EUR 110 million, and each bank holds only EUR 30 million in its T2 account. No single payment can settle, because each bank is short of the amount it owes, yet the circle as a whole is sound: total inflows of EUR 330 million cover total outflows of EUR 330 million. The gridlock resolution algorithm finds the cycle, checks that every bank can cover its net position inside the set, and settles all three payments simultaneously, moving EUR 120 million, EUR 100 million and EUR 110 million in one atomic step. Without the algorithm, the three payments would sit in the queue until fresh funds arrived, possibly for hours. Gridlock resolution can fail, and operations must know what happens then. If the algorithm cannot find a settling set because one bank in the cycle is short even after netting, the payments stay queued and the system tries again at the next cycle, usually every few minutes. The operator can intervene by releasing a payment manually, by asking a bank to fund its account, or by splitting a large payment into smaller ones that can settle. In T2 the operator also has bilateral and multilateral offsetting, which settles two banks against each other before running the full resolution. A bank that repeatedly causes gridlock may face higher charges or a call from the central bank, because its payment behaviour is a risk to the whole system. For a business analyst, gridlock is a requirements topic, not just a theory topic. The hub must show operations the queue depth per bank, the age of the oldest queued payment, and which payments are blocked by gridlock rather than by a simple lack of funds. Test scenarios must include a three bank cycle, a cycle that cannot settle, and a cycle that resolves only after a funding payment arrives. The BA should also capture the liquidity saving features the bank uses, such as offsetting, prioritisation and reservation, because each one changes how the queue behaves. A payment product that cannot explain why a payment is queued will generate calls from customers and from counterparties, and the queue display is where that explanation starts.", "paragraphs": ["Gridlock is a situation where several banks are each waiting for funds from another bank in the group, and no bank can settle its queued payments because each one is waiting for the next. Imagine Bank A waiting for funds from Bank B, Bank B waiting for funds from Bank C, and Bank C waiting for funds from Bank A. Each bank has enough incoming payments to cover its outgoing payments, but none of them can move first. The system is stuck, even though the overall position is sound. Gridlock is a real risk in RTGS systems, and it tends to appear on busy days or when a large participant is delayed.", "Payment systems resolve gridlock with a process called gridlock resolution, which searches the queues for a set of payments that can settle together. The system looks for a cycle of queued payments where each bank's outgoing payments are covered by its incoming payments within the set, and then settles the whole set simultaneously. This requires the system to have a complete view of all queued payments and all account balances, and to be able to calculate whether a proposed set can settle safely. Gridlock resolution typically runs automatically at intervals, and it can also be triggered manually by the system operator when queues build up.", "Banks can also help prevent gridlock by managing their payment submission behaviour. Sending large payments early in the day, before incoming funds have arrived, increases the chance of queuing and gridlock. Spreading payments through the day, coordinating with major counterparties, and using liquidity forecasts to time large payments all reduce the risk. Some systems also encourage good behaviour by publishing queue information or by charging for excessive queuing. For a business analyst, gridlock is a reminder that payment systems are networks, and the behaviour of one participant affects all the others.", "Take a concrete gridlock in T2 on a busy morning. Bank A owes Bank B EUR 120 million, Bank B owes Bank C EUR 100 million, Bank C owes Bank A EUR 110 million, and each bank holds only EUR 30 million in its T2 account. No single payment can settle, because each bank is short of the amount it owes, yet the circle as a whole is sound: total inflows of EUR 330 million cover total outflows of EUR 330 million. The gridlock resolution algorithm finds the cycle, checks that every bank can cover its net position inside the set, and settles all three payments simultaneously, moving EUR 120 million, EUR 100 million and EUR 110 million in one atomic step. Without the algorithm, the three payments would sit in the queue until fresh funds arrived, possibly for hours.", "Gridlock resolution can fail, and operations must know what happens then. If the algorithm cannot find a settling set because one bank in the cycle is short even after netting, the payments stay queued and the system tries again at the next cycle, usually every few minutes. The operator can intervene by releasing a payment manually, by asking a bank to fund its account, or by splitting a large payment into smaller ones that can settle. In T2 the operator also has bilateral and multilateral offsetting, which settles two banks against each other before running the full resolution. A bank that repeatedly causes gridlock may face higher charges or a call from the central bank, because its payment behaviour is a risk to the whole system.", "For a business analyst, gridlock is a requirements topic, not just a theory topic. The hub must show operations the queue depth per bank, the age of the oldest queued payment, and which payments are blocked by gridlock rather than by a simple lack of funds. Test scenarios must include a three bank cycle, a cycle that cannot settle, and a cycle that resolves only after a funding payment arrives. The BA should also capture the liquidity saving features the bank uses, such as offsetting, prioritisation and reservation, because each one changes how the queue behaves. A payment product that cannot explain why a payment is queued will generate calls from customers and from counterparties, and the queue display is where that explanation starts."], "accessibility": "Payment flow diagram showing Gridlock and How Systems Resolve It.", "visual_type": "payment_flow", "visual_choice_reason": "default payment journey", "beats": [{"t0": 0.0, "t1": 46.1, "title": "Gridlock: situation where several banks", "note": "Gridlock is a situation where several banks are each waiting for funds from another bank in the group, and no bank can settle its queued payments because each one is waiting for the next.", "highlight_nodes": ["n0"], "highlight_conns": [], "highlight_fields": []}, {"t0": 46.1, "t1": 89.6, "title": "Cycle-based gridlock resolution", "note": "The system looks for a cycle of queued payments where each bank's outgoing payments are covered by its incoming payments within the set, and then settles the whole set simultaneously.", "highlight_nodes": ["n1"], "highlight_conns": ["c0"], "highlight_fields": []}, {"t0": 89.6, "t1": 139.7, "title": "Coordinating with major counterparties", "note": "Spreading payments through the day, coordinating with major counterparties, and using liquidity forecasts to time large payments all reduce the risk.", "highlight_nodes": ["n2"], "highlight_conns": ["c1"], "highlight_fields": []}, {"t0": 139.7, "t1": 188.8, "title": "Gridlock resolution algorithm finds", "note": "The gridlock resolution algorithm finds the cycle", "highlight_nodes": ["n3"], "highlight_conns": ["c2"], "highlight_fields": []}, {"t0": 188.8, "t1": 232.0, "title": "T2 the operator also has", "note": "In T2 the operator also has bilateral and multilateral offsetting, which settles two banks against each other before running the full resolution.", "highlight_nodes": ["n4"], "highlight_conns": ["c3"], "highlight_fields": []}, {"t0": 232.0, "t1": 253.7, "title": "BA should capture the liquidity saving features", "note": "The BA should also capture the liquidity saving features the bank uses, such as offsetting, prioritisation and reservation, because each one changes how the queue behaves.", "highlight_nodes": ["n5"], "highlight_conns": ["c4"], "highlight_fields": []}], "node_ids": ["n0", "n1", "n2", "n3", "n4", "n5"], "framework": {"objective": "By the end of this lesson, you will be able to explain gridlock and how systems resolve it. Gridlock is a situation where several banks are each waiting for funds from another bank in the group, and no bank can settle its queued payments because each one is waiting for the next.", "why_matters": "For a business analyst, gridlock is a reminder that payment systems are networks, and the behaviour of one participant affects all the others.", "technical_example": "Liquidity: Cash or assets that a bank can use immediately to meet payment obligations. Banks manage liquidity by forecasting inflows and outflows, funding nostro and settlement accounts, and using central bank...", "failure_recovery": "Gridlock is a situation where several banks are each waiting for funds from another bank in the group, and no bank can settle its queued payments because each one is waiting for the next. Payment systems resolve gridlock with a process called gridlock resolution, which searches the queues for a set of payments that can settle together.", "exercise": {"task": "Work out what the beneficiary receives for a $10,000 payment under OUR, SHA and BEN.", "info": "Use the charge arrangement rules in this lesson and the correspondent and beneficiary bank fees named in the lesson.", "action": "Calculate the amount credited under each of the three arrangements and state who pays each fee.", "correct": "Under OUR the sender pays all charges and the beneficiary receives the full amount. Under SHA the sender pays the sending charges and the beneficiary pays the receiving charges. Under BEN the beneficiary pays all charges and receives the amount less all fees.", "why": "The charge arrangement decides who pays and how much arrives. A customer who was promised the full amount and receives less will complain, and the complaint lands on the analyst."}, "assessment": {"question": "Which of the following best describes gridlock and how systems resolve it?", "options": ["Liquidity, in the context of payment systems, is the ready availability of funds in a bank's central bank account to settle payments as they fall due", "For a business analyst, liquidity management is where payment operations meet treasury", "The scale of the challenge is easy to underestimate", "Gridlock is a situation where several banks are each waiting for funds from another bank in the group, and no bank can settle its queued payments because each one is waiting for the next"], "answer": 3, "explanation": "Gridlock is a situation where several banks are each waiting for funds from another bank in the group, and no bank can settle its queued payments because each one is waiting for the next. This is the core idea of the lesson.", "why_wrong": ["This describes a different concept from this chapter, not gridlock and how systems resolve it.", "This describes a different concept from this chapter, not gridlock and how systems resolve it.", "This describes a different concept from this chapter, not gridlock and how systems resolve it.", ""], "source": "generated:ch19s4"}, "takeaway": "For a business analyst, gridlock is a reminder that payment systems are networks, and the behaviour of one participant affects all the others.", "prereq": "ch19s3", "next": "ch19s5", "connection_note": "Builds on \"Liquidity Saving Mechanisms and Queuing\".", "tool": {"slug": "t2-tips", "label": "T2/TIPS Simulator", "url": "../simulators/t2-tips.html", "scenario": "Settle a payment like the one in this lesson and watch the liquidity and finality behaviour."}, "simple": "In plain words: gridlock is a situation where several banks are each waiting for funds from another bank in the group, and no bank can settle its queued payments because each one is waiting for the next. That is the whole idea in one sentence, and the rest of the lesson shows how it works in a real bank.", "summary": "Gridlock is a situation where several banks are each waiting for funds from another bank in the group, and no bank can settle its queued payments because each one is waiting for the next. Key points: Gridlock: situation where several banks; Gridlock stalemate; Cycle-based gridlock resolution; Gridlock resolution typically runs automatically; Coordinating with major counterparties.", "example": "This lesson is conceptual. The worked examples that use it are in the lessons that follow in this chapter."}}], "chapter_title": "Liquidity Management", "meta_line": "Liquidity Management, Lesson 4 of 7, Narration 4:13, D07 Clearing, settlement and liquidity", "next_id": "ch19s5", "next_title": "Liquidity Pools and Shared Arrangements"}]);</script>
+</div>
+<nav class="tool-rail" aria-label="Lesson tools">
+<button type="button" class="rail-tool" onclick="pfOpenTranscript('studio-ch19s4')" title="Open transcript"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M7 3h7l4 4v14H7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M14 3v4h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 12h5M10 15.5h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span>Transcript</span></button>
+<button type="button" class="rail-tool" onclick="pfToggleNote('studio-ch19s4')" title="Write a note on this lesson"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L8 19l-4 1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>Notes</span></button>
+<button type="button" class="rail-tool" onclick="pfToggleFiles('studio-ch19s4')" title="Download lesson files"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>Files</span></button>
+</nav>
+<div class="fw-files-panel" id="pf-files-studio-ch19s4" style="display:none"><b>Lesson files</b><p><a href="../audio/ch19s4.mp3" download>Download narration (MP3)</a></p><p><a href="#" onclick="pfDownloadTranscript('studio-ch19s4');return false">Download transcript (.txt)</a></p></div>
+</div>
+</div>
+</main>
+<footer><p>Payments Training Hub. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="../index.html">Home</a> &middot; <a href="../courses.html">Courses</a> &middot; <a href="../practice.html">Practice</a> &middot; <a href="../simulators.html">Simulators</a> &middot; <a href="../labs.html">Labs</a> &middot; <a href="../explorer.html">Explorer</a> &middot; <a href="../tests.html">Tests</a> &middot; <a href="../diagnostic.html">Diagnostic</a> &middot; <a href="../faq.html">Interview Ready Questions</a> &middot; <a href="../interview-prep.html">Interview Prep</a></p><p><a href="../about.html">About</a> &middot; <a href="../privacy.html">Privacy</a> &middot; <a href="../terms.html">Terms</a> &middot; <a href="../contact.html">Contact</a> &middot; <a href="../editorial-standards.html">Editorial Standards</a> &middot; <a href="../sources.html">Sources</a></p></footer>
+<script defer src="../assets/site.js"></script>
+<script defer src="../assets/bundles.js"></script>
+<script defer src="../assets/auth.js"></script>
+<script defer src="../assets/studio.js"></script>
+<script defer src="../assets/insight-components.js"></script>
+<script defer src="../assets/nav.js"></script>
+<script defer src="../assets/pf-enhance.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+if(window.PFInsight){PFInsight.init();}
+});
+</script>
+</body>
+</html>

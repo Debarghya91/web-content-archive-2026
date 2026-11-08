@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>Choosing a Model for a Payment System | Payments Training Hub</title>
+<meta name="description" content="When a new payment system is designed, the settlement model is one of the earliest decisions, because it shapes everything else. The design team starts...">
+<link rel="canonical" href="https://www.paymentstraininghub.in/lessons/ch18s6.html">
+<meta property="og:url" content="https://www.paymentstraininghub.in/lessons/ch18s6.html">
+<meta property="og:title" content="Choosing a Model for a Payment System | Payments Training Hub">
+<meta property="og:description" content="When a new payment system is designed, the settlement model is one of the earliest decisions, because it shapes everything else. The design team starts...">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.in/assets/hero/hero-poster.jpg">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.paymentstraininghub.in/index.html"}, {"@type": "ListItem", "position": 2, "name": "Settlement Models", "item": "https://www.paymentstraininghub.in/chapters/ch18-settlement-models.html"}, {"@type": "ListItem", "position": 3, "name": "Choosing a Model for a Payment System", "item": "https://www.paymentstraininghub.in/lessons/ch18s6.html"}]}</script>
+<link rel="stylesheet" href="../assets/studio.css">
+<link rel="stylesheet" href="../assets/pf-theme.css">
+<link rel="stylesheet" href="../assets/insight-components.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="../index.html" class="brand">Payments <span>Training Hub</span></a><nav class="topnav"><a href="../index.html">Home</a> <a href="../courses.html">Courses</a> <a href="../practice.html">Practice</a> <a href="../simulators.html">Simulators</a> <a href="../labs.html">Labs</a> <a href="../explorer.html">Explorer</a> <a href="../tests.html">Tests</a></nav><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox" style="display:none"><span id="authState">Not signed in</span> <span id="authForm" style="display:none"><input id="authEmail" type="email" placeholder="Email for OTP" aria-label="Email for sign-in"> <button class="mute-btn" onclick="paAuthSendOtp()">Send code</button> <input id="authCode" type="text" placeholder="6-digit code" aria-label="One-time code" style="display:none"> <button class="mute-btn" id="authVerifyBtn" onclick="paAuthVerifyOtp()" style="display:none">Verify</button> <button class="mute-btn" onclick="paAuthGoogle()">Sign in with Google</button> </span><button class="mute-btn" id="authSignOutBtn" onclick="paAuthSignOut()" style="display:none">Sign out</button></span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<div class="lesson-page">
+<div class="lesson-shell">
+<aside class="course-rail">
+<div class="rail-head">
+<h2>Settlement Models</h2>
+<a class="rail-close" href="../chapters/ch18-settlement-models.html" aria-label="Close and go to chapter" title="Back to chapter">&times;</a>
+</div>
+<div class="goal-card">
+<div class="goal-head"><b>Today's goal &middot; <span id="side-progress-text">0 of 7 items</span></b><span class="goal-flag"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 21V4m0 1h11l-2.5 3.5L17 12H6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="goal-chev">&#94;</span></div>
+<p class="goal-body" id="side-goal-body">Complete 3 items today to stay at a good pace!</p>
+</div>
+<ul class="lesson-list"><li class="" data-lesson="ch18s1"><a href="ch18s1.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">What Settlement Means After Clearing</span><span class="m">Video &middot; 3 min</span></span></a></li>
+<li class="" data-lesson="ch18s2"><a href="ch18s2.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Real Time Gross Settlement</span><span class="m">Video &middot; 3 min</span></span></a></li>
+<li class="" data-lesson="ch18s3"><a href="ch18s3.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Deferred Net Settlement</span><span class="m">Video &middot; 7 min</span></span></a></li>
+<li class="" data-lesson="ch18s4"><a href="ch18s4.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Prefunded Settlement Models</span><span class="m">Video &middot; 3 min</span></span></a></li>
+<li class="" data-lesson="ch18s5"><a href="ch18s5.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Comparing the Three Models</span><span class="m">Video &middot; 4 min</span></span></a></li>
+<li class="current" data-lesson="ch18s6"><a href="ch18s6.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Choosing a Model for a Payment System</span><span class="m">Video &middot; 4 min</span></span></a></li>
+<li class="" data-lesson="ch18s7"><a href="ch18s7.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Settlement Finality and Legal Certainty</span><span class="m">Video &middot; 3 min</span></span></a></li></ul>
+</aside>
+<div class="lesson-main">
+<div class="studio" id="studio-studio-ch18s6">
+<div class="player">
+<div class="studio-canvas" id="studio-canvas-studio-ch18s6">
+<div class="ch-sec studio-scene-vis active" id="studio-vis-studio-ch18s6-0"><div class="beat-frames">
+<div class="beat-frame active" data-frame="0">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">New</tspan> <tspan fill="#FFFFFF">payment</tspan> <tspan fill="#FFFFFF">system</tspan></text>
+<rect x="48" y="140" width="804" height="299" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">STARTED</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="33" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="228" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="229" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">New payment system</tspan><tspan fill="#CBD5E1"> - When a new payment system is designed</tspan></text>
+<text x="820" y="228" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="0.55">
+<rect x="64" y="245" width="772" height="33" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="269" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="270" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Small banks and non bank payment</tspan><tspan fill="#CBD5E1"> - may struggle to fund large RTGS</tspan></text>
+<text x="820" y="269" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="0.55">
+<rect x="64" y="286" width="772" height="33" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="310" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="311" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Reusing existing settlement</tspan><tspan fill="#CBD5E1"> - new system does not need to invent</tspan></text>
+<text x="820" y="310" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="64" y="327" width="772" height="33" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="351" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="352" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">RTGS</tspan><tspan fill="#CBD5E1"> - RTGS is the wrong model.</tspan></text>
+<text x="820" y="351" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="64" y="368" width="772" height="33" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="392" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="393" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Analyst's</tspan><tspan fill="#CBD5E1"> - new system has three sections that matter</tspan></text>
+<text x="820" y="392" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="421" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="421" width="154" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="459" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">When a new payment system is designed, the settlement model is one of the earliest decisions,</text>
+<text x="450" y="477" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">because it shapes everything else.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 1 of 5</text>
+<circle cx="788" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 648" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="648" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">New</tspan> <tspan fill="#FFFFFF">payment</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">system</tspan></text>
+<rect x="24" y="86" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="104" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">STARTED</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="120" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="139" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">New payment system</text>
+<text x="180" y="157" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">When a new payment system is designed</text>
+<text x="180" y="175" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="0.55">
+<rect x="24" y="192" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="211" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Small banks and non</text>
+<text x="180" y="229" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">bank payment</text>
+<text x="180" y="247" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">may struggle to fund large RTGS balances</text>
+<text x="180" y="265" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="0.55">
+<rect x="24" y="284" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="303" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Reusing existing</text>
+<text x="180" y="321" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">settlement</text>
+<text x="180" y="339" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">new system does not need to invent</text>
+<text x="180" y="357" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="24" y="376" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="395" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">RTGS</text>
+<text x="180" y="413" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">RTGS is the wrong model.</text>
+<text x="180" y="431" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="24" y="448" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="467" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Analyst's</text>
+<text x="180" y="485" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">new system has three sections that matter</text>
+<text x="180" y="503" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="528" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">When a new payment system is designed,</text>
+<text x="180" y="547" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">the settlement model is one of the earliest</text>
+<text x="180" y="566" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">decisions, because it shapes everything</text>
+<text x="180" y="585" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">else.</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="1">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Small</tspan> <tspan fill="#FFFFFF">banks</tspan> <tspan fill="#FFFFFF">and</tspan> <tspan fill="#FFFFFF">non</tspan> <tspan fill="#FFFFFF">bank</tspan> <tspan fill="#FFFFFF">payment</tspan></text>
+<text x="48" y="126" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">firms</tspan></text>
+<rect x="48" y="140" width="804" height="299" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="33" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="228" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="229" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">New payment system</tspan><tspan fill="#CBD5E1"> - When a new payment system is designed</tspan></text>
+<text x="820" y="228" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="245" width="772" height="33" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="269" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="270" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Small banks and non bank payment</tspan><tspan fill="#CBD5E1"> - may struggle to fund large RTGS</tspan></text>
+<text x="820" y="269" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="0.55">
+<rect x="64" y="286" width="772" height="33" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="310" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="311" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Reusing existing settlement</tspan><tspan fill="#CBD5E1"> - new system does not need to invent</tspan></text>
+<text x="820" y="310" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="64" y="327" width="772" height="33" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="351" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="352" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">RTGS</tspan><tspan fill="#CBD5E1"> - RTGS is the wrong model.</tspan></text>
+<text x="820" y="351" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="64" y="368" width="772" height="33" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="392" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="393" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Analyst's</tspan><tspan fill="#CBD5E1"> - new system has three sections that matter</tspan></text>
+<text x="820" y="392" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="421" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="421" width="308" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="459" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Small banks and non bank payment firms may struggle to fund large RTGS balances or large</text>
+<text x="450" y="477" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">prefunds, so a model that demands heavy liquidity can become a barrier to entry.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 2 of 5</text>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 695" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="695" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Small</tspan> <tspan fill="#FFFFFF">banks</tspan> <tspan fill="#FFFFFF">and</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">non</tspan> <tspan fill="#FFFFFF">bank</tspan> <tspan fill="#FFFFFF">payment</tspan></text>
+<text x="24" y="96" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">firms</tspan></text>
+<rect x="24" y="114" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="132" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="148" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="167" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">New payment system</text>
+<text x="180" y="185" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">When a new payment system is designed</text>
+<text x="180" y="203" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="220" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="239" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Small banks and non</text>
+<text x="180" y="257" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">bank payment</text>
+<text x="180" y="275" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">may struggle to fund large RTGS balances</text>
+<text x="180" y="293" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="0.55">
+<rect x="24" y="312" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="331" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Reusing existing</text>
+<text x="180" y="349" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">settlement</text>
+<text x="180" y="367" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">new system does not need to invent</text>
+<text x="180" y="385" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="24" y="404" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="423" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">RTGS</text>
+<text x="180" y="441" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">RTGS is the wrong model.</text>
+<text x="180" y="459" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="24" y="476" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="495" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Analyst's</text>
+<text x="180" y="513" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">new system has three sections that matter</text>
+<text x="180" y="531" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="556" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Small banks and non bank payment firms</text>
+<text x="180" y="575" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">may struggle to fund large RTGS balances</text>
+<text x="180" y="594" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">or large prefunds, so a model that</text>
+<text x="180" y="613" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">demands heavy liquidity can become a</text>
+<text x="180" y="632" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">barrier to entry.</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="2">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Reusing</tspan> <tspan fill="#FFFFFF">existing</tspan> <tspan fill="#FFFFFF">settlement</tspan> <tspan fill="#FFFFFF">design</tspan></text>
+<rect x="48" y="140" width="804" height="299" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="33" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="228" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="229" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">New payment system</tspan><tspan fill="#CBD5E1"> - When a new payment system is designed</tspan></text>
+<text x="820" y="228" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="245" width="772" height="33" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="269" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="270" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Small banks and non bank payment</tspan><tspan fill="#CBD5E1"> - may struggle to fund large RTGS</tspan></text>
+<text x="820" y="269" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2">
+<rect x="64" y="286" width="772" height="33" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="310" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="311" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Reusing existing settlement</tspan><tspan fill="#CBD5E1"> - new system does not need to invent</tspan></text>
+<text x="820" y="310" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="64" y="327" width="772" height="33" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="351" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="352" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">RTGS</tspan><tspan fill="#CBD5E1"> - RTGS is the wrong model.</tspan></text>
+<text x="820" y="351" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="64" y="368" width="772" height="33" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="392" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="393" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Analyst's</tspan><tspan fill="#CBD5E1"> - new system has three sections that matter</tspan></text>
+<text x="820" y="392" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="421" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="421" width="463" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="459" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The new system does not need to invent settlement from scratch.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 3 of 5</text>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 610" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="610" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Reusing</tspan> <tspan fill="#FFFFFF">existing</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">settlement</tspan> <tspan fill="#FFFFFF">design</tspan></text>
+<rect x="24" y="86" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="104" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="120" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="139" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">New payment system</text>
+<text x="180" y="157" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">When a new payment system is designed</text>
+<text x="180" y="175" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="192" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="211" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Small banks and non</text>
+<text x="180" y="229" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">bank payment</text>
+<text x="180" y="247" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">may struggle to fund large RTGS balances</text>
+<text x="180" y="265" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="1">
+<rect x="24" y="284" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="303" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Reusing existing</text>
+<text x="180" y="321" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">settlement</text>
+<text x="180" y="339" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">new system does not need to invent</text>
+<text x="180" y="357" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="24" y="376" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="395" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">RTGS</text>
+<text x="180" y="413" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">RTGS is the wrong model.</text>
+<text x="180" y="431" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="24" y="448" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="467" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Analyst's</text>
+<text x="180" y="485" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">new system has three sections that matter</text>
+<text x="180" y="503" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="528" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The new system does not need to</text>
+<text x="180" y="547" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">invent settlement from scratch.</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="3">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">RTGS:</tspan> <tspan fill="#FFFFFF">wrong</tspan> <tspan fill="#FFFFFF">model</tspan></text>
+<rect x="48" y="140" width="804" height="299" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="33" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="228" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="229" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">New payment system</tspan><tspan fill="#CBD5E1"> - When a new payment system is designed</tspan></text>
+<text x="820" y="228" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="245" width="772" height="33" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="269" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="270" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Small banks and non bank payment</tspan><tspan fill="#CBD5E1"> - may struggle to fund large RTGS</tspan></text>
+<text x="820" y="269" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2">
+<rect x="64" y="286" width="772" height="33" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="310" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="311" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Reusing existing settlement</tspan><tspan fill="#CBD5E1"> - new system does not need to invent</tspan></text>
+<text x="820" y="310" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3">
+<rect x="64" y="327" width="772" height="33" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="351" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="352" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">RTGS</tspan><tspan fill="#CBD5E1"> - RTGS is the wrong model.</tspan></text>
+<text x="820" y="351" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="64" y="368" width="772" height="33" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="392" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="393" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Analyst's</tspan><tspan fill="#CBD5E1"> - new system has three sections that matter</tspan></text>
+<text x="820" y="392" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="421" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="421" width="617" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="459" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">RTGS is the wrong model.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 4 of 5</text>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 591" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="591" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">RTGS:</tspan> <tspan fill="#FFFFFF">wrong</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">model</tspan></text>
+<rect x="24" y="86" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="104" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="120" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="139" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">New payment system</text>
+<text x="180" y="157" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">When a new payment system is designed</text>
+<text x="180" y="175" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="192" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="211" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Small banks and non</text>
+<text x="180" y="229" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">bank payment</text>
+<text x="180" y="247" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">may struggle to fund large RTGS balances</text>
+<text x="180" y="265" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="1">
+<rect x="24" y="284" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="303" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Reusing existing</text>
+<text x="180" y="321" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">settlement</text>
+<text x="180" y="339" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">new system does not need to invent</text>
+<text x="180" y="357" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="1">
+<rect x="24" y="376" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="395" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">RTGS</text>
+<text x="180" y="413" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">RTGS is the wrong model.</text>
+<text x="180" y="431" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="24" y="448" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="467" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Analyst's</text>
+<text x="180" y="485" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">new system has three sections that matter</text>
+<text x="180" y="503" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="528" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">RTGS is the wrong model.</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="4">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Analyst's</tspan> <tspan fill="#FFFFFF">design</tspan> <tspan fill="#FFFFFF">document</tspan></text>
+<rect x="48" y="140" width="804" height="299" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">COMPLETE</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="33" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="228" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="229" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">New payment system</tspan><tspan fill="#CBD5E1"> - When a new payment system is designed</tspan></text>
+<text x="820" y="228" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="245" width="772" height="33" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="269" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="270" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Small banks and non bank payment</tspan><tspan fill="#CBD5E1"> - may struggle to fund large RTGS</tspan></text>
+<text x="820" y="269" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2">
+<rect x="64" y="286" width="772" height="33" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="310" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="311" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Reusing existing settlement</tspan><tspan fill="#CBD5E1"> - new system does not need to invent</tspan></text>
+<text x="820" y="310" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3">
+<rect x="64" y="327" width="772" height="33" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="351" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="352" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">RTGS</tspan><tspan fill="#CBD5E1"> - RTGS is the wrong model.</tspan></text>
+<text x="820" y="351" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n4" data-beat="4">
+<rect x="64" y="368" width="772" height="33" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="392" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="393" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Analyst's</tspan><tspan fill="#CBD5E1"> - new system has three sections that matter</tspan></text>
+<text x="820" y="392" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<rect x="64" y="421" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="421" width="772" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="459" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The analyst's design document for a new system has three sections that matter most.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 5 of 5</text>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#45A4FF"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 629" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="629" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Analyst's</tspan> <tspan fill="#FFFFFF">design</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">document</tspan></text>
+<rect x="24" y="86" width="312" height="26" rx="8" fill="#0C1626" stroke="#2DD4BF" stroke-width="1.5"/>
+<text x="180" y="104" text-anchor="middle" font-size="12" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">COMPLETE</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="120" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="139" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">New payment system</text>
+<text x="180" y="157" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">When a new payment system is designed</text>
+<text x="180" y="175" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="192" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="211" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Small banks and non</text>
+<text x="180" y="229" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">bank payment</text>
+<text x="180" y="247" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">may struggle to fund large RTGS balances</text>
+<text x="180" y="265" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="1">
+<rect x="24" y="284" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="303" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Reusing existing</text>
+<text x="180" y="321" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">settlement</text>
+<text x="180" y="339" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">new system does not need to invent</text>
+<text x="180" y="357" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="1">
+<rect x="24" y="376" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="395" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">RTGS</text>
+<text x="180" y="413" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">RTGS is the wrong model.</text>
+<text x="180" y="431" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="1">
+<rect x="24" y="448" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="467" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Analyst's</text>
+<text x="180" y="485" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">new system has three sections that matter</text>
+<text x="180" y="503" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<text x="180" y="528" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The analyst's design document for a</text>
+<text x="180" y="547" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">new system has three sections that</text>
+<text x="180" y="566" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">matter most.</text>
+</svg>
+</div>
+</div>
+<p class="xml-caption">Flow of the explanation in this lesson.</p></div>
+<div class="playerbar">
+<div class="studio-progress"><div class="studio-markers" id="studio-markers-studio-ch18s6"></div><input type="range" id="studio-slider-studio-ch18s6" min="0" max="1000" value="0" aria-label="Lesson timeline"></div>
+<div class="ctrl-row">
+<button class="ctrl-btn" id="studio-play-studio-ch18s6" onclick="studioTogglePlay('studio-ch18s6')" aria-label="Play lesson" title="Play lesson"><span class="ctrl-ic-play"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></span><span class="ctrl-ic-pause" style="display:none"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><rect x="6" y="5" width="4" height="14" fill="currentColor"/><rect x="14" y="5" width="4" height="14" fill="currentColor"/></svg></span></button>
+<button class="ctrl-btn studio-mute-btn" id="studio-mute-studio-ch18s6" onclick="studioToggleMute('studio-ch18s6')" aria-label="Mute narration" title="Mute / unmute narration"><svg class="studio-mute-icon" viewBox="0 0 24 24" width="28" height="28" fill="currentColor" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3z"/><path class="studio-mute-waves" d="M16 8.5a5 5 0 0 1 0 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><path class="studio-mute-waves" d="M18.5 6a9 9 0 0 1 0 12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><path class="studio-mute-x" d="M16 9.5l5 5M21 9.5l-5 5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" style="display:none"/></svg></button>
+<button class="ctrl-btn" onclick="studioSkip('studio-ch18s6', -10)" aria-label="Back 10 seconds" title="Back 10 seconds"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 5a7 7 0 1 1-6.32 4.06" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M5.5 3.5v5h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><text x="12" y="16.5" font-size="8" fill="currentColor" text-anchor="middle" font-weight="700">10</text></svg></button>
+<span class="studio-time ctrl-time" id="studio-time-studio-ch18s6">0:00 / 3:31</span>
+<button class="ctrl-btn" onclick="studioSkip('studio-ch18s6', 10)" aria-label="Forward 10 seconds" title="Forward 10 seconds"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 5a7 7 0 1 0 6.32 4.06" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M18.5 3.5v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><text x="12" y="16.5" font-size="8" fill="currentColor" text-anchor="middle" font-weight="700">10</text></svg></button>
+<span class="playerbar-spacer"></span>
+<span class="player-stage" id="studio-tag-studio-ch18s6">Step 1 of 5</span>
+<button class="ctrl-btn ctrl-step" id="studio-prevscene-studio-ch18s6" onclick="studioPrevScene('studio-ch18s6')" title="Previous step" aria-label="Previous step">&lsaquo;</button>
+<button class="ctrl-btn ctrl-step" id="studio-nextscene-studio-ch18s6" onclick="studioNextScene('studio-ch18s6')" title="Next step" aria-label="Next step">&rsaquo;</button>
+<button class="ctrl-btn ctrl-speed" id="studio-speedbtn-studio-ch18s6" onclick="studioCycleSpeed('studio-ch18s6')" title="Playback speed" aria-label="Playback speed">1x</button>
+<span class="ctrl-settings-wrap"><button class="ctrl-btn" onclick="studioToggleSettings('studio-ch18s6', event)" aria-label="Player settings" title="Settings"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5 5l2.1 2.1M16.9 16.9L19 19M19 5l-2.1 2.1M7.1 16.9L5 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button><span class="ctrl-popover" id="studio-settings-studio-ch18s6" style="display:none" onclick="event.stopPropagation()"><label class="ctrl-pop-row">Volume <input type="range" min="0" max="1" step="0.1" value="1" oninput="studioSetVolume('studio-ch18s6', this.value)" style="width:110px;accent-color:#3587FC"></label><button class="studio-btn" id="studio-captions-studio-ch18s6" onclick="studioToggleCaptions('studio-ch18s6')">Captions: On</button><button class="studio-btn" onclick="studioReplayScene('studio-ch18s6')">Replay scene</button></span></span>
+<button class="ctrl-btn" onclick="studioFullscreen('studio-ch18s6')" aria-label="Fullscreen" title="Fullscreen"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+</div>
+</div>
+</div>
+<p class="studio-caption" id="studio-caption-studio-ch18s6"></p>
+<p class="studio-loading" id="studio-loading-studio-ch18s6" style="display:none">Loading narration...</p>
+<p class="studio-error" id="studio-error-studio-ch18s6" role="alert" style="display:none"></p>
+<audio id="studio-audio-studio-ch18s6" preload="auto" src="../audio/ch18s6.mp3"></audio>
+</div>
+<div class="lesson-title-row">
+<h1>Choosing a Model for a Payment System</h1>
+<button class="save-note" type="button" onclick="pfToggleNote('studio-ch18s6')" title="Save a note on this lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L8 19l-4 1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg> Save note</button>
+</div>
+<p class="lesson-meta-line">Settlement Models, Lesson 6 of 7, Narration 3:31, D07 Clearing, settlement and liquidity</p>
+<p class="lesson-note-saved" id="studio-note-saved-studio-ch18s6" style="display:none">Note saved.</p>
+<div class="note-editor" id="studio-note-editor-studio-ch18s6" style="display:none"><textarea id="studio-note-text-studio-ch18s6" rows="3" placeholder="Write a note on this lesson..." aria-label="Lesson note"></textarea><div class="note-editor-row"><button class="studio-btn primary" onclick="pfSaveNote('studio-ch18s6')">Save note</button> <button class="studio-btn" onclick="pfToggleNote('studio-ch18s6')">Cancel</button></div></div>
+<div class="dive-deeper">
+<div class="dive-head"><button type="button" class="dive-toggle" onclick="pfToggleDive(this)" aria-expanded="true"><span class="dive-spark"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 2l2.2 6.8L21 11l-6.8 2.2L12 20l-2.2-6.8L3 11l6.8-2.2z" fill="currentColor"/></svg></span><span class="dive-title">Dive deeper on this topic</span><span class="dive-chev"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 14l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button></div>
+<div class="dive-btns"><button type="button" class="dive-btn" data-kind="practice" onclick="pfDive('studio-ch18s6', 'practice')">Give me practice questions</button><button type="button" class="dive-btn" data-kind="simple" onclick="pfDive('studio-ch18s6', 'simple')">Explain this topic in simple terms</button><button type="button" class="dive-btn" data-kind="summary" onclick="pfDive('studio-ch18s6', 'summary')">Give me a summary</button><button type="button" class="dive-btn" data-kind="example" onclick="pfDive('studio-ch18s6', 'example')">Give me real-life examples</button></div>
+<div class="dive-panel" id="dive-panel-studio-ch18s6"><div class="dive-panel-body"></div></div>
+<script type="application/json" id="pf-dive-data-studio-ch18s6">{"simple": "In plain words: when a new payment system is designed, the settlement model is one of the earliest decisions, because it shapes everything else. That is the whole idea in one sentence, and the rest of the lesson shows how it works in a real bank.", "summary": "When a new payment system is designed, the settlement model is one of the earliest decisions, because it shapes everything else. Key points: New payment system; Small banks and non bank payment firms; Reusing existing settlement design; RTGS: wrong model; Analyst's design document.", "example": "The team also considers the participants. Finally, the team considers what already exists."}</script>
+</div>
+<div class="lesson-feedback">
+<div class="fb-icons"><button type="button" class="fb-btn" data-kind="like" onclick="pfFeedback(this,'like')" aria-label="Like this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M7 21H4a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1h3v11zm0 0h9.6a2 2 0 0 0 1.9-1.4l1.6-5A2 2 0 0 0 18.2 12H15V6.5A2.5 2.5 0 0 0 12.5 4L11 7.5 8.6 10H7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button><button type="button" class="fb-btn" data-kind="dislike" onclick="pfFeedback(this,'dislike')" aria-label="Dislike this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M17 3h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1h-3V3zm0 0H7.4a2 2 0 0 0-1.9 1.4l-1.6 5A2 2 0 0 0 5.8 12H9v5.5A2.5 2.5 0 0 0 11.5 20L13 16.5l2.4-2.5H17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button><button type="button" class="fb-btn" data-kind="flag" onclick="pfFeedback(this,'flag')" aria-label="Flag this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M6 21V4m0 1h11l-2.5 3.5L17 12H6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+<button type="button" class="go-next" onclick="goLesson('ch18s7')" title="Next: Settlement Finality and Legal Certainty">Go to next item &rarr;</button>
+</div>
+<div class="chips"><span class="chip">Settlement</span><span class="chip">Liquidity</span><span class="chip">Finality</span></div>
+<div class="card learn-card">
+<h2>What you will learn</h2>
+<p class="transcript"><b>Your objective.</b> By the end of this lesson, you will be able to explain choosing a model for a payment system. When a new payment system is designed, the settlement model is one of the earliest decisions, because it shapes everything else.</p>
+<p class="transcript"><b>Why it matters.</b> A business analyst working on such a project spends much of their time mapping these interfaces and confirming that the new system and the existing settlement system agree on timing, amounts and responsibilities.</p>
+<p class="transcript">Chapter objective: Learner compares gross settlement, net settlement, deferred net settlement, and real-time gross settlement, and explains finality, timing, and liquidity needs for each model. Learner practises this skill on realistic banking cases, explaining the reasoning clearly and using correct terminology throughout the work.</p>
+<h3>Key learning points</h3>
+<ul id="studio-points-studio-ch18s6">
+<li>New payment system</li>
+<li>Small banks and non bank payment firms</li>
+<li>Reusing existing settlement design</li>
+<li>RTGS: wrong model</li>
+<li>Analyst's design document</li>
+</ul>
+<h3>Key terms</h3>
+<div id="studio-terms-studio-ch18s6">
+<p class="keyterm"><b>Settlement:</b> The final movement of funds between banks to discharge obligations created by cleared payments. Settlement is usually made in central bank money or through correspondent accounts.</p>
+<p class="keyterm"><b>Liquidity:</b> Cash or assets that a bank can use immediately to meet payment obligations. Banks manage liquidity by forecasting inflows and outflows, funding nostro and settlement accounts, and using central bank...</p>
+<p class="keyterm"><b>Finality:</b> The point at which a payment settlement becomes irrevocable and unconditional, so it cannot be reversed by the payer or the system.</p>
+</div>
+<p class="studio-note">Clearing and settlement timeline showing Choosing a Model for a Payment System.</p>
+</div>
+<section class="ic-lesson-section" id="pf-insights-studio-ch18s6">
+<h2>Insights and practice scenarios</h2>
+<p class="studio-note">Worked insights and practice scenarios for this lesson. Each one is a reusable PaymentForge case, so the same case may appear in more than one lesson.</p>
+<div data-ic-type="level" data-record-id="INS-105"><script type="application/json">{"level": 3, "meta": {"domain": "Clearing & Settlement", "topic": "UPI customer instant credit versus interbank settlement", "depth": 3, "difficulty": "advanced", "insightId": "INS-105"}, "evidence": "url-pending", "recordId": "INS-105", "problem": "A customer of Meridian Bank in India pays a merchant by UPI and sees the money leave the account instantly, with the merchant confirming receipt within seconds. The customer assumes the banks have already settled with each other. In fact, the customer experience and the interbank settlement are two different events: the customer debit and the merchant credit happen in near real time, while the interbank settlement between the banks follows the scheme's settlement cycle, and the bank carries a liquidity and reconciliation exposure in between.\n\nThe distinction matters when something goes wrong. If the merchant's bank has credited the merchant but the interbank leg is delayed, the customer cannot be debited twice to fix it. If the customer's bank debited the customer but the merchant never received the credit, the customer needs a reversal, not a second payment. If a payment is above the UPI limit for its category, it must be routed elsewhere, and the customer needs to know why UPI was not available rather than being told the payment simply failed.\n\nThe case separates the three clocks in every UPI payment: the customer clock, which is instant; the clearing clock, which confirms the instruction; and the settlement clock, which moves funds between banks. It also places UPI alongside the other Indian rails so the learner can choose the right rail for the amount and the need, instead of treating all instant looking payments as the same.", "solution": "Teach the payment as three linked but separate events, each with its own authoritative source. The customer event is the debit to the payer and the credit to the payee, confirmed in seconds through the UPI switch. The clearing event is the confirmation that the instruction was accepted and routed correctly. The settlement event is the movement of funds between the banks through the scheme settlement cycle. Operations must be able to show, for any payment, which of the three events has happened and which has not, by joining the customer record, the switch confirmation and the settlement record by transaction reference.\n\nChoose the rail by amount, urgency and settlement need, not by habit. UPI is instant for the customer with a limit of INR 5 lakh for specified categories. IMPS is instant and typically bank capped around Rs 5 lakh. NEFT settles in half-hourly batches and suits non urgent transfers. RTGS settles individually in real time, has a minimum of Rs 2 lakh and no RBI maximum, and suits high value time critical transfers. All four operate 24x7x365, so availability does not distinguish them; amount, urgency and settlement model do. The UPI-PayNow linkage, live since 21 February 2023, lets a customer pay a Singapore payee by UPI ID, mobile number or VPA, with an initial Indian daily limit of Rs 60,000, and the same three clock separation applies across the border.\n\nHandle failures by the event that failed. A customer debit without a merchant credit is a reversal case, not a retry case. A merchant credit without a completed interbank leg is a settlement and reconciliation case, not a customer case. A payment above the UPI limit is a routing case: explain the limit, offer the correct rail, and never silently split the payment to fit under the limit.", "decision": {"question": "A UPI payment shows as successful to the customer within seconds, but the interbank settlement between the two banks has not yet happened. Has the payment settled?", "context": "", "options": [{"label": "A", "detail": "No. The customer leg is complete, but interbank settlement follows the scheme settlement cycle, and the bank carries the exposure until it completes.", "correct": true}, {"label": "B", "detail": "Yes, customer confirmation is settlement.", "correct": false}, {"label": "C", "detail": "No, the customer payment should be reversed until settlement happens.", "correct": false}, {"label": "D", "detail": "Yes, because UPI is real time in every sense.", "correct": false}]}, "decisionRationale": "A is correct because customer experience timing and settlement are separate. The debit and credit are instant for the customer, while interbank settlement follows the scheme cycle. B is wrong because confirmation is not settlement finality. D is wrong for the same reason. C is wrong because reversing a completed customer leg would create a second error.", "flow": {"steps": [{"title": "Initiates a UPI payment to a merchant by UPI ID, mobile number or VPA", "actor": "Customer", "note": "UPI app"}, {"title": "Validates the instruction, checks the UPI limit for the category, and debits the customer", "actor": "Payer bank", "note": "Core banking and UPI switch"}, {"title": "Routes the instruction to the payee bank and confirms acceptance", "actor": "UPI switch", "note": "UPI switch"}, {"title": "Credits the merchant account and confirms the credit to the switch", "actor": "Payee bank", "note": "Core banking"}, {"title": "Sees instant confirmation that the merchant has been paid", "actor": "Customer", "note": "UPI app"}, {"title": "Nets and settles the interbank positions between the banks in the settlement cycle", "actor": "Scheme", "note": "Settlement system"}, {"title": "Reconciles the customer debit, the switch confirmation and the settlement record", "actor": "Payer bank", "note": "Reconciliation service"}, {"title": "Sees the credit in the merchant account and statement", "actor": "Merchant", "note": "Merchant banking"}, {"title": "Investigates any item where the customer leg and the settlement leg disagree", "actor": "Payments operations", "note": "Exception workbench"}, {"title": "Closes the payment only when customer, clearing and settlement records all agree", "actor": "Payments operations", "note": "Reconciliation service"}]}, "happy": ["The customer pays, the merchant is credited within seconds, the switch confirms acceptance, and the interbank settlement completes in the scheme cycle. The reconciliation joins the customer debit, the switch confirmation and the settlement record, all three agree, and the payment closes with no exception."], "negative": [{"title": "Debited but not credited", "detail": "The payer bank debited the customer but the payee bank never credited the merchant. Hold the payment as a reversal case, return the funds to the customer as a separate linked entry, and never ask the customer to pay again."}, {"title": "Credited but settlement delayed", "detail": "The merchant is credited but the interbank settlement leg is delayed. Treat it as a settlement and liquidity case for the bank, not a customer case, and do not debit the customer a second time."}, {"title": "Above the UPI limit", "detail": "The amount exceeds the UPI limit of INR 5 lakh for its category. Explain the limit, route the payment by IMPS, NEFT or RTGS as the amount and urgency require, and never split it silently to fit."}, {"title": "Clearing rejection after acceptance", "detail": "The bank accepted the instruction but the clearing participant rejects the resulting message. Move the payment to a defined rejected state, reverse or release any reservation once, and notify the customer with the mapped reason."}, {"title": "Cross-border proxy failure", "detail": "A UPI-PayNow payment fails because the proxy identifier does not resolve to the intended payee. Do not debit the customer, show the exact proxy failure, and let the customer correct the identifier before retrying."}], "technical": ["Store the customer leg, the switch confirmation and the settlement record as separate events linked by the transaction reference and UPI transaction ID, each with its own timestamp and authoritative source. Never derive the settlement state from the customer confirmation screen. Record the limit evaluation, including the category, the amount, and the limit that governed, so a rejection can be explained. Use idempotency on the UPI instruction so a retry after a timeout returns the original outcome. Reconcile the three events on a defined cadence, age unmatched items in an exception worklist, and alert when a customer leg and a settlement leg disagree past the agreed window."], "messages": [{"message": "UPI transaction message", "title": "Switch message carrying the UPI instruction between payer and payee banks.", "fields": [{"tag": "Transaction ID", "name": "Transaction ID", "relevant": true}, {"tag": "Payer and payee VPA or UPI ID", "name": "Payer and payee VPA or UPI ID", "relevant": true}, {"tag": "Amount and currency", "name": "Amount and currency", "relevant": true}, {"tag": "Transaction status", "name": "Transaction status", "relevant": true}]}, {"message": "pacs.008", "title": "Customer credit transfer used where an account based interbank leg is sent for the underlying payment.", "fields": [{"tag": "Instruction identification", "name": "Instruction identification", "relevant": true}, {"tag": "End to end identification", "name": "End to end identification", "relevant": true}, {"tag": "Interbank settlement amount", "name": "Interbank settlement amount", "relevant": true}, {"tag": "Debtor and creditor agent", "name": "Debtor and creditor agent", "relevant": true}]}, {"message": "pacs.002", "title": "Payment status report confirming acceptance or rejection of an instruction.", "fields": [{"tag": "Original instruction reference", "name": "Original instruction reference", "relevant": true}, {"tag": "Transaction status code", "name": "Transaction status code", "relevant": true}, {"tag": "Status reason code", "name": "Status reason code", "relevant": true}]}, {"message": "camt.053", "title": "Bank to customer statement evidencing the customer debit and credit.", "fields": [{"tag": "Statement period", "name": "Statement period", "relevant": true}, {"tag": "Entry reference", "name": "Entry reference", "relevant": true}, {"tag": "Amount, currency and value date", "name": "Amount, currency and value date", "relevant": true}]}], "accounting": ["The customer debit and the merchant credit are posted at the customer leg, while the interbank settlement is a separate bank to bank movement that follows the scheme cycle. Until settlement completes, the bank carries a settlement exposure that is monitored by treasury and reconciled by operations. A debit without a credit is reversed as a separate linked entry to the customer, under maker-checker control, and is never netted silently against another payment. A credit without a completed settlement leg stays visible in the nostro or settlement reconciliation worklist until the cycle completes. Batch booking questions do not arise for a single UPI payment, but where a merchant receives many UPI credits, the statement must still allow each credit to be traced to its transaction reference."], "gherkin": {"scenarios": [{"given": "a clearing rejection correlated to a payment", "when": "the response is received", "then": "the payment is moved to the appropriate rejected state. any related accounting reservation is handled once"}, {"given": "a batch with one returned transaction", "when": "accounting is generated", "then": "aggregate and item-level records reconcile. successful items are not reversed"}]}, "check": {"questions": [{"question": "A UPI payment is confirmed to the customer in seconds. Has interbank settlement happened?", "options": ["No. Customer timing and interbank settlement are separate, and settlement follows the scheme cycle", "No, the payment is not real", "Yes, confirmation is settlement", "Yes, UPI settles instantly between banks"], "answer": 0, "explanation": "The customer debit and credit are instant, but the banks settle through the scheme settlement cycle. The two events must be tracked separately."}, {"question": "Which rail suits a high value time critical transfer of Rs 50 lakh?", "options": ["NEFT, because it is batched", "RTGS, which settles individually in real time, has a minimum of Rs 2 lakh and no RBI maximum", "Cash", "UPI, because it is instant"], "answer": 1, "explanation": "RTGS is the high value real time rail. UPI is limited to INR 5 lakh for specified categories and IMPS is typically bank capped around Rs 5 lakh."}, {"question": "NEFT, RTGS, IMPS and UPI differ in settlement in which way?", "options": ["They all settle in half-hourly batches", "NEFT settles in half-hourly batches, RTGS settles individually in real time, IMPS and UPI are instant for the customer", "RTGS is batched and NEFT is real time", "IMPS settles weekly"], "answer": 1, "explanation": "NEFT is half-hourly batches, RTGS is individual real time settlement, and IMPS and UPI give instant customer confirmation. All four operate 24x7x365."}, {"question": "A customer was debited by UPI but the merchant was never credited. What is correct?", "options": ["Debit the customer again to try to push it through", "Treat it as a reversal case and return the funds as a separate linked entry", "Ask the customer to pay again", "Do nothing and wait a month"], "answer": 1, "explanation": "A debit without a credit is reversed once as a linked entry. A second payment would risk paying twice if the first credit later arrives."}]}}</script></div>
+</section>
+<div class="fw-card" id="pf-exercise-studio-ch18s6">
+<p class="fw-label">Practise this lesson</p>
+<h2>Exercise</h2>
+<p><b>Decide which settlement model fits the scenario in this lesson and explain why.</b></p>
+<p>Use the settlement models, the liquidity trade-off and the finality rules in this lesson.</p>
+<ol class="fw-steps">
+<li><b>What to do.</b> Name the model, state when settlement becomes final, and explain what happens if the sending bank does not have enough liquidity.</li>
+</ol>
+<p><button class="studio-btn" id="pf-ex-btn-studio-ch18s6" onclick="pfRevealExercise('studio-ch18s6')">Show the answer</button></p>
+<div class="fw-exercise-answer" id="pf-ex-answer-studio-ch18s6">
+<p><b>Correct result.</b> Real time gross settlement settles each payment individually in central bank money with immediate finality, but it needs liquidity for every payment. Deferred net settlement nets payments and settles the net position, which needs less liquidity but leaves settlement risk until the net settles.</p>
+<p><b>Why.</b> Settlement is where money actually moves. The model decides the risk, the liquidity need, and when the payment is truly final.</p>
+</div>
+</div>
+<div class="fw-card" id="pf-quiz-studio-ch18s6" data-answer="1">
+<p class="fw-label">Check your understanding</p>
+<h2>Practice question</h2>
+<p><b>Which of the following best describes choosing a model for a payment system?</b></p>
+<button type="button" class="quiz-opt" data-idx="0" onclick="pfCheckAnswer('studio-ch18s6', this)">Settlement is the moment when value actually moves and a payment becomes final and irrevocable</button>
+<button type="button" class="quiz-opt" data-idx="1" onclick="pfCheckAnswer('studio-ch18s6', this)">When a new payment system is designed, the settlement model is one of the earliest decisions, because it shapes everything else</button>
+<button type="button" class="quiz-opt" data-idx="2" onclick="pfCheckAnswer('studio-ch18s6', this)">Settlement finality is a legal concept as well as an operational one</button>
+<button type="button" class="quiz-opt" data-idx="3" onclick="pfCheckAnswer('studio-ch18s6', this)">The distinction between clearing and settlement is easy to blur, but it matters in practice</button>
+<div class="quiz-feedback" id="pf-quiz-fb-studio-ch18s6"></div>
+<script type="application/json" id="pf-quiz-data-studio-ch18s6">{"why_wrong": ["This describes a different concept from this chapter, not choosing a model for a payment system.", "", "This describes a different concept from this chapter, not choosing a model for a payment system.", "This describes a different concept from this chapter, not choosing a model for a payment system."], "explanation": "When a new payment system is designed, the settlement model is one of the earliest decisions, because it shapes everything else. This is the core idea of the lesson."}</script>
+</div>
+<div class="fw-card">
+<p class="fw-label">Takeaway and next step</p>
+<h2>What to remember</h2>
+<p>Most of the analyst's time goes on that third section, confirming that the new system and the existing settlement system agree on timing, amounts, and responsibilities, because a mismatch there is discovered at the worst possible moment, on the first live settlement day.</p>
+<p>Settle a payment like the one in this lesson and watch the liquidity and finality behaviour.</p>
+<p><a class="fw-tool-link" href="../simulators/t2-tips.html">Open the T2/TIPS Simulator &rarr;</a></p>
+<p class="studio-note">Builds on "Comparing the Three Models".</p>
+</div>
+<section class="upnext" id="studio-upnext-studio-ch18s6" style="display:none" aria-label="Up next">
+<span class="tag">Up next</span>
+<h2>Up next: Settlement Finality and Legal Certainty</h2>
+<p>Lesson 7 of 7, Settlement Models, Narration 3:28</p>
+<div class="row">
+<button class="studio-btn primary" onclick="goLessonAuto('ch18s7')">Next lesson &rarr;</button>
+<button class="studio-btn" onclick="goLesson('ch18s5')">&larr; Previous lesson</button>
+<button class="studio-btn" onclick="studioReplayLesson('studio-ch18s6')">Replay this lesson</button>
+</div>
+</section>
+<div class="lesson-nav">
+<button class="studio-btn" onclick="goLesson('ch18s5')" title="Previous lesson: Comparing the Three Models">&larr; Previous</button>
+<button class="studio-btn" onclick="goChapterContents('ch18')">Chapter contents</button>
+<button class="studio-btn primary" onclick="goLesson('ch18s7')" title="Next lesson: Settlement Finality and Legal Certainty">Next &rarr;</button>
+</div>
+<div class="card transcript-card">
+<h2>Transcript and full text</h2>
+<details class="studio-transcript" id="studio-transcript-details-studio-ch18s6"><summary>Show transcript</summary>
+<p class="transcript" id="studio-transcript-studio-ch18s6">When a new payment system is designed, the settlement model is one of the earliest decisions, because it shapes everything else. The design team starts with the use case. Who are the users, what are they paying for, how large are the payments, how urgent are they, and what happens if a payment is delayed. A system for house purchases needs immediate finality and can justify high liquidity costs. A system for monthly utility bills does not need speed and benefits far more from low cost netting. The use case drives the model, not the other way round. The team also considers the participants. Small banks and non bank payment firms may struggle to fund large RTGS balances or large prefunds, so a model that demands heavy liquidity can become a barrier to entry. A well designed system balances safety with access, so that smaller participants can join without taking on risks they cannot manage. This is why many modern fast payment systems use prefunding with low minimums and easy top ups, and why some RTGS systems offer tiered access where smaller firms settle through a larger sponsor bank. Finally, the team considers what already exists. In most countries the central bank already operates an RTGS system, and a new retail system will settle its net positions through that RTGS system. The new system does not need to invent settlement from scratch. It needs to fit cleanly into the existing infrastructure, respecting cut off times, account structures and legal finality rules. A business analyst working on such a project spends much of their time mapping these interfaces and confirming that the new system and the existing settlement system agree on timing, amounts and responsibilities. Design a system from the use case up. A country with 40 banks wants a new instant payment system for retail customers. It will carry 12 million payments a day with an average value of EUR 85, and customers expect the money in seconds. RTGS is the wrong model. 12 million individual settlements a day would overwhelm the central bank system, and the liquidity cost would be enormous. Deferred net settlement is also wrong. It cannot deliver funds in seconds. The team chooses prefunding, with a minimum prefund of EUR 500,000, easy top ups through the RTGS system, and low barriers so small banks can join. Smaller firms that cannot prefund at all join as indirect participants through a larger sponsor bank, which settles on their behalf. If the team had chosen RTGS, the small banks would have been unable to fund the intraday balances and would not have joined, and the system would have launched with half the market missing. The analyst's design document for a new system has three sections that matter most. First, the use case, in numbers. Who pays whom, how much, how often, and how urgent it is. Second, the participants. Who can join directly, who needs a sponsor, and what the minimum liquidity requirement is for each. Third, the fit with what already exists. The new system will settle its net positions through the central bank RTGS system, so the document must map the cut off times, the account structure, and the legal finality point between the two systems. Most of the analyst's time goes on that third section, confirming that the new system and the existing settlement system agree on timing, amounts, and responsibilities, because a mismatch there is discovered at the worst possible moment, on the first live settlement day.</p>
+<div id="studio-paras-studio-ch18s6">
+<p class="transcript">When a new payment system is designed, the settlement model is one of the earliest decisions, because it shapes everything else. The design team starts with the use case. Who are the users, what are they paying for, how large are the payments, how urgent are they, and what happens if a payment is delayed. A system for house purchases needs immediate finality and can justify high liquidity costs. A system for monthly utility bills does not need speed and benefits far more from low cost netting. The use case drives the model, not the other way round.</p>
+<p class="transcript">The team also considers the participants. Small banks and non bank payment firms may struggle to fund large RTGS balances or large prefunds, so a model that demands heavy liquidity can become a barrier to entry. A well designed system balances safety with access, so that smaller participants can join without taking on risks they cannot manage. This is why many modern fast payment systems use prefunding with low minimums and easy top ups, and why some RTGS systems offer tiered access where smaller firms settle through a larger sponsor bank.</p>
+<p class="transcript">Finally, the team considers what already exists. In most countries the central bank already operates an RTGS system, and a new retail system will settle its net positions through that RTGS system. The new system does not need to invent settlement from scratch. It needs to fit cleanly into the existing infrastructure, respecting cut off times, account structures and legal finality rules. A business analyst working on such a project spends much of their time mapping these interfaces and confirming that the new system and the existing settlement system agree on timing, amounts and responsibilities.</p>
+<p class="transcript">Design a system from the use case up. A country with 40 banks wants a new instant payment system for retail customers. It will carry 12 million payments a day with an average value of EUR 85, and customers expect the money in seconds. RTGS is the wrong model. 12 million individual settlements a day would overwhelm the central bank system, and the liquidity cost would be enormous. Deferred net settlement is also wrong. It cannot deliver funds in seconds. The team chooses prefunding, with a minimum prefund of EUR 500,000, easy top ups through the RTGS system, and low barriers so small banks can join. Smaller firms that cannot prefund at all join as indirect participants through a larger sponsor bank, which settles on their behalf. If the team had chosen RTGS, the small banks would have been unable to fund the intraday balances and would not have joined, and the system would have launched with half the market missing.</p>
+<p class="transcript">The analyst's design document for a new system has three sections that matter most. First, the use case, in numbers. Who pays whom, how much, how often, and how urgent it is. Second, the participants. Who can join directly, who needs a sponsor, and what the minimum liquidity requirement is for each. Third, the fit with what already exists. The new system will settle its net positions through the central bank RTGS system, so the document must map the cut off times, the account structure, and the legal finality point between the two systems. Most of the analyst's time goes on that third section, confirming that the new system and the existing settlement system agree on timing, amounts, and responsibilities, because a mismatch there is discovered at the worst possible moment, on the first live settlement day.</p>
+</div>
+</details>
+<details class="studio-transcript"><summary>Full lesson text (all scenes)</summary><div id="studio-transcript-full-studio-ch18s6"></div></details>
+<p><button class="studio-btn primary" id="done-ch18s6" onclick="studioMarkSceneDone('studio-ch18s6')">Mark lesson complete</button> <span class="studio-note">Completing a lesson updates your progress dashboard on the homepage.</span></p>
+</div>
+<p class="studio-note">Scene timestamps are estimated by allocating the narration text proportionally across the real audio length. The audio playback position is the source of truth: pause freezes the visual, seeking restores the correct scene, replay restarts the scene animation.</p>
+</div>
+<script>window.__PA_STUDIO_QUEUE = window.__PA_STUDIO_QUEUE || []; window.__PA_STUDIO_QUEUE.push(["studio-ch18s6", {"sample_id": "studio-ch18s6", "chapter_id": "ch18", "title": "Choosing a Model for a Payment System", "domain": "D07 Clearing, settlement and liquidity", "objective": "Learner compares gross settlement, net settlement, deferred net settlement, and real-time gross settlement, and explains finality, timing, and liquidity needs for each model. Learner practises this skill on realistic banking cases, explaining the reasoning clearly and using correct terminology throughout the work.", "scenes": [{"id": "ch18s6", "section_id": "ch18s6", "title": "Choosing a Model for a Payment System", "audio": "../audio/ch18s6.mp3", "duration_sec": 211.5, "points": ["When a new payment system is designed, the settlement model is one of the earliest decisions, because it shapes everything else.", "The team also considers the participants.", "Finally, the team considers what already exists.", "Design a system from the use case up.", "The analyst's design document for a new system has three sections that matter most."], "terms": [{"term": "Settlement", "def": "The final movement of funds between banks to discharge obligations created by cleared payments. Settlement is usually made in central bank money or through correspondent accounts."}, {"term": "Liquidity", "def": "Cash or assets that a bank can use immediately to meet payment obligations. Banks manage liquidity by forecasting inflows and outflows, funding nostro and settlement accounts, and using central bank..."}, {"term": "Finality", "def": "The point at which a payment settlement becomes irrevocable and unconditional, so it cannot be reversed by the payer or the system."}], "transcript": "When a new payment system is designed, the settlement model is one of the earliest decisions, because it shapes everything else. The design team starts with the use case. Who are the users, what are they paying for, how large are the payments, how urgent are they, and what happens if a payment is delayed. A system for house purchases needs immediate finality and can justify high liquidity costs. A system for monthly utility bills does not need speed and benefits far more from low cost netting. The use case drives the model, not the other way round. The team also considers the participants. Small banks and non bank payment firms may struggle to fund large RTGS balances or large prefunds, so a model that demands heavy liquidity can become a barrier to entry. A well designed system balances safety with access, so that smaller participants can join without taking on risks they cannot manage. This is why many modern fast payment systems use prefunding with low minimums and easy top ups, and why some RTGS systems offer tiered access where smaller firms settle through a larger sponsor bank. Finally, the team considers what already exists. In most countries the central bank already operates an RTGS system, and a new retail system will settle its net positions through that RTGS system. The new system does not need to invent settlement from scratch. It needs to fit cleanly into the existing infrastructure, respecting cut off times, account structures and legal finality rules. A business analyst working on such a project spends much of their time mapping these interfaces and confirming that the new system and the existing settlement system agree on timing, amounts and responsibilities. Design a system from the use case up. A country with 40 banks wants a new instant payment system for retail customers. It will carry 12 million payments a day with an average value of EUR 85, and customers expect the money in seconds. RTGS is the wrong model. 12 million individual settlements a day would overwhelm the central bank system, and the liquidity cost would be enormous. Deferred net settlement is also wrong. It cannot deliver funds in seconds. The team chooses prefunding, with a minimum prefund of EUR 500,000, easy top ups through the RTGS system, and low barriers so small banks can join. Smaller firms that cannot prefund at all join as indirect participants through a larger sponsor bank, which settles on their behalf. If the team had chosen RTGS, the small banks would have been unable to fund the intraday balances and would not have joined, and the system would have launched with half the market missing. The analyst's design document for a new system has three sections that matter most. First, the use case, in numbers. Who pays whom, how much, how often, and how urgent it is. Second, the participants. Who can join directly, who needs a sponsor, and what the minimum liquidity requirement is for each. Third, the fit with what already exists. The new system will settle its net positions through the central bank RTGS system, so the document must map the cut off times, the account structure, and the legal finality point between the two systems. Most of the analyst's time goes on that third section, confirming that the new system and the existing settlement system agree on timing, amounts, and responsibilities, because a mismatch there is discovered at the worst possible moment, on the first live settlement day.", "paragraphs": ["When a new payment system is designed, the settlement model is one of the earliest decisions, because it shapes everything else. The design team starts with the use case. Who are the users, what are they paying for, how large are the payments, how urgent are they, and what happens if a payment is delayed. A system for house purchases needs immediate finality and can justify high liquidity costs. A system for monthly utility bills does not need speed and benefits far more from low cost netting. The use case drives the model, not the other way round.", "The team also considers the participants. Small banks and non bank payment firms may struggle to fund large RTGS balances or large prefunds, so a model that demands heavy liquidity can become a barrier to entry. A well designed system balances safety with access, so that smaller participants can join without taking on risks they cannot manage. This is why many modern fast payment systems use prefunding with low minimums and easy top ups, and why some RTGS systems offer tiered access where smaller firms settle through a larger sponsor bank.", "Finally, the team considers what already exists. In most countries the central bank already operates an RTGS system, and a new retail system will settle its net positions through that RTGS system. The new system does not need to invent settlement from scratch. It needs to fit cleanly into the existing infrastructure, respecting cut off times, account structures and legal finality rules. A business analyst working on such a project spends much of their time mapping these interfaces and confirming that the new system and the existing settlement system agree on timing, amounts and responsibilities.", "Design a system from the use case up. A country with 40 banks wants a new instant payment system for retail customers. It will carry 12 million payments a day with an average value of EUR 85, and customers expect the money in seconds. RTGS is the wrong model. 12 million individual settlements a day would overwhelm the central bank system, and the liquidity cost would be enormous. Deferred net settlement is also wrong. It cannot deliver funds in seconds. The team chooses prefunding, with a minimum prefund of EUR 500,000, easy top ups through the RTGS system, and low barriers so small banks can join. Smaller firms that cannot prefund at all join as indirect participants through a larger sponsor bank, which settles on their behalf. If the team had chosen RTGS, the small banks would have been unable to fund the intraday balances and would not have joined, and the system would have launched with half the market missing.", "The analyst's design document for a new system has three sections that matter most. First, the use case, in numbers. Who pays whom, how much, how often, and how urgent it is. Second, the participants. Who can join directly, who needs a sponsor, and what the minimum liquidity requirement is for each. Third, the fit with what already exists. The new system will settle its net positions through the central bank RTGS system, so the document must map the cut off times, the account structure, and the legal finality point between the two systems. Most of the analyst's time goes on that third section, confirming that the new system and the existing settlement system agree on timing, amounts, and responsibilities, because a mismatch there is discovered at the worst possible moment, on the first live settlement day."], "accessibility": "Clearing and settlement timeline showing Choosing a Model for a Payment System.", "visual_type": "timeline", "visual_choice_reason": "clearing and settlement chapter", "beats": [{"t0": 0.0, "t1": 36.5, "title": "New payment system", "note": "When a new payment system is designed, the settlement model is one of the earliest decisions, because it shapes everything else.", "highlight_nodes": ["n0"], "highlight_conns": [], "highlight_fields": []}, {"t0": 36.5, "t1": 79.6, "title": "Small banks and non bank payment firms", "note": "Small banks and non bank payment firms may struggle to fund large RTGS balances or large prefunds, so a model that demands heavy liquidity can become a barrier to entry.", "highlight_nodes": ["n1"], "highlight_conns": ["c0"], "highlight_fields": []}, {"t0": 79.6, "t1": 118.9, "title": "Reusing existing settlement design", "note": "The new system does not need to invent settlement from scratch.", "highlight_nodes": ["n2"], "highlight_conns": ["c1"], "highlight_fields": []}, {"t0": 118.9, "t1": 161.4, "title": "RTGS: wrong model", "note": "RTGS is the wrong model.", "highlight_nodes": ["n3"], "highlight_conns": ["c2"], "highlight_fields": []}, {"t0": 161.4, "t1": 211.5, "title": "Analyst's design document", "note": "The analyst's design document for a new system has three sections that matter most.", "highlight_nodes": ["n4"], "highlight_conns": ["c3"], "highlight_fields": []}], "node_ids": ["n0", "n1", "n2", "n3", "n4"], "framework": {"objective": "By the end of this lesson, you will be able to explain choosing a model for a payment system. When a new payment system is designed, the settlement model is one of the earliest decisions, because it shapes everything else.", "why_matters": "A business analyst working on such a project spends much of their time mapping these interfaces and confirming that the new system and the existing settlement system agree on timing, amounts and responsibilities.", "technical_example": "It will carry 12 million payments a day with an average value of EUR 85, and customers expect the money in seconds.", "failure_recovery": "If the team had chosen RTGS, the small banks would have been unable to fund the intraday balances and would not have joined, and the system would have launched with half the market missing.", "exercise": {"task": "Decide which settlement model fits the scenario in this lesson and explain why.", "info": "Use the settlement models, the liquidity trade-off and the finality rules in this lesson.", "action": "Name the model, state when settlement becomes final, and explain what happens if the sending bank does not have enough liquidity.", "correct": "Real time gross settlement settles each payment individually in central bank money with immediate finality, but it needs liquidity for every payment. Deferred net settlement nets payments and settles the net position, which needs less liquidity but leaves settlement risk until the net settles.", "why": "Settlement is where money actually moves. The model decides the risk, the liquidity need, and when the payment is truly final."}, "assessment": {"question": "Which of the following best describes choosing a model for a payment system?", "options": ["Settlement is the moment when value actually moves and a payment becomes final and irrevocable", "When a new payment system is designed, the settlement model is one of the earliest decisions, because it shapes everything else", "Settlement finality is a legal concept as well as an operational one", "The distinction between clearing and settlement is easy to blur, but it matters in practice"], "answer": 1, "explanation": "When a new payment system is designed, the settlement model is one of the earliest decisions, because it shapes everything else. This is the core idea of the lesson.", "why_wrong": ["This describes a different concept from this chapter, not choosing a model for a payment system.", "", "This describes a different concept from this chapter, not choosing a model for a payment system.", "This describes a different concept from this chapter, not choosing a model for a payment system."], "source": "generated:ch18s6"}, "takeaway": "Most of the analyst's time goes on that third section, confirming that the new system and the existing settlement system agree on timing, amounts, and responsibilities, because a mismatch there is discovered at the worst possible moment, on the first live settlement day.", "prereq": "ch18s5", "next": "ch18s7", "connection_note": "Builds on \"Comparing the Three Models\".", "tool": {"slug": "t2-tips", "label": "T2/TIPS Simulator", "url": "../simulators/t2-tips.html", "scenario": "Settle a payment like the one in this lesson and watch the liquidity and finality behaviour."}, "simple": "In plain words: when a new payment system is designed, the settlement model is one of the earliest decisions, because it shapes everything else. That is the whole idea in one sentence, and the rest of the lesson shows how it works in a real bank.", "summary": "When a new payment system is designed, the settlement model is one of the earliest decisions, because it shapes everything else. Key points: New payment system; Small banks and non bank payment firms; Reusing existing settlement design; RTGS: wrong model; Analyst's design document.", "example": "The team also considers the participants. Finally, the team considers what already exists."}}], "chapter_title": "Settlement Models", "meta_line": "Settlement Models, Lesson 6 of 7, Narration 3:31, D07 Clearing, settlement and liquidity", "next_id": "ch18s7", "next_title": "Settlement Finality and Legal Certainty"}]);</script>
+</div>
+<nav class="tool-rail" aria-label="Lesson tools">
+<button type="button" class="rail-tool" onclick="pfOpenTranscript('studio-ch18s6')" title="Open transcript"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M7 3h7l4 4v14H7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M14 3v4h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 12h5M10 15.5h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span>Transcript</span></button>
+<button type="button" class="rail-tool" onclick="pfToggleNote('studio-ch18s6')" title="Write a note on this lesson"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L8 19l-4 1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>Notes</span></button>
+<button type="button" class="rail-tool" onclick="pfToggleFiles('studio-ch18s6')" title="Download lesson files"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>Files</span></button>
+</nav>
+<div class="fw-files-panel" id="pf-files-studio-ch18s6" style="display:none"><b>Lesson files</b><p><a href="../audio/ch18s6.mp3" download>Download narration (MP3)</a></p><p><a href="#" onclick="pfDownloadTranscript('studio-ch18s6');return false">Download transcript (.txt)</a></p></div>
+</div>
+</div>
+</main>
+<footer><p>Payments Training Hub. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="../index.html">Home</a> &middot; <a href="../courses.html">Courses</a> &middot; <a href="../practice.html">Practice</a> &middot; <a href="../simulators.html">Simulators</a> &middot; <a href="../labs.html">Labs</a> &middot; <a href="../explorer.html">Explorer</a> &middot; <a href="../tests.html">Tests</a> &middot; <a href="../diagnostic.html">Diagnostic</a> &middot; <a href="../faq.html">Interview Ready Questions</a> &middot; <a href="../interview-prep.html">Interview Prep</a></p><p><a href="../about.html">About</a> &middot; <a href="../privacy.html">Privacy</a> &middot; <a href="../terms.html">Terms</a> &middot; <a href="../contact.html">Contact</a> &middot; <a href="../editorial-standards.html">Editorial Standards</a> &middot; <a href="../sources.html">Sources</a></p></footer>
+<script defer src="../assets/site.js"></script>
+<script defer src="../assets/bundles.js"></script>
+<script defer src="../assets/auth.js"></script>
+<script defer src="../assets/studio.js"></script>
+<script defer src="../assets/insight-components.js"></script>
+<script defer src="../assets/nav.js"></script>
+<script defer src="../assets/pf-enhance.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+if(window.PFInsight){PFInsight.init();}
+});
+</script>
+</body>
+</html>

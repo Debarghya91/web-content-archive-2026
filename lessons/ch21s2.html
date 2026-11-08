@@ -1,0 +1,1606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>Authorization in Real Time | Payments Training Hub</title>
+<meta name="description" content="Authorisation is the real time check that happens while the customer is still at the till or on the checkout page. It answers one question before the...">
+<link rel="canonical" href="https://www.paymentstraininghub.in/lessons/ch21s2.html">
+<meta property="og:url" content="https://www.paymentstraininghub.in/lessons/ch21s2.html">
+<meta property="og:title" content="Authorization in Real Time | Payments Training Hub">
+<meta property="og:description" content="Authorisation is the real time check that happens while the customer is still at the till or on the checkout page. It answers one question before the...">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.in/assets/hero/hero-poster.jpg">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.paymentstraininghub.in/index.html"}, {"@type": "ListItem", "position": 2, "name": "Card Authorization, Clearing and Settlement", "item": "https://www.paymentstraininghub.in/chapters/ch21-card-authorization-clearing-and-settlement.html"}, {"@type": "ListItem", "position": 3, "name": "Authorization in Real Time", "item": "https://www.paymentstraininghub.in/lessons/ch21s2.html"}]}</script>
+<link rel="stylesheet" href="../assets/studio.css">
+<link rel="stylesheet" href="../assets/pf-theme.css">
+<link rel="stylesheet" href="../assets/insight-components.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="../index.html" class="brand">Payments <span>Training Hub</span></a><nav class="topnav"><a href="../index.html">Home</a> <a href="../courses.html">Courses</a> <a href="../practice.html">Practice</a> <a href="../simulators.html">Simulators</a> <a href="../labs.html">Labs</a> <a href="../explorer.html">Explorer</a> <a href="../tests.html">Tests</a></nav><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox" style="display:none"><span id="authState">Not signed in</span> <span id="authForm" style="display:none"><input id="authEmail" type="email" placeholder="Email for OTP" aria-label="Email for sign-in"> <button class="mute-btn" onclick="paAuthSendOtp()">Send code</button> <input id="authCode" type="text" placeholder="6-digit code" aria-label="One-time code" style="display:none"> <button class="mute-btn" id="authVerifyBtn" onclick="paAuthVerifyOtp()" style="display:none">Verify</button> <button class="mute-btn" onclick="paAuthGoogle()">Sign in with Google</button> </span><button class="mute-btn" id="authSignOutBtn" onclick="paAuthSignOut()" style="display:none">Sign out</button></span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<div class="lesson-page">
+<div class="lesson-shell">
+<aside class="course-rail">
+<div class="rail-head">
+<h2>Card Authorization, Clearing and Settlement</h2>
+<a class="rail-close" href="../chapters/ch21-card-authorization-clearing-and-settlement.html" aria-label="Close and go to chapter" title="Back to chapter">&times;</a>
+</div>
+<div class="goal-card">
+<div class="goal-head"><b>Today's goal &middot; <span id="side-progress-text">0 of 8 items</span></b><span class="goal-flag"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 21V4m0 1h11l-2.5 3.5L17 12H6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="goal-chev">&#94;</span></div>
+<p class="goal-body" id="side-goal-body">Complete 3 items today to stay at a good pace!</p>
+</div>
+<ul class="lesson-list"><li class="" data-lesson="ch21s1"><a href="ch21s1.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">The Four Parties and the Card Transaction</span><span class="m">Video &middot; 4 min</span></span></a></li>
+<li class="current" data-lesson="ch21s2"><a href="ch21s2.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Authorization in Real Time</span><span class="m">Video &middot; 4 min</span></span></a></li>
+<li class="" data-lesson="ch21s3"><a href="ch21s3.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">What Happens After the Customer Leaves</span><span class="m">Video &middot; 4 min</span></span></a></li>
+<li class="" data-lesson="ch21s4"><a href="ch21s4.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Batching and Clearing Files</span><span class="m">Video &middot; 3 min</span></span></a></li>
+<li class="" data-lesson="ch21s5"><a href="ch21s5.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Interchange Fees and How Money Moves</span><span class="m">Video &middot; 4 min</span></span></a></li>
+<li class="" data-lesson="ch21s6"><a href="ch21s6.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Settlement Between Issuer, Acquirer and Scheme</span><span class="m">Video &middot; 4 min</span></span></a></li>
+<li class="" data-lesson="ch21s7"><a href="ch21s7.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Where Things Go Wrong</span><span class="m">Video &middot; 8 min</span></span></a></li>
+<li class="" data-lesson="ch21s8"><a href="ch21s8.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">System design deep dive: card authorization at scale</span><span class="m">Video &middot; 3 min</span></span></a></li></ul>
+</aside>
+<div class="lesson-main">
+<div class="studio" id="studio-studio-ch21s2">
+<div class="player">
+<div class="studio-canvas" id="studio-canvas-studio-ch21s2">
+<div class="ch-sec studio-scene-vis active" id="studio-vis-studio-ch21s2-0"><div class="beat-frames">
+<div class="beat-frame active" data-frame="0">
+<svg class="flow-desktop" viewBox="0 0 900 560" role="img" aria-label="Lesson visual">
+<defs><pattern id="bfd56" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<linearGradient id="bfd55-gTop" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#C9E4FF"/><stop offset="50%" stop-color="#7FB8E8"/><stop offset="100%" stop-color="#4A90CC"/></linearGradient>
+<linearGradient id="bfd55-gTopA" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#E2F2FF"/><stop offset="50%" stop-color="#A9D8FF"/><stop offset="100%" stop-color="#6FB3E8"/></linearGradient>
+<linearGradient id="bfd55-gLeft" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#5A96C8"/><stop offset="50%" stop-color="#2E5F8F"/><stop offset="100%" stop-color="#16324F"/></linearGradient>
+<linearGradient id="bfd55-gLeftA" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#84BCE8"/><stop offset="50%" stop-color="#4A86BC"/><stop offset="100%" stop-color="#1E4066"/></linearGradient>
+<linearGradient id="bfd55-gRight" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#35618C"/><stop offset="50%" stop-color="#1A3A5C"/><stop offset="100%" stop-color="#0A1A2C"/></linearGradient>
+<linearGradient id="bfd55-gRightA" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#5AA8E8"/><stop offset="50%" stop-color="#2E6FA8"/><stop offset="100%" stop-color="#123252"/></linearGradient>
+<radialGradient id="bfd55-sh" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#000000" stop-opacity="0.55"/><stop offset="70%" stop-color="#000000" stop-opacity="0.22"/><stop offset="100%" stop-color="#000000" stop-opacity="0"/></radialGradient>
+<filter id="bfd55-glow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="10" result="b"/><feMerge><feMergeNode in="b"/></feMerge></filter>
+<rect x="0" y="0" width="900" height="560" fill="#0B1F3D"/>
+<rect x="0" y="0" width="900" height="560" fill="url(#bfd56)"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Authorisation:</tspan> <tspan fill="#FFFFFF">real</tspan> <tspan fill="#FFFFFF">time</tspan> <tspan fill="#FFFFFF">check</tspan></text>
+<g class="bf-now" data-beat="0">
+<ellipse cx="172" cy="284" rx="85" ry="9" fill="url(#bfd55-sh)" opacity="0.9"/>
+<ellipse cx="172" cy="282" rx="62" ry="6" fill="#01040A" opacity="0.8"/>
+<polygon points="172,168 241,202 241,240 172,274 103,240" fill="#2E9BFF" opacity="0.30" filter="url(#bfd55-glow)"/>
+<ellipse cx="172" cy="221" rx="99" ry="82" fill="none" stroke="#47DCDD" stroke-width="2" opacity="0.8"/>
+<polygon points="103,202 172,236 172,274 103,240" fill="url(#bfd55-gLeftA)"/>
+<polygon points="172,236 241,202 241,240 172,274" fill="url(#bfd55-gRightA)"/>
+<polygon points="172,168 241,202 172,236 103,202" fill="url(#bfd55-gTopA)"/>
+<line x1="172" y1="168" x2="103" y2="202" stroke="#D6EBFF" stroke-width="2"/>
+<line x1="172" y1="168" x2="241" y2="202" stroke="#A6E5FF" stroke-width="2"/>
+<line x1="103" y1="202" x2="172" y2="236" stroke="#7FB8E8" stroke-width="1.5"/>
+<line x1="172" y1="236" x2="241" y2="202" stroke="#5A96C8" stroke-width="1.5"/>
+<line x1="103" y1="202" x2="103" y2="240" stroke="#4A7CA8" stroke-width="1.5"/>
+<line x1="241" y1="202" x2="241" y2="240" stroke="#35618C" stroke-width="1.5"/>
+<line x1="172" y1="236" x2="172" y2="274" stroke="#2A5A8A" stroke-width="1.5"/>
+<line x1="103" y1="240" x2="172" y2="274" stroke="#2A5A8A" stroke-width="1"/>
+<line x1="172" y1="274" x2="241" y2="240" stroke="#1A3A5C" stroke-width="1"/>
+<polyline points="150,182 172,172 194,182" fill="none" stroke="#EAF6FF" stroke-width="2" stroke-linecap="round" opacity="0.9"/>
+<circle cx="172" cy="202" r="10" fill="#1D4ED8"/>
+<text x="172" y="206" text-anchor="middle" font-size="11" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<rect x="126" y="247" width="93" height="22" rx="5" fill="#071A2D" stroke="#5FB8E8" stroke-width="1"/>
+<text x="172" y="259" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">Authorisation</text>
+<text x="235" y="184" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<circle cx="103" cy="202" r="4" fill="#47DCDD" stroke="#0B1526" stroke-width="1.5"/>
+<circle cx="241" cy="202" r="4" fill="#45A4FF" stroke="#0B1526" stroke-width="1.5"/>
+</g>
+<g class="bf-dim" data-beat="1">
+<ellipse cx="449" cy="284" rx="85" ry="9" fill="url(#bfd55-sh)" opacity="0.9"/>
+<ellipse cx="449" cy="282" rx="62" ry="6" fill="#01040A" opacity="0.8"/>
+<polygon points="380,202 449,236 449,274 380,240" fill="url(#bfd55-gLeft)"/>
+<polygon points="449,236 518,202 518,240 449,274" fill="url(#bfd55-gRight)"/>
+<polygon points="449,168 518,202 449,236 380,202" fill="url(#bfd55-gTop)"/>
+<line x1="449" y1="168" x2="380" y2="202" stroke="#D6EBFF" stroke-width="2"/>
+<line x1="449" y1="168" x2="518" y2="202" stroke="#A6E5FF" stroke-width="2"/>
+<line x1="380" y1="202" x2="449" y2="236" stroke="#7FB8E8" stroke-width="1.5"/>
+<line x1="449" y1="236" x2="518" y2="202" stroke="#5A96C8" stroke-width="1.5"/>
+<line x1="380" y1="202" x2="380" y2="240" stroke="#4A7CA8" stroke-width="1.5"/>
+<line x1="518" y1="202" x2="518" y2="240" stroke="#35618C" stroke-width="1.5"/>
+<line x1="449" y1="236" x2="449" y2="274" stroke="#2A5A8A" stroke-width="1.5"/>
+<line x1="380" y1="240" x2="449" y2="274" stroke="#2A5A8A" stroke-width="1"/>
+<line x1="449" y1="274" x2="518" y2="240" stroke="#1A3A5C" stroke-width="1"/>
+<polyline points="427,182 449,172 471,182" fill="none" stroke="#EAF6FF" stroke-width="2" stroke-linecap="round" opacity="0.9"/>
+<circle cx="449" cy="202" r="10" fill="#1E3A5F"/>
+<text x="449" y="206" text-anchor="middle" font-size="11" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<rect x="403" y="247" width="93" height="22" rx="5" fill="#071A2D" stroke="#2F5E87" stroke-width="1"/>
+<text x="449" y="259" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">Terminal</text>
+<circle cx="380" cy="202" r="4" fill="#47DCDD" stroke="#0B1526" stroke-width="1.5"/>
+<circle cx="518" cy="202" r="4" fill="#45A4FF" stroke="#0B1526" stroke-width="1.5"/>
+</g>
+<g class="bf-dim" data-beat="2">
+<ellipse cx="726" cy="284" rx="85" ry="9" fill="url(#bfd55-sh)" opacity="0.9"/>
+<ellipse cx="726" cy="282" rx="62" ry="6" fill="#01040A" opacity="0.8"/>
+<polygon points="657,202 726,236 726,274 657,240" fill="url(#bfd55-gLeft)"/>
+<polygon points="726,236 795,202 795,240 726,274" fill="url(#bfd55-gRight)"/>
+<polygon points="726,168 795,202 726,236 657,202" fill="url(#bfd55-gTop)"/>
+<line x1="726" y1="168" x2="657" y2="202" stroke="#D6EBFF" stroke-width="2"/>
+<line x1="726" y1="168" x2="795" y2="202" stroke="#A6E5FF" stroke-width="2"/>
+<line x1="657" y1="202" x2="726" y2="236" stroke="#7FB8E8" stroke-width="1.5"/>
+<line x1="726" y1="236" x2="795" y2="202" stroke="#5A96C8" stroke-width="1.5"/>
+<line x1="657" y1="202" x2="657" y2="240" stroke="#4A7CA8" stroke-width="1.5"/>
+<line x1="795" y1="202" x2="795" y2="240" stroke="#35618C" stroke-width="1.5"/>
+<line x1="726" y1="236" x2="726" y2="274" stroke="#2A5A8A" stroke-width="1.5"/>
+<line x1="657" y1="240" x2="726" y2="274" stroke="#2A5A8A" stroke-width="1"/>
+<line x1="726" y1="274" x2="795" y2="240" stroke="#1A3A5C" stroke-width="1"/>
+<polyline points="704,182 726,172 748,182" fill="none" stroke="#EAF6FF" stroke-width="2" stroke-linecap="round" opacity="0.9"/>
+<circle cx="726" cy="202" r="10" fill="#1E3A5F"/>
+<text x="726" y="206" text-anchor="middle" font-size="11" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<rect x="680" y="247" width="93" height="36" rx="5" fill="#071A2D" stroke="#2F5E87" stroke-width="1"/>
+<text x="726" y="259" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">Cardholder</text>
+<text x="726" y="273" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">controls</text>
+<circle cx="657" cy="202" r="4" fill="#47DCDD" stroke="#0B1526" stroke-width="1.5"/>
+<circle cx="795" cy="202" r="4" fill="#45A4FF" stroke="#0B1526" stroke-width="1.5"/>
+</g>
+<g class="bf-dim" data-beat="3">
+<ellipse cx="726" cy="434" rx="85" ry="9" fill="url(#bfd55-sh)" opacity="0.9"/>
+<ellipse cx="726" cy="432" rx="62" ry="6" fill="#01040A" opacity="0.8"/>
+<polygon points="657,352 726,386 726,424 657,390" fill="url(#bfd55-gLeft)"/>
+<polygon points="726,386 795,352 795,390 726,424" fill="url(#bfd55-gRight)"/>
+<polygon points="726,318 795,352 726,386 657,352" fill="url(#bfd55-gTop)"/>
+<line x1="726" y1="318" x2="657" y2="352" stroke="#D6EBFF" stroke-width="2"/>
+<line x1="726" y1="318" x2="795" y2="352" stroke="#A6E5FF" stroke-width="2"/>
+<line x1="657" y1="352" x2="726" y2="386" stroke="#7FB8E8" stroke-width="1.5"/>
+<line x1="726" y1="386" x2="795" y2="352" stroke="#5A96C8" stroke-width="1.5"/>
+<line x1="657" y1="352" x2="657" y2="390" stroke="#4A7CA8" stroke-width="1.5"/>
+<line x1="795" y1="352" x2="795" y2="390" stroke="#35618C" stroke-width="1.5"/>
+<line x1="726" y1="386" x2="726" y2="424" stroke="#2A5A8A" stroke-width="1.5"/>
+<line x1="657" y1="390" x2="726" y2="424" stroke="#2A5A8A" stroke-width="1"/>
+<line x1="726" y1="424" x2="795" y2="390" stroke="#1A3A5C" stroke-width="1"/>
+<polyline points="704,332 726,322 748,332" fill="none" stroke="#EAF6FF" stroke-width="2" stroke-linecap="round" opacity="0.9"/>
+<circle cx="726" cy="352" r="10" fill="#1E3A5F"/>
+<text x="726" y="356" text-anchor="middle" font-size="11" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<rect x="680" y="397" width="93" height="22" rx="5" fill="#071A2D" stroke="#2F5E87" stroke-width="1"/>
+<text x="726" y="409" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">Approval</text>
+<circle cx="657" cy="352" r="4" fill="#47DCDD" stroke="#0B1526" stroke-width="1.5"/>
+<circle cx="795" cy="352" r="4" fill="#45A4FF" stroke="#0B1526" stroke-width="1.5"/>
+</g>
+<g class="bf-dim" data-beat="4">
+<ellipse cx="449" cy="434" rx="85" ry="9" fill="url(#bfd55-sh)" opacity="0.9"/>
+<ellipse cx="449" cy="432" rx="62" ry="6" fill="#01040A" opacity="0.8"/>
+<polygon points="380,352 449,386 449,424 380,390" fill="url(#bfd55-gLeft)"/>
+<polygon points="449,386 518,352 518,390 449,424" fill="url(#bfd55-gRight)"/>
+<polygon points="449,318 518,352 449,386 380,352" fill="url(#bfd55-gTop)"/>
+<line x1="449" y1="318" x2="380" y2="352" stroke="#D6EBFF" stroke-width="2"/>
+<line x1="449" y1="318" x2="518" y2="352" stroke="#A6E5FF" stroke-width="2"/>
+<line x1="380" y1="352" x2="449" y2="386" stroke="#7FB8E8" stroke-width="1.5"/>
+<line x1="449" y1="386" x2="518" y2="352" stroke="#5A96C8" stroke-width="1.5"/>
+<line x1="380" y1="352" x2="380" y2="390" stroke="#4A7CA8" stroke-width="1.5"/>
+<line x1="518" y1="352" x2="518" y2="390" stroke="#35618C" stroke-width="1.5"/>
+<line x1="449" y1="386" x2="449" y2="424" stroke="#2A5A8A" stroke-width="1.5"/>
+<line x1="380" y1="390" x2="449" y2="424" stroke="#2A5A8A" stroke-width="1"/>
+<line x1="449" y1="424" x2="518" y2="390" stroke="#1A3A5C" stroke-width="1"/>
+<polyline points="427,332 449,322 471,332" fill="none" stroke="#EAF6FF" stroke-width="2" stroke-linecap="round" opacity="0.9"/>
+<circle cx="449" cy="352" r="10" fill="#1E3A5F"/>
+<text x="449" y="356" text-anchor="middle" font-size="11" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<rect x="403" y="397" width="93" height="36" rx="5" fill="#071A2D" stroke="#2F5E87" stroke-width="1"/>
+<text x="449" y="409" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">Merchant</text>
+<text x="449" y="423" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">never</text>
+<circle cx="380" cy="352" r="4" fill="#47DCDD" stroke="#0B1526" stroke-width="1.5"/>
+<circle cx="518" cy="352" r="4" fill="#45A4FF" stroke="#0B1526" stroke-width="1.5"/>
+</g>
+<g class="bf-dim" data-beat="5">
+<ellipse cx="172" cy="434" rx="85" ry="9" fill="url(#bfd55-sh)" opacity="0.9"/>
+<ellipse cx="172" cy="432" rx="62" ry="6" fill="#01040A" opacity="0.8"/>
+<polygon points="103,352 172,386 172,424 103,390" fill="url(#bfd55-gLeft)"/>
+<polygon points="172,386 241,352 241,390 172,424" fill="url(#bfd55-gRight)"/>
+<polygon points="172,318 241,352 172,386 103,352" fill="url(#bfd55-gTop)"/>
+<line x1="172" y1="318" x2="103" y2="352" stroke="#D6EBFF" stroke-width="2"/>
+<line x1="172" y1="318" x2="241" y2="352" stroke="#A6E5FF" stroke-width="2"/>
+<line x1="103" y1="352" x2="172" y2="386" stroke="#7FB8E8" stroke-width="1.5"/>
+<line x1="172" y1="386" x2="241" y2="352" stroke="#5A96C8" stroke-width="1.5"/>
+<line x1="103" y1="352" x2="103" y2="390" stroke="#4A7CA8" stroke-width="1.5"/>
+<line x1="241" y1="352" x2="241" y2="390" stroke="#35618C" stroke-width="1.5"/>
+<line x1="172" y1="386" x2="172" y2="424" stroke="#2A5A8A" stroke-width="1.5"/>
+<line x1="103" y1="390" x2="172" y2="424" stroke="#2A5A8A" stroke-width="1"/>
+<line x1="172" y1="424" x2="241" y2="390" stroke="#1A3A5C" stroke-width="1"/>
+<polyline points="150,332 172,322 194,332" fill="none" stroke="#EAF6FF" stroke-width="2" stroke-linecap="round" opacity="0.9"/>
+<circle cx="172" cy="352" r="10" fill="#1E3A5F"/>
+<text x="172" y="356" text-anchor="middle" font-size="11" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<rect x="126" y="397" width="93" height="22" rx="5" fill="#071A2D" stroke="#2F5E87" stroke-width="1"/>
+<text x="172" y="409" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">Path</text>
+<circle cx="103" cy="352" r="4" fill="#47DCDD" stroke="#0B1526" stroke-width="1.5"/>
+<circle cx="241" cy="352" r="4" fill="#45A4FF" stroke="#0B1526" stroke-width="1.5"/>
+</g>
+<path data-conn="c0" data-beat="0" d="M 245 202 L 364 202" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c0" data-beat="0" points="376,202 364,209 364,195" fill="#DBEAFE"/>
+<path data-conn="c1" data-beat="1" d="M 522 202 L 641 202" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c1" data-beat="1" points="653,202 641,209 641,195" fill="#DBEAFE"/>
+<path data-conn="c2" data-beat="2" d="M 726 287 L 726 296 L 726 296 L 726 303" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c2" data-beat="2" points="726,315 719,303 733,303" fill="#DBEAFE"/>
+<path data-conn="c3" data-beat="3" d="M 653 352 L 534 352" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c3" data-beat="3" points="522,352 534,345 534,359" fill="#DBEAFE"/>
+<path data-conn="c4" data-beat="4" d="M 376 352 L 257 352" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c4" data-beat="4" points="245,352 257,345 257,359" fill="#DBEAFE"/>
+<g class="bf-paydot" style="--dx:0px;--dy:0px"><circle class="bf-pulse" cx="91" cy="202" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="91" cy="202" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="450" y="479" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Authorisation is the real time check that happens while the customer is still at the till or on the</text>
+<text x="450" y="499" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">checkout page.</text>
+<text x="48" y="538" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 1 of 6</text>
+<circle cx="772" cy="534" r="4" fill="#60A5FA"/>
+<circle cx="788" cy="534" r="4" fill="#334155"/>
+<circle cx="804" cy="534" r="4" fill="#334155"/>
+<circle cx="820" cy="534" r="4" fill="#334155"/>
+<circle cx="836" cy="534" r="4" fill="#334155"/>
+<circle cx="852" cy="534" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 767" role="img" aria-label="Lesson visual, vertical layout">
+<defs><pattern id="bfd57" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="360" height="767" fill="#0B1F3D"/>
+<rect x="0" y="0" width="360" height="767" fill="url(#bfd57)"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Authorisation:</tspan> <tspan fill="#FFFFFF">real</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">time</tspan> <tspan fill="#FFFFFF">check</tspan></text>
+<g data-node="n0" class="bf-now" data-beat="0">
+<rect x="24" y="94" width="312" height="72" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="44" cy="114" r="11" fill="#1D4ED8"/>
+<text x="44" y="118" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="324" y="118" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="180" y="132" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Authorisation</text>
+</g>
+<line data-conn="c0" data-beat="0" x1="180" y1="169" x2="180" y2="177" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c0" data-beat="0" points="180,189 173,177 187,177" fill="#DBEAFE"/>
+<g data-node="n1" class="bf-dim" data-beat="1">
+<rect x="24" y="192" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="212" r="11" fill="#1E3A5F"/>
+<text x="44" y="216" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="180" y="230" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Terminal</text>
+</g>
+<line data-conn="c1" data-beat="1" x1="180" y1="267" x2="180" y2="275" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c1" data-beat="1" points="180,287 173,275 187,275" fill="#DBEAFE"/>
+<g data-node="n2" class="bf-dim" data-beat="2">
+<rect x="24" y="290" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="310" r="11" fill="#1E3A5F"/>
+<text x="44" y="314" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="180" y="328" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Cardholder controls</text>
+</g>
+<line data-conn="c2" data-beat="2" x1="180" y1="365" x2="180" y2="373" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c2" data-beat="2" points="180,385 173,373 187,373" fill="#DBEAFE"/>
+<g data-node="n3" class="bf-dim" data-beat="3">
+<rect x="24" y="388" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="408" r="11" fill="#1E3A5F"/>
+<text x="44" y="412" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="180" y="426" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Approval</text>
+</g>
+<line data-conn="c3" data-beat="3" x1="180" y1="463" x2="180" y2="471" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c3" data-beat="3" points="180,483 173,471 187,471" fill="#DBEAFE"/>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<rect x="24" y="486" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="506" r="11" fill="#1E3A5F"/>
+<text x="44" y="510" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="180" y="524" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Merchant never</text>
+</g>
+<line data-conn="c4" data-beat="4" x1="180" y1="561" x2="180" y2="569" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c4" data-beat="4" points="180,581 173,569 187,569" fill="#DBEAFE"/>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="24" y="584" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="604" r="11" fill="#1E3A5F"/>
+<text x="44" y="608" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="180" y="622" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Path</text>
+</g>
+<g class="bf-paydot" style="--dx:0px;--dy:0px"><circle class="bf-pulse" cx="180" cy="94" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="180" cy="94" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="180" y="676" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Authorisation is the real time check that</text>
+<text x="180" y="695" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">happens while the customer is still at</text>
+<text x="180" y="714" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">the till or on the checkout page.</text>
+<text x="24" y="755" font-size="12" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 1 of 6</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="1">
+<svg class="flow-desktop" viewBox="0 0 900 560" role="img" aria-label="Lesson visual">
+<defs><pattern id="bfd59" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<linearGradient id="bfd58-gTop" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#C9E4FF"/><stop offset="50%" stop-color="#7FB8E8"/><stop offset="100%" stop-color="#4A90CC"/></linearGradient>
+<linearGradient id="bfd58-gTopA" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#E2F2FF"/><stop offset="50%" stop-color="#A9D8FF"/><stop offset="100%" stop-color="#6FB3E8"/></linearGradient>
+<linearGradient id="bfd58-gLeft" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#5A96C8"/><stop offset="50%" stop-color="#2E5F8F"/><stop offset="100%" stop-color="#16324F"/></linearGradient>
+<linearGradient id="bfd58-gLeftA" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#84BCE8"/><stop offset="50%" stop-color="#4A86BC"/><stop offset="100%" stop-color="#1E4066"/></linearGradient>
+<linearGradient id="bfd58-gRight" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#35618C"/><stop offset="50%" stop-color="#1A3A5C"/><stop offset="100%" stop-color="#0A1A2C"/></linearGradient>
+<linearGradient id="bfd58-gRightA" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#5AA8E8"/><stop offset="50%" stop-color="#2E6FA8"/><stop offset="100%" stop-color="#123252"/></linearGradient>
+<radialGradient id="bfd58-sh" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#000000" stop-opacity="0.55"/><stop offset="70%" stop-color="#000000" stop-opacity="0.22"/><stop offset="100%" stop-color="#000000" stop-opacity="0"/></radialGradient>
+<filter id="bfd58-glow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="10" result="b"/><feMerge><feMergeNode in="b"/></feMerge></filter>
+<rect x="0" y="0" width="900" height="560" fill="#0B1F3D"/>
+<rect x="0" y="0" width="900" height="560" fill="url(#bfd59)"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Terminal</tspan> <tspan fill="#FFFFFF">sends</tspan> <tspan fill="#FFFFFF">the</tspan> <tspan fill="#FFFFFF">request</tspan></text>
+<g class="bf-done" data-beat="0">
+<ellipse cx="172" cy="284" rx="85" ry="9" fill="url(#bfd58-sh)" opacity="0.9"/>
+<ellipse cx="172" cy="282" rx="62" ry="6" fill="#01040A" opacity="0.8"/>
+<polygon points="103,202 172,236 172,274 103,240" fill="url(#bfd58-gLeft)"/>
+<polygon points="172,236 241,202 241,240 172,274" fill="url(#bfd58-gRight)"/>
+<polygon points="172,168 241,202 172,236 103,202" fill="url(#bfd58-gTop)"/>
+<line x1="172" y1="168" x2="103" y2="202" stroke="#D6EBFF" stroke-width="2"/>
+<line x1="172" y1="168" x2="241" y2="202" stroke="#A6E5FF" stroke-width="2"/>
+<line x1="103" y1="202" x2="172" y2="236" stroke="#7FB8E8" stroke-width="1.5"/>
+<line x1="172" y1="236" x2="241" y2="202" stroke="#5A96C8" stroke-width="1.5"/>
+<line x1="103" y1="202" x2="103" y2="240" stroke="#4A7CA8" stroke-width="1.5"/>
+<line x1="241" y1="202" x2="241" y2="240" stroke="#35618C" stroke-width="1.5"/>
+<line x1="172" y1="236" x2="172" y2="274" stroke="#2A5A8A" stroke-width="1.5"/>
+<line x1="103" y1="240" x2="172" y2="274" stroke="#2A5A8A" stroke-width="1"/>
+<line x1="172" y1="274" x2="241" y2="240" stroke="#1A3A5C" stroke-width="1"/>
+<polyline points="150,182 172,172 194,182" fill="none" stroke="#EAF6FF" stroke-width="2" stroke-linecap="round" opacity="0.9"/>
+<circle cx="172" cy="202" r="10" fill="#1E3A5F"/>
+<text x="172" y="206" text-anchor="middle" font-size="11" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<rect x="126" y="247" width="93" height="22" rx="5" fill="#071A2D" stroke="#2F5E87" stroke-width="1"/>
+<text x="172" y="259" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">Authorisation</text>
+<circle cx="103" cy="202" r="4" fill="#47DCDD" stroke="#0B1526" stroke-width="1.5"/>
+<circle cx="241" cy="202" r="4" fill="#45A4FF" stroke="#0B1526" stroke-width="1.5"/>
+</g>
+<g class="bf-now" data-beat="1">
+<ellipse cx="449" cy="284" rx="85" ry="9" fill="url(#bfd58-sh)" opacity="0.9"/>
+<ellipse cx="449" cy="282" rx="62" ry="6" fill="#01040A" opacity="0.8"/>
+<polygon points="449,168 518,202 518,240 449,274 380,240" fill="#2E9BFF" opacity="0.30" filter="url(#bfd58-glow)"/>
+<ellipse cx="449" cy="221" rx="99" ry="82" fill="none" stroke="#47DCDD" stroke-width="2" opacity="0.8"/>
+<polygon points="380,202 449,236 449,274 380,240" fill="url(#bfd58-gLeftA)"/>
+<polygon points="449,236 518,202 518,240 449,274" fill="url(#bfd58-gRightA)"/>
+<polygon points="449,168 518,202 449,236 380,202" fill="url(#bfd58-gTopA)"/>
+<line x1="449" y1="168" x2="380" y2="202" stroke="#D6EBFF" stroke-width="2"/>
+<line x1="449" y1="168" x2="518" y2="202" stroke="#A6E5FF" stroke-width="2"/>
+<line x1="380" y1="202" x2="449" y2="236" stroke="#7FB8E8" stroke-width="1.5"/>
+<line x1="449" y1="236" x2="518" y2="202" stroke="#5A96C8" stroke-width="1.5"/>
+<line x1="380" y1="202" x2="380" y2="240" stroke="#4A7CA8" stroke-width="1.5"/>
+<line x1="518" y1="202" x2="518" y2="240" stroke="#35618C" stroke-width="1.5"/>
+<line x1="449" y1="236" x2="449" y2="274" stroke="#2A5A8A" stroke-width="1.5"/>
+<line x1="380" y1="240" x2="449" y2="274" stroke="#2A5A8A" stroke-width="1"/>
+<line x1="449" y1="274" x2="518" y2="240" stroke="#1A3A5C" stroke-width="1"/>
+<polyline points="427,182 449,172 471,182" fill="none" stroke="#EAF6FF" stroke-width="2" stroke-linecap="round" opacity="0.9"/>
+<circle cx="449" cy="202" r="10" fill="#1D4ED8"/>
+<text x="449" y="206" text-anchor="middle" font-size="11" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<rect x="403" y="247" width="93" height="22" rx="5" fill="#071A2D" stroke="#5FB8E8" stroke-width="1"/>
+<text x="449" y="259" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">Terminal</text>
+<text x="512" y="184" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<circle cx="380" cy="202" r="4" fill="#47DCDD" stroke="#0B1526" stroke-width="1.5"/>
+<circle cx="518" cy="202" r="4" fill="#45A4FF" stroke="#0B1526" stroke-width="1.5"/>
+</g>
+<g class="bf-dim" data-beat="2">
+<ellipse cx="726" cy="284" rx="85" ry="9" fill="url(#bfd58-sh)" opacity="0.9"/>
+<ellipse cx="726" cy="282" rx="62" ry="6" fill="#01040A" opacity="0.8"/>
+<polygon points="657,202 726,236 726,274 657,240" fill="url(#bfd58-gLeft)"/>
+<polygon points="726,236 795,202 795,240 726,274" fill="url(#bfd58-gRight)"/>
+<polygon points="726,168 795,202 726,236 657,202" fill="url(#bfd58-gTop)"/>
+<line x1="726" y1="168" x2="657" y2="202" stroke="#D6EBFF" stroke-width="2"/>
+<line x1="726" y1="168" x2="795" y2="202" stroke="#A6E5FF" stroke-width="2"/>
+<line x1="657" y1="202" x2="726" y2="236" stroke="#7FB8E8" stroke-width="1.5"/>
+<line x1="726" y1="236" x2="795" y2="202" stroke="#5A96C8" stroke-width="1.5"/>
+<line x1="657" y1="202" x2="657" y2="240" stroke="#4A7CA8" stroke-width="1.5"/>
+<line x1="795" y1="202" x2="795" y2="240" stroke="#35618C" stroke-width="1.5"/>
+<line x1="726" y1="236" x2="726" y2="274" stroke="#2A5A8A" stroke-width="1.5"/>
+<line x1="657" y1="240" x2="726" y2="274" stroke="#2A5A8A" stroke-width="1"/>
+<line x1="726" y1="274" x2="795" y2="240" stroke="#1A3A5C" stroke-width="1"/>
+<polyline points="704,182 726,172 748,182" fill="none" stroke="#EAF6FF" stroke-width="2" stroke-linecap="round" opacity="0.9"/>
+<circle cx="726" cy="202" r="10" fill="#1E3A5F"/>
+<text x="726" y="206" text-anchor="middle" font-size="11" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<rect x="680" y="247" width="93" height="36" rx="5" fill="#071A2D" stroke="#2F5E87" stroke-width="1"/>
+<text x="726" y="259" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">Cardholder</text>
+<text x="726" y="273" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">controls</text>
+<circle cx="657" cy="202" r="4" fill="#47DCDD" stroke="#0B1526" stroke-width="1.5"/>
+<circle cx="795" cy="202" r="4" fill="#45A4FF" stroke="#0B1526" stroke-width="1.5"/>
+</g>
+<g class="bf-dim" data-beat="3">
+<ellipse cx="726" cy="434" rx="85" ry="9" fill="url(#bfd58-sh)" opacity="0.9"/>
+<ellipse cx="726" cy="432" rx="62" ry="6" fill="#01040A" opacity="0.8"/>
+<polygon points="657,352 726,386 726,424 657,390" fill="url(#bfd58-gLeft)"/>
+<polygon points="726,386 795,352 795,390 726,424" fill="url(#bfd58-gRight)"/>
+<polygon points="726,318 795,352 726,386 657,352" fill="url(#bfd58-gTop)"/>
+<line x1="726" y1="318" x2="657" y2="352" stroke="#D6EBFF" stroke-width="2"/>
+<line x1="726" y1="318" x2="795" y2="352" stroke="#A6E5FF" stroke-width="2"/>
+<line x1="657" y1="352" x2="726" y2="386" stroke="#7FB8E8" stroke-width="1.5"/>
+<line x1="726" y1="386" x2="795" y2="352" stroke="#5A96C8" stroke-width="1.5"/>
+<line x1="657" y1="352" x2="657" y2="390" stroke="#4A7CA8" stroke-width="1.5"/>
+<line x1="795" y1="352" x2="795" y2="390" stroke="#35618C" stroke-width="1.5"/>
+<line x1="726" y1="386" x2="726" y2="424" stroke="#2A5A8A" stroke-width="1.5"/>
+<line x1="657" y1="390" x2="726" y2="424" stroke="#2A5A8A" stroke-width="1"/>
+<line x1="726" y1="424" x2="795" y2="390" stroke="#1A3A5C" stroke-width="1"/>
+<polyline points="704,332 726,322 748,332" fill="none" stroke="#EAF6FF" stroke-width="2" stroke-linecap="round" opacity="0.9"/>
+<circle cx="726" cy="352" r="10" fill="#1E3A5F"/>
+<text x="726" y="356" text-anchor="middle" font-size="11" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<rect x="680" y="397" width="93" height="22" rx="5" fill="#071A2D" stroke="#2F5E87" stroke-width="1"/>
+<text x="726" y="409" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">Approval</text>
+<circle cx="657" cy="352" r="4" fill="#47DCDD" stroke="#0B1526" stroke-width="1.5"/>
+<circle cx="795" cy="352" r="4" fill="#45A4FF" stroke="#0B1526" stroke-width="1.5"/>
+</g>
+<g class="bf-dim" data-beat="4">
+<ellipse cx="449" cy="434" rx="85" ry="9" fill="url(#bfd58-sh)" opacity="0.9"/>
+<ellipse cx="449" cy="432" rx="62" ry="6" fill="#01040A" opacity="0.8"/>
+<polygon points="380,352 449,386 449,424 380,390" fill="url(#bfd58-gLeft)"/>
+<polygon points="449,386 518,352 518,390 449,424" fill="url(#bfd58-gRight)"/>
+<polygon points="449,318 518,352 449,386 380,352" fill="url(#bfd58-gTop)"/>
+<line x1="449" y1="318" x2="380" y2="352" stroke="#D6EBFF" stroke-width="2"/>
+<line x1="449" y1="318" x2="518" y2="352" stroke="#A6E5FF" stroke-width="2"/>
+<line x1="380" y1="352" x2="449" y2="386" stroke="#7FB8E8" stroke-width="1.5"/>
+<line x1="449" y1="386" x2="518" y2="352" stroke="#5A96C8" stroke-width="1.5"/>
+<line x1="380" y1="352" x2="380" y2="390" stroke="#4A7CA8" stroke-width="1.5"/>
+<line x1="518" y1="352" x2="518" y2="390" stroke="#35618C" stroke-width="1.5"/>
+<line x1="449" y1="386" x2="449" y2="424" stroke="#2A5A8A" stroke-width="1.5"/>
+<line x1="380" y1="390" x2="449" y2="424" stroke="#2A5A8A" stroke-width="1"/>
+<line x1="449" y1="424" x2="518" y2="390" stroke="#1A3A5C" stroke-width="1"/>
+<polyline points="427,332 449,322 471,332" fill="none" stroke="#EAF6FF" stroke-width="2" stroke-linecap="round" opacity="0.9"/>
+<circle cx="449" cy="352" r="10" fill="#1E3A5F"/>
+<text x="449" y="356" text-anchor="middle" font-size="11" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<rect x="403" y="397" width="93" height="36" rx="5" fill="#071A2D" stroke="#2F5E87" stroke-width="1"/>
+<text x="449" y="409" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">Merchant</text>
+<text x="449" y="423" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">never</text>
+<circle cx="380" cy="352" r="4" fill="#47DCDD" stroke="#0B1526" stroke-width="1.5"/>
+<circle cx="518" cy="352" r="4" fill="#45A4FF" stroke="#0B1526" stroke-width="1.5"/>
+</g>
+<g class="bf-dim" data-beat="5">
+<ellipse cx="172" cy="434" rx="85" ry="9" fill="url(#bfd58-sh)" opacity="0.9"/>
+<ellipse cx="172" cy="432" rx="62" ry="6" fill="#01040A" opacity="0.8"/>
+<polygon points="103,352 172,386 172,424 103,390" fill="url(#bfd58-gLeft)"/>
+<polygon points="172,386 241,352 241,390 172,424" fill="url(#bfd58-gRight)"/>
+<polygon points="172,318 241,352 172,386 103,352" fill="url(#bfd58-gTop)"/>
+<line x1="172" y1="318" x2="103" y2="352" stroke="#D6EBFF" stroke-width="2"/>
+<line x1="172" y1="318" x2="241" y2="352" stroke="#A6E5FF" stroke-width="2"/>
+<line x1="103" y1="352" x2="172" y2="386" stroke="#7FB8E8" stroke-width="1.5"/>
+<line x1="172" y1="386" x2="241" y2="352" stroke="#5A96C8" stroke-width="1.5"/>
+<line x1="103" y1="352" x2="103" y2="390" stroke="#4A7CA8" stroke-width="1.5"/>
+<line x1="241" y1="352" x2="241" y2="390" stroke="#35618C" stroke-width="1.5"/>
+<line x1="172" y1="386" x2="172" y2="424" stroke="#2A5A8A" stroke-width="1.5"/>
+<line x1="103" y1="390" x2="172" y2="424" stroke="#2A5A8A" stroke-width="1"/>
+<line x1="172" y1="424" x2="241" y2="390" stroke="#1A3A5C" stroke-width="1"/>
+<polyline points="150,332 172,322 194,332" fill="none" stroke="#EAF6FF" stroke-width="2" stroke-linecap="round" opacity="0.9"/>
+<circle cx="172" cy="352" r="10" fill="#1E3A5F"/>
+<text x="172" y="356" text-anchor="middle" font-size="11" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<rect x="126" y="397" width="93" height="22" rx="5" fill="#071A2D" stroke="#2F5E87" stroke-width="1"/>
+<text x="172" y="409" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">Path</text>
+<circle cx="103" cy="352" r="4" fill="#47DCDD" stroke="#0B1526" stroke-width="1.5"/>
+<circle cx="241" cy="352" r="4" fill="#45A4FF" stroke="#0B1526" stroke-width="1.5"/>
+</g>
+<path data-conn="c0" data-beat="0" d="M 245 202 L 364 202" stroke="#60A5FA" stroke-width="3" fill="none"/><polygon data-conn="c0" data-beat="0" points="376,202 364,209 364,195" fill="#DBEAFE"/>
+<path data-conn="c1" data-beat="1" d="M 522 202 L 641 202" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c1" data-beat="1" points="653,202 641,209 641,195" fill="#DBEAFE"/>
+<path data-conn="c2" data-beat="2" d="M 726 287 L 726 296 L 726 296 L 726 303" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c2" data-beat="2" points="726,315 719,303 733,303" fill="#DBEAFE"/>
+<path data-conn="c3" data-beat="3" d="M 653 352 L 534 352" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c3" data-beat="3" points="522,352 534,345 534,359" fill="#DBEAFE"/>
+<path data-conn="c4" data-beat="4" d="M 376 352 L 257 352" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c4" data-beat="4" points="245,352 257,345 257,359" fill="#DBEAFE"/>
+<g class="bf-paydot" style="--dx:-196px;--dy:0px"><circle class="bf-pulse" cx="368" cy="202" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="368" cy="202" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="450" y="479" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The terminal sends the request to the acquirer, the acquirer forwards it to the card scheme, and</text>
+<text x="450" y="499" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">the scheme routes it to the issuer using the card number.</text>
+<text x="48" y="538" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 2 of 6</text>
+<circle cx="772" cy="534" r="4" fill="#334155"/>
+<circle cx="788" cy="534" r="4" fill="#60A5FA"/>
+<circle cx="804" cy="534" r="4" fill="#334155"/>
+<circle cx="820" cy="534" r="4" fill="#334155"/>
+<circle cx="836" cy="534" r="4" fill="#334155"/>
+<circle cx="852" cy="534" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 786" role="img" aria-label="Lesson visual, vertical layout">
+<defs><pattern id="bfd60" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="360" height="786" fill="#0B1F3D"/>
+<rect x="0" y="0" width="360" height="786" fill="url(#bfd60)"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Terminal</tspan> <tspan fill="#FFFFFF">sends</tspan> <tspan fill="#FFFFFF">the</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">request</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="24" y="94" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="114" r="11" fill="#1E3A5F"/>
+<text x="44" y="118" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="180" y="132" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Authorisation</text>
+</g>
+<line data-conn="c0" data-beat="0" x1="180" y1="169" x2="180" y2="177" stroke="#60A5FA" stroke-width="2"/>
+<polygon data-conn="c0" data-beat="0" points="180,189 173,177 187,177" fill="#DBEAFE"/>
+<g data-node="n1" class="bf-now" data-beat="1">
+<rect x="24" y="192" width="312" height="72" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="44" cy="212" r="11" fill="#1D4ED8"/>
+<text x="44" y="216" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="324" y="216" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="180" y="230" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Terminal</text>
+</g>
+<line data-conn="c1" data-beat="1" x1="180" y1="267" x2="180" y2="275" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c1" data-beat="1" points="180,287 173,275 187,275" fill="#DBEAFE"/>
+<g data-node="n2" class="bf-dim" data-beat="2">
+<rect x="24" y="290" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="310" r="11" fill="#1E3A5F"/>
+<text x="44" y="314" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="180" y="328" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Cardholder controls</text>
+</g>
+<line data-conn="c2" data-beat="2" x1="180" y1="365" x2="180" y2="373" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c2" data-beat="2" points="180,385 173,373 187,373" fill="#DBEAFE"/>
+<g data-node="n3" class="bf-dim" data-beat="3">
+<rect x="24" y="388" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="408" r="11" fill="#1E3A5F"/>
+<text x="44" y="412" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="180" y="426" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Approval</text>
+</g>
+<line data-conn="c3" data-beat="3" x1="180" y1="463" x2="180" y2="471" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c3" data-beat="3" points="180,483 173,471 187,471" fill="#DBEAFE"/>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<rect x="24" y="486" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="506" r="11" fill="#1E3A5F"/>
+<text x="44" y="510" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="180" y="524" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Merchant never</text>
+</g>
+<line data-conn="c4" data-beat="4" x1="180" y1="561" x2="180" y2="569" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c4" data-beat="4" points="180,581 173,569 187,569" fill="#DBEAFE"/>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="24" y="584" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="604" r="11" fill="#1E3A5F"/>
+<text x="44" y="608" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="180" y="622" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Path</text>
+</g>
+<g class="bf-paydot" style="--dx:0px;--dy:-52px"><circle class="bf-pulse" cx="180" cy="182" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="180" cy="182" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="180" y="676" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The terminal sends the request to the</text>
+<text x="180" y="695" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">acquirer, the acquirer forwards it to the</text>
+<text x="180" y="714" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">card scheme, and the scheme routes it to</text>
+<text x="180" y="733" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">the issuer using the card number.</text>
+<text x="24" y="774" font-size="12" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 2 of 6</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="2">
+<svg class="flow-desktop" viewBox="0 0 900 560" role="img" aria-label="Lesson visual">
+<defs><pattern id="bfd62" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<linearGradient id="bfd61-gTop" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#C9E4FF"/><stop offset="50%" stop-color="#7FB8E8"/><stop offset="100%" stop-color="#4A90CC"/></linearGradient>
+<linearGradient id="bfd61-gTopA" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#E2F2FF"/><stop offset="50%" stop-color="#A9D8FF"/><stop offset="100%" stop-color="#6FB3E8"/></linearGradient>
+<linearGradient id="bfd61-gLeft" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#5A96C8"/><stop offset="50%" stop-color="#2E5F8F"/><stop offset="100%" stop-color="#16324F"/></linearGradient>
+<linearGradient id="bfd61-gLeftA" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#84BCE8"/><stop offset="50%" stop-color="#4A86BC"/><stop offset="100%" stop-color="#1E4066"/></linearGradient>
+<linearGradient id="bfd61-gRight" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#35618C"/><stop offset="50%" stop-color="#1A3A5C"/><stop offset="100%" stop-color="#0A1A2C"/></linearGradient>
+<linearGradient id="bfd61-gRightA" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#5AA8E8"/><stop offset="50%" stop-color="#2E6FA8"/><stop offset="100%" stop-color="#123252"/></linearGradient>
+<radialGradient id="bfd61-sh" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#000000" stop-opacity="0.55"/><stop offset="70%" stop-color="#000000" stop-opacity="0.22"/><stop offset="100%" stop-color="#000000" stop-opacity="0"/></radialGradient>
+<filter id="bfd61-glow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="10" result="b"/><feMerge><feMergeNode in="b"/></feMerge></filter>
+<rect x="0" y="0" width="900" height="560" fill="#0B1F3D"/>
+<rect x="0" y="0" width="900" height="560" fill="url(#bfd62)"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Cardholder</tspan> <tspan fill="#FFFFFF">controls</tspan></text>
+<g class="bf-done" data-beat="0">
+<ellipse cx="172" cy="284" rx="85" ry="9" fill="url(#bfd61-sh)" opacity="0.9"/>
+<ellipse cx="172" cy="282" rx="62" ry="6" fill="#01040A" opacity="0.8"/>
+<polygon points="103,202 172,236 172,274 103,240" fill="url(#bfd61-gLeft)"/>
+<polygon points="172,236 241,202 241,240 172,274" fill="url(#bfd61-gRight)"/>
+<polygon points="172,168 241,202 172,236 103,202" fill="url(#bfd61-gTop)"/>
+<line x1="172" y1="168" x2="103" y2="202" stroke="#D6EBFF" stroke-width="2"/>
+<line x1="172" y1="168" x2="241" y2="202" stroke="#A6E5FF" stroke-width="2"/>
+<line x1="103" y1="202" x2="172" y2="236" stroke="#7FB8E8" stroke-width="1.5"/>
+<line x1="172" y1="236" x2="241" y2="202" stroke="#5A96C8" stroke-width="1.5"/>
+<line x1="103" y1="202" x2="103" y2="240" stroke="#4A7CA8" stroke-width="1.5"/>
+<line x1="241" y1="202" x2="241" y2="240" stroke="#35618C" stroke-width="1.5"/>
+<line x1="172" y1="236" x2="172" y2="274" stroke="#2A5A8A" stroke-width="1.5"/>
+<line x1="103" y1="240" x2="172" y2="274" stroke="#2A5A8A" stroke-width="1"/>
+<line x1="172" y1="274" x2="241" y2="240" stroke="#1A3A5C" stroke-width="1"/>
+<polyline points="150,182 172,172 194,182" fill="none" stroke="#EAF6FF" stroke-width="2" stroke-linecap="round" opacity="0.9"/>
+<circle cx="172" cy="202" r="10" fill="#1E3A5F"/>
+<text x="172" y="206" text-anchor="middle" font-size="11" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<rect x="126" y="247" width="93" height="22" rx="5" fill="#071A2D" stroke="#2F5E87" stroke-width="1"/>
+<text x="172" y="259" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">Authorisation</text>
+<circle cx="103" cy="202" r="4" fill="#47DCDD" stroke="#0B1526" stroke-width="1.5"/>
+<circle cx="241" cy="202" r="4" fill="#45A4FF" stroke="#0B1526" stroke-width="1.5"/>
+</g>
+<g class="bf-done" data-beat="1">
+<ellipse cx="449" cy="284" rx="85" ry="9" fill="url(#bfd61-sh)" opacity="0.9"/>
+<ellipse cx="449" cy="282" rx="62" ry="6" fill="#01040A" opacity="0.8"/>
+<polygon points="380,202 449,236 449,274 380,240" fill="url(#bfd61-gLeft)"/>
+<polygon points="449,236 518,202 518,240 449,274" fill="url(#bfd61-gRight)"/>
+<polygon points="449,168 518,202 449,236 380,202" fill="url(#bfd61-gTop)"/>
+<line x1="449" y1="168" x2="380" y2="202" stroke="#D6EBFF" stroke-width="2"/>
+<line x1="449" y1="168" x2="518" y2="202" stroke="#A6E5FF" stroke-width="2"/>
+<line x1="380" y1="202" x2="449" y2="236" stroke="#7FB8E8" stroke-width="1.5"/>
+<line x1="449" y1="236" x2="518" y2="202" stroke="#5A96C8" stroke-width="1.5"/>
+<line x1="380" y1="202" x2="380" y2="240" stroke="#4A7CA8" stroke-width="1.5"/>
+<line x1="518" y1="202" x2="518" y2="240" stroke="#35618C" stroke-width="1.5"/>
+<line x1="449" y1="236" x2="449" y2="274" stroke="#2A5A8A" stroke-width="1.5"/>
+<line x1="380" y1="240" x2="449" y2="274" stroke="#2A5A8A" stroke-width="1"/>
+<line x1="449" y1="274" x2="518" y2="240" stroke="#1A3A5C" stroke-width="1"/>
+<polyline points="427,182 449,172 471,182" fill="none" stroke="#EAF6FF" stroke-width="2" stroke-linecap="round" opacity="0.9"/>
+<circle cx="449" cy="202" r="10" fill="#1E3A5F"/>
+<text x="449" y="206" text-anchor="middle" font-size="11" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<rect x="403" y="247" width="93" height="22" rx="5" fill="#071A2D" stroke="#2F5E87" stroke-width="1"/>
+<text x="449" y="259" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">Terminal</text>
+<circle cx="380" cy="202" r="4" fill="#47DCDD" stroke="#0B1526" stroke-width="1.5"/>
+<circle cx="518" cy="202" r="4" fill="#45A4FF" stroke="#0B1526" stroke-width="1.5"/>
+</g>
+<g class="bf-now" data-beat="2">
+<ellipse cx="726" cy="284" rx="85" ry="9" fill="url(#bfd61-sh)" opacity="0.9"/>
+<ellipse cx="726" cy="282" rx="62" ry="6" fill="#01040A" opacity="0.8"/>
+<polygon points="726,168 795,202 795,240 726,274 657,240" fill="#2E9BFF" opacity="0.30" filter="url(#bfd61-glow)"/>
+<ellipse cx="726" cy="221" rx="99" ry="82" fill="none" stroke="#47DCDD" stroke-width="2" opacity="0.8"/>
+<polygon points="657,202 726,236 726,274 657,240" fill="url(#bfd61-gLeftA)"/>
+<polygon points="726,236 795,202 795,240 726,274" fill="url(#bfd61-gRightA)"/>
+<polygon points="726,168 795,202 726,236 657,202" fill="url(#bfd61-gTopA)"/>
+<line x1="726" y1="168" x2="657" y2="202" stroke="#D6EBFF" stroke-width="2"/>
+<line x1="726" y1="168" x2="795" y2="202" stroke="#A6E5FF" stroke-width="2"/>
+<line x1="657" y1="202" x2="726" y2="236" stroke="#7FB8E8" stroke-width="1.5"/>
+<line x1="726" y1="236" x2="795" y2="202" stroke="#5A96C8" stroke-width="1.5"/>
+<line x1="657" y1="202" x2="657" y2="240" stroke="#4A7CA8" stroke-width="1.5"/>
+<line x1="795" y1="202" x2="795" y2="240" stroke="#35618C" stroke-width="1.5"/>
+<line x1="726" y1="236" x2="726" y2="274" stroke="#2A5A8A" stroke-width="1.5"/>
+<line x1="657" y1="240" x2="726" y2="274" stroke="#2A5A8A" stroke-width="1"/>
+<line x1="726" y1="274" x2="795" y2="240" stroke="#1A3A5C" stroke-width="1"/>
+<polyline points="704,182 726,172 748,182" fill="none" stroke="#EAF6FF" stroke-width="2" stroke-linecap="round" opacity="0.9"/>
+<circle cx="726" cy="202" r="10" fill="#1D4ED8"/>
+<text x="726" y="206" text-anchor="middle" font-size="11" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<rect x="680" y="247" width="93" height="36" rx="5" fill="#071A2D" stroke="#5FB8E8" stroke-width="1"/>
+<text x="726" y="259" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">Cardholder</text>
+<text x="726" y="273" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">controls</text>
+<text x="789" y="184" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<circle cx="657" cy="202" r="4" fill="#47DCDD" stroke="#0B1526" stroke-width="1.5"/>
+<circle cx="795" cy="202" r="4" fill="#45A4FF" stroke="#0B1526" stroke-width="1.5"/>
+</g>
+<g class="bf-dim" data-beat="3">
+<ellipse cx="726" cy="434" rx="85" ry="9" fill="url(#bfd61-sh)" opacity="0.9"/>
+<ellipse cx="726" cy="432" rx="62" ry="6" fill="#01040A" opacity="0.8"/>
+<polygon points="657,352 726,386 726,424 657,390" fill="url(#bfd61-gLeft)"/>
+<polygon points="726,386 795,352 795,390 726,424" fill="url(#bfd61-gRight)"/>
+<polygon points="726,318 795,352 726,386 657,352" fill="url(#bfd61-gTop)"/>
+<line x1="726" y1="318" x2="657" y2="352" stroke="#D6EBFF" stroke-width="2"/>
+<line x1="726" y1="318" x2="795" y2="352" stroke="#A6E5FF" stroke-width="2"/>
+<line x1="657" y1="352" x2="726" y2="386" stroke="#7FB8E8" stroke-width="1.5"/>
+<line x1="726" y1="386" x2="795" y2="352" stroke="#5A96C8" stroke-width="1.5"/>
+<line x1="657" y1="352" x2="657" y2="390" stroke="#4A7CA8" stroke-width="1.5"/>
+<line x1="795" y1="352" x2="795" y2="390" stroke="#35618C" stroke-width="1.5"/>
+<line x1="726" y1="386" x2="726" y2="424" stroke="#2A5A8A" stroke-width="1.5"/>
+<line x1="657" y1="390" x2="726" y2="424" stroke="#2A5A8A" stroke-width="1"/>
+<line x1="726" y1="424" x2="795" y2="390" stroke="#1A3A5C" stroke-width="1"/>
+<polyline points="704,332 726,322 748,332" fill="none" stroke="#EAF6FF" stroke-width="2" stroke-linecap="round" opacity="0.9"/>
+<circle cx="726" cy="352" r="10" fill="#1E3A5F"/>
+<text x="726" y="356" text-anchor="middle" font-size="11" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<rect x="680" y="397" width="93" height="22" rx="5" fill="#071A2D" stroke="#2F5E87" stroke-width="1"/>
+<text x="726" y="409" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">Approval</text>
+<circle cx="657" cy="352" r="4" fill="#47DCDD" stroke="#0B1526" stroke-width="1.5"/>
+<circle cx="795" cy="352" r="4" fill="#45A4FF" stroke="#0B1526" stroke-width="1.5"/>
+</g>
+<g class="bf-dim" data-beat="4">
+<ellipse cx="449" cy="434" rx="85" ry="9" fill="url(#bfd61-sh)" opacity="0.9"/>
+<ellipse cx="449" cy="432" rx="62" ry="6" fill="#01040A" opacity="0.8"/>
+<polygon points="380,352 449,386 449,424 380,390" fill="url(#bfd61-gLeft)"/>
+<polygon points="449,386 518,352 518,390 449,424" fill="url(#bfd61-gRight)"/>
+<polygon points="449,318 518,352 449,386 380,352" fill="url(#bfd61-gTop)"/>
+<line x1="449" y1="318" x2="380" y2="352" stroke="#D6EBFF" stroke-width="2"/>
+<line x1="449" y1="318" x2="518" y2="352" stroke="#A6E5FF" stroke-width="2"/>
+<line x1="380" y1="352" x2="449" y2="386" stroke="#7FB8E8" stroke-width="1.5"/>
+<line x1="449" y1="386" x2="518" y2="352" stroke="#5A96C8" stroke-width="1.5"/>
+<line x1="380" y1="352" x2="380" y2="390" stroke="#4A7CA8" stroke-width="1.5"/>
+<line x1="518" y1="352" x2="518" y2="390" stroke="#35618C" stroke-width="1.5"/>
+<line x1="449" y1="386" x2="449" y2="424" stroke="#2A5A8A" stroke-width="1.5"/>
+<line x1="380" y1="390" x2="449" y2="424" stroke="#2A5A8A" stroke-width="1"/>
+<line x1="449" y1="424" x2="518" y2="390" stroke="#1A3A5C" stroke-width="1"/>
+<polyline points="427,332 449,322 471,332" fill="none" stroke="#EAF6FF" stroke-width="2" stroke-linecap="round" opacity="0.9"/>
+<circle cx="449" cy="352" r="10" fill="#1E3A5F"/>
+<text x="449" y="356" text-anchor="middle" font-size="11" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<rect x="403" y="397" width="93" height="36" rx="5" fill="#071A2D" stroke="#2F5E87" stroke-width="1"/>
+<text x="449" y="409" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">Merchant</text>
+<text x="449" y="423" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">never</text>
+<circle cx="380" cy="352" r="4" fill="#47DCDD" stroke="#0B1526" stroke-width="1.5"/>
+<circle cx="518" cy="352" r="4" fill="#45A4FF" stroke="#0B1526" stroke-width="1.5"/>
+</g>
+<g class="bf-dim" data-beat="5">
+<ellipse cx="172" cy="434" rx="85" ry="9" fill="url(#bfd61-sh)" opacity="0.9"/>
+<ellipse cx="172" cy="432" rx="62" ry="6" fill="#01040A" opacity="0.8"/>
+<polygon points="103,352 172,386 172,424 103,390" fill="url(#bfd61-gLeft)"/>
+<polygon points="172,386 241,352 241,390 172,424" fill="url(#bfd61-gRight)"/>
+<polygon points="172,318 241,352 172,386 103,352" fill="url(#bfd61-gTop)"/>
+<line x1="172" y1="318" x2="103" y2="352" stroke="#D6EBFF" stroke-width="2"/>
+<line x1="172" y1="318" x2="241" y2="352" stroke="#A6E5FF" stroke-width="2"/>
+<line x1="103" y1="352" x2="172" y2="386" stroke="#7FB8E8" stroke-width="1.5"/>
+<line x1="172" y1="386" x2="241" y2="352" stroke="#5A96C8" stroke-width="1.5"/>
+<line x1="103" y1="352" x2="103" y2="390" stroke="#4A7CA8" stroke-width="1.5"/>
+<line x1="241" y1="352" x2="241" y2="390" stroke="#35618C" stroke-width="1.5"/>
+<line x1="172" y1="386" x2="172" y2="424" stroke="#2A5A8A" stroke-width="1.5"/>
+<line x1="103" y1="390" x2="172" y2="424" stroke="#2A5A8A" stroke-width="1"/>
+<line x1="172" y1="424" x2="241" y2="390" stroke="#1A3A5C" stroke-width="1"/>
+<polyline points="150,332 172,322 194,332" fill="none" stroke="#EAF6FF" stroke-width="2" stroke-linecap="round" opacity="0.9"/>
+<circle cx="172" cy="352" r="10" fill="#1E3A5F"/>
+<text x="172" y="356" text-anchor="middle" font-size="11" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<rect x="126" y="397" width="93" height="22" rx="5" fill="#071A2D" stroke="#2F5E87" stroke-width="1"/>
+<text x="172" y="409" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">Path</text>
+<circle cx="103" cy="352" r="4" fill="#47DCDD" stroke="#0B1526" stroke-width="1.5"/>
+<circle cx="241" cy="352" r="4" fill="#45A4FF" stroke="#0B1526" stroke-width="1.5"/>
+</g>
+<path data-conn="c0" data-beat="0" d="M 245 202 L 364 202" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c0" data-beat="0" points="376,202 364,209 364,195" fill="#DBEAFE"/>
+<path data-conn="c1" data-beat="1" d="M 522 202 L 641 202" stroke="#60A5FA" stroke-width="3" fill="none"/><polygon data-conn="c1" data-beat="1" points="653,202 641,209 641,195" fill="#DBEAFE"/>
+<path data-conn="c2" data-beat="2" d="M 726 287 L 726 296 L 726 296 L 726 303" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c2" data-beat="2" points="726,315 719,303 733,303" fill="#DBEAFE"/>
+<path data-conn="c3" data-beat="3" d="M 653 352 L 534 352" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c3" data-beat="3" points="522,352 534,345 534,359" fill="#DBEAFE"/>
+<path data-conn="c4" data-beat="4" d="M 376 352 L 257 352" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c4" data-beat="4" points="245,352 257,345 257,359" fill="#DBEAFE"/>
+<g class="bf-paydot" style="--dx:-196px;--dy:0px"><circle class="bf-pulse" cx="645" cy="202" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="645" cy="202" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="450" y="479" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">It checks cardholder controls, such as a daily limit or a block on online spending.</text>
+<text x="48" y="538" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 3 of 6</text>
+<circle cx="772" cy="534" r="4" fill="#334155"/>
+<circle cx="788" cy="534" r="4" fill="#334155"/>
+<circle cx="804" cy="534" r="4" fill="#60A5FA"/>
+<circle cx="820" cy="534" r="4" fill="#334155"/>
+<circle cx="836" cy="534" r="4" fill="#334155"/>
+<circle cx="852" cy="534" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 767" role="img" aria-label="Lesson visual, vertical layout">
+<defs><pattern id="bfd63" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="360" height="767" fill="#0B1F3D"/>
+<rect x="0" y="0" width="360" height="767" fill="url(#bfd63)"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Cardholder</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">controls</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="24" y="94" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="114" r="11" fill="#1E3A5F"/>
+<text x="44" y="118" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="180" y="132" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Authorisation</text>
+</g>
+<line data-conn="c0" data-beat="0" x1="180" y1="169" x2="180" y2="177" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c0" data-beat="0" points="180,189 173,177 187,177" fill="#DBEAFE"/>
+<g data-node="n1" class="bf-done" data-beat="1">
+<rect x="24" y="192" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="212" r="11" fill="#1E3A5F"/>
+<text x="44" y="216" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="180" y="230" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Terminal</text>
+</g>
+<line data-conn="c1" data-beat="1" x1="180" y1="267" x2="180" y2="275" stroke="#60A5FA" stroke-width="2"/>
+<polygon data-conn="c1" data-beat="1" points="180,287 173,275 187,275" fill="#DBEAFE"/>
+<g data-node="n2" class="bf-now" data-beat="2">
+<rect x="24" y="290" width="312" height="72" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="44" cy="310" r="11" fill="#1D4ED8"/>
+<text x="44" y="314" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="324" y="314" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="180" y="328" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Cardholder controls</text>
+</g>
+<line data-conn="c2" data-beat="2" x1="180" y1="365" x2="180" y2="373" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c2" data-beat="2" points="180,385 173,373 187,373" fill="#DBEAFE"/>
+<g data-node="n3" class="bf-dim" data-beat="3">
+<rect x="24" y="388" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="408" r="11" fill="#1E3A5F"/>
+<text x="44" y="412" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="180" y="426" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Approval</text>
+</g>
+<line data-conn="c3" data-beat="3" x1="180" y1="463" x2="180" y2="471" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c3" data-beat="3" points="180,483 173,471 187,471" fill="#DBEAFE"/>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<rect x="24" y="486" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="506" r="11" fill="#1E3A5F"/>
+<text x="44" y="510" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="180" y="524" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Merchant never</text>
+</g>
+<line data-conn="c4" data-beat="4" x1="180" y1="561" x2="180" y2="569" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c4" data-beat="4" points="180,581 173,569 187,569" fill="#DBEAFE"/>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="24" y="584" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="604" r="11" fill="#1E3A5F"/>
+<text x="44" y="608" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="180" y="622" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Path</text>
+</g>
+<g class="bf-paydot" style="--dx:0px;--dy:-52px"><circle class="bf-pulse" cx="180" cy="280" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="180" cy="280" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="180" y="676" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">It checks cardholder controls, such as a</text>
+<text x="180" y="695" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">daily limit or a block on online</text>
+<text x="180" y="714" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">spending.</text>
+<text x="24" y="755" font-size="12" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 3 of 6</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="3">
+<svg class="flow-desktop" viewBox="0 0 900 560" role="img" aria-label="Lesson visual">
+<defs><pattern id="bfd65" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<linearGradient id="bfd64-gTop" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#C9E4FF"/><stop offset="50%" stop-color="#7FB8E8"/><stop offset="100%" stop-color="#4A90CC"/></linearGradient>
+<linearGradient id="bfd64-gTopA" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#E2F2FF"/><stop offset="50%" stop-color="#A9D8FF"/><stop offset="100%" stop-color="#6FB3E8"/></linearGradient>
+<linearGradient id="bfd64-gLeft" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#5A96C8"/><stop offset="50%" stop-color="#2E5F8F"/><stop offset="100%" stop-color="#16324F"/></linearGradient>
+<linearGradient id="bfd64-gLeftA" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#84BCE8"/><stop offset="50%" stop-color="#4A86BC"/><stop offset="100%" stop-color="#1E4066"/></linearGradient>
+<linearGradient id="bfd64-gRight" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#35618C"/><stop offset="50%" stop-color="#1A3A5C"/><stop offset="100%" stop-color="#0A1A2C"/></linearGradient>
+<linearGradient id="bfd64-gRightA" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#5AA8E8"/><stop offset="50%" stop-color="#2E6FA8"/><stop offset="100%" stop-color="#123252"/></linearGradient>
+<radialGradient id="bfd64-sh" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#000000" stop-opacity="0.55"/><stop offset="70%" stop-color="#000000" stop-opacity="0.22"/><stop offset="100%" stop-color="#000000" stop-opacity="0"/></radialGradient>
+<filter id="bfd64-glow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="10" result="b"/><feMerge><feMergeNode in="b"/></feMerge></filter>
+<rect x="0" y="0" width="900" height="560" fill="#0B1F3D"/>
+<rect x="0" y="0" width="900" height="560" fill="url(#bfd65)"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Approval</tspan> <tspan fill="#FFFFFF">travels</tspan> <tspan fill="#FFFFFF">back</tspan> <tspan fill="#FFFFFF">as</tspan> <tspan fill="#FFFFFF">an</tspan></text>
+<text x="48" y="126" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">authorisation</tspan> <tspan fill="#FFFFFF">response</tspan></text>
+<g class="bf-done" data-beat="0">
+<ellipse cx="172" cy="284" rx="85" ry="9" fill="url(#bfd64-sh)" opacity="0.9"/>
+<ellipse cx="172" cy="282" rx="62" ry="6" fill="#01040A" opacity="0.8"/>
+<polygon points="103,202 172,236 172,274 103,240" fill="url(#bfd64-gLeft)"/>
+<polygon points="172,236 241,202 241,240 172,274" fill="url(#bfd64-gRight)"/>
+<polygon points="172,168 241,202 172,236 103,202" fill="url(#bfd64-gTop)"/>
+<line x1="172" y1="168" x2="103" y2="202" stroke="#D6EBFF" stroke-width="2"/>
+<line x1="172" y1="168" x2="241" y2="202" stroke="#A6E5FF" stroke-width="2"/>
+<line x1="103" y1="202" x2="172" y2="236" stroke="#7FB8E8" stroke-width="1.5"/>
+<line x1="172" y1="236" x2="241" y2="202" stroke="#5A96C8" stroke-width="1.5"/>
+<line x1="103" y1="202" x2="103" y2="240" stroke="#4A7CA8" stroke-width="1.5"/>
+<line x1="241" y1="202" x2="241" y2="240" stroke="#35618C" stroke-width="1.5"/>
+<line x1="172" y1="236" x2="172" y2="274" stroke="#2A5A8A" stroke-width="1.5"/>
+<line x1="103" y1="240" x2="172" y2="274" stroke="#2A5A8A" stroke-width="1"/>
+<line x1="172" y1="274" x2="241" y2="240" stroke="#1A3A5C" stroke-width="1"/>
+<polyline points="150,182 172,172 194,182" fill="none" stroke="#EAF6FF" stroke-width="2" stroke-linecap="round" opacity="0.9"/>
+<circle cx="172" cy="202" r="10" fill="#1E3A5F"/>
+<text x="172" y="206" text-anchor="middle" font-size="11" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<rect x="126" y="247" width="93" height="22" rx="5" fill="#071A2D" stroke="#2F5E87" stroke-width="1"/>
+<text x="172" y="259" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">Authorisation</text>
+<circle cx="103" cy="202" r="4" fill="#47DCDD" stroke="#0B1526" stroke-width="1.5"/>
+<circle cx="241" cy="202" r="4" fill="#45A4FF" stroke="#0B1526" stroke-width="1.5"/>
+</g>
+<g class="bf-done" data-beat="1">
+<ellipse cx="449" cy="284" rx="85" ry="9" fill="url(#bfd64-sh)" opacity="0.9"/>
+<ellipse cx="449" cy="282" rx="62" ry="6" fill="#01040A" opacity="0.8"/>
+<polygon points="380,202 449,236 449,274 380,240" fill="url(#bfd64-gLeft)"/>
+<polygon points="449,236 518,202 518,240 449,274" fill="url(#bfd64-gRight)"/>
+<polygon points="449,168 518,202 449,236 380,202" fill="url(#bfd64-gTop)"/>
+<line x1="449" y1="168" x2="380" y2="202" stroke="#D6EBFF" stroke-width="2"/>
+<line x1="449" y1="168" x2="518" y2="202" stroke="#A6E5FF" stroke-width="2"/>
+<line x1="380" y1="202" x2="449" y2="236" stroke="#7FB8E8" stroke-width="1.5"/>
+<line x1="449" y1="236" x2="518" y2="202" stroke="#5A96C8" stroke-width="1.5"/>
+<line x1="380" y1="202" x2="380" y2="240" stroke="#4A7CA8" stroke-width="1.5"/>
+<line x1="518" y1="202" x2="518" y2="240" stroke="#35618C" stroke-width="1.5"/>
+<line x1="449" y1="236" x2="449" y2="274" stroke="#2A5A8A" stroke-width="1.5"/>
+<line x1="380" y1="240" x2="449" y2="274" stroke="#2A5A8A" stroke-width="1"/>
+<line x1="449" y1="274" x2="518" y2="240" stroke="#1A3A5C" stroke-width="1"/>
+<polyline points="427,182 449,172 471,182" fill="none" stroke="#EAF6FF" stroke-width="2" stroke-linecap="round" opacity="0.9"/>
+<circle cx="449" cy="202" r="10" fill="#1E3A5F"/>
+<text x="449" y="206" text-anchor="middle" font-size="11" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<rect x="403" y="247" width="93" height="22" rx="5" fill="#071A2D" stroke="#2F5E87" stroke-width="1"/>
+<text x="449" y="259" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">Terminal</text>
+<circle cx="380" cy="202" r="4" fill="#47DCDD" stroke="#0B1526" stroke-width="1.5"/>
+<circle cx="518" cy="202" r="4" fill="#45A4FF" stroke="#0B1526" stroke-width="1.5"/>
+</g>
+<g class="bf-done" data-beat="2">
+<ellipse cx="726" cy="284" rx="85" ry="9" fill="url(#bfd64-sh)" opacity="0.9"/>
+<ellipse cx="726" cy="282" rx="62" ry="6" fill="#01040A" opacity="0.8"/>
+<polygon points="657,202 726,236 726,274 657,240" fill="url(#bfd64-gLeft)"/>
+<polygon points="726,236 795,202 795,240 726,274" fill="url(#bfd64-gRight)"/>
+<polygon points="726,168 795,202 726,236 657,202" fill="url(#bfd64-gTop)"/>
+<line x1="726" y1="168" x2="657" y2="202" stroke="#D6EBFF" stroke-width="2"/>
+<line x1="726" y1="168" x2="795" y2="202" stroke="#A6E5FF" stroke-width="2"/>
+<line x1="657" y1="202" x2="726" y2="236" stroke="#7FB8E8" stroke-width="1.5"/>
+<line x1="726" y1="236" x2="795" y2="202" stroke="#5A96C8" stroke-width="1.5"/>
+<line x1="657" y1="202" x2="657" y2="240" stroke="#4A7CA8" stroke-width="1.5"/>
+<line x1="795" y1="202" x2="795" y2="240" stroke="#35618C" stroke-width="1.5"/>
+<line x1="726" y1="236" x2="726" y2="274" stroke="#2A5A8A" stroke-width="1.5"/>
+<line x1="657" y1="240" x2="726" y2="274" stroke="#2A5A8A" stroke-width="1"/>
+<line x1="726" y1="274" x2="795" y2="240" stroke="#1A3A5C" stroke-width="1"/>
+<polyline points="704,182 726,172 748,182" fill="none" stroke="#EAF6FF" stroke-width="2" stroke-linecap="round" opacity="0.9"/>
+<circle cx="726" cy="202" r="10" fill="#1E3A5F"/>
+<text x="726" y="206" text-anchor="middle" font-size="11" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<rect x="680" y="247" width="93" height="36" rx="5" fill="#071A2D" stroke="#2F5E87" stroke-width="1"/>
+<text x="726" y="259" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">Cardholder</text>
+<text x="726" y="273" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">controls</text>
+<circle cx="657" cy="202" r="4" fill="#47DCDD" stroke="#0B1526" stroke-width="1.5"/>
+<circle cx="795" cy="202" r="4" fill="#45A4FF" stroke="#0B1526" stroke-width="1.5"/>
+</g>
+<g class="bf-now" data-beat="3">
+<ellipse cx="726" cy="434" rx="85" ry="9" fill="url(#bfd64-sh)" opacity="0.9"/>
+<ellipse cx="726" cy="432" rx="62" ry="6" fill="#01040A" opacity="0.8"/>
+<polygon points="726,318 795,352 795,390 726,424 657,390" fill="#2E9BFF" opacity="0.30" filter="url(#bfd64-glow)"/>
+<ellipse cx="726" cy="371" rx="99" ry="82" fill="none" stroke="#47DCDD" stroke-width="2" opacity="0.8"/>
+<polygon points="657,352 726,386 726,424 657,390" fill="url(#bfd64-gLeftA)"/>
+<polygon points="726,386 795,352 795,390 726,424" fill="url(#bfd64-gRightA)"/>
+<polygon points="726,318 795,352 726,386 657,352" fill="url(#bfd64-gTopA)"/>
+<line x1="726" y1="318" x2="657" y2="352" stroke="#D6EBFF" stroke-width="2"/>
+<line x1="726" y1="318" x2="795" y2="352" stroke="#A6E5FF" stroke-width="2"/>
+<line x1="657" y1="352" x2="726" y2="386" stroke="#7FB8E8" stroke-width="1.5"/>
+<line x1="726" y1="386" x2="795" y2="352" stroke="#5A96C8" stroke-width="1.5"/>
+<line x1="657" y1="352" x2="657" y2="390" stroke="#4A7CA8" stroke-width="1.5"/>
+<line x1="795" y1="352" x2="795" y2="390" stroke="#35618C" stroke-width="1.5"/>
+<line x1="726" y1="386" x2="726" y2="424" stroke="#2A5A8A" stroke-width="1.5"/>
+<line x1="657" y1="390" x2="726" y2="424" stroke="#2A5A8A" stroke-width="1"/>
+<line x1="726" y1="424" x2="795" y2="390" stroke="#1A3A5C" stroke-width="1"/>
+<polyline points="704,332 726,322 748,332" fill="none" stroke="#EAF6FF" stroke-width="2" stroke-linecap="round" opacity="0.9"/>
+<circle cx="726" cy="352" r="10" fill="#1D4ED8"/>
+<text x="726" y="356" text-anchor="middle" font-size="11" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<rect x="680" y="397" width="93" height="22" rx="5" fill="#071A2D" stroke="#5FB8E8" stroke-width="1"/>
+<text x="726" y="409" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">Approval</text>
+<text x="789" y="334" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<circle cx="657" cy="352" r="4" fill="#47DCDD" stroke="#0B1526" stroke-width="1.5"/>
+<circle cx="795" cy="352" r="4" fill="#45A4FF" stroke="#0B1526" stroke-width="1.5"/>
+</g>
+<g class="bf-dim" data-beat="4">
+<ellipse cx="449" cy="434" rx="85" ry="9" fill="url(#bfd64-sh)" opacity="0.9"/>
+<ellipse cx="449" cy="432" rx="62" ry="6" fill="#01040A" opacity="0.8"/>
+<polygon points="380,352 449,386 449,424 380,390" fill="url(#bfd64-gLeft)"/>
+<polygon points="449,386 518,352 518,390 449,424" fill="url(#bfd64-gRight)"/>
+<polygon points="449,318 518,352 449,386 380,352" fill="url(#bfd64-gTop)"/>
+<line x1="449" y1="318" x2="380" y2="352" stroke="#D6EBFF" stroke-width="2"/>
+<line x1="449" y1="318" x2="518" y2="352" stroke="#A6E5FF" stroke-width="2"/>
+<line x1="380" y1="352" x2="449" y2="386" stroke="#7FB8E8" stroke-width="1.5"/>
+<line x1="449" y1="386" x2="518" y2="352" stroke="#5A96C8" stroke-width="1.5"/>
+<line x1="380" y1="352" x2="380" y2="390" stroke="#4A7CA8" stroke-width="1.5"/>
+<line x1="518" y1="352" x2="518" y2="390" stroke="#35618C" stroke-width="1.5"/>
+<line x1="449" y1="386" x2="449" y2="424" stroke="#2A5A8A" stroke-width="1.5"/>
+<line x1="380" y1="390" x2="449" y2="424" stroke="#2A5A8A" stroke-width="1"/>
+<line x1="449" y1="424" x2="518" y2="390" stroke="#1A3A5C" stroke-width="1"/>
+<polyline points="427,332 449,322 471,332" fill="none" stroke="#EAF6FF" stroke-width="2" stroke-linecap="round" opacity="0.9"/>
+<circle cx="449" cy="352" r="10" fill="#1E3A5F"/>
+<text x="449" y="356" text-anchor="middle" font-size="11" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<rect x="403" y="397" width="93" height="36" rx="5" fill="#071A2D" stroke="#2F5E87" stroke-width="1"/>
+<text x="449" y="409" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">Merchant</text>
+<text x="449" y="423" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">never</text>
+<circle cx="380" cy="352" r="4" fill="#47DCDD" stroke="#0B1526" stroke-width="1.5"/>
+<circle cx="518" cy="352" r="4" fill="#45A4FF" stroke="#0B1526" stroke-width="1.5"/>
+</g>
+<g class="bf-dim" data-beat="5">
+<ellipse cx="172" cy="434" rx="85" ry="9" fill="url(#bfd64-sh)" opacity="0.9"/>
+<ellipse cx="172" cy="432" rx="62" ry="6" fill="#01040A" opacity="0.8"/>
+<polygon points="103,352 172,386 172,424 103,390" fill="url(#bfd64-gLeft)"/>
+<polygon points="172,386 241,352 241,390 172,424" fill="url(#bfd64-gRight)"/>
+<polygon points="172,318 241,352 172,386 103,352" fill="url(#bfd64-gTop)"/>
+<line x1="172" y1="318" x2="103" y2="352" stroke="#D6EBFF" stroke-width="2"/>
+<line x1="172" y1="318" x2="241" y2="352" stroke="#A6E5FF" stroke-width="2"/>
+<line x1="103" y1="352" x2="172" y2="386" stroke="#7FB8E8" stroke-width="1.5"/>
+<line x1="172" y1="386" x2="241" y2="352" stroke="#5A96C8" stroke-width="1.5"/>
+<line x1="103" y1="352" x2="103" y2="390" stroke="#4A7CA8" stroke-width="1.5"/>
+<line x1="241" y1="352" x2="241" y2="390" stroke="#35618C" stroke-width="1.5"/>
+<line x1="172" y1="386" x2="172" y2="424" stroke="#2A5A8A" stroke-width="1.5"/>
+<line x1="103" y1="390" x2="172" y2="424" stroke="#2A5A8A" stroke-width="1"/>
+<line x1="172" y1="424" x2="241" y2="390" stroke="#1A3A5C" stroke-width="1"/>
+<polyline points="150,332 172,322 194,332" fill="none" stroke="#EAF6FF" stroke-width="2" stroke-linecap="round" opacity="0.9"/>
+<circle cx="172" cy="352" r="10" fill="#1E3A5F"/>
+<text x="172" y="356" text-anchor="middle" font-size="11" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<rect x="126" y="397" width="93" height="22" rx="5" fill="#071A2D" stroke="#2F5E87" stroke-width="1"/>
+<text x="172" y="409" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">Path</text>
+<circle cx="103" cy="352" r="4" fill="#47DCDD" stroke="#0B1526" stroke-width="1.5"/>
+<circle cx="241" cy="352" r="4" fill="#45A4FF" stroke="#0B1526" stroke-width="1.5"/>
+</g>
+<path data-conn="c0" data-beat="0" d="M 245 202 L 364 202" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c0" data-beat="0" points="376,202 364,209 364,195" fill="#DBEAFE"/>
+<path data-conn="c1" data-beat="1" d="M 522 202 L 641 202" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c1" data-beat="1" points="653,202 641,209 641,195" fill="#DBEAFE"/>
+<path data-conn="c2" data-beat="2" d="M 726 287 L 726 296 L 726 296 L 726 303" stroke="#60A5FA" stroke-width="3" fill="none"/><polygon data-conn="c2" data-beat="2" points="726,315 719,303 733,303" fill="#DBEAFE"/>
+<path data-conn="c3" data-beat="3" d="M 653 352 L 534 352" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c3" data-beat="3" points="522,352 534,345 534,359" fill="#DBEAFE"/>
+<path data-conn="c4" data-beat="4" d="M 376 352 L 257 352" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c4" data-beat="4" points="245,352 257,345 257,359" fill="#DBEAFE"/>
+<g class="bf-paydot" style="--dx:0px;--dy:-104px"><circle class="bf-pulse" cx="726" cy="306" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="726" cy="306" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="450" y="479" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The approval travels back as an authorisation response, message type 0110, from issuer to</text>
+<text x="450" y="499" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">scheme to acquirer to merchant.</text>
+<text x="48" y="538" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 4 of 6</text>
+<circle cx="772" cy="534" r="4" fill="#334155"/>
+<circle cx="788" cy="534" r="4" fill="#334155"/>
+<circle cx="804" cy="534" r="4" fill="#334155"/>
+<circle cx="820" cy="534" r="4" fill="#60A5FA"/>
+<circle cx="836" cy="534" r="4" fill="#334155"/>
+<circle cx="852" cy="534" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 842" role="img" aria-label="Lesson visual, vertical layout">
+<defs><pattern id="bfd66" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="360" height="842" fill="#0B1F3D"/>
+<rect x="0" y="0" width="360" height="842" fill="url(#bfd66)"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Approval</tspan> <tspan fill="#FFFFFF">travels</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">back</tspan> <tspan fill="#FFFFFF">as</tspan> <tspan fill="#FFFFFF">an</tspan></text>
+<text x="24" y="96" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">authorisation</tspan></text>
+<text x="24" y="124" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">response</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="24" y="150" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="170" r="11" fill="#1E3A5F"/>
+<text x="44" y="174" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="180" y="188" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Authorisation</text>
+</g>
+<line data-conn="c0" data-beat="0" x1="180" y1="225" x2="180" y2="233" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c0" data-beat="0" points="180,245 173,233 187,233" fill="#DBEAFE"/>
+<g data-node="n1" class="bf-done" data-beat="1">
+<rect x="24" y="248" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="268" r="11" fill="#1E3A5F"/>
+<text x="44" y="272" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="180" y="286" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Terminal</text>
+</g>
+<line data-conn="c1" data-beat="1" x1="180" y1="323" x2="180" y2="331" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c1" data-beat="1" points="180,343 173,331 187,331" fill="#DBEAFE"/>
+<g data-node="n2" class="bf-done" data-beat="2">
+<rect x="24" y="346" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="366" r="11" fill="#1E3A5F"/>
+<text x="44" y="370" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="180" y="384" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Cardholder controls</text>
+</g>
+<line data-conn="c2" data-beat="2" x1="180" y1="421" x2="180" y2="429" stroke="#60A5FA" stroke-width="2"/>
+<polygon data-conn="c2" data-beat="2" points="180,441 173,429 187,429" fill="#DBEAFE"/>
+<g data-node="n3" class="bf-now" data-beat="3">
+<rect x="24" y="444" width="312" height="72" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="44" cy="464" r="11" fill="#1D4ED8"/>
+<text x="44" y="468" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="324" y="468" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="180" y="482" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Approval</text>
+</g>
+<line data-conn="c3" data-beat="3" x1="180" y1="519" x2="180" y2="527" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c3" data-beat="3" points="180,539 173,527 187,527" fill="#DBEAFE"/>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<rect x="24" y="542" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="562" r="11" fill="#1E3A5F"/>
+<text x="44" y="566" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="180" y="580" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Merchant never</text>
+</g>
+<line data-conn="c4" data-beat="4" x1="180" y1="617" x2="180" y2="625" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c4" data-beat="4" points="180,637 173,625 187,625" fill="#DBEAFE"/>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="24" y="640" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="660" r="11" fill="#1E3A5F"/>
+<text x="44" y="664" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="180" y="678" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Path</text>
+</g>
+<g class="bf-paydot" style="--dx:0px;--dy:-52px"><circle class="bf-pulse" cx="180" cy="434" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="180" cy="434" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="180" y="732" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The approval travels back as an</text>
+<text x="180" y="751" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">authorisation response, message type</text>
+<text x="180" y="770" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">0110, from issuer to scheme to acquirer to</text>
+<text x="180" y="789" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">merchant.</text>
+<text x="24" y="830" font-size="12" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 4 of 6</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="4">
+<svg class="flow-desktop" viewBox="0 0 900 560" role="img" aria-label="Lesson visual">
+<defs><pattern id="bfd68" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<linearGradient id="bfd67-gTop" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#C9E4FF"/><stop offset="50%" stop-color="#7FB8E8"/><stop offset="100%" stop-color="#4A90CC"/></linearGradient>
+<linearGradient id="bfd67-gTopA" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#E2F2FF"/><stop offset="50%" stop-color="#A9D8FF"/><stop offset="100%" stop-color="#6FB3E8"/></linearGradient>
+<linearGradient id="bfd67-gLeft" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#5A96C8"/><stop offset="50%" stop-color="#2E5F8F"/><stop offset="100%" stop-color="#16324F"/></linearGradient>
+<linearGradient id="bfd67-gLeftA" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#84BCE8"/><stop offset="50%" stop-color="#4A86BC"/><stop offset="100%" stop-color="#1E4066"/></linearGradient>
+<linearGradient id="bfd67-gRight" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#35618C"/><stop offset="50%" stop-color="#1A3A5C"/><stop offset="100%" stop-color="#0A1A2C"/></linearGradient>
+<linearGradient id="bfd67-gRightA" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#5AA8E8"/><stop offset="50%" stop-color="#2E6FA8"/><stop offset="100%" stop-color="#123252"/></linearGradient>
+<radialGradient id="bfd67-sh" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#000000" stop-opacity="0.55"/><stop offset="70%" stop-color="#000000" stop-opacity="0.22"/><stop offset="100%" stop-color="#000000" stop-opacity="0"/></radialGradient>
+<filter id="bfd67-glow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="10" result="b"/><feMerge><feMergeNode in="b"/></feMerge></filter>
+<rect x="0" y="0" width="900" height="560" fill="#0B1F3D"/>
+<rect x="0" y="0" width="900" height="560" fill="url(#bfd68)"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Merchant</tspan> <tspan fill="#FFFFFF">never</tspan> <tspan fill="#FFFFFF">clears</tspan> <tspan fill="#FFFFFF">it</tspan></text>
+<g class="bf-done" data-beat="0">
+<ellipse cx="172" cy="284" rx="85" ry="9" fill="url(#bfd67-sh)" opacity="0.9"/>
+<ellipse cx="172" cy="282" rx="62" ry="6" fill="#01040A" opacity="0.8"/>
+<polygon points="103,202 172,236 172,274 103,240" fill="url(#bfd67-gLeft)"/>
+<polygon points="172,236 241,202 241,240 172,274" fill="url(#bfd67-gRight)"/>
+<polygon points="172,168 241,202 172,236 103,202" fill="url(#bfd67-gTop)"/>
+<line x1="172" y1="168" x2="103" y2="202" stroke="#D6EBFF" stroke-width="2"/>
+<line x1="172" y1="168" x2="241" y2="202" stroke="#A6E5FF" stroke-width="2"/>
+<line x1="103" y1="202" x2="172" y2="236" stroke="#7FB8E8" stroke-width="1.5"/>
+<line x1="172" y1="236" x2="241" y2="202" stroke="#5A96C8" stroke-width="1.5"/>
+<line x1="103" y1="202" x2="103" y2="240" stroke="#4A7CA8" stroke-width="1.5"/>
+<line x1="241" y1="202" x2="241" y2="240" stroke="#35618C" stroke-width="1.5"/>
+<line x1="172" y1="236" x2="172" y2="274" stroke="#2A5A8A" stroke-width="1.5"/>
+<line x1="103" y1="240" x2="172" y2="274" stroke="#2A5A8A" stroke-width="1"/>
+<line x1="172" y1="274" x2="241" y2="240" stroke="#1A3A5C" stroke-width="1"/>
+<polyline points="150,182 172,172 194,182" fill="none" stroke="#EAF6FF" stroke-width="2" stroke-linecap="round" opacity="0.9"/>
+<circle cx="172" cy="202" r="10" fill="#1E3A5F"/>
+<text x="172" y="206" text-anchor="middle" font-size="11" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<rect x="126" y="247" width="93" height="22" rx="5" fill="#071A2D" stroke="#2F5E87" stroke-width="1"/>
+<text x="172" y="259" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">Authorisation</text>
+<circle cx="103" cy="202" r="4" fill="#47DCDD" stroke="#0B1526" stroke-width="1.5"/>
+<circle cx="241" cy="202" r="4" fill="#45A4FF" stroke="#0B1526" stroke-width="1.5"/>
+</g>
+<g class="bf-done" data-beat="1">
+<ellipse cx="449" cy="284" rx="85" ry="9" fill="url(#bfd67-sh)" opacity="0.9"/>
+<ellipse cx="449" cy="282" rx="62" ry="6" fill="#01040A" opacity="0.8"/>
+<polygon points="380,202 449,236 449,274 380,240" fill="url(#bfd67-gLeft)"/>
+<polygon points="449,236 518,202 518,240 449,274" fill="url(#bfd67-gRight)"/>
+<polygon points="449,168 518,202 449,236 380,202" fill="url(#bfd67-gTop)"/>
+<line x1="449" y1="168" x2="380" y2="202" stroke="#D6EBFF" stroke-width="2"/>
+<line x1="449" y1="168" x2="518" y2="202" stroke="#A6E5FF" stroke-width="2"/>
+<line x1="380" y1="202" x2="449" y2="236" stroke="#7FB8E8" stroke-width="1.5"/>
+<line x1="449" y1="236" x2="518" y2="202" stroke="#5A96C8" stroke-width="1.5"/>
+<line x1="380" y1="202" x2="380" y2="240" stroke="#4A7CA8" stroke-width="1.5"/>
+<line x1="518" y1="202" x2="518" y2="240" stroke="#35618C" stroke-width="1.5"/>
+<line x1="449" y1="236" x2="449" y2="274" stroke="#2A5A8A" stroke-width="1.5"/>
+<line x1="380" y1="240" x2="449" y2="274" stroke="#2A5A8A" stroke-width="1"/>
+<line x1="449" y1="274" x2="518" y2="240" stroke="#1A3A5C" stroke-width="1"/>
+<polyline points="427,182 449,172 471,182" fill="none" stroke="#EAF6FF" stroke-width="2" stroke-linecap="round" opacity="0.9"/>
+<circle cx="449" cy="202" r="10" fill="#1E3A5F"/>
+<text x="449" y="206" text-anchor="middle" font-size="11" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<rect x="403" y="247" width="93" height="22" rx="5" fill="#071A2D" stroke="#2F5E87" stroke-width="1"/>
+<text x="449" y="259" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">Terminal</text>
+<circle cx="380" cy="202" r="4" fill="#47DCDD" stroke="#0B1526" stroke-width="1.5"/>
+<circle cx="518" cy="202" r="4" fill="#45A4FF" stroke="#0B1526" stroke-width="1.5"/>
+</g>
+<g class="bf-done" data-beat="2">
+<ellipse cx="726" cy="284" rx="85" ry="9" fill="url(#bfd67-sh)" opacity="0.9"/>
+<ellipse cx="726" cy="282" rx="62" ry="6" fill="#01040A" opacity="0.8"/>
+<polygon points="657,202 726,236 726,274 657,240" fill="url(#bfd67-gLeft)"/>
+<polygon points="726,236 795,202 795,240 726,274" fill="url(#bfd67-gRight)"/>
+<polygon points="726,168 795,202 726,236 657,202" fill="url(#bfd67-gTop)"/>
+<line x1="726" y1="168" x2="657" y2="202" stroke="#D6EBFF" stroke-width="2"/>
+<line x1="726" y1="168" x2="795" y2="202" stroke="#A6E5FF" stroke-width="2"/>
+<line x1="657" y1="202" x2="726" y2="236" stroke="#7FB8E8" stroke-width="1.5"/>
+<line x1="726" y1="236" x2="795" y2="202" stroke="#5A96C8" stroke-width="1.5"/>
+<line x1="657" y1="202" x2="657" y2="240" stroke="#4A7CA8" stroke-width="1.5"/>
+<line x1="795" y1="202" x2="795" y2="240" stroke="#35618C" stroke-width="1.5"/>
+<line x1="726" y1="236" x2="726" y2="274" stroke="#2A5A8A" stroke-width="1.5"/>
+<line x1="657" y1="240" x2="726" y2="274" stroke="#2A5A8A" stroke-width="1"/>
+<line x1="726" y1="274" x2="795" y2="240" stroke="#1A3A5C" stroke-width="1"/>
+<polyline points="704,182 726,172 748,182" fill="none" stroke="#EAF6FF" stroke-width="2" stroke-linecap="round" opacity="0.9"/>
+<circle cx="726" cy="202" r="10" fill="#1E3A5F"/>
+<text x="726" y="206" text-anchor="middle" font-size="11" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<rect x="680" y="247" width="93" height="36" rx="5" fill="#071A2D" stroke="#2F5E87" stroke-width="1"/>
+<text x="726" y="259" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">Cardholder</text>
+<text x="726" y="273" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">controls</text>
+<circle cx="657" cy="202" r="4" fill="#47DCDD" stroke="#0B1526" stroke-width="1.5"/>
+<circle cx="795" cy="202" r="4" fill="#45A4FF" stroke="#0B1526" stroke-width="1.5"/>
+</g>
+<g class="bf-done" data-beat="3">
+<ellipse cx="726" cy="434" rx="85" ry="9" fill="url(#bfd67-sh)" opacity="0.9"/>
+<ellipse cx="726" cy="432" rx="62" ry="6" fill="#01040A" opacity="0.8"/>
+<polygon points="657,352 726,386 726,424 657,390" fill="url(#bfd67-gLeft)"/>
+<polygon points="726,386 795,352 795,390 726,424" fill="url(#bfd67-gRight)"/>
+<polygon points="726,318 795,352 726,386 657,352" fill="url(#bfd67-gTop)"/>
+<line x1="726" y1="318" x2="657" y2="352" stroke="#D6EBFF" stroke-width="2"/>
+<line x1="726" y1="318" x2="795" y2="352" stroke="#A6E5FF" stroke-width="2"/>
+<line x1="657" y1="352" x2="726" y2="386" stroke="#7FB8E8" stroke-width="1.5"/>
+<line x1="726" y1="386" x2="795" y2="352" stroke="#5A96C8" stroke-width="1.5"/>
+<line x1="657" y1="352" x2="657" y2="390" stroke="#4A7CA8" stroke-width="1.5"/>
+<line x1="795" y1="352" x2="795" y2="390" stroke="#35618C" stroke-width="1.5"/>
+<line x1="726" y1="386" x2="726" y2="424" stroke="#2A5A8A" stroke-width="1.5"/>
+<line x1="657" y1="390" x2="726" y2="424" stroke="#2A5A8A" stroke-width="1"/>
+<line x1="726" y1="424" x2="795" y2="390" stroke="#1A3A5C" stroke-width="1"/>
+<polyline points="704,332 726,322 748,332" fill="none" stroke="#EAF6FF" stroke-width="2" stroke-linecap="round" opacity="0.9"/>
+<circle cx="726" cy="352" r="10" fill="#1E3A5F"/>
+<text x="726" y="356" text-anchor="middle" font-size="11" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<rect x="680" y="397" width="93" height="22" rx="5" fill="#071A2D" stroke="#2F5E87" stroke-width="1"/>
+<text x="726" y="409" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">Approval</text>
+<circle cx="657" cy="352" r="4" fill="#47DCDD" stroke="#0B1526" stroke-width="1.5"/>
+<circle cx="795" cy="352" r="4" fill="#45A4FF" stroke="#0B1526" stroke-width="1.5"/>
+</g>
+<g class="bf-now" data-beat="4">
+<ellipse cx="449" cy="434" rx="85" ry="9" fill="url(#bfd67-sh)" opacity="0.9"/>
+<ellipse cx="449" cy="432" rx="62" ry="6" fill="#01040A" opacity="0.8"/>
+<polygon points="449,318 518,352 518,390 449,424 380,390" fill="#2E9BFF" opacity="0.30" filter="url(#bfd67-glow)"/>
+<ellipse cx="449" cy="371" rx="99" ry="82" fill="none" stroke="#47DCDD" stroke-width="2" opacity="0.8"/>
+<polygon points="380,352 449,386 449,424 380,390" fill="url(#bfd67-gLeftA)"/>
+<polygon points="449,386 518,352 518,390 449,424" fill="url(#bfd67-gRightA)"/>
+<polygon points="449,318 518,352 449,386 380,352" fill="url(#bfd67-gTopA)"/>
+<line x1="449" y1="318" x2="380" y2="352" stroke="#D6EBFF" stroke-width="2"/>
+<line x1="449" y1="318" x2="518" y2="352" stroke="#A6E5FF" stroke-width="2"/>
+<line x1="380" y1="352" x2="449" y2="386" stroke="#7FB8E8" stroke-width="1.5"/>
+<line x1="449" y1="386" x2="518" y2="352" stroke="#5A96C8" stroke-width="1.5"/>
+<line x1="380" y1="352" x2="380" y2="390" stroke="#4A7CA8" stroke-width="1.5"/>
+<line x1="518" y1="352" x2="518" y2="390" stroke="#35618C" stroke-width="1.5"/>
+<line x1="449" y1="386" x2="449" y2="424" stroke="#2A5A8A" stroke-width="1.5"/>
+<line x1="380" y1="390" x2="449" y2="424" stroke="#2A5A8A" stroke-width="1"/>
+<line x1="449" y1="424" x2="518" y2="390" stroke="#1A3A5C" stroke-width="1"/>
+<polyline points="427,332 449,322 471,332" fill="none" stroke="#EAF6FF" stroke-width="2" stroke-linecap="round" opacity="0.9"/>
+<circle cx="449" cy="352" r="10" fill="#1D4ED8"/>
+<text x="449" y="356" text-anchor="middle" font-size="11" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<rect x="403" y="397" width="93" height="36" rx="5" fill="#071A2D" stroke="#5FB8E8" stroke-width="1"/>
+<text x="449" y="409" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">Merchant</text>
+<text x="449" y="423" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">never</text>
+<text x="512" y="334" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<circle cx="380" cy="352" r="4" fill="#47DCDD" stroke="#0B1526" stroke-width="1.5"/>
+<circle cx="518" cy="352" r="4" fill="#45A4FF" stroke="#0B1526" stroke-width="1.5"/>
+</g>
+<g class="bf-dim" data-beat="5">
+<ellipse cx="172" cy="434" rx="85" ry="9" fill="url(#bfd67-sh)" opacity="0.9"/>
+<ellipse cx="172" cy="432" rx="62" ry="6" fill="#01040A" opacity="0.8"/>
+<polygon points="103,352 172,386 172,424 103,390" fill="url(#bfd67-gLeft)"/>
+<polygon points="172,386 241,352 241,390 172,424" fill="url(#bfd67-gRight)"/>
+<polygon points="172,318 241,352 172,386 103,352" fill="url(#bfd67-gTop)"/>
+<line x1="172" y1="318" x2="103" y2="352" stroke="#D6EBFF" stroke-width="2"/>
+<line x1="172" y1="318" x2="241" y2="352" stroke="#A6E5FF" stroke-width="2"/>
+<line x1="103" y1="352" x2="172" y2="386" stroke="#7FB8E8" stroke-width="1.5"/>
+<line x1="172" y1="386" x2="241" y2="352" stroke="#5A96C8" stroke-width="1.5"/>
+<line x1="103" y1="352" x2="103" y2="390" stroke="#4A7CA8" stroke-width="1.5"/>
+<line x1="241" y1="352" x2="241" y2="390" stroke="#35618C" stroke-width="1.5"/>
+<line x1="172" y1="386" x2="172" y2="424" stroke="#2A5A8A" stroke-width="1.5"/>
+<line x1="103" y1="390" x2="172" y2="424" stroke="#2A5A8A" stroke-width="1"/>
+<line x1="172" y1="424" x2="241" y2="390" stroke="#1A3A5C" stroke-width="1"/>
+<polyline points="150,332 172,322 194,332" fill="none" stroke="#EAF6FF" stroke-width="2" stroke-linecap="round" opacity="0.9"/>
+<circle cx="172" cy="352" r="10" fill="#1E3A5F"/>
+<text x="172" y="356" text-anchor="middle" font-size="11" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<rect x="126" y="397" width="93" height="22" rx="5" fill="#071A2D" stroke="#2F5E87" stroke-width="1"/>
+<text x="172" y="409" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">Path</text>
+<circle cx="103" cy="352" r="4" fill="#47DCDD" stroke="#0B1526" stroke-width="1.5"/>
+<circle cx="241" cy="352" r="4" fill="#45A4FF" stroke="#0B1526" stroke-width="1.5"/>
+</g>
+<path data-conn="c0" data-beat="0" d="M 245 202 L 364 202" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c0" data-beat="0" points="376,202 364,209 364,195" fill="#DBEAFE"/>
+<path data-conn="c1" data-beat="1" d="M 522 202 L 641 202" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c1" data-beat="1" points="653,202 641,209 641,195" fill="#DBEAFE"/>
+<path data-conn="c2" data-beat="2" d="M 726 287 L 726 296 L 726 296 L 726 303" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c2" data-beat="2" points="726,315 719,303 733,303" fill="#DBEAFE"/>
+<path data-conn="c3" data-beat="3" d="M 653 352 L 534 352" stroke="#60A5FA" stroke-width="3" fill="none"/><polygon data-conn="c3" data-beat="3" points="522,352 534,345 534,359" fill="#DBEAFE"/>
+<path data-conn="c4" data-beat="4" d="M 376 352 L 257 352" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c4" data-beat="4" points="245,352 257,345 257,359" fill="#DBEAFE"/>
+<g class="bf-paydot" style="--dx:196px;--dy:0px"><circle class="bf-pulse" cx="530" cy="352" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="530" cy="352" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="450" y="479" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">If the merchant never clears it, the hold expires and the funds are released.</text>
+<text x="48" y="538" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 5 of 6</text>
+<circle cx="772" cy="534" r="4" fill="#334155"/>
+<circle cx="788" cy="534" r="4" fill="#334155"/>
+<circle cx="804" cy="534" r="4" fill="#334155"/>
+<circle cx="820" cy="534" r="4" fill="#334155"/>
+<circle cx="836" cy="534" r="4" fill="#60A5FA"/>
+<circle cx="852" cy="534" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 748" role="img" aria-label="Lesson visual, vertical layout">
+<defs><pattern id="bfd69" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="360" height="748" fill="#0B1F3D"/>
+<rect x="0" y="0" width="360" height="748" fill="url(#bfd69)"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Merchant</tspan> <tspan fill="#FFFFFF">never</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">clears</tspan> <tspan fill="#FFFFFF">it</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="24" y="94" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="114" r="11" fill="#1E3A5F"/>
+<text x="44" y="118" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="180" y="132" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Authorisation</text>
+</g>
+<line data-conn="c0" data-beat="0" x1="180" y1="169" x2="180" y2="177" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c0" data-beat="0" points="180,189 173,177 187,177" fill="#DBEAFE"/>
+<g data-node="n1" class="bf-done" data-beat="1">
+<rect x="24" y="192" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="212" r="11" fill="#1E3A5F"/>
+<text x="44" y="216" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="180" y="230" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Terminal</text>
+</g>
+<line data-conn="c1" data-beat="1" x1="180" y1="267" x2="180" y2="275" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c1" data-beat="1" points="180,287 173,275 187,275" fill="#DBEAFE"/>
+<g data-node="n2" class="bf-done" data-beat="2">
+<rect x="24" y="290" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="310" r="11" fill="#1E3A5F"/>
+<text x="44" y="314" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="180" y="328" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Cardholder controls</text>
+</g>
+<line data-conn="c2" data-beat="2" x1="180" y1="365" x2="180" y2="373" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c2" data-beat="2" points="180,385 173,373 187,373" fill="#DBEAFE"/>
+<g data-node="n3" class="bf-done" data-beat="3">
+<rect x="24" y="388" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="408" r="11" fill="#1E3A5F"/>
+<text x="44" y="412" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="180" y="426" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Approval</text>
+</g>
+<line data-conn="c3" data-beat="3" x1="180" y1="463" x2="180" y2="471" stroke="#60A5FA" stroke-width="2"/>
+<polygon data-conn="c3" data-beat="3" points="180,483 173,471 187,471" fill="#DBEAFE"/>
+<g data-node="n4" class="bf-now" data-beat="4">
+<rect x="24" y="486" width="312" height="72" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="44" cy="506" r="11" fill="#1D4ED8"/>
+<text x="44" y="510" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="324" y="510" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="180" y="524" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Merchant never</text>
+</g>
+<line data-conn="c4" data-beat="4" x1="180" y1="561" x2="180" y2="569" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c4" data-beat="4" points="180,581 173,569 187,569" fill="#DBEAFE"/>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="24" y="584" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="604" r="11" fill="#1E3A5F"/>
+<text x="44" y="608" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="180" y="622" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Path</text>
+</g>
+<g class="bf-paydot" style="--dx:0px;--dy:-52px"><circle class="bf-pulse" cx="180" cy="476" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="180" cy="476" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="180" y="676" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">If the merchant never clears it, the hold</text>
+<text x="180" y="695" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">expires and the funds are released.</text>
+<text x="24" y="736" font-size="12" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 5 of 6</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="5">
+<svg class="flow-desktop" viewBox="0 0 900 560" role="img" aria-label="Lesson visual">
+<defs><pattern id="bfd71" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<linearGradient id="bfd70-gTop" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#C9E4FF"/><stop offset="50%" stop-color="#7FB8E8"/><stop offset="100%" stop-color="#4A90CC"/></linearGradient>
+<linearGradient id="bfd70-gTopA" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#E2F2FF"/><stop offset="50%" stop-color="#A9D8FF"/><stop offset="100%" stop-color="#6FB3E8"/></linearGradient>
+<linearGradient id="bfd70-gLeft" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#5A96C8"/><stop offset="50%" stop-color="#2E5F8F"/><stop offset="100%" stop-color="#16324F"/></linearGradient>
+<linearGradient id="bfd70-gLeftA" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#84BCE8"/><stop offset="50%" stop-color="#4A86BC"/><stop offset="100%" stop-color="#1E4066"/></linearGradient>
+<linearGradient id="bfd70-gRight" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#35618C"/><stop offset="50%" stop-color="#1A3A5C"/><stop offset="100%" stop-color="#0A1A2C"/></linearGradient>
+<linearGradient id="bfd70-gRightA" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#5AA8E8"/><stop offset="50%" stop-color="#2E6FA8"/><stop offset="100%" stop-color="#123252"/></linearGradient>
+<radialGradient id="bfd70-sh" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#000000" stop-opacity="0.55"/><stop offset="70%" stop-color="#000000" stop-opacity="0.22"/><stop offset="100%" stop-color="#000000" stop-opacity="0"/></radialGradient>
+<filter id="bfd70-glow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="10" result="b"/><feMerge><feMergeNode in="b"/></feMerge></filter>
+<rect x="0" y="0" width="900" height="560" fill="#0B1F3D"/>
+<rect x="0" y="0" width="900" height="560" fill="url(#bfd71)"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Path</tspan> <tspan fill="#FFFFFF">needs</tspan> <tspan fill="#FFFFFF">its</tspan> <tspan fill="#FFFFFF">own</tspan> <tspan fill="#FFFFFF">message</tspan></text>
+<g class="bf-done" data-beat="0">
+<ellipse cx="172" cy="284" rx="85" ry="9" fill="url(#bfd70-sh)" opacity="0.9"/>
+<ellipse cx="172" cy="282" rx="62" ry="6" fill="#01040A" opacity="0.8"/>
+<polygon points="103,202 172,236 172,274 103,240" fill="url(#bfd70-gLeft)"/>
+<polygon points="172,236 241,202 241,240 172,274" fill="url(#bfd70-gRight)"/>
+<polygon points="172,168 241,202 172,236 103,202" fill="url(#bfd70-gTop)"/>
+<line x1="172" y1="168" x2="103" y2="202" stroke="#D6EBFF" stroke-width="2"/>
+<line x1="172" y1="168" x2="241" y2="202" stroke="#A6E5FF" stroke-width="2"/>
+<line x1="103" y1="202" x2="172" y2="236" stroke="#7FB8E8" stroke-width="1.5"/>
+<line x1="172" y1="236" x2="241" y2="202" stroke="#5A96C8" stroke-width="1.5"/>
+<line x1="103" y1="202" x2="103" y2="240" stroke="#4A7CA8" stroke-width="1.5"/>
+<line x1="241" y1="202" x2="241" y2="240" stroke="#35618C" stroke-width="1.5"/>
+<line x1="172" y1="236" x2="172" y2="274" stroke="#2A5A8A" stroke-width="1.5"/>
+<line x1="103" y1="240" x2="172" y2="274" stroke="#2A5A8A" stroke-width="1"/>
+<line x1="172" y1="274" x2="241" y2="240" stroke="#1A3A5C" stroke-width="1"/>
+<polyline points="150,182 172,172 194,182" fill="none" stroke="#EAF6FF" stroke-width="2" stroke-linecap="round" opacity="0.9"/>
+<circle cx="172" cy="202" r="10" fill="#1E3A5F"/>
+<text x="172" y="206" text-anchor="middle" font-size="11" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<rect x="126" y="247" width="93" height="22" rx="5" fill="#071A2D" stroke="#2F5E87" stroke-width="1"/>
+<text x="172" y="259" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">Authorisation</text>
+<circle cx="103" cy="202" r="4" fill="#47DCDD" stroke="#0B1526" stroke-width="1.5"/>
+<circle cx="241" cy="202" r="4" fill="#45A4FF" stroke="#0B1526" stroke-width="1.5"/>
+</g>
+<g class="bf-done" data-beat="1">
+<ellipse cx="449" cy="284" rx="85" ry="9" fill="url(#bfd70-sh)" opacity="0.9"/>
+<ellipse cx="449" cy="282" rx="62" ry="6" fill="#01040A" opacity="0.8"/>
+<polygon points="380,202 449,236 449,274 380,240" fill="url(#bfd70-gLeft)"/>
+<polygon points="449,236 518,202 518,240 449,274" fill="url(#bfd70-gRight)"/>
+<polygon points="449,168 518,202 449,236 380,202" fill="url(#bfd70-gTop)"/>
+<line x1="449" y1="168" x2="380" y2="202" stroke="#D6EBFF" stroke-width="2"/>
+<line x1="449" y1="168" x2="518" y2="202" stroke="#A6E5FF" stroke-width="2"/>
+<line x1="380" y1="202" x2="449" y2="236" stroke="#7FB8E8" stroke-width="1.5"/>
+<line x1="449" y1="236" x2="518" y2="202" stroke="#5A96C8" stroke-width="1.5"/>
+<line x1="380" y1="202" x2="380" y2="240" stroke="#4A7CA8" stroke-width="1.5"/>
+<line x1="518" y1="202" x2="518" y2="240" stroke="#35618C" stroke-width="1.5"/>
+<line x1="449" y1="236" x2="449" y2="274" stroke="#2A5A8A" stroke-width="1.5"/>
+<line x1="380" y1="240" x2="449" y2="274" stroke="#2A5A8A" stroke-width="1"/>
+<line x1="449" y1="274" x2="518" y2="240" stroke="#1A3A5C" stroke-width="1"/>
+<polyline points="427,182 449,172 471,182" fill="none" stroke="#EAF6FF" stroke-width="2" stroke-linecap="round" opacity="0.9"/>
+<circle cx="449" cy="202" r="10" fill="#1E3A5F"/>
+<text x="449" y="206" text-anchor="middle" font-size="11" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<rect x="403" y="247" width="93" height="22" rx="5" fill="#071A2D" stroke="#2F5E87" stroke-width="1"/>
+<text x="449" y="259" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">Terminal</text>
+<circle cx="380" cy="202" r="4" fill="#47DCDD" stroke="#0B1526" stroke-width="1.5"/>
+<circle cx="518" cy="202" r="4" fill="#45A4FF" stroke="#0B1526" stroke-width="1.5"/>
+</g>
+<g class="bf-done" data-beat="2">
+<ellipse cx="726" cy="284" rx="85" ry="9" fill="url(#bfd70-sh)" opacity="0.9"/>
+<ellipse cx="726" cy="282" rx="62" ry="6" fill="#01040A" opacity="0.8"/>
+<polygon points="657,202 726,236 726,274 657,240" fill="url(#bfd70-gLeft)"/>
+<polygon points="726,236 795,202 795,240 726,274" fill="url(#bfd70-gRight)"/>
+<polygon points="726,168 795,202 726,236 657,202" fill="url(#bfd70-gTop)"/>
+<line x1="726" y1="168" x2="657" y2="202" stroke="#D6EBFF" stroke-width="2"/>
+<line x1="726" y1="168" x2="795" y2="202" stroke="#A6E5FF" stroke-width="2"/>
+<line x1="657" y1="202" x2="726" y2="236" stroke="#7FB8E8" stroke-width="1.5"/>
+<line x1="726" y1="236" x2="795" y2="202" stroke="#5A96C8" stroke-width="1.5"/>
+<line x1="657" y1="202" x2="657" y2="240" stroke="#4A7CA8" stroke-width="1.5"/>
+<line x1="795" y1="202" x2="795" y2="240" stroke="#35618C" stroke-width="1.5"/>
+<line x1="726" y1="236" x2="726" y2="274" stroke="#2A5A8A" stroke-width="1.5"/>
+<line x1="657" y1="240" x2="726" y2="274" stroke="#2A5A8A" stroke-width="1"/>
+<line x1="726" y1="274" x2="795" y2="240" stroke="#1A3A5C" stroke-width="1"/>
+<polyline points="704,182 726,172 748,182" fill="none" stroke="#EAF6FF" stroke-width="2" stroke-linecap="round" opacity="0.9"/>
+<circle cx="726" cy="202" r="10" fill="#1E3A5F"/>
+<text x="726" y="206" text-anchor="middle" font-size="11" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<rect x="680" y="247" width="93" height="36" rx="5" fill="#071A2D" stroke="#2F5E87" stroke-width="1"/>
+<text x="726" y="259" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">Cardholder</text>
+<text x="726" y="273" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">controls</text>
+<circle cx="657" cy="202" r="4" fill="#47DCDD" stroke="#0B1526" stroke-width="1.5"/>
+<circle cx="795" cy="202" r="4" fill="#45A4FF" stroke="#0B1526" stroke-width="1.5"/>
+</g>
+<g class="bf-done" data-beat="3">
+<ellipse cx="726" cy="434" rx="85" ry="9" fill="url(#bfd70-sh)" opacity="0.9"/>
+<ellipse cx="726" cy="432" rx="62" ry="6" fill="#01040A" opacity="0.8"/>
+<polygon points="657,352 726,386 726,424 657,390" fill="url(#bfd70-gLeft)"/>
+<polygon points="726,386 795,352 795,390 726,424" fill="url(#bfd70-gRight)"/>
+<polygon points="726,318 795,352 726,386 657,352" fill="url(#bfd70-gTop)"/>
+<line x1="726" y1="318" x2="657" y2="352" stroke="#D6EBFF" stroke-width="2"/>
+<line x1="726" y1="318" x2="795" y2="352" stroke="#A6E5FF" stroke-width="2"/>
+<line x1="657" y1="352" x2="726" y2="386" stroke="#7FB8E8" stroke-width="1.5"/>
+<line x1="726" y1="386" x2="795" y2="352" stroke="#5A96C8" stroke-width="1.5"/>
+<line x1="657" y1="352" x2="657" y2="390" stroke="#4A7CA8" stroke-width="1.5"/>
+<line x1="795" y1="352" x2="795" y2="390" stroke="#35618C" stroke-width="1.5"/>
+<line x1="726" y1="386" x2="726" y2="424" stroke="#2A5A8A" stroke-width="1.5"/>
+<line x1="657" y1="390" x2="726" y2="424" stroke="#2A5A8A" stroke-width="1"/>
+<line x1="726" y1="424" x2="795" y2="390" stroke="#1A3A5C" stroke-width="1"/>
+<polyline points="704,332 726,322 748,332" fill="none" stroke="#EAF6FF" stroke-width="2" stroke-linecap="round" opacity="0.9"/>
+<circle cx="726" cy="352" r="10" fill="#1E3A5F"/>
+<text x="726" y="356" text-anchor="middle" font-size="11" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<rect x="680" y="397" width="93" height="22" rx="5" fill="#071A2D" stroke="#2F5E87" stroke-width="1"/>
+<text x="726" y="409" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">Approval</text>
+<circle cx="657" cy="352" r="4" fill="#47DCDD" stroke="#0B1526" stroke-width="1.5"/>
+<circle cx="795" cy="352" r="4" fill="#45A4FF" stroke="#0B1526" stroke-width="1.5"/>
+</g>
+<g class="bf-done" data-beat="4">
+<ellipse cx="449" cy="434" rx="85" ry="9" fill="url(#bfd70-sh)" opacity="0.9"/>
+<ellipse cx="449" cy="432" rx="62" ry="6" fill="#01040A" opacity="0.8"/>
+<polygon points="380,352 449,386 449,424 380,390" fill="url(#bfd70-gLeft)"/>
+<polygon points="449,386 518,352 518,390 449,424" fill="url(#bfd70-gRight)"/>
+<polygon points="449,318 518,352 449,386 380,352" fill="url(#bfd70-gTop)"/>
+<line x1="449" y1="318" x2="380" y2="352" stroke="#D6EBFF" stroke-width="2"/>
+<line x1="449" y1="318" x2="518" y2="352" stroke="#A6E5FF" stroke-width="2"/>
+<line x1="380" y1="352" x2="449" y2="386" stroke="#7FB8E8" stroke-width="1.5"/>
+<line x1="449" y1="386" x2="518" y2="352" stroke="#5A96C8" stroke-width="1.5"/>
+<line x1="380" y1="352" x2="380" y2="390" stroke="#4A7CA8" stroke-width="1.5"/>
+<line x1="518" y1="352" x2="518" y2="390" stroke="#35618C" stroke-width="1.5"/>
+<line x1="449" y1="386" x2="449" y2="424" stroke="#2A5A8A" stroke-width="1.5"/>
+<line x1="380" y1="390" x2="449" y2="424" stroke="#2A5A8A" stroke-width="1"/>
+<line x1="449" y1="424" x2="518" y2="390" stroke="#1A3A5C" stroke-width="1"/>
+<polyline points="427,332 449,322 471,332" fill="none" stroke="#EAF6FF" stroke-width="2" stroke-linecap="round" opacity="0.9"/>
+<circle cx="449" cy="352" r="10" fill="#1E3A5F"/>
+<text x="449" y="356" text-anchor="middle" font-size="11" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<rect x="403" y="397" width="93" height="36" rx="5" fill="#071A2D" stroke="#2F5E87" stroke-width="1"/>
+<text x="449" y="409" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">Merchant</text>
+<text x="449" y="423" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">never</text>
+<circle cx="380" cy="352" r="4" fill="#47DCDD" stroke="#0B1526" stroke-width="1.5"/>
+<circle cx="518" cy="352" r="4" fill="#45A4FF" stroke="#0B1526" stroke-width="1.5"/>
+</g>
+<g class="bf-now" data-beat="5">
+<ellipse cx="172" cy="434" rx="85" ry="9" fill="url(#bfd70-sh)" opacity="0.9"/>
+<ellipse cx="172" cy="432" rx="62" ry="6" fill="#01040A" opacity="0.8"/>
+<polygon points="172,318 241,352 241,390 172,424 103,390" fill="#2E9BFF" opacity="0.30" filter="url(#bfd70-glow)"/>
+<ellipse cx="172" cy="371" rx="99" ry="82" fill="none" stroke="#47DCDD" stroke-width="2" opacity="0.8"/>
+<polygon points="103,352 172,386 172,424 103,390" fill="url(#bfd70-gLeftA)"/>
+<polygon points="172,386 241,352 241,390 172,424" fill="url(#bfd70-gRightA)"/>
+<polygon points="172,318 241,352 172,386 103,352" fill="url(#bfd70-gTopA)"/>
+<line x1="172" y1="318" x2="103" y2="352" stroke="#D6EBFF" stroke-width="2"/>
+<line x1="172" y1="318" x2="241" y2="352" stroke="#A6E5FF" stroke-width="2"/>
+<line x1="103" y1="352" x2="172" y2="386" stroke="#7FB8E8" stroke-width="1.5"/>
+<line x1="172" y1="386" x2="241" y2="352" stroke="#5A96C8" stroke-width="1.5"/>
+<line x1="103" y1="352" x2="103" y2="390" stroke="#4A7CA8" stroke-width="1.5"/>
+<line x1="241" y1="352" x2="241" y2="390" stroke="#35618C" stroke-width="1.5"/>
+<line x1="172" y1="386" x2="172" y2="424" stroke="#2A5A8A" stroke-width="1.5"/>
+<line x1="103" y1="390" x2="172" y2="424" stroke="#2A5A8A" stroke-width="1"/>
+<line x1="172" y1="424" x2="241" y2="390" stroke="#1A3A5C" stroke-width="1"/>
+<polyline points="150,332 172,322 194,332" fill="none" stroke="#EAF6FF" stroke-width="2" stroke-linecap="round" opacity="0.9"/>
+<circle cx="172" cy="352" r="10" fill="#1D4ED8"/>
+<text x="172" y="356" text-anchor="middle" font-size="11" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<rect x="126" y="397" width="93" height="22" rx="5" fill="#071A2D" stroke="#5FB8E8" stroke-width="1"/>
+<text x="172" y="409" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">Path</text>
+<text x="235" y="334" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<circle cx="103" cy="352" r="4" fill="#47DCDD" stroke="#0B1526" stroke-width="1.5"/>
+<circle cx="241" cy="352" r="4" fill="#45A4FF" stroke="#0B1526" stroke-width="1.5"/>
+</g>
+<path data-conn="c0" data-beat="0" d="M 245 202 L 364 202" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c0" data-beat="0" points="376,202 364,209 364,195" fill="#DBEAFE"/>
+<path data-conn="c1" data-beat="1" d="M 522 202 L 641 202" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c1" data-beat="1" points="653,202 641,209 641,195" fill="#DBEAFE"/>
+<path data-conn="c2" data-beat="2" d="M 726 287 L 726 296 L 726 296 L 726 303" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c2" data-beat="2" points="726,315 719,303 733,303" fill="#DBEAFE"/>
+<path data-conn="c3" data-beat="3" d="M 653 352 L 534 352" stroke="#475569" stroke-width="2" fill="none"/><polygon data-conn="c3" data-beat="3" points="522,352 534,345 534,359" fill="#DBEAFE"/>
+<path data-conn="c4" data-beat="4" d="M 376 352 L 257 352" stroke="#60A5FA" stroke-width="3" fill="none"/><polygon data-conn="c4" data-beat="4" points="245,352 257,345 257,359" fill="#DBEAFE"/>
+<g class="bf-paydot" style="--dx:196px;--dy:0px"><circle class="bf-pulse" cx="253" cy="352" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="253" cy="352" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="450" y="479" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Each path needs its own message, its own log entry and its own reconciliation treatment.</text>
+<text x="48" y="538" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 6 of 6</text>
+<circle cx="772" cy="534" r="4" fill="#334155"/>
+<circle cx="788" cy="534" r="4" fill="#334155"/>
+<circle cx="804" cy="534" r="4" fill="#334155"/>
+<circle cx="820" cy="534" r="4" fill="#334155"/>
+<circle cx="836" cy="534" r="4" fill="#334155"/>
+<circle cx="852" cy="534" r="4" fill="#60A5FA"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 767" role="img" aria-label="Lesson visual, vertical layout">
+<defs><pattern id="bfd72" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="360" height="767" fill="#0B1F3D"/>
+<rect x="0" y="0" width="360" height="767" fill="url(#bfd72)"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Path</tspan> <tspan fill="#FFFFFF">needs</tspan> <tspan fill="#FFFFFF">its</tspan> <tspan fill="#FFFFFF">own</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">message</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="24" y="94" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="114" r="11" fill="#1E3A5F"/>
+<text x="44" y="118" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="180" y="132" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Authorisation</text>
+</g>
+<line data-conn="c0" data-beat="0" x1="180" y1="169" x2="180" y2="177" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c0" data-beat="0" points="180,189 173,177 187,177" fill="#DBEAFE"/>
+<g data-node="n1" class="bf-done" data-beat="1">
+<rect x="24" y="192" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="212" r="11" fill="#1E3A5F"/>
+<text x="44" y="216" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="180" y="230" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Terminal</text>
+</g>
+<line data-conn="c1" data-beat="1" x1="180" y1="267" x2="180" y2="275" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c1" data-beat="1" points="180,287 173,275 187,275" fill="#DBEAFE"/>
+<g data-node="n2" class="bf-done" data-beat="2">
+<rect x="24" y="290" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="310" r="11" fill="#1E3A5F"/>
+<text x="44" y="314" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="180" y="328" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Cardholder controls</text>
+</g>
+<line data-conn="c2" data-beat="2" x1="180" y1="365" x2="180" y2="373" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c2" data-beat="2" points="180,385 173,373 187,373" fill="#DBEAFE"/>
+<g data-node="n3" class="bf-done" data-beat="3">
+<rect x="24" y="388" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="408" r="11" fill="#1E3A5F"/>
+<text x="44" y="412" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="180" y="426" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Approval</text>
+</g>
+<line data-conn="c3" data-beat="3" x1="180" y1="463" x2="180" y2="471" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c3" data-beat="3" points="180,483 173,471 187,471" fill="#DBEAFE"/>
+<g data-node="n4" class="bf-done" data-beat="4">
+<rect x="24" y="486" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="506" r="11" fill="#1E3A5F"/>
+<text x="44" y="510" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="180" y="524" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Merchant never</text>
+</g>
+<line data-conn="c4" data-beat="4" x1="180" y1="561" x2="180" y2="569" stroke="#60A5FA" stroke-width="2"/>
+<polygon data-conn="c4" data-beat="4" points="180,581 173,569 187,569" fill="#DBEAFE"/>
+<g data-node="n5" class="bf-now" data-beat="5">
+<rect x="24" y="584" width="312" height="72" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="44" cy="604" r="11" fill="#1D4ED8"/>
+<text x="44" y="608" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="324" y="608" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="180" y="622" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Path</text>
+</g>
+<g class="bf-paydot" style="--dx:0px;--dy:-52px"><circle class="bf-pulse" cx="180" cy="574" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="180" cy="574" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="180" y="676" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Each path needs its own message, its</text>
+<text x="180" y="695" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">own log entry and its own reconciliation</text>
+<text x="180" y="714" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">treatment.</text>
+<text x="24" y="755" font-size="12" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 6 of 6</text>
+</svg>
+</div>
+</div>
+<p class="xml-caption">Flow of the explanation in this lesson.</p></div>
+<div class="playerbar">
+<div class="studio-progress"><div class="studio-markers" id="studio-markers-studio-ch21s2"></div><input type="range" id="studio-slider-studio-ch21s2" min="0" max="1000" value="0" aria-label="Lesson timeline"></div>
+<div class="ctrl-row">
+<button class="ctrl-btn" id="studio-play-studio-ch21s2" onclick="studioTogglePlay('studio-ch21s2')" aria-label="Play lesson" title="Play lesson"><span class="ctrl-ic-play"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></span><span class="ctrl-ic-pause" style="display:none"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><rect x="6" y="5" width="4" height="14" fill="currentColor"/><rect x="14" y="5" width="4" height="14" fill="currentColor"/></svg></span></button>
+<button class="ctrl-btn studio-mute-btn" id="studio-mute-studio-ch21s2" onclick="studioToggleMute('studio-ch21s2')" aria-label="Mute narration" title="Mute / unmute narration"><svg class="studio-mute-icon" viewBox="0 0 24 24" width="28" height="28" fill="currentColor" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3z"/><path class="studio-mute-waves" d="M16 8.5a5 5 0 0 1 0 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><path class="studio-mute-waves" d="M18.5 6a9 9 0 0 1 0 12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><path class="studio-mute-x" d="M16 9.5l5 5M21 9.5l-5 5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" style="display:none"/></svg></button>
+<button class="ctrl-btn" onclick="studioSkip('studio-ch21s2', -10)" aria-label="Back 10 seconds" title="Back 10 seconds"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 5a7 7 0 1 1-6.32 4.06" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M5.5 3.5v5h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><text x="12" y="16.5" font-size="8" fill="currentColor" text-anchor="middle" font-weight="700">10</text></svg></button>
+<span class="studio-time ctrl-time" id="studio-time-studio-ch21s2">0:00 / 4:19</span>
+<button class="ctrl-btn" onclick="studioSkip('studio-ch21s2', 10)" aria-label="Forward 10 seconds" title="Forward 10 seconds"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 5a7 7 0 1 0 6.32 4.06" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M18.5 3.5v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><text x="12" y="16.5" font-size="8" fill="currentColor" text-anchor="middle" font-weight="700">10</text></svg></button>
+<span class="playerbar-spacer"></span>
+<span class="player-stage" id="studio-tag-studio-ch21s2">Step 1 of 6</span>
+<button class="ctrl-btn ctrl-step" id="studio-prevscene-studio-ch21s2" onclick="studioPrevScene('studio-ch21s2')" title="Previous step" aria-label="Previous step">&lsaquo;</button>
+<button class="ctrl-btn ctrl-step" id="studio-nextscene-studio-ch21s2" onclick="studioNextScene('studio-ch21s2')" title="Next step" aria-label="Next step">&rsaquo;</button>
+<button class="ctrl-btn ctrl-speed" id="studio-speedbtn-studio-ch21s2" onclick="studioCycleSpeed('studio-ch21s2')" title="Playback speed" aria-label="Playback speed">1x</button>
+<span class="ctrl-settings-wrap"><button class="ctrl-btn" onclick="studioToggleSettings('studio-ch21s2', event)" aria-label="Player settings" title="Settings"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5 5l2.1 2.1M16.9 16.9L19 19M19 5l-2.1 2.1M7.1 16.9L5 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button><span class="ctrl-popover" id="studio-settings-studio-ch21s2" style="display:none" onclick="event.stopPropagation()"><label class="ctrl-pop-row">Volume <input type="range" min="0" max="1" step="0.1" value="1" oninput="studioSetVolume('studio-ch21s2', this.value)" style="width:110px;accent-color:#3587FC"></label><button class="studio-btn" id="studio-captions-studio-ch21s2" onclick="studioToggleCaptions('studio-ch21s2')">Captions: On</button><button class="studio-btn" onclick="studioReplayScene('studio-ch21s2')">Replay scene</button></span></span>
+<button class="ctrl-btn" onclick="studioFullscreen('studio-ch21s2')" aria-label="Fullscreen" title="Fullscreen"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+</div>
+</div>
+</div>
+<p class="studio-caption" id="studio-caption-studio-ch21s2"></p>
+<p class="studio-loading" id="studio-loading-studio-ch21s2" style="display:none">Loading narration...</p>
+<p class="studio-error" id="studio-error-studio-ch21s2" role="alert" style="display:none"></p>
+<audio id="studio-audio-studio-ch21s2" preload="auto" src="../audio/ch21s2.mp3"></audio>
+</div>
+<div class="lesson-title-row">
+<h1>Authorization in Real Time</h1>
+<button class="save-note" type="button" onclick="pfToggleNote('studio-ch21s2')" title="Save a note on this lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L8 19l-4 1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg> Save note</button>
+</div>
+<p class="lesson-meta-line">Card Authorization, Clearing and Settlement, Lesson 2 of 8, Narration 4:19, D08 Cards and alternative payments</p>
+<p class="lesson-note-saved" id="studio-note-saved-studio-ch21s2" style="display:none">Note saved.</p>
+<div class="note-editor" id="studio-note-editor-studio-ch21s2" style="display:none"><textarea id="studio-note-text-studio-ch21s2" rows="3" placeholder="Write a note on this lesson..." aria-label="Lesson note"></textarea><div class="note-editor-row"><button class="studio-btn primary" onclick="pfSaveNote('studio-ch21s2')">Save note</button> <button class="studio-btn" onclick="pfToggleNote('studio-ch21s2')">Cancel</button></div></div>
+<div class="dive-deeper">
+<div class="dive-head"><button type="button" class="dive-toggle" onclick="pfToggleDive(this)" aria-expanded="true"><span class="dive-spark"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 2l2.2 6.8L21 11l-6.8 2.2L12 20l-2.2-6.8L3 11l6.8-2.2z" fill="currentColor"/></svg></span><span class="dive-title">Dive deeper on this topic</span><span class="dive-chev"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 14l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button></div>
+<div class="dive-btns"><button type="button" class="dive-btn" data-kind="practice" onclick="pfDive('studio-ch21s2', 'practice')">Give me practice questions</button><button type="button" class="dive-btn" data-kind="simple" onclick="pfDive('studio-ch21s2', 'simple')">Explain this topic in simple terms</button><button type="button" class="dive-btn" data-kind="summary" onclick="pfDive('studio-ch21s2', 'summary')">Give me a summary</button><button type="button" class="dive-btn" data-kind="example" onclick="pfDive('studio-ch21s2', 'example')">Give me real-life examples</button></div>
+<div class="dive-panel" id="dive-panel-studio-ch21s2"><div class="dive-panel-body"></div></div>
+<script type="application/json" id="pf-dive-data-studio-ch21s2">{"simple": "In plain words: authorisation is the real time check that happens while the customer is still at the till or on the checkout page. That is the whole idea in one sentence, and the rest of the lesson shows how it works in a real bank.", "summary": "Authorisation is the real time check that happens while the customer is still at the till or on the checkout page. Key points: Authorisation: real time check; Terminal sends the request; Cardholder controls; Approval travels back as an authorisation response; Merchant never clears it; Path needs its own message.", "example": "The merchant terminal or website builds an authorisation request with the card number, the amount, the currency, the merchant name and location, the transaction type, and data about how the card was presented, for example chip, contactless, online or wallet."}</script>
+</div>
+<div class="lesson-feedback">
+<div class="fb-icons"><button type="button" class="fb-btn" data-kind="like" onclick="pfFeedback(this,'like')" aria-label="Like this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M7 21H4a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1h3v11zm0 0h9.6a2 2 0 0 0 1.9-1.4l1.6-5A2 2 0 0 0 18.2 12H15V6.5A2.5 2.5 0 0 0 12.5 4L11 7.5 8.6 10H7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button><button type="button" class="fb-btn" data-kind="dislike" onclick="pfFeedback(this,'dislike')" aria-label="Dislike this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M17 3h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1h-3V3zm0 0H7.4a2 2 0 0 0-1.9 1.4l-1.6 5A2 2 0 0 0 5.8 12H9v5.5A2.5 2.5 0 0 0 11.5 20L13 16.5l2.4-2.5H17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button><button type="button" class="fb-btn" data-kind="flag" onclick="pfFeedback(this,'flag')" aria-label="Flag this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M6 21V4m0 1h11l-2.5 3.5L17 12H6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+<button type="button" class="go-next" onclick="goLesson('ch21s3')" title="Next: What Happens After the Customer Leaves">Go to next item &rarr;</button>
+</div>
+<div class="chips"><span class="chip">Reconciliation</span><span class="chip">Authorisation</span><span class="chip">Fraud scoring</span></div>
+<div class="card learn-card">
+<h2>What you will learn</h2>
+<p class="transcript"><b>Your objective.</b> By the end of this lesson, you will be able to explain authorization in real time. Authorisation is the real time check that happens while the customer is still at the till or on the checkout page.</p>
+<p class="transcript"><b>Why it matters.</b> Step four is the hold, and the analyst must understand how long it lasts.</p>
+<p class="transcript">Chapter objective: Learner explains card authorization, clearing, and settlement, including the roles of issuer, acquirer, network, and merchant, and traces a card transaction from swipe to settlement. Learner practises this skill on realistic banking cases, explaining the reasoning clearly and using correct terminology throughout the work.</p>
+<h3>Key learning points</h3>
+<ul id="studio-points-studio-ch21s2">
+<li>Authorisation: real time check</li>
+<li>Terminal sends the request</li>
+<li>Cardholder controls</li>
+<li>Approval travels back as an authorisation response</li>
+<li>Merchant never clears it</li>
+<li>Path needs its own message</li>
+</ul>
+<h3>Key terms</h3>
+<div id="studio-terms-studio-ch21s2">
+<p class="keyterm"><b>Reconciliation:</b> The process of comparing records from two sources, such as a bank statement and an internal ledger, to confirm they agree.</p>
+<p class="keyterm"><b>Authorisation:</b> Approval by the issuer for a card transaction to proceed, confirming the card is valid and funds or credit are available.</p>
+<p class="keyterm"><b>Fraud scoring:</b> A risk score assigned to a payment based on factors such as amount, location, device, velocity and customer history.</p>
+</div>
+<p class="studio-note">Payment flow diagram showing Authorization in Real Time.</p>
+</div>
+<div class="fw-card" id="pf-exercise-studio-ch21s2">
+<p class="fw-label">Practise this lesson</p>
+<h2>Exercise</h2>
+<p><b>Trace the card payment in this lesson through authorisation, clearing and settlement.</b></p>
+<p>Use the four-party model and the stage timings in this lesson.</p>
+<ol class="fw-steps">
+<li><b>What to do.</b> State what happens at each stage, who pays whom, and when the merchant is actually credited.</li>
+</ol>
+<p><button class="studio-btn" id="pf-ex-btn-studio-ch21s2" onclick="pfRevealExercise('studio-ch21s2')">Show the answer</button></p>
+<div class="fw-exercise-answer" id="pf-ex-answer-studio-ch21s2">
+<p><b>Correct result.</b> Authorisation holds the funds and returns a response code. Clearing sends the transaction in a batch file. Settlement moves the net amount between banks, and the acquirer credits the merchant after deducting interchange, scheme fees and its margin.</p>
+<p><b>Why.</b> A card payment is not one event. The customer sees it on Monday, the merchant gets it on Wednesday, and the difference is the clearing and settlement cycle.</p>
+</div>
+</div>
+<div class="fw-card" id="pf-quiz-studio-ch21s2" data-answer="0">
+<p class="fw-label">Check your understanding</p>
+<h2>Practice question</h2>
+<p><b>A customer pays by card at a shop. The terminal shows approved, but the shop owner asks when the money will actually reach the shop account. What is the correct explanation?</b></p>
+<button type="button" class="quiz-opt" data-idx="0" onclick="pfCheckAnswer('studio-ch21s2', this)">Authorisation approves the payment and blocks the funds, but clearing and settlement between the banks happen later, so the shop is credited after that</button>
+<button type="button" class="quiz-opt" data-idx="1" onclick="pfCheckAnswer('studio-ch21s2', this)">The shop account is credited the instant the terminal shows approved</button>
+<button type="button" class="quiz-opt" data-idx="2" onclick="pfCheckAnswer('studio-ch21s2', this)">Authorisation and settlement are the same event for cards</button>
+<button type="button" class="quiz-opt" data-idx="3" onclick="pfCheckAnswer('studio-ch21s2', this)">The shop is never credited because card payments are only authorisations</button>
+<div class="quiz-feedback" id="pf-quiz-fb-studio-ch21s2"></div>
+<script type="application/json" id="pf-quiz-data-studio-ch21s2">{"why_wrong": ["", "This is not correct for this question. A card payment has three stages: authorisation approves and holds the funds, clearing exchanges the transaction details, and settlement moves the money between the banks.", "This is not correct for this question. A card payment has three stages: authorisation approves and holds the funds, clearing exchanges the transaction details, and settlement moves the money between the banks.", "This is not correct for this question. A card payment has three stages: authorisation approves and holds the funds, clearing exchanges the transaction details, and settlement moves the money between the banks."], "explanation": "A card payment has three stages: authorisation approves and holds the funds, clearing exchanges the transaction details, and settlement moves the money between the banks. The terminal approval is only the first stage; the credit to the shop follows clearing and settlement."}</script>
+</div>
+<div class="fw-card">
+<p class="fw-label">Takeaway and next step</p>
+<h2>What to remember</h2>
+<p>If the merchant never clears it, the hold expires and the funds are released.</p>
+<p>Follow a payment through every stage, from instruction to beneficiary credit, and note where it can stop.</p>
+<p><a class="fw-tool-link" href="../simulators/lifecycle.html">Open the Payment Lifecycle Simulator &rarr;</a></p>
+<p class="studio-note">Builds on "The Four Parties and the Card Transaction".</p>
+</div>
+<section class="upnext" id="studio-upnext-studio-ch21s2" style="display:none" aria-label="Up next">
+<span class="tag">Up next</span>
+<h2>Up next: What Happens After the Customer Leaves</h2>
+<p>Lesson 3 of 8, Card Authorization, Clearing and Settlement, Narration 3:37</p>
+<div class="row">
+<button class="studio-btn primary" onclick="goLessonAuto('ch21s3')">Next lesson &rarr;</button>
+<button class="studio-btn" onclick="goLesson('ch21s1')">&larr; Previous lesson</button>
+<button class="studio-btn" onclick="studioReplayLesson('studio-ch21s2')">Replay this lesson</button>
+</div>
+</section>
+<div class="lesson-nav">
+<button class="studio-btn" onclick="goLesson('ch21s1')" title="Previous lesson: The Four Parties and the Card Transaction">&larr; Previous</button>
+<button class="studio-btn" onclick="goChapterContents('ch21')">Chapter contents</button>
+<button class="studio-btn primary" onclick="goLesson('ch21s3')" title="Next lesson: What Happens After the Customer Leaves">Next &rarr;</button>
+</div>
+<div class="card transcript-card">
+<h2>Transcript and full text</h2>
+<details class="studio-transcript" id="studio-transcript-details-studio-ch21s2"><summary>Show transcript</summary>
+<p class="transcript" id="studio-transcript-studio-ch21s2">Authorisation is the real time check that happens while the customer is still at the till or on the checkout page. It answers one question before the sale completes: will the issuer honour this transaction for this amount, on this card, at this moment? The merchant terminal or website builds an authorisation request with the card number, the amount, the currency, the merchant name and location, the transaction type, and data about how the card was presented, for example chip, contactless, online or wallet. That request is the first message in the card flow, and every later step depends on it being complete and correct. Step one is the request travelling from merchant to issuer through the acquirer and the scheme. The terminal sends the request to the acquirer, the acquirer forwards it to the card scheme, and the scheme routes it to the issuer using the card number. In card messaging this is the authorisation request, sent in the ISO 8583 format as message type 0100. The scheme may add checks of its own, such as whether the card is reported lost, and it may act as a stand in when the issuer system is briefly unavailable, using rules the issuer set in advance. The whole journey normally takes one to two seconds. Step two is the issuer checks, and they run in a fraction of a second. The issuer verifies that the card is active and not blocked, lost or stolen, that the account exists, and that the available funds or credit cover the amount. It checks cardholder controls, such as a daily limit or a block on online spending. It runs fraud scoring on the amount, the merchant, the location and the device, and it checks the card verification value for online transactions and the PIN or biometric for card present ones. Any one of these checks can stop the transaction, and the order matters: a blocked card is declined before a funds check is needed. Step three is the response, and it carries the status the merchant must act on. If all checks pass, the issuer approves, returns an approval code, and places a hold on the funds. The available balance falls immediately, but the money has not left the account and the transaction is not yet a posted charge. The approval travels back as an authorisation response, message type 0110, from issuer to scheme to acquirer to merchant. If a check fails, the issuer declines and returns a response code. Common codes are 05 for do not honour, 51 for insufficient funds, 54 for an expired card, 14 for an invalid card number, and 91 for issuer unavailable. Step four is the hold, and the analyst must understand how long it lasts. An authorisation hold reserves the funds for a limited period, typically about seven days for a standard purchase, and longer for hotels, car hire and other travel merchants where the final amount is not known at check in. If the merchant clears the transaction within that window, the hold converts into a posted charge. If the merchant never clears it, the hold expires and the funds are released. Exceptions are where authorisation design is tested, and there are four the analyst must handle. A decline is a firm no from the issuer, and the merchant must not retry it as a new request without a change. A timeout means no response arrived, so the status is unknown, and the merchant must reverse the authorisation or run a status check before retrying, or the customer can be charged twice. A partial approval means the issuer approves only part of the amount, and the merchant must collect the balance another way. A referral means the issuer wants a voice authorisation, usually a call to the issuer, before the sale can proceed. Each path needs its own message, its own log entry and its own reconciliation treatment. Reversals close the loop when a sale does not complete. If the customer cancels, the terminal fails, or the merchant voids the sale, the merchant sends an authorisation reversal, which asks the issuer to release the hold. A reversal is not a refund, because no money moved. A refund is a separate transaction that follows a cleared charge. Mixing the two up creates reconciliation breaks and customer complaints, so systems must keep authorisation, reversal, clearing and refund as four distinct transaction types with their own identifiers and statuses.</p>
+<div id="studio-paras-studio-ch21s2">
+<p class="transcript">Authorisation is the real time check that happens while the customer is still at the till or on the checkout page. It answers one question before the sale completes: will the issuer honour this transaction for this amount, on this card, at this moment? The merchant terminal or website builds an authorisation request with the card number, the amount, the currency, the merchant name and location, the transaction type, and data about how the card was presented, for example chip, contactless, online or wallet. That request is the first message in the card flow, and every later step depends on it being complete and correct.</p>
+<p class="transcript">Step one is the request travelling from merchant to issuer through the acquirer and the scheme. The terminal sends the request to the acquirer, the acquirer forwards it to the card scheme, and the scheme routes it to the issuer using the card number. In card messaging this is the authorisation request, sent in the ISO 8583 format as message type 0100. The scheme may add checks of its own, such as whether the card is reported lost, and it may act as a stand in when the issuer system is briefly unavailable, using rules the issuer set in advance. The whole journey normally takes one to two seconds.</p>
+<p class="transcript">Step two is the issuer checks, and they run in a fraction of a second. The issuer verifies that the card is active and not blocked, lost or stolen, that the account exists, and that the available funds or credit cover the amount. It checks cardholder controls, such as a daily limit or a block on online spending. It runs fraud scoring on the amount, the merchant, the location and the device, and it checks the card verification value for online transactions and the PIN or biometric for card present ones. Any one of these checks can stop the transaction, and the order matters: a blocked card is declined before a funds check is needed.</p>
+<p class="transcript">Step three is the response, and it carries the status the merchant must act on. If all checks pass, the issuer approves, returns an approval code, and places a hold on the funds. The available balance falls immediately, but the money has not left the account and the transaction is not yet a posted charge. The approval travels back as an authorisation response, message type 0110, from issuer to scheme to acquirer to merchant. If a check fails, the issuer declines and returns a response code. Common codes are 05 for do not honour, 51 for insufficient funds, 54 for an expired card, 14 for an invalid card number, and 91 for issuer unavailable.</p>
+<p class="transcript">Step four is the hold, and the analyst must understand how long it lasts. An authorisation hold reserves the funds for a limited period, typically about seven days for a standard purchase, and longer for hotels, car hire and other travel merchants where the final amount is not known at check in. If the merchant clears the transaction within that window, the hold converts into a posted charge. If the merchant never clears it, the hold expires and the funds are released.</p>
+<p class="transcript">Exceptions are where authorisation design is tested, and there are four the analyst must handle. A decline is a firm no from the issuer, and the merchant must not retry it as a new request without a change. A timeout means no response arrived, so the status is unknown, and the merchant must reverse the authorisation or run a status check before retrying, or the customer can be charged twice. A partial approval means the issuer approves only part of the amount, and the merchant must collect the balance another way. A referral means the issuer wants a voice authorisation, usually a call to the issuer, before the sale can proceed. Each path needs its own message, its own log entry and its own reconciliation treatment.</p>
+<p class="transcript">Reversals close the loop when a sale does not complete. If the customer cancels, the terminal fails, or the merchant voids the sale, the merchant sends an authorisation reversal, which asks the issuer to release the hold. A reversal is not a refund, because no money moved. A refund is a separate transaction that follows a cleared charge. Mixing the two up creates reconciliation breaks and customer complaints, so systems must keep authorisation, reversal, clearing and refund as four distinct transaction types with their own identifiers and statuses.</p>
+</div>
+</details>
+<details class="studio-transcript"><summary>Full lesson text (all scenes)</summary><div id="studio-transcript-full-studio-ch21s2"></div></details>
+<p><button class="studio-btn primary" id="done-ch21s2" onclick="studioMarkSceneDone('studio-ch21s2')">Mark lesson complete</button> <span class="studio-note">Completing a lesson updates your progress dashboard on the homepage.</span></p>
+</div>
+<p class="studio-note">Scene timestamps are estimated by allocating the narration text proportionally across the real audio length. The audio playback position is the source of truth: pause freezes the visual, seeking restores the correct scene, replay restarts the scene animation.</p>
+</div>
+<script>window.__PA_STUDIO_QUEUE = window.__PA_STUDIO_QUEUE || []; window.__PA_STUDIO_QUEUE.push(["studio-ch21s2", {"sample_id": "studio-ch21s2", "chapter_id": "ch21", "title": "Authorization in Real Time", "domain": "D08 Cards and alternative payments", "objective": "Learner explains card authorization, clearing, and settlement, including the roles of issuer, acquirer, network, and merchant, and traces a card transaction from swipe to settlement. Learner practises this skill on realistic banking cases, explaining the reasoning clearly and using correct terminology throughout the work.", "scenes": [{"id": "ch21s2", "section_id": "ch21s2", "title": "Authorization in Real Time", "audio": "../audio/ch21s2.mp3", "duration_sec": 259.8, "points": ["Authorisation is the real time check that happens while the customer is still at the till or on the checkout page.", "Step one is the request travelling from merchant to issuer through the acquirer and the scheme.", "Step two is the issuer checks, and they run in a fraction of a second.", "Step three is the response, and it carries the status the merchant must act on.", "Step four is the hold, and the analyst must understand how long it lasts."], "terms": [{"term": "Reconciliation", "def": "The process of comparing records from two sources, such as a bank statement and an internal ledger, to confirm they agree."}, {"term": "Authorisation", "def": "Approval by the issuer for a card transaction to proceed, confirming the card is valid and funds or credit are available."}, {"term": "Fraud scoring", "def": "A risk score assigned to a payment based on factors such as amount, location, device, velocity and customer history."}], "transcript": "Authorisation is the real time check that happens while the customer is still at the till or on the checkout page. It answers one question before the sale completes: will the issuer honour this transaction for this amount, on this card, at this moment? The merchant terminal or website builds an authorisation request with the card number, the amount, the currency, the merchant name and location, the transaction type, and data about how the card was presented, for example chip, contactless, online or wallet. That request is the first message in the card flow, and every later step depends on it being complete and correct. Step one is the request travelling from merchant to issuer through the acquirer and the scheme. The terminal sends the request to the acquirer, the acquirer forwards it to the card scheme, and the scheme routes it to the issuer using the card number. In card messaging this is the authorisation request, sent in the ISO 8583 format as message type 0100. The scheme may add checks of its own, such as whether the card is reported lost, and it may act as a stand in when the issuer system is briefly unavailable, using rules the issuer set in advance. The whole journey normally takes one to two seconds. Step two is the issuer checks, and they run in a fraction of a second. The issuer verifies that the card is active and not blocked, lost or stolen, that the account exists, and that the available funds or credit cover the amount. It checks cardholder controls, such as a daily limit or a block on online spending. It runs fraud scoring on the amount, the merchant, the location and the device, and it checks the card verification value for online transactions and the PIN or biometric for card present ones. Any one of these checks can stop the transaction, and the order matters: a blocked card is declined before a funds check is needed. Step three is the response, and it carries the status the merchant must act on. If all checks pass, the issuer approves, returns an approval code, and places a hold on the funds. The available balance falls immediately, but the money has not left the account and the transaction is not yet a posted charge. The approval travels back as an authorisation response, message type 0110, from issuer to scheme to acquirer to merchant. If a check fails, the issuer declines and returns a response code. Common codes are 05 for do not honour, 51 for insufficient funds, 54 for an expired card, 14 for an invalid card number, and 91 for issuer unavailable. Step four is the hold, and the analyst must understand how long it lasts. An authorisation hold reserves the funds for a limited period, typically about seven days for a standard purchase, and longer for hotels, car hire and other travel merchants where the final amount is not known at check in. If the merchant clears the transaction within that window, the hold converts into a posted charge. If the merchant never clears it, the hold expires and the funds are released. Exceptions are where authorisation design is tested, and there are four the analyst must handle. A decline is a firm no from the issuer, and the merchant must not retry it as a new request without a change. A timeout means no response arrived, so the status is unknown, and the merchant must reverse the authorisation or run a status check before retrying, or the customer can be charged twice. A partial approval means the issuer approves only part of the amount, and the merchant must collect the balance another way. A referral means the issuer wants a voice authorisation, usually a call to the issuer, before the sale can proceed. Each path needs its own message, its own log entry and its own reconciliation treatment. Reversals close the loop when a sale does not complete. If the customer cancels, the terminal fails, or the merchant voids the sale, the merchant sends an authorisation reversal, which asks the issuer to release the hold. A reversal is not a refund, because no money moved. A refund is a separate transaction that follows a cleared charge. Mixing the two up creates reconciliation breaks and customer complaints, so systems must keep authorisation, reversal, clearing and refund as four distinct transaction types with their own identifiers and statuses.", "paragraphs": ["Authorisation is the real time check that happens while the customer is still at the till or on the checkout page. It answers one question before the sale completes: will the issuer honour this transaction for this amount, on this card, at this moment? The merchant terminal or website builds an authorisation request with the card number, the amount, the currency, the merchant name and location, the transaction type, and data about how the card was presented, for example chip, contactless, online or wallet. That request is the first message in the card flow, and every later step depends on it being complete and correct.", "Step one is the request travelling from merchant to issuer through the acquirer and the scheme. The terminal sends the request to the acquirer, the acquirer forwards it to the card scheme, and the scheme routes it to the issuer using the card number. In card messaging this is the authorisation request, sent in the ISO 8583 format as message type 0100. The scheme may add checks of its own, such as whether the card is reported lost, and it may act as a stand in when the issuer system is briefly unavailable, using rules the issuer set in advance. The whole journey normally takes one to two seconds.", "Step two is the issuer checks, and they run in a fraction of a second. The issuer verifies that the card is active and not blocked, lost or stolen, that the account exists, and that the available funds or credit cover the amount. It checks cardholder controls, such as a daily limit or a block on online spending. It runs fraud scoring on the amount, the merchant, the location and the device, and it checks the card verification value for online transactions and the PIN or biometric for card present ones. Any one of these checks can stop the transaction, and the order matters: a blocked card is declined before a funds check is needed.", "Step three is the response, and it carries the status the merchant must act on. If all checks pass, the issuer approves, returns an approval code, and places a hold on the funds. The available balance falls immediately, but the money has not left the account and the transaction is not yet a posted charge. The approval travels back as an authorisation response, message type 0110, from issuer to scheme to acquirer to merchant. If a check fails, the issuer declines and returns a response code. Common codes are 05 for do not honour, 51 for insufficient funds, 54 for an expired card, 14 for an invalid card number, and 91 for issuer unavailable.", "Step four is the hold, and the analyst must understand how long it lasts. An authorisation hold reserves the funds for a limited period, typically about seven days for a standard purchase, and longer for hotels, car hire and other travel merchants where the final amount is not known at check in. If the merchant clears the transaction within that window, the hold converts into a posted charge. If the merchant never clears it, the hold expires and the funds are released.", "Exceptions are where authorisation design is tested, and there are four the analyst must handle. A decline is a firm no from the issuer, and the merchant must not retry it as a new request without a change. A timeout means no response arrived, so the status is unknown, and the merchant must reverse the authorisation or run a status check before retrying, or the customer can be charged twice. A partial approval means the issuer approves only part of the amount, and the merchant must collect the balance another way. A referral means the issuer wants a voice authorisation, usually a call to the issuer, before the sale can proceed. Each path needs its own message, its own log entry and its own reconciliation treatment.", "Reversals close the loop when a sale does not complete. If the customer cancels, the terminal fails, or the merchant voids the sale, the merchant sends an authorisation reversal, which asks the issuer to release the hold. A reversal is not a refund, because no money moved. A refund is a separate transaction that follows a cleared charge. Mixing the two up creates reconciliation breaks and customer complaints, so systems must keep authorisation, reversal, clearing and refund as four distinct transaction types with their own identifiers and statuses."], "accessibility": "Payment flow diagram showing Authorization in Real Time.", "visual_type": "payment_flow", "visual_choice_reason": "card payments chapter", "beats": [{"t0": 0.0, "t1": 44.0, "title": "Authorisation: real time check", "note": "Authorisation is the real time check that happens while the customer is still at the till or on the checkout page.", "highlight_nodes": ["n0"], "highlight_conns": [], "highlight_fields": []}, {"t0": 44.0, "t1": 88.8, "title": "Terminal sends the request", "note": "The terminal sends the request to the acquirer, the acquirer forwards it to the card scheme, and the scheme routes it to the issuer using the card number.", "highlight_nodes": ["n1"], "highlight_conns": ["c0"], "highlight_fields": []}, {"t0": 88.8, "t1": 132.4, "title": "Cardholder controls", "note": "It checks cardholder controls, such as a daily limit or a block on online spending.", "highlight_nodes": ["n2"], "highlight_conns": ["c1"], "highlight_fields": []}, {"t0": 132.4, "t1": 177.2, "title": "Approval travels back as an authorisation response", "note": "The approval travels back as an authorisation response, message type 0110, from issuer to scheme to acquirer to merchant.", "highlight_nodes": ["n3"], "highlight_conns": ["c2"], "highlight_fields": []}, {"t0": 177.2, "t1": 220.6, "title": "Merchant never clears it", "note": "If the merchant never clears it, the hold expires and the funds are released.", "highlight_nodes": ["n4"], "highlight_conns": ["c3"], "highlight_fields": []}, {"t0": 220.6, "t1": 259.8, "title": "Path needs its own message", "note": "Each path needs its own message, its own log entry and its own reconciliation treatment.", "highlight_nodes": ["n5"], "highlight_conns": ["c4"], "highlight_fields": []}], "node_ids": ["n0", "n1", "n2", "n3", "n4", "n5"], "framework": {"objective": "By the end of this lesson, you will be able to explain authorization in real time. Authorisation is the real time check that happens while the customer is still at the till or on the checkout page.", "why_matters": "Step four is the hold, and the analyst must understand how long it lasts.", "technical_example": "In card messaging this is the authorisation request, sent in the ISO 8583 format as message type 0100.", "failure_recovery": "That request is the first message in the card flow, and every later step depends on it being complete and correct.", "exercise": {"task": "Trace the card payment in this lesson through authorisation, clearing and settlement.", "info": "Use the four-party model and the stage timings in this lesson.", "action": "State what happens at each stage, who pays whom, and when the merchant is actually credited.", "correct": "Authorisation holds the funds and returns a response code. Clearing sends the transaction in a batch file. Settlement moves the net amount between banks, and the acquirer credits the merchant after deducting interchange, scheme fees and its margin.", "why": "A card payment is not one event. The customer sees it on Monday, the merchant gets it on Wednesday, and the difference is the clearing and settlement cycle."}, "assessment": {"question": "A customer pays by card at a shop. The terminal shows approved, but the shop owner asks when the money will actually reach the shop account. What is the correct explanation?", "options": ["Authorisation approves the payment and blocks the funds, but clearing and settlement between the banks happen later, so the shop is credited after that", "The shop account is credited the instant the terminal shows approved", "Authorisation and settlement are the same event for cards", "The shop is never credited because card payments are only authorisations"], "answer": 0, "explanation": "A card payment has three stages: authorisation approves and holds the funds, clearing exchanges the transaction details, and settlement moves the money between the banks. The terminal approval is only the first stage; the credit to the shop follows clearing and settlement.", "why_wrong": ["", "This is not correct for this question. A card payment has three stages: authorisation approves and holds the funds, clearing exchanges the transaction details, and settlement moves the money between the banks.", "This is not correct for this question. A card payment has three stages: authorisation approves and holds the funds, clearing exchanges the transaction details, and settlement moves the money between the banks.", "This is not correct for this question. A card payment has three stages: authorisation approves and holds the funds, clearing exchanges the transaction details, and settlement moves the money between the banks."], "source": "test:ts-d06-01"}, "takeaway": "If the merchant never clears it, the hold expires and the funds are released.", "prereq": "ch21s1", "next": "ch21s3", "connection_note": "Builds on \"The Four Parties and the Card Transaction\".", "tool": {"slug": "lifecycle", "label": "Payment Lifecycle Simulator", "url": "../simulators/lifecycle.html", "scenario": "Follow a payment through every stage, from instruction to beneficiary credit, and note where it can stop."}, "simple": "In plain words: authorisation is the real time check that happens while the customer is still at the till or on the checkout page. That is the whole idea in one sentence, and the rest of the lesson shows how it works in a real bank.", "summary": "Authorisation is the real time check that happens while the customer is still at the till or on the checkout page. Key points: Authorisation: real time check; Terminal sends the request; Cardholder controls; Approval travels back as an authorisation response; Merchant never clears it; Path needs its own message.", "example": "The merchant terminal or website builds an authorisation request with the card number, the amount, the currency, the merchant name and location, the transaction type, and data about how the card was presented, for example chip, contactless, online or wallet."}}], "chapter_title": "Card Authorization, Clearing and Settlement", "meta_line": "Card Authorization, Clearing and Settlement, Lesson 2 of 8, Narration 4:19, D08 Cards and alternative payments", "next_id": "ch21s3", "next_title": "What Happens After the Customer Leaves"}]);</script>
+</div>
+<nav class="tool-rail" aria-label="Lesson tools">
+<button type="button" class="rail-tool" onclick="pfOpenTranscript('studio-ch21s2')" title="Open transcript"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M7 3h7l4 4v14H7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M14 3v4h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 12h5M10 15.5h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span>Transcript</span></button>
+<button type="button" class="rail-tool" onclick="pfToggleNote('studio-ch21s2')" title="Write a note on this lesson"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L8 19l-4 1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>Notes</span></button>
+<button type="button" class="rail-tool" onclick="pfToggleFiles('studio-ch21s2')" title="Download lesson files"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>Files</span></button>
+</nav>
+<div class="fw-files-panel" id="pf-files-studio-ch21s2" style="display:none"><b>Lesson files</b><p><a href="../audio/ch21s2.mp3" download>Download narration (MP3)</a></p><p><a href="#" onclick="pfDownloadTranscript('studio-ch21s2');return false">Download transcript (.txt)</a></p></div>
+</div>
+</div>
+</main>
+<footer><p>Payments Training Hub. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="../index.html">Home</a> &middot; <a href="../courses.html">Courses</a> &middot; <a href="../practice.html">Practice</a> &middot; <a href="../simulators.html">Simulators</a> &middot; <a href="../labs.html">Labs</a> &middot; <a href="../explorer.html">Explorer</a> &middot; <a href="../tests.html">Tests</a> &middot; <a href="../diagnostic.html">Diagnostic</a> &middot; <a href="../faq.html">Interview Ready Questions</a> &middot; <a href="../interview-prep.html">Interview Prep</a></p><p><a href="../about.html">About</a> &middot; <a href="../privacy.html">Privacy</a> &middot; <a href="../terms.html">Terms</a> &middot; <a href="../contact.html">Contact</a> &middot; <a href="../editorial-standards.html">Editorial Standards</a> &middot; <a href="../sources.html">Sources</a></p></footer>
+<script defer src="../assets/site.js"></script>
+<script defer src="../assets/bundles.js"></script>
+<script defer src="../assets/auth.js"></script>
+<script defer src="../assets/studio.js"></script>
+<script defer src="../assets/insight-components.js"></script>
+<script defer src="../assets/nav.js"></script>
+<script defer src="../assets/pf-enhance.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+if(window.PFInsight){PFInsight.init();}
+});
+</script>
+</body>
+</html>
