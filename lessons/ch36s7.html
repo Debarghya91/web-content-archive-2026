@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>Database Design for Payments | Payments Training Hub</title>
+<meta name="description" content="The payment instruction table is the core record. It holds one row per payment instruction, with the unique reference number, the debit account, the...">
+<link rel="canonical" href="https://www.paymentstraininghub.in/lessons/ch36s7.html">
+<meta property="og:url" content="https://www.paymentstraininghub.in/lessons/ch36s7.html">
+<meta property="og:title" content="Database Design for Payments | Payments Training Hub">
+<meta property="og:description" content="The payment instruction table is the core record. It holds one row per payment instruction, with the unique reference number, the debit account, the...">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.in/assets/hero/hero-poster.jpg">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.paymentstraininghub.in/index.html"}, {"@type": "ListItem", "position": 2, "name": "System Design Deep Dive", "item": "https://www.paymentstraininghub.in/chapters/ch36-system-design-deep-dive.html"}, {"@type": "ListItem", "position": 3, "name": "Database Design for Payments", "item": "https://www.paymentstraininghub.in/lessons/ch36s7.html"}]}</script>
+<link rel="stylesheet" href="../assets/studio.css">
+<link rel="stylesheet" href="../assets/pf-theme.css">
+<link rel="stylesheet" href="../assets/insight-components.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="../index.html" class="brand">Payments <span>Training Hub</span></a><nav class="topnav"><a href="../index.html">Home</a> <a href="../courses.html">Courses</a> <a href="../practice.html">Practice</a> <a href="../simulators.html">Simulators</a> <a href="../labs.html">Labs</a> <a href="../explorer.html">Explorer</a> <a href="../tests.html">Tests</a></nav><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox" style="display:none"><span id="authState">Not signed in</span> <span id="authForm" style="display:none"><input id="authEmail" type="email" placeholder="Email for OTP" aria-label="Email for sign-in"> <button class="mute-btn" onclick="paAuthSendOtp()">Send code</button> <input id="authCode" type="text" placeholder="6-digit code" aria-label="One-time code" style="display:none"> <button class="mute-btn" id="authVerifyBtn" onclick="paAuthVerifyOtp()" style="display:none">Verify</button> <button class="mute-btn" onclick="paAuthGoogle()">Sign in with Google</button> </span><button class="mute-btn" id="authSignOutBtn" onclick="paAuthSignOut()" style="display:none">Sign out</button></span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<div class="lesson-page">
+<div class="lesson-shell">
+<aside class="course-rail">
+<div class="rail-head">
+<h2>System Design Deep Dive</h2>
+<a class="rail-close" href="../chapters/ch36-system-design-deep-dive.html" aria-label="Close and go to chapter" title="Back to chapter">&times;</a>
+</div>
+<div class="goal-card">
+<div class="goal-head"><b>Today's goal &middot; <span id="side-progress-text">0 of 7 items</span></b><span class="goal-flag"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 21V4m0 1h11l-2.5 3.5L17 12H6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="goal-chev">&#94;</span></div>
+<p class="goal-body" id="side-goal-body">Complete 3 items today to stay at a good pace!</p>
+</div>
+<ul class="lesson-list"><li class="" data-lesson="ch36s1"><a href="ch36s1.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Payment Hub Architecture Inside a Bank</span><span class="m">Video &middot; 4 min</span></span></a></li>
+<li class="" data-lesson="ch36s2"><a href="ch36s2.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Message Routing: From Channel to Rail</span><span class="m">Video &middot; 3 min</span></span></a></li>
+<li class="" data-lesson="ch36s3"><a href="ch36s3.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Queueing and Retry Logic</span><span class="m">Video &middot; 4 min</span></span></a></li>
+<li class="" data-lesson="ch36s4"><a href="ch36s4.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Reconciliation Engines</span><span class="m">Video &middot; 8 min</span></span></a></li>
+<li class="" data-lesson="ch36s5"><a href="ch36s5.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Exception Queues</span><span class="m">Video &middot; 4 min</span></span></a></li>
+<li class="" data-lesson="ch36s6"><a href="ch36s6.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">How Systems Connect</span><span class="m">Video &middot; 4 min</span></span></a></li>
+<li class="current" data-lesson="ch36s7"><a href="ch36s7.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Database Design for Payments</span><span class="m">Video &middot; 5 min</span></span></a></li></ul>
+</aside>
+<div class="lesson-main">
+<div class="studio" id="studio-studio-ch36s7">
+<div class="player">
+<div class="studio-canvas" id="studio-canvas-studio-ch36s7">
+<div class="ch-sec studio-scene-vis active" id="studio-vis-studio-ch36s7-0"><div class="beat-frames">
+<div class="beat-frame active" data-frame="0">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Payment</tspan> <tspan fill="#FFFFFF">instruction</tspan> <tspan fill="#FFFFFF">table</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">STARTED</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Payment instruction table</tspan><tspan fill="#CBD5E1"> - core record.</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="0.55">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="13" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Payment event table</tspan><tspan fill="#CBD5E1"> - significant thing that happens to a payment.</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="0.55">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Event table</tspan><tspan fill="#CBD5E1"> - append-only, meaning rows are never updated</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">System failure interrupts a posting halfway</tspan><tspan fill="#CBD5E1"> - If a system failure interrupts a</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="13" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Seven-year message retention</tspan><tspan fill="#CBD5E1"> - logs are kept for at least seven years</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Transition</tspan><tspan fill="#CBD5E1"> - Each transition is recorded in the event</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="128" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The payment instruction table is the core record.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 1 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 702" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="702" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Payment</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">instruction</tspan> <tspan fill="#FFFFFF">table</tspan></text>
+<rect x="24" y="86" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="104" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">STARTED</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="120" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="139" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Payment instruction</text>
+<text x="180" y="157" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">table</text>
+<text x="180" y="175" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">core record.</text>
+<text x="180" y="193" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="0.55">
+<rect x="24" y="212" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="231" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Payment event table</text>
+<text x="180" y="249" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">significant thing that happens to a payment.</text>
+<text x="180" y="267" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="0.55">
+<rect x="24" y="284" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="303" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Event table</text>
+<text x="180" y="321" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">append-only, meaning rows are never</text>
+<text x="180" y="339" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="24" y="356" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="375" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">System failure</text>
+<text x="180" y="393" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">interrupts a posting</text>
+<text x="180" y="411" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">If a system failure interrupts a posting</text>
+<text x="180" y="429" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="24" y="448" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="467" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Seven-year message</text>
+<text x="180" y="485" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">retention</text>
+<text x="180" y="503" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">logs are kept for at least seven years</text>
+<text x="180" y="521" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="540" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="559" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Transition</text>
+<text x="180" y="577" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Each transition is recorded in the event</text>
+<text x="180" y="595" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="620" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The payment instruction table is the</text>
+<text x="180" y="639" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">core record.</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="1">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Payment</tspan> <tspan fill="#FFFFFF">event</tspan> <tspan fill="#FFFFFF">table</tspan> <tspan fill="#FFFFFF">records</tspan> <tspan fill="#FFFFFF">every</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Payment instruction table</tspan><tspan fill="#CBD5E1"> - core record.</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="13" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Payment event table</tspan><tspan fill="#CBD5E1"> - significant thing that happens to a payment.</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="0.55">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Event table</tspan><tspan fill="#CBD5E1"> - append-only, meaning rows are never updated</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">System failure interrupts a posting halfway</tspan><tspan fill="#CBD5E1"> - If a system failure interrupts a</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="13" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Seven-year message retention</tspan><tspan fill="#CBD5E1"> - logs are kept for at least seven years</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Transition</tspan><tspan fill="#CBD5E1"> - Each transition is recorded in the event</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="257" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The payment event table records every significant thing that happens to a payment.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 2 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 749" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="749" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Payment</tspan> <tspan fill="#FFFFFF">event</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">table</tspan> <tspan fill="#FFFFFF">records</tspan></text>
+<text x="24" y="96" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">every</tspan></text>
+<rect x="24" y="114" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="132" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="148" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="167" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Payment instruction</text>
+<text x="180" y="185" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">table</text>
+<text x="180" y="203" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">core record.</text>
+<text x="180" y="221" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="240" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="259" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Payment event table</text>
+<text x="180" y="277" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">significant thing that happens to a payment.</text>
+<text x="180" y="295" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="0.55">
+<rect x="24" y="312" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="331" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Event table</text>
+<text x="180" y="349" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">append-only, meaning rows are never</text>
+<text x="180" y="367" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="24" y="384" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="403" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">System failure</text>
+<text x="180" y="421" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">interrupts a posting</text>
+<text x="180" y="439" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">If a system failure interrupts a posting</text>
+<text x="180" y="457" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="24" y="476" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="495" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Seven-year message</text>
+<text x="180" y="513" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">retention</text>
+<text x="180" y="531" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">logs are kept for at least seven years</text>
+<text x="180" y="549" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="568" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="587" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Transition</text>
+<text x="180" y="605" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Each transition is recorded in the event</text>
+<text x="180" y="623" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="648" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The payment event table records every</text>
+<text x="180" y="667" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">significant thing that happens to a</text>
+<text x="180" y="686" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">payment.</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="2">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Event</tspan> <tspan fill="#FFFFFF">table</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Payment instruction table</tspan><tspan fill="#CBD5E1"> - core record.</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="13" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Payment event table</tspan><tspan fill="#CBD5E1"> - significant thing that happens to a payment.</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Event table</tspan><tspan fill="#CBD5E1"> - append-only, meaning rows are never updated</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">System failure interrupts a posting halfway</tspan><tspan fill="#CBD5E1"> - If a system failure interrupts a</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="13" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Seven-year message retention</tspan><tspan fill="#CBD5E1"> - logs are kept for at least seven years</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Transition</tspan><tspan fill="#CBD5E1"> - Each transition is recorded in the event</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="386" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The event table is append-only, meaning rows are never updated or deleted, so the history</text>
+<text x="450" y="476" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">cannot be rewritten.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 3 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 693" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="693" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Event</tspan> <tspan fill="#FFFFFF">table</tspan></text>
+<rect x="24" y="58" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="76" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="92" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="111" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Payment instruction</text>
+<text x="180" y="129" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">table</text>
+<text x="180" y="147" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">core record.</text>
+<text x="180" y="165" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="184" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="203" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Payment event table</text>
+<text x="180" y="221" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">significant thing that happens to a payment.</text>
+<text x="180" y="239" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="1">
+<rect x="24" y="256" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="275" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Event table</text>
+<text x="180" y="293" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">append-only, meaning rows are never</text>
+<text x="180" y="311" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="24" y="328" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="347" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">System failure</text>
+<text x="180" y="365" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">interrupts a posting</text>
+<text x="180" y="383" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">If a system failure interrupts a posting</text>
+<text x="180" y="401" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="24" y="420" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="439" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Seven-year message</text>
+<text x="180" y="457" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">retention</text>
+<text x="180" y="475" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">logs are kept for at least seven years</text>
+<text x="180" y="493" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="512" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="531" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Transition</text>
+<text x="180" y="549" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Each transition is recorded in the event</text>
+<text x="180" y="567" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="592" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The event table is append-only, meaning</text>
+<text x="180" y="611" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">rows are never updated or deleted, so the</text>
+<text x="180" y="630" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">history cannot be rewritten.</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="3">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">System</tspan> <tspan fill="#FFFFFF">failure</tspan> <tspan fill="#FFFFFF">interrupts</tspan> <tspan fill="#FFFFFF">a</tspan> <tspan fill="#FFFFFF">posting</tspan></text>
+<text x="48" y="126" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">halfway</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Payment instruction table</tspan><tspan fill="#CBD5E1"> - core record.</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="13" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Payment event table</tspan><tspan fill="#CBD5E1"> - significant thing that happens to a payment.</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Event table</tspan><tspan fill="#CBD5E1"> - append-only, meaning rows are never updated</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">System failure interrupts a posting halfway</tspan><tspan fill="#CBD5E1"> - If a system failure interrupts a</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="13" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Seven-year message retention</tspan><tspan fill="#CBD5E1"> - logs are kept for at least seven years</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Transition</tspan><tspan fill="#CBD5E1"> - Each transition is recorded in the event</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="514" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">If a system failure interrupts a posting halfway</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 4 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 730" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="730" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">System</tspan> <tspan fill="#FFFFFF">failure</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">interrupts</tspan> <tspan fill="#FFFFFF">a</tspan></text>
+<text x="24" y="96" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">posting</tspan> <tspan fill="#FFFFFF">halfway</tspan></text>
+<rect x="24" y="114" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="132" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="148" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="167" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Payment instruction</text>
+<text x="180" y="185" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">table</text>
+<text x="180" y="203" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">core record.</text>
+<text x="180" y="221" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="240" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="259" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Payment event table</text>
+<text x="180" y="277" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">significant thing that happens to a payment.</text>
+<text x="180" y="295" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="1">
+<rect x="24" y="312" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="331" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Event table</text>
+<text x="180" y="349" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">append-only, meaning rows are never</text>
+<text x="180" y="367" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="1">
+<rect x="24" y="384" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="403" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">System failure</text>
+<text x="180" y="421" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">interrupts a posting</text>
+<text x="180" y="439" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">If a system failure interrupts a posting</text>
+<text x="180" y="457" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="24" y="476" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="495" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Seven-year message</text>
+<text x="180" y="513" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">retention</text>
+<text x="180" y="531" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">logs are kept for at least seven years</text>
+<text x="180" y="549" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="568" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="587" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Transition</text>
+<text x="180" y="605" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Each transition is recorded in the event</text>
+<text x="180" y="623" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="648" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">If a system failure interrupts a posting</text>
+<text x="180" y="667" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">halfway</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="4">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Seven-year</tspan> <tspan fill="#FFFFFF">message</tspan> <tspan fill="#FFFFFF">retention</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Payment instruction table</tspan><tspan fill="#CBD5E1"> - core record.</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="13" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Payment event table</tspan><tspan fill="#CBD5E1"> - significant thing that happens to a payment.</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Event table</tspan><tspan fill="#CBD5E1"> - append-only, meaning rows are never updated</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">System failure interrupts a posting halfway</tspan><tspan fill="#CBD5E1"> - If a system failure interrupts a</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n4" data-beat="4">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="13" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Seven-year message retention</tspan><tspan fill="#CBD5E1"> - logs are kept for at least seven years</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Transition</tspan><tspan fill="#CBD5E1"> - Each transition is recorded in the event</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="643" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Message logs are kept for at least seven years in most countries to meet regulatory</text>
+<text x="450" y="476" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">requirements.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 5 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 721" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="721" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Seven-year</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">message</tspan> <tspan fill="#FFFFFF">retention</tspan></text>
+<rect x="24" y="86" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="104" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="120" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="139" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Payment instruction</text>
+<text x="180" y="157" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">table</text>
+<text x="180" y="175" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">core record.</text>
+<text x="180" y="193" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="212" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="231" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Payment event table</text>
+<text x="180" y="249" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">significant thing that happens to a payment.</text>
+<text x="180" y="267" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="1">
+<rect x="24" y="284" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="303" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Event table</text>
+<text x="180" y="321" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">append-only, meaning rows are never</text>
+<text x="180" y="339" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="1">
+<rect x="24" y="356" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="375" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">System failure</text>
+<text x="180" y="393" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">interrupts a posting</text>
+<text x="180" y="411" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">If a system failure interrupts a posting</text>
+<text x="180" y="429" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="1">
+<rect x="24" y="448" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="467" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Seven-year message</text>
+<text x="180" y="485" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">retention</text>
+<text x="180" y="503" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">logs are kept for at least seven years</text>
+<text x="180" y="521" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="540" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="559" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Transition</text>
+<text x="180" y="577" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Each transition is recorded in the event</text>
+<text x="180" y="595" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="620" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Message logs are kept for at least seven</text>
+<text x="180" y="639" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">years in most countries to meet</text>
+<text x="180" y="658" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">regulatory requirements.</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="5">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Transition:</tspan> <tspan fill="#FFFFFF">recorded</tspan> <tspan fill="#FFFFFF">in</tspan> <tspan fill="#FFFFFF">event</tspan> <tspan fill="#FFFFFF">table</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">COMPLETE</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Payment instruction table</tspan><tspan fill="#CBD5E1"> - core record.</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="13" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Payment event table</tspan><tspan fill="#CBD5E1"> - significant thing that happens to a payment.</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Event table</tspan><tspan fill="#CBD5E1"> - append-only, meaning rows are never updated</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">System failure interrupts a posting halfway</tspan><tspan fill="#CBD5E1"> - If a system failure interrupts a</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n4" data-beat="4">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="13" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Seven-year message retention</tspan><tspan fill="#CBD5E1"> - logs are kept for at least seven years</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n5" data-beat="5">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Transition</tspan><tspan fill="#CBD5E1"> - Each transition is recorded in the event</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Each transition is recorded in the event table with the user or system that triggered it, and the</text>
+<text x="450" y="476" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">database rejects any transition that is not on the approved list.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 6 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#45A4FF"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 768" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="768" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Transition:</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">recorded</tspan> <tspan fill="#FFFFFF">in</tspan> <tspan fill="#FFFFFF">event</tspan></text>
+<text x="24" y="96" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">table</tspan></text>
+<rect x="24" y="114" width="312" height="26" rx="8" fill="#0C1626" stroke="#2DD4BF" stroke-width="1.5"/>
+<text x="180" y="132" text-anchor="middle" font-size="12" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">COMPLETE</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="148" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="167" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Payment instruction</text>
+<text x="180" y="185" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">table</text>
+<text x="180" y="203" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">core record.</text>
+<text x="180" y="221" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="240" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="259" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Payment event table</text>
+<text x="180" y="277" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">significant thing that happens to a payment.</text>
+<text x="180" y="295" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="1">
+<rect x="24" y="312" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="331" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Event table</text>
+<text x="180" y="349" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">append-only, meaning rows are never</text>
+<text x="180" y="367" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="1">
+<rect x="24" y="384" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="403" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">System failure</text>
+<text x="180" y="421" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">interrupts a posting</text>
+<text x="180" y="439" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">If a system failure interrupts a posting</text>
+<text x="180" y="457" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="1">
+<rect x="24" y="476" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="495" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Seven-year message</text>
+<text x="180" y="513" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">retention</text>
+<text x="180" y="531" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">logs are kept for at least seven years</text>
+<text x="180" y="549" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="1">
+<rect x="24" y="568" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="587" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Transition</text>
+<text x="180" y="605" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Each transition is recorded in the event</text>
+<text x="180" y="623" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<text x="180" y="648" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Each transition is recorded in the event</text>
+<text x="180" y="667" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">table with the user or system that</text>
+<text x="180" y="686" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">triggered it, and the database rejects any</text>
+<text x="180" y="705" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">transition that is not on the approved list.</text>
+</svg>
+</div>
+</div>
+<p class="xml-caption">Flow of the explanation in this lesson.</p></div>
+<div class="playerbar">
+<div class="studio-progress"><div class="studio-markers" id="studio-markers-studio-ch36s7"></div><input type="range" id="studio-slider-studio-ch36s7" min="0" max="1000" value="0" aria-label="Lesson timeline"></div>
+<div class="ctrl-row">
+<button class="ctrl-btn" id="studio-play-studio-ch36s7" onclick="studioTogglePlay('studio-ch36s7')" aria-label="Play lesson" title="Play lesson"><span class="ctrl-ic-play"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></span><span class="ctrl-ic-pause" style="display:none"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><rect x="6" y="5" width="4" height="14" fill="currentColor"/><rect x="14" y="5" width="4" height="14" fill="currentColor"/></svg></span></button>
+<button class="ctrl-btn studio-mute-btn" id="studio-mute-studio-ch36s7" onclick="studioToggleMute('studio-ch36s7')" aria-label="Mute narration" title="Mute / unmute narration"><svg class="studio-mute-icon" viewBox="0 0 24 24" width="28" height="28" fill="currentColor" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3z"/><path class="studio-mute-waves" d="M16 8.5a5 5 0 0 1 0 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><path class="studio-mute-waves" d="M18.5 6a9 9 0 0 1 0 12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><path class="studio-mute-x" d="M16 9.5l5 5M21 9.5l-5 5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" style="display:none"/></svg></button>
+<button class="ctrl-btn" onclick="studioSkip('studio-ch36s7', -10)" aria-label="Back 10 seconds" title="Back 10 seconds"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 5a7 7 0 1 1-6.32 4.06" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M5.5 3.5v5h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><text x="12" y="16.5" font-size="8" fill="currentColor" text-anchor="middle" font-weight="700">10</text></svg></button>
+<span class="studio-time ctrl-time" id="studio-time-studio-ch36s7">0:00 / 4:49</span>
+<button class="ctrl-btn" onclick="studioSkip('studio-ch36s7', 10)" aria-label="Forward 10 seconds" title="Forward 10 seconds"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 5a7 7 0 1 0 6.32 4.06" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M18.5 3.5v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><text x="12" y="16.5" font-size="8" fill="currentColor" text-anchor="middle" font-weight="700">10</text></svg></button>
+<span class="playerbar-spacer"></span>
+<span class="player-stage" id="studio-tag-studio-ch36s7">Step 1 of 6</span>
+<button class="ctrl-btn ctrl-step" id="studio-prevscene-studio-ch36s7" onclick="studioPrevScene('studio-ch36s7')" title="Previous step" aria-label="Previous step">&lsaquo;</button>
+<button class="ctrl-btn ctrl-step" id="studio-nextscene-studio-ch36s7" onclick="studioNextScene('studio-ch36s7')" title="Next step" aria-label="Next step">&rsaquo;</button>
+<button class="ctrl-btn ctrl-speed" id="studio-speedbtn-studio-ch36s7" onclick="studioCycleSpeed('studio-ch36s7')" title="Playback speed" aria-label="Playback speed">1x</button>
+<span class="ctrl-settings-wrap"><button class="ctrl-btn" onclick="studioToggleSettings('studio-ch36s7', event)" aria-label="Player settings" title="Settings"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5 5l2.1 2.1M16.9 16.9L19 19M19 5l-2.1 2.1M7.1 16.9L5 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button><span class="ctrl-popover" id="studio-settings-studio-ch36s7" style="display:none" onclick="event.stopPropagation()"><label class="ctrl-pop-row">Volume <input type="range" min="0" max="1" step="0.1" value="1" oninput="studioSetVolume('studio-ch36s7', this.value)" style="width:110px;accent-color:#3587FC"></label><button class="studio-btn" id="studio-captions-studio-ch36s7" onclick="studioToggleCaptions('studio-ch36s7')">Captions: On</button><button class="studio-btn" onclick="studioReplayScene('studio-ch36s7')">Replay scene</button></span></span>
+<button class="ctrl-btn" onclick="studioFullscreen('studio-ch36s7')" aria-label="Fullscreen" title="Fullscreen"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+</div>
+</div>
+</div>
+<p class="studio-caption" id="studio-caption-studio-ch36s7"></p>
+<p class="studio-loading" id="studio-loading-studio-ch36s7" style="display:none">Loading narration...</p>
+<p class="studio-error" id="studio-error-studio-ch36s7" role="alert" style="display:none"></p>
+<audio id="studio-audio-studio-ch36s7" preload="auto" src="../audio/ch36s7.mp3"></audio>
+</div>
+<div class="lesson-title-row">
+<h1>Database Design for Payments</h1>
+<button class="save-note" type="button" onclick="pfToggleNote('studio-ch36s7')" title="Save a note on this lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L8 19l-4 1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg> Save note</button>
+</div>
+<p class="lesson-meta-line">System Design Deep Dive, Lesson 7 of 7, Narration 4:49, D09 Payment architecture and technology</p>
+<p class="lesson-note-saved" id="studio-note-saved-studio-ch36s7" style="display:none">Note saved.</p>
+<div class="note-editor" id="studio-note-editor-studio-ch36s7" style="display:none"><textarea id="studio-note-text-studio-ch36s7" rows="3" placeholder="Write a note on this lesson..." aria-label="Lesson note"></textarea><div class="note-editor-row"><button class="studio-btn primary" onclick="pfSaveNote('studio-ch36s7')">Save note</button> <button class="studio-btn" onclick="pfToggleNote('studio-ch36s7')">Cancel</button></div></div>
+<div class="dive-deeper">
+<div class="dive-head"><button type="button" class="dive-toggle" onclick="pfToggleDive(this)" aria-expanded="true"><span class="dive-spark"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 2l2.2 6.8L21 11l-6.8 2.2L12 20l-2.2-6.8L3 11l6.8-2.2z" fill="currentColor"/></svg></span><span class="dive-title">Dive deeper on this topic</span><span class="dive-chev"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 14l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button></div>
+<div class="dive-btns"><button type="button" class="dive-btn" data-kind="practice" onclick="pfDive('studio-ch36s7', 'practice')">Give me practice questions</button><button type="button" class="dive-btn" data-kind="simple" onclick="pfDive('studio-ch36s7', 'simple')">Explain this topic in simple terms</button><button type="button" class="dive-btn" data-kind="summary" onclick="pfDive('studio-ch36s7', 'summary')">Give me a summary</button><button type="button" class="dive-btn" data-kind="example" onclick="pfDive('studio-ch36s7', 'example')">Give me real-life examples</button></div>
+<div class="dive-panel" id="dive-panel-studio-ch36s7"><div class="dive-panel-body"></div></div>
+<script type="application/json" id="pf-dive-data-studio-ch36s7">{"simple": "In plain words: the payment instruction table is the core record. That is the whole idea in one sentence, and the rest of the lesson shows how it works in a real bank.", "summary": "The payment instruction table is the core record. Key points: Payment instruction table; Payment event table records every; Event table; System failure interrupts a posting halfway; Seven-year message retention; Transition: recorded in event table.", "example": "A bank processing 2 million payments a day adds 2 million rows a day to this table, so it is partitioned by date and indexed on the reference number and the account number. If a customer asks why a payment of 80,000 dollars took three days, the bank can show the exact sequence, received at 12 minutes past 9 in the morning, validated at 13 minutes past 9 in the morning, held for sanctions review at 14 minutes past 9 in the morning, released by compliance at 40 minutes past 11 in the morning, settled at 5 minutes past 12 in the afternoon."}</script>
+</div>
+<div class="lesson-feedback">
+<div class="fb-icons"><button type="button" class="fb-btn" data-kind="like" onclick="pfFeedback(this,'like')" aria-label="Like this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M7 21H4a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1h3v11zm0 0h9.6a2 2 0 0 0 1.9-1.4l1.6-5A2 2 0 0 0 18.2 12H15V6.5A2.5 2.5 0 0 0 12.5 4L11 7.5 8.6 10H7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button><button type="button" class="fb-btn" data-kind="dislike" onclick="pfFeedback(this,'dislike')" aria-label="Dislike this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M17 3h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1h-3V3zm0 0H7.4a2 2 0 0 0-1.9 1.4l-1.6 5A2 2 0 0 0 5.8 12H9v5.5A2.5 2.5 0 0 0 11.5 20L13 16.5l2.4-2.5H17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button><button type="button" class="fb-btn" data-kind="flag" onclick="pfFeedback(this,'flag')" aria-label="Flag this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M6 21V4m0 1h11l-2.5 3.5L17 12H6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+<button type="button" class="go-next" onclick="goLesson('ch37s1')" title="Next: JPMorgan Chase and Citibank">Go to next item &rarr;</button>
+</div>
+<div class="chips"><span class="chip">Value date</span><span class="chip">Settlement</span><span class="chip">pacs.008</span></div>
+<div class="card learn-card">
+<h2>What you will learn</h2>
+<p class="transcript"><b>Your objective.</b> By the end of this lesson, you will be able to explain database design for payments. The payment instruction table is the core record.</p>
+<p class="transcript"><b>Why it matters.</b> This matters because the architecture decides what the bank can build, how fast it can change, and where a payment can fail. Most payment requirements live in the architecture.</p>
+<p class="transcript">Chapter objective: Learner applies system design to payments, covering throughput, latency, idempotency, exactly-once processing, and failure recovery, and designs a system for a stated load. Learner practises this skill on realistic banking cases, explaining the reasoning clearly and using correct terminology throughout the work.</p>
+<h3>Key learning points</h3>
+<ul id="studio-points-studio-ch36s7">
+<li>Payment instruction table</li>
+<li>Payment event table records every</li>
+<li>Event table</li>
+<li>System failure interrupts a posting halfway</li>
+<li>Seven-year message retention</li>
+<li>Transition: recorded in event table</li>
+</ul>
+<h3>Key terms</h3>
+<div id="studio-terms-studio-ch36s7">
+<p class="keyterm"><b>Value date:</b> The date on which funds become available to the beneficiary and on which interest starts to accrue. It is the date used for settlement and for nostro posting.</p>
+<p class="keyterm"><b>Settlement:</b> The final movement of funds between banks to discharge obligations created by cleared payments. Settlement is usually made in central bank money or through correspondent accounts.</p>
+<p class="keyterm"><b>pacs.008:</b> An ISO 20022 message for a financial institution to financial institution customer credit transfer. It replaces MT103 in cross border payments and carries structured debtor, creditor, charges and...</p>
+</div>
+<p class="studio-note">Banking architecture diagram showing Database Design for Payments.</p>
+</div>
+<div class="fw-card" id="pf-exercise-studio-ch36s7">
+<p class="fw-label">Practise this lesson</p>
+<h2>Exercise</h2>
+<p><b>Map the payment in this lesson through the hub components.</b></p>
+<p>Use the hub components and their order in this lesson.</p>
+<ol class="fw-steps">
+<li><b>What to do.</b> List each component the payment passes through, what it does, and what happens if it fails.</li>
+</ol>
+<p><button class="studio-btn" id="pf-ex-btn-studio-ch36s7" onclick="pfRevealExercise('studio-ch36s7')">Show the answer</button></p>
+<div class="fw-exercise-answer" id="pf-ex-answer-studio-ch36s7">
+<p><b>Correct result.</b> The payment enters through a channel, passes the gateway, validation, fraud and sanctions checks, routing, and the ledger, then leaves through the right clearing system. A failure at any component stops or holds the payment, and the hub must record where it stopped.</p>
+<p><b>Why.</b> The hub is where most payment requirements live. If you cannot map a payment through it, you cannot specify, test or fix it.</p>
+</div>
+</div>
+<div class="fw-card" id="pf-quiz-studio-ch36s7" data-answer="1">
+<p class="fw-label">Check your understanding</p>
+<h2>Practice question</h2>
+<p><b>Which of the following best describes database design for payments?</b></p>
+<button type="button" class="quiz-opt" data-idx="0" onclick="pfCheckAnswer('studio-ch36s7', this)">A payment engine is the specialist component that executes one type of payment</button>
+<button type="button" class="quiz-opt" data-idx="1" onclick="pfCheckAnswer('studio-ch36s7', this)">The payment instruction table is the core record</button>
+<button type="button" class="quiz-opt" data-idx="2" onclick="pfCheckAnswer('studio-ch36s7', this)">Inside the hub, the journey of a payment follows a clear sequence of stages</button>
+<button type="button" class="quiz-opt" data-idx="3" onclick="pfCheckAnswer('studio-ch36s7', this)">A payment hub is the central processing engine that receives payment instructions from every channel in a bank and routes each one to the correct destination</button>
+<div class="quiz-feedback" id="pf-quiz-fb-studio-ch36s7"></div>
+<script type="application/json" id="pf-quiz-data-studio-ch36s7">{"why_wrong": ["This describes a different concept from this chapter, not database design for payments.", "", "This describes a different concept from this chapter, not database design for payments.", "This describes a different concept from this chapter, not database design for payments."], "explanation": "The payment instruction table is the core record. This is the core idea of the lesson."}</script>
+</div>
+<div class="fw-card">
+<p class="fw-label">Takeaway and next step</p>
+<h2>What to remember</h2>
+<p>The event table is append-only, meaning rows are never updated or deleted, so the history cannot be rewritten.</p>
+<p>Send a payment through the hub and watch it pass each component named in this lesson.</p>
+<p><a class="fw-tool-link" href="../simulators/hub.html">Open the Payment Hub Architecture Simulator &rarr;</a></p>
+<p class="studio-note">Builds on "How Systems Connect".</p>
+</div>
+<section class="upnext" id="studio-upnext-studio-ch36s7" style="display:none" aria-label="Up next">
+<span class="tag">Up next</span>
+<h2>Up next: JPMorgan Chase and Citibank</h2>
+<p>Lesson 1 of 7, How 10 Large Banks Do Payments, Narration 3:42</p>
+<div class="row">
+<button class="studio-btn primary" onclick="goLessonAuto('ch37s1')">Next lesson &rarr;</button>
+<button class="studio-btn" onclick="goLesson('ch36s6')">&larr; Previous lesson</button>
+<button class="studio-btn" onclick="studioReplayLesson('studio-ch36s7')">Replay this lesson</button>
+</div>
+</section>
+<div class="lesson-nav">
+<button class="studio-btn" onclick="goLesson('ch36s6')" title="Previous lesson: How Systems Connect">&larr; Previous</button>
+<button class="studio-btn" onclick="goChapterContents('ch36')">Chapter contents</button>
+<button class="studio-btn primary" onclick="goLesson('ch37s1')" title="Next lesson: JPMorgan Chase and Citibank">Next &rarr;</button>
+</div>
+<div class="card transcript-card">
+<h2>Transcript and full text</h2>
+<details class="studio-transcript" id="studio-transcript-details-studio-ch36s7"><summary>Show transcript</summary>
+<p class="transcript" id="studio-transcript-studio-ch36s7">The payment instruction table is the core record. It holds one row per payment instruction, with the unique reference number, the debit account, the beneficiary name and account, the amount and currency, the value date, the payment type, and the channel it came from. A bank processing 2 million payments a day adds 2 million rows a day to this table, so it is partitioned by date and indexed on the reference number and the account number. Without those indexes, finding a single payment among billions of rows would take minutes instead of milliseconds. The table also holds the current status of the payment, which is updated as the payment moves through its lifecycle. The payment event table records every significant thing that happens to a payment. When a payment is received, validated, screened, queued, released, settled, confirmed, rejected, or returned, a new event row is written with a timestamp, the old status, the new status, and the system or user who made the change. This event history is the audit trail. If a customer asks why a payment of 80,000 dollars took three days, the bank can show the exact sequence, received at 12 minutes past 9 in the morning, validated at 13 minutes past 9 in the morning, held for sanctions review at 14 minutes past 9 in the morning, released by compliance at 40 minutes past 11 in the morning, settled at 5 minutes past 12 in the afternoon. The event table is append-only, meaning rows are never updated or deleted, so the history cannot be rewritten. The account entry table holds the accounting postings for each payment. Every payment creates at least two entries, a debit to the sender account and a credit to the internal settlement account, followed by a debit to the settlement account and a credit to the beneficiary or the nostro account. Each entry records the account number, the amount, the currency, the value date, and the reference to the payment instruction. These entries must balance exactly, and the database enforces this with a rule that the total debits equal the total credits for every payment. If a system failure interrupts a posting halfway, the database transaction is rolled back so that no partial posting survives, which is why payment databases use strict transactional guarantees. The message log table stores the actual messages sent and received for each payment. For a cross-border payment this includes the pacs.008 message sent to the correspondent bank, the pacs.002 status report received back, and the MT103 equivalent if the payment went through the older SWIFT format. The log holds the full message text, the sender and receiver, and the time of transmission. This table is essential for investigations, because when a beneficiary bank says it never received a payment, the bank can produce the exact message, the exact time, and the acknowledgement reference. Message logs are kept for at least seven years in most countries to meet regulatory requirements. A payment moves through a defined set of states, and the database enforces the allowed transitions. The states are received, validated, queued, released, settled, confirmed, rejected, and returned. A payment in the received state can move to validated or rejected, but it cannot jump directly to settled. A payment in the queued state can move to released or returned, but not back to received. A payment in the settled state can move to confirmed when the clearing system acknowledges it, or to returned if the beneficiary bank rejects it. Each transition is recorded in the event table with the user or system that triggered it, and the database rejects any transition that is not on the approved list. This state machine is what stops a payment from being settled twice or confirmed before it has been released.</p>
+<div id="studio-paras-studio-ch36s7">
+<p class="transcript">The payment instruction table is the core record. It holds one row per payment instruction, with the unique reference number, the debit account, the beneficiary name and account, the amount and currency, the value date, the payment type, and the channel it came from. A bank processing 2 million payments a day adds 2 million rows a day to this table, so it is partitioned by date and indexed on the reference number and the account number. Without those indexes, finding a single payment among billions of rows would take minutes instead of milliseconds. The table also holds the current status of the payment, which is updated as the payment moves through its lifecycle.</p>
+<p class="transcript">The payment event table records every significant thing that happens to a payment. When a payment is received, validated, screened, queued, released, settled, confirmed, rejected, or returned, a new event row is written with a timestamp, the old status, the new status, and the system or user who made the change. This event history is the audit trail. If a customer asks why a payment of 80,000 dollars took three days, the bank can show the exact sequence, received at 12 minutes past 9 in the morning, validated at 13 minutes past 9 in the morning, held for sanctions review at 14 minutes past 9 in the morning, released by compliance at 40 minutes past 11 in the morning, settled at 5 minutes past 12 in the afternoon. The event table is append-only, meaning rows are never updated or deleted, so the history cannot be rewritten.</p>
+<p class="transcript">The account entry table holds the accounting postings for each payment. Every payment creates at least two entries, a debit to the sender account and a credit to the internal settlement account, followed by a debit to the settlement account and a credit to the beneficiary or the nostro account. Each entry records the account number, the amount, the currency, the value date, and the reference to the payment instruction. These entries must balance exactly, and the database enforces this with a rule that the total debits equal the total credits for every payment. If a system failure interrupts a posting halfway, the database transaction is rolled back so that no partial posting survives, which is why payment databases use strict transactional guarantees.</p>
+<p class="transcript">The message log table stores the actual messages sent and received for each payment. For a cross-border payment this includes the pacs.008 message sent to the correspondent bank, the pacs.002 status report received back, and the MT103 equivalent if the payment went through the older SWIFT format. The log holds the full message text, the sender and receiver, and the time of transmission. This table is essential for investigations, because when a beneficiary bank says it never received a payment, the bank can produce the exact message, the exact time, and the acknowledgement reference. Message logs are kept for at least seven years in most countries to meet regulatory requirements.</p>
+<p class="transcript">A payment moves through a defined set of states, and the database enforces the allowed transitions. The states are received, validated, queued, released, settled, confirmed, rejected, and returned. A payment in the received state can move to validated or rejected, but it cannot jump directly to settled. A payment in the queued state can move to released or returned, but not back to received. A payment in the settled state can move to confirmed when the clearing system acknowledges it, or to returned if the beneficiary bank rejects it. Each transition is recorded in the event table with the user or system that triggered it, and the database rejects any transition that is not on the approved list. This state machine is what stops a payment from being settled twice or confirmed before it has been released.</p>
+</div>
+</details>
+<details class="studio-transcript"><summary>Full lesson text (all scenes)</summary><div id="studio-transcript-full-studio-ch36s7"></div></details>
+<p><button class="studio-btn primary" id="done-ch36s7" onclick="studioMarkSceneDone('studio-ch36s7')">Mark lesson complete</button> <span class="studio-note">Completing a lesson updates your progress dashboard on the homepage.</span></p>
+</div>
+<p class="studio-note">Scene timestamps are estimated by allocating the narration text proportionally across the real audio length. The audio playback position is the source of truth: pause freezes the visual, seeking restores the correct scene, replay restarts the scene animation.</p>
+</div>
+<script>window.__PA_STUDIO_QUEUE = window.__PA_STUDIO_QUEUE || []; window.__PA_STUDIO_QUEUE.push(["studio-ch36s7", {"sample_id": "studio-ch36s7", "chapter_id": "ch36", "title": "Database Design for Payments", "domain": "D09 Payment architecture and technology", "objective": "Learner applies system design to payments, covering throughput, latency, idempotency, exactly-once processing, and failure recovery, and designs a system for a stated load. Learner practises this skill on realistic banking cases, explaining the reasoning clearly and using correct terminology throughout the work.", "scenes": [{"id": "ch36s7", "section_id": "ch36s7", "title": "Database Design for Payments", "audio": "../audio/ch36s7.mp3", "duration_sec": 289.8, "points": ["The payment instruction table is the core record.", "The payment event table records every significant thing that happens to a payment.", "The account entry table holds the accounting postings for each payment.", "The message log table stores the actual messages sent and received for each payment.", "A payment moves through a defined set of states, and the database enforces the allowed transitions."], "terms": [{"term": "Value date", "def": "The date on which funds become available to the beneficiary and on which interest starts to accrue. It is the date used for settlement and for nostro posting."}, {"term": "Settlement", "def": "The final movement of funds between banks to discharge obligations created by cleared payments. Settlement is usually made in central bank money or through correspondent accounts."}, {"term": "pacs.008", "def": "An ISO 20022 message for a financial institution to financial institution customer credit transfer. It replaces MT103 in cross border payments and carries structured debtor, creditor, charges and..."}], "transcript": "The payment instruction table is the core record. It holds one row per payment instruction, with the unique reference number, the debit account, the beneficiary name and account, the amount and currency, the value date, the payment type, and the channel it came from. A bank processing 2 million payments a day adds 2 million rows a day to this table, so it is partitioned by date and indexed on the reference number and the account number. Without those indexes, finding a single payment among billions of rows would take minutes instead of milliseconds. The table also holds the current status of the payment, which is updated as the payment moves through its lifecycle. The payment event table records every significant thing that happens to a payment. When a payment is received, validated, screened, queued, released, settled, confirmed, rejected, or returned, a new event row is written with a timestamp, the old status, the new status, and the system or user who made the change. This event history is the audit trail. If a customer asks why a payment of 80,000 dollars took three days, the bank can show the exact sequence, received at 12 minutes past 9 in the morning, validated at 13 minutes past 9 in the morning, held for sanctions review at 14 minutes past 9 in the morning, released by compliance at 40 minutes past 11 in the morning, settled at 5 minutes past 12 in the afternoon. The event table is append-only, meaning rows are never updated or deleted, so the history cannot be rewritten. The account entry table holds the accounting postings for each payment. Every payment creates at least two entries, a debit to the sender account and a credit to the internal settlement account, followed by a debit to the settlement account and a credit to the beneficiary or the nostro account. Each entry records the account number, the amount, the currency, the value date, and the reference to the payment instruction. These entries must balance exactly, and the database enforces this with a rule that the total debits equal the total credits for every payment. If a system failure interrupts a posting halfway, the database transaction is rolled back so that no partial posting survives, which is why payment databases use strict transactional guarantees. The message log table stores the actual messages sent and received for each payment. For a cross-border payment this includes the pacs.008 message sent to the correspondent bank, the pacs.002 status report received back, and the MT103 equivalent if the payment went through the older SWIFT format. The log holds the full message text, the sender and receiver, and the time of transmission. This table is essential for investigations, because when a beneficiary bank says it never received a payment, the bank can produce the exact message, the exact time, and the acknowledgement reference. Message logs are kept for at least seven years in most countries to meet regulatory requirements. A payment moves through a defined set of states, and the database enforces the allowed transitions. The states are received, validated, queued, released, settled, confirmed, rejected, and returned. A payment in the received state can move to validated or rejected, but it cannot jump directly to settled. A payment in the queued state can move to released or returned, but not back to received. A payment in the settled state can move to confirmed when the clearing system acknowledges it, or to returned if the beneficiary bank rejects it. Each transition is recorded in the event table with the user or system that triggered it, and the database rejects any transition that is not on the approved list. This state machine is what stops a payment from being settled twice or confirmed before it has been released.", "paragraphs": ["The payment instruction table is the core record. It holds one row per payment instruction, with the unique reference number, the debit account, the beneficiary name and account, the amount and currency, the value date, the payment type, and the channel it came from. A bank processing 2 million payments a day adds 2 million rows a day to this table, so it is partitioned by date and indexed on the reference number and the account number. Without those indexes, finding a single payment among billions of rows would take minutes instead of milliseconds. The table also holds the current status of the payment, which is updated as the payment moves through its lifecycle.", "The payment event table records every significant thing that happens to a payment. When a payment is received, validated, screened, queued, released, settled, confirmed, rejected, or returned, a new event row is written with a timestamp, the old status, the new status, and the system or user who made the change. This event history is the audit trail. If a customer asks why a payment of 80,000 dollars took three days, the bank can show the exact sequence, received at 12 minutes past 9 in the morning, validated at 13 minutes past 9 in the morning, held for sanctions review at 14 minutes past 9 in the morning, released by compliance at 40 minutes past 11 in the morning, settled at 5 minutes past 12 in the afternoon. The event table is append-only, meaning rows are never updated or deleted, so the history cannot be rewritten.", "The account entry table holds the accounting postings for each payment. Every payment creates at least two entries, a debit to the sender account and a credit to the internal settlement account, followed by a debit to the settlement account and a credit to the beneficiary or the nostro account. Each entry records the account number, the amount, the currency, the value date, and the reference to the payment instruction. These entries must balance exactly, and the database enforces this with a rule that the total debits equal the total credits for every payment. If a system failure interrupts a posting halfway, the database transaction is rolled back so that no partial posting survives, which is why payment databases use strict transactional guarantees.", "The message log table stores the actual messages sent and received for each payment. For a cross-border payment this includes the pacs.008 message sent to the correspondent bank, the pacs.002 status report received back, and the MT103 equivalent if the payment went through the older SWIFT format. The log holds the full message text, the sender and receiver, and the time of transmission. This table is essential for investigations, because when a beneficiary bank says it never received a payment, the bank can produce the exact message, the exact time, and the acknowledgement reference. Message logs are kept for at least seven years in most countries to meet regulatory requirements.", "A payment moves through a defined set of states, and the database enforces the allowed transitions. The states are received, validated, queued, released, settled, confirmed, rejected, and returned. A payment in the received state can move to validated or rejected, but it cannot jump directly to settled. A payment in the queued state can move to released or returned, but not back to received. A payment in the settled state can move to confirmed when the clearing system acknowledges it, or to returned if the beneficiary bank rejects it. Each transition is recorded in the event table with the user or system that triggered it, and the database rejects any transition that is not on the approved list. This state machine is what stops a payment from being settled twice or confirmed before it has been released."], "accessibility": "Banking architecture diagram showing Database Design for Payments.", "visual_type": "architecture", "visual_choice_reason": "architecture chapter", "beats": [{"t0": 0.0, "t1": 51.7, "title": "Payment instruction table", "note": "The payment instruction table is the core record.", "highlight_nodes": ["n0"], "highlight_conns": [], "highlight_fields": []}, {"t0": 51.7, "t1": 107.3, "title": "Payment event table records every", "note": "The payment event table records every significant thing that happens to a payment.", "highlight_nodes": ["n1"], "highlight_conns": ["c0"], "highlight_fields": []}, {"t0": 107.3, "t1": 159.4, "title": "Event table", "note": "The event table is append-only, meaning rows are never updated or deleted, so the history cannot be rewritten.", "highlight_nodes": ["n2"], "highlight_conns": ["c1"], "highlight_fields": []}, {"t0": 159.4, "t1": 219.8, "title": "System failure interrupts a posting halfway", "note": "If a system failure interrupts a posting halfway", "highlight_nodes": ["n3"], "highlight_conns": ["c2"], "highlight_fields": []}, {"t0": 219.8, "t1": 268.8, "title": "Seven-year message retention", "note": "Message logs are kept for at least seven years in most countries to meet regulatory requirements.", "highlight_nodes": ["n4"], "highlight_conns": ["c3"], "highlight_fields": []}, {"t0": 268.8, "t1": 289.8, "title": "Transition: recorded in event table", "note": "Each transition is recorded in the event table with the user or system that triggered it, and the database rejects any transition that is not on the approved list.", "highlight_nodes": ["n5"], "highlight_conns": ["c4"], "highlight_fields": []}], "node_ids": ["n0", "n1", "n2", "n3", "n4", "n5"], "framework": {"objective": "By the end of this lesson, you will be able to explain database design for payments. The payment instruction table is the core record.", "why_matters": "This matters because the architecture decides what the bank can build, how fast it can change, and where a payment can fail. Most payment requirements live in the architecture.", "technical_example": "For a cross-border payment this includes the pacs.008 message sent to the correspondent bank, the pacs.002 status report received back, and the MT103 equivalent if the payment went through the older SWIFT format.", "failure_recovery": "When a payment is received, validated, screened, queued, released, settled, confirmed, rejected, or returned, a new event row is written with a timestamp, the old status, the new status, and the system or user who made the change. This table is essential for investigations, because when a beneficiary bank says it never received a payment, the bank can produce the exact message, the exact time, and the acknowledgement reference.", "exercise": {"task": "Map the payment in this lesson through the hub components.", "info": "Use the hub components and their order in this lesson.", "action": "List each component the payment passes through, what it does, and what happens if it fails.", "correct": "The payment enters through a channel, passes the gateway, validation, fraud and sanctions checks, routing, and the ledger, then leaves through the right clearing system. A failure at any component stops or holds the payment, and the hub must record where it stopped.", "why": "The hub is where most payment requirements live. If you cannot map a payment through it, you cannot specify, test or fix it."}, "assessment": {"question": "Which of the following best describes database design for payments?", "options": ["A payment engine is the specialist component that executes one type of payment", "The payment instruction table is the core record", "Inside the hub, the journey of a payment follows a clear sequence of stages", "A payment hub is the central processing engine that receives payment instructions from every channel in a bank and routes each one to the correct destination"], "answer": 1, "explanation": "The payment instruction table is the core record. This is the core idea of the lesson.", "why_wrong": ["This describes a different concept from this chapter, not database design for payments.", "", "This describes a different concept from this chapter, not database design for payments.", "This describes a different concept from this chapter, not database design for payments."], "source": "generated:ch36s7"}, "takeaway": "The event table is append-only, meaning rows are never updated or deleted, so the history cannot be rewritten.", "prereq": "ch36s6", "next": "ch37s1", "connection_note": "Builds on \"How Systems Connect\".", "tool": {"slug": "hub", "label": "Payment Hub Architecture Simulator", "url": "../simulators/hub.html", "scenario": "Send a payment through the hub and watch it pass each component named in this lesson."}, "simple": "In plain words: the payment instruction table is the core record. That is the whole idea in one sentence, and the rest of the lesson shows how it works in a real bank.", "summary": "The payment instruction table is the core record. Key points: Payment instruction table; Payment event table records every; Event table; System failure interrupts a posting halfway; Seven-year message retention; Transition: recorded in event table.", "example": "A bank processing 2 million payments a day adds 2 million rows a day to this table, so it is partitioned by date and indexed on the reference number and the account number. If a customer asks why a payment of 80,000 dollars took three days, the bank can show the exact sequence, received at 12 minutes past 9 in the morning, validated at 13 minutes past 9 in the morning, held for sanctions review at 14 minutes past 9 in the morning, released by compliance at 40 minutes past 11 in the morning, settled at 5 minutes past 12 in the afternoon."}}], "chapter_title": "System Design Deep Dive", "meta_line": "System Design Deep Dive, Lesson 7 of 7, Narration 4:49, D09 Payment architecture and technology", "next_id": "ch37s1", "next_title": "JPMorgan Chase and Citibank"}]);</script>
+</div>
+<nav class="tool-rail" aria-label="Lesson tools">
+<button type="button" class="rail-tool" onclick="pfOpenTranscript('studio-ch36s7')" title="Open transcript"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M7 3h7l4 4v14H7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M14 3v4h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 12h5M10 15.5h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span>Transcript</span></button>
+<button type="button" class="rail-tool" onclick="pfToggleNote('studio-ch36s7')" title="Write a note on this lesson"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L8 19l-4 1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>Notes</span></button>
+<button type="button" class="rail-tool" onclick="pfToggleFiles('studio-ch36s7')" title="Download lesson files"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>Files</span></button>
+</nav>
+<div class="fw-files-panel" id="pf-files-studio-ch36s7" style="display:none"><b>Lesson files</b><p><a href="../audio/ch36s7.mp3" download>Download narration (MP3)</a></p><p><a href="#" onclick="pfDownloadTranscript('studio-ch36s7');return false">Download transcript (.txt)</a></p></div>
+</div>
+</div>
+</main>
+<footer><p>Payments Training Hub. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="../index.html">Home</a> &middot; <a href="../courses.html">Courses</a> &middot; <a href="../practice.html">Practice</a> &middot; <a href="../simulators.html">Simulators</a> &middot; <a href="../labs.html">Labs</a> &middot; <a href="../explorer.html">Explorer</a> &middot; <a href="../tests.html">Tests</a> &middot; <a href="../diagnostic.html">Diagnostic</a> &middot; <a href="../faq.html">Interview Ready Questions</a> &middot; <a href="../interview-prep.html">Interview Prep</a></p><p><a href="../about.html">About</a> &middot; <a href="../privacy.html">Privacy</a> &middot; <a href="../terms.html">Terms</a> &middot; <a href="../contact.html">Contact</a> &middot; <a href="../editorial-standards.html">Editorial Standards</a> &middot; <a href="../sources.html">Sources</a></p></footer>
+<script defer src="../assets/site.js"></script>
+<script defer src="../assets/bundles.js"></script>
+<script defer src="../assets/auth.js"></script>
+<script defer src="../assets/studio.js"></script>
+<script defer src="../assets/insight-components.js"></script>
+<script defer src="../assets/nav.js"></script>
+<script defer src="../assets/pf-enhance.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+if(window.PFInsight){PFInsight.init();}
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>Reconciliation Engines | Payments Training Hub</title>
+<meta name="description" content="A reconciliation engine compares two or more sets of records and reports the differences. The most important comparison in payments is three-way...">
+<link rel="canonical" href="https://www.paymentstraininghub.in/lessons/ch36s4.html">
+<meta property="og:url" content="https://www.paymentstraininghub.in/lessons/ch36s4.html">
+<meta property="og:title" content="Reconciliation Engines | Payments Training Hub">
+<meta property="og:description" content="A reconciliation engine compares two or more sets of records and reports the differences. The most important comparison in payments is three-way...">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.in/assets/hero/hero-poster.jpg">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.paymentstraininghub.in/index.html"}, {"@type": "ListItem", "position": 2, "name": "System Design Deep Dive", "item": "https://www.paymentstraininghub.in/chapters/ch36-system-design-deep-dive.html"}, {"@type": "ListItem", "position": 3, "name": "Reconciliation Engines", "item": "https://www.paymentstraininghub.in/lessons/ch36s4.html"}]}</script>
+<link rel="stylesheet" href="../assets/studio.css">
+<link rel="stylesheet" href="../assets/pf-theme.css">
+<link rel="stylesheet" href="../assets/insight-components.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="../index.html" class="brand">Payments <span>Training Hub</span></a><nav class="topnav"><a href="../index.html">Home</a> <a href="../courses.html">Courses</a> <a href="../practice.html">Practice</a> <a href="../simulators.html">Simulators</a> <a href="../labs.html">Labs</a> <a href="../explorer.html">Explorer</a> <a href="../tests.html">Tests</a></nav><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox" style="display:none"><span id="authState">Not signed in</span> <span id="authForm" style="display:none"><input id="authEmail" type="email" placeholder="Email for OTP" aria-label="Email for sign-in"> <button class="mute-btn" onclick="paAuthSendOtp()">Send code</button> <input id="authCode" type="text" placeholder="6-digit code" aria-label="One-time code" style="display:none"> <button class="mute-btn" id="authVerifyBtn" onclick="paAuthVerifyOtp()" style="display:none">Verify</button> <button class="mute-btn" onclick="paAuthGoogle()">Sign in with Google</button> </span><button class="mute-btn" id="authSignOutBtn" onclick="paAuthSignOut()" style="display:none">Sign out</button></span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<div class="lesson-page">
+<div class="lesson-shell">
+<aside class="course-rail">
+<div class="rail-head">
+<h2>System Design Deep Dive</h2>
+<a class="rail-close" href="../chapters/ch36-system-design-deep-dive.html" aria-label="Close and go to chapter" title="Back to chapter">&times;</a>
+</div>
+<div class="goal-card">
+<div class="goal-head"><b>Today's goal &middot; <span id="side-progress-text">0 of 7 items</span></b><span class="goal-flag"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 21V4m0 1h11l-2.5 3.5L17 12H6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="goal-chev">&#94;</span></div>
+<p class="goal-body" id="side-goal-body">Complete 3 items today to stay at a good pace!</p>
+</div>
+<ul class="lesson-list"><li class="" data-lesson="ch36s1"><a href="ch36s1.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Payment Hub Architecture Inside a Bank</span><span class="m">Video &middot; 4 min</span></span></a></li>
+<li class="" data-lesson="ch36s2"><a href="ch36s2.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Message Routing: From Channel to Rail</span><span class="m">Video &middot; 3 min</span></span></a></li>
+<li class="" data-lesson="ch36s3"><a href="ch36s3.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Queueing and Retry Logic</span><span class="m">Video &middot; 4 min</span></span></a></li>
+<li class="current" data-lesson="ch36s4"><a href="ch36s4.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Reconciliation Engines</span><span class="m">Video &middot; 8 min</span></span></a></li>
+<li class="" data-lesson="ch36s5"><a href="ch36s5.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Exception Queues</span><span class="m">Video &middot; 4 min</span></span></a></li>
+<li class="" data-lesson="ch36s6"><a href="ch36s6.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">How Systems Connect</span><span class="m">Video &middot; 4 min</span></span></a></li>
+<li class="" data-lesson="ch36s7"><a href="ch36s7.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Database Design for Payments</span><span class="m">Video &middot; 5 min</span></span></a></li></ul>
+</aside>
+<div class="lesson-main">
+<div class="studio" id="studio-studio-ch36s4">
+<div class="player">
+<div class="studio-canvas" id="studio-canvas-studio-ch36s4">
+<div class="ch-sec studio-scene-vis active" id="studio-vis-studio-ch36s4-0"><div class="beat-frames">
+<div class="beat-frame active" data-frame="0">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Reconciliation</tspan> <tspan fill="#FFFFFF">engine</tspan> <tspan fill="#FFFFFF">compares</tspan> <tspan fill="#FFFFFF">two</tspan></text>
+<text x="48" y="126" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">or</tspan> <tspan fill="#FFFFFF">more</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">STARTED</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Reconciliation engine</tspan><tspan fill="#CBD5E1"> - sets of records and reports the differences.</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="0.55">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Reconciliation engine matches each statement</tspan><tspan fill="#CBD5E1"> - line against the bank</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="0.55">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Break ageing</tspan><tspan fill="#CBD5E1"> - Each break is assigned an age</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Payment cannot</tspan><tspan fill="#CBD5E1"> - When a payment cannot be matched</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Good acceptance test</tspan><tspan fill="#CBD5E1"> - statement with a known set of breaks</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Failure scenario</tspan><tspan fill="#CBD5E1"> - tests the engine under stress.</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="128" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">A reconciliation engine compares two or more sets of records and reports the differences.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 1 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 749" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="749" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Reconciliation</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">engine</tspan> <tspan fill="#FFFFFF">compares</tspan></text>
+<text x="24" y="96" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">two</tspan> <tspan fill="#FFFFFF">or</tspan> <tspan fill="#FFFFFF">more</tspan></text>
+<rect x="24" y="114" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="132" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">STARTED</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="148" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="167" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Reconciliation</text>
+<text x="180" y="185" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">engine</text>
+<text x="180" y="203" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">sets of records and reports the differences.</text>
+<text x="180" y="221" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="0.55">
+<rect x="24" y="240" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="259" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Reconciliation engine</text>
+<text x="180" y="277" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">matches each statement</text>
+<text x="180" y="295" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">line against the bank internal ledger.</text>
+<text x="180" y="313" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="0.55">
+<rect x="24" y="332" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="351" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Break ageing</text>
+<text x="180" y="369" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Each break is assigned an age</text>
+<text x="180" y="387" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="24" y="404" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="423" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Payment cannot</text>
+<text x="180" y="441" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">When a payment cannot be matched</text>
+<text x="180" y="459" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="24" y="476" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="495" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Good acceptance</text>
+<text x="180" y="513" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">test</text>
+<text x="180" y="531" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">statement with a known set of breaks</text>
+<text x="180" y="549" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="568" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="587" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Failure scenario</text>
+<text x="180" y="605" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">tests the engine under stress.</text>
+<text x="180" y="623" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="648" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">A reconciliation engine compares two or</text>
+<text x="180" y="667" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">more sets of records and reports the</text>
+<text x="180" y="686" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">differences.</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="1">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Reconciliation</tspan> <tspan fill="#FFFFFF">engine</tspan> <tspan fill="#FFFFFF">matches</tspan> <tspan fill="#FFFFFF">each</tspan></text>
+<text x="48" y="126" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">statement</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Reconciliation engine</tspan><tspan fill="#CBD5E1"> - sets of records and reports the differences.</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Reconciliation engine matches each statement</tspan><tspan fill="#CBD5E1"> - line against the bank</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="0.55">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Break ageing</tspan><tspan fill="#CBD5E1"> - Each break is assigned an age</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Payment cannot</tspan><tspan fill="#CBD5E1"> - When a payment cannot be matched</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Good acceptance test</tspan><tspan fill="#CBD5E1"> - statement with a known set of breaks</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Failure scenario</tspan><tspan fill="#CBD5E1"> - tests the engine under stress.</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="257" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The reconciliation engine matches each statement line against the bank internal ledger.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 2 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 749" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="749" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Reconciliation</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">engine</tspan> <tspan fill="#FFFFFF">matches</tspan></text>
+<text x="24" y="96" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">each</tspan> <tspan fill="#FFFFFF">statement</tspan></text>
+<rect x="24" y="114" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="132" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="148" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="167" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Reconciliation</text>
+<text x="180" y="185" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">engine</text>
+<text x="180" y="203" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">sets of records and reports the differences.</text>
+<text x="180" y="221" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="240" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="259" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Reconciliation engine</text>
+<text x="180" y="277" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">matches each statement</text>
+<text x="180" y="295" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">line against the bank internal ledger.</text>
+<text x="180" y="313" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="0.55">
+<rect x="24" y="332" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="351" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Break ageing</text>
+<text x="180" y="369" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Each break is assigned an age</text>
+<text x="180" y="387" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="24" y="404" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="423" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Payment cannot</text>
+<text x="180" y="441" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">When a payment cannot be matched</text>
+<text x="180" y="459" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="24" y="476" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="495" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Good acceptance</text>
+<text x="180" y="513" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">test</text>
+<text x="180" y="531" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">statement with a known set of breaks</text>
+<text x="180" y="549" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="568" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="587" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Failure scenario</text>
+<text x="180" y="605" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">tests the engine under stress.</text>
+<text x="180" y="623" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="648" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The reconciliation engine matches each</text>
+<text x="180" y="667" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">statement line against the bank internal</text>
+<text x="180" y="686" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">ledger.</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="2">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Break</tspan> <tspan fill="#FFFFFF">ageing</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Reconciliation engine</tspan><tspan fill="#CBD5E1"> - sets of records and reports the differences.</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Reconciliation engine matches each statement</tspan><tspan fill="#CBD5E1"> - line against the bank</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Break ageing</tspan><tspan fill="#CBD5E1"> - Each break is assigned an age</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Payment cannot</tspan><tspan fill="#CBD5E1"> - When a payment cannot be matched</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Good acceptance test</tspan><tspan fill="#CBD5E1"> - statement with a known set of breaks</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Failure scenario</tspan><tspan fill="#CBD5E1"> - tests the engine under stress.</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="386" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Each break is assigned an age, an owner, and a priority.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 3 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 674" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="674" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Break</tspan> <tspan fill="#FFFFFF">ageing</tspan></text>
+<rect x="24" y="58" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="76" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="92" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="111" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Reconciliation</text>
+<text x="180" y="129" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">engine</text>
+<text x="180" y="147" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">sets of records and reports the differences.</text>
+<text x="180" y="165" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="184" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="203" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Reconciliation engine</text>
+<text x="180" y="221" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">matches each statement</text>
+<text x="180" y="239" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">line against the bank internal ledger.</text>
+<text x="180" y="257" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="1">
+<rect x="24" y="276" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="295" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Break ageing</text>
+<text x="180" y="313" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Each break is assigned an age</text>
+<text x="180" y="331" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="24" y="348" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="367" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Payment cannot</text>
+<text x="180" y="385" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">When a payment cannot be matched</text>
+<text x="180" y="403" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="24" y="420" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="439" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Good acceptance</text>
+<text x="180" y="457" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">test</text>
+<text x="180" y="475" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">statement with a known set of breaks</text>
+<text x="180" y="493" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="512" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="531" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Failure scenario</text>
+<text x="180" y="549" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">tests the engine under stress.</text>
+<text x="180" y="567" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="592" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Each break is assigned an age, an</text>
+<text x="180" y="611" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">owner, and a priority.</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="3">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Payment</tspan> <tspan fill="#FFFFFF">cannot</tspan> <tspan fill="#FFFFFF">be</tspan> <tspan fill="#FFFFFF">matched</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Reconciliation engine</tspan><tspan fill="#CBD5E1"> - sets of records and reports the differences.</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Reconciliation engine matches each statement</tspan><tspan fill="#CBD5E1"> - line against the bank</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Break ageing</tspan><tspan fill="#CBD5E1"> - Each break is assigned an age</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Payment cannot</tspan><tspan fill="#CBD5E1"> - When a payment cannot be matched</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Good acceptance test</tspan><tspan fill="#CBD5E1"> - statement with a known set of breaks</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Failure scenario</tspan><tspan fill="#CBD5E1"> - tests the engine under stress.</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="514" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">When a payment cannot be matched, the funds are parked in a suspense ledger until the break</text>
+<text x="450" y="476" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">is resolved.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 4 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 721" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="721" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Payment</tspan> <tspan fill="#FFFFFF">cannot</tspan> <tspan fill="#FFFFFF">be</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">matched</tspan></text>
+<rect x="24" y="86" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="104" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="120" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="139" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Reconciliation</text>
+<text x="180" y="157" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">engine</text>
+<text x="180" y="175" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">sets of records and reports the differences.</text>
+<text x="180" y="193" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="212" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="231" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Reconciliation engine</text>
+<text x="180" y="249" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">matches each statement</text>
+<text x="180" y="267" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">line against the bank internal ledger.</text>
+<text x="180" y="285" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="1">
+<rect x="24" y="304" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="323" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Break ageing</text>
+<text x="180" y="341" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Each break is assigned an age</text>
+<text x="180" y="359" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="1">
+<rect x="24" y="376" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="395" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Payment cannot</text>
+<text x="180" y="413" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">When a payment cannot be matched</text>
+<text x="180" y="431" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="24" y="448" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="467" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Good acceptance</text>
+<text x="180" y="485" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">test</text>
+<text x="180" y="503" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">statement with a known set of breaks</text>
+<text x="180" y="521" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="540" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="559" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Failure scenario</text>
+<text x="180" y="577" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">tests the engine under stress.</text>
+<text x="180" y="595" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="620" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">When a payment cannot be matched,</text>
+<text x="180" y="639" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">the funds are parked in a suspense</text>
+<text x="180" y="658" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">ledger until the break is resolved.</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="4">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Good</tspan> <tspan fill="#FFFFFF">acceptance</tspan> <tspan fill="#FFFFFF">test</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Reconciliation engine</tspan><tspan fill="#CBD5E1"> - sets of records and reports the differences.</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Reconciliation engine matches each statement</tspan><tspan fill="#CBD5E1"> - line against the bank</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Break ageing</tspan><tspan fill="#CBD5E1"> - Each break is assigned an age</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Payment cannot</tspan><tspan fill="#CBD5E1"> - When a payment cannot be matched</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n4" data-beat="4">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Good acceptance test</tspan><tspan fill="#CBD5E1"> - statement with a known set of breaks</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Failure scenario</tspan><tspan fill="#CBD5E1"> - tests the engine under stress.</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="643" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">A good acceptance test is a statement with a known set of breaks, and the engine must classify</text>
+<text x="450" y="476" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">each one correctly.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 5 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 721" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="721" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Good</tspan> <tspan fill="#FFFFFF">acceptance</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">test</tspan></text>
+<rect x="24" y="86" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="104" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="120" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="139" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Reconciliation</text>
+<text x="180" y="157" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">engine</text>
+<text x="180" y="175" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">sets of records and reports the differences.</text>
+<text x="180" y="193" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="212" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="231" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Reconciliation engine</text>
+<text x="180" y="249" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">matches each statement</text>
+<text x="180" y="267" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">line against the bank internal ledger.</text>
+<text x="180" y="285" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="1">
+<rect x="24" y="304" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="323" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Break ageing</text>
+<text x="180" y="341" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Each break is assigned an age</text>
+<text x="180" y="359" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="1">
+<rect x="24" y="376" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="395" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Payment cannot</text>
+<text x="180" y="413" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">When a payment cannot be matched</text>
+<text x="180" y="431" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="1">
+<rect x="24" y="448" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="467" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Good acceptance</text>
+<text x="180" y="485" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">test</text>
+<text x="180" y="503" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">statement with a known set of breaks</text>
+<text x="180" y="521" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="540" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="559" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Failure scenario</text>
+<text x="180" y="577" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">tests the engine under stress.</text>
+<text x="180" y="595" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="620" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">A good acceptance test is a statement</text>
+<text x="180" y="639" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">with a known set of breaks, and the</text>
+<text x="180" y="658" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">engine must classify each one correctly.</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="5">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Failure</tspan> <tspan fill="#FFFFFF">scenario</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">COMPLETE</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Reconciliation engine</tspan><tspan fill="#CBD5E1"> - sets of records and reports the differences.</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Reconciliation engine matches each statement</tspan><tspan fill="#CBD5E1"> - line against the bank</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Break ageing</tspan><tspan fill="#CBD5E1"> - Each break is assigned an age</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Payment cannot</tspan><tspan fill="#CBD5E1"> - When a payment cannot be matched</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n4" data-beat="4">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Good acceptance test</tspan><tspan fill="#CBD5E1"> - statement with a known set of breaks</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n5" data-beat="5">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Failure scenario</tspan><tspan fill="#CBD5E1"> - tests the engine under stress.</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">A failure scenario tests the engine under stress.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 6 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#45A4FF"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 674" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="674" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Failure</tspan> <tspan fill="#FFFFFF">scenario</tspan></text>
+<rect x="24" y="58" width="312" height="26" rx="8" fill="#0C1626" stroke="#2DD4BF" stroke-width="1.5"/>
+<text x="180" y="76" text-anchor="middle" font-size="12" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">COMPLETE</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="92" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="111" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Reconciliation</text>
+<text x="180" y="129" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">engine</text>
+<text x="180" y="147" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">sets of records and reports the differences.</text>
+<text x="180" y="165" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="184" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="203" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Reconciliation engine</text>
+<text x="180" y="221" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">matches each statement</text>
+<text x="180" y="239" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">line against the bank internal ledger.</text>
+<text x="180" y="257" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="1">
+<rect x="24" y="276" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="295" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Break ageing</text>
+<text x="180" y="313" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Each break is assigned an age</text>
+<text x="180" y="331" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="1">
+<rect x="24" y="348" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="367" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Payment cannot</text>
+<text x="180" y="385" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">When a payment cannot be matched</text>
+<text x="180" y="403" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="1">
+<rect x="24" y="420" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="439" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Good acceptance</text>
+<text x="180" y="457" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">test</text>
+<text x="180" y="475" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">statement with a known set of breaks</text>
+<text x="180" y="493" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="1">
+<rect x="24" y="512" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="531" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Failure scenario</text>
+<text x="180" y="549" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">tests the engine under stress.</text>
+<text x="180" y="567" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<text x="180" y="592" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">A failure scenario tests the engine</text>
+<text x="180" y="611" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">under stress.</text>
+</svg>
+</div>
+</div>
+<p class="xml-caption">Flow of the explanation in this lesson.</p></div>
+<div class="playerbar">
+<div class="studio-progress"><div class="studio-markers" id="studio-markers-studio-ch36s4"></div><input type="range" id="studio-slider-studio-ch36s4" min="0" max="1000" value="0" aria-label="Lesson timeline"></div>
+<div class="ctrl-row">
+<button class="ctrl-btn" id="studio-play-studio-ch36s4" onclick="studioTogglePlay('studio-ch36s4')" aria-label="Play lesson" title="Play lesson"><span class="ctrl-ic-play"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></span><span class="ctrl-ic-pause" style="display:none"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><rect x="6" y="5" width="4" height="14" fill="currentColor"/><rect x="14" y="5" width="4" height="14" fill="currentColor"/></svg></span></button>
+<button class="ctrl-btn studio-mute-btn" id="studio-mute-studio-ch36s4" onclick="studioToggleMute('studio-ch36s4')" aria-label="Mute narration" title="Mute / unmute narration"><svg class="studio-mute-icon" viewBox="0 0 24 24" width="28" height="28" fill="currentColor" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3z"/><path class="studio-mute-waves" d="M16 8.5a5 5 0 0 1 0 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><path class="studio-mute-waves" d="M18.5 6a9 9 0 0 1 0 12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><path class="studio-mute-x" d="M16 9.5l5 5M21 9.5l-5 5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" style="display:none"/></svg></button>
+<button class="ctrl-btn" onclick="studioSkip('studio-ch36s4', -10)" aria-label="Back 10 seconds" title="Back 10 seconds"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 5a7 7 0 1 1-6.32 4.06" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M5.5 3.5v5h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><text x="12" y="16.5" font-size="8" fill="currentColor" text-anchor="middle" font-weight="700">10</text></svg></button>
+<span class="studio-time ctrl-time" id="studio-time-studio-ch36s4">0:00 / 7:30</span>
+<button class="ctrl-btn" onclick="studioSkip('studio-ch36s4', 10)" aria-label="Forward 10 seconds" title="Forward 10 seconds"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 5a7 7 0 1 0 6.32 4.06" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M18.5 3.5v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><text x="12" y="16.5" font-size="8" fill="currentColor" text-anchor="middle" font-weight="700">10</text></svg></button>
+<span class="playerbar-spacer"></span>
+<span class="player-stage" id="studio-tag-studio-ch36s4">Step 1 of 6</span>
+<button class="ctrl-btn ctrl-step" id="studio-prevscene-studio-ch36s4" onclick="studioPrevScene('studio-ch36s4')" title="Previous step" aria-label="Previous step">&lsaquo;</button>
+<button class="ctrl-btn ctrl-step" id="studio-nextscene-studio-ch36s4" onclick="studioNextScene('studio-ch36s4')" title="Next step" aria-label="Next step">&rsaquo;</button>
+<button class="ctrl-btn ctrl-speed" id="studio-speedbtn-studio-ch36s4" onclick="studioCycleSpeed('studio-ch36s4')" title="Playback speed" aria-label="Playback speed">1x</button>
+<span class="ctrl-settings-wrap"><button class="ctrl-btn" onclick="studioToggleSettings('studio-ch36s4', event)" aria-label="Player settings" title="Settings"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5 5l2.1 2.1M16.9 16.9L19 19M19 5l-2.1 2.1M7.1 16.9L5 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button><span class="ctrl-popover" id="studio-settings-studio-ch36s4" style="display:none" onclick="event.stopPropagation()"><label class="ctrl-pop-row">Volume <input type="range" min="0" max="1" step="0.1" value="1" oninput="studioSetVolume('studio-ch36s4', this.value)" style="width:110px;accent-color:#3587FC"></label><button class="studio-btn" id="studio-captions-studio-ch36s4" onclick="studioToggleCaptions('studio-ch36s4')">Captions: On</button><button class="studio-btn" onclick="studioReplayScene('studio-ch36s4')">Replay scene</button></span></span>
+<button class="ctrl-btn" onclick="studioFullscreen('studio-ch36s4')" aria-label="Fullscreen" title="Fullscreen"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+</div>
+</div>
+</div>
+<p class="studio-caption" id="studio-caption-studio-ch36s4"></p>
+<p class="studio-loading" id="studio-loading-studio-ch36s4" style="display:none">Loading narration...</p>
+<p class="studio-error" id="studio-error-studio-ch36s4" role="alert" style="display:none"></p>
+<audio id="studio-audio-studio-ch36s4" preload="auto" src="../audio/ch36s4.mp3"></audio>
+</div>
+<div class="lesson-title-row">
+<h1>Reconciliation Engines</h1>
+<button class="save-note" type="button" onclick="pfToggleNote('studio-ch36s4')" title="Save a note on this lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L8 19l-4 1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg> Save note</button>
+</div>
+<p class="lesson-meta-line">System Design Deep Dive, Lesson 4 of 7, Narration 7:30, D09 Payment architecture and technology</p>
+<p class="lesson-note-saved" id="studio-note-saved-studio-ch36s4" style="display:none">Note saved.</p>
+<div class="note-editor" id="studio-note-editor-studio-ch36s4" style="display:none"><textarea id="studio-note-text-studio-ch36s4" rows="3" placeholder="Write a note on this lesson..." aria-label="Lesson note"></textarea><div class="note-editor-row"><button class="studio-btn primary" onclick="pfSaveNote('studio-ch36s4')">Save note</button> <button class="studio-btn" onclick="pfToggleNote('studio-ch36s4')">Cancel</button></div></div>
+<div class="dive-deeper">
+<div class="dive-head"><button type="button" class="dive-toggle" onclick="pfToggleDive(this)" aria-expanded="true"><span class="dive-spark"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 2l2.2 6.8L21 11l-6.8 2.2L12 20l-2.2-6.8L3 11l6.8-2.2z" fill="currentColor"/></svg></span><span class="dive-title">Dive deeper on this topic</span><span class="dive-chev"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 14l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button></div>
+<div class="dive-btns"><button type="button" class="dive-btn" data-kind="practice" onclick="pfDive('studio-ch36s4', 'practice')">Give me practice questions</button><button type="button" class="dive-btn" data-kind="simple" onclick="pfDive('studio-ch36s4', 'simple')">Explain this topic in simple terms</button><button type="button" class="dive-btn" data-kind="summary" onclick="pfDive('studio-ch36s4', 'summary')">Give me a summary</button><button type="button" class="dive-btn" data-kind="example" onclick="pfDive('studio-ch36s4', 'example')">Give me real-life examples</button></div>
+<div class="dive-panel" id="dive-panel-studio-ch36s4"><div class="dive-panel-body"></div></div>
+<script type="application/json" id="pf-dive-data-studio-ch36s4">{"simple": "In plain words: a reconciliation engine compares two or more sets of records and reports the differences. That is the whole idea in one sentence, and the rest of the lesson shows how it works in a real bank.", "summary": "A reconciliation engine compares two or more sets of records and reports the differences. Key points: Reconciliation engine compares two or more; Three agree on amount; End-of-day reconciliation; Break ageing; Missing statement payment; Recorded break actions.", "example": "The instruction says what the customer asked for, for example a payment of 250,000 pounds to a supplier on 5 November. Nostro reconciliation is the daily check of the accounts a bank holds with other banks overseas."}</script>
+</div>
+<div class="lesson-feedback">
+<div class="fb-icons"><button type="button" class="fb-btn" data-kind="like" onclick="pfFeedback(this,'like')" aria-label="Like this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M7 21H4a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1h3v11zm0 0h9.6a2 2 0 0 0 1.9-1.4l1.6-5A2 2 0 0 0 18.2 12H15V6.5A2.5 2.5 0 0 0 12.5 4L11 7.5 8.6 10H7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button><button type="button" class="fb-btn" data-kind="dislike" onclick="pfFeedback(this,'dislike')" aria-label="Dislike this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M17 3h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1h-3V3zm0 0H7.4a2 2 0 0 0-1.9 1.4l-1.6 5A2 2 0 0 0 5.8 12H9v5.5A2.5 2.5 0 0 0 11.5 20L13 16.5l2.4-2.5H17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button><button type="button" class="fb-btn" data-kind="flag" onclick="pfFeedback(this,'flag')" aria-label="Flag this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M6 21V4m0 1h11l-2.5 3.5L17 12H6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+<button type="button" class="go-next" onclick="goLesson('ch36s5')" title="Next: Exception Queues">Go to next item &rarr;</button>
+</div>
+<div class="chips"><span class="chip">Nostro reconciliation</span><span class="chip">Suspense account</span><span class="chip">Reconciliation</span></div>
+<div class="card learn-card">
+<h2>What you will learn</h2>
+<p class="transcript"><b>Your objective.</b> By the end of this lesson, you will be able to explain reconciliation engines. A reconciliation engine compares two or more sets of records and reports the differences.</p>
+<p class="transcript"><b>Why it matters.</b> The analyst starts with the payment reference and traces it through every system, the hub log, the payment engine log, the SWIFT message archive, and the core banking entries.</p>
+<p class="transcript">Chapter objective: Learner applies system design to payments, covering throughput, latency, idempotency, exactly-once processing, and failure recovery, and designs a system for a stated load. Learner practises this skill on realistic banking cases, explaining the reasoning clearly and using correct terminology throughout the work.</p>
+<h3>Key learning points</h3>
+<ul id="studio-points-studio-ch36s4">
+<li>Reconciliation engine compares two or more</li>
+<li>Reconciliation engine matches each statement</li>
+<li>Break ageing</li>
+<li>Payment cannot be matched</li>
+<li>Good acceptance test</li>
+<li>Failure scenario</li>
+</ul>
+<h3>Key terms</h3>
+<div id="studio-terms-studio-ch36s4">
+<p class="keyterm"><b>Nostro reconciliation:</b> Reconciliation of a bank nostro account against the statement received from the correspondent bank. Operations teams match each nostro entry to a statement entry, investigate breaks, and confirm the...</p>
+<p class="keyterm"><b>Suspense account:</b> A temporary account used to hold funds or entries that cannot yet be posted to their final account. Banks use suspense accounts for unidentified receipts, pending investigations and items awaiting...</p>
+<p class="keyterm"><b>Reconciliation:</b> The process of comparing records from two sources, such as a bank statement and an internal ledger, to confirm they agree.</p>
+</div>
+<p class="studio-note">Banking architecture diagram showing Reconciliation Engines.</p>
+</div>
+<div class="fw-card" id="pf-exercise-studio-ch36s4">
+<p class="fw-label">Practise this lesson</p>
+<h2>Exercise</h2>
+<p><b>Investigate the reconciliation break described in this lesson and find its root cause.</b></p>
+<p>Use the three-way matching rule and the break categories in this lesson.</p>
+<ol class="fw-steps">
+<li><b>What to do.</b> Compare the instruction, the settlement record and the statement, name the break type, and state the corrective action.</li>
+</ol>
+<p><button class="studio-btn" id="pf-ex-btn-studio-ch36s4" onclick="pfRevealExercise('studio-ch36s4')">Show the answer</button></p>
+<div class="fw-exercise-answer" id="pf-ex-answer-studio-ch36s4">
+<p><b>Correct result.</b> A break is found by matching amount, currency, date and reference across the three sources. The root cause is a timing difference, an amount difference, a missing entry, or a duplicate, and the corrective action follows the cause.</p>
+<p><b>Why.</b> Reconciliation is the last line of defence. A break that is not investigated is money that cannot be proved.</p>
+</div>
+</div>
+<div class="fw-card" id="pf-quiz-studio-ch36s4" data-answer="0">
+<p class="fw-label">Check your understanding</p>
+<h2>Practice question</h2>
+<p><b>Which of the following best describes reconciliation engines?</b></p>
+<button type="button" class="quiz-opt" data-idx="0" onclick="pfCheckAnswer('studio-ch36s4', this)">A reconciliation engine compares two or more sets of records and reports the differences</button>
+<button type="button" class="quiz-opt" data-idx="1" onclick="pfCheckAnswer('studio-ch36s4', this)">A payment engine is the specialist component that executes one type of payment</button>
+<button type="button" class="quiz-opt" data-idx="2" onclick="pfCheckAnswer('studio-ch36s4', this)">Inside the hub, the journey of a payment follows a clear sequence of stages</button>
+<button type="button" class="quiz-opt" data-idx="3" onclick="pfCheckAnswer('studio-ch36s4', this)">A payment hub is the central processing engine that receives payment instructions from every channel in a bank and routes each one to the correct destination</button>
+<div class="quiz-feedback" id="pf-quiz-fb-studio-ch36s4"></div>
+<script type="application/json" id="pf-quiz-data-studio-ch36s4">{"why_wrong": ["", "This describes a different concept from this chapter, not reconciliation engines.", "This describes a different concept from this chapter, not reconciliation engines.", "This describes a different concept from this chapter, not reconciliation engines."], "explanation": "A reconciliation engine compares two or more sets of records and reports the differences. This is the core idea of the lesson."}</script>
+</div>
+<div class="fw-card">
+<p class="fw-label">Takeaway and next step</p>
+<h2>What to remember</h2>
+<p>Every action is recorded, because auditors will ask how each break was resolved.</p>
+<p>Reconcile the payment in this lesson against its statement and find the break.</p>
+<p><a class="fw-tool-link" href="../simulators/accounting.html">Open the Accounting and Reconciliation Lab &rarr;</a></p>
+<p class="studio-note">Builds on "Queueing and Retry Logic".</p>
+</div>
+<section class="upnext" id="studio-upnext-studio-ch36s4" style="display:none" aria-label="Up next">
+<span class="tag">Up next</span>
+<h2>Up next: Exception Queues</h2>
+<p>Lesson 5 of 7, System Design Deep Dive, Narration 3:41</p>
+<div class="row">
+<button class="studio-btn primary" onclick="goLessonAuto('ch36s5')">Next lesson &rarr;</button>
+<button class="studio-btn" onclick="goLesson('ch36s3')">&larr; Previous lesson</button>
+<button class="studio-btn" onclick="studioReplayLesson('studio-ch36s4')">Replay this lesson</button>
+</div>
+</section>
+<div class="lesson-nav">
+<button class="studio-btn" onclick="goLesson('ch36s3')" title="Previous lesson: Queueing and Retry Logic">&larr; Previous</button>
+<button class="studio-btn" onclick="goChapterContents('ch36')">Chapter contents</button>
+<button class="studio-btn primary" onclick="goLesson('ch36s5')" title="Next lesson: Exception Queues">Next &rarr;</button>
+</div>
+<div class="card transcript-card">
+<h2>Transcript and full text</h2>
+<details class="studio-transcript" id="studio-transcript-details-studio-ch36s4"><summary>Show transcript</summary>
+<p class="transcript" id="studio-transcript-studio-ch36s4">A reconciliation engine compares two or more sets of records and reports the differences. The most important comparison in payments is three-way matching, which checks the payment instruction, the settlement record, and the bank statement against each other. The instruction says what the customer asked for, for example a payment of 250,000 pounds to a supplier on 5 November. The settlement record says what actually left the bank through the clearing system. The statement from the correspondent bank or clearing system says what was received at the other end. When all three agree on amount, currency, date, and reference, the payment is matched and closed. When any one of them differs, the engine raises a break. Nostro reconciliation is the daily check of the accounts a bank holds with other banks overseas. A nostro account is an account a bank holds in a foreign currency with a correspondent bank, for example a London bank holding a US dollar account with a bank in New York. Every payment sent in dollars debits that nostro account, and every payment received credits it. At the end of each day, the correspondent bank sends a statement, usually as an MT950 message or a camt.053 statement in ISO 20022 format, listing every entry. The reconciliation engine matches each statement line against the bank internal ledger. A balance of 12.4 million dollars in the ledger must equal 12.4 million dollars on the statement, to the cent. Matching is rarely a simple equality check, because real payments carry fees, value-date shifts and rounding. A good engine applies a rule hierarchy: exact match first on reference, amount and value date; then a tolerance match where the amount differs by a known charge, for example a 25 dollar intermediary fee deducted from a 10,000 dollar payment, leaving 9,975 dollars credited; then a value-date tolerance of one or two business days for payments that crossed a weekend. Each rule must be explicit and auditable, because an auditor will ask why two records were declared a match when the amounts differ. Rules that auto-match on amount alone, without checking the reference, are a known source of false matches and must never be used. Break management is the process of handling the items that do not match. Breaks fall into common categories: a timing difference, where a payment was sent on Monday but appears on the statement on Tuesday; an amount difference, where a fee of 25 dollars was deducted by an intermediary bank; a missing item, where the bank sent a payment but the statement shows no entry; and a duplicate, where the same payment appears twice. Each break is assigned an age, an owner, and a priority. A break of 5 million dollars that is one day old gets urgent attention, while a break of 12 dollars that is thirty days old may be written off under a defined policy. The engine tracks every break until it is resolved or formally written off. Investigating a break is detective work. The analyst starts with the payment reference and traces it through every system: the hub log, the payment engine log, the SWIFT message archive, and the core banking entries. If the statement is missing a payment, the analyst checks whether the SWIFT message was actually sent and whether the correspondent bank has acknowledged it. If the amount differs, the analyst checks the fee schedule and the intermediary charges. If the value date differs, the analyst checks the cut-off time and the time zone. The analyst then takes corrective action, which may mean asking the correspondent bank for a missing entry, posting a manual adjustment, or contacting the customer. Every action is recorded, because auditors will ask how each break was resolved. Unresolved breaks do not sit in limbo; they sit in a suspense account, and suspense is where operational risk hides. When a payment cannot be matched, the funds are parked in a suspense ledger until the break is resolved. A suspense balance that grows week on week is a red flag: it usually means a systematic problem, such as a mapping error that drops the same reference on every payment. Banks set ageing limits, for example no item older than 30 days without a documented reason, and any write-off above a threshold, often 1,000 dollars, needs a manager sign-off. A business analyst specifying a reconciliation engine must define the suspense rules, the ageing ladder, and the write-off authority, because these are the controls that keep a small break from becoming a material misstatement. For a business analyst or product owner, the reconciliation engine is specified through its matching rules, its break taxonomy, and its reporting. The specification must state which records are compared, in which order, with what tolerances, and what happens at each decision point. It must define the break categories, the ageing rules, the ownership model, and the escalation path. It must also define the management information: daily match rate, break ageing profile, suspense balance, and the top ten breaks by value. A good acceptance test is a statement with a known set of breaks, and the engine must classify each one correctly. If the engine cannot explain why it matched two records, it is not fit for audit. A worked example shows a reconciliation engine matching a nostro statement. A bank receives an MT950 statement from its correspondent in New York for its USD nostro account. The statement shows 1,240 entries for the day. The reconciliation engine matches each statement entry to a ledger entry by value date, amount and reference. 1,238 entries match exactly. Two do not. One is a payment of USD 50,000 that the bank sent but the correspondent has not yet recorded, because of a value date difference: the bank posted it on 5 November and the correspondent will post it on 6 November. The engine marks it as a timing break and expects it to match tomorrow. The other is a charge of USD 25 that the correspondent deducted but the bank did not expect, because the correspondent applied a fee the bank had not agreed. The engine marks it as a charge break and routes it to the nostro team to query. A reconciliation engine that only counts matches is useless; the value is in how it classifies the breaks. A failure scenario tests the engine under stress. On the last working day of the month, the correspondent sends a statement with 50,000 entries, ten times the normal volume, because it is catching up after a system outage. The reconciliation engine must process the whole statement within the working day, or the nostro balance will be unverified and the bank cannot be sure how much money it has in New York. The engine scales by processing entries in parallel and by matching on indexed fields, but if it is not designed for peak volume, it will still be running when the next statement arrives. For a business analyst, the requirement is to define the matching rules, the break categories, the tolerance for timing differences, the escalation for charge breaks, and the performance requirement for peak statement volume. Last reviewed 7 November 2026. Further reading: public post on nostro reconciliation; SWIFT MT950 and camt.053 message definitions.</p>
+<div id="studio-paras-studio-ch36s4">
+<p class="transcript">A reconciliation engine compares two or more sets of records and reports the differences. The most important comparison in payments is three-way matching, which checks the payment instruction, the settlement record, and the bank statement against each other. The instruction says what the customer asked for, for example a payment of 250,000 pounds to a supplier on 5 November. The settlement record says what actually left the bank through the clearing system. The statement from the correspondent bank or clearing system says what was received at the other end. When all three agree on amount, currency, date, and reference, the payment is matched and closed. When any one of them differs, the engine raises a break.</p>
+<p class="transcript">Nostro reconciliation is the daily check of the accounts a bank holds with other banks overseas. A nostro account is an account a bank holds in a foreign currency with a correspondent bank, for example a London bank holding a US dollar account with a bank in New York. Every payment sent in dollars debits that nostro account, and every payment received credits it. At the end of each day, the correspondent bank sends a statement, usually as an MT950 message or a camt.053 statement in ISO 20022 format, listing every entry. The reconciliation engine matches each statement line against the bank internal ledger. A balance of 12.4 million dollars in the ledger must equal 12.4 million dollars on the statement, to the cent.</p>
+<p class="transcript">Matching is rarely a simple equality check, because real payments carry fees, value-date shifts and rounding. A good engine applies a rule hierarchy: exact match first on reference, amount and value date; then a tolerance match where the amount differs by a known charge, for example a 25 dollar intermediary fee deducted from a 10,000 dollar payment, leaving 9,975 dollars credited; then a value-date tolerance of one or two business days for payments that crossed a weekend. Each rule must be explicit and auditable, because an auditor will ask why two records were declared a match when the amounts differ. Rules that auto-match on amount alone, without checking the reference, are a known source of false matches and must never be used.</p>
+<p class="transcript">Break management is the process of handling the items that do not match. Breaks fall into common categories: a timing difference, where a payment was sent on Monday but appears on the statement on Tuesday; an amount difference, where a fee of 25 dollars was deducted by an intermediary bank; a missing item, where the bank sent a payment but the statement shows no entry; and a duplicate, where the same payment appears twice. Each break is assigned an age, an owner, and a priority. A break of 5 million dollars that is one day old gets urgent attention, while a break of 12 dollars that is thirty days old may be written off under a defined policy. The engine tracks every break until it is resolved or formally written off.</p>
+<p class="transcript">Investigating a break is detective work. The analyst starts with the payment reference and traces it through every system: the hub log, the payment engine log, the SWIFT message archive, and the core banking entries. If the statement is missing a payment, the analyst checks whether the SWIFT message was actually sent and whether the correspondent bank has acknowledged it. If the amount differs, the analyst checks the fee schedule and the intermediary charges. If the value date differs, the analyst checks the cut-off time and the time zone. The analyst then takes corrective action, which may mean asking the correspondent bank for a missing entry, posting a manual adjustment, or contacting the customer. Every action is recorded, because auditors will ask how each break was resolved.</p>
+<p class="transcript">Unresolved breaks do not sit in limbo; they sit in a suspense account, and suspense is where operational risk hides. When a payment cannot be matched, the funds are parked in a suspense ledger until the break is resolved. A suspense balance that grows week on week is a red flag: it usually means a systematic problem, such as a mapping error that drops the same reference on every payment. Banks set ageing limits, for example no item older than 30 days without a documented reason, and any write-off above a threshold, often 1,000 dollars, needs a manager sign-off. A business analyst specifying a reconciliation engine must define the suspense rules, the ageing ladder, and the write-off authority, because these are the controls that keep a small break from becoming a material misstatement.</p>
+<p class="transcript">For a business analyst or product owner, the reconciliation engine is specified through its matching rules, its break taxonomy, and its reporting. The specification must state which records are compared, in which order, with what tolerances, and what happens at each decision point. It must define the break categories, the ageing rules, the ownership model, and the escalation path. It must also define the management information: daily match rate, break ageing profile, suspense balance, and the top ten breaks by value. A good acceptance test is a statement with a known set of breaks, and the engine must classify each one correctly. If the engine cannot explain why it matched two records, it is not fit for audit.</p>
+<p class="transcript">A worked example shows a reconciliation engine matching a nostro statement. A bank receives an MT950 statement from its correspondent in New York for its USD nostro account. The statement shows 1,240 entries for the day. The reconciliation engine matches each statement entry to a ledger entry by value date, amount and reference. 1,238 entries match exactly. Two do not. One is a payment of USD 50,000 that the bank sent but the correspondent has not yet recorded, because of a value date difference: the bank posted it on 5 November and the correspondent will post it on 6 November. The engine marks it as a timing break and expects it to match tomorrow. The other is a charge of USD 25 that the correspondent deducted but the bank did not expect, because the correspondent applied a fee the bank had not agreed. The engine marks it as a charge break and routes it to the nostro team to query. A reconciliation engine that only counts matches is useless; the value is in how it classifies the breaks.</p>
+<p class="transcript">A failure scenario tests the engine under stress. On the last working day of the month, the correspondent sends a statement with 50,000 entries, ten times the normal volume, because it is catching up after a system outage. The reconciliation engine must process the whole statement within the working day, or the nostro balance will be unverified and the bank cannot be sure how much money it has in New York. The engine scales by processing entries in parallel and by matching on indexed fields, but if it is not designed for peak volume, it will still be running when the next statement arrives. For a business analyst, the requirement is to define the matching rules, the break categories, the tolerance for timing differences, the escalation for charge breaks, and the performance requirement for peak statement volume. Last reviewed 7 November 2026. Further reading: public post on nostro reconciliation; SWIFT MT950 and camt.053 message definitions.</p>
+</div>
+</details>
+<details class="studio-transcript"><summary>Full lesson text (all scenes)</summary><div id="studio-transcript-full-studio-ch36s4"></div></details>
+<p><button class="studio-btn primary" id="done-ch36s4" onclick="studioMarkSceneDone('studio-ch36s4')">Mark lesson complete</button> <span class="studio-note">Completing a lesson updates your progress dashboard on the homepage.</span></p>
+</div>
+<p class="studio-note">Scene timestamps are estimated by allocating the narration text proportionally across the real audio length. The audio playback position is the source of truth: pause freezes the visual, seeking restores the correct scene, replay restarts the scene animation.</p>
+</div>
+<script>window.__PA_STUDIO_QUEUE = window.__PA_STUDIO_QUEUE || []; window.__PA_STUDIO_QUEUE.push(["studio-ch36s4", {"sample_id": "studio-ch36s4", "chapter_id": "ch36", "title": "Reconciliation Engines", "domain": "D09 Payment architecture and technology", "objective": "Learner applies system design to payments, covering throughput, latency, idempotency, exactly-once processing, and failure recovery, and designs a system for a stated load. Learner practises this skill on realistic banking cases, explaining the reasoning clearly and using correct terminology throughout the work.", "scenes": [{"id": "ch36s4", "section_id": "ch36s4", "title": "Reconciliation Engines", "audio": "../audio/ch36s4.mp3", "duration_sec": 450.0, "points": ["A reconciliation engine compares two or more sets of records and reports the differences.", "Nostro reconciliation is the daily check of the accounts a bank holds with other banks overseas.", "Matching is rarely a simple equality check, because real payments carry fees, value-date shifts and rounding.", "Break management is the process of handling the items that do not match.", "Investigating a break is detective work."], "terms": [{"term": "Nostro reconciliation", "def": "Reconciliation of a bank nostro account against the statement received from the correspondent bank. Operations teams match each nostro entry to a statement entry, investigate breaks, and confirm the..."}, {"term": "Suspense account", "def": "A temporary account used to hold funds or entries that cannot yet be posted to their final account. Banks use suspense accounts for unidentified receipts, pending investigations and items awaiting..."}, {"term": "Reconciliation", "def": "The process of comparing records from two sources, such as a bank statement and an internal ledger, to confirm they agree."}], "transcript": "A reconciliation engine compares two or more sets of records and reports the differences. The most important comparison in payments is three-way matching, which checks the payment instruction, the settlement record, and the bank statement against each other. The instruction says what the customer asked for, for example a payment of 250,000 pounds to a supplier on 5 November. The settlement record says what actually left the bank through the clearing system. The statement from the correspondent bank or clearing system says what was received at the other end. When all three agree on amount, currency, date, and reference, the payment is matched and closed. When any one of them differs, the engine raises a break. Nostro reconciliation is the daily check of the accounts a bank holds with other banks overseas. A nostro account is an account a bank holds in a foreign currency with a correspondent bank, for example a London bank holding a US dollar account with a bank in New York. Every payment sent in dollars debits that nostro account, and every payment received credits it. At the end of each day, the correspondent bank sends a statement, usually as an MT950 message or a camt.053 statement in ISO 20022 format, listing every entry. The reconciliation engine matches each statement line against the bank internal ledger. A balance of 12.4 million dollars in the ledger must equal 12.4 million dollars on the statement, to the cent. Matching is rarely a simple equality check, because real payments carry fees, value-date shifts and rounding. A good engine applies a rule hierarchy: exact match first on reference, amount and value date; then a tolerance match where the amount differs by a known charge, for example a 25 dollar intermediary fee deducted from a 10,000 dollar payment, leaving 9,975 dollars credited; then a value-date tolerance of one or two business days for payments that crossed a weekend. Each rule must be explicit and auditable, because an auditor will ask why two records were declared a match when the amounts differ. Rules that auto-match on amount alone, without checking the reference, are a known source of false matches and must never be used. Break management is the process of handling the items that do not match. Breaks fall into common categories: a timing difference, where a payment was sent on Monday but appears on the statement on Tuesday; an amount difference, where a fee of 25 dollars was deducted by an intermediary bank; a missing item, where the bank sent a payment but the statement shows no entry; and a duplicate, where the same payment appears twice. Each break is assigned an age, an owner, and a priority. A break of 5 million dollars that is one day old gets urgent attention, while a break of 12 dollars that is thirty days old may be written off under a defined policy. The engine tracks every break until it is resolved or formally written off. Investigating a break is detective work. The analyst starts with the payment reference and traces it through every system: the hub log, the payment engine log, the SWIFT message archive, and the core banking entries. If the statement is missing a payment, the analyst checks whether the SWIFT message was actually sent and whether the correspondent bank has acknowledged it. If the amount differs, the analyst checks the fee schedule and the intermediary charges. If the value date differs, the analyst checks the cut-off time and the time zone. The analyst then takes corrective action, which may mean asking the correspondent bank for a missing entry, posting a manual adjustment, or contacting the customer. Every action is recorded, because auditors will ask how each break was resolved. Unresolved breaks do not sit in limbo; they sit in a suspense account, and suspense is where operational risk hides. When a payment cannot be matched, the funds are parked in a suspense ledger until the break is resolved. A suspense balance that grows week on week is a red flag: it usually means a systematic problem, such as a mapping error that drops the same reference on every payment. Banks set ageing limits, for example no item older than 30 days without a documented reason, and any write-off above a threshold, often 1,000 dollars, needs a manager sign-off. A business analyst specifying a reconciliation engine must define the suspense rules, the ageing ladder, and the write-off authority, because these are the controls that keep a small break from becoming a material misstatement. For a business analyst or product owner, the reconciliation engine is specified through its matching rules, its break taxonomy, and its reporting. The specification must state which records are compared, in which order, with what tolerances, and what happens at each decision point. It must define the break categories, the ageing rules, the ownership model, and the escalation path. It must also define the management information: daily match rate, break ageing profile, suspense balance, and the top ten breaks by value. A good acceptance test is a statement with a known set of breaks, and the engine must classify each one correctly. If the engine cannot explain why it matched two records, it is not fit for audit. A worked example shows a reconciliation engine matching a nostro statement. A bank receives an MT950 statement from its correspondent in New York for its USD nostro account. The statement shows 1,240 entries for the day. The reconciliation engine matches each statement entry to a ledger entry by value date, amount and reference. 1,238 entries match exactly. Two do not. One is a payment of USD 50,000 that the bank sent but the correspondent has not yet recorded, because of a value date difference: the bank posted it on 5 November and the correspondent will post it on 6 November. The engine marks it as a timing break and expects it to match tomorrow. The other is a charge of USD 25 that the correspondent deducted but the bank did not expect, because the correspondent applied a fee the bank had not agreed. The engine marks it as a charge break and routes it to the nostro team to query. A reconciliation engine that only counts matches is useless; the value is in how it classifies the breaks. A failure scenario tests the engine under stress. On the last working day of the month, the correspondent sends a statement with 50,000 entries, ten times the normal volume, because it is catching up after a system outage. The reconciliation engine must process the whole statement within the working day, or the nostro balance will be unverified and the bank cannot be sure how much money it has in New York. The engine scales by processing entries in parallel and by matching on indexed fields, but if it is not designed for peak volume, it will still be running when the next statement arrives. For a business analyst, the requirement is to define the matching rules, the break categories, the tolerance for timing differences, the escalation for charge breaks, and the performance requirement for peak statement volume. Last reviewed 7 November 2026. Further reading: public post on nostro reconciliation; SWIFT MT950 and camt.053 message definitions.", "paragraphs": ["A reconciliation engine compares two or more sets of records and reports the differences. The most important comparison in payments is three-way matching, which checks the payment instruction, the settlement record, and the bank statement against each other. The instruction says what the customer asked for, for example a payment of 250,000 pounds to a supplier on 5 November. The settlement record says what actually left the bank through the clearing system. The statement from the correspondent bank or clearing system says what was received at the other end. When all three agree on amount, currency, date, and reference, the payment is matched and closed. When any one of them differs, the engine raises a break.", "Nostro reconciliation is the daily check of the accounts a bank holds with other banks overseas. A nostro account is an account a bank holds in a foreign currency with a correspondent bank, for example a London bank holding a US dollar account with a bank in New York. Every payment sent in dollars debits that nostro account, and every payment received credits it. At the end of each day, the correspondent bank sends a statement, usually as an MT950 message or a camt.053 statement in ISO 20022 format, listing every entry. The reconciliation engine matches each statement line against the bank internal ledger. A balance of 12.4 million dollars in the ledger must equal 12.4 million dollars on the statement, to the cent.", "Matching is rarely a simple equality check, because real payments carry fees, value-date shifts and rounding. A good engine applies a rule hierarchy: exact match first on reference, amount and value date; then a tolerance match where the amount differs by a known charge, for example a 25 dollar intermediary fee deducted from a 10,000 dollar payment, leaving 9,975 dollars credited; then a value-date tolerance of one or two business days for payments that crossed a weekend. Each rule must be explicit and auditable, because an auditor will ask why two records were declared a match when the amounts differ. Rules that auto-match on amount alone, without checking the reference, are a known source of false matches and must never be used.", "Break management is the process of handling the items that do not match. Breaks fall into common categories: a timing difference, where a payment was sent on Monday but appears on the statement on Tuesday; an amount difference, where a fee of 25 dollars was deducted by an intermediary bank; a missing item, where the bank sent a payment but the statement shows no entry; and a duplicate, where the same payment appears twice. Each break is assigned an age, an owner, and a priority. A break of 5 million dollars that is one day old gets urgent attention, while a break of 12 dollars that is thirty days old may be written off under a defined policy. The engine tracks every break until it is resolved or formally written off.", "Investigating a break is detective work. The analyst starts with the payment reference and traces it through every system: the hub log, the payment engine log, the SWIFT message archive, and the core banking entries. If the statement is missing a payment, the analyst checks whether the SWIFT message was actually sent and whether the correspondent bank has acknowledged it. If the amount differs, the analyst checks the fee schedule and the intermediary charges. If the value date differs, the analyst checks the cut-off time and the time zone. The analyst then takes corrective action, which may mean asking the correspondent bank for a missing entry, posting a manual adjustment, or contacting the customer. Every action is recorded, because auditors will ask how each break was resolved.", "Unresolved breaks do not sit in limbo; they sit in a suspense account, and suspense is where operational risk hides. When a payment cannot be matched, the funds are parked in a suspense ledger until the break is resolved. A suspense balance that grows week on week is a red flag: it usually means a systematic problem, such as a mapping error that drops the same reference on every payment. Banks set ageing limits, for example no item older than 30 days without a documented reason, and any write-off above a threshold, often 1,000 dollars, needs a manager sign-off. A business analyst specifying a reconciliation engine must define the suspense rules, the ageing ladder, and the write-off authority, because these are the controls that keep a small break from becoming a material misstatement.", "For a business analyst or product owner, the reconciliation engine is specified through its matching rules, its break taxonomy, and its reporting. The specification must state which records are compared, in which order, with what tolerances, and what happens at each decision point. It must define the break categories, the ageing rules, the ownership model, and the escalation path. It must also define the management information: daily match rate, break ageing profile, suspense balance, and the top ten breaks by value. A good acceptance test is a statement with a known set of breaks, and the engine must classify each one correctly. If the engine cannot explain why it matched two records, it is not fit for audit.", "A worked example shows a reconciliation engine matching a nostro statement. A bank receives an MT950 statement from its correspondent in New York for its USD nostro account. The statement shows 1,240 entries for the day. The reconciliation engine matches each statement entry to a ledger entry by value date, amount and reference. 1,238 entries match exactly. Two do not. One is a payment of USD 50,000 that the bank sent but the correspondent has not yet recorded, because of a value date difference: the bank posted it on 5 November and the correspondent will post it on 6 November. The engine marks it as a timing break and expects it to match tomorrow. The other is a charge of USD 25 that the correspondent deducted but the bank did not expect, because the correspondent applied a fee the bank had not agreed. The engine marks it as a charge break and routes it to the nostro team to query. A reconciliation engine that only counts matches is useless; the value is in how it classifies the breaks.", "A failure scenario tests the engine under stress. On the last working day of the month, the correspondent sends a statement with 50,000 entries, ten times the normal volume, because it is catching up after a system outage. The reconciliation engine must process the whole statement within the working day, or the nostro balance will be unverified and the bank cannot be sure how much money it has in New York. The engine scales by processing entries in parallel and by matching on indexed fields, but if it is not designed for peak volume, it will still be running when the next statement arrives. For a business analyst, the requirement is to define the matching rules, the break categories, the tolerance for timing differences, the escalation for charge breaks, and the performance requirement for peak statement volume. Last reviewed 7 November 2026. Further reading: public post on nostro reconciliation; SWIFT MT950 and camt.053 message definitions."], "accessibility": "Banking architecture diagram showing Reconciliation Engines.", "visual_type": "architecture", "visual_choice_reason": "architecture chapter", "beats": [{"t0": 0.0, "t1": 78.0, "title": "Reconciliation engine compares two or more", "note": "A reconciliation engine compares two or more sets of records and reports the differences.", "highlight_nodes": ["n0"], "highlight_conns": [], "highlight_fields": []}, {"t0": 78.0, "t1": 163.9, "title": "Reconciliation engine matches each statement", "note": "The reconciliation engine matches each statement line against the bank internal ledger.", "highlight_nodes": ["n1"], "highlight_conns": ["c0"], "highlight_fields": []}, {"t0": 163.9, "t1": 239.6, "title": "Break ageing", "note": "Each break is assigned an age, an owner, and a priority.", "highlight_nodes": ["n2"], "highlight_conns": ["c1"], "highlight_fields": []}, {"t0": 239.6, "t1": 315.1, "title": "Payment cannot be matched", "note": "When a payment cannot be matched, the funds are parked in a suspense ledger until the break is resolved.", "highlight_nodes": ["n3"], "highlight_conns": ["c2"], "highlight_fields": []}, {"t0": 315.1, "t1": 390.1, "title": "Good acceptance test", "note": "A good acceptance test is a statement with a known set of breaks, and the engine must classify each one correctly.", "highlight_nodes": ["n4"], "highlight_conns": ["c3"], "highlight_fields": []}, {"t0": 390.1, "t1": 450.0, "title": "Failure scenario", "note": "A failure scenario tests the engine under stress.", "highlight_nodes": ["n5"], "highlight_conns": ["c4"], "highlight_fields": []}], "node_ids": ["n0", "n1", "n2", "n3", "n4", "n5"], "framework": {"objective": "By the end of this lesson, you will be able to explain reconciliation engines. A reconciliation engine compares two or more sets of records and reports the differences.", "why_matters": "The analyst starts with the payment reference and traces it through every system, the hub log, the payment engine log, the SWIFT message archive, and the core banking entries.", "technical_example": "At the end of each day, the correspondent bank sends a statement, usually as an MT950 message or a camt.053 statement in ISO 20022 format, listing every entry.", "failure_recovery": "Breaks fall into common categories, a timing difference, where a payment was sent on Monday but appears on the statement on Tuesday; an amount difference, where a fee of 25 dollars was deducted by an intermediary bank; a missing item, where the bank sent a payment but the statement shows no entry; and a duplicate, where the same payment appears twice. The engine tracks every break until it is resolved or formally written off.", "exercise": {"task": "Investigate the reconciliation break described in this lesson and find its root cause.", "info": "Use the three-way matching rule and the break categories in this lesson.", "action": "Compare the instruction, the settlement record and the statement, name the break type, and state the corrective action.", "correct": "A break is found by matching amount, currency, date and reference across the three sources. The root cause is a timing difference, an amount difference, a missing entry, or a duplicate, and the corrective action follows the cause.", "why": "Reconciliation is the last line of defence. A break that is not investigated is money that cannot be proved."}, "assessment": {"question": "Which of the following best describes reconciliation engines?", "options": ["A reconciliation engine compares two or more sets of records and reports the differences", "A payment engine is the specialist component that executes one type of payment", "Inside the hub, the journey of a payment follows a clear sequence of stages", "A payment hub is the central processing engine that receives payment instructions from every channel in a bank and routes each one to the correct destination"], "answer": 0, "explanation": "A reconciliation engine compares two or more sets of records and reports the differences. This is the core idea of the lesson.", "why_wrong": ["", "This describes a different concept from this chapter, not reconciliation engines.", "This describes a different concept from this chapter, not reconciliation engines.", "This describes a different concept from this chapter, not reconciliation engines."], "source": "generated:ch36s4"}, "takeaway": "Every action is recorded, because auditors will ask how each break was resolved.", "prereq": "ch36s3", "next": "ch36s5", "connection_note": "Builds on \"Queueing and Retry Logic\".", "tool": {"slug": "accounting", "label": "Accounting and Reconciliation Lab", "url": "../simulators/accounting.html", "scenario": "Reconcile the payment in this lesson against its statement and find the break."}, "simple": "In plain words: a reconciliation engine compares two or more sets of records and reports the differences. That is the whole idea in one sentence, and the rest of the lesson shows how it works in a real bank.", "summary": "A reconciliation engine compares two or more sets of records and reports the differences. Key points: Reconciliation engine compares two or more; Three agree on amount; End-of-day reconciliation; Break ageing; Missing statement payment; Recorded break actions.", "example": "The instruction says what the customer asked for, for example a payment of 250,000 pounds to a supplier on 5 November. Nostro reconciliation is the daily check of the accounts a bank holds with other banks overseas."}}], "chapter_title": "System Design Deep Dive", "meta_line": "System Design Deep Dive, Lesson 4 of 7, Narration 7:30, D09 Payment architecture and technology", "next_id": "ch36s5", "next_title": "Exception Queues"}]);</script>
+</div>
+<nav class="tool-rail" aria-label="Lesson tools">
+<button type="button" class="rail-tool" onclick="pfOpenTranscript('studio-ch36s4')" title="Open transcript"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M7 3h7l4 4v14H7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M14 3v4h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 12h5M10 15.5h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span>Transcript</span></button>
+<button type="button" class="rail-tool" onclick="pfToggleNote('studio-ch36s4')" title="Write a note on this lesson"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L8 19l-4 1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>Notes</span></button>
+<button type="button" class="rail-tool" onclick="pfToggleFiles('studio-ch36s4')" title="Download lesson files"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>Files</span></button>
+</nav>
+<div class="fw-files-panel" id="pf-files-studio-ch36s4" style="display:none"><b>Lesson files</b><p><a href="../audio/ch36s4.mp3" download>Download narration (MP3)</a></p><p><a href="#" onclick="pfDownloadTranscript('studio-ch36s4');return false">Download transcript (.txt)</a></p></div>
+</div>
+</div>
+</main>
+<footer><p>Payments Training Hub. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="../index.html">Home</a> &middot; <a href="../courses.html">Courses</a> &middot; <a href="../practice.html">Practice</a> &middot; <a href="../simulators.html">Simulators</a> &middot; <a href="../labs.html">Labs</a> &middot; <a href="../explorer.html">Explorer</a> &middot; <a href="../tests.html">Tests</a> &middot; <a href="../diagnostic.html">Diagnostic</a> &middot; <a href="../faq.html">Interview Ready Questions</a> &middot; <a href="../interview-prep.html">Interview Prep</a></p><p><a href="../about.html">About</a> &middot; <a href="../privacy.html">Privacy</a> &middot; <a href="../terms.html">Terms</a> &middot; <a href="../contact.html">Contact</a> &middot; <a href="../editorial-standards.html">Editorial Standards</a> &middot; <a href="../sources.html">Sources</a></p></footer>
+<script defer src="../assets/site.js"></script>
+<script defer src="../assets/bundles.js"></script>
+<script defer src="../assets/auth.js"></script>
+<script defer src="../assets/studio.js"></script>
+<script defer src="../assets/insight-components.js"></script>
+<script defer src="../assets/nav.js"></script>
+<script defer src="../assets/pf-enhance.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+if(window.PFInsight){PFInsight.init();}
+});
+</script>
+</body>
+</html>
