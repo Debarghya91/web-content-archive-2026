@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>Retries, Dead Letter Queues, Timeouts and Unknown Outcomes | Payments Training Hub</title>
+<meta name="description" content="A retry policy defines how many times a payment is sent again, how long to wait between attempts, and how the wait grows with each failure. The usual...">
+<link rel="canonical" href="https://www.paymentstraininghub.in/lessons/ch68s3.html">
+<meta property="og:url" content="https://www.paymentstraininghub.in/lessons/ch68s3.html">
+<meta property="og:title" content="Retries, Dead Letter Queues, Timeouts and Unknown Outcomes | Payments Training Hub">
+<meta property="og:description" content="A retry policy defines how many times a payment is sent again, how long to wait between attempts, and how the wait grows with each failure. The usual...">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.in/assets/hero/hero-poster.jpg">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.paymentstraininghub.in/index.html"}, {"@type": "ListItem", "position": 2, "name": "Payment Operations Architecture: State, Resilience and Control", "item": "https://www.paymentstraininghub.in/chapters/ch68-payment-operations-architecture-state-resilience-and-control.html"}, {"@type": "ListItem", "position": 3, "name": "Retries, Dead Letter Queues, Timeouts and Unknown Outcomes", "item": "https://www.paymentstraininghub.in/lessons/ch68s3.html"}]}</script>
+<link rel="stylesheet" href="../assets/studio.css">
+<link rel="stylesheet" href="../assets/pf-theme.css">
+<link rel="stylesheet" href="../assets/insight-components.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="../index.html" class="brand">Payments <span>Training Hub</span></a><nav class="topnav"><a href="../index.html">Home</a> <a href="../courses.html">Courses</a> <a href="../practice.html">Practice</a> <a href="../simulators.html">Simulators</a> <a href="../labs.html">Labs</a> <a href="../explorer.html">Explorer</a> <a href="../tests.html">Tests</a></nav><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox" style="display:none"><span id="authState">Not signed in</span> <span id="authForm" style="display:none"><input id="authEmail" type="email" placeholder="Email for OTP" aria-label="Email for sign-in"> <button class="mute-btn" onclick="paAuthSendOtp()">Send code</button> <input id="authCode" type="text" placeholder="6-digit code" aria-label="One-time code" style="display:none"> <button class="mute-btn" id="authVerifyBtn" onclick="paAuthVerifyOtp()" style="display:none">Verify</button> <button class="mute-btn" onclick="paAuthGoogle()">Sign in with Google</button> </span><button class="mute-btn" id="authSignOutBtn" onclick="paAuthSignOut()" style="display:none">Sign out</button></span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<div class="lesson-page">
+<div class="lesson-shell">
+<aside class="course-rail">
+<div class="rail-head">
+<h2>Payment Operations Architecture: State, Resilience and Control</h2>
+<a class="rail-close" href="../chapters/ch68-payment-operations-architecture-state-resilience-and-control.html" aria-label="Close and go to chapter" title="Back to chapter">&times;</a>
+</div>
+<div class="goal-card">
+<div class="goal-head"><b>Today's goal &middot; <span id="side-progress-text">0 of 8 items</span></b><span class="goal-flag"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 21V4m0 1h11l-2.5 3.5L17 12H6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="goal-chev">&#94;</span></div>
+<p class="goal-body" id="side-goal-body">Complete 3 items today to stay at a good pace!</p>
+</div>
+<ul class="lesson-list"><li class="" data-lesson="ch68s1"><a href="ch68s1.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Payment State Machines and Correlation</span><span class="m">Video &middot; 4 min</span></span></a></li>
+<li class="" data-lesson="ch68s2"><a href="ch68s2.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Idempotency and Duplicate Prevention</span><span class="m">Video &middot; 4 min</span></span></a></li>
+<li class="current" data-lesson="ch68s3"><a href="ch68s3.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Retries, Dead Letter Queues, Timeouts and Unknown Outcomes</span><span class="m">Video &middot; 4 min</span></span></a></li>
+<li class="" data-lesson="ch68s4"><a href="ch68s4.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Out of Order Events: Messages and Acknowledgements Arriving Out of Order</span><span class="m">Video &middot; 4 min</span></span></a></li>
+<li class="" data-lesson="ch68s5"><a href="ch68s5.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Ledger Posting versus Settlement</span><span class="m">Video &middot; 4 min</span></span></a></li>
+<li class="" data-lesson="ch68s6"><a href="ch68s6.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Reconciliation Matching Hierarchies and Suspense Account Management</span><span class="m">Video &middot; 3 min</span></span></a></li>
+<li class="" data-lesson="ch68s7"><a href="ch68s7.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Operational Dashboards, KPIs, Resilience and Disaster Recovery</span><span class="m">Video &middot; 4 min</span></span></a></li>
+<li class="" data-lesson="ch68s8"><a href="ch68s8.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Incident communication: who is told, what they are told, and when</span><span class="m">Video &middot; 3 min</span></span></a></li></ul>
+</aside>
+<div class="lesson-main">
+<div class="studio" id="studio-studio-ch68s3">
+<div class="player">
+<div class="studio-canvas" id="studio-canvas-studio-ch68s3">
+<div class="ch-sec studio-scene-vis active" id="studio-vis-studio-ch68s3-0"><div class="beat-frames">
+<div class="beat-frame active" data-frame="0">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Retry</tspan> <tspan fill="#FFFFFF">policy</tspan> <tspan fill="#FFFFFF">and</tspan> <tspan fill="#FFFFFF">backoff</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">STARTED</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Retry policy and backoff</tspan><tspan fill="#CBD5E1"> - defines how many times a payment is sent again</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="0.55">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Testing</tspan><tspan fill="#CBD5E1"> - policy means forcing a timeout</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="0.55">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Meridian Bank</tspan><tspan fill="#CBD5E1"> - worked example, Meridian Bank allows three</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Common causes</tspan><tspan fill="#CBD5E1"> - malformed message</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Golden rule</tspan><tspan fill="#CBD5E1"> - never to retry blindly</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Testing this flow</tspan><tspan fill="#CBD5E1"> - means forcing a timeout</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="128" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">A retry policy defines how many times a payment is sent again, how long to wait between</text>
+<text x="450" y="476" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">attempts, and how the wait grows with each failure.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 1 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 700" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="700" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Retry</tspan> <tspan fill="#FFFFFF">policy</tspan> <tspan fill="#FFFFFF">and</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">backoff</tspan></text>
+<rect x="24" y="86" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="104" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">STARTED</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="120" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="139" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Retry policy and</text>
+<text x="180" y="157" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">backoff</text>
+<text x="180" y="175" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">defines how many times a payment is sent</text>
+<text x="180" y="193" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="0.55">
+<rect x="24" y="212" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="231" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Testing</text>
+<text x="180" y="249" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">policy means forcing a timeout</text>
+<text x="180" y="267" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="0.55">
+<rect x="24" y="284" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="303" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Meridian Bank</text>
+<text x="180" y="321" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">worked example, Meridian Bank allows three</text>
+<text x="180" y="339" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="24" y="356" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="375" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Common causes</text>
+<text x="180" y="393" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">malformed message</text>
+<text x="180" y="411" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="24" y="428" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="447" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Golden rule</text>
+<text x="180" y="465" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">never to retry blindly</text>
+<text x="180" y="483" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="500" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="519" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Testing this flow</text>
+<text x="180" y="537" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">means forcing a timeout</text>
+<text x="180" y="555" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="580" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">A retry policy defines how many times a</text>
+<text x="180" y="599" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">payment is sent again, how long to wait</text>
+<text x="180" y="618" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">between attempts, and how the wait grows</text>
+<text x="180" y="637" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">with each failure.</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="1">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Testing:</tspan> <tspan fill="#FFFFFF">forcing</tspan> <tspan fill="#FFFFFF">timeout</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Retry policy and backoff</tspan><tspan fill="#CBD5E1"> - defines how many times a payment is sent again</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Testing</tspan><tspan fill="#CBD5E1"> - policy means forcing a timeout</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="0.55">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Meridian Bank</tspan><tspan fill="#CBD5E1"> - worked example, Meridian Bank allows three</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Common causes</tspan><tspan fill="#CBD5E1"> - malformed message</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Golden rule</tspan><tspan fill="#CBD5E1"> - never to retry blindly</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Testing this flow</tspan><tspan fill="#CBD5E1"> - means forcing a timeout</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="257" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Testing the policy means forcing a timeout, counting the retries, checking the gaps between</text>
+<text x="450" y="476" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">them, and confirming the key and the UETR stay the same on every attempt.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 2 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 700" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="700" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Testing:</tspan> <tspan fill="#FFFFFF">forcing</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">timeout</tspan></text>
+<rect x="24" y="86" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="104" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="120" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="139" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Retry policy and</text>
+<text x="180" y="157" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">backoff</text>
+<text x="180" y="175" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">defines how many times a payment is sent</text>
+<text x="180" y="193" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="212" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="231" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Testing</text>
+<text x="180" y="249" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">policy means forcing a timeout</text>
+<text x="180" y="267" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="0.55">
+<rect x="24" y="284" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="303" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Meridian Bank</text>
+<text x="180" y="321" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">worked example, Meridian Bank allows three</text>
+<text x="180" y="339" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="24" y="356" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="375" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Common causes</text>
+<text x="180" y="393" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">malformed message</text>
+<text x="180" y="411" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="24" y="428" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="447" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Golden rule</text>
+<text x="180" y="465" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">never to retry blindly</text>
+<text x="180" y="483" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="500" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="519" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Testing this flow</text>
+<text x="180" y="537" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">means forcing a timeout</text>
+<text x="180" y="555" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="580" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Testing the policy means forcing a timeout,</text>
+<text x="180" y="599" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">counting the retries, checking the gaps</text>
+<text x="180" y="618" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">between them, and confirming the key and</text>
+<text x="180" y="637" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">the UETR stay the same on every attempt.</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="2">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Meridian</tspan> <tspan fill="#FFFFFF">Bank</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Retry policy and backoff</tspan><tspan fill="#CBD5E1"> - defines how many times a payment is sent again</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Testing</tspan><tspan fill="#CBD5E1"> - policy means forcing a timeout</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Meridian Bank</tspan><tspan fill="#CBD5E1"> - worked example, Meridian Bank allows three</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Common causes</tspan><tspan fill="#CBD5E1"> - malformed message</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Golden rule</tspan><tspan fill="#CBD5E1"> - never to retry blindly</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Testing this flow</tspan><tspan fill="#CBD5E1"> - means forcing a timeout</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="386" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">In the worked example, Meridian Bank allows three attempts over ten minutes, and after the</text>
+<text x="450" y="476" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">third failure the USD 120,000 payment is marked failed and routed to the exception queue.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 3 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 691" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="691" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Meridian</tspan> <tspan fill="#FFFFFF">Bank</tspan></text>
+<rect x="24" y="58" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="76" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="92" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="111" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Retry policy and</text>
+<text x="180" y="129" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">backoff</text>
+<text x="180" y="147" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">defines how many times a payment is sent</text>
+<text x="180" y="165" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="184" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="203" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Testing</text>
+<text x="180" y="221" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">policy means forcing a timeout</text>
+<text x="180" y="239" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="1">
+<rect x="24" y="256" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="275" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Meridian Bank</text>
+<text x="180" y="293" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">worked example, Meridian Bank allows three</text>
+<text x="180" y="311" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="24" y="328" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="347" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Common causes</text>
+<text x="180" y="365" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">malformed message</text>
+<text x="180" y="383" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="24" y="400" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="419" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Golden rule</text>
+<text x="180" y="437" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">never to retry blindly</text>
+<text x="180" y="455" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="472" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="491" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Testing this flow</text>
+<text x="180" y="509" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">means forcing a timeout</text>
+<text x="180" y="527" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="552" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">In the worked example, Meridian Bank</text>
+<text x="180" y="571" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">allows three attempts over ten minutes,</text>
+<text x="180" y="590" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">and after the third failure the USD 120,000</text>
+<text x="180" y="609" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">payment is marked failed and routed to</text>
+<text x="180" y="628" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">the exception queue.</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="3">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Common</tspan> <tspan fill="#FFFFFF">causes</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Retry policy and backoff</tspan><tspan fill="#CBD5E1"> - defines how many times a payment is sent again</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Testing</tspan><tspan fill="#CBD5E1"> - policy means forcing a timeout</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Meridian Bank</tspan><tspan fill="#CBD5E1"> - worked example, Meridian Bank allows three</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Common causes</tspan><tspan fill="#CBD5E1"> - malformed message</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Golden rule</tspan><tspan fill="#CBD5E1"> - never to retry blindly</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Testing this flow</tspan><tspan fill="#CBD5E1"> - means forcing a timeout</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="514" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Common causes are a malformed message, a missing account, a system that is down, or a</text>
+<text x="450" y="476" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">validation rule that rejects the content.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 4 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 672" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="672" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Common</tspan> <tspan fill="#FFFFFF">causes</tspan></text>
+<rect x="24" y="58" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="76" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="92" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="111" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Retry policy and</text>
+<text x="180" y="129" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">backoff</text>
+<text x="180" y="147" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">defines how many times a payment is sent</text>
+<text x="180" y="165" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="184" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="203" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Testing</text>
+<text x="180" y="221" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">policy means forcing a timeout</text>
+<text x="180" y="239" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="1">
+<rect x="24" y="256" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="275" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Meridian Bank</text>
+<text x="180" y="293" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">worked example, Meridian Bank allows three</text>
+<text x="180" y="311" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="1">
+<rect x="24" y="328" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="347" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Common causes</text>
+<text x="180" y="365" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">malformed message</text>
+<text x="180" y="383" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="24" y="400" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="419" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Golden rule</text>
+<text x="180" y="437" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">never to retry blindly</text>
+<text x="180" y="455" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="472" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="491" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Testing this flow</text>
+<text x="180" y="509" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">means forcing a timeout</text>
+<text x="180" y="527" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="552" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Common causes are a malformed</text>
+<text x="180" y="571" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">message, a missing account, a system that</text>
+<text x="180" y="590" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">is down, or a validation rule that rejects</text>
+<text x="180" y="609" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">the content.</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="4">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Golden</tspan> <tspan fill="#FFFFFF">rule</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Retry policy and backoff</tspan><tspan fill="#CBD5E1"> - defines how many times a payment is sent again</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Testing</tspan><tspan fill="#CBD5E1"> - policy means forcing a timeout</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Meridian Bank</tspan><tspan fill="#CBD5E1"> - worked example, Meridian Bank allows three</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Common causes</tspan><tspan fill="#CBD5E1"> - malformed message</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n4" data-beat="4">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Golden rule</tspan><tspan fill="#CBD5E1"> - never to retry blindly</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Testing this flow</tspan><tspan fill="#CBD5E1"> - means forcing a timeout</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="643" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The golden rule is never to retry blindly, because a blind retry can pay the same USD 120,000</text>
+<text x="450" y="476" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">twice.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 5 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 653" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="653" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Golden</tspan> <tspan fill="#FFFFFF">rule</tspan></text>
+<rect x="24" y="58" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="76" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="92" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="111" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Retry policy and</text>
+<text x="180" y="129" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">backoff</text>
+<text x="180" y="147" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">defines how many times a payment is sent</text>
+<text x="180" y="165" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="184" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="203" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Testing</text>
+<text x="180" y="221" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">policy means forcing a timeout</text>
+<text x="180" y="239" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="1">
+<rect x="24" y="256" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="275" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Meridian Bank</text>
+<text x="180" y="293" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">worked example, Meridian Bank allows three</text>
+<text x="180" y="311" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="1">
+<rect x="24" y="328" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="347" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Common causes</text>
+<text x="180" y="365" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">malformed message</text>
+<text x="180" y="383" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="1">
+<rect x="24" y="400" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="419" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Golden rule</text>
+<text x="180" y="437" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">never to retry blindly</text>
+<text x="180" y="455" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="472" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="491" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Testing this flow</text>
+<text x="180" y="509" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">means forcing a timeout</text>
+<text x="180" y="527" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="552" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The golden rule is never to retry blindly,</text>
+<text x="180" y="571" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">because a blind retry can pay the same</text>
+<text x="180" y="590" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">USD 120,000 twice.</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="5">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Testing</tspan> <tspan fill="#FFFFFF">this</tspan> <tspan fill="#FFFFFF">flow</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">COMPLETE</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Retry policy and backoff</tspan><tspan fill="#CBD5E1"> - defines how many times a payment is sent again</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Testing</tspan><tspan fill="#CBD5E1"> - policy means forcing a timeout</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Meridian Bank</tspan><tspan fill="#CBD5E1"> - worked example, Meridian Bank allows three</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Common causes</tspan><tspan fill="#CBD5E1"> - malformed message</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n4" data-beat="4">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Golden rule</tspan><tspan fill="#CBD5E1"> - never to retry blindly</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n5" data-beat="5">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Testing this flow</tspan><tspan fill="#CBD5E1"> - means forcing a timeout</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Testing this flow means forcing a timeout, confirming the system queries before it retries, and</text>
+<text x="450" y="476" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">confirming no duplicate payment is created in either outcome.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 6 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#45A4FF"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 672" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="672" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Testing</tspan> <tspan fill="#FFFFFF">this</tspan> <tspan fill="#FFFFFF">flow</tspan></text>
+<rect x="24" y="58" width="312" height="26" rx="8" fill="#0C1626" stroke="#2DD4BF" stroke-width="1.5"/>
+<text x="180" y="76" text-anchor="middle" font-size="12" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">COMPLETE</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="92" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="111" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Retry policy and</text>
+<text x="180" y="129" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">backoff</text>
+<text x="180" y="147" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">defines how many times a payment is sent</text>
+<text x="180" y="165" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="184" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="203" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Testing</text>
+<text x="180" y="221" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">policy means forcing a timeout</text>
+<text x="180" y="239" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="1">
+<rect x="24" y="256" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="275" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Meridian Bank</text>
+<text x="180" y="293" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">worked example, Meridian Bank allows three</text>
+<text x="180" y="311" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="1">
+<rect x="24" y="328" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="347" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Common causes</text>
+<text x="180" y="365" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">malformed message</text>
+<text x="180" y="383" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="1">
+<rect x="24" y="400" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="419" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Golden rule</text>
+<text x="180" y="437" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">never to retry blindly</text>
+<text x="180" y="455" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="1">
+<rect x="24" y="472" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="491" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Testing this flow</text>
+<text x="180" y="509" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">means forcing a timeout</text>
+<text x="180" y="527" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<text x="180" y="552" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Testing this flow means forcing a timeout,</text>
+<text x="180" y="571" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">confirming the system queries before it</text>
+<text x="180" y="590" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">retries, and confirming no duplicate</text>
+<text x="180" y="609" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">payment is created in either outcome.</text>
+</svg>
+</div>
+</div>
+<p class="xml-caption">Flow of the explanation in this lesson.</p></div>
+<div class="playerbar">
+<div class="studio-progress"><div class="studio-markers" id="studio-markers-studio-ch68s3"></div><input type="range" id="studio-slider-studio-ch68s3" min="0" max="1000" value="0" aria-label="Lesson timeline"></div>
+<div class="ctrl-row">
+<button class="ctrl-btn" id="studio-play-studio-ch68s3" onclick="studioTogglePlay('studio-ch68s3')" aria-label="Play lesson" title="Play lesson"><span class="ctrl-ic-play"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></span><span class="ctrl-ic-pause" style="display:none"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><rect x="6" y="5" width="4" height="14" fill="currentColor"/><rect x="14" y="5" width="4" height="14" fill="currentColor"/></svg></span></button>
+<button class="ctrl-btn studio-mute-btn" id="studio-mute-studio-ch68s3" onclick="studioToggleMute('studio-ch68s3')" aria-label="Mute narration" title="Mute / unmute narration"><svg class="studio-mute-icon" viewBox="0 0 24 24" width="28" height="28" fill="currentColor" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3z"/><path class="studio-mute-waves" d="M16 8.5a5 5 0 0 1 0 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><path class="studio-mute-waves" d="M18.5 6a9 9 0 0 1 0 12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><path class="studio-mute-x" d="M16 9.5l5 5M21 9.5l-5 5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" style="display:none"/></svg></button>
+<button class="ctrl-btn" onclick="studioSkip('studio-ch68s3', -10)" aria-label="Back 10 seconds" title="Back 10 seconds"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 5a7 7 0 1 1-6.32 4.06" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M5.5 3.5v5h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><text x="12" y="16.5" font-size="8" fill="currentColor" text-anchor="middle" font-weight="700">10</text></svg></button>
+<span class="studio-time ctrl-time" id="studio-time-studio-ch68s3">0:00 / 3:37</span>
+<button class="ctrl-btn" onclick="studioSkip('studio-ch68s3', 10)" aria-label="Forward 10 seconds" title="Forward 10 seconds"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 5a7 7 0 1 0 6.32 4.06" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M18.5 3.5v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><text x="12" y="16.5" font-size="8" fill="currentColor" text-anchor="middle" font-weight="700">10</text></svg></button>
+<span class="playerbar-spacer"></span>
+<span class="player-stage" id="studio-tag-studio-ch68s3">Step 1 of 6</span>
+<button class="ctrl-btn ctrl-step" id="studio-prevscene-studio-ch68s3" onclick="studioPrevScene('studio-ch68s3')" title="Previous step" aria-label="Previous step">&lsaquo;</button>
+<button class="ctrl-btn ctrl-step" id="studio-nextscene-studio-ch68s3" onclick="studioNextScene('studio-ch68s3')" title="Next step" aria-label="Next step">&rsaquo;</button>
+<button class="ctrl-btn ctrl-speed" id="studio-speedbtn-studio-ch68s3" onclick="studioCycleSpeed('studio-ch68s3')" title="Playback speed" aria-label="Playback speed">1x</button>
+<span class="ctrl-settings-wrap"><button class="ctrl-btn" onclick="studioToggleSettings('studio-ch68s3', event)" aria-label="Player settings" title="Settings"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5 5l2.1 2.1M16.9 16.9L19 19M19 5l-2.1 2.1M7.1 16.9L5 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button><span class="ctrl-popover" id="studio-settings-studio-ch68s3" style="display:none" onclick="event.stopPropagation()"><label class="ctrl-pop-row">Volume <input type="range" min="0" max="1" step="0.1" value="1" oninput="studioSetVolume('studio-ch68s3', this.value)" style="width:110px;accent-color:#3587FC"></label><button class="studio-btn" id="studio-captions-studio-ch68s3" onclick="studioToggleCaptions('studio-ch68s3')">Captions: On</button><button class="studio-btn" onclick="studioReplayScene('studio-ch68s3')">Replay scene</button></span></span>
+<button class="ctrl-btn" onclick="studioFullscreen('studio-ch68s3')" aria-label="Fullscreen" title="Fullscreen"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+</div>
+</div>
+</div>
+<p class="studio-caption" id="studio-caption-studio-ch68s3"></p>
+<p class="studio-loading" id="studio-loading-studio-ch68s3" style="display:none">Loading narration...</p>
+<p class="studio-error" id="studio-error-studio-ch68s3" role="alert" style="display:none"></p>
+<audio id="studio-audio-studio-ch68s3" preload="auto" src="../audio/ch68s3.mp3"></audio>
+</div>
+<div class="lesson-title-row">
+<h1>Retries, Dead Letter Queues, Timeouts and Unknown Outcomes</h1>
+<button class="save-note" type="button" onclick="pfToggleNote('studio-ch68s3')" title="Save a note on this lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L8 19l-4 1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg> Save note</button>
+</div>
+<p class="lesson-meta-line">Payment Operations Architecture: State, Resilience and Control, Lesson 3 of 8, Narration 3:37, D11 Operations, exceptions and reconciliation</p>
+<p class="lesson-note-saved" id="studio-note-saved-studio-ch68s3" style="display:none">Note saved.</p>
+<div class="note-editor" id="studio-note-editor-studio-ch68s3" style="display:none"><textarea id="studio-note-text-studio-ch68s3" rows="3" placeholder="Write a note on this lesson..." aria-label="Lesson note"></textarea><div class="note-editor-row"><button class="studio-btn primary" onclick="pfSaveNote('studio-ch68s3')">Save note</button> <button class="studio-btn" onclick="pfToggleNote('studio-ch68s3')">Cancel</button></div></div>
+<div class="dive-deeper">
+<div class="dive-head"><button type="button" class="dive-toggle" onclick="pfToggleDive(this)" aria-expanded="true"><span class="dive-spark"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 2l2.2 6.8L21 11l-6.8 2.2L12 20l-2.2-6.8L3 11l6.8-2.2z" fill="currentColor"/></svg></span><span class="dive-title">Dive deeper on this topic</span><span class="dive-chev"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 14l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button></div>
+<div class="dive-btns"><button type="button" class="dive-btn" data-kind="practice" onclick="pfDive('studio-ch68s3', 'practice')">Give me practice questions</button><button type="button" class="dive-btn" data-kind="simple" onclick="pfDive('studio-ch68s3', 'simple')">Explain this topic in simple terms</button><button type="button" class="dive-btn" data-kind="summary" onclick="pfDive('studio-ch68s3', 'summary')">Give me a summary</button><button type="button" class="dive-btn" data-kind="example" onclick="pfDive('studio-ch68s3', 'example')">Give me real-life examples</button></div>
+<div class="dive-panel" id="dive-panel-studio-ch68s3"><div class="dive-panel-body"></div></div>
+<script type="application/json" id="pf-dive-data-studio-ch68s3">{"simple": "In plain words: a retry policy defines how many times a payment is sent again, how long to wait between attempts, and how the wait grows with each failure. That is the whole idea in one sentence, and the rest of the lesson shows how it works in a real bank.", "summary": "A retry policy defines how many times a payment is sent again, how long to wait between attempts, and how the wait grows with each failure. Key points: Retry policy and backoff; Testing: forcing timeout; Meridian Bank; Common causes; Golden rule; Testing this flow.", "example": "In the worked example, Meridian Bank sends the USD 120,000 payment to the correspondent, receives no acknowledgement within thirty seconds, waits one minute and retries, then waits two minutes and retries again. In the worked example, Meridian Bank allows three attempts over ten minutes, and after the third failure the USD 120,000 payment is marked failed and routed to the exception queue."}</script>
+</div>
+<div class="lesson-feedback">
+<div class="fb-icons"><button type="button" class="fb-btn" data-kind="like" onclick="pfFeedback(this,'like')" aria-label="Like this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M7 21H4a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1h3v11zm0 0h9.6a2 2 0 0 0 1.9-1.4l1.6-5A2 2 0 0 0 18.2 12H15V6.5A2.5 2.5 0 0 0 12.5 4L11 7.5 8.6 10H7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button><button type="button" class="fb-btn" data-kind="dislike" onclick="pfFeedback(this,'dislike')" aria-label="Dislike this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M17 3h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1h-3V3zm0 0H7.4a2 2 0 0 0-1.9 1.4l-1.6 5A2 2 0 0 0 5.8 12H9v5.5A2.5 2.5 0 0 0 11.5 20L13 16.5l2.4-2.5H17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button><button type="button" class="fb-btn" data-kind="flag" onclick="pfFeedback(this,'flag')" aria-label="Flag this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M6 21V4m0 1h11l-2.5 3.5L17 12H6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+<button type="button" class="go-next" onclick="goLesson('ch68s4')" title="Next: Out of Order Events: Messages and Acknowledgements Arriving Out of Order">Go to next item &rarr;</button>
+</div>
+<div class="chips"><span class="chip">Idempotency</span><span class="chip">Settlement</span><span class="chip">Exception</span></div>
+<div class="card learn-card">
+<h2>What you will learn</h2>
+<p class="transcript"><b>Your objective.</b> By the end of this lesson, you will be able to explain retries, dead letter queues, timeouts and unknown outcomes. A retry policy defines how many times a payment is sent again, how long to wait between attempts, and how the wait grows with each failure.</p>
+<p class="transcript"><b>Why it matters.</b> The limit is usually a number of attempts or a total elapsed time, and once it is reached the payment moves to a failed state and the operations team is alerted.</p>
+<p class="transcript">Chapter objective: Learner explains payment state machines, idempotency, retries, dead letter queues, out of order events, ledger posting versus settlement, reconciliation matching hierarchies, suspense account management and operational dashboards, and designs the controls that keep a payment platform safe. Learner applies this skill in realistic banking scenarios, with clear examples and correct terminology throughout.</p>
+<h3>Key learning points</h3>
+<ul id="studio-points-studio-ch68s3">
+<li>Retry policy and backoff</li>
+<li>Testing: forcing timeout</li>
+<li>Meridian Bank</li>
+<li>Common causes</li>
+<li>Golden rule</li>
+<li>Testing this flow</li>
+</ul>
+<h3>Key terms</h3>
+<div id="studio-terms-studio-ch68s3">
+<p class="keyterm"><b>Idempotency:</b> The property that repeating the same request has the same effect as sending it once. In payments, an idempotency key lets a client safely retry a request after a timeout without creating a duplicate...</p>
+<p class="keyterm"><b>Settlement:</b> The final movement of funds between banks to discharge obligations created by cleared payments. Settlement is usually made in central bank money or through correspondent accounts.</p>
+<p class="keyterm"><b>Exception:</b> A payment that cannot be processed normally and needs manual handling, investigation or repair. Exceptions arise from missing data, failed screening, account errors or system faults.</p>
+</div>
+<p class="studio-note">Banking architecture diagram showing Retries, Dead Letter Queues, Timeouts and Unknown Outcomes.</p>
+</div>
+<section class="ic-lesson-section" id="pf-insights-studio-ch68s3">
+<h2>Insights and practice scenarios</h2>
+<p class="studio-note">Worked insights and practice scenarios for this lesson. Each one is a reusable PaymentForge case, so the same case may appear in more than one lesson.</p>
+<div data-ic-type="level" data-record-id="INS-050"><script type="application/json">{"level": 3, "meta": {"domain": "Payment Operations", "topic": "Duplicate transactions appear after release", "depth": 3, "difficulty": "advanced", "insightId": "INS-050"}, "evidence": "public-post", "recordId": "INS-050", "problem": "Solstice Bank released a new corporate payment channel that lets customers submit salary and supplier payments through an API. In the first week after release, the operations team notices duplicate debits: several corporate customers have been charged twice for the same instruction, and a few suppliers have been paid twice. The pattern is not random. Duplicates cluster around slow channel responses, where the customer system timed out, retried the submission, and both attempts were processed as separate payments. The release also changed the retry behaviour of an internal event consumer, so some events are now redelivered and processed a second time. Customers are asking for their money back, the finance team wants to know how many duplicates exist, and the release team wants to know whether to roll back.\n\nThe learner must investigate as an operations and controls problem, not only as a code defect. The core question is how the platform distinguishes a technical retry from a genuine second payment, and what happens when that distinction fails. The answer involves idempotency keys, payload hashes, duplicate detection rules, durable state and a recovery process that returns money exactly once. The case also tests the discipline of not silently discarding ambiguous payments: an uncertain match must go to review, never to an automatic delete or an automatic re-post.", "solution": "Start by containing the failure: confirm whether duplicates are still being created and, if so, stop the affected path or route it through a manual check. Then establish the affected population using stable identifiers rather than guesswork: match on idempotency key, instruction reference, end-to-end identification, debtor, creditor, amount, currency and value date, and separate confirmed duplicates from uncertain matches. For confirmed duplicates, reverse the second financial effect exactly once through the controlled reversal process, with a unique reversal reference linked to the original payment, and confirm the customer account and the supplier position. Uncertain matches go to a review worklist with maker-checker approval; they are never silently discarded or automatically re-posted.\n\nThen fix the cause at each layer. Persist the idempotency key with the payload hash, the original payment reference, timestamps and outcome, so a retry with the same key returns the original reference and creates no second debit. Apply duplicate detection using stable business identifiers, but do not rely on amount and beneficiary alone, because two genuine identical payments are possible. Make event redelivery idempotent so a redelivered event updates state once. Define the retention and replay policy for idempotency records, and add monitoring that alerts on duplicate detection events and on retries after timeouts. Finally, re-run the affected population check after the fix to prove no new duplicates are being created, and report the count, the value and the recovery status to finance and to affected customers.", "decision": {"question": "Solstice Bank released a new corporate payment API. In the first week, customers report duplicate debits: slow channel responses led to retries that were processed as separate payments, and an event consumer redelivers some events. You are the business analyst leading the investigation and the recovery.", "context": "", "options": [{"label": "A", "detail": "Block all retries in the channel, since retries are the cause of the problem.", "correct": false}, {"label": "B", "detail": "Tell customers to submit a new payment to replace the duplicate, since the money will sort itself out in reconciliation.", "correct": false}, {"label": "C", "detail": "Stop the duplicate path, identify every affected payment with idempotency and reference data, reverse duplicates exactly once through a controlled process, and fix idempotency, deduplication and redelivery handling.", "correct": true}, {"label": "D", "detail": "Delete the second debit from the ledger directly, since it is obviously a duplicate.", "correct": false}]}, "decisionRationale": "Option C is correct because it contains the failure, identifies the full affected population, corrects each duplicate exactly once, and fixes the control that failed. Option B creates a third payment. Option D deletes a financial record without an audited reversal. Option A removes a legitimate recovery mechanism and leaves genuine timeouts with no safe path.", "flow": {"steps": [{"title": "Contain the duplicate path and open the incident record", "actor": "Operations Lead", "note": "Incident record"}, {"title": "Define matching rules and identify confirmed duplicates and uncertain matches", "actor": "Business Analyst", "note": "Reconciliation report"}, {"title": "Reverse confirmed duplicates exactly once with linked reversal references", "actor": "Finance Operations", "note": "Core ledger"}, {"title": "Persist idempotency keys with payload hash and original reference", "actor": "Integration Engineer", "note": "Payment platform"}, {"title": "Make event redelivery idempotent and add duplicate alerts", "actor": "Integration Engineer", "note": "Payment platform"}, {"title": "Re-run the population check after the fix and report recovery status", "actor": "Business Analyst", "note": "Reconciliation report"}, {"title": "Notify affected customers with the reversal reference and date", "actor": "Customer Support", "note": "Customer communications"}]}, "happy": ["Duplicates stop being created, every confirmed duplicate is reversed exactly once with a linked reference, uncertain matches are resolved through review, and the idempotency and redelivery controls are proven by a clean re-run of the population check. Customers receive a clear statement of what was reversed and when."], "negative": [{"title": "Same key with altered payload", "detail": "A retry arrives with the same idempotency key but different amount or beneficiary. Reject the request as a key conflict, return an error, and route it for review rather than creating a payment."}, {"title": "Retry after timeout", "detail": "The channel times out, the customer retries, and the first attempt later completes. Return the original reference for the same key so the retry is recognised as the same instruction."}, {"title": "Duplicate detected after downstream submission", "detail": "The duplicate is found only after the second payment has left the bank. Reverse through the controlled process with a linked reversal reference and reconcile the supplier position."}, {"title": "Concurrent requests", "detail": "Two identical requests arrive at the same moment before either is persisted. Use a durable uniqueness constraint on the idempotency key so only one request creates the payment."}], "technical": ["Persist the idempotency key scoped to the initiating party and instruction, the payload hash, the original payment ID, the timestamps and the outcome, and keep those records for the agreed retention period. Store the duplicate detection rules with their version and effective date, and log every duplicate detection event, reversal and review decision with operator, timestamp and reason. Keep the original and the reversal linked by reference so the audit trail shows exactly one financial effect per genuine instruction."], "messages": [{"message": "pain.001", "title": "Corporate payment instruction submitted through the API", "fields": [{"tag": "Instruction identification and end-to-end identification", "name": "Instruction identification and end-to-end identification", "relevant": true}, {"tag": "Idempotency key in the API request", "name": "Idempotency key in the API request", "relevant": true}, {"tag": "Debtor and creditor account details", "name": "Debtor and creditor account details", "relevant": true}, {"tag": "Amount and currency", "name": "Amount and currency", "relevant": true}]}, {"message": "pacs.008", "title": "Credit transfer created from each accepted instruction", "fields": [{"tag": "Interbank settlement amount and currency", "name": "Interbank settlement amount and currency", "relevant": true}, {"tag": "Creditor agent and account", "name": "Creditor agent and account", "relevant": true}, {"tag": "Instruction reference used for duplicate matching", "name": "Instruction reference used for duplicate matching", "relevant": true}]}, {"message": "pacs.002", "title": "Payment status report confirming acceptance or rejection of each attempt", "fields": [{"tag": "Original instruction reference", "name": "Original instruction reference", "relevant": true}, {"tag": "Status code and reason code", "name": "Status code and reason code", "relevant": true}, {"tag": "Timestamp of each status transition", "name": "Timestamp of each status transition", "relevant": true}]}], "accounting": ["Each duplicate is a second debit to the customer account and a second credit to the supplier, so the reversal must credit the customer and, where the supplier was overpaid, recover or offset the second credit through the agreed process. Reversals go through suspense only where the standard process requires it, and each reversal is reconciled separately from the original payment so finance can prove the customer is whole. Operations need a duplicate worklist with ageing and service levels, a daily count and value of duplicates detected, and a rule that no operator reverses a payment without a linked original reference and a second approval for large values."], "gherkin": {"scenarios": [{"given": "an already accepted instruction,", "when": "the identical request is retried with the same idempotency key,", "then": "the platform returns the original payment reference and does not create a second debit."}, {"given": "two payments share amount and beneficiary,", "when": "they carry different idempotency keys and references,", "then": "they are treated as potentially genuine and routed for review rather than automatically discarded."}, {"given": "a confirmed duplicate,", "when": "the reversal is processed,", "then": "the customer account is credited exactly once with a reversal reference linked to the original payment."}]}, "check": {"questions": [{"question": "How do you distinguish a technical retry from a genuine second payment?", "options": ["By the time of day", "By the idempotency key and stable instruction identifiers", "By the channel used", "By amount and beneficiary alone"], "answer": 1, "explanation": "An idempotency key scoped to the initiating party and instruction, with the payload hash and original reference, identifies a retry; amount and beneficiary alone cannot, because two genuine identical payments are possible."}, {"question": "What should happen to an uncertain duplicate match?", "options": ["Ignore it", "Delete it silently", "Post it again", "Route it to a review worklist with maker-checker approval"], "answer": 3, "explanation": "An ambiguous payment must never be silently discarded or automatically re-posted; it goes to review with an audited decision."}, {"question": "Why is a direct ledger delete the wrong way to fix a duplicate debit?", "options": ["It changes the supplier balance only", "It is too slow", "It removes the financial record without an audited reversal linked to the original", "It needs a new system"], "answer": 2, "explanation": "A duplicate must be corrected through a controlled reversal with a linked reference, so the audit trail proves exactly one financial effect per genuine instruction."}, {"question": "What makes event redelivery safe?", "options": ["Faster consumers", "More retries", "Idempotent processing so a redelivered event updates state once", "Longer timeouts"], "answer": 2, "explanation": "Idempotent event handling ensures a redelivered event does not create a second payment or a second debit."}]}}</script></div>
+<div data-ic-type="level" data-record-id="PAY-002"><script type="application/json">{"level": 2, "meta": {"domain": "Payment processing", "topic": "Timeout after submission with unknown outcome", "difficulty": "intermediate", "depth": 2, "scenarioId": "PAY-002"}, "evidence": "practice-scenario", "recordId": "PAY-002", "problem": "The channel times out after submitting a payment. It is unclear whether the payment engine accepted or executed it.", "solution": "This scenario is covered in depth in the Payment Exception Q&A bank (QA 11, QA 14, QA 28, QA 36). The material below adds the end-to-end flow, the messages involved, the structured control points and the acceptance criterion.", "flow": {"steps": [{"title": "Channel"}, {"title": "API gateway"}, {"title": "payment engine"}, {"title": "status store"}, {"title": "clearing connector"}]}, "technical": ["Use durable state, correlation IDs, idempotency, outbox/inbox patterns and operational ageing alerts", "Distinguish technical acknowledgement from settlement finality"], "messages": [{"message": "pain.001", "title": "Customer credit transfer initiation", "fields": [{"tag": "pain.001", "name": "Customer credit transfer initiation", "relevant": true, "note": ""}]}, {"message": "pacs.002", "title": "Payment status report", "fields": [{"tag": "pacs.002", "name": "Payment status report", "relevant": true, "note": ""}]}, {"message": "camt.056", "title": "FI-to-FI payment cancellation request", "fields": [{"tag": "camt.056", "name": "FI-to-FI payment cancellation request", "relevant": true, "note": "only if a valid cancellation process is initiated"}]}], "gherkin": {"scenarios": [{"given": "a submission timeout", "when": "the client enquires using the original reference", "then": "the platform returns the current known state and does not create a new transaction"}]}}</script></div>
+<div data-ic-type="level" data-record-id="PAY-070"><script type="application/json">{"level": 3, "meta": {"domain": "Operations & resilience", "topic": "Payment queue grows during downstream outage", "difficulty": "intermediate", "depth": 3, "scenarioId": "PAY-070"}, "evidence": "practice-scenario", "recordId": "PAY-070", "problem": "A clearing connector outage causes payment backlog and threatens cut-off deadlines.", "decision": {"question": "How do you recover a payment backlog safely after an outage?", "options": [{"label": "Resubmit the instruction with a new reference without checking the original", "detail": "Send the payment again as if the first attempt never happened.", "why": "The original instruction may already have been accepted. A new reference creates a second payment.", "outcome": "A duplicate payment is created and must be reversed.", "correct": false}, {"label": "Treat the unclear outcome as a failure and reverse the payment at once", "detail": "Assume the payment failed and move the money back immediately.", "why": "An unclear outcome is not a failure. Reversal is only correct after the current state is confirmed; reversing at once can move money twice.", "outcome": "The payment is reversed even though it had already settled.", "correct": false}, {"label": "Apply queue prioritisation, back-pressure and controlled recovery", "detail": "Apply queue prioritisation, back-pressure and controlled recovery.", "correct": true, "why": "This is the recommended solution in this case. Identify payments at risk of missing cut-off, communicate impact, prevent retry storms and reconcile all queued items after restoration.", "outcome": "Queued payments resume in a controlled order without duplicates and within scheme constraints."}, {"label": "Close the case without investigating and wait for the customer to report it", "detail": "Log the incident and take no further action.", "why": "Every case in this set requires investigation, evidence and a controlled outcome before it is closed.", "outcome": "The break stays open and is found later by reconciliation or by the customer.", "correct": false}]}, "solution": "Apply queue prioritisation, back-pressure and controlled recovery. Identify payments at risk of missing cut-off, communicate impact, prevent retry storms and reconcile all queued items after restoration.", "flow": {"steps": [{"title": "Payment engine"}, {"title": "durable queue"}, {"title": "connector"}, {"title": "recovery/replay"}, {"title": "clearing"}]}, "happy": ["Queued payments resume in a controlled order without duplicates and within scheme constraints."], "negative": ["Repeated connector retries", "queue storage pressure", "expired payments", "partial replay"], "technical": ["Define queue ageing, priority, retry schedule, circuit breaker, dead-letter handling, recovery objectives and operational command roles", "Other standard named in this case: Rail-specific messages", "Other standard named in this case: internal queue events"], "accounting": ["Identify payments at risk of missing cut-off, communicate impact, prevent retry storms and reconcile all queued items after restoration."], "gherkin": {"scenarios": [{"given": "the clearing connector is unavailable", "when": "queue depth crosses the threshold", "then": "alerts and controlled back-pressure are activated"}]}, "check": {"questions": [{"question": "What is the recommended approach in this case?", "options": ["Resubmit the instruction with a new reference without checking the original", "Treat the unclear outcome as a failure and reverse the payment at once", "Apply queue prioritisation, back-pressure and controlled recovery", "Close the case without investigating and wait for the customer to report it"], "answer": 2, "explanation": "Apply queue prioritisation, back-pressure and controlled recovery.", "whyWrong": ["The original instruction may already have been accepted. A new reference creates a second payment.", "An unclear outcome is not a failure. Reversal is only correct after the current state is confirmed; reversing at once can move money twice.", "", "Every case in this set requires investigation, evidence and a controlled outcome before it is closed."]}, {"question": "Which of these is a negative path or edge case in this scenario?", "options": ["The payment settles in full with no exceptions", "The ledger and the statement agree on the first attempt", "The customer receives the funds before the instruction is sent", "Repeated connector retries"], "answer": 3, "explanation": "The scenario lists \"Repeated connector retries\" among its negative paths and edge cases.", "whyWrong": ["That describes a successful outcome, not a negative path in this scenario.", "That describes a successful outcome, not a negative path in this scenario.", "That describes a successful outcome, not a negative path in this scenario.", ""]}, {"question": "What happens on the happy path?", "options": ["Queued payments resume in a controlled order without duplicates and within scheme constraints", "Repeated connector retries", "Queue storage pressure", "Expired payments"], "answer": 0, "explanation": "Queued payments resume in a controlled order without duplicates and within scheme constraints.", "whyWrong": ["", "That is a failure outcome, not the happy path in this scenario.", "That is a failure outcome, not the happy path in this scenario.", "That is a failure outcome, not the happy path in this scenario."]}]}}</script></div>
+</section>
+<div class="fw-card" id="pf-exercise-studio-ch68s3">
+<p class="fw-label">Practise this lesson</p>
+<h2>Exercise</h2>
+<p><b>Apply the concept in this lesson to a real banking scenario.</b></p>
+<p>Use the definition, the example and the key points in this lesson.</p>
+<ol class="fw-steps">
+<li><b>What to do.</b> Explain the concept in your own words, give a banking example with an amount, and state what goes wrong if it is misunderstood.</li>
+</ol>
+<p><button class="studio-btn" id="pf-ex-btn-studio-ch68s3" onclick="pfRevealExercise('studio-ch68s3')">Show the answer</button></p>
+<div class="fw-exercise-answer" id="pf-ex-answer-studio-ch68s3">
+<p><b>Correct result.</b> A correct answer names the concept accurately, uses a realistic banking example with a concrete amount, and identifies the consequence of getting it wrong.</p>
+<p><b>Why.</b> Understanding is not memorising a definition. It is being able to explain it, apply it, and spot the failure it prevents.</p>
+</div>
+</div>
+<div class="fw-card" id="pf-quiz-studio-ch68s3" data-answer="0">
+<p class="fw-label">Check your understanding</p>
+<h2>Practice question</h2>
+<p><b>Which of the following best describes retries, dead letter queues, timeouts and unknown outcomes?</b></p>
+<button type="button" class="quiz-opt" data-idx="0" onclick="pfCheckAnswer('studio-ch68s3', this)">A retry policy defines how many times a payment is sent again, how long to wait between attempts, and how the wait grows with each failure</button>
+<button type="button" class="quiz-opt" data-idx="1" onclick="pfCheckAnswer('studio-ch68s3', this)">A payment state machine lists every state a payment can sit in and every move between states that is allowed, and it is the single control that keeps operations, settlement and customer service looking at the same truth</button>
+<button type="button" class="quiz-opt" data-idx="2" onclick="pfCheckAnswer('studio-ch68s3', this)">Allowed transitions follow the order of the work, and each one is triggered by a real event such as a validation result, a funds check, a settlement confirmation or a timeout</button>
+<button type="button" class="quiz-opt" data-idx="3" onclick="pfCheckAnswer('studio-ch68s3', this)">Illegal transitions are moves the state machine must refuse, because they would let a payment exist in two contradictory states at once</button>
+<div class="quiz-feedback" id="pf-quiz-fb-studio-ch68s3"></div>
+<script type="application/json" id="pf-quiz-data-studio-ch68s3">{"why_wrong": ["", "This describes a different concept from this chapter, not retries, dead letter queues, timeouts and unknown outcomes.", "This describes a different concept from this chapter, not retries, dead letter queues, timeouts and unknown outcomes.", "This describes a different concept from this chapter, not retries, dead letter queues, timeouts and unknown outcomes."], "explanation": "A retry policy defines how many times a payment is sent again, how long to wait between attempts, and how the wait grows with each failure. This is the core idea of the lesson."}</script>
+</div>
+<div class="fw-card">
+<p class="fw-label">Takeaway and next step</p>
+<h2>What to remember</h2>
+<p>Testing the policy means forcing a timeout, counting the retries, checking the gaps between them, and confirming the key and the UETR stay the same on every attempt.</p>
+<p>Reconcile the payment in this lesson against its statement and find the break.</p>
+<p><a class="fw-tool-link" href="../simulators/accounting.html">Open the Accounting and Reconciliation Lab &rarr;</a></p>
+<p class="studio-note">Builds on "Idempotency and Duplicate Prevention".</p>
+</div>
+<section class="upnext" id="studio-upnext-studio-ch68s3" style="display:none" aria-label="Up next">
+<span class="tag">Up next</span>
+<h2>Up next: Out of Order Events: Messages and Acknowledgements Arriving Out of Order</h2>
+<p>Lesson 4 of 8, Payment Operations Architecture: State, Resilience and Control, Narration 3:30</p>
+<div class="row">
+<button class="studio-btn primary" onclick="goLessonAuto('ch68s4')">Next lesson &rarr;</button>
+<button class="studio-btn" onclick="goLesson('ch68s2')">&larr; Previous lesson</button>
+<button class="studio-btn" onclick="studioReplayLesson('studio-ch68s3')">Replay this lesson</button>
+</div>
+</section>
+<div class="lesson-nav">
+<button class="studio-btn" onclick="goLesson('ch68s2')" title="Previous lesson: Idempotency and Duplicate Prevention">&larr; Previous</button>
+<button class="studio-btn" onclick="goChapterContents('ch68')">Chapter contents</button>
+<button class="studio-btn primary" onclick="goLesson('ch68s4')" title="Next lesson: Out of Order Events: Messages and Acknowledgements Arriving Out of Order">Next &rarr;</button>
+</div>
+<div class="card transcript-card">
+<h2>Transcript and full text</h2>
+<details class="studio-transcript" id="studio-transcript-details-studio-ch68s3"><summary>Show transcript</summary>
+<p class="transcript" id="studio-transcript-studio-ch68s3">A retry policy defines how many times a payment is sent again, how long to wait between attempts, and how the wait grows with each failure. The usual pattern is exponential backoff, where the first retry waits a few seconds, the next waits longer, and later retries wait minutes, so a struggling system is not flooded with repeated attempts. Each retry must carry the same idempotency key and the same UETR, so the receiving system recognises it as the same payment rather than a new one. In the worked example, Meridian Bank sends the USD 120,000 payment to the correspondent, receives no acknowledgement within thirty seconds, waits one minute and retries, then waits two minutes and retries again. Testing the policy means forcing a timeout, counting the retries, checking the gaps between them, and confirming the key and the UETR stay the same on every attempt. Retry must stop at a defined limit, because endless retry can turn a small failure into a flood and can pay a payment twice if the original attempt actually succeeded. The limit is usually a number of attempts or a total elapsed time, and once it is reached the payment moves to a failed state and the operations team is alerted. The limit must be short enough to protect the customer from long delays, but long enough to ride out a brief outage, and the choice is agreed with the business rather than left to a developer default. In the worked example, Meridian Bank allows three attempts over ten minutes, and after the third failure the USD 120,000 payment is marked failed and routed to the exception queue. Testing the limit means forcing repeated failures, confirming the payment stops after exactly three attempts, and confirming the alert reaches operations. A dead letter queue holds messages that could not be processed after retries, and it is a holding area rather than a bin, because every message in it still needs a decision. Each entry carries the message, the error that stopped it, the number of attempts, and the time it failed, so an operator can see why it stopped and what to do next. Common causes are a malformed message, a missing account, a system that is down, or a validation rule that rejects the content. In the worked example, the USD 120,000 payment lands in the dead letter queue when the correspondent system rejects the message format, and an operator corrects the field, replays the message, and watches it complete. Testing the queue means sending a bad message, confirming it lands in the queue with its error, replaying it after a correction, and confirming the replay creates one payment. A timeout leaves the outcome unknown, because the payment may have been processed by the receiving system even though the acknowledgement never arrived. The golden rule is never to retry blindly, because a blind retry can pay the same USD 120,000 twice. Instead, operations checks the real outcome first, by asking the correspondent for the payment status using the UETR, by checking the settlement account for a matching debit, and by reading the latest status report from the chain. In the worked example, Meridian Bank times out on the correspondent, queries the status by UETR, learns the payment was never received, and only then retries safely. If the query had shown the payment was already settled, operations would have marked it settled and stopped. Testing this flow means forcing a timeout, confirming the system queries before it retries, and confirming no duplicate payment is created in either outcome.</p>
+<div id="studio-paras-studio-ch68s3">
+<p class="transcript">A retry policy defines how many times a payment is sent again, how long to wait between attempts, and how the wait grows with each failure. The usual pattern is exponential backoff, where the first retry waits a few seconds, the next waits longer, and later retries wait minutes, so a struggling system is not flooded with repeated attempts. Each retry must carry the same idempotency key and the same UETR, so the receiving system recognises it as the same payment rather than a new one. In the worked example, Meridian Bank sends the USD 120,000 payment to the correspondent, receives no acknowledgement within thirty seconds, waits one minute and retries, then waits two minutes and retries again. Testing the policy means forcing a timeout, counting the retries, checking the gaps between them, and confirming the key and the UETR stay the same on every attempt.</p>
+<p class="transcript">Retry must stop at a defined limit, because endless retry can turn a small failure into a flood and can pay a payment twice if the original attempt actually succeeded. The limit is usually a number of attempts or a total elapsed time, and once it is reached the payment moves to a failed state and the operations team is alerted. The limit must be short enough to protect the customer from long delays, but long enough to ride out a brief outage, and the choice is agreed with the business rather than left to a developer default. In the worked example, Meridian Bank allows three attempts over ten minutes, and after the third failure the USD 120,000 payment is marked failed and routed to the exception queue. Testing the limit means forcing repeated failures, confirming the payment stops after exactly three attempts, and confirming the alert reaches operations.</p>
+<p class="transcript">A dead letter queue holds messages that could not be processed after retries, and it is a holding area rather than a bin, because every message in it still needs a decision. Each entry carries the message, the error that stopped it, the number of attempts, and the time it failed, so an operator can see why it stopped and what to do next. Common causes are a malformed message, a missing account, a system that is down, or a validation rule that rejects the content. In the worked example, the USD 120,000 payment lands in the dead letter queue when the correspondent system rejects the message format, and an operator corrects the field, replays the message, and watches it complete. Testing the queue means sending a bad message, confirming it lands in the queue with its error, replaying it after a correction, and confirming the replay creates one payment.</p>
+<p class="transcript">A timeout leaves the outcome unknown, because the payment may have been processed by the receiving system even though the acknowledgement never arrived. The golden rule is never to retry blindly, because a blind retry can pay the same USD 120,000 twice. Instead, operations checks the real outcome first, by asking the correspondent for the payment status using the UETR, by checking the settlement account for a matching debit, and by reading the latest status report from the chain. In the worked example, Meridian Bank times out on the correspondent, queries the status by UETR, learns the payment was never received, and only then retries safely. If the query had shown the payment was already settled, operations would have marked it settled and stopped. Testing this flow means forcing a timeout, confirming the system queries before it retries, and confirming no duplicate payment is created in either outcome.</p>
+</div>
+</details>
+<details class="studio-transcript"><summary>Full lesson text (all scenes)</summary><div id="studio-transcript-full-studio-ch68s3"></div></details>
+<p><button class="studio-btn primary" id="done-ch68s3" onclick="studioMarkSceneDone('studio-ch68s3')">Mark lesson complete</button> <span class="studio-note">Completing a lesson updates your progress dashboard on the homepage.</span></p>
+</div>
+<p class="studio-note">Scene timestamps are estimated by allocating the narration text proportionally across the real audio length. The audio playback position is the source of truth: pause freezes the visual, seeking restores the correct scene, replay restarts the scene animation.</p>
+</div>
+<script>window.__PA_STUDIO_QUEUE = window.__PA_STUDIO_QUEUE || []; window.__PA_STUDIO_QUEUE.push(["studio-ch68s3", {"sample_id": "studio-ch68s3", "chapter_id": "ch68", "title": "Retries, Dead Letter Queues, Timeouts and Unknown Outcomes", "domain": "D11 Operations, exceptions and reconciliation", "objective": "Learner explains payment state machines, idempotency, retries, dead letter queues, out of order events, ledger posting versus settlement, reconciliation matching hierarchies, suspense account management and operational dashboards, and designs the controls that keep a payment platform safe. Learner applies this skill in realistic banking scenarios, with clear examples and correct terminology throughout.", "scenes": [{"id": "ch68s3", "section_id": "ch68s3", "title": "Retries, Dead Letter Queues, Timeouts and Unknown Outcomes", "audio": "../audio/ch68s3.mp3", "duration_sec": 217.2, "points": ["A retry policy defines how many times a payment is sent again, how long to wait between attempts, and how the wait grows with each failure.", "Retry must stop at a defined limit, because endless retry can turn a small failure into a flood and can pay a payment twice if the original attempt actually succeeded.", "A dead letter queue holds messages that could not be processed after retries, and it is a holding area rather than a bin, because every message in it still needs a decision.", "A timeout leaves the outcome unknown, because the payment may have been processed by the receiving system even though the acknowledgement never arrived."], "terms": [{"term": "Idempotency", "def": "The property that repeating the same request has the same effect as sending it once. In payments, an idempotency key lets a client safely retry a request after a timeout without creating a duplicate..."}, {"term": "Settlement", "def": "The final movement of funds between banks to discharge obligations created by cleared payments. Settlement is usually made in central bank money or through correspondent accounts."}, {"term": "Exception", "def": "A payment that cannot be processed normally and needs manual handling, investigation or repair. Exceptions arise from missing data, failed screening, account errors or system faults."}], "transcript": "A retry policy defines how many times a payment is sent again, how long to wait between attempts, and how the wait grows with each failure. The usual pattern is exponential backoff, where the first retry waits a few seconds, the next waits longer, and later retries wait minutes, so a struggling system is not flooded with repeated attempts. Each retry must carry the same idempotency key and the same UETR, so the receiving system recognises it as the same payment rather than a new one. In the worked example, Meridian Bank sends the USD 120,000 payment to the correspondent, receives no acknowledgement within thirty seconds, waits one minute and retries, then waits two minutes and retries again. Testing the policy means forcing a timeout, counting the retries, checking the gaps between them, and confirming the key and the UETR stay the same on every attempt. Retry must stop at a defined limit, because endless retry can turn a small failure into a flood and can pay a payment twice if the original attempt actually succeeded. The limit is usually a number of attempts or a total elapsed time, and once it is reached the payment moves to a failed state and the operations team is alerted. The limit must be short enough to protect the customer from long delays, but long enough to ride out a brief outage, and the choice is agreed with the business rather than left to a developer default. In the worked example, Meridian Bank allows three attempts over ten minutes, and after the third failure the USD 120,000 payment is marked failed and routed to the exception queue. Testing the limit means forcing repeated failures, confirming the payment stops after exactly three attempts, and confirming the alert reaches operations. A dead letter queue holds messages that could not be processed after retries, and it is a holding area rather than a bin, because every message in it still needs a decision. Each entry carries the message, the error that stopped it, the number of attempts, and the time it failed, so an operator can see why it stopped and what to do next. Common causes are a malformed message, a missing account, a system that is down, or a validation rule that rejects the content. In the worked example, the USD 120,000 payment lands in the dead letter queue when the correspondent system rejects the message format, and an operator corrects the field, replays the message, and watches it complete. Testing the queue means sending a bad message, confirming it lands in the queue with its error, replaying it after a correction, and confirming the replay creates one payment. A timeout leaves the outcome unknown, because the payment may have been processed by the receiving system even though the acknowledgement never arrived. The golden rule is never to retry blindly, because a blind retry can pay the same USD 120,000 twice. Instead, operations checks the real outcome first, by asking the correspondent for the payment status using the UETR, by checking the settlement account for a matching debit, and by reading the latest status report from the chain. In the worked example, Meridian Bank times out on the correspondent, queries the status by UETR, learns the payment was never received, and only then retries safely. If the query had shown the payment was already settled, operations would have marked it settled and stopped. Testing this flow means forcing a timeout, confirming the system queries before it retries, and confirming no duplicate payment is created in either outcome.", "paragraphs": ["A retry policy defines how many times a payment is sent again, how long to wait between attempts, and how the wait grows with each failure. The usual pattern is exponential backoff, where the first retry waits a few seconds, the next waits longer, and later retries wait minutes, so a struggling system is not flooded with repeated attempts. Each retry must carry the same idempotency key and the same UETR, so the receiving system recognises it as the same payment rather than a new one. In the worked example, Meridian Bank sends the USD 120,000 payment to the correspondent, receives no acknowledgement within thirty seconds, waits one minute and retries, then waits two minutes and retries again. Testing the policy means forcing a timeout, counting the retries, checking the gaps between them, and confirming the key and the UETR stay the same on every attempt.", "Retry must stop at a defined limit, because endless retry can turn a small failure into a flood and can pay a payment twice if the original attempt actually succeeded. The limit is usually a number of attempts or a total elapsed time, and once it is reached the payment moves to a failed state and the operations team is alerted. The limit must be short enough to protect the customer from long delays, but long enough to ride out a brief outage, and the choice is agreed with the business rather than left to a developer default. In the worked example, Meridian Bank allows three attempts over ten minutes, and after the third failure the USD 120,000 payment is marked failed and routed to the exception queue. Testing the limit means forcing repeated failures, confirming the payment stops after exactly three attempts, and confirming the alert reaches operations.", "A dead letter queue holds messages that could not be processed after retries, and it is a holding area rather than a bin, because every message in it still needs a decision. Each entry carries the message, the error that stopped it, the number of attempts, and the time it failed, so an operator can see why it stopped and what to do next. Common causes are a malformed message, a missing account, a system that is down, or a validation rule that rejects the content. In the worked example, the USD 120,000 payment lands in the dead letter queue when the correspondent system rejects the message format, and an operator corrects the field, replays the message, and watches it complete. Testing the queue means sending a bad message, confirming it lands in the queue with its error, replaying it after a correction, and confirming the replay creates one payment.", "A timeout leaves the outcome unknown, because the payment may have been processed by the receiving system even though the acknowledgement never arrived. The golden rule is never to retry blindly, because a blind retry can pay the same USD 120,000 twice. Instead, operations checks the real outcome first, by asking the correspondent for the payment status using the UETR, by checking the settlement account for a matching debit, and by reading the latest status report from the chain. In the worked example, Meridian Bank times out on the correspondent, queries the status by UETR, learns the payment was never received, and only then retries safely. If the query had shown the payment was already settled, operations would have marked it settled and stopped. Testing this flow means forcing a timeout, confirming the system queries before it retries, and confirming no duplicate payment is created in either outcome."], "accessibility": "Banking architecture diagram showing Retries, Dead Letter Queues, Timeouts and Unknown Outcomes.", "visual_type": "architecture", "visual_choice_reason": "architecture chapter", "beats": [{"t0": 0.0, "t1": 43.3, "title": "Retry policy and backoff", "note": "A retry policy defines how many times a payment is sent again, how long to wait between attempts, and how the wait grows with each failure.", "highlight_nodes": ["n0"], "highlight_conns": [], "highlight_fields": []}, {"t0": 43.3, "t1": 86.4, "title": "Testing: forcing timeout", "note": "Testing the policy means forcing a timeout, counting the retries, checking the gaps between them, and confirming the key and the UETR stay the same on every attempt.", "highlight_nodes": ["n1"], "highlight_conns": ["c0"], "highlight_fields": []}, {"t0": 86.4, "t1": 128.2, "title": "Meridian Bank", "note": "In the worked example, Meridian Bank allows three attempts over ten minutes, and after the third failure the USD 120,000 payment is marked failed and routed to the exception queue.", "highlight_nodes": ["n2"], "highlight_conns": ["c1"], "highlight_fields": []}, {"t0": 128.2, "t1": 169.9, "title": "Common causes", "note": "Common causes are a malformed message, a missing account, a system that is down, or a validation rule that rejects the content.", "highlight_nodes": ["n3"], "highlight_conns": ["c2"], "highlight_fields": []}, {"t0": 169.9, "t1": 207.4, "title": "Golden rule", "note": "The golden rule is never to retry blindly, because a blind retry can pay the same USD 120,000 twice.", "highlight_nodes": ["n4"], "highlight_conns": ["c3"], "highlight_fields": []}, {"t0": 207.4, "t1": 217.2, "title": "Testing this flow", "note": "Testing this flow means forcing a timeout, confirming the system queries before it retries, and confirming no duplicate payment is created in either outcome.", "highlight_nodes": ["n5"], "highlight_conns": ["c4"], "highlight_fields": []}], "node_ids": ["n0", "n1", "n2", "n3", "n4", "n5"], "framework": {"objective": "By the end of this lesson, you will be able to explain retries, dead letter queues, timeouts and unknown outcomes. A retry policy defines how many times a payment is sent again, how long to wait between attempts, and how the wait grows with each failure.", "why_matters": "The limit is usually a number of attempts or a total elapsed time, and once it is reached the payment moves to a failed state and the operations team is alerted.", "technical_example": "Each retry must carry the same idempotency key and the same UETR, so the receiving system recognises it as the same payment rather than a new one.", "failure_recovery": "In the worked example, Meridian Bank allows three attempts over ten minutes, and after the third failure the USD 120,000 payment is marked failed and routed to the exception queue. In the worked example, the USD 120,000 payment lands in the dead letter queue when the correspondent system rejects the message format, and an operator corrects the field, replays the message, and watches it complete.", "exercise": {"task": "Apply the concept in this lesson to a real banking scenario.", "info": "Use the definition, the example and the key points in this lesson.", "action": "Explain the concept in your own words, give a banking example with an amount, and state what goes wrong if it is misunderstood.", "correct": "A correct answer names the concept accurately, uses a realistic banking example with a concrete amount, and identifies the consequence of getting it wrong.", "why": "Understanding is not memorising a definition. It is being able to explain it, apply it, and spot the failure it prevents."}, "assessment": {"question": "Which of the following best describes retries, dead letter queues, timeouts and unknown outcomes?", "options": ["A retry policy defines how many times a payment is sent again, how long to wait between attempts, and how the wait grows with each failure", "A payment state machine lists every state a payment can sit in and every move between states that is allowed, and it is the single control that keeps operations, settlement and customer service looking at the same truth", "Allowed transitions follow the order of the work, and each one is triggered by a real event such as a validation result, a funds check, a settlement confirmation or a timeout", "Illegal transitions are moves the state machine must refuse, because they would let a payment exist in two contradictory states at once"], "answer": 0, "explanation": "A retry policy defines how many times a payment is sent again, how long to wait between attempts, and how the wait grows with each failure. This is the core idea of the lesson.", "why_wrong": ["", "This describes a different concept from this chapter, not retries, dead letter queues, timeouts and unknown outcomes.", "This describes a different concept from this chapter, not retries, dead letter queues, timeouts and unknown outcomes.", "This describes a different concept from this chapter, not retries, dead letter queues, timeouts and unknown outcomes."], "source": "generated:ch68s3"}, "takeaway": "Testing the policy means forcing a timeout, counting the retries, checking the gaps between them, and confirming the key and the UETR stay the same on every attempt.", "prereq": "ch68s2", "next": "ch68s4", "connection_note": "Builds on \"Idempotency and Duplicate Prevention\".", "tool": {"slug": "accounting", "label": "Accounting and Reconciliation Lab", "url": "../simulators/accounting.html", "scenario": "Reconcile the payment in this lesson against its statement and find the break."}, "simple": "In plain words: a retry policy defines how many times a payment is sent again, how long to wait between attempts, and how the wait grows with each failure. That is the whole idea in one sentence, and the rest of the lesson shows how it works in a real bank.", "summary": "A retry policy defines how many times a payment is sent again, how long to wait between attempts, and how the wait grows with each failure. Key points: Retry policy and backoff; Testing: forcing timeout; Meridian Bank; Common causes; Golden rule; Testing this flow.", "example": "In the worked example, Meridian Bank sends the USD 120,000 payment to the correspondent, receives no acknowledgement within thirty seconds, waits one minute and retries, then waits two minutes and retries again. In the worked example, Meridian Bank allows three attempts over ten minutes, and after the third failure the USD 120,000 payment is marked failed and routed to the exception queue."}}], "chapter_title": "Payment Operations Architecture: State, Resilience and Control", "meta_line": "Payment Operations Architecture: State, Resilience and Control, Lesson 3 of 8, Narration 3:37, D11 Operations, exceptions and reconciliation", "next_id": "ch68s4", "next_title": "Out of Order Events: Messages and Acknowledgements Arriving Out of Order"}]);</script>
+</div>
+<nav class="tool-rail" aria-label="Lesson tools">
+<button type="button" class="rail-tool" onclick="pfOpenTranscript('studio-ch68s3')" title="Open transcript"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M7 3h7l4 4v14H7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M14 3v4h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 12h5M10 15.5h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span>Transcript</span></button>
+<button type="button" class="rail-tool" onclick="pfToggleNote('studio-ch68s3')" title="Write a note on this lesson"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L8 19l-4 1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>Notes</span></button>
+<button type="button" class="rail-tool" onclick="pfToggleFiles('studio-ch68s3')" title="Download lesson files"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>Files</span></button>
+</nav>
+<div class="fw-files-panel" id="pf-files-studio-ch68s3" style="display:none"><b>Lesson files</b><p><a href="../audio/ch68s3.mp3" download>Download narration (MP3)</a></p><p><a href="#" onclick="pfDownloadTranscript('studio-ch68s3');return false">Download transcript (.txt)</a></p></div>
+</div>
+</div>
+</main>
+<footer><p>Payments Training Hub. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="../index.html">Home</a> &middot; <a href="../courses.html">Courses</a> &middot; <a href="../practice.html">Practice</a> &middot; <a href="../simulators.html">Simulators</a> &middot; <a href="../labs.html">Labs</a> &middot; <a href="../explorer.html">Explorer</a> &middot; <a href="../tests.html">Tests</a> &middot; <a href="../diagnostic.html">Diagnostic</a> &middot; <a href="../faq.html">Interview Ready Questions</a> &middot; <a href="../interview-prep.html">Interview Prep</a></p><p><a href="../about.html">About</a> &middot; <a href="../privacy.html">Privacy</a> &middot; <a href="../terms.html">Terms</a> &middot; <a href="../contact.html">Contact</a> &middot; <a href="../editorial-standards.html">Editorial Standards</a> &middot; <a href="../sources.html">Sources</a></p></footer>
+<script defer src="../assets/site.js"></script>
+<script defer src="../assets/bundles.js"></script>
+<script defer src="../assets/auth.js"></script>
+<script defer src="../assets/studio.js"></script>
+<script defer src="../assets/insight-components.js"></script>
+<script defer src="../assets/nav.js"></script>
+<script defer src="../assets/pf-enhance.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+if(window.PFInsight){PFInsight.init();}
+});
+</script>
+</body>
+</html>

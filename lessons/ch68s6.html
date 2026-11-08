@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>Reconciliation Matching Hierarchies and Suspense Account Management | Payments Training Hub</title>
+<meta name="description" content="Reconciliation compares the internal ledger with the external statement, and it starts with exact matching on the reference, the amount and the value...">
+<link rel="canonical" href="https://www.paymentstraininghub.in/lessons/ch68s6.html">
+<meta property="og:url" content="https://www.paymentstraininghub.in/lessons/ch68s6.html">
+<meta property="og:title" content="Reconciliation Matching Hierarchies and Suspense Account Management | Payments Training Hub">
+<meta property="og:description" content="Reconciliation compares the internal ledger with the external statement, and it starts with exact matching on the reference, the amount and the value...">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.in/assets/hero/hero-poster.jpg">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.paymentstraininghub.in/index.html"}, {"@type": "ListItem", "position": 2, "name": "Payment Operations Architecture: State, Resilience and Control", "item": "https://www.paymentstraininghub.in/chapters/ch68-payment-operations-architecture-state-resilience-and-control.html"}, {"@type": "ListItem", "position": 3, "name": "Reconciliation Matching Hierarchies and Suspense Account Management", "item": "https://www.paymentstraininghub.in/lessons/ch68s6.html"}]}</script>
+<link rel="stylesheet" href="../assets/studio.css">
+<link rel="stylesheet" href="../assets/pf-theme.css">
+<link rel="stylesheet" href="../assets/insight-components.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="../index.html" class="brand">Payments <span>Training Hub</span></a><nav class="topnav"><a href="../index.html">Home</a> <a href="../courses.html">Courses</a> <a href="../practice.html">Practice</a> <a href="../simulators.html">Simulators</a> <a href="../labs.html">Labs</a> <a href="../explorer.html">Explorer</a> <a href="../tests.html">Tests</a></nav><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox" style="display:none"><span id="authState">Not signed in</span> <span id="authForm" style="display:none"><input id="authEmail" type="email" placeholder="Email for OTP" aria-label="Email for sign-in"> <button class="mute-btn" onclick="paAuthSendOtp()">Send code</button> <input id="authCode" type="text" placeholder="6-digit code" aria-label="One-time code" style="display:none"> <button class="mute-btn" id="authVerifyBtn" onclick="paAuthVerifyOtp()" style="display:none">Verify</button> <button class="mute-btn" onclick="paAuthGoogle()">Sign in with Google</button> </span><button class="mute-btn" id="authSignOutBtn" onclick="paAuthSignOut()" style="display:none">Sign out</button></span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<div class="lesson-page">
+<div class="lesson-shell">
+<aside class="course-rail">
+<div class="rail-head">
+<h2>Payment Operations Architecture: State, Resilience and Control</h2>
+<a class="rail-close" href="../chapters/ch68-payment-operations-architecture-state-resilience-and-control.html" aria-label="Close and go to chapter" title="Back to chapter">&times;</a>
+</div>
+<div class="goal-card">
+<div class="goal-head"><b>Today's goal &middot; <span id="side-progress-text">0 of 8 items</span></b><span class="goal-flag"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 21V4m0 1h11l-2.5 3.5L17 12H6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="goal-chev">&#94;</span></div>
+<p class="goal-body" id="side-goal-body">Complete 3 items today to stay at a good pace!</p>
+</div>
+<ul class="lesson-list"><li class="" data-lesson="ch68s1"><a href="ch68s1.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Payment State Machines and Correlation</span><span class="m">Video &middot; 4 min</span></span></a></li>
+<li class="" data-lesson="ch68s2"><a href="ch68s2.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Idempotency and Duplicate Prevention</span><span class="m">Video &middot; 4 min</span></span></a></li>
+<li class="" data-lesson="ch68s3"><a href="ch68s3.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Retries, Dead Letter Queues, Timeouts and Unknown Outcomes</span><span class="m">Video &middot; 4 min</span></span></a></li>
+<li class="" data-lesson="ch68s4"><a href="ch68s4.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Out of Order Events: Messages and Acknowledgements Arriving Out of Order</span><span class="m">Video &middot; 4 min</span></span></a></li>
+<li class="" data-lesson="ch68s5"><a href="ch68s5.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Ledger Posting versus Settlement</span><span class="m">Video &middot; 4 min</span></span></a></li>
+<li class="current" data-lesson="ch68s6"><a href="ch68s6.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Reconciliation Matching Hierarchies and Suspense Account Management</span><span class="m">Video &middot; 3 min</span></span></a></li>
+<li class="" data-lesson="ch68s7"><a href="ch68s7.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Operational Dashboards, KPIs, Resilience and Disaster Recovery</span><span class="m">Video &middot; 4 min</span></span></a></li>
+<li class="" data-lesson="ch68s8"><a href="ch68s8.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Incident communication: who is told, what they are told, and when</span><span class="m">Video &middot; 3 min</span></span></a></li></ul>
+</aside>
+<div class="lesson-main">
+<div class="studio" id="studio-studio-ch68s6">
+<div class="player">
+<div class="studio-canvas" id="studio-canvas-studio-ch68s6">
+<div class="ch-sec studio-scene-vis active" id="studio-vis-studio-ch68s6-0"><div class="beat-frames">
+<div class="beat-frame active" data-frame="0">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Reconciliation</tspan> <tspan fill="#FFFFFF">compares</tspan> <tspan fill="#FFFFFF">the</tspan> <tspan fill="#FFFFFF">internal</tspan></text>
+<text x="48" y="126" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">ledger</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">STARTED</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Reconciliation</tspan><tspan fill="#CBD5E1"> - external statement</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="0.55">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Testing exact matching</tspan><tspan fill="#CBD5E1"> - means sending a payment with a clean</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="0.55">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">USD 120,000 payment matches on amount</tspan><tspan fill="#CBD5E1"> - worked example, the USD</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Value date differences</tspan><tspan fill="#CBD5E1"> - Common breaks are missing statements</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="13" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Suspense account posting</tspan><tspan fill="#CBD5E1"> - When a payment arrives without a clear</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="13" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Testing suspense control</tspan><tspan fill="#CBD5E1"> - means ageing an item past each threshold</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="128" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Reconciliation compares the internal ledger with the external statement, and it starts with exact</text>
+<text x="450" y="476" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">matching on the reference, the amount and the value date.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 1 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 808" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="808" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Reconciliation</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">compares</tspan> <tspan fill="#FFFFFF">the</tspan></text>
+<text x="24" y="96" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">internal</tspan> <tspan fill="#FFFFFF">ledger</tspan></text>
+<rect x="24" y="114" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="132" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">STARTED</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="148" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="167" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Reconciliation</text>
+<text x="180" y="185" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">external statement</text>
+<text x="180" y="203" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="0.55">
+<rect x="24" y="220" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="239" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Testing exact</text>
+<text x="180" y="257" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">matching</text>
+<text x="180" y="275" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">means sending a payment with a clean</text>
+<text x="180" y="293" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="0.55">
+<rect x="24" y="312" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="331" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">USD 120,000 payment</text>
+<text x="180" y="349" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">matches on amount</text>
+<text x="180" y="367" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">worked example, the USD 120,000 payment</text>
+<text x="180" y="385" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="24" y="404" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="423" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Value date</text>
+<text x="180" y="441" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">differences</text>
+<text x="180" y="459" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Common breaks are missing statements</text>
+<text x="180" y="477" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="24" y="496" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="515" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Suspense account</text>
+<text x="180" y="533" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">posting</text>
+<text x="180" y="551" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">When a payment arrives without a clear</text>
+<text x="180" y="569" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="588" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="607" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Testing suspense</text>
+<text x="180" y="625" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">control</text>
+<text x="180" y="643" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">means ageing an item past each threshold</text>
+<text x="180" y="661" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="688" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Reconciliation compares the internal ledger</text>
+<text x="180" y="707" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">with the external statement, and it starts</text>
+<text x="180" y="726" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">with exact matching on the reference, the</text>
+<text x="180" y="745" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">amount and the value date.</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="1">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Testing</tspan> <tspan fill="#FFFFFF">exact</tspan> <tspan fill="#FFFFFF">matching</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Reconciliation</tspan><tspan fill="#CBD5E1"> - external statement</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Testing exact matching</tspan><tspan fill="#CBD5E1"> - means sending a payment with a clean</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="0.55">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">USD 120,000 payment matches on amount</tspan><tspan fill="#CBD5E1"> - worked example, the USD</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Value date differences</tspan><tspan fill="#CBD5E1"> - Common breaks are missing statements</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="13" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Suspense account posting</tspan><tspan fill="#CBD5E1"> - When a payment arrives without a clear</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="13" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Testing suspense control</tspan><tspan fill="#CBD5E1"> - means ageing an item past each threshold</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="257" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Testing exact matching means sending a payment with a clean reference and confirming it</text>
+<text x="450" y="476" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">matches and closes automatically, with no manual intervention and no break record created.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 2 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 799" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="799" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Testing</tspan> <tspan fill="#FFFFFF">exact</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">matching</tspan></text>
+<rect x="24" y="86" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="104" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="120" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="139" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Reconciliation</text>
+<text x="180" y="157" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">external statement</text>
+<text x="180" y="175" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="192" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="211" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Testing exact</text>
+<text x="180" y="229" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">matching</text>
+<text x="180" y="247" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">means sending a payment with a clean</text>
+<text x="180" y="265" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="0.55">
+<rect x="24" y="284" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="303" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">USD 120,000 payment</text>
+<text x="180" y="321" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">matches on amount</text>
+<text x="180" y="339" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">worked example, the USD 120,000 payment</text>
+<text x="180" y="357" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="24" y="376" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="395" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Value date</text>
+<text x="180" y="413" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">differences</text>
+<text x="180" y="431" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Common breaks are missing statements</text>
+<text x="180" y="449" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="24" y="468" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="487" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Suspense account</text>
+<text x="180" y="505" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">posting</text>
+<text x="180" y="523" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">When a payment arrives without a clear</text>
+<text x="180" y="541" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="560" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="579" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Testing suspense</text>
+<text x="180" y="597" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">control</text>
+<text x="180" y="615" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">means ageing an item past each threshold</text>
+<text x="180" y="633" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="660" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Testing exact matching means sending a</text>
+<text x="180" y="679" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">payment with a clean reference and</text>
+<text x="180" y="698" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">confirming it matches and closes</text>
+<text x="180" y="717" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">automatically, with no manual intervention</text>
+<text x="180" y="736" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">and no break record created.</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="2">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">USD</tspan> <tspan fill="#FFFFFF">120,000</tspan> <tspan fill="#FFFFFF">payment</tspan> <tspan fill="#FFFFFF">matches</tspan> <tspan fill="#FFFFFF">on</tspan></text>
+<text x="48" y="126" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">amount</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Reconciliation</tspan><tspan fill="#CBD5E1"> - external statement</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Testing exact matching</tspan><tspan fill="#CBD5E1"> - means sending a payment with a clean</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">USD 120,000 payment matches on amount</tspan><tspan fill="#CBD5E1"> - worked example, the USD</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Value date differences</tspan><tspan fill="#CBD5E1"> - Common breaks are missing statements</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="13" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Suspense account posting</tspan><tspan fill="#CBD5E1"> - When a payment arrives without a clear</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="13" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Testing suspense control</tspan><tspan fill="#CBD5E1"> - means ageing an item past each threshold</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="386" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">In the worked example, the USD 120,000 payment matches on amount and value date despite a</text>
+<text x="450" y="476" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">shortened reference on the statement, and an operator confirms it after checking the UETR.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 3 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 827" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="827" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">USD</tspan> <tspan fill="#FFFFFF">120,000</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">payment</tspan> <tspan fill="#FFFFFF">matches</tspan></text>
+<text x="24" y="96" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">on</tspan> <tspan fill="#FFFFFF">amount</tspan></text>
+<rect x="24" y="114" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="132" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="148" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="167" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Reconciliation</text>
+<text x="180" y="185" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">external statement</text>
+<text x="180" y="203" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="220" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="239" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Testing exact</text>
+<text x="180" y="257" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">matching</text>
+<text x="180" y="275" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">means sending a payment with a clean</text>
+<text x="180" y="293" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="1">
+<rect x="24" y="312" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="331" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">USD 120,000 payment</text>
+<text x="180" y="349" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">matches on amount</text>
+<text x="180" y="367" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">worked example, the USD 120,000 payment</text>
+<text x="180" y="385" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="24" y="404" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="423" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Value date</text>
+<text x="180" y="441" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">differences</text>
+<text x="180" y="459" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Common breaks are missing statements</text>
+<text x="180" y="477" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="24" y="496" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="515" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Suspense account</text>
+<text x="180" y="533" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">posting</text>
+<text x="180" y="551" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">When a payment arrives without a clear</text>
+<text x="180" y="569" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="588" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="607" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Testing suspense</text>
+<text x="180" y="625" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">control</text>
+<text x="180" y="643" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">means ageing an item past each threshold</text>
+<text x="180" y="661" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="688" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">In the worked example, the USD 120,000</text>
+<text x="180" y="707" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">payment matches on amount and value</text>
+<text x="180" y="726" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">date despite a shortened reference on the</text>
+<text x="180" y="745" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">statement, and an operator confirms it</text>
+<text x="180" y="764" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">after checking the UETR.</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="3">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Value</tspan> <tspan fill="#FFFFFF">date</tspan> <tspan fill="#FFFFFF">differences</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Reconciliation</tspan><tspan fill="#CBD5E1"> - external statement</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Testing exact matching</tspan><tspan fill="#CBD5E1"> - means sending a payment with a clean</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">USD 120,000 payment matches on amount</tspan><tspan fill="#CBD5E1"> - worked example, the USD</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Value date differences</tspan><tspan fill="#CBD5E1"> - Common breaks are missing statements</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="13" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Suspense account posting</tspan><tspan fill="#CBD5E1"> - When a payment arrives without a clear</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="13" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Testing suspense control</tspan><tspan fill="#CBD5E1"> - means ageing an item past each threshold</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="514" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Common breaks are missing statements, value date differences, correspondent charges, and</text>
+<text x="450" y="476" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">payments that arrived but were never booked.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 4 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 780" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="780" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Value</tspan> <tspan fill="#FFFFFF">date</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">differences</tspan></text>
+<rect x="24" y="86" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="104" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="120" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="139" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Reconciliation</text>
+<text x="180" y="157" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">external statement</text>
+<text x="180" y="175" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="192" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="211" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Testing exact</text>
+<text x="180" y="229" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">matching</text>
+<text x="180" y="247" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">means sending a payment with a clean</text>
+<text x="180" y="265" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="1">
+<rect x="24" y="284" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="303" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">USD 120,000 payment</text>
+<text x="180" y="321" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">matches on amount</text>
+<text x="180" y="339" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">worked example, the USD 120,000 payment</text>
+<text x="180" y="357" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="1">
+<rect x="24" y="376" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="395" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Value date</text>
+<text x="180" y="413" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">differences</text>
+<text x="180" y="431" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Common breaks are missing statements</text>
+<text x="180" y="449" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="24" y="468" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="487" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Suspense account</text>
+<text x="180" y="505" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">posting</text>
+<text x="180" y="523" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">When a payment arrives without a clear</text>
+<text x="180" y="541" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="560" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="579" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Testing suspense</text>
+<text x="180" y="597" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">control</text>
+<text x="180" y="615" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">means ageing an item past each threshold</text>
+<text x="180" y="633" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="660" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Common breaks are missing statements,</text>
+<text x="180" y="679" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">value date differences, correspondent</text>
+<text x="180" y="698" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">charges, and payments that arrived but</text>
+<text x="180" y="717" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">were never booked.</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="4">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Suspense</tspan> <tspan fill="#FFFFFF">account</tspan> <tspan fill="#FFFFFF">posting</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Reconciliation</tspan><tspan fill="#CBD5E1"> - external statement</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Testing exact matching</tspan><tspan fill="#CBD5E1"> - means sending a payment with a clean</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">USD 120,000 payment matches on amount</tspan><tspan fill="#CBD5E1"> - worked example, the USD</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Value date differences</tspan><tspan fill="#CBD5E1"> - Common breaks are missing statements</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n4" data-beat="4">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="13" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Suspense account posting</tspan><tspan fill="#CBD5E1"> - When a payment arrives without a clear</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="13" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Testing suspense control</tspan><tspan fill="#CBD5E1"> - means ageing an item past each threshold</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="643" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">When a payment arrives without a clear reference</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 5 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 742" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="742" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Suspense</tspan> <tspan fill="#FFFFFF">account</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">posting</tspan></text>
+<rect x="24" y="86" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="104" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="120" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="139" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Reconciliation</text>
+<text x="180" y="157" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">external statement</text>
+<text x="180" y="175" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="192" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="211" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Testing exact</text>
+<text x="180" y="229" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">matching</text>
+<text x="180" y="247" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">means sending a payment with a clean</text>
+<text x="180" y="265" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="1">
+<rect x="24" y="284" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="303" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">USD 120,000 payment</text>
+<text x="180" y="321" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">matches on amount</text>
+<text x="180" y="339" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">worked example, the USD 120,000 payment</text>
+<text x="180" y="357" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="1">
+<rect x="24" y="376" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="395" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Value date</text>
+<text x="180" y="413" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">differences</text>
+<text x="180" y="431" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Common breaks are missing statements</text>
+<text x="180" y="449" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="1">
+<rect x="24" y="468" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="487" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Suspense account</text>
+<text x="180" y="505" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">posting</text>
+<text x="180" y="523" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">When a payment arrives without a clear</text>
+<text x="180" y="541" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="560" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="579" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Testing suspense</text>
+<text x="180" y="597" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">control</text>
+<text x="180" y="615" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">means ageing an item past each threshold</text>
+<text x="180" y="633" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="660" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">When a payment arrives without a clear</text>
+<text x="180" y="679" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">reference</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="5">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Testing</tspan> <tspan fill="#FFFFFF">suspense</tspan> <tspan fill="#FFFFFF">control</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">COMPLETE</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Reconciliation</tspan><tspan fill="#CBD5E1"> - external statement</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Testing exact matching</tspan><tspan fill="#CBD5E1"> - means sending a payment with a clean</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">USD 120,000 payment matches on amount</tspan><tspan fill="#CBD5E1"> - worked example, the USD</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Value date differences</tspan><tspan fill="#CBD5E1"> - Common breaks are missing statements</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n4" data-beat="4">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="13" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Suspense account posting</tspan><tspan fill="#CBD5E1"> - When a payment arrives without a clear</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n5" data-beat="5">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="13" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Testing suspense control</tspan><tspan fill="#CBD5E1"> - means ageing an item past each threshold</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Testing suspense control means ageing an item past each threshold and confirming escalation</text>
+<text x="450" y="476" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">fires and a write off without dual approval is refused.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 6 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#45A4FF"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 780" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="780" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Testing</tspan> <tspan fill="#FFFFFF">suspense</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">control</tspan></text>
+<rect x="24" y="86" width="312" height="26" rx="8" fill="#0C1626" stroke="#2DD4BF" stroke-width="1.5"/>
+<text x="180" y="104" text-anchor="middle" font-size="12" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">COMPLETE</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="120" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="139" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Reconciliation</text>
+<text x="180" y="157" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">external statement</text>
+<text x="180" y="175" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="192" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="211" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Testing exact</text>
+<text x="180" y="229" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">matching</text>
+<text x="180" y="247" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">means sending a payment with a clean</text>
+<text x="180" y="265" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="1">
+<rect x="24" y="284" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="303" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">USD 120,000 payment</text>
+<text x="180" y="321" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">matches on amount</text>
+<text x="180" y="339" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">worked example, the USD 120,000 payment</text>
+<text x="180" y="357" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="1">
+<rect x="24" y="376" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="395" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Value date</text>
+<text x="180" y="413" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">differences</text>
+<text x="180" y="431" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Common breaks are missing statements</text>
+<text x="180" y="449" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="1">
+<rect x="24" y="468" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="487" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Suspense account</text>
+<text x="180" y="505" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">posting</text>
+<text x="180" y="523" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">When a payment arrives without a clear</text>
+<text x="180" y="541" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="1">
+<rect x="24" y="560" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="579" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Testing suspense</text>
+<text x="180" y="597" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">control</text>
+<text x="180" y="615" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">means ageing an item past each threshold</text>
+<text x="180" y="633" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<text x="180" y="660" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Testing suspense control means ageing an</text>
+<text x="180" y="679" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">item past each threshold and confirming</text>
+<text x="180" y="698" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">escalation fires and a write off without dual</text>
+<text x="180" y="717" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">approval is refused.</text>
+</svg>
+</div>
+</div>
+<p class="xml-caption">Flow of the explanation in this lesson.</p></div>
+<div class="playerbar">
+<div class="studio-progress"><div class="studio-markers" id="studio-markers-studio-ch68s6"></div><input type="range" id="studio-slider-studio-ch68s6" min="0" max="1000" value="0" aria-label="Lesson timeline"></div>
+<div class="ctrl-row">
+<button class="ctrl-btn" id="studio-play-studio-ch68s6" onclick="studioTogglePlay('studio-ch68s6')" aria-label="Play lesson" title="Play lesson"><span class="ctrl-ic-play"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></span><span class="ctrl-ic-pause" style="display:none"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><rect x="6" y="5" width="4" height="14" fill="currentColor"/><rect x="14" y="5" width="4" height="14" fill="currentColor"/></svg></span></button>
+<button class="ctrl-btn studio-mute-btn" id="studio-mute-studio-ch68s6" onclick="studioToggleMute('studio-ch68s6')" aria-label="Mute narration" title="Mute / unmute narration"><svg class="studio-mute-icon" viewBox="0 0 24 24" width="28" height="28" fill="currentColor" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3z"/><path class="studio-mute-waves" d="M16 8.5a5 5 0 0 1 0 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><path class="studio-mute-waves" d="M18.5 6a9 9 0 0 1 0 12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><path class="studio-mute-x" d="M16 9.5l5 5M21 9.5l-5 5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" style="display:none"/></svg></button>
+<button class="ctrl-btn" onclick="studioSkip('studio-ch68s6', -10)" aria-label="Back 10 seconds" title="Back 10 seconds"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 5a7 7 0 1 1-6.32 4.06" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M5.5 3.5v5h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><text x="12" y="16.5" font-size="8" fill="currentColor" text-anchor="middle" font-weight="700">10</text></svg></button>
+<span class="studio-time ctrl-time" id="studio-time-studio-ch68s6">0:00 / 3:26</span>
+<button class="ctrl-btn" onclick="studioSkip('studio-ch68s6', 10)" aria-label="Forward 10 seconds" title="Forward 10 seconds"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 5a7 7 0 1 0 6.32 4.06" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M18.5 3.5v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><text x="12" y="16.5" font-size="8" fill="currentColor" text-anchor="middle" font-weight="700">10</text></svg></button>
+<span class="playerbar-spacer"></span>
+<span class="player-stage" id="studio-tag-studio-ch68s6">Step 1 of 6</span>
+<button class="ctrl-btn ctrl-step" id="studio-prevscene-studio-ch68s6" onclick="studioPrevScene('studio-ch68s6')" title="Previous step" aria-label="Previous step">&lsaquo;</button>
+<button class="ctrl-btn ctrl-step" id="studio-nextscene-studio-ch68s6" onclick="studioNextScene('studio-ch68s6')" title="Next step" aria-label="Next step">&rsaquo;</button>
+<button class="ctrl-btn ctrl-speed" id="studio-speedbtn-studio-ch68s6" onclick="studioCycleSpeed('studio-ch68s6')" title="Playback speed" aria-label="Playback speed">1x</button>
+<span class="ctrl-settings-wrap"><button class="ctrl-btn" onclick="studioToggleSettings('studio-ch68s6', event)" aria-label="Player settings" title="Settings"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5 5l2.1 2.1M16.9 16.9L19 19M19 5l-2.1 2.1M7.1 16.9L5 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button><span class="ctrl-popover" id="studio-settings-studio-ch68s6" style="display:none" onclick="event.stopPropagation()"><label class="ctrl-pop-row">Volume <input type="range" min="0" max="1" step="0.1" value="1" oninput="studioSetVolume('studio-ch68s6', this.value)" style="width:110px;accent-color:#3587FC"></label><button class="studio-btn" id="studio-captions-studio-ch68s6" onclick="studioToggleCaptions('studio-ch68s6')">Captions: On</button><button class="studio-btn" onclick="studioReplayScene('studio-ch68s6')">Replay scene</button></span></span>
+<button class="ctrl-btn" onclick="studioFullscreen('studio-ch68s6')" aria-label="Fullscreen" title="Fullscreen"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+</div>
+</div>
+</div>
+<p class="studio-caption" id="studio-caption-studio-ch68s6"></p>
+<p class="studio-loading" id="studio-loading-studio-ch68s6" style="display:none">Loading narration...</p>
+<p class="studio-error" id="studio-error-studio-ch68s6" role="alert" style="display:none"></p>
+<audio id="studio-audio-studio-ch68s6" preload="auto" src="../audio/ch68s6.mp3"></audio>
+</div>
+<div class="lesson-title-row">
+<h1>Reconciliation Matching Hierarchies and Suspense Account Management</h1>
+<button class="save-note" type="button" onclick="pfToggleNote('studio-ch68s6')" title="Save a note on this lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L8 19l-4 1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg> Save note</button>
+</div>
+<p class="lesson-meta-line">Payment Operations Architecture: State, Resilience and Control, Lesson 6 of 8, Narration 3:26, D11 Operations, exceptions and reconciliation</p>
+<p class="lesson-note-saved" id="studio-note-saved-studio-ch68s6" style="display:none">Note saved.</p>
+<div class="note-editor" id="studio-note-editor-studio-ch68s6" style="display:none"><textarea id="studio-note-text-studio-ch68s6" rows="3" placeholder="Write a note on this lesson..." aria-label="Lesson note"></textarea><div class="note-editor-row"><button class="studio-btn primary" onclick="pfSaveNote('studio-ch68s6')">Save note</button> <button class="studio-btn" onclick="pfToggleNote('studio-ch68s6')">Cancel</button></div></div>
+<div class="dive-deeper">
+<div class="dive-head"><button type="button" class="dive-toggle" onclick="pfToggleDive(this)" aria-expanded="true"><span class="dive-spark"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 2l2.2 6.8L21 11l-6.8 2.2L12 20l-2.2-6.8L3 11l6.8-2.2z" fill="currentColor"/></svg></span><span class="dive-title">Dive deeper on this topic</span><span class="dive-chev"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 14l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button></div>
+<div class="dive-btns"><button type="button" class="dive-btn" data-kind="practice" onclick="pfDive('studio-ch68s6', 'practice')">Give me practice questions</button><button type="button" class="dive-btn" data-kind="simple" onclick="pfDive('studio-ch68s6', 'simple')">Explain this topic in simple terms</button><button type="button" class="dive-btn" data-kind="summary" onclick="pfDive('studio-ch68s6', 'summary')">Give me a summary</button><button type="button" class="dive-btn" data-kind="example" onclick="pfDive('studio-ch68s6', 'example')">Give me real-life examples</button></div>
+<div class="dive-panel" id="dive-panel-studio-ch68s6"><div class="dive-panel-body"></div></div>
+<script type="application/json" id="pf-dive-data-studio-ch68s6">{"simple": "In plain words: reconciliation compares the internal ledger with the external statement, and it starts with exact matching on the reference, the amount and the value date. That is the whole idea in one sentence, and the rest of the lesson shows how it works in a real bank.", "summary": "Reconciliation compares the internal ledger with the external statement, and it starts with exact matching on the reference, the amount and the value date. Key points: Reconciliation compares the internal ledger; Testing exact matching; USD 120,000 payment matches on amount; Value date differences; Suspense account posting; Testing suspense control.", "example": "When the correspondent statement shows USD 120,000 with the same end to end identification and the same value date as the internal record, the item matches exactly and is closed without human touch. A payment of USD 120,000 that arrives with a value date one day late, or with a reference that differs by one character, can still be matched if amount and beneficiary agree and the difference is clear."}</script>
+</div>
+<div class="lesson-feedback">
+<div class="fb-icons"><button type="button" class="fb-btn" data-kind="like" onclick="pfFeedback(this,'like')" aria-label="Like this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M7 21H4a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1h3v11zm0 0h9.6a2 2 0 0 0 1.9-1.4l1.6-5A2 2 0 0 0 18.2 12H15V6.5A2.5 2.5 0 0 0 12.5 4L11 7.5 8.6 10H7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button><button type="button" class="fb-btn" data-kind="dislike" onclick="pfFeedback(this,'dislike')" aria-label="Dislike this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M17 3h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1h-3V3zm0 0H7.4a2 2 0 0 0-1.9 1.4l-1.6 5A2 2 0 0 0 5.8 12H9v5.5A2.5 2.5 0 0 0 11.5 20L13 16.5l2.4-2.5H17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button><button type="button" class="fb-btn" data-kind="flag" onclick="pfFeedback(this,'flag')" aria-label="Flag this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M6 21V4m0 1h11l-2.5 3.5L17 12H6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+<button type="button" class="go-next" onclick="goLesson('ch68s7')" title="Next: Operational Dashboards, KPIs, Resilience and Disaster Recovery">Go to next item &rarr;</button>
+</div>
+<div class="chips"><span class="chip">Suspense account</span><span class="chip">Reconciliation</span><span class="chip">Value date</span></div>
+<div class="card learn-card">
+<h2>What you will learn</h2>
+<p class="transcript"><b>Your objective.</b> By the end of this lesson, you will be able to explain reconciliation matching hierarchies and suspense account management. Reconciliation compares the internal ledger with the external statement, and it starts with exact matching on the reference, the amount and the value date.</p>
+<p class="transcript"><b>Why it matters.</b> This matters because operations is where payments are reconciled, investigated and fixed. The work in this lesson is what keeps the money right.</p>
+<p class="transcript">Chapter objective: Learner explains payment state machines, idempotency, retries, dead letter queues, out of order events, ledger posting versus settlement, reconciliation matching hierarchies, suspense account management and operational dashboards, and designs the controls that keep a payment platform safe. Learner applies this skill in realistic banking scenarios, with clear examples and correct terminology throughout.</p>
+<h3>Key learning points</h3>
+<ul id="studio-points-studio-ch68s6">
+<li>Reconciliation compares the internal ledger</li>
+<li>Testing exact matching</li>
+<li>USD 120,000 payment matches on amount</li>
+<li>Value date differences</li>
+<li>Suspense account posting</li>
+<li>Testing suspense control</li>
+</ul>
+<h3>Key terms</h3>
+<div id="studio-terms-studio-ch68s6">
+<p class="keyterm"><b>Suspense account:</b> A temporary account used to hold funds or entries that cannot yet be posted to their final account. Banks use suspense accounts for unidentified receipts, pending investigations and items awaiting...</p>
+<p class="keyterm"><b>Reconciliation:</b> The process of comparing records from two sources, such as a bank statement and an internal ledger, to confirm they agree.</p>
+<p class="keyterm"><b>Value date:</b> The date on which funds become available to the beneficiary and on which interest starts to accrue. It is the date used for settlement and for nostro posting.</p>
+</div>
+<p class="studio-note">Banking architecture diagram showing Reconciliation Matching Hierarchies and Suspense Account Management.</p>
+</div>
+<div class="fw-card" id="pf-exercise-studio-ch68s6">
+<p class="fw-label">Practise this lesson</p>
+<h2>Exercise</h2>
+<p><b>Investigate the reconciliation break described in this lesson and find its root cause.</b></p>
+<p>Use the three-way matching rule and the break categories in this lesson.</p>
+<ol class="fw-steps">
+<li><b>What to do.</b> Compare the instruction, the settlement record and the statement, name the break type, and state the corrective action.</li>
+</ol>
+<p><button class="studio-btn" id="pf-ex-btn-studio-ch68s6" onclick="pfRevealExercise('studio-ch68s6')">Show the answer</button></p>
+<div class="fw-exercise-answer" id="pf-ex-answer-studio-ch68s6">
+<p><b>Correct result.</b> A break is found by matching amount, currency, date and reference across the three sources. The root cause is a timing difference, an amount difference, a missing entry, or a duplicate, and the corrective action follows the cause.</p>
+<p><b>Why.</b> Reconciliation is the last line of defence. A break that is not investigated is money that cannot be proved.</p>
+</div>
+</div>
+<div class="fw-card" id="pf-quiz-studio-ch68s6" data-answer="0">
+<p class="fw-label">Check your understanding</p>
+<h2>Practice question</h2>
+<p><b>Which of the following best describes reconciliation matching hierarchies and suspense account management?</b></p>
+<button type="button" class="quiz-opt" data-idx="0" onclick="pfCheckAnswer('studio-ch68s6', this)">Reconciliation compares the internal ledger with the external statement, and it starts with exact matching on the reference, the amount and the value date</button>
+<button type="button" class="quiz-opt" data-idx="1" onclick="pfCheckAnswer('studio-ch68s6', this)">Allowed transitions follow the order of the work, and each one is triggered by a real event such as a validation result, a funds check, a settlement confirmation or a timeout</button>
+<button type="button" class="quiz-opt" data-idx="2" onclick="pfCheckAnswer('studio-ch68s6', this)">A payment state machine lists every state a payment can sit in and every move between states that is allowed, and it is the single control that keeps operations, settlement and customer service looking at the same truth</button>
+<button type="button" class="quiz-opt" data-idx="3" onclick="pfCheckAnswer('studio-ch68s6', this)">Illegal transitions are moves the state machine must refuse, because they would let a payment exist in two contradictory states at once</button>
+<div class="quiz-feedback" id="pf-quiz-fb-studio-ch68s6"></div>
+<script type="application/json" id="pf-quiz-data-studio-ch68s6">{"why_wrong": ["", "This describes a different concept from this chapter, not reconciliation matching hierarchies and suspense account management.", "This describes a different concept from this chapter, not reconciliation matching hierarchies and suspense account management.", "This describes a different concept from this chapter, not reconciliation matching hierarchies and suspense account management."], "explanation": "Reconciliation compares the internal ledger with the external statement, and it starts with exact matching on the reference, the amount and the value date. This is the core idea of the lesson."}</script>
+</div>
+<div class="fw-card">
+<p class="fw-label">Takeaway and next step</p>
+<h2>What to remember</h2>
+<p>Common breaks are missing statements, value date differences, correspondent charges, and payments that arrived but were never booked.</p>
+<p>Reconcile the payment in this lesson against its statement and find the break.</p>
+<p><a class="fw-tool-link" href="../simulators/accounting.html">Open the Accounting and Reconciliation Lab &rarr;</a></p>
+<p class="studio-note">The architecture view of matching and suspense accounts, building on ch40, Breaks: Suspense Accounts, Unmatched Transactions, Duplicates and Date Mismatches. This lesson is about how the matching engine is designed, not how an analyst clears a break.</p>
+</div>
+<section class="upnext" id="studio-upnext-studio-ch68s6" style="display:none" aria-label="Up next">
+<span class="tag">Up next</span>
+<h2>Up next: Operational Dashboards, KPIs, Resilience and Disaster Recovery</h2>
+<p>Lesson 7 of 8, Payment Operations Architecture: State, Resilience and Control, Narration 3:43</p>
+<div class="row">
+<button class="studio-btn primary" onclick="goLessonAuto('ch68s7')">Next lesson &rarr;</button>
+<button class="studio-btn" onclick="goLesson('ch68s5')">&larr; Previous lesson</button>
+<button class="studio-btn" onclick="studioReplayLesson('studio-ch68s6')">Replay this lesson</button>
+</div>
+</section>
+<div class="lesson-nav">
+<button class="studio-btn" onclick="goLesson('ch68s5')" title="Previous lesson: Ledger Posting versus Settlement">&larr; Previous</button>
+<button class="studio-btn" onclick="goChapterContents('ch68')">Chapter contents</button>
+<button class="studio-btn primary" onclick="goLesson('ch68s7')" title="Next lesson: Operational Dashboards, KPIs, Resilience and Disaster Recovery">Next &rarr;</button>
+</div>
+<div class="card transcript-card">
+<h2>Transcript and full text</h2>
+<details class="studio-transcript" id="studio-transcript-details-studio-ch68s6"><summary>Show transcript</summary>
+<p class="transcript" id="studio-transcript-studio-ch68s6">Reconciliation compares the internal ledger with the external statement, and it starts with exact matching on the reference, the amount and the value date. When the correspondent statement shows USD 120,000 with the same end to end identification and the same value date as the internal record, the item matches exactly and is closed without human touch. Exact matching handles the large majority of payments, because straight through processing produces clean references and clean amounts, and it is the fastest and safest level. The matching engine runs every morning on the previous day activity, and it reports the matched rate as a key measure of operational health. Testing exact matching means sending a payment with a clean reference and confirming it matches and closes automatically, with no manual intervention and no break record created. When exact matching fails, the engine tries amount and value date matching, and then fuzzy matching on close but not identical names, references and amounts. A payment of USD 120,000 that arrives with a value date one day late, or with a reference that differs by one character, can still be matched if amount and beneficiary agree and the difference is clear. Fuzzy matching uses rules and scores, and it proposes a match for an operator to confirm rather than closing the item automatically, because a wrong match can hide real errors. In the worked example, the USD 120,000 payment matches on amount and value date despite a shortened reference on the statement, and an operator confirms it after checking the UETR. Testing fuzzy matching means creating a one character reference difference and confirming the engine proposes the match, and creating a wrong amount and confirming it proposes nothing. Items that do not match at any level go to a break queue, where an operator investigates the difference and decides how to resolve it. The break record shows the internal ledger entry, the external statement entry, the difference in amount or date, and the age of the break, so the operator can see the whole problem at a glance. Common breaks are missing statements, value date differences, correspondent charges, and payments that arrived but were never booked. In the worked example, a USD 120 charge deducted by the correspondent creates a break on the USD 120,000 payment, because the statement shows USD 119,880 while the ledger shows USD 120,000, and the operator books the charge to a charges account and closes the break. Testing the break queue means creating a charge difference, confirming the break appears with the right amount, and confirming the resolution is recorded. A suspense account holds money that cannot yet be matched to a payment, and it must never become a hiding place for unexplained funds. When a payment arrives without a clear reference, or a break cannot be resolved on the day, the amount is posted to suspense with the full detail attached, and operations works the balance every day. Ageing rules escalate suspense items, for example to a supervisor after five days and to senior management after thirty days, and write off needs dual approval and a documented investigation. In the worked example, the USD 120,000 payment never touches suspense because it matches the next morning, but a USD 4,500 receipt without a reference sits in suspense for three days until the sender is found. Testing suspense control means ageing an item past each threshold and confirming escalation fires and a write off without dual approval is refused.</p>
+<div id="studio-paras-studio-ch68s6">
+<p class="transcript">Reconciliation compares the internal ledger with the external statement, and it starts with exact matching on the reference, the amount and the value date. When the correspondent statement shows USD 120,000 with the same end to end identification and the same value date as the internal record, the item matches exactly and is closed without human touch. Exact matching handles the large majority of payments, because straight through processing produces clean references and clean amounts, and it is the fastest and safest level. The matching engine runs every morning on the previous day activity, and it reports the matched rate as a key measure of operational health. Testing exact matching means sending a payment with a clean reference and confirming it matches and closes automatically, with no manual intervention and no break record created.</p>
+<p class="transcript">When exact matching fails, the engine tries amount and value date matching, and then fuzzy matching on close but not identical names, references and amounts. A payment of USD 120,000 that arrives with a value date one day late, or with a reference that differs by one character, can still be matched if amount and beneficiary agree and the difference is clear. Fuzzy matching uses rules and scores, and it proposes a match for an operator to confirm rather than closing the item automatically, because a wrong match can hide real errors. In the worked example, the USD 120,000 payment matches on amount and value date despite a shortened reference on the statement, and an operator confirms it after checking the UETR. Testing fuzzy matching means creating a one character reference difference and confirming the engine proposes the match, and creating a wrong amount and confirming it proposes nothing.</p>
+<p class="transcript">Items that do not match at any level go to a break queue, where an operator investigates the difference and decides how to resolve it. The break record shows the internal ledger entry, the external statement entry, the difference in amount or date, and the age of the break, so the operator can see the whole problem at a glance. Common breaks are missing statements, value date differences, correspondent charges, and payments that arrived but were never booked. In the worked example, a USD 120 charge deducted by the correspondent creates a break on the USD 120,000 payment, because the statement shows USD 119,880 while the ledger shows USD 120,000, and the operator books the charge to a charges account and closes the break. Testing the break queue means creating a charge difference, confirming the break appears with the right amount, and confirming the resolution is recorded.</p>
+<p class="transcript">A suspense account holds money that cannot yet be matched to a payment, and it must never become a hiding place for unexplained funds. When a payment arrives without a clear reference, or a break cannot be resolved on the day, the amount is posted to suspense with the full detail attached, and operations works the balance every day. Ageing rules escalate suspense items, for example to a supervisor after five days and to senior management after thirty days, and write off needs dual approval and a documented investigation. In the worked example, the USD 120,000 payment never touches suspense because it matches the next morning, but a USD 4,500 receipt without a reference sits in suspense for three days until the sender is found. Testing suspense control means ageing an item past each threshold and confirming escalation fires and a write off without dual approval is refused.</p>
+</div>
+</details>
+<details class="studio-transcript"><summary>Full lesson text (all scenes)</summary><div id="studio-transcript-full-studio-ch68s6"></div></details>
+<p><button class="studio-btn primary" id="done-ch68s6" onclick="studioMarkSceneDone('studio-ch68s6')">Mark lesson complete</button> <span class="studio-note">Completing a lesson updates your progress dashboard on the homepage.</span></p>
+</div>
+<p class="studio-note">Scene timestamps are estimated by allocating the narration text proportionally across the real audio length. The audio playback position is the source of truth: pause freezes the visual, seeking restores the correct scene, replay restarts the scene animation.</p>
+</div>
+<script>window.__PA_STUDIO_QUEUE = window.__PA_STUDIO_QUEUE || []; window.__PA_STUDIO_QUEUE.push(["studio-ch68s6", {"sample_id": "studio-ch68s6", "chapter_id": "ch68", "title": "Reconciliation Matching Hierarchies and Suspense Account Management", "domain": "D11 Operations, exceptions and reconciliation", "objective": "Learner explains payment state machines, idempotency, retries, dead letter queues, out of order events, ledger posting versus settlement, reconciliation matching hierarchies, suspense account management and operational dashboards, and designs the controls that keep a payment platform safe. Learner applies this skill in realistic banking scenarios, with clear examples and correct terminology throughout.", "scenes": [{"id": "ch68s6", "section_id": "ch68s6", "title": "Reconciliation Matching Hierarchies and Suspense Account Management", "audio": "../audio/ch68s6.mp3", "duration_sec": 206.0, "points": ["Reconciliation compares the internal ledger with the external statement, and it starts with exact matching on the reference, the amount and the value date.", "When exact matching fails, the engine tries amount and value date matching, and then fuzzy matching on close but not identical names, references and amounts.", "Items that do not match at any level go to a break queue, where an operator investigates the difference and decides how to resolve it.", "A suspense account holds money that cannot yet be matched to a payment, and it must never become a hiding place for unexplained funds."], "terms": [{"term": "Suspense account", "def": "A temporary account used to hold funds or entries that cannot yet be posted to their final account. Banks use suspense accounts for unidentified receipts, pending investigations and items awaiting..."}, {"term": "Reconciliation", "def": "The process of comparing records from two sources, such as a bank statement and an internal ledger, to confirm they agree."}, {"term": "Value date", "def": "The date on which funds become available to the beneficiary and on which interest starts to accrue. It is the date used for settlement and for nostro posting."}], "transcript": "Reconciliation compares the internal ledger with the external statement, and it starts with exact matching on the reference, the amount and the value date. When the correspondent statement shows USD 120,000 with the same end to end identification and the same value date as the internal record, the item matches exactly and is closed without human touch. Exact matching handles the large majority of payments, because straight through processing produces clean references and clean amounts, and it is the fastest and safest level. The matching engine runs every morning on the previous day activity, and it reports the matched rate as a key measure of operational health. Testing exact matching means sending a payment with a clean reference and confirming it matches and closes automatically, with no manual intervention and no break record created. When exact matching fails, the engine tries amount and value date matching, and then fuzzy matching on close but not identical names, references and amounts. A payment of USD 120,000 that arrives with a value date one day late, or with a reference that differs by one character, can still be matched if amount and beneficiary agree and the difference is clear. Fuzzy matching uses rules and scores, and it proposes a match for an operator to confirm rather than closing the item automatically, because a wrong match can hide real errors. In the worked example, the USD 120,000 payment matches on amount and value date despite a shortened reference on the statement, and an operator confirms it after checking the UETR. Testing fuzzy matching means creating a one character reference difference and confirming the engine proposes the match, and creating a wrong amount and confirming it proposes nothing. Items that do not match at any level go to a break queue, where an operator investigates the difference and decides how to resolve it. The break record shows the internal ledger entry, the external statement entry, the difference in amount or date, and the age of the break, so the operator can see the whole problem at a glance. Common breaks are missing statements, value date differences, correspondent charges, and payments that arrived but were never booked. In the worked example, a USD 120 charge deducted by the correspondent creates a break on the USD 120,000 payment, because the statement shows USD 119,880 while the ledger shows USD 120,000, and the operator books the charge to a charges account and closes the break. Testing the break queue means creating a charge difference, confirming the break appears with the right amount, and confirming the resolution is recorded. A suspense account holds money that cannot yet be matched to a payment, and it must never become a hiding place for unexplained funds. When a payment arrives without a clear reference, or a break cannot be resolved on the day, the amount is posted to suspense with the full detail attached, and operations works the balance every day. Ageing rules escalate suspense items, for example to a supervisor after five days and to senior management after thirty days, and write off needs dual approval and a documented investigation. In the worked example, the USD 120,000 payment never touches suspense because it matches the next morning, but a USD 4,500 receipt without a reference sits in suspense for three days until the sender is found. Testing suspense control means ageing an item past each threshold and confirming escalation fires and a write off without dual approval is refused.", "paragraphs": ["Reconciliation compares the internal ledger with the external statement, and it starts with exact matching on the reference, the amount and the value date. When the correspondent statement shows USD 120,000 with the same end to end identification and the same value date as the internal record, the item matches exactly and is closed without human touch. Exact matching handles the large majority of payments, because straight through processing produces clean references and clean amounts, and it is the fastest and safest level. The matching engine runs every morning on the previous day activity, and it reports the matched rate as a key measure of operational health. Testing exact matching means sending a payment with a clean reference and confirming it matches and closes automatically, with no manual intervention and no break record created.", "When exact matching fails, the engine tries amount and value date matching, and then fuzzy matching on close but not identical names, references and amounts. A payment of USD 120,000 that arrives with a value date one day late, or with a reference that differs by one character, can still be matched if amount and beneficiary agree and the difference is clear. Fuzzy matching uses rules and scores, and it proposes a match for an operator to confirm rather than closing the item automatically, because a wrong match can hide real errors. In the worked example, the USD 120,000 payment matches on amount and value date despite a shortened reference on the statement, and an operator confirms it after checking the UETR. Testing fuzzy matching means creating a one character reference difference and confirming the engine proposes the match, and creating a wrong amount and confirming it proposes nothing.", "Items that do not match at any level go to a break queue, where an operator investigates the difference and decides how to resolve it. The break record shows the internal ledger entry, the external statement entry, the difference in amount or date, and the age of the break, so the operator can see the whole problem at a glance. Common breaks are missing statements, value date differences, correspondent charges, and payments that arrived but were never booked. In the worked example, a USD 120 charge deducted by the correspondent creates a break on the USD 120,000 payment, because the statement shows USD 119,880 while the ledger shows USD 120,000, and the operator books the charge to a charges account and closes the break. Testing the break queue means creating a charge difference, confirming the break appears with the right amount, and confirming the resolution is recorded.", "A suspense account holds money that cannot yet be matched to a payment, and it must never become a hiding place for unexplained funds. When a payment arrives without a clear reference, or a break cannot be resolved on the day, the amount is posted to suspense with the full detail attached, and operations works the balance every day. Ageing rules escalate suspense items, for example to a supervisor after five days and to senior management after thirty days, and write off needs dual approval and a documented investigation. In the worked example, the USD 120,000 payment never touches suspense because it matches the next morning, but a USD 4,500 receipt without a reference sits in suspense for three days until the sender is found. Testing suspense control means ageing an item past each threshold and confirming escalation fires and a write off without dual approval is refused."], "accessibility": "Banking architecture diagram showing Reconciliation Matching Hierarchies and Suspense Account Management.", "visual_type": "architecture", "visual_choice_reason": "architecture chapter", "beats": [{"t0": 0.0, "t1": 39.2, "title": "Reconciliation compares the internal ledger", "note": "Reconciliation compares the internal ledger with the external statement, and it starts with exact matching on the reference, the amount and the value date.", "highlight_nodes": ["n0"], "highlight_conns": [], "highlight_fields": []}, {"t0": 39.2, "t1": 81.1, "title": "Testing exact matching", "note": "Testing exact matching means sending a payment with a clean reference and confirming it matches and closes automatically, with no manual intervention and no break record created.", "highlight_nodes": ["n1"], "highlight_conns": ["c0"], "highlight_fields": []}, {"t0": 81.1, "t1": 121.8, "title": "USD 120,000 payment matches on amount", "note": "In the worked example, the USD 120,000 payment matches on amount and value date despite a shortened reference on the statement, and an operator confirms it after checking the UETR.", "highlight_nodes": ["n2"], "highlight_conns": ["c1"], "highlight_fields": []}, {"t0": 121.8, "t1": 162.2, "title": "Value date differences", "note": "Common breaks are missing statements, value date differences, correspondent charges, and payments that arrived but were never booked.", "highlight_nodes": ["n3"], "highlight_conns": ["c2"], "highlight_fields": []}, {"t0": 162.2, "t1": 197.4, "title": "Suspense account posting", "note": "When a payment arrives without a clear reference", "highlight_nodes": ["n4"], "highlight_conns": ["c3"], "highlight_fields": []}, {"t0": 197.4, "t1": 206.0, "title": "Testing suspense control", "note": "Testing suspense control means ageing an item past each threshold and confirming escalation fires and a write off without dual approval is refused.", "highlight_nodes": ["n5"], "highlight_conns": ["c4"], "highlight_fields": []}], "node_ids": ["n0", "n1", "n2", "n3", "n4", "n5"], "framework": {"objective": "By the end of this lesson, you will be able to explain reconciliation matching hierarchies and suspense account management. Reconciliation compares the internal ledger with the external statement, and it starts with exact matching on the reference, the amount and the value date.", "why_matters": "This matters because operations is where payments are reconciled, investigated and fixed. The work in this lesson is what keeps the money right.", "technical_example": "In the worked example, the USD 120,000 payment matches on amount and value date despite a shortened reference on the statement, and an operator confirms it after checking the UETR.", "failure_recovery": "Items that do not match at any level go to a break queue, where an operator investigates the difference and decides how to resolve it. When a payment arrives without a clear reference, or a break cannot be resolved on the day, the amount is posted to suspense with the full detail attached, and operations works the balance every day.", "exercise": {"task": "Investigate the reconciliation break described in this lesson and find its root cause.", "info": "Use the three-way matching rule and the break categories in this lesson.", "action": "Compare the instruction, the settlement record and the statement, name the break type, and state the corrective action.", "correct": "A break is found by matching amount, currency, date and reference across the three sources. The root cause is a timing difference, an amount difference, a missing entry, or a duplicate, and the corrective action follows the cause.", "why": "Reconciliation is the last line of defence. A break that is not investigated is money that cannot be proved."}, "assessment": {"question": "Which of the following best describes reconciliation matching hierarchies and suspense account management?", "options": ["Reconciliation compares the internal ledger with the external statement, and it starts with exact matching on the reference, the amount and the value date", "Allowed transitions follow the order of the work, and each one is triggered by a real event such as a validation result, a funds check, a settlement confirmation or a timeout", "A payment state machine lists every state a payment can sit in and every move between states that is allowed, and it is the single control that keeps operations, settlement and customer service looking at the same truth", "Illegal transitions are moves the state machine must refuse, because they would let a payment exist in two contradictory states at once"], "answer": 0, "explanation": "Reconciliation compares the internal ledger with the external statement, and it starts with exact matching on the reference, the amount and the value date. This is the core idea of the lesson.", "why_wrong": ["", "This describes a different concept from this chapter, not reconciliation matching hierarchies and suspense account management.", "This describes a different concept from this chapter, not reconciliation matching hierarchies and suspense account management.", "This describes a different concept from this chapter, not reconciliation matching hierarchies and suspense account management."], "source": "generated:ch68s6"}, "takeaway": "Common breaks are missing statements, value date differences, correspondent charges, and payments that arrived but were never booked.", "prereq": "ch40s5", "next": "ch68s7", "connection_note": "The architecture view of matching and suspense accounts, building on ch40, Breaks: Suspense Accounts, Unmatched Transactions, Duplicates and Date Mismatches. This lesson is about how the matching engine is designed, not how an analyst clears a break.", "tool": {"slug": "accounting", "label": "Accounting and Reconciliation Lab", "url": "../simulators/accounting.html", "scenario": "Reconcile the payment in this lesson against its statement and find the break."}, "simple": "In plain words: reconciliation compares the internal ledger with the external statement, and it starts with exact matching on the reference, the amount and the value date. That is the whole idea in one sentence, and the rest of the lesson shows how it works in a real bank.", "summary": "Reconciliation compares the internal ledger with the external statement, and it starts with exact matching on the reference, the amount and the value date. Key points: Reconciliation compares the internal ledger; Testing exact matching; USD 120,000 payment matches on amount; Value date differences; Suspense account posting; Testing suspense control.", "example": "When the correspondent statement shows USD 120,000 with the same end to end identification and the same value date as the internal record, the item matches exactly and is closed without human touch. A payment of USD 120,000 that arrives with a value date one day late, or with a reference that differs by one character, can still be matched if amount and beneficiary agree and the difference is clear."}}], "chapter_title": "Payment Operations Architecture: State, Resilience and Control", "meta_line": "Payment Operations Architecture: State, Resilience and Control, Lesson 6 of 8, Narration 3:26, D11 Operations, exceptions and reconciliation", "next_id": "ch68s7", "next_title": "Operational Dashboards, KPIs, Resilience and Disaster Recovery"}]);</script>
+</div>
+<nav class="tool-rail" aria-label="Lesson tools">
+<button type="button" class="rail-tool" onclick="pfOpenTranscript('studio-ch68s6')" title="Open transcript"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M7 3h7l4 4v14H7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M14 3v4h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 12h5M10 15.5h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span>Transcript</span></button>
+<button type="button" class="rail-tool" onclick="pfToggleNote('studio-ch68s6')" title="Write a note on this lesson"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L8 19l-4 1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>Notes</span></button>
+<button type="button" class="rail-tool" onclick="pfToggleFiles('studio-ch68s6')" title="Download lesson files"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>Files</span></button>
+</nav>
+<div class="fw-files-panel" id="pf-files-studio-ch68s6" style="display:none"><b>Lesson files</b><p><a href="../audio/ch68s6.mp3" download>Download narration (MP3)</a></p><p><a href="#" onclick="pfDownloadTranscript('studio-ch68s6');return false">Download transcript (.txt)</a></p></div>
+</div>
+</div>
+</main>
+<footer><p>Payments Training Hub. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="../index.html">Home</a> &middot; <a href="../courses.html">Courses</a> &middot; <a href="../practice.html">Practice</a> &middot; <a href="../simulators.html">Simulators</a> &middot; <a href="../labs.html">Labs</a> &middot; <a href="../explorer.html">Explorer</a> &middot; <a href="../tests.html">Tests</a> &middot; <a href="../diagnostic.html">Diagnostic</a> &middot; <a href="../faq.html">Interview Ready Questions</a> &middot; <a href="../interview-prep.html">Interview Prep</a></p><p><a href="../about.html">About</a> &middot; <a href="../privacy.html">Privacy</a> &middot; <a href="../terms.html">Terms</a> &middot; <a href="../contact.html">Contact</a> &middot; <a href="../editorial-standards.html">Editorial Standards</a> &middot; <a href="../sources.html">Sources</a></p></footer>
+<script defer src="../assets/site.js"></script>
+<script defer src="../assets/bundles.js"></script>
+<script defer src="../assets/auth.js"></script>
+<script defer src="../assets/studio.js"></script>
+<script defer src="../assets/insight-components.js"></script>
+<script defer src="../assets/nav.js"></script>
+<script defer src="../assets/pf-enhance.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+if(window.PFInsight){PFInsight.init();}
+});
+</script>
+</body>
+</html>

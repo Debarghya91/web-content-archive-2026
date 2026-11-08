@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>Ledger Posting versus Settlement | Payments Training Hub</title>
+<meta name="description" content="Acceptance means the bank has checked the instruction and agreed to process it, and it happens before any money moves. The bank has validated the...">
+<link rel="canonical" href="https://www.paymentstraininghub.in/lessons/ch68s5.html">
+<meta property="og:url" content="https://www.paymentstraininghub.in/lessons/ch68s5.html">
+<meta property="og:title" content="Ledger Posting versus Settlement | Payments Training Hub">
+<meta property="og:description" content="Acceptance means the bank has checked the instruction and agreed to process it, and it happens before any money moves. The bank has validated the...">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.in/assets/hero/hero-poster.jpg">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.paymentstraininghub.in/index.html"}, {"@type": "ListItem", "position": 2, "name": "Payment Operations Architecture: State, Resilience and Control", "item": "https://www.paymentstraininghub.in/chapters/ch68-payment-operations-architecture-state-resilience-and-control.html"}, {"@type": "ListItem", "position": 3, "name": "Ledger Posting versus Settlement", "item": "https://www.paymentstraininghub.in/lessons/ch68s5.html"}]}</script>
+<link rel="stylesheet" href="../assets/studio.css">
+<link rel="stylesheet" href="../assets/pf-theme.css">
+<link rel="stylesheet" href="../assets/insight-components.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="../index.html" class="brand">Payments <span>Training Hub</span></a><nav class="topnav"><a href="../index.html">Home</a> <a href="../courses.html">Courses</a> <a href="../practice.html">Practice</a> <a href="../simulators.html">Simulators</a> <a href="../labs.html">Labs</a> <a href="../explorer.html">Explorer</a> <a href="../tests.html">Tests</a></nav><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox" style="display:none"><span id="authState">Not signed in</span> <span id="authForm" style="display:none"><input id="authEmail" type="email" placeholder="Email for OTP" aria-label="Email for sign-in"> <button class="mute-btn" onclick="paAuthSendOtp()">Send code</button> <input id="authCode" type="text" placeholder="6-digit code" aria-label="One-time code" style="display:none"> <button class="mute-btn" id="authVerifyBtn" onclick="paAuthVerifyOtp()" style="display:none">Verify</button> <button class="mute-btn" onclick="paAuthGoogle()">Sign in with Google</button> </span><button class="mute-btn" id="authSignOutBtn" onclick="paAuthSignOut()" style="display:none">Sign out</button></span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<div class="lesson-page">
+<div class="lesson-shell">
+<aside class="course-rail">
+<div class="rail-head">
+<h2>Payment Operations Architecture: State, Resilience and Control</h2>
+<a class="rail-close" href="../chapters/ch68-payment-operations-architecture-state-resilience-and-control.html" aria-label="Close and go to chapter" title="Back to chapter">&times;</a>
+</div>
+<div class="goal-card">
+<div class="goal-head"><b>Today's goal &middot; <span id="side-progress-text">0 of 8 items</span></b><span class="goal-flag"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 21V4m0 1h11l-2.5 3.5L17 12H6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="goal-chev">&#94;</span></div>
+<p class="goal-body" id="side-goal-body">Complete 3 items today to stay at a good pace!</p>
+</div>
+<ul class="lesson-list"><li class="" data-lesson="ch68s1"><a href="ch68s1.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Payment State Machines and Correlation</span><span class="m">Video &middot; 4 min</span></span></a></li>
+<li class="" data-lesson="ch68s2"><a href="ch68s2.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Idempotency and Duplicate Prevention</span><span class="m">Video &middot; 4 min</span></span></a></li>
+<li class="" data-lesson="ch68s3"><a href="ch68s3.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Retries, Dead Letter Queues, Timeouts and Unknown Outcomes</span><span class="m">Video &middot; 4 min</span></span></a></li>
+<li class="" data-lesson="ch68s4"><a href="ch68s4.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Out of Order Events: Messages and Acknowledgements Arriving Out of Order</span><span class="m">Video &middot; 4 min</span></span></a></li>
+<li class="current" data-lesson="ch68s5"><a href="ch68s5.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Ledger Posting versus Settlement</span><span class="m">Video &middot; 4 min</span></span></a></li>
+<li class="" data-lesson="ch68s6"><a href="ch68s6.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Reconciliation Matching Hierarchies and Suspense Account Management</span><span class="m">Video &middot; 3 min</span></span></a></li>
+<li class="" data-lesson="ch68s7"><a href="ch68s7.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Operational Dashboards, KPIs, Resilience and Disaster Recovery</span><span class="m">Video &middot; 4 min</span></span></a></li>
+<li class="" data-lesson="ch68s8"><a href="ch68s8.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Incident communication: who is told, what they are told, and when</span><span class="m">Video &middot; 3 min</span></span></a></li></ul>
+</aside>
+<div class="lesson-main">
+<div class="studio" id="studio-studio-ch68s5">
+<div class="player">
+<div class="studio-canvas" id="studio-canvas-studio-ch68s5">
+<div class="ch-sec studio-scene-vis active" id="studio-vis-studio-ch68s5-0"><div class="beat-frames">
+<div class="beat-frame active" data-frame="0">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Acceptance:</tspan> <tspan fill="#FFFFFF">bank</tspan> <tspan fill="#FFFFFF">checked</tspan> <tspan fill="#FFFFFF">instruction</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">STARTED</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Acceptance</tspan><tspan fill="#CBD5E1"> - means the bank has checked the instruction</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="0.55">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Testing acceptance</tspan><tspan fill="#CBD5E1"> - means sending a valid instruction</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="0.55">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Bank posts a reversing entry</tspan><tspan fill="#CBD5E1"> - If the payment later fails</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Settlement timing after acceptance</tspan><tspan fill="#CBD5E1"> - can happen hours after acceptance and</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Tokyo supplier bank</tspan><tspan fill="#CBD5E1"> - worked example, the Tokyo supplier bank</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Testing</tspan><tspan fill="#CBD5E1"> - chain means tracing one payment through all</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="128" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Acceptance means the bank has checked the instruction and agreed to process it, and it</text>
+<text x="450" y="476" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">happens before any money moves.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 1 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 729" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="729" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Acceptance:</tspan> <tspan fill="#FFFFFF">bank</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">checked</tspan></text>
+<text x="24" y="96" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">instruction</tspan></text>
+<rect x="24" y="114" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="132" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">STARTED</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="148" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="167" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Acceptance</text>
+<text x="180" y="185" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">means the bank has checked the instruction</text>
+<text x="180" y="203" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="0.55">
+<rect x="24" y="220" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="239" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Testing acceptance</text>
+<text x="180" y="257" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">means sending a valid instruction</text>
+<text x="180" y="275" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="0.55">
+<rect x="24" y="292" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="311" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Bank posts a</text>
+<text x="180" y="329" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">reversing entry</text>
+<text x="180" y="347" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">If the payment later fails</text>
+<text x="180" y="365" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="24" y="384" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="403" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Settlement timing</text>
+<text x="180" y="421" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">after acceptance</text>
+<text x="180" y="439" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">can happen hours after acceptance and after</text>
+<text x="180" y="457" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="24" y="476" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="495" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Tokyo supplier bank</text>
+<text x="180" y="513" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">worked example, the Tokyo supplier bank</text>
+<text x="180" y="531" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="548" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="567" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Testing</text>
+<text x="180" y="585" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">chain means tracing one payment through all</text>
+<text x="180" y="603" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="628" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Acceptance means the bank has checked</text>
+<text x="180" y="647" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">the instruction and agreed to process it,</text>
+<text x="180" y="666" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">and it happens before any money moves.</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="1">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Testing</tspan> <tspan fill="#FFFFFF">acceptance</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Acceptance</tspan><tspan fill="#CBD5E1"> - means the bank has checked the instruction</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Testing acceptance</tspan><tspan fill="#CBD5E1"> - means sending a valid instruction</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="0.55">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Bank posts a reversing entry</tspan><tspan fill="#CBD5E1"> - If the payment later fails</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Settlement timing after acceptance</tspan><tspan fill="#CBD5E1"> - can happen hours after acceptance and</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Tokyo supplier bank</tspan><tspan fill="#CBD5E1"> - worked example, the Tokyo supplier bank</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Testing</tspan><tspan fill="#CBD5E1"> - chain means tracing one payment through all</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="257" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Testing acceptance means sending a valid instruction and confirming the acceptance report, and</text>
+<text x="450" y="476" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">sending an invalid instruction and confirming a rejection instead.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 2 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 692" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="692" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Testing</tspan> <tspan fill="#FFFFFF">acceptance</tspan></text>
+<rect x="24" y="58" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="76" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="92" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="111" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Acceptance</text>
+<text x="180" y="129" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">means the bank has checked the instruction</text>
+<text x="180" y="147" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="164" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="183" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Testing acceptance</text>
+<text x="180" y="201" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">means sending a valid instruction</text>
+<text x="180" y="219" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="0.55">
+<rect x="24" y="236" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="255" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Bank posts a</text>
+<text x="180" y="273" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">reversing entry</text>
+<text x="180" y="291" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">If the payment later fails</text>
+<text x="180" y="309" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="24" y="328" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="347" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Settlement timing</text>
+<text x="180" y="365" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">after acceptance</text>
+<text x="180" y="383" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">can happen hours after acceptance and after</text>
+<text x="180" y="401" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="24" y="420" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="439" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Tokyo supplier bank</text>
+<text x="180" y="457" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">worked example, the Tokyo supplier bank</text>
+<text x="180" y="475" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="492" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="511" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Testing</text>
+<text x="180" y="529" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">chain means tracing one payment through all</text>
+<text x="180" y="547" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="572" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Testing acceptance means sending a valid</text>
+<text x="180" y="591" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">instruction and confirming the acceptance</text>
+<text x="180" y="610" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">report, and sending an invalid instruction</text>
+<text x="180" y="629" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">and confirming a rejection instead.</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="2">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Bank</tspan> <tspan fill="#FFFFFF">posts</tspan> <tspan fill="#FFFFFF">a</tspan> <tspan fill="#FFFFFF">reversing</tspan> <tspan fill="#FFFFFF">entry</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Acceptance</tspan><tspan fill="#CBD5E1"> - means the bank has checked the instruction</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Testing acceptance</tspan><tspan fill="#CBD5E1"> - means sending a valid instruction</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Bank posts a reversing entry</tspan><tspan fill="#CBD5E1"> - If the payment later fails</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Settlement timing after acceptance</tspan><tspan fill="#CBD5E1"> - can happen hours after acceptance and</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Tokyo supplier bank</tspan><tspan fill="#CBD5E1"> - worked example, the Tokyo supplier bank</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Testing</tspan><tspan fill="#CBD5E1"> - chain means tracing one payment through all</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="386" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">If the payment later fails, the bank posts a reversing entry, a credit of USD 120,000 back to the</text>
+<text x="450" y="476" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">corporate account and a debit of USD 120,000 to the settlement account.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 3 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 720" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="720" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Bank</tspan> <tspan fill="#FFFFFF">posts</tspan> <tspan fill="#FFFFFF">a</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">reversing</tspan> <tspan fill="#FFFFFF">entry</tspan></text>
+<rect x="24" y="86" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="104" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="120" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="139" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Acceptance</text>
+<text x="180" y="157" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">means the bank has checked the instruction</text>
+<text x="180" y="175" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="192" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="211" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Testing acceptance</text>
+<text x="180" y="229" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">means sending a valid instruction</text>
+<text x="180" y="247" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="1">
+<rect x="24" y="264" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="283" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Bank posts a</text>
+<text x="180" y="301" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">reversing entry</text>
+<text x="180" y="319" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">If the payment later fails</text>
+<text x="180" y="337" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="24" y="356" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="375" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Settlement timing</text>
+<text x="180" y="393" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">after acceptance</text>
+<text x="180" y="411" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">can happen hours after acceptance and after</text>
+<text x="180" y="429" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="24" y="448" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="467" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Tokyo supplier bank</text>
+<text x="180" y="485" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">worked example, the Tokyo supplier bank</text>
+<text x="180" y="503" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="520" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="539" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Testing</text>
+<text x="180" y="557" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">chain means tracing one payment through all</text>
+<text x="180" y="575" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="600" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">If the payment later fails, the bank posts a</text>
+<text x="180" y="619" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">reversing entry, a credit of USD 120,000</text>
+<text x="180" y="638" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">back to the corporate account and a debit</text>
+<text x="180" y="657" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">of USD 120,000 to the settlement account.</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="3">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Settlement</tspan> <tspan fill="#FFFFFF">timing</tspan> <tspan fill="#FFFFFF">after</tspan> <tspan fill="#FFFFFF">acceptance</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Acceptance</tspan><tspan fill="#CBD5E1"> - means the bank has checked the instruction</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Testing acceptance</tspan><tspan fill="#CBD5E1"> - means sending a valid instruction</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Bank posts a reversing entry</tspan><tspan fill="#CBD5E1"> - If the payment later fails</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Settlement timing after acceptance</tspan><tspan fill="#CBD5E1"> - can happen hours after acceptance and</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Tokyo supplier bank</tspan><tspan fill="#CBD5E1"> - worked example, the Tokyo supplier bank</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Testing</tspan><tspan fill="#CBD5E1"> - chain means tracing one payment through all</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="514" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Settlement can happen hours after acceptance and after ledger posting, because it depends on</text>
+<text x="450" y="476" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">clearing cut offs, correspondent availability and the time zone of the receiving bank.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 4 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 739" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="739" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Settlement</tspan> <tspan fill="#FFFFFF">timing</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">after</tspan> <tspan fill="#FFFFFF">acceptance</tspan></text>
+<rect x="24" y="86" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="104" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="120" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="139" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Acceptance</text>
+<text x="180" y="157" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">means the bank has checked the instruction</text>
+<text x="180" y="175" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="192" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="211" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Testing acceptance</text>
+<text x="180" y="229" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">means sending a valid instruction</text>
+<text x="180" y="247" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="1">
+<rect x="24" y="264" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="283" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Bank posts a</text>
+<text x="180" y="301" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">reversing entry</text>
+<text x="180" y="319" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">If the payment later fails</text>
+<text x="180" y="337" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="1">
+<rect x="24" y="356" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="375" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Settlement timing</text>
+<text x="180" y="393" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">after acceptance</text>
+<text x="180" y="411" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">can happen hours after acceptance and after</text>
+<text x="180" y="429" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="24" y="448" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="467" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Tokyo supplier bank</text>
+<text x="180" y="485" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">worked example, the Tokyo supplier bank</text>
+<text x="180" y="503" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="520" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="539" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Testing</text>
+<text x="180" y="557" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">chain means tracing one payment through all</text>
+<text x="180" y="575" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="600" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Settlement can happen hours after</text>
+<text x="180" y="619" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">acceptance and after ledger posting,</text>
+<text x="180" y="638" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">because it depends on clearing cut offs,</text>
+<text x="180" y="657" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">correspondent availability and the time</text>
+<text x="180" y="676" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">zone of the receiving bank.</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="4">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Tokyo</tspan> <tspan fill="#FFFFFF">supplier</tspan> <tspan fill="#FFFFFF">bank</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Acceptance</tspan><tspan fill="#CBD5E1"> - means the bank has checked the instruction</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Testing acceptance</tspan><tspan fill="#CBD5E1"> - means sending a valid instruction</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Bank posts a reversing entry</tspan><tspan fill="#CBD5E1"> - If the payment later fails</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Settlement timing after acceptance</tspan><tspan fill="#CBD5E1"> - can happen hours after acceptance and</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n4" data-beat="4">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Tokyo supplier bank</tspan><tspan fill="#CBD5E1"> - worked example, the Tokyo supplier bank</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Testing</tspan><tspan fill="#CBD5E1"> - chain means tracing one payment through all</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="643" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">In the worked example, the Tokyo supplier bank receives USD 120,000 at settlement, checks the</text>
+<text x="450" y="476" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">beneficiary details,</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 5 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 701" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="701" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Tokyo</tspan> <tspan fill="#FFFFFF">supplier</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">bank</tspan></text>
+<rect x="24" y="86" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="104" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="120" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="139" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Acceptance</text>
+<text x="180" y="157" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">means the bank has checked the instruction</text>
+<text x="180" y="175" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="192" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="211" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Testing acceptance</text>
+<text x="180" y="229" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">means sending a valid instruction</text>
+<text x="180" y="247" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="1">
+<rect x="24" y="264" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="283" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Bank posts a</text>
+<text x="180" y="301" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">reversing entry</text>
+<text x="180" y="319" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">If the payment later fails</text>
+<text x="180" y="337" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="1">
+<rect x="24" y="356" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="375" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Settlement timing</text>
+<text x="180" y="393" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">after acceptance</text>
+<text x="180" y="411" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">can happen hours after acceptance and after</text>
+<text x="180" y="429" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="1">
+<rect x="24" y="448" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="467" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Tokyo supplier bank</text>
+<text x="180" y="485" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">worked example, the Tokyo supplier bank</text>
+<text x="180" y="503" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="520" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="539" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Testing</text>
+<text x="180" y="557" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">chain means tracing one payment through all</text>
+<text x="180" y="575" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="600" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">In the worked example, the Tokyo supplier</text>
+<text x="180" y="619" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">bank receives USD 120,000 at settlement,</text>
+<text x="180" y="638" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">checks the beneficiary details,</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="5">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Testing:</tspan> <tspan fill="#FFFFFF">tracing</tspan> <tspan fill="#FFFFFF">payment</tspan> <tspan fill="#FFFFFF">through</tspan> <tspan fill="#FFFFFF">all</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">COMPLETE</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Acceptance</tspan><tspan fill="#CBD5E1"> - means the bank has checked the instruction</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Testing acceptance</tspan><tspan fill="#CBD5E1"> - means sending a valid instruction</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Bank posts a reversing entry</tspan><tspan fill="#CBD5E1"> - If the payment later fails</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Settlement timing after acceptance</tspan><tspan fill="#CBD5E1"> - can happen hours after acceptance and</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n4" data-beat="4">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Tokyo supplier bank</tspan><tspan fill="#CBD5E1"> - worked example, the Tokyo supplier bank</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n5" data-beat="5">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Testing</tspan><tspan fill="#CBD5E1"> - chain means tracing one payment through all</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Testing the chain means tracing one payment through all four accounts and confirming each</text>
+<text x="450" y="476" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">debit has a matching credit.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 6 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#45A4FF"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 748" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="748" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Testing:</tspan> <tspan fill="#FFFFFF">tracing</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">payment</tspan> <tspan fill="#FFFFFF">through</tspan></text>
+<text x="24" y="96" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">all</tspan></text>
+<rect x="24" y="114" width="312" height="26" rx="8" fill="#0C1626" stroke="#2DD4BF" stroke-width="1.5"/>
+<text x="180" y="132" text-anchor="middle" font-size="12" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">COMPLETE</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="148" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="167" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Acceptance</text>
+<text x="180" y="185" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">means the bank has checked the instruction</text>
+<text x="180" y="203" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="220" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="239" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Testing acceptance</text>
+<text x="180" y="257" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">means sending a valid instruction</text>
+<text x="180" y="275" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="1">
+<rect x="24" y="292" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="311" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Bank posts a</text>
+<text x="180" y="329" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">reversing entry</text>
+<text x="180" y="347" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">If the payment later fails</text>
+<text x="180" y="365" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="1">
+<rect x="24" y="384" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="403" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Settlement timing</text>
+<text x="180" y="421" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">after acceptance</text>
+<text x="180" y="439" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">can happen hours after acceptance and after</text>
+<text x="180" y="457" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="1">
+<rect x="24" y="476" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="495" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Tokyo supplier bank</text>
+<text x="180" y="513" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">worked example, the Tokyo supplier bank</text>
+<text x="180" y="531" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="1">
+<rect x="24" y="548" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="567" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Testing</text>
+<text x="180" y="585" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">chain means tracing one payment through all</text>
+<text x="180" y="603" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<text x="180" y="628" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Testing the chain means tracing one</text>
+<text x="180" y="647" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">payment through all four accounts and</text>
+<text x="180" y="666" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">confirming each debit has a matching</text>
+<text x="180" y="685" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">credit.</text>
+</svg>
+</div>
+</div>
+<p class="xml-caption">Flow of the explanation in this lesson.</p></div>
+<div class="playerbar">
+<div class="studio-progress"><div class="studio-markers" id="studio-markers-studio-ch68s5"></div><input type="range" id="studio-slider-studio-ch68s5" min="0" max="1000" value="0" aria-label="Lesson timeline"></div>
+<div class="ctrl-row">
+<button class="ctrl-btn" id="studio-play-studio-ch68s5" onclick="studioTogglePlay('studio-ch68s5')" aria-label="Play lesson" title="Play lesson"><span class="ctrl-ic-play"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></span><span class="ctrl-ic-pause" style="display:none"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><rect x="6" y="5" width="4" height="14" fill="currentColor"/><rect x="14" y="5" width="4" height="14" fill="currentColor"/></svg></span></button>
+<button class="ctrl-btn studio-mute-btn" id="studio-mute-studio-ch68s5" onclick="studioToggleMute('studio-ch68s5')" aria-label="Mute narration" title="Mute / unmute narration"><svg class="studio-mute-icon" viewBox="0 0 24 24" width="28" height="28" fill="currentColor" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3z"/><path class="studio-mute-waves" d="M16 8.5a5 5 0 0 1 0 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><path class="studio-mute-waves" d="M18.5 6a9 9 0 0 1 0 12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><path class="studio-mute-x" d="M16 9.5l5 5M21 9.5l-5 5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" style="display:none"/></svg></button>
+<button class="ctrl-btn" onclick="studioSkip('studio-ch68s5', -10)" aria-label="Back 10 seconds" title="Back 10 seconds"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 5a7 7 0 1 1-6.32 4.06" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M5.5 3.5v5h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><text x="12" y="16.5" font-size="8" fill="currentColor" text-anchor="middle" font-weight="700">10</text></svg></button>
+<span class="studio-time ctrl-time" id="studio-time-studio-ch68s5">0:00 / 3:46</span>
+<button class="ctrl-btn" onclick="studioSkip('studio-ch68s5', 10)" aria-label="Forward 10 seconds" title="Forward 10 seconds"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 5a7 7 0 1 0 6.32 4.06" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M18.5 3.5v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><text x="12" y="16.5" font-size="8" fill="currentColor" text-anchor="middle" font-weight="700">10</text></svg></button>
+<span class="playerbar-spacer"></span>
+<span class="player-stage" id="studio-tag-studio-ch68s5">Step 1 of 6</span>
+<button class="ctrl-btn ctrl-step" id="studio-prevscene-studio-ch68s5" onclick="studioPrevScene('studio-ch68s5')" title="Previous step" aria-label="Previous step">&lsaquo;</button>
+<button class="ctrl-btn ctrl-step" id="studio-nextscene-studio-ch68s5" onclick="studioNextScene('studio-ch68s5')" title="Next step" aria-label="Next step">&rsaquo;</button>
+<button class="ctrl-btn ctrl-speed" id="studio-speedbtn-studio-ch68s5" onclick="studioCycleSpeed('studio-ch68s5')" title="Playback speed" aria-label="Playback speed">1x</button>
+<span class="ctrl-settings-wrap"><button class="ctrl-btn" onclick="studioToggleSettings('studio-ch68s5', event)" aria-label="Player settings" title="Settings"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5 5l2.1 2.1M16.9 16.9L19 19M19 5l-2.1 2.1M7.1 16.9L5 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button><span class="ctrl-popover" id="studio-settings-studio-ch68s5" style="display:none" onclick="event.stopPropagation()"><label class="ctrl-pop-row">Volume <input type="range" min="0" max="1" step="0.1" value="1" oninput="studioSetVolume('studio-ch68s5', this.value)" style="width:110px;accent-color:#3587FC"></label><button class="studio-btn" id="studio-captions-studio-ch68s5" onclick="studioToggleCaptions('studio-ch68s5')">Captions: On</button><button class="studio-btn" onclick="studioReplayScene('studio-ch68s5')">Replay scene</button></span></span>
+<button class="ctrl-btn" onclick="studioFullscreen('studio-ch68s5')" aria-label="Fullscreen" title="Fullscreen"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+</div>
+</div>
+</div>
+<p class="studio-caption" id="studio-caption-studio-ch68s5"></p>
+<p class="studio-loading" id="studio-loading-studio-ch68s5" style="display:none">Loading narration...</p>
+<p class="studio-error" id="studio-error-studio-ch68s5" role="alert" style="display:none"></p>
+<audio id="studio-audio-studio-ch68s5" preload="auto" src="../audio/ch68s5.mp3"></audio>
+</div>
+<div class="lesson-title-row">
+<h1>Ledger Posting versus Settlement</h1>
+<button class="save-note" type="button" onclick="pfToggleNote('studio-ch68s5')" title="Save a note on this lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L8 19l-4 1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg> Save note</button>
+</div>
+<p class="lesson-meta-line">Payment Operations Architecture: State, Resilience and Control, Lesson 5 of 8, Narration 3:46, D11 Operations, exceptions and reconciliation</p>
+<p class="lesson-note-saved" id="studio-note-saved-studio-ch68s5" style="display:none">Note saved.</p>
+<div class="note-editor" id="studio-note-editor-studio-ch68s5" style="display:none"><textarea id="studio-note-text-studio-ch68s5" rows="3" placeholder="Write a note on this lesson..." aria-label="Lesson note"></textarea><div class="note-editor-row"><button class="studio-btn primary" onclick="pfSaveNote('studio-ch68s5')">Save note</button> <button class="studio-btn" onclick="pfToggleNote('studio-ch68s5')">Cancel</button></div></div>
+<div class="dive-deeper">
+<div class="dive-head"><button type="button" class="dive-toggle" onclick="pfToggleDive(this)" aria-expanded="true"><span class="dive-spark"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 2l2.2 6.8L21 11l-6.8 2.2L12 20l-2.2-6.8L3 11l6.8-2.2z" fill="currentColor"/></svg></span><span class="dive-title">Dive deeper on this topic</span><span class="dive-chev"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 14l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button></div>
+<div class="dive-btns"><button type="button" class="dive-btn" data-kind="practice" onclick="pfDive('studio-ch68s5', 'practice')">Give me practice questions</button><button type="button" class="dive-btn" data-kind="simple" onclick="pfDive('studio-ch68s5', 'simple')">Explain this topic in simple terms</button><button type="button" class="dive-btn" data-kind="summary" onclick="pfDive('studio-ch68s5', 'summary')">Give me a summary</button><button type="button" class="dive-btn" data-kind="example" onclick="pfDive('studio-ch68s5', 'example')">Give me real-life examples</button></div>
+<div class="dive-panel" id="dive-panel-studio-ch68s5"><div class="dive-panel-body"></div></div>
+<script type="application/json" id="pf-dive-data-studio-ch68s5">{"simple": "In plain words: acceptance means the bank has checked the instruction and agreed to process it, and it happens before any money moves. That is the whole idea in one sentence, and the rest of the lesson shows how it works in a real bank.", "summary": "Acceptance means the bank has checked the instruction and agreed to process it, and it happens before any money moves. Key points: Acceptance: bank checked instruction; Testing acceptance; Bank posts a reversing entry; Settlement timing after acceptance; Tokyo supplier bank; Testing: tracing payment through all.", "example": "In the worked example, Meridian Bank accepts the USD 120,000 instruction from the London corporate at twelve minutes past nine in the morning, sends an acceptance report, and reserves USD 120,000 on the corporate account so the funds cannot be spent elsewhere. When Meridian Bank accepts the USD 120,000 payment, it posts a debit of USD 120,000 to the corporate customer account and a credit of USD 120,000 to its internal settlement account, so the corporate balance falls by USD 120,000."}</script>
+</div>
+<div class="lesson-feedback">
+<div class="fb-icons"><button type="button" class="fb-btn" data-kind="like" onclick="pfFeedback(this,'like')" aria-label="Like this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M7 21H4a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1h3v11zm0 0h9.6a2 2 0 0 0 1.9-1.4l1.6-5A2 2 0 0 0 18.2 12H15V6.5A2.5 2.5 0 0 0 12.5 4L11 7.5 8.6 10H7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button><button type="button" class="fb-btn" data-kind="dislike" onclick="pfFeedback(this,'dislike')" aria-label="Dislike this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M17 3h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1h-3V3zm0 0H7.4a2 2 0 0 0-1.9 1.4l-1.6 5A2 2 0 0 0 5.8 12H9v5.5A2.5 2.5 0 0 0 11.5 20L13 16.5l2.4-2.5H17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button><button type="button" class="fb-btn" data-kind="flag" onclick="pfFeedback(this,'flag')" aria-label="Flag this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M6 21V4m0 1h11l-2.5 3.5L17 12H6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+<button type="button" class="go-next" onclick="goLesson('ch68s6')" title="Next: Reconciliation Matching Hierarchies and Suspense Account Management">Go to next item &rarr;</button>
+</div>
+<div class="chips"><span class="chip">Irrevocable</span><span class="chip">Settlement</span><span class="chip">T-account</span></div>
+<div class="card learn-card">
+<h2>What you will learn</h2>
+<p class="transcript"><b>Your objective.</b> By the end of this lesson, you will be able to explain ledger posting versus settlement. Acceptance means the bank has checked the instruction and agreed to process it, and it happens before any money moves.</p>
+<p class="transcript"><b>Why it matters.</b> This matters because operations is where payments are reconciled, investigated and fixed. The work in this lesson is what keeps the money right.</p>
+<p class="transcript">Chapter objective: Learner explains payment state machines, idempotency, retries, dead letter queues, out of order events, ledger posting versus settlement, reconciliation matching hierarchies, suspense account management and operational dashboards, and designs the controls that keep a payment platform safe. Learner applies this skill in realistic banking scenarios, with clear examples and correct terminology throughout.</p>
+<h3>Key learning points</h3>
+<ul id="studio-points-studio-ch68s5">
+<li>Acceptance: bank checked instruction</li>
+<li>Testing acceptance</li>
+<li>Bank posts a reversing entry</li>
+<li>Settlement timing after acceptance</li>
+<li>Tokyo supplier bank</li>
+<li>Testing: tracing payment through all</li>
+</ul>
+<h3>Key terms</h3>
+<div id="studio-terms-studio-ch68s5">
+<p class="keyterm"><b>Irrevocable:</b> A payment or instruction that cannot be cancelled or reversed once it has been made, except by agreement of all parties or by a court order.</p>
+<p class="keyterm"><b>Settlement:</b> The final movement of funds between banks to discharge obligations created by cleared payments. Settlement is usually made in central bank money or through correspondent accounts.</p>
+<p class="keyterm"><b>T-account:</b> A ledger representation of an account shaped like the letter T, with debits on the left and credits on the right.</p>
+</div>
+<p class="studio-note">Banking architecture diagram showing Ledger Posting versus Settlement.</p>
+</div>
+<section class="ic-lesson-section" id="pf-insights-studio-ch68s5">
+<h2>Insights and practice scenarios</h2>
+<p class="studio-note">Worked insights and practice scenarios for this lesson. Each one is a reusable PaymentForge case, so the same case may appear in more than one lesson.</p>
+<div data-ic-type="level" data-record-id="INS-032"><script type="application/json">{"level": 3, "meta": {"domain": "Payment Operations", "topic": "Gateway success but core banking posting fails", "depth": 3, "difficulty": "advanced", "insightId": "INS-032"}, "evidence": "public-post", "recordId": "INS-032", "problem": "Meridian Bank's payment gateway returns a success response for a corporate customer's EUR 40,000 supplier payment, and the channel shows the payment as accepted. Hours later, the supplier has not been paid, the finance team finds no debit in the core banking ledger, and the payment engine still shows the payment as in progress. The gateway said yes, the ledger says nothing happened, and the customer wants to know whether to send the payment again.\n\nThe gap sits between acceptance and posting. The gateway accepted the instruction, but the posting to the core ledger failed, so the payment never reached clearing. The learner must investigate the gap without creating a duplicate payment, decide which system is authoritative for each fact, and design the recovery so the payment posts exactly once.", "solution": "Separate the three facts and find the authoritative source for each. The gateway is authoritative for acceptance of the instruction. The payment engine is authoritative for the processing state. The core ledger is authoritative for whether a debit posted. When they disagree, the payment goes into a controlled exception state and no retry is allowed until the disagreement is resolved.\n\nTrace the payment by its instruction ID, end-to-end ID and ledger posting reference across the gateway, the payment engine, the ledger adapter and the core ledger. Check the ledger adapter logs, the outbox and the transaction boundary: did the posting commit, did the status event fail, or did the posting never reach the ledger? If the posting never happened, replay the posting once using the original posting reference and idempotency controls. If the posting happened but the status event was lost, replay the status event idempotently without reposting the debit. If the posting failed for a business reason such as insufficient funds or an account restriction, move the payment to a rejected state with the reason code and notify the customer.\n\nProtect against the duplicate that a retry would create. Persist the idempotency key and payload hash at intake, and make the ledger adapter reject a second posting for the same posting reference. Reconcile the payment engine against the ledger on a scheduled cycle, and alert on any payment that stays in an inconsistent state beyond its threshold. Keep the customer informed with the true state, not with the gateway message alone.", "decision": {"question": "The payment gateway returns success, but the core ledger has no debit and the supplier has not been paid. What should the analyst do first?", "context": "", "options": [{"label": "A", "detail": "Reverse a debit that does not exist.", "correct": false}, {"label": "B", "detail": "Resubmit the payment from the gateway so the supplier is paid.", "correct": false}, {"label": "C", "detail": "Treat the gateway response as acceptance only, verify the payment engine state and the ledger posting using the original references, place the payment in a controlled exception state, and recover the posting exactly once.", "correct": true}, {"label": "D", "detail": "Tell the customer the payment succeeded because the gateway said so.", "correct": false}]}, "decisionRationale": "Option C is correct because gateway success proves acceptance, not posting or settlement, and the ledger is authoritative for whether a debit exists. Recovery must post exactly once. Option B risks a duplicate payment if the original later posts. Option D states a conclusion the ledger contradicts. Option A is impossible and shows the state was never checked.", "flow": {"steps": [{"title": "Submits a EUR 40,000 supplier payment through the corporate channel", "actor": "Corporate customer", "note": "Corporate banking channel"}, {"title": "Validates the instruction and returns a success response", "actor": "Gateway", "note": "Payment gateway"}, {"title": "Creates the payment and sends the debit instruction to the ledger adapter", "actor": "Payment engine", "note": "Payment engine"}, {"title": "Attempts to post the debit to the core ledger", "actor": "Ledger adapter", "note": "Ledger adapter"}, {"title": "Posts the debit or returns a failure, with a posting reference on success", "actor": "Core ledger", "note": "Core banking"}, {"title": "Updates the payment state from the ledger outcome", "actor": "Payment engine", "note": "Payment engine and status store"}, {"title": "Investigates the gap using the original references and places the payment in an exception state", "actor": "Operations analyst", "note": "Operations workbench"}, {"title": "Recovers the posting exactly once, or rejects the payment with a reason, and notifies the customer", "actor": "Payment engine", "note": "Payment engine and notification service"}]}, "happy": ["The gateway accepts the instruction, the ledger posts the debit once, the payment engine records the posting reference, the payment proceeds to clearing, the supplier is credited, and the customer receives a confirmation that matches the ledger entry. No duplicate posting and no manual correction are needed."], "negative": [{"title": "Posting never reached the ledger", "detail": "The ledger adapter fails before the debit is posted, so the ledger has no record. Detect the gap by reconciling engine states against ledger postings. Replay the posting once with the original posting reference and idempotency controls."}, {"title": "Posting succeeded but status event lost", "detail": "The debit posts but the payment engine never learns about it. Replay the status event idempotently from the outbox using the original posting reference. Do not repost the debit."}, {"title": "Duplicate retry creates a second payment", "detail": "The customer resubmits the instruction after a slow gateway response. Return the original payment reference for the same idempotency key. If two distinct instructions arrive, duplicate detection routes the uncertain match for review."}, {"title": "Out-of-order status events", "detail": "An older status event arrives after a newer state has been recorded. Version events and ignore any event older than the current state, so the payment state never regresses."}], "technical": ["Define the transaction boundary explicitly: the ledger posting and the status publication must be recoverable as a unit, using the outbox pattern so a failed event can be replayed. Give every posting a unique posting ID that the ledger enforces, so a replay cannot create a second debit. Keep instruction ID, end-to-end ID, posting reference and correlation ID in separate fields with a documented lifecycle. Make status consumers idempotent and version events so out-of-order delivery cannot regress state. Log the gateway response, the adapter request, the ledger outcome and every state transition with timestamps. Reconcile the payment engine against the ledger on a scheduled cycle, with ageing thresholds and alerts for unresolved gaps. Never equate a gateway success response with a ledger posting or with settlement."], "messages": [{"message": "pain.001", "title": "Customer credit transfer initiation from the channel to the gateway.", "fields": [{"tag": "Instruction ID", "name": "Instruction ID", "relevant": true}, {"tag": "End-to-end ID", "name": "End-to-end ID", "relevant": true}, {"tag": "Debtor and creditor accounts", "name": "Debtor and creditor accounts", "relevant": true}, {"tag": "Instructed amount and currency", "name": "Instructed amount and currency", "relevant": true}]}, {"message": "pacs.008", "title": "Customer payment sent to clearing once the ledger posting succeeds.", "fields": [{"tag": "Instruction ID and end-to-end ID", "name": "Instruction ID and end-to-end ID", "relevant": true}, {"tag": "Debtor agent and creditor agent", "name": "Debtor agent and creditor agent", "relevant": true}, {"tag": "Settlement amount and currency", "name": "Settlement amount and currency", "relevant": true}]}, {"message": "pacs.002", "title": "Payment status report from clearing, confirming acceptance or rejection.", "fields": [{"tag": "Original instruction ID", "name": "Original instruction ID", "relevant": true}, {"tag": "Status code", "name": "Status code", "relevant": true}, {"tag": "Reason code where rejected", "name": "Reason code where rejected", "relevant": true}]}, {"message": "camt.053", "title": "Bank-to-customer statement used as evidence for whether the debit posted.", "fields": [{"tag": "Account identification", "name": "Account identification", "relevant": true}, {"tag": "Entry amount and value date", "name": "Entry amount and value date", "relevant": true}, {"tag": "Posting reference", "name": "Posting reference", "relevant": true}, {"tag": "Balance after the entry", "name": "Balance after the entry", "relevant": true}]}, {"message": "camt.054", "title": "Bank-to-customer debit or credit notification, used as evidence for an individual posting.", "fields": [{"tag": "Account identification", "name": "Account identification", "relevant": true}, {"tag": "Entry amount and value date", "name": "Entry amount and value date", "relevant": true}, {"tag": "Posting reference", "name": "Posting reference", "relevant": true}, {"tag": "Related payment reference", "name": "Related payment reference", "relevant": true}]}], "accounting": ["Debit the customer account once for EUR 40,000 and credit the settlement account, using the original posting reference. If the posting never happened, post it once as the recovery action. If the posting happened but the status was lost, post nothing further. If the payment is rejected for a business reason, no debit is posted and the customer is told the reason. Unresolved gateway-to-ledger gaps sit on an operations worklist with an owner, an age and a service level, and aged items escalate. Reconciliation between the payment engine and the ledger must prove that every accepted payment has exactly one posting, and every posting has a matching payment, before the day is closed."], "gherkin": {"scenarios": [{"given": "a ledger posting exists but the status event is missing", "when": "recovery runs", "then": "the payment state is updated using the original posting reference without reposting the debit."}, {"given": "out-of-order status events", "when": "an older event arrives after a newer state", "then": "the payment state does not regress."}, {"given": "an already accepted instruction", "when": "the identical request is retried with the same idempotency key", "then": "the platform returns the original payment reference and does not create a second debit."}]}, "check": {"questions": [{"question": "The gateway returns success. What does that prove?", "options": ["That the instruction was accepted by the gateway, not that the ledger posted or the payment settled.", "That the payment completed.", "That the ledger posted the debit.", "That the supplier was paid."], "answer": 0, "explanation": "Gateway success is acceptance. Posting and settlement are separate stages with their own evidence."}, {"question": "Which system is authoritative for whether a debit exists?", "options": ["The customer statement screen.", "The gateway.", "The channel.", "The core ledger."], "answer": 3, "explanation": "Only the ledger can prove a posting. Other systems show their own view of the payment state."}, {"question": "The debit posted but the status event was lost. How is it recovered?", "options": ["By replaying the status event idempotently using the original posting reference.", "By asking the customer to pay again.", "By deleting the payment.", "By posting the debit again."], "answer": 0, "explanation": "The money already moved, so only the status needs to be corrected, without a second debit."}, {"question": "How is a duplicate ledger posting prevented during recovery?", "options": ["By posting faster.", "By turning off the ledger.", "By trusting the operator to be careful.", "By giving every posting a unique posting ID that the ledger enforces, and by persisting the idempotency key."], "answer": 3, "explanation": "A unique posting ID enforced by the ledger makes a replay safe, and the idempotency key stops duplicate instructions."}]}}</script></div>
+<div data-ic-type="level" data-record-id="INS-064"><script type="application/json">{"level": 3, "meta": {"domain": "Payment Operations", "topic": "\u20b918,500 debit but e-commerce order remains pending", "depth": 3, "difficulty": "advanced", "insightId": "INS-064"}, "evidence": "public-post", "recordId": "INS-064", "problem": "A customer of Northgate Retail pays Rs 18,500 for an order through the retailer's checkout. The bank account is debited, the payment gateway reports success, and the order remains pending: no confirmation, no dispatch, no delivery date. The customer contacts support, who can see the debit in the bank statement but cannot see the order, and the retailer cannot tell the customer whether the goods will arrive or the money will come back. The amount matters for the investigation: Rs 18,500 is well within the usual bank cap of around Rs 5 lakh for IMPS, and within the UPI limit of INR 5 lakh for specified categories, so the failure is not a limit breach. It is a state failure: the money moved, or appears to have moved, while the order state did not.\n\nThe learner must trace the payment through the gateway, the bank, the merchant callback and the order creation, and then decide between the two possible endings: fulfilment or refund. That decision cannot be made from the customer's statement alone, nor from the gateway's success alone. It needs the ledger entry, the gateway record, the callback delivery record and the order system state, all matched on the same reference. The case also tests the recovery discipline for the amount in question: a Rs 18,500 debit that is not matched to an order must be resolved through a controlled process with a reference the customer can quote, not through an informal promise that the money will come back.", "solution": "Start by fixing the reference: take the payment reference from the customer's bank statement and the gateway transaction ID, and confirm they belong to the same payment. Then trace the four boundaries in order. First, the gateway: did it authorise and capture the payment, what response did it return, and what callback did it send? Second, the bank: does the ledger show a debit of Rs 18,500, on which rail, and with what status? The rail matters for the timeline: IMPS is instant and typically bank-capped around Rs 5 lakh, NEFT settles in half-hourly batches, RTGS settles individually in real time with a minimum of Rs 2 lakh, and UPI allows INR 5 lakh for specified categories, so a Rs 18,500 payment could have travelled on IMPS or UPI without breaching a limit, and the rail record shows whether settlement completed. Third, the merchant callback: was it delivered, did the endpoint acknowledge it, and does the dead-letter queue hold it? Fourth, the order system: was an order created, in what state, and is it linked to the payment reference?\n\nOnce the four boundaries are known, the decision follows the evidence. If the payment completed and the callback was lost, create the order from the payment record exactly once and confirm fulfilment to the customer with the order reference. If the payment did not complete, or the debit is provisional and will not settle, refund the Rs 18,500 through the controlled process with a refund reference, a date and a written confirmation. If the state is still uncertain after the trace, hold the payment in a controlled recovery state, tell the customer what is known, what is being checked and when the next update will come, and do not promise a date the bank cannot guarantee. Record every step against the same reference so the customer, support and finance all see one story.", "decision": {"question": "A customer pays Rs 18,500 at Northgate Retail. The bank account is debited and the gateway reports success, but the order remains pending with no confirmation or dispatch. Support can see the debit but cannot see the order. You are the business analyst asked to trace the payment and decide whether the customer gets fulfilment or a refund.", "context": "", "options": [{"label": "A", "detail": "Treat the gateway success as proof the order will be fulfilled and tell the customer to wait.", "correct": false}, {"label": "B", "detail": "Tell the customer the money will be refunded automatically and close the case.", "correct": false}, {"label": "C", "detail": "Trace the gateway, bank, merchant callback and order creation on the same reference, establish whether the payment completed, and then fulfil the order or refund through a controlled process with a reference.", "correct": true}, {"label": "D", "detail": "Ask the customer to pay again so the order can be created, and sort out the first debit later.", "correct": false}]}, "decisionRationale": "Option C is correct because only a traced, evidenced decision can choose between fulfilment and refund, and either ending needs a controlled process with a reference. Option B promises a refund before knowing whether the payment completed. Option D takes a second Rs 18,500 before the first is resolved. Option A treats a gateway success as proof of an order that the order system never created.", "flow": {"steps": [{"title": "Capture the payment reference and gateway transaction ID and open the case", "actor": "Support Lead", "note": "Case record"}, {"title": "Trace the gateway record, response and callback delivery", "actor": "Business Analyst", "note": "Gateway logs"}, {"title": "Confirm the ledger debit of Rs 18,500, the rail and the settlement status", "actor": "Finance Operations", "note": "Core ledger"}, {"title": "Check callback delivery, endpoint acknowledgement and dead-letter queue", "actor": "Integration Engineer", "note": "Merchant callback logs"}, {"title": "Check the order system for an order linked to the payment reference", "actor": "Business Analyst", "note": "Order system"}, {"title": "Decide fulfilment or refund on the evidence and record the decision", "actor": "Business Analyst", "note": "Case record"}, {"title": "Confirm the outcome to the customer with the order or refund reference", "actor": "Customer Support", "note": "Customer communications"}]}, "happy": ["The customer receives one clear outcome: either the order is created and confirmed with an order reference and a delivery expectation, or the Rs 18,500 is refunded with a refund reference and a date. The payment, the callback, the ledger entry and the order are all linked on the same reference, and the case record shows the evidence the decision rested on."], "negative": [{"title": "Gateway success but callback lost", "detail": "The payment completed but the callback that creates the order never arrived. Create the order from the payment record exactly once and confirm fulfilment with the order reference."}, {"title": "Debit provisional and payment not settled", "detail": "The bank shows a debit but the rail record shows the payment did not complete. Refund through the controlled process with a refund reference and a written confirmation."}, {"title": "Late success after a refund was promised", "detail": "The payment completes after support has already told the customer a refund is coming. Cancel the refund, create the order, and tell the customer what changed and why, with the new reference."}, {"title": "Duplicate charge on retry", "detail": "The customer paid again while the first payment was unresolved. Reverse the duplicate exactly once through the controlled process and link both payments to the same case."}], "technical": ["Persist the payment reference, the gateway transaction ID, the correlation ID, the ledger entry reference, the callback delivery attempts and the order reference in one case record, so any team can follow the same payment. Log the rail and settlement status with the amount, currency and timestamp, and keep the customer's statement reference alongside the bank's records. Store the decision, the decision maker and the evidence relied on, and log the fulfilment or refund with its reference, date and operator. Never store full card or account credentials in the case record."], "messages": [{"message": "pain.001", "title": "Customer payment instruction submitted at checkout", "fields": [{"tag": "Instruction identification and end-to-end identification", "name": "Instruction identification and end-to-end identification", "relevant": true}, {"tag": "Debtor account and amount of Rs 18,500", "name": "Debtor account and amount of Rs 18,500", "relevant": true}, {"tag": "Creditor account of the merchant", "name": "Creditor account of the merchant", "relevant": true}, {"tag": "Remittance information identifying the order", "name": "Remittance information identifying the order", "relevant": true}]}, {"message": "pacs.008", "title": "Credit transfer leg where the payment moves through the payment system", "fields": [{"tag": "Interbank settlement amount and currency", "name": "Interbank settlement amount and currency", "relevant": true}, {"tag": "Creditor agent and account", "name": "Creditor agent and account", "relevant": true}, {"tag": "Instruction reference for reconciliation", "name": "Instruction reference for reconciliation", "relevant": true}]}, {"message": "pacs.002", "title": "Payment status report giving the authoritative outcome", "fields": [{"tag": "Original instruction reference", "name": "Original instruction reference", "relevant": true}, {"tag": "Status code and reason code", "name": "Status code and reason code", "relevant": true}, {"tag": "Timestamp of each status transition", "name": "Timestamp of each status transition", "relevant": true}]}, {"message": "camt.053", "title": "Account statement confirming the Rs 18,500 debit", "fields": [{"tag": "Account identification", "name": "Account identification", "relevant": true}, {"tag": "Entry amount, date and reference", "name": "Entry amount, date and reference", "relevant": true}, {"tag": "Balance after the entry", "name": "Balance after the entry", "relevant": true}]}, {"message": "camt.054", "title": "Debit notification confirming the debit to the account", "fields": [{"tag": "Account identification", "name": "Account identification", "relevant": true}, {"tag": "Entry amount, date and reference", "name": "Entry amount, date and reference", "relevant": true}, {"tag": "Related payment reference", "name": "Related payment reference", "relevant": true}]}], "accounting": ["A Rs 18,500 debit with no order is a real financial break, not a display problem, so reconciliation must treat it as one: match every gateway payment to an order or a refund each day, and age unmatched items into a worklist with service levels and an owner. If the order is fulfilled, the merchant's revenue and the customer's payment reconcile on the same reference. If the money is refunded, the refund is a separate credit to the customer account with its own reference, reconciled separately from the original debit so finance can prove the customer is whole. Operations must be able to answer, for any unmatched debit, how old it is, who owns it, and what the next step is."], "gherkin": {"scenarios": [{"given": "a ledger debit without a matching order,", "when": "reconciliation runs,", "then": "the item is classified as an unmatched break and assigned for investigation."}, {"given": "a payment completed but the callback was lost,", "when": "the order system recovers,", "then": "the order is created exactly once from the payment record."}, {"given": "a payment did not complete,", "when": "the case is resolved,", "then": "the customer is refunded through a controlled process with a refund reference and a written confirmation."}]}, "check": {"questions": [{"question": "Why is the gateway success alone not enough to promise fulfilment?", "options": ["The customer paid by card", "Gateway success may mean acceptance, while the order depends on callback delivery and order creation", "The gateway is slow", "The amount is too small"], "answer": 1, "explanation": "The gateway, the bank, the callback and the order system are separate boundaries, and success at one does not prove the others completed."}, {"question": "Which rail facts are relevant to a Rs 18,500 payment in India?", "options": ["Only RTGS can carry it", "Only NEFT can carry it", "No rail can carry it", "RTGS minimum Rs 2 lakh means it could not have used RTGS; IMPS and UPI can carry it within their limits"], "answer": 1, "explanation": "RTGS has a minimum of Rs 2 lakh, so a Rs 18,500 payment could not have used RTGS, while IMPS and UPI can carry it within their limits."}, {"question": "What should support tell the customer while the outcome is still uncertain?", "options": ["That the order is on its way", "What is known, what is being checked and when the next update will come", "That the money will be back tomorrow", "Nothing until the case closes"], "answer": 1, "explanation": "An honest holding message states what is known, what is being checked and when the next update will come, without promising a date the bank cannot guarantee."}, {"question": "How should a refund be recorded?", "options": ["As a separate credit with its own reference, reconciled separately from the original debit", "By deleting the debit", "As a verbal promise", "By editing the statement"], "answer": 0, "explanation": "A refund is a separate credit with its own reference, reconciled separately from the original debit, so finance can prove the customer is whole."}]}}</script></div>
+</section>
+<div class="fw-card" id="pf-exercise-studio-ch68s5">
+<p class="fw-label">Practise this lesson</p>
+<h2>Exercise</h2>
+<p><b>Decide which settlement model fits the scenario in this lesson and explain why.</b></p>
+<p>Use the settlement models, the liquidity trade-off and the finality rules in this lesson.</p>
+<ol class="fw-steps">
+<li><b>What to do.</b> Name the model, state when settlement becomes final, and explain what happens if the sending bank does not have enough liquidity.</li>
+</ol>
+<p><button class="studio-btn" id="pf-ex-btn-studio-ch68s5" onclick="pfRevealExercise('studio-ch68s5')">Show the answer</button></p>
+<div class="fw-exercise-answer" id="pf-ex-answer-studio-ch68s5">
+<p><b>Correct result.</b> Real time gross settlement settles each payment individually in central bank money with immediate finality, but it needs liquidity for every payment. Deferred net settlement nets payments and settles the net position, which needs less liquidity but leaves settlement risk until the net settles.</p>
+<p><b>Why.</b> Settlement is where money actually moves. The model decides the risk, the liquidity need, and when the payment is truly final.</p>
+</div>
+</div>
+<div class="fw-card" id="pf-quiz-studio-ch68s5" data-answer="3">
+<p class="fw-label">Check your understanding</p>
+<h2>Practice question</h2>
+<p><b>Which of the following best describes ledger posting versus settlement?</b></p>
+<button type="button" class="quiz-opt" data-idx="0" onclick="pfCheckAnswer('studio-ch68s5', this)">Allowed transitions follow the order of the work, and each one is triggered by a real event such as a validation result, a funds check, a settlement confirmation or a timeout</button>
+<button type="button" class="quiz-opt" data-idx="1" onclick="pfCheckAnswer('studio-ch68s5', this)">A payment state machine lists every state a payment can sit in and every move between states that is allowed, and it is the single control that keeps operations, settlement and customer service looking at the same truth</button>
+<button type="button" class="quiz-opt" data-idx="2" onclick="pfCheckAnswer('studio-ch68s5', this)">Illegal transitions are moves the state machine must refuse, because they would let a payment exist in two contradictory states at once</button>
+<button type="button" class="quiz-opt" data-idx="3" onclick="pfCheckAnswer('studio-ch68s5', this)">Acceptance means the bank has checked the instruction and agreed to process it, and it happens before any money moves</button>
+<div class="quiz-feedback" id="pf-quiz-fb-studio-ch68s5"></div>
+<script type="application/json" id="pf-quiz-data-studio-ch68s5">{"why_wrong": ["This describes a different concept from this chapter, not ledger posting versus settlement.", "This describes a different concept from this chapter, not ledger posting versus settlement.", "This describes a different concept from this chapter, not ledger posting versus settlement.", ""], "explanation": "Acceptance means the bank has checked the instruction and agreed to process it, and it happens before any money moves. This is the core idea of the lesson."}</script>
+</div>
+<div class="fw-card">
+<p class="fw-label">Takeaway and next step</p>
+<h2>What to remember</h2>
+<p>A ledger entry records the payment in the bank books, and it is a debit and a credit that must always balance.</p>
+<p>Follow USD 120,000 through every stage, from instruction to beneficiary credit, and note where it can stop.</p>
+<p><a class="fw-tool-link" href="../simulators/lifecycle.html">Open the Payment Lifecycle Simulator &rarr;</a></p>
+<p class="studio-note">The architecture view of ledger posting versus settlement, building on ch40, Internal Ledger, Clearing and Settlement Reconciliation. This lesson is about how the state machine and the ledger interact, not how an analyst reconciles.</p>
+</div>
+<section class="upnext" id="studio-upnext-studio-ch68s5" style="display:none" aria-label="Up next">
+<span class="tag">Up next</span>
+<h2>Up next: Reconciliation Matching Hierarchies and Suspense Account Management</h2>
+<p>Lesson 6 of 8, Payment Operations Architecture: State, Resilience and Control, Narration 3:26</p>
+<div class="row">
+<button class="studio-btn primary" onclick="goLessonAuto('ch68s6')">Next lesson &rarr;</button>
+<button class="studio-btn" onclick="goLesson('ch68s4')">&larr; Previous lesson</button>
+<button class="studio-btn" onclick="studioReplayLesson('studio-ch68s5')">Replay this lesson</button>
+</div>
+</section>
+<div class="lesson-nav">
+<button class="studio-btn" onclick="goLesson('ch68s4')" title="Previous lesson: Out of Order Events: Messages and Acknowledgements Arriving Out of Order">&larr; Previous</button>
+<button class="studio-btn" onclick="goChapterContents('ch68')">Chapter contents</button>
+<button class="studio-btn primary" onclick="goLesson('ch68s6')" title="Next lesson: Reconciliation Matching Hierarchies and Suspense Account Management">Next &rarr;</button>
+</div>
+<div class="card transcript-card">
+<h2>Transcript and full text</h2>
+<details class="studio-transcript" id="studio-transcript-details-studio-ch68s5"><summary>Show transcript</summary>
+<p class="transcript" id="studio-transcript-studio-ch68s5">Acceptance means the bank has checked the instruction and agreed to process it, and it happens before any money moves. The bank has validated the format, the account, the funds and the compliance checks, and it has told the customer the payment is accepted, usually through a status report. Acceptance does not move money, does not change any balance, and does not guarantee settlement, because a payment can still fail at the clearing system or at the correspondent. In the worked example, Meridian Bank accepts the USD 120,000 instruction from the London corporate at twelve minutes past nine in the morning, sends an acceptance report, and reserves USD 120,000 on the corporate account so the funds cannot be spent elsewhere. Testing acceptance means sending a valid instruction and confirming the acceptance report, and sending an invalid instruction and confirming a rejection instead. A ledger entry records the payment in the bank books, and it is a debit and a credit that must always balance. When Meridian Bank accepts the USD 120,000 payment, it posts a debit of USD 120,000 to the corporate customer account and a credit of USD 120,000 to its internal settlement account, so the corporate balance falls by USD 120,000. The ledger entry is the record of the obligation, and it exists even before settlement, which is why the customer sees the money leave the account while the supplier has not yet been paid. If the payment later fails, the bank posts a reversing entry, a credit of USD 120,000 back to the corporate account and a debit of USD 120,000 to the settlement account. Testing ledger posting means checking every payment creates equal debits and credits, and checking a failed payment creates a reversing entry. Settlement is the final movement of funds between banks, and it is the moment the payment becomes irrevocable. For the worked example, settlement happens when Meridian Bank pays USD 120,000 across its correspondent account at Harbour Bank, and Harbour Bank confirms the funds are received and available. Settlement can happen hours after acceptance and after ledger posting, because it depends on clearing cut offs, correspondent availability and the time zone of the receiving bank. The Tokyo supplier bank receives the funds only at settlement, and until that moment the payment can still be stopped, returned or reversed by the sending bank. Testing settlement means confirming the settlement account moves by exactly USD 120,000, confirming the confirmation arrives, and confirming the payment state changes to settled only when the confirmation is received. Crediting the customer account is the last step, when the receiving bank posts the funds to the beneficiary account, and it happens only after settlement. In the worked example, the Tokyo supplier bank receives USD 120,000 at settlement, checks the beneficiary details, and credits USD 120,000 to the supplier account, less any charges the supplier agreed to bear. The supplier sees the money only at this point, even though the London corporate saw its account debited hours earlier, and that gap is normal in cross border payments. A T-account view makes the whole chain clear, with the corporate account debited USD 120,000, the Meridian settlement account credited then debited USD 120,000, the Harbour correspondent account credited then debited USD 120,000, and the supplier account credited USD 120,000. Testing the chain means tracing one payment through all four accounts and confirming each debit has a matching credit.</p>
+<div id="studio-paras-studio-ch68s5">
+<p class="transcript">Acceptance means the bank has checked the instruction and agreed to process it, and it happens before any money moves. The bank has validated the format, the account, the funds and the compliance checks, and it has told the customer the payment is accepted, usually through a status report. Acceptance does not move money, does not change any balance, and does not guarantee settlement, because a payment can still fail at the clearing system or at the correspondent. In the worked example, Meridian Bank accepts the USD 120,000 instruction from the London corporate at twelve minutes past nine in the morning, sends an acceptance report, and reserves USD 120,000 on the corporate account so the funds cannot be spent elsewhere. Testing acceptance means sending a valid instruction and confirming the acceptance report, and sending an invalid instruction and confirming a rejection instead.</p>
+<p class="transcript">A ledger entry records the payment in the bank books, and it is a debit and a credit that must always balance. When Meridian Bank accepts the USD 120,000 payment, it posts a debit of USD 120,000 to the corporate customer account and a credit of USD 120,000 to its internal settlement account, so the corporate balance falls by USD 120,000. The ledger entry is the record of the obligation, and it exists even before settlement, which is why the customer sees the money leave the account while the supplier has not yet been paid. If the payment later fails, the bank posts a reversing entry, a credit of USD 120,000 back to the corporate account and a debit of USD 120,000 to the settlement account. Testing ledger posting means checking every payment creates equal debits and credits, and checking a failed payment creates a reversing entry.</p>
+<p class="transcript">Settlement is the final movement of funds between banks, and it is the moment the payment becomes irrevocable. For the worked example, settlement happens when Meridian Bank pays USD 120,000 across its correspondent account at Harbour Bank, and Harbour Bank confirms the funds are received and available. Settlement can happen hours after acceptance and after ledger posting, because it depends on clearing cut offs, correspondent availability and the time zone of the receiving bank. The Tokyo supplier bank receives the funds only at settlement, and until that moment the payment can still be stopped, returned or reversed by the sending bank. Testing settlement means confirming the settlement account moves by exactly USD 120,000, confirming the confirmation arrives, and confirming the payment state changes to settled only when the confirmation is received.</p>
+<p class="transcript">Crediting the customer account is the last step, when the receiving bank posts the funds to the beneficiary account, and it happens only after settlement. In the worked example, the Tokyo supplier bank receives USD 120,000 at settlement, checks the beneficiary details, and credits USD 120,000 to the supplier account, less any charges the supplier agreed to bear. The supplier sees the money only at this point, even though the London corporate saw its account debited hours earlier, and that gap is normal in cross border payments. A T-account view makes the whole chain clear, with the corporate account debited USD 120,000, the Meridian settlement account credited then debited USD 120,000, the Harbour correspondent account credited then debited USD 120,000, and the supplier account credited USD 120,000. Testing the chain means tracing one payment through all four accounts and confirming each debit has a matching credit.</p>
+</div>
+</details>
+<details class="studio-transcript"><summary>Full lesson text (all scenes)</summary><div id="studio-transcript-full-studio-ch68s5"></div></details>
+<p><button class="studio-btn primary" id="done-ch68s5" onclick="studioMarkSceneDone('studio-ch68s5')">Mark lesson complete</button> <span class="studio-note">Completing a lesson updates your progress dashboard on the homepage.</span></p>
+</div>
+<p class="studio-note">Scene timestamps are estimated by allocating the narration text proportionally across the real audio length. The audio playback position is the source of truth: pause freezes the visual, seeking restores the correct scene, replay restarts the scene animation.</p>
+</div>
+<script>window.__PA_STUDIO_QUEUE = window.__PA_STUDIO_QUEUE || []; window.__PA_STUDIO_QUEUE.push(["studio-ch68s5", {"sample_id": "studio-ch68s5", "chapter_id": "ch68", "title": "Ledger Posting versus Settlement", "domain": "D11 Operations, exceptions and reconciliation", "objective": "Learner explains payment state machines, idempotency, retries, dead letter queues, out of order events, ledger posting versus settlement, reconciliation matching hierarchies, suspense account management and operational dashboards, and designs the controls that keep a payment platform safe. Learner applies this skill in realistic banking scenarios, with clear examples and correct terminology throughout.", "scenes": [{"id": "ch68s5", "section_id": "ch68s5", "title": "Ledger Posting versus Settlement", "audio": "../audio/ch68s5.mp3", "duration_sec": 226.0, "points": ["Acceptance means the bank has checked the instruction and agreed to process it, and it happens before any money moves.", "A ledger entry records the payment in the bank books, and it is a debit and a credit that must always balance.", "Settlement is the final movement of funds between banks, and it is the moment the payment becomes irrevocable.", "Crediting the customer account is the last step, when the receiving bank posts the funds to the beneficiary account, and it happens only after settlement."], "terms": [{"term": "Irrevocable", "def": "A payment or instruction that cannot be cancelled or reversed once it has been made, except by agreement of all parties or by a court order."}, {"term": "Settlement", "def": "The final movement of funds between banks to discharge obligations created by cleared payments. Settlement is usually made in central bank money or through correspondent accounts."}, {"term": "T-account", "def": "A ledger representation of an account shaped like the letter T, with debits on the left and credits on the right."}], "transcript": "Acceptance means the bank has checked the instruction and agreed to process it, and it happens before any money moves. The bank has validated the format, the account, the funds and the compliance checks, and it has told the customer the payment is accepted, usually through a status report. Acceptance does not move money, does not change any balance, and does not guarantee settlement, because a payment can still fail at the clearing system or at the correspondent. In the worked example, Meridian Bank accepts the USD 120,000 instruction from the London corporate at twelve minutes past nine in the morning, sends an acceptance report, and reserves USD 120,000 on the corporate account so the funds cannot be spent elsewhere. Testing acceptance means sending a valid instruction and confirming the acceptance report, and sending an invalid instruction and confirming a rejection instead. A ledger entry records the payment in the bank books, and it is a debit and a credit that must always balance. When Meridian Bank accepts the USD 120,000 payment, it posts a debit of USD 120,000 to the corporate customer account and a credit of USD 120,000 to its internal settlement account, so the corporate balance falls by USD 120,000. The ledger entry is the record of the obligation, and it exists even before settlement, which is why the customer sees the money leave the account while the supplier has not yet been paid. If the payment later fails, the bank posts a reversing entry, a credit of USD 120,000 back to the corporate account and a debit of USD 120,000 to the settlement account. Testing ledger posting means checking every payment creates equal debits and credits, and checking a failed payment creates a reversing entry. Settlement is the final movement of funds between banks, and it is the moment the payment becomes irrevocable. For the worked example, settlement happens when Meridian Bank pays USD 120,000 across its correspondent account at Harbour Bank, and Harbour Bank confirms the funds are received and available. Settlement can happen hours after acceptance and after ledger posting, because it depends on clearing cut offs, correspondent availability and the time zone of the receiving bank. The Tokyo supplier bank receives the funds only at settlement, and until that moment the payment can still be stopped, returned or reversed by the sending bank. Testing settlement means confirming the settlement account moves by exactly USD 120,000, confirming the confirmation arrives, and confirming the payment state changes to settled only when the confirmation is received. Crediting the customer account is the last step, when the receiving bank posts the funds to the beneficiary account, and it happens only after settlement. In the worked example, the Tokyo supplier bank receives USD 120,000 at settlement, checks the beneficiary details, and credits USD 120,000 to the supplier account, less any charges the supplier agreed to bear. The supplier sees the money only at this point, even though the London corporate saw its account debited hours earlier, and that gap is normal in cross border payments. A T-account view makes the whole chain clear, with the corporate account debited USD 120,000, the Meridian settlement account credited then debited USD 120,000, the Harbour correspondent account credited then debited USD 120,000, and the supplier account credited USD 120,000. Testing the chain means tracing one payment through all four accounts and confirming each debit has a matching credit.", "paragraphs": ["Acceptance means the bank has checked the instruction and agreed to process it, and it happens before any money moves. The bank has validated the format, the account, the funds and the compliance checks, and it has told the customer the payment is accepted, usually through a status report. Acceptance does not move money, does not change any balance, and does not guarantee settlement, because a payment can still fail at the clearing system or at the correspondent. In the worked example, Meridian Bank accepts the USD 120,000 instruction from the London corporate at twelve minutes past nine in the morning, sends an acceptance report, and reserves USD 120,000 on the corporate account so the funds cannot be spent elsewhere. Testing acceptance means sending a valid instruction and confirming the acceptance report, and sending an invalid instruction and confirming a rejection instead.", "A ledger entry records the payment in the bank books, and it is a debit and a credit that must always balance. When Meridian Bank accepts the USD 120,000 payment, it posts a debit of USD 120,000 to the corporate customer account and a credit of USD 120,000 to its internal settlement account, so the corporate balance falls by USD 120,000. The ledger entry is the record of the obligation, and it exists even before settlement, which is why the customer sees the money leave the account while the supplier has not yet been paid. If the payment later fails, the bank posts a reversing entry, a credit of USD 120,000 back to the corporate account and a debit of USD 120,000 to the settlement account. Testing ledger posting means checking every payment creates equal debits and credits, and checking a failed payment creates a reversing entry.", "Settlement is the final movement of funds between banks, and it is the moment the payment becomes irrevocable. For the worked example, settlement happens when Meridian Bank pays USD 120,000 across its correspondent account at Harbour Bank, and Harbour Bank confirms the funds are received and available. Settlement can happen hours after acceptance and after ledger posting, because it depends on clearing cut offs, correspondent availability and the time zone of the receiving bank. The Tokyo supplier bank receives the funds only at settlement, and until that moment the payment can still be stopped, returned or reversed by the sending bank. Testing settlement means confirming the settlement account moves by exactly USD 120,000, confirming the confirmation arrives, and confirming the payment state changes to settled only when the confirmation is received.", "Crediting the customer account is the last step, when the receiving bank posts the funds to the beneficiary account, and it happens only after settlement. In the worked example, the Tokyo supplier bank receives USD 120,000 at settlement, checks the beneficiary details, and credits USD 120,000 to the supplier account, less any charges the supplier agreed to bear. The supplier sees the money only at this point, even though the London corporate saw its account debited hours earlier, and that gap is normal in cross border payments. A T-account view makes the whole chain clear, with the corporate account debited USD 120,000, the Meridian settlement account credited then debited USD 120,000, the Harbour correspondent account credited then debited USD 120,000, and the supplier account credited USD 120,000. Testing the chain means tracing one payment through all four accounts and confirming each debit has a matching credit."], "accessibility": "Banking architecture diagram showing Ledger Posting versus Settlement.", "visual_type": "architecture", "visual_choice_reason": "architecture chapter", "beats": [{"t0": 0.0, "t1": 46.7, "title": "Acceptance: bank checked instruction", "note": "Acceptance means the bank has checked the instruction and agreed to process it, and it happens before any money moves.", "highlight_nodes": ["n0"], "highlight_conns": [], "highlight_fields": []}, {"t0": 46.7, "t1": 91.0, "title": "Testing acceptance", "note": "Testing acceptance means sending a valid instruction and confirming the acceptance report, and sending an invalid instruction and confirming a rejection instead.", "highlight_nodes": ["n1"], "highlight_conns": ["c0"], "highlight_fields": []}, {"t0": 91.0, "t1": 130.5, "title": "Bank posts a reversing entry", "note": "If the payment later fails, the bank posts a reversing entry, a credit of USD 120,000 back to the corporate account and a debit of USD 120,000 to the settlement account.", "highlight_nodes": ["n2"], "highlight_conns": ["c1"], "highlight_fields": []}, {"t0": 130.5, "t1": 176.3, "title": "Settlement timing after acceptance", "note": "Settlement can happen hours after acceptance and after ledger posting, because it depends on clearing cut offs, correspondent availability and the time zone of the receiving bank.", "highlight_nodes": ["n3"], "highlight_conns": ["c2"], "highlight_fields": []}, {"t0": 176.3, "t1": 218.4, "title": "Tokyo supplier bank", "note": "In the worked example, the Tokyo supplier bank receives USD 120,000 at settlement, checks the beneficiary details,", "highlight_nodes": ["n4"], "highlight_conns": ["c3"], "highlight_fields": []}, {"t0": 218.4, "t1": 226.0, "title": "Testing: tracing payment through all", "note": "Testing the chain means tracing one payment through all four accounts and confirming each debit has a matching credit.", "highlight_nodes": ["n5"], "highlight_conns": ["c4"], "highlight_fields": []}], "node_ids": ["n0", "n1", "n2", "n3", "n4", "n5"], "framework": {"objective": "By the end of this lesson, you will be able to explain ledger posting versus settlement. Acceptance means the bank has checked the instruction and agreed to process it, and it happens before any money moves.", "why_matters": "This matters because operations is where payments are reconciled, investigated and fixed. The work in this lesson is what keeps the money right.", "technical_example": "In the worked example, Meridian Bank accepts the USD 120,000 instruction from the London corporate at twelve minutes past nine in the morning, sends an acceptance report, and reserves USD 120,000 on the corporate account so the funds cannot be spent elsewhere.", "failure_recovery": "Testing ledger posting means checking every payment creates equal debits and credits, and checking a failed payment creates a reversing entry.", "exercise": {"task": "Decide which settlement model fits the scenario in this lesson and explain why.", "info": "Use the settlement models, the liquidity trade-off and the finality rules in this lesson.", "action": "Name the model, state when settlement becomes final, and explain what happens if the sending bank does not have enough liquidity.", "correct": "Real time gross settlement settles each payment individually in central bank money with immediate finality, but it needs liquidity for every payment. Deferred net settlement nets payments and settles the net position, which needs less liquidity but leaves settlement risk until the net settles.", "why": "Settlement is where money actually moves. The model decides the risk, the liquidity need, and when the payment is truly final."}, "assessment": {"question": "Which of the following best describes ledger posting versus settlement?", "options": ["Allowed transitions follow the order of the work, and each one is triggered by a real event such as a validation result, a funds check, a settlement confirmation or a timeout", "A payment state machine lists every state a payment can sit in and every move between states that is allowed, and it is the single control that keeps operations, settlement and customer service looking at the same truth", "Illegal transitions are moves the state machine must refuse, because they would let a payment exist in two contradictory states at once", "Acceptance means the bank has checked the instruction and agreed to process it, and it happens before any money moves"], "answer": 3, "explanation": "Acceptance means the bank has checked the instruction and agreed to process it, and it happens before any money moves. This is the core idea of the lesson.", "why_wrong": ["This describes a different concept from this chapter, not ledger posting versus settlement.", "This describes a different concept from this chapter, not ledger posting versus settlement.", "This describes a different concept from this chapter, not ledger posting versus settlement.", ""], "source": "generated:ch68s5"}, "takeaway": "A ledger entry records the payment in the bank books, and it is a debit and a credit that must always balance.", "prereq": "ch40s3", "next": "ch68s6", "connection_note": "The architecture view of ledger posting versus settlement, building on ch40, Internal Ledger, Clearing and Settlement Reconciliation. This lesson is about how the state machine and the ledger interact, not how an analyst reconciles.", "tool": {"slug": "lifecycle", "label": "Payment Lifecycle Simulator", "url": "../simulators/lifecycle.html", "scenario": "Follow USD 120,000 through every stage, from instruction to beneficiary credit, and note where it can stop."}, "simple": "In plain words: acceptance means the bank has checked the instruction and agreed to process it, and it happens before any money moves. That is the whole idea in one sentence, and the rest of the lesson shows how it works in a real bank.", "summary": "Acceptance means the bank has checked the instruction and agreed to process it, and it happens before any money moves. Key points: Acceptance: bank checked instruction; Testing acceptance; Bank posts a reversing entry; Settlement timing after acceptance; Tokyo supplier bank; Testing: tracing payment through all.", "example": "In the worked example, Meridian Bank accepts the USD 120,000 instruction from the London corporate at twelve minutes past nine in the morning, sends an acceptance report, and reserves USD 120,000 on the corporate account so the funds cannot be spent elsewhere. When Meridian Bank accepts the USD 120,000 payment, it posts a debit of USD 120,000 to the corporate customer account and a credit of USD 120,000 to its internal settlement account, so the corporate balance falls by USD 120,000."}}], "chapter_title": "Payment Operations Architecture: State, Resilience and Control", "meta_line": "Payment Operations Architecture: State, Resilience and Control, Lesson 5 of 8, Narration 3:46, D11 Operations, exceptions and reconciliation", "next_id": "ch68s6", "next_title": "Reconciliation Matching Hierarchies and Suspense Account Management"}]);</script>
+</div>
+<nav class="tool-rail" aria-label="Lesson tools">
+<button type="button" class="rail-tool" onclick="pfOpenTranscript('studio-ch68s5')" title="Open transcript"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M7 3h7l4 4v14H7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M14 3v4h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 12h5M10 15.5h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span>Transcript</span></button>
+<button type="button" class="rail-tool" onclick="pfToggleNote('studio-ch68s5')" title="Write a note on this lesson"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L8 19l-4 1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>Notes</span></button>
+<button type="button" class="rail-tool" onclick="pfToggleFiles('studio-ch68s5')" title="Download lesson files"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>Files</span></button>
+</nav>
+<div class="fw-files-panel" id="pf-files-studio-ch68s5" style="display:none"><b>Lesson files</b><p><a href="../audio/ch68s5.mp3" download>Download narration (MP3)</a></p><p><a href="#" onclick="pfDownloadTranscript('studio-ch68s5');return false">Download transcript (.txt)</a></p></div>
+</div>
+</div>
+</main>
+<footer><p>Payments Training Hub. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="../index.html">Home</a> &middot; <a href="../courses.html">Courses</a> &middot; <a href="../practice.html">Practice</a> &middot; <a href="../simulators.html">Simulators</a> &middot; <a href="../labs.html">Labs</a> &middot; <a href="../explorer.html">Explorer</a> &middot; <a href="../tests.html">Tests</a> &middot; <a href="../diagnostic.html">Diagnostic</a> &middot; <a href="../faq.html">Interview Ready Questions</a> &middot; <a href="../interview-prep.html">Interview Prep</a></p><p><a href="../about.html">About</a> &middot; <a href="../privacy.html">Privacy</a> &middot; <a href="../terms.html">Terms</a> &middot; <a href="../contact.html">Contact</a> &middot; <a href="../editorial-standards.html">Editorial Standards</a> &middot; <a href="../sources.html">Sources</a></p></footer>
+<script defer src="../assets/site.js"></script>
+<script defer src="../assets/bundles.js"></script>
+<script defer src="../assets/auth.js"></script>
+<script defer src="../assets/studio.js"></script>
+<script defer src="../assets/insight-components.js"></script>
+<script defer src="../assets/nav.js"></script>
+<script defer src="../assets/pf-enhance.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+if(window.PFInsight){PFInsight.init();}
+});
+</script>
+</body>
+</html>

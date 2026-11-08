@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>ATM Cash Withdrawals, the SEPA Cards Framework, Clearing and Settlement | Payments Training Hub</title>
+<meta name="description" content="A cash withdrawal at an ATM follows the same authorisation pattern as a purchase, but the merchant is replaced by the ATM owner. The cardholder inserts...">
+<link rel="canonical" href="https://www.paymentstraininghub.in/lessons/ch63s7.html">
+<meta property="og:url" content="https://www.paymentstraininghub.in/lessons/ch63s7.html">
+<meta property="og:title" content="ATM Cash Withdrawals, the SEPA Cards Framework, Clearing and Settlement | Payments Training Hub">
+<meta property="og:description" content="A cash withdrawal at an ATM follows the same authorisation pattern as a purchase, but the merchant is replaced by the ATM owner. The cardholder inserts...">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.in/assets/hero/hero-poster.jpg">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.paymentstraininghub.in/index.html"}, {"@type": "ListItem", "position": 2, "name": "Card Payments Deep Dive", "item": "https://www.paymentstraininghub.in/chapters/ch63-card-payments-deep-dive.html"}, {"@type": "ListItem", "position": 3, "name": "ATM Cash Withdrawals, the SEPA Cards Framework, Clearing and Settlement", "item": "https://www.paymentstraininghub.in/lessons/ch63s7.html"}]}</script>
+<link rel="stylesheet" href="../assets/studio.css">
+<link rel="stylesheet" href="../assets/pf-theme.css">
+<link rel="stylesheet" href="../assets/insight-components.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="../index.html" class="brand">Payments <span>Training Hub</span></a><nav class="topnav"><a href="../index.html">Home</a> <a href="../courses.html">Courses</a> <a href="../practice.html">Practice</a> <a href="../simulators.html">Simulators</a> <a href="../labs.html">Labs</a> <a href="../explorer.html">Explorer</a> <a href="../tests.html">Tests</a></nav><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox" style="display:none"><span id="authState">Not signed in</span> <span id="authForm" style="display:none"><input id="authEmail" type="email" placeholder="Email for OTP" aria-label="Email for sign-in"> <button class="mute-btn" onclick="paAuthSendOtp()">Send code</button> <input id="authCode" type="text" placeholder="6-digit code" aria-label="One-time code" style="display:none"> <button class="mute-btn" id="authVerifyBtn" onclick="paAuthVerifyOtp()" style="display:none">Verify</button> <button class="mute-btn" onclick="paAuthGoogle()">Sign in with Google</button> </span><button class="mute-btn" id="authSignOutBtn" onclick="paAuthSignOut()" style="display:none">Sign out</button></span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<div class="lesson-page">
+<div class="lesson-shell">
+<aside class="course-rail">
+<div class="rail-head">
+<h2>Card Payments Deep Dive</h2>
+<a class="rail-close" href="../chapters/ch63-card-payments-deep-dive.html" aria-label="Close and go to chapter" title="Back to chapter">&times;</a>
+</div>
+<div class="goal-card">
+<div class="goal-head"><b>Today's goal &middot; <span id="side-progress-text">0 of 7 items</span></b><span class="goal-flag"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 21V4m0 1h11l-2.5 3.5L17 12H6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="goal-chev">&#94;</span></div>
+<p class="goal-body" id="side-goal-body">Complete 3 items today to stay at a good pace!</p>
+</div>
+<ul class="lesson-list"><li class="" data-lesson="ch63s1"><a href="ch63s1.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Types of Payment Cards and Their Services</span><span class="m">Video &middot; 3 min</span></span></a></li>
+<li class="" data-lesson="ch63s2"><a href="ch63s2.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Card-Present vs Card-Not-Present Transactions</span><span class="m">Video &middot; 3 min</span></span></a></li>
+<li class="" data-lesson="ch63s3"><a href="ch63s3.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Anatomy of a Bank Card</span><span class="m">Video &middot; 3 min</span></span></a></li>
+<li class="" data-lesson="ch63s4"><a href="ch63s4.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">The Main Players and the Three-Corner and Four-Corner Models</span><span class="m">Video &middot; 3 min</span></span></a></li>
+<li class="" data-lesson="ch63s5"><a href="ch63s5.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">The Four-Party Scheme Flow Step by Step</span><span class="m">Video &middot; 3 min</span></span></a></li>
+<li class="" data-lesson="ch63s6"><a href="ch63s6.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Payment Processors, Fees and How They Are Shared</span><span class="m">Video &middot; 3 min</span></span></a></li>
+<li class="current" data-lesson="ch63s7"><a href="ch63s7.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">ATM Cash Withdrawals, the SEPA Cards Framework, Clearing and Settlement</span><span class="m">Video &middot; 3 min</span></span></a></li></ul>
+</aside>
+<div class="lesson-main">
+<div class="studio" id="studio-studio-ch63s7">
+<div class="player">
+<div class="studio-canvas" id="studio-canvas-studio-ch63s7">
+<div class="ch-sec studio-scene-vis active" id="studio-vis-studio-ch63s7-0"><div class="beat-frames">
+<div class="beat-frame active" data-frame="0">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Cash</tspan> <tspan fill="#FFFFFF">withdrawal</tspan></text>
+<rect x="48" y="140" width="804" height="299" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">STARTED</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="33" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="228" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="229" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Cash withdrawal</tspan><tspan fill="#CBD5E1"> - ATM follows the same authorisation pattern</tspan></text>
+<text x="820" y="228" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="0.55">
+<rect x="64" y="245" width="772" height="33" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="269" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="270" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Card transactions</tspan><tspan fill="#CBD5E1"> - After authorisation</tspan></text>
+<text x="820" y="269" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="0.55">
+<rect x="64" y="286" width="772" height="33" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="310" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="311" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">EUR 120 purchase and the EUR</tspan><tspan fill="#CBD5E1"> - withdrawal both appear in the clearing files</tspan></text>
+<text x="820" y="310" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="64" y="327" width="772" height="33" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="351" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="352" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Ledger entries</tspan><tspan fill="#CBD5E1"> - clear.</tspan></text>
+<text x="820" y="351" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="64" y="368" width="772" height="33" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="392" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="393" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Common standards</tspan><tspan fill="#CBD5E1"> - requires that cards and terminals follow</tspan></text>
+<text x="820" y="392" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="421" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="421" width="154" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="459" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">A cash withdrawal at an ATM follows the same authorisation pattern as a purchase, but the</text>
+<text x="450" y="477" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">merchant is replaced by the ATM owner.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 1 of 5</text>
+<circle cx="788" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 600" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="600" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Cash</tspan> <tspan fill="#FFFFFF">withdrawal</tspan></text>
+<rect x="24" y="58" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="76" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">STARTED</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="92" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="111" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Cash withdrawal</text>
+<text x="180" y="129" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">ATM follows the same authorisation pattern</text>
+<text x="180" y="147" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="0.55">
+<rect x="24" y="164" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="183" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Card transactions</text>
+<text x="180" y="201" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">After authorisation</text>
+<text x="180" y="219" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="0.55">
+<rect x="24" y="236" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="255" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">EUR 120 purchase</text>
+<text x="180" y="273" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">and the EUR</text>
+<text x="180" y="291" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">withdrawal both appear in the clearing files</text>
+<text x="180" y="309" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="24" y="328" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="347" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Ledger entries</text>
+<text x="180" y="365" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">clear.</text>
+<text x="180" y="383" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="24" y="400" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="419" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Common standards</text>
+<text x="180" y="437" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">requires that cards and terminals follow</text>
+<text x="180" y="455" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="480" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">A cash withdrawal at an ATM follows the</text>
+<text x="180" y="499" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">same authorisation pattern as a purchase,</text>
+<text x="180" y="518" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">but the merchant is replaced by the ATM</text>
+<text x="180" y="537" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">owner.</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="1">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Card</tspan> <tspan fill="#FFFFFF">transactions</tspan></text>
+<rect x="48" y="140" width="804" height="299" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="33" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="228" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="229" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Cash withdrawal</tspan><tspan fill="#CBD5E1"> - ATM follows the same authorisation pattern</tspan></text>
+<text x="820" y="228" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="245" width="772" height="33" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="269" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="270" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Card transactions</tspan><tspan fill="#CBD5E1"> - After authorisation</tspan></text>
+<text x="820" y="269" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="0.55">
+<rect x="64" y="286" width="772" height="33" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="310" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="311" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">EUR 120 purchase and the EUR</tspan><tspan fill="#CBD5E1"> - withdrawal both appear in the clearing files</tspan></text>
+<text x="820" y="310" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="64" y="327" width="772" height="33" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="351" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="352" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Ledger entries</tspan><tspan fill="#CBD5E1"> - clear.</tspan></text>
+<text x="820" y="351" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="64" y="368" width="772" height="33" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="392" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="393" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Common standards</tspan><tspan fill="#CBD5E1"> - requires that cards and terminals follow</tspan></text>
+<text x="820" y="392" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="421" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="421" width="308" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="459" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">After authorisation, card transactions are collected into clearing files that the acquirer sends to</text>
+<text x="450" y="477" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">the scheme, usually at the end of the business day.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 2 of 5</text>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 600" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="600" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Card</tspan> <tspan fill="#FFFFFF">transactions</tspan></text>
+<rect x="24" y="58" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="76" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="92" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="111" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Cash withdrawal</text>
+<text x="180" y="129" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">ATM follows the same authorisation pattern</text>
+<text x="180" y="147" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="164" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="183" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Card transactions</text>
+<text x="180" y="201" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">After authorisation</text>
+<text x="180" y="219" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="0.55">
+<rect x="24" y="236" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="255" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">EUR 120 purchase</text>
+<text x="180" y="273" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">and the EUR</text>
+<text x="180" y="291" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">withdrawal both appear in the clearing files</text>
+<text x="180" y="309" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="24" y="328" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="347" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Ledger entries</text>
+<text x="180" y="365" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">clear.</text>
+<text x="180" y="383" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="24" y="400" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="419" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Common standards</text>
+<text x="180" y="437" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">requires that cards and terminals follow</text>
+<text x="180" y="455" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="480" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">After authorisation, card transactions are</text>
+<text x="180" y="499" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">collected into clearing files that the</text>
+<text x="180" y="518" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">acquirer sends to the scheme, usually at</text>
+<text x="180" y="537" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">the end of the business day.</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="2">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">EUR</tspan> <tspan fill="#FFFFFF">120</tspan> <tspan fill="#FFFFFF">purchase</tspan> <tspan fill="#FFFFFF">and</tspan> <tspan fill="#FFFFFF">the</tspan> <tspan fill="#FFFFFF">EUR</tspan> <tspan fill="#FFFFFF">60</tspan></text>
+<rect x="48" y="140" width="804" height="299" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="33" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="228" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="229" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Cash withdrawal</tspan><tspan fill="#CBD5E1"> - ATM follows the same authorisation pattern</tspan></text>
+<text x="820" y="228" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="245" width="772" height="33" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="269" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="270" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Card transactions</tspan><tspan fill="#CBD5E1"> - After authorisation</tspan></text>
+<text x="820" y="269" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2">
+<rect x="64" y="286" width="772" height="33" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="310" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="311" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">EUR 120 purchase and the EUR</tspan><tspan fill="#CBD5E1"> - withdrawal both appear in the clearing files</tspan></text>
+<text x="820" y="310" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="64" y="327" width="772" height="33" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="351" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="352" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Ledger entries</tspan><tspan fill="#CBD5E1"> - clear.</tspan></text>
+<text x="820" y="351" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="64" y="368" width="772" height="33" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="392" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="393" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Common standards</tspan><tspan fill="#CBD5E1"> - requires that cards and terminals follow</tspan></text>
+<text x="820" y="392" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="421" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="421" width="463" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="459" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The EUR 120 purchase and the EUR 60 withdrawal both appear in the clearing files, and the</text>
+<text x="450" y="477" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">scheme calculates what Meridian Bank owes Harbour Bank after the fees are taken into account.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 3 of 5</text>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 647" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="647" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">EUR</tspan> <tspan fill="#FFFFFF">120</tspan> <tspan fill="#FFFFFF">purchase</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">and</tspan> <tspan fill="#FFFFFF">the</tspan> <tspan fill="#FFFFFF">EUR</tspan> <tspan fill="#FFFFFF">60</tspan></text>
+<rect x="24" y="86" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="104" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="120" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="139" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Cash withdrawal</text>
+<text x="180" y="157" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">ATM follows the same authorisation pattern</text>
+<text x="180" y="175" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="192" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="211" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Card transactions</text>
+<text x="180" y="229" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">After authorisation</text>
+<text x="180" y="247" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="1">
+<rect x="24" y="264" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="283" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">EUR 120 purchase</text>
+<text x="180" y="301" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">and the EUR</text>
+<text x="180" y="319" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">withdrawal both appear in the clearing files</text>
+<text x="180" y="337" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="24" y="356" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="375" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Ledger entries</text>
+<text x="180" y="393" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">clear.</text>
+<text x="180" y="411" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="24" y="428" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="447" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Common standards</text>
+<text x="180" y="465" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">requires that cards and terminals follow</text>
+<text x="180" y="483" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="508" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The EUR 120 purchase and the EUR 60</text>
+<text x="180" y="527" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">withdrawal both appear in the clearing</text>
+<text x="180" y="546" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">files, and the scheme calculates what</text>
+<text x="180" y="565" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Meridian Bank owes Harbour Bank after</text>
+<text x="180" y="584" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">the fees are taken into account.</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="3">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Ledger</tspan> <tspan fill="#FFFFFF">entries</tspan></text>
+<rect x="48" y="140" width="804" height="299" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="33" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="228" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="229" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Cash withdrawal</tspan><tspan fill="#CBD5E1"> - ATM follows the same authorisation pattern</tspan></text>
+<text x="820" y="228" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="245" width="772" height="33" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="269" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="270" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Card transactions</tspan><tspan fill="#CBD5E1"> - After authorisation</tspan></text>
+<text x="820" y="269" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2">
+<rect x="64" y="286" width="772" height="33" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="310" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="311" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">EUR 120 purchase and the EUR</tspan><tspan fill="#CBD5E1"> - withdrawal both appear in the clearing files</tspan></text>
+<text x="820" y="310" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3">
+<rect x="64" y="327" width="772" height="33" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="351" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="352" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Ledger entries</tspan><tspan fill="#CBD5E1"> - clear.</tspan></text>
+<text x="820" y="351" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="64" y="368" width="772" height="33" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="392" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="393" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Common standards</tspan><tspan fill="#CBD5E1"> - requires that cards and terminals follow</tspan></text>
+<text x="820" y="392" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="421" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="421" width="617" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="459" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The ledger entries are clear.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 4 of 5</text>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 543" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="543" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Ledger</tspan> <tspan fill="#FFFFFF">entries</tspan></text>
+<rect x="24" y="58" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="76" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="92" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="111" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Cash withdrawal</text>
+<text x="180" y="129" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">ATM follows the same authorisation pattern</text>
+<text x="180" y="147" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="164" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="183" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Card transactions</text>
+<text x="180" y="201" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">After authorisation</text>
+<text x="180" y="219" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="1">
+<rect x="24" y="236" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="255" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">EUR 120 purchase</text>
+<text x="180" y="273" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">and the EUR</text>
+<text x="180" y="291" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">withdrawal both appear in the clearing files</text>
+<text x="180" y="309" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="1">
+<rect x="24" y="328" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="347" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Ledger entries</text>
+<text x="180" y="365" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">clear.</text>
+<text x="180" y="383" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="24" y="400" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="419" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Common standards</text>
+<text x="180" y="437" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">requires that cards and terminals follow</text>
+<text x="180" y="455" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="480" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The ledger entries are clear.</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="4">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Common</tspan> <tspan fill="#FFFFFF">standards</tspan></text>
+<rect x="48" y="140" width="804" height="299" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">COMPLETE</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="33" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="228" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="229" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Cash withdrawal</tspan><tspan fill="#CBD5E1"> - ATM follows the same authorisation pattern</tspan></text>
+<text x="820" y="228" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="245" width="772" height="33" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="269" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="270" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Card transactions</tspan><tspan fill="#CBD5E1"> - After authorisation</tspan></text>
+<text x="820" y="269" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2">
+<rect x="64" y="286" width="772" height="33" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="310" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="311" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">EUR 120 purchase and the EUR</tspan><tspan fill="#CBD5E1"> - withdrawal both appear in the clearing files</tspan></text>
+<text x="820" y="310" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3">
+<rect x="64" y="327" width="772" height="33" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="351" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="352" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Ledger entries</tspan><tspan fill="#CBD5E1"> - clear.</tspan></text>
+<text x="820" y="351" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n4" data-beat="4">
+<rect x="64" y="368" width="772" height="33" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="392" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="393" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Common standards</tspan><tspan fill="#CBD5E1"> - requires that cards and terminals follow</tspan></text>
+<text x="820" y="392" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<rect x="64" y="421" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="421" width="772" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="459" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">It requires that cards and terminals follow common standards, that a merchant can choose its</text>
+<text x="450" y="477" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">acquirer in any SEPA country, and that the rules for clearing and settlement are transparent.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 5 of 5</text>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#45A4FF"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 619" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="619" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Common</tspan> <tspan fill="#FFFFFF">standards</tspan></text>
+<rect x="24" y="58" width="312" height="26" rx="8" fill="#0C1626" stroke="#2DD4BF" stroke-width="1.5"/>
+<text x="180" y="76" text-anchor="middle" font-size="12" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">COMPLETE</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="92" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="111" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Cash withdrawal</text>
+<text x="180" y="129" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">ATM follows the same authorisation pattern</text>
+<text x="180" y="147" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="164" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="183" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Card transactions</text>
+<text x="180" y="201" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">After authorisation</text>
+<text x="180" y="219" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="1">
+<rect x="24" y="236" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="255" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">EUR 120 purchase</text>
+<text x="180" y="273" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">and the EUR</text>
+<text x="180" y="291" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">withdrawal both appear in the clearing files</text>
+<text x="180" y="309" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="1">
+<rect x="24" y="328" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="347" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Ledger entries</text>
+<text x="180" y="365" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">clear.</text>
+<text x="180" y="383" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="1">
+<rect x="24" y="400" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="419" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Common standards</text>
+<text x="180" y="437" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">requires that cards and terminals follow</text>
+<text x="180" y="455" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<text x="180" y="480" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">It requires that cards and terminals follow</text>
+<text x="180" y="499" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">common standards, that a merchant can</text>
+<text x="180" y="518" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">choose its acquirer in any SEPA country,</text>
+<text x="180" y="537" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">and that the rules for clearing and</text>
+<text x="180" y="556" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">settlement are transparent.</text>
+</svg>
+</div>
+</div>
+<p class="xml-caption">Flow of the explanation in this lesson.</p></div>
+<div class="playerbar">
+<div class="studio-progress"><div class="studio-markers" id="studio-markers-studio-ch63s7"></div><input type="range" id="studio-slider-studio-ch63s7" min="0" max="1000" value="0" aria-label="Lesson timeline"></div>
+<div class="ctrl-row">
+<button class="ctrl-btn" id="studio-play-studio-ch63s7" onclick="studioTogglePlay('studio-ch63s7')" aria-label="Play lesson" title="Play lesson"><span class="ctrl-ic-play"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></span><span class="ctrl-ic-pause" style="display:none"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><rect x="6" y="5" width="4" height="14" fill="currentColor"/><rect x="14" y="5" width="4" height="14" fill="currentColor"/></svg></span></button>
+<button class="ctrl-btn studio-mute-btn" id="studio-mute-studio-ch63s7" onclick="studioToggleMute('studio-ch63s7')" aria-label="Mute narration" title="Mute / unmute narration"><svg class="studio-mute-icon" viewBox="0 0 24 24" width="28" height="28" fill="currentColor" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3z"/><path class="studio-mute-waves" d="M16 8.5a5 5 0 0 1 0 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><path class="studio-mute-waves" d="M18.5 6a9 9 0 0 1 0 12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><path class="studio-mute-x" d="M16 9.5l5 5M21 9.5l-5 5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" style="display:none"/></svg></button>
+<button class="ctrl-btn" onclick="studioSkip('studio-ch63s7', -10)" aria-label="Back 10 seconds" title="Back 10 seconds"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 5a7 7 0 1 1-6.32 4.06" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M5.5 3.5v5h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><text x="12" y="16.5" font-size="8" fill="currentColor" text-anchor="middle" font-weight="700">10</text></svg></button>
+<span class="studio-time ctrl-time" id="studio-time-studio-ch63s7">0:00 / 3:08</span>
+<button class="ctrl-btn" onclick="studioSkip('studio-ch63s7', 10)" aria-label="Forward 10 seconds" title="Forward 10 seconds"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 5a7 7 0 1 0 6.32 4.06" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M18.5 3.5v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><text x="12" y="16.5" font-size="8" fill="currentColor" text-anchor="middle" font-weight="700">10</text></svg></button>
+<span class="playerbar-spacer"></span>
+<span class="player-stage" id="studio-tag-studio-ch63s7">Step 1 of 5</span>
+<button class="ctrl-btn ctrl-step" id="studio-prevscene-studio-ch63s7" onclick="studioPrevScene('studio-ch63s7')" title="Previous step" aria-label="Previous step">&lsaquo;</button>
+<button class="ctrl-btn ctrl-step" id="studio-nextscene-studio-ch63s7" onclick="studioNextScene('studio-ch63s7')" title="Next step" aria-label="Next step">&rsaquo;</button>
+<button class="ctrl-btn ctrl-speed" id="studio-speedbtn-studio-ch63s7" onclick="studioCycleSpeed('studio-ch63s7')" title="Playback speed" aria-label="Playback speed">1x</button>
+<span class="ctrl-settings-wrap"><button class="ctrl-btn" onclick="studioToggleSettings('studio-ch63s7', event)" aria-label="Player settings" title="Settings"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5 5l2.1 2.1M16.9 16.9L19 19M19 5l-2.1 2.1M7.1 16.9L5 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button><span class="ctrl-popover" id="studio-settings-studio-ch63s7" style="display:none" onclick="event.stopPropagation()"><label class="ctrl-pop-row">Volume <input type="range" min="0" max="1" step="0.1" value="1" oninput="studioSetVolume('studio-ch63s7', this.value)" style="width:110px;accent-color:#3587FC"></label><button class="studio-btn" id="studio-captions-studio-ch63s7" onclick="studioToggleCaptions('studio-ch63s7')">Captions: On</button><button class="studio-btn" onclick="studioReplayScene('studio-ch63s7')">Replay scene</button></span></span>
+<button class="ctrl-btn" onclick="studioFullscreen('studio-ch63s7')" aria-label="Fullscreen" title="Fullscreen"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+</div>
+</div>
+</div>
+<p class="studio-caption" id="studio-caption-studio-ch63s7"></p>
+<p class="studio-loading" id="studio-loading-studio-ch63s7" style="display:none">Loading narration...</p>
+<p class="studio-error" id="studio-error-studio-ch63s7" role="alert" style="display:none"></p>
+<audio id="studio-audio-studio-ch63s7" preload="auto" src="../audio/ch63s7.mp3"></audio>
+</div>
+<div class="lesson-title-row">
+<h1>ATM Cash Withdrawals, the SEPA Cards Framework, Clearing and Settlement</h1>
+<button class="save-note" type="button" onclick="pfToggleNote('studio-ch63s7')" title="Save a note on this lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L8 19l-4 1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg> Save note</button>
+</div>
+<p class="lesson-meta-line">Card Payments Deep Dive, Lesson 7 of 7, Narration 3:08, D08 Cards and alternative payments</p>
+<p class="lesson-note-saved" id="studio-note-saved-studio-ch63s7" style="display:none">Note saved.</p>
+<div class="note-editor" id="studio-note-editor-studio-ch63s7" style="display:none"><textarea id="studio-note-text-studio-ch63s7" rows="3" placeholder="Write a note on this lesson..." aria-label="Lesson note"></textarea><div class="note-editor-row"><button class="studio-btn primary" onclick="pfSaveNote('studio-ch63s7')">Save note</button> <button class="studio-btn" onclick="pfToggleNote('studio-ch63s7')">Cancel</button></div></div>
+<div class="dive-deeper">
+<div class="dive-head"><button type="button" class="dive-toggle" onclick="pfToggleDive(this)" aria-expanded="true"><span class="dive-spark"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 2l2.2 6.8L21 11l-6.8 2.2L12 20l-2.2-6.8L3 11l6.8-2.2z" fill="currentColor"/></svg></span><span class="dive-title">Dive deeper on this topic</span><span class="dive-chev"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 14l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button></div>
+<div class="dive-btns"><button type="button" class="dive-btn" data-kind="practice" onclick="pfDive('studio-ch63s7', 'practice')">Give me practice questions</button><button type="button" class="dive-btn" data-kind="simple" onclick="pfDive('studio-ch63s7', 'simple')">Explain this topic in simple terms</button><button type="button" class="dive-btn" data-kind="summary" onclick="pfDive('studio-ch63s7', 'summary')">Give me a summary</button><button type="button" class="dive-btn" data-kind="example" onclick="pfDive('studio-ch63s7', 'example')">Give me real-life examples</button></div>
+<div class="dive-panel" id="dive-panel-studio-ch63s7"><div class="dive-panel-body"></div></div>
+<script type="application/json" id="pf-dive-data-studio-ch63s7">{"simple": "In plain words: a cash withdrawal at an ATM follows the same authorisation pattern as a purchase, but the merchant is replaced by the ATM owner. That is the whole idea in one sentence, and the rest of the lesson shows how it works in a real bank.", "summary": "A cash withdrawal at an ATM follows the same authorisation pattern as a purchase, but the merchant is replaced by the ATM owner. Key points: Cash withdrawal; Card transactions; EUR 120 purchase and the EUR 60; Ledger entries; Common standards.", "example": "The cardholder inserts a Meridian Bank card into an ATM owned by Harbour Bank Manchester and asks for EUR 60. The ATM then dispenses EUR 60 in cash, and Meridian Bank reserves EUR 60 plus any withdrawal fee on the cardholder account."}</script>
+</div>
+<div class="lesson-feedback">
+<div class="fb-icons"><button type="button" class="fb-btn" data-kind="like" onclick="pfFeedback(this,'like')" aria-label="Like this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M7 21H4a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1h3v11zm0 0h9.6a2 2 0 0 0 1.9-1.4l1.6-5A2 2 0 0 0 18.2 12H15V6.5A2.5 2.5 0 0 0 12.5 4L11 7.5 8.6 10H7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button><button type="button" class="fb-btn" data-kind="dislike" onclick="pfFeedback(this,'dislike')" aria-label="Dislike this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M17 3h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1h-3V3zm0 0H7.4a2 2 0 0 0-1.9 1.4l-1.6 5A2 2 0 0 0 5.8 12H9v5.5A2.5 2.5 0 0 0 11.5 20L13 16.5l2.4-2.5H17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button><button type="button" class="fb-btn" data-kind="flag" onclick="pfFeedback(this,'flag')" aria-label="Flag this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M6 21V4m0 1h11l-2.5 3.5L17 12H6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+<button type="button" class="go-next" onclick="goLesson('ch64s1')" title="Next: What a Cheque Is and Why Cheques Still Exist">Go to next item &rarr;</button>
+</div>
+<div class="chips"><span class="chip">Authorisation</span><span class="chip">Settlement</span><span class="chip">Clearing</span></div>
+<div class="card learn-card">
+<h2>What you will learn</h2>
+<p class="transcript"><b>Your objective.</b> By the end of this lesson, you will be able to explain ATM cash withdrawals, the SEPA cards framework, clearing and settlement. A cash withdrawal at an ATM follows the same authorisation pattern as a purchase, but the merchant is replaced by the ATM owner.</p>
+<p class="transcript"><b>Why it matters.</b> For a business analyst, the framework matters because it defines the standards a new card product must meet, and for a product owner it matters because it opens the market to acquirers and processors from across Europe.</p>
+<p class="transcript">Chapter objective: Learner explains card types, the three-corner and four-corner models, and the full authorisation, clearing and settlement flow for a EUR 120 online purchase. Learner describes card anatomy, processor roles, fee sharing, ATM withdrawals, and the SEPA Cards Framework.</p>
+<h3>Key learning points</h3>
+<ul id="studio-points-studio-ch63s7">
+<li>Cash withdrawal</li>
+<li>Card transactions</li>
+<li>EUR 120 purchase and the EUR 60</li>
+<li>Ledger entries</li>
+<li>Common standards</li>
+</ul>
+<h3>Key terms</h3>
+<div id="studio-terms-studio-ch63s7">
+<p class="keyterm"><b>Authorisation:</b> Approval by the issuer for a card transaction to proceed, confirming the card is valid and funds or credit are available.</p>
+<p class="keyterm"><b>Settlement:</b> The final movement of funds between banks to discharge obligations created by cleared payments. Settlement is usually made in central bank money or through correspondent accounts.</p>
+<p class="keyterm"><b>Clearing:</b> The process of exchanging payment instructions between banks and calculating what each bank owes the others.</p>
+</div>
+<p class="studio-note">Payment flow diagram showing ATM Cash Withdrawals, the SEPA Cards Framework, Clearing and Settlement.</p>
+</div>
+<section class="ic-lesson-section" id="pf-insights-studio-ch63s7">
+<h2>Insights and practice scenarios</h2>
+<p class="studio-note">Worked insights and practice scenarios for this lesson. Each one is a reusable PaymentForge case, so the same case may appear in more than one lesson.</p>
+<div data-ic-type="level" data-record-id="INS-031"><script type="application/json">{"level": 3, "meta": {"domain": "Cards & Merchant Payments", "topic": "End-to-end credit card transaction flow", "depth": 3, "difficulty": "advanced", "insightId": "INS-031"}, "evidence": "public-post", "recordId": "INS-031", "problem": "A customer of Meridian Bank buys a laptop for EUR 1,200 at Northgate Retail using a Meridian credit card. The terminal shows the payment as approved, the customer leaves with the laptop, and Northgate expects the funds in its account. Two days later, Northgate's finance team cannot match the sale to a settlement, and the customer sees a pending authorisation on the card statement but no completed charge.\n\nThe confusion comes from treating authorisation, clearing, billing and settlement as one event. Authorisation only reserves funds and checks the card. Clearing moves the transaction record to the scheme and the issuer. Settlement moves the money. Billing shows the charge to the cardholder. The learner must trace the transaction through each touchpoint and explain where it can stall, what each party sees, and how a dispute would be handled.", "solution": "Teach the card flow as four distinct stages with different owners and different evidence. Authorisation happens in seconds: the terminal sends the card and transaction details to the acquirer, the scheme routes them to the issuer, and the issuer checks the card status, the available credit and fraud rules, then approves or declines and places a hold on the funds. The authorisation code is the key reference for everything that follows.\n\nClearing happens later, usually in batches. The merchant submits the approved transaction, the acquirer sends a clearing record through the scheme, and the issuer receives it and matches it to the authorisation. Settlement then moves the money: the issuer pays the scheme, the scheme pays the acquirer, and the acquirer credits the merchant, each less any agreed fees. Billing shows the completed charge on the cardholder statement once clearing has matched.\n\nWhen a transaction is missing from settlement, trace it by authorisation code, transaction reference and batch ID across the merchant, acquirer, scheme and issuer records. A duplicate clearing record must be deduplicated by its message identity so it creates no second charge. A delayed clearing acknowledgement must be handled by holding the transaction in an awaiting-clearing state, never by resubmitting it blindly. Disputes follow a separate path: the cardholder raises the dispute, the issuer investigates with the merchant evidence, and the outcome is a chargeback or a rejection of the dispute, each with its own accounting treatment.", "decision": {"question": "A EUR 1,200 card purchase shows as approved at the terminal, but two days later the merchant cannot match the sale to a settlement and the cardholder sees only a pending authorisation. What is the most likely situation and the right first step?", "context": "", "options": [{"label": "A", "detail": "The payment failed, so the merchant should ask the customer to pay again.", "correct": false}, {"label": "B", "detail": "Authorisation succeeded but clearing or settlement has not yet completed or reconciled, so trace the transaction by its authorisation code and transaction reference through the acquirer, scheme and issuer records before acting.", "correct": true}, {"label": "C", "detail": "The merchant should write off the sale.", "correct": false}, {"label": "D", "detail": "The cardholder should be charged again by the issuer.", "correct": false}]}, "decisionRationale": "Option B is correct because an approved authorisation is only the first stage. Clearing and settlement follow, and a mismatch is usually a timing or reconciliation break, not proof of failure. Option A risks double charging the customer. Option D duplicates the charge. Option C gives up a valid sale without evidence.", "flow": {"steps": [{"title": "Presents the card at the Northgate terminal for EUR 1,200", "actor": "Cardholder", "note": "Point of sale terminal"}, {"title": "Sends the authorisation request through the card scheme to the issuer", "actor": "Acquirer", "note": "Acquirer host"}, {"title": "Checks the card, available credit and fraud rules, approves the transaction and places a hold", "actor": "Issuer", "note": "Issuer authorisation system"}, {"title": "Completes the sale and submits the transaction in the daily clearing batch", "actor": "Merchant", "note": "Merchant acquiring system"}, {"title": "Routes the clearing record to the issuer and calculates settlement", "actor": "Card scheme", "note": "Card scheme"}, {"title": "Matches the clearing record to the authorisation and confirms the charge", "actor": "Issuer", "note": "Issuer clearing system"}, {"title": "Moves funds from issuer to scheme to acquirer, less agreed fees", "actor": "Settlement", "note": "Settlement accounts"}, {"title": "Credit the merchant account and show the completed charge on the cardholder statement", "actor": "Acquirer and issuer", "note": "Merchant account and card billing"}]}, "happy": ["Authorisation is approved in seconds with an authorisation code. The transaction clears in the daily batch, settlement completes for the expected net amount, the merchant is credited, and the cardholder statement shows the completed EUR 1,200 charge with the merchant name. The authorisation hold is replaced by the completed charge."], "negative": [{"title": "Clearing acknowledgement delayed", "detail": "The clearing record is submitted but no acknowledgement arrives in the expected window. Hold the transaction in an awaiting-clearing state, correlate by transaction reference, and investigate without blind resubmission."}, {"title": "Settlement amount differs", "detail": "The settlement report shows a different amount from the submitted sale. Classify the difference as fees, partial settlement or error, reconcile at the correct level, and post adjustments only under approved rules."}, {"title": "Duplicate clearing record", "detail": "The same clearing record arrives twice. Deduplicate by message and transaction identity, make clearing handling idempotent, and ensure no second charge or second merchant credit is created."}, {"title": "Cardholder dispute", "detail": "The cardholder disputes the charge after the statement arrives. Raise a dispute case with the authorisation code, clearing evidence and merchant records, follow the scheme dispute process, and post any chargeback as a separate controlled transaction."}], "technical": ["Use the authorisation code, transaction reference, card reference and batch ID as the stable tracing keys across merchant, acquirer, scheme and issuer. Keep authorisation, clearing and settlement as separate states with explicit transitions, and never treat an authorisation as proof of settlement. Make clearing and status handling idempotent by message identity so duplicate records create no second effect. Record the authorisation hold, its expiry, the cleared amount, fees and the settlement amount as separate data items. Validate card data handling, tokenisation and masking rules, and keep the full transaction trail for dispute and audit purposes. Reconcile authorisations against clearing records and clearing records against settlement reports daily."], "messages": [{"message": "ISO 8583 authorisation request (0100)", "title": "Authorisation request from the acquirer through the scheme to the issuer.", "fields": [{"tag": "Primary account number or token", "name": "Primary account number or token", "relevant": true}, {"tag": "Transaction amount and currency", "name": "Transaction amount and currency", "relevant": true}, {"tag": "Merchant identification", "name": "Merchant identification", "relevant": true}, {"tag": "Terminal and cardholder verification data", "name": "Terminal and cardholder verification data", "relevant": true}]}, {"message": "ISO 8583 authorisation response (0110)", "title": "Issuer decision on the authorisation request.", "fields": [{"tag": "Response code, approved or declined", "name": "Response code, approved or declined", "relevant": true}, {"tag": "Authorisation code", "name": "Authorisation code", "relevant": true}, {"tag": "Available balance or credit information where provided", "name": "Available balance or credit information where provided", "relevant": true}]}, {"message": "Clearing record", "title": "Batch clearing record sent from the acquirer through the scheme to the issuer.", "fields": [{"tag": "Transaction reference and authorisation code", "name": "Transaction reference and authorisation code", "relevant": true}, {"tag": "Cleared amount and currency", "name": "Cleared amount and currency", "relevant": true}, {"tag": "Merchant and acquirer identification", "name": "Merchant and acquirer identification", "relevant": true}, {"tag": "Batch ID and value date", "name": "Batch ID and value date", "relevant": true}]}, {"message": "Settlement report", "title": "Scheme settlement report used for reconciliation.", "fields": [{"tag": "Settlement amount, gross and net", "name": "Settlement amount, gross and net", "relevant": true}, {"tag": "Fees applied", "name": "Fees applied", "relevant": true}, {"tag": "Value date", "name": "Value date", "relevant": true}, {"tag": "Participant account identification", "name": "Participant account identification", "relevant": true}]}], "accounting": ["Authorisation places a hold on the cardholder's available credit without posting a completed charge. Clearing converts the hold into a posted charge: debit the cardholder account and credit the scheme settlement account. Settlement credits the merchant account for the net amount after fees, and fees are recorded as separate income lines. A duplicate clearing record must not create a second charge. A chargeback debits the merchant and credits the cardholder as a separate controlled transaction with its own reference. Operations reconciles authorisations to clearing records and clearing records to settlement reports daily, and unmatched items sit on a worklist with an owner and a service level."], "gherkin": {"scenarios": [{"given": "a clearing record is submitted", "when": "no acknowledgement arrives within the expected window", "then": "the transaction enters an awaiting-clearing state without duplicate submission."}, {"given": "an identical clearing record is received twice", "when": "the second copy is processed", "then": "no duplicate charge or merchant credit occurs."}, {"given": "a settlement amount differs from the submitted sale", "when": "reconciliation runs", "then": "the variance is classified and not auto-written off without policy approval."}]}, "check": {"questions": [{"question": "What does a card authorisation do?", "options": ["It credits the merchant.", "It creates the cardholder statement.", "It settles the payment immediately.", "It checks the card and reserves funds, but it does not by itself settle the payment."], "answer": 3, "explanation": "Authorisation approves and holds funds. Clearing and settlement follow as separate stages."}, {"question": "Why might a merchant not see a settlement two days after an approved sale?", "options": ["The sale was never authorised.", "Clearing or settlement may still be in progress, or the settlement may not have reconciled to the sale.", "The terminal was switched off.", "The cardholder has no money."], "answer": 1, "explanation": "Authorisation, clearing and settlement run on different cycles, and a reconciliation break can also delay matching."}, {"question": "The same clearing record arrives twice. What must happen?", "options": ["Deduplicate by message identity so only one charge and one merchant credit occur.", "Credit the merchant twice.", "Ignore both copies.", "Charge the cardholder twice."], "answer": 0, "explanation": "Idempotent clearing handling ensures duplicate delivery has no second financial effect."}, {"question": "A cardholder disputes a completed charge. What is the correct handling?", "options": ["Raise a dispute case with authorisation, clearing and merchant evidence, follow the scheme process, and post any chargeback as a separate controlled transaction.", "Ask the merchant to pay the cardholder directly.", "Refund immediately without evidence.", "Delete the transaction."], "answer": 0, "explanation": "Disputes follow a defined scheme process with evidence, and a chargeback is a separate transaction with its own reference."}]}}</script></div>
+</section>
+<div class="fw-card" id="pf-exercise-studio-ch63s7">
+<p class="fw-label">Practise this lesson</p>
+<h2>Exercise</h2>
+<p><b>Trace the card payment in this lesson through authorisation, clearing and settlement.</b></p>
+<p>Use the four-party model and the stage timings in this lesson.</p>
+<ol class="fw-steps">
+<li><b>What to do.</b> State what happens at each stage, who pays whom, and when the merchant is actually credited.</li>
+</ol>
+<p><button class="studio-btn" id="pf-ex-btn-studio-ch63s7" onclick="pfRevealExercise('studio-ch63s7')">Show the answer</button></p>
+<div class="fw-exercise-answer" id="pf-ex-answer-studio-ch63s7">
+<p><b>Correct result.</b> Authorisation holds the funds and returns a response code. Clearing sends the transaction in a batch file. Settlement moves the net amount between banks, and the acquirer credits the merchant after deducting interchange, scheme fees and its margin.</p>
+<p><b>Why.</b> A card payment is not one event. The customer sees it on Monday, the merchant gets it on Wednesday, and the difference is the clearing and settlement cycle.</p>
+</div>
+</div>
+<div class="fw-card" id="pf-quiz-studio-ch63s7" data-answer="3">
+<p class="fw-label">Check your understanding</p>
+<h2>Practice question</h2>
+<p><b>Which of the following best describes ATM cash withdrawals, the SEPA cards framework, clearing and settlement?</b></p>
+<button type="button" class="quiz-opt" data-idx="0" onclick="pfCheckAnswer('studio-ch63s7', this)">Each card type exists because a different user need sits behind it, and a business analyst who confuses them will design the wrong flow</button>
+<button type="button" class="quiz-opt" data-idx="1" onclick="pfCheckAnswer('studio-ch63s7', this)">Card services add value on top of the basic payment, and they change what the payments team must build and support</button>
+<button type="button" class="quiz-opt" data-idx="2" onclick="pfCheckAnswer('studio-ch63s7', this)">A credit card lets the cardholder borrow money from the issuing bank up to an agreed credit limit, and the cardholder repays the balance later, either in full or in monthly instalments with interest</button>
+<button type="button" class="quiz-opt" data-idx="3" onclick="pfCheckAnswer('studio-ch63s7', this)">A cash withdrawal at an ATM follows the same authorisation pattern as a purchase, but the merchant is replaced by the ATM owner</button>
+<div class="quiz-feedback" id="pf-quiz-fb-studio-ch63s7"></div>
+<script type="application/json" id="pf-quiz-data-studio-ch63s7">{"why_wrong": ["This describes a different concept from this chapter, not ATM cash withdrawals, the SEPA cards framework, clearing and settlement.", "This describes a different concept from this chapter, not ATM cash withdrawals, the SEPA cards framework, clearing and settlement.", "This describes a different concept from this chapter, not ATM cash withdrawals, the SEPA cards framework, clearing and settlement.", ""], "explanation": "A cash withdrawal at an ATM follows the same authorisation pattern as a purchase, but the merchant is replaced by the ATM owner. This is the core idea of the lesson."}</script>
+</div>
+<div class="fw-card">
+<p class="fw-label">Takeaway and next step</p>
+<h2>What to remember</h2>
+<p>For a business analyst, the framework matters because it defines the standards a new card product must meet, and for a product owner it matters because it opens the market to acquirers and processors from across Europe.</p>
+<p>Follow EUR 60 through every stage, from instruction to beneficiary credit, and note where it can stop.</p>
+<p><a class="fw-tool-link" href="../simulators/lifecycle.html">Open the Payment Lifecycle Simulator &rarr;</a></p>
+<p class="studio-note">Builds on ch21, Batching and Clearing Files, and ch31. This lesson adds ATM withdrawals and the SEPA cards framework.</p>
+</div>
+<section class="upnext" id="studio-upnext-studio-ch63s7" style="display:none" aria-label="Up next">
+<span class="tag">Up next</span>
+<h2>Up next: What a Cheque Is and Why Cheques Still Exist</h2>
+<p>Lesson 1 of 7, Cheques and Paper Instruments, Narration 2:51</p>
+<div class="row">
+<button class="studio-btn primary" onclick="goLessonAuto('ch64s1')">Next lesson &rarr;</button>
+<button class="studio-btn" onclick="goLesson('ch63s6')">&larr; Previous lesson</button>
+<button class="studio-btn" onclick="studioReplayLesson('studio-ch63s7')">Replay this lesson</button>
+</div>
+</section>
+<div class="lesson-nav">
+<button class="studio-btn" onclick="goLesson('ch63s6')" title="Previous lesson: Payment Processors, Fees and How They Are Shared">&larr; Previous</button>
+<button class="studio-btn" onclick="goChapterContents('ch63')">Chapter contents</button>
+<button class="studio-btn primary" onclick="goLesson('ch64s1')" title="Next lesson: What a Cheque Is and Why Cheques Still Exist">Next &rarr;</button>
+</div>
+<div class="card transcript-card">
+<h2>Transcript and full text</h2>
+<details class="studio-transcript" id="studio-transcript-details-studio-ch63s7"><summary>Show transcript</summary>
+<p class="transcript" id="studio-transcript-studio-ch63s7">A cash withdrawal at an ATM follows the same authorisation pattern as a purchase, but the merchant is replaced by the ATM owner. The cardholder inserts a Meridian Bank card into an ATM owned by Harbour Bank Manchester and asks for EUR 60. The ATM sends an authorisation request through the scheme to Meridian Bank, which checks the card, the PIN and the available balance, and approves the withdrawal. The ATM then dispenses EUR 60 in cash, and Meridian Bank reserves EUR 60 plus any withdrawal fee on the cardholder account. The ATM owner earns a fee for providing the cash, and the cardholder may also pay a fee to the issuer, so the ledger must record the cash, the issuer fee and the ATM fee as separate entries. After authorisation, card transactions are collected into clearing files that the acquirer sends to the scheme, usually at the end of the business day. Clearing is the process of exchanging transaction records, matching them and calculating what each party owes the others. In bilateral clearing, each pair of banks settles directly with each other, so ten banks need many separate settlements. In multilateral clearing, all banks send their files to one central clearer, which nets everything down to one amount per bank, so each bank either pays or receives a single net amount. The EUR 120 purchase and the EUR 60 withdrawal both appear in the clearing files, and the scheme calculates what Meridian Bank owes Harbour Bank after the fees are taken into account. Settlement is the actual movement of money that follows clearing, and it happens between the banks settlement accounts, usually at the central bank. Once the net positions are calculated, Meridian Bank pays its net amount to the scheme settlement account, and the scheme pays Harbour Bank, so the merchant and the ATM owner are funded. Settlement is usually once a day, which is why a merchant who sells goods on Monday may not receive the money until Tuesday. The ledger entries are clear. The cardholder account is debited EUR 120 for the purchase and EUR 60 plus fees for the withdrawal, the merchant account is credited EUR 119.09, and the scheme and acquirer fee accounts receive their shares. If a clearing file is late or a settlement account lacks funds, the scheme applies its rules for delayed settlement and interest. The SEPA Cards Framework is the set of principles that aims to make card payments work the same way across the Single Euro Payments Area, so a card issued in one SEPA country works at any terminal or ATM in another without extra cost or friction. It requires that cards and terminals follow common standards, that a merchant can choose its acquirer in any SEPA country, and that the rules for clearing and settlement are transparent. Interoperability means a cardholder from France can use a card at a terminal in Germany, and a merchant in Spain can use an acquirer in the Netherlands, with the same flow and the same protections. For a business analyst, the framework matters because it defines the standards a new card product must meet, and for a product owner it matters because it opens the market to acquirers and processors from across Europe.</p>
+<div id="studio-paras-studio-ch63s7">
+<p class="transcript">A cash withdrawal at an ATM follows the same authorisation pattern as a purchase, but the merchant is replaced by the ATM owner. The cardholder inserts a Meridian Bank card into an ATM owned by Harbour Bank Manchester and asks for EUR 60. The ATM sends an authorisation request through the scheme to Meridian Bank, which checks the card, the PIN and the available balance, and approves the withdrawal. The ATM then dispenses EUR 60 in cash, and Meridian Bank reserves EUR 60 plus any withdrawal fee on the cardholder account. The ATM owner earns a fee for providing the cash, and the cardholder may also pay a fee to the issuer, so the ledger must record the cash, the issuer fee and the ATM fee as separate entries.</p>
+<p class="transcript">After authorisation, card transactions are collected into clearing files that the acquirer sends to the scheme, usually at the end of the business day. Clearing is the process of exchanging transaction records, matching them and calculating what each party owes the others. In bilateral clearing, each pair of banks settles directly with each other, so ten banks need many separate settlements. In multilateral clearing, all banks send their files to one central clearer, which nets everything down to one amount per bank, so each bank either pays or receives a single net amount. The EUR 120 purchase and the EUR 60 withdrawal both appear in the clearing files, and the scheme calculates what Meridian Bank owes Harbour Bank after the fees are taken into account.</p>
+<p class="transcript">Settlement is the actual movement of money that follows clearing, and it happens between the banks settlement accounts, usually at the central bank. Once the net positions are calculated, Meridian Bank pays its net amount to the scheme settlement account, and the scheme pays Harbour Bank, so the merchant and the ATM owner are funded. Settlement is usually once a day, which is why a merchant who sells goods on Monday may not receive the money until Tuesday. The ledger entries are clear. The cardholder account is debited EUR 120 for the purchase and EUR 60 plus fees for the withdrawal, the merchant account is credited EUR 119.09, and the scheme and acquirer fee accounts receive their shares. If a clearing file is late or a settlement account lacks funds, the scheme applies its rules for delayed settlement and interest.</p>
+<p class="transcript">The SEPA Cards Framework is the set of principles that aims to make card payments work the same way across the Single Euro Payments Area, so a card issued in one SEPA country works at any terminal or ATM in another without extra cost or friction. It requires that cards and terminals follow common standards, that a merchant can choose its acquirer in any SEPA country, and that the rules for clearing and settlement are transparent. Interoperability means a cardholder from France can use a card at a terminal in Germany, and a merchant in Spain can use an acquirer in the Netherlands, with the same flow and the same protections. For a business analyst, the framework matters because it defines the standards a new card product must meet, and for a product owner it matters because it opens the market to acquirers and processors from across Europe.</p>
+</div>
+</details>
+<details class="studio-transcript"><summary>Full lesson text (all scenes)</summary><div id="studio-transcript-full-studio-ch63s7"></div></details>
+<p><button class="studio-btn primary" id="done-ch63s7" onclick="studioMarkSceneDone('studio-ch63s7')">Mark lesson complete</button> <span class="studio-note">Completing a lesson updates your progress dashboard on the homepage.</span></p>
+</div>
+<p class="studio-note">Scene timestamps are estimated by allocating the narration text proportionally across the real audio length. The audio playback position is the source of truth: pause freezes the visual, seeking restores the correct scene, replay restarts the scene animation.</p>
+</div>
+<script>window.__PA_STUDIO_QUEUE = window.__PA_STUDIO_QUEUE || []; window.__PA_STUDIO_QUEUE.push(["studio-ch63s7", {"sample_id": "studio-ch63s7", "chapter_id": "ch63", "title": "ATM Cash Withdrawals, the SEPA Cards Framework, Clearing and Settlement", "domain": "D08 Cards and alternative payments", "objective": "Learner explains card types, the three-corner and four-corner models, and the full authorisation, clearing and settlement flow for a EUR 120 online purchase. Learner describes card anatomy, processor roles, fee sharing, ATM withdrawals, and the SEPA Cards Framework.", "scenes": [{"id": "ch63s7", "section_id": "ch63s7", "title": "ATM Cash Withdrawals, the SEPA Cards Framework, Clearing and Settlement", "audio": "../audio/ch63s7.mp3", "duration_sec": 188.5, "points": ["A cash withdrawal at an ATM follows the same authorisation pattern as a purchase, but the merchant is replaced by the ATM owner.", "After authorisation, card transactions are collected into clearing files that the acquirer sends to the scheme, usually at the end of the business day.", "Settlement is the actual movement of money that follows clearing, and it happens between the banks settlement accounts, usually at the central bank.", "The SEPA Cards Framework is the set of principles that aims to make card payments work the same way across the Single Euro Payments Area, so a card issued in one SEPA country works at any terminal or ATM in another..."], "terms": [{"term": "Authorisation", "def": "Approval by the issuer for a card transaction to proceed, confirming the card is valid and funds or credit are available."}, {"term": "Settlement", "def": "The final movement of funds between banks to discharge obligations created by cleared payments. Settlement is usually made in central bank money or through correspondent accounts."}, {"term": "Clearing", "def": "The process of exchanging payment instructions between banks and calculating what each bank owes the others."}], "transcript": "A cash withdrawal at an ATM follows the same authorisation pattern as a purchase, but the merchant is replaced by the ATM owner. The cardholder inserts a Meridian Bank card into an ATM owned by Harbour Bank Manchester and asks for EUR 60. The ATM sends an authorisation request through the scheme to Meridian Bank, which checks the card, the PIN and the available balance, and approves the withdrawal. The ATM then dispenses EUR 60 in cash, and Meridian Bank reserves EUR 60 plus any withdrawal fee on the cardholder account. The ATM owner earns a fee for providing the cash, and the cardholder may also pay a fee to the issuer, so the ledger must record the cash, the issuer fee and the ATM fee as separate entries. After authorisation, card transactions are collected into clearing files that the acquirer sends to the scheme, usually at the end of the business day. Clearing is the process of exchanging transaction records, matching them and calculating what each party owes the others. In bilateral clearing, each pair of banks settles directly with each other, so ten banks need many separate settlements. In multilateral clearing, all banks send their files to one central clearer, which nets everything down to one amount per bank, so each bank either pays or receives a single net amount. The EUR 120 purchase and the EUR 60 withdrawal both appear in the clearing files, and the scheme calculates what Meridian Bank owes Harbour Bank after the fees are taken into account. Settlement is the actual movement of money that follows clearing, and it happens between the banks settlement accounts, usually at the central bank. Once the net positions are calculated, Meridian Bank pays its net amount to the scheme settlement account, and the scheme pays Harbour Bank, so the merchant and the ATM owner are funded. Settlement is usually once a day, which is why a merchant who sells goods on Monday may not receive the money until Tuesday. The ledger entries are clear. The cardholder account is debited EUR 120 for the purchase and EUR 60 plus fees for the withdrawal, the merchant account is credited EUR 119.09, and the scheme and acquirer fee accounts receive their shares. If a clearing file is late or a settlement account lacks funds, the scheme applies its rules for delayed settlement and interest. The SEPA Cards Framework is the set of principles that aims to make card payments work the same way across the Single Euro Payments Area, so a card issued in one SEPA country works at any terminal or ATM in another without extra cost or friction. It requires that cards and terminals follow common standards, that a merchant can choose its acquirer in any SEPA country, and that the rules for clearing and settlement are transparent. Interoperability means a cardholder from France can use a card at a terminal in Germany, and a merchant in Spain can use an acquirer in the Netherlands, with the same flow and the same protections. For a business analyst, the framework matters because it defines the standards a new card product must meet, and for a product owner it matters because it opens the market to acquirers and processors from across Europe.", "paragraphs": ["A cash withdrawal at an ATM follows the same authorisation pattern as a purchase, but the merchant is replaced by the ATM owner. The cardholder inserts a Meridian Bank card into an ATM owned by Harbour Bank Manchester and asks for EUR 60. The ATM sends an authorisation request through the scheme to Meridian Bank, which checks the card, the PIN and the available balance, and approves the withdrawal. The ATM then dispenses EUR 60 in cash, and Meridian Bank reserves EUR 60 plus any withdrawal fee on the cardholder account. The ATM owner earns a fee for providing the cash, and the cardholder may also pay a fee to the issuer, so the ledger must record the cash, the issuer fee and the ATM fee as separate entries.", "After authorisation, card transactions are collected into clearing files that the acquirer sends to the scheme, usually at the end of the business day. Clearing is the process of exchanging transaction records, matching them and calculating what each party owes the others. In bilateral clearing, each pair of banks settles directly with each other, so ten banks need many separate settlements. In multilateral clearing, all banks send their files to one central clearer, which nets everything down to one amount per bank, so each bank either pays or receives a single net amount. The EUR 120 purchase and the EUR 60 withdrawal both appear in the clearing files, and the scheme calculates what Meridian Bank owes Harbour Bank after the fees are taken into account.", "Settlement is the actual movement of money that follows clearing, and it happens between the banks settlement accounts, usually at the central bank. Once the net positions are calculated, Meridian Bank pays its net amount to the scheme settlement account, and the scheme pays Harbour Bank, so the merchant and the ATM owner are funded. Settlement is usually once a day, which is why a merchant who sells goods on Monday may not receive the money until Tuesday. The ledger entries are clear. The cardholder account is debited EUR 120 for the purchase and EUR 60 plus fees for the withdrawal, the merchant account is credited EUR 119.09, and the scheme and acquirer fee accounts receive their shares. If a clearing file is late or a settlement account lacks funds, the scheme applies its rules for delayed settlement and interest.", "The SEPA Cards Framework is the set of principles that aims to make card payments work the same way across the Single Euro Payments Area, so a card issued in one SEPA country works at any terminal or ATM in another without extra cost or friction. It requires that cards and terminals follow common standards, that a merchant can choose its acquirer in any SEPA country, and that the rules for clearing and settlement are transparent. Interoperability means a cardholder from France can use a card at a terminal in Germany, and a merchant in Spain can use an acquirer in the Netherlands, with the same flow and the same protections. For a business analyst, the framework matters because it defines the standards a new card product must meet, and for a product owner it matters because it opens the market to acquirers and processors from across Europe."], "accessibility": "Payment flow diagram showing ATM Cash Withdrawals, the SEPA Cards Framework, Clearing and Settlement.", "visual_type": "payment_flow", "visual_choice_reason": "card payments chapter", "beats": [{"t0": 0.0, "t1": 42.7, "title": "Cash withdrawal", "note": "A cash withdrawal at an ATM follows the same authorisation pattern as a purchase, but the merchant is replaced by the ATM owner.", "highlight_nodes": ["n0"], "highlight_conns": [], "highlight_fields": []}, {"t0": 42.7, "t1": 77.3, "title": "Card transactions", "note": "After authorisation, card transactions are collected into clearing files that the acquirer sends to the scheme, usually at the end of the business day.", "highlight_nodes": ["n1"], "highlight_conns": ["c0"], "highlight_fields": []}, {"t0": 77.3, "t1": 115.7, "title": "EUR 120 purchase and the EUR 60", "note": "The EUR 120 purchase and the EUR 60 withdrawal both appear in the clearing files, and the scheme calculates what Meridian Bank owes Harbour Bank after the fees are taken into account.", "highlight_nodes": ["n2"], "highlight_conns": ["c1"], "highlight_fields": []}, {"t0": 115.7, "t1": 152.3, "title": "Ledger entries", "note": "The ledger entries are clear.", "highlight_nodes": ["n3"], "highlight_conns": ["c2"], "highlight_fields": []}, {"t0": 152.3, "t1": 188.5, "title": "Common standards", "note": "It requires that cards and terminals follow common standards, that a merchant can choose its acquirer in any SEPA country, and that the rules for clearing and settlement are transparent.", "highlight_nodes": ["n4"], "highlight_conns": ["c3"], "highlight_fields": []}], "node_ids": ["n0", "n1", "n2", "n3", "n4"], "framework": {"objective": "By the end of this lesson, you will be able to explain ATM cash withdrawals, the SEPA cards framework, clearing and settlement. A cash withdrawal at an ATM follows the same authorisation pattern as a purchase, but the merchant is replaced by the ATM owner.", "why_matters": "For a business analyst, the framework matters because it defines the standards a new card product must meet, and for a product owner it matters because it opens the market to acquirers and processors from across Europe.", "technical_example": "The cardholder inserts a Meridian Bank card into an ATM owned by Harbour Bank Manchester and asks for EUR 60.", "failure_recovery": "This lesson introduces a concept. The failure and recovery paths for it are covered in the exceptions and investigations lessons in this domain.", "exercise": {"task": "Trace the card payment in this lesson through authorisation, clearing and settlement.", "info": "Use the four-party model and the stage timings in this lesson.", "action": "State what happens at each stage, who pays whom, and when the merchant is actually credited.", "correct": "Authorisation holds the funds and returns a response code. Clearing sends the transaction in a batch file. Settlement moves the net amount between banks, and the acquirer credits the merchant after deducting interchange, scheme fees and its margin.", "why": "A card payment is not one event. The customer sees it on Monday, the merchant gets it on Wednesday, and the difference is the clearing and settlement cycle."}, "assessment": {"question": "Which of the following best describes ATM cash withdrawals, the SEPA cards framework, clearing and settlement?", "options": ["Each card type exists because a different user need sits behind it, and a business analyst who confuses them will design the wrong flow", "Card services add value on top of the basic payment, and they change what the payments team must build and support", "A credit card lets the cardholder borrow money from the issuing bank up to an agreed credit limit, and the cardholder repays the balance later, either in full or in monthly instalments with interest", "A cash withdrawal at an ATM follows the same authorisation pattern as a purchase, but the merchant is replaced by the ATM owner"], "answer": 3, "explanation": "A cash withdrawal at an ATM follows the same authorisation pattern as a purchase, but the merchant is replaced by the ATM owner. This is the core idea of the lesson.", "why_wrong": ["This describes a different concept from this chapter, not ATM cash withdrawals, the SEPA cards framework, clearing and settlement.", "This describes a different concept from this chapter, not ATM cash withdrawals, the SEPA cards framework, clearing and settlement.", "This describes a different concept from this chapter, not ATM cash withdrawals, the SEPA cards framework, clearing and settlement.", ""], "source": "generated:ch63s7"}, "takeaway": "For a business analyst, the framework matters because it defines the standards a new card product must meet, and for a product owner it matters because it opens the market to acquirers and processors from across Europe.", "prereq": "ch63s6", "next": null, "connection_note": "Builds on ch21, Batching and Clearing Files, and ch31. This lesson adds ATM withdrawals and the SEPA cards framework.", "tool": {"slug": "lifecycle", "label": "Payment Lifecycle Simulator", "url": "../simulators/lifecycle.html", "scenario": "Follow EUR 60 through every stage, from instruction to beneficiary credit, and note where it can stop."}, "simple": "In plain words: a cash withdrawal at an ATM follows the same authorisation pattern as a purchase, but the merchant is replaced by the ATM owner. That is the whole idea in one sentence, and the rest of the lesson shows how it works in a real bank.", "summary": "A cash withdrawal at an ATM follows the same authorisation pattern as a purchase, but the merchant is replaced by the ATM owner. Key points: Cash withdrawal; Card transactions; EUR 120 purchase and the EUR 60; Ledger entries; Common standards.", "example": "The cardholder inserts a Meridian Bank card into an ATM owned by Harbour Bank Manchester and asks for EUR 60. The ATM then dispenses EUR 60 in cash, and Meridian Bank reserves EUR 60 plus any withdrawal fee on the cardholder account."}}], "chapter_title": "Card Payments Deep Dive", "meta_line": "Card Payments Deep Dive, Lesson 7 of 7, Narration 3:08, D08 Cards and alternative payments", "next_id": "ch64s1", "next_title": "What a Cheque Is and Why Cheques Still Exist"}]);</script>
+</div>
+<nav class="tool-rail" aria-label="Lesson tools">
+<button type="button" class="rail-tool" onclick="pfOpenTranscript('studio-ch63s7')" title="Open transcript"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M7 3h7l4 4v14H7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M14 3v4h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 12h5M10 15.5h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span>Transcript</span></button>
+<button type="button" class="rail-tool" onclick="pfToggleNote('studio-ch63s7')" title="Write a note on this lesson"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L8 19l-4 1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>Notes</span></button>
+<button type="button" class="rail-tool" onclick="pfToggleFiles('studio-ch63s7')" title="Download lesson files"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>Files</span></button>
+</nav>
+<div class="fw-files-panel" id="pf-files-studio-ch63s7" style="display:none"><b>Lesson files</b><p><a href="../audio/ch63s7.mp3" download>Download narration (MP3)</a></p><p><a href="#" onclick="pfDownloadTranscript('studio-ch63s7');return false">Download transcript (.txt)</a></p></div>
+</div>
+</div>
+</main>
+<footer><p>Payments Training Hub. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="../index.html">Home</a> &middot; <a href="../courses.html">Courses</a> &middot; <a href="../practice.html">Practice</a> &middot; <a href="../simulators.html">Simulators</a> &middot; <a href="../labs.html">Labs</a> &middot; <a href="../explorer.html">Explorer</a> &middot; <a href="../tests.html">Tests</a> &middot; <a href="../diagnostic.html">Diagnostic</a> &middot; <a href="../faq.html">Interview Ready Questions</a> &middot; <a href="../interview-prep.html">Interview Prep</a></p><p><a href="../about.html">About</a> &middot; <a href="../privacy.html">Privacy</a> &middot; <a href="../terms.html">Terms</a> &middot; <a href="../contact.html">Contact</a> &middot; <a href="../editorial-standards.html">Editorial Standards</a> &middot; <a href="../sources.html">Sources</a></p></footer>
+<script defer src="../assets/site.js"></script>
+<script defer src="../assets/bundles.js"></script>
+<script defer src="../assets/auth.js"></script>
+<script defer src="../assets/studio.js"></script>
+<script defer src="../assets/insight-components.js"></script>
+<script defer src="../assets/nav.js"></script>
+<script defer src="../assets/pf-enhance.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+if(window.PFInsight){PFInsight.init();}
+});
+</script>
+</body>
+</html>
