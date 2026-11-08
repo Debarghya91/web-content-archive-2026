@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>API Playground | Payments Training Hub</title>
+<meta name="description" content="Real payment API requests and responses. Send a valid request and an invalid one to see how validation and errors work.">
+<link rel="canonical" href="https://www.paymentstraininghub.in/simulators/api-playground.html">
+<meta property="og:url" content="https://www.paymentstraininghub.in/simulators/api-playground.html">
+<meta property="og:title" content="API Playground | Payments Training Hub">
+<meta property="og:description" content="Real payment API requests and responses. Send a valid request and an invalid one to see how validation and errors work.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.in/assets/hero/hero-poster.jpg">
+<link rel="stylesheet" href="../assets/pf-theme.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="../index.html" class="brand">Payments <span>Training Hub</span></a><nav class="topnav"><a href="../index.html">Home</a> <a href="../courses.html">Courses</a> <a href="../practice.html">Practice</a> <a href="../simulators.html">Simulators</a> <a href="../labs.html">Labs</a> <a href="../explorer.html">Explorer</a> <a href="../tests.html">Tests</a></nav><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox" style="display:none"><span id="authState">Not signed in</span> <span id="authForm" style="display:none"><input id="authEmail" type="email" placeholder="Email for OTP" aria-label="Email for sign-in"> <button class="mute-btn" onclick="paAuthSendOtp()">Send code</button> <input id="authCode" type="text" placeholder="6-digit code" aria-label="One-time code" style="display:none"> <button class="mute-btn" id="authVerifyBtn" onclick="paAuthVerifyOtp()" style="display:none">Verify</button> <button class="mute-btn" onclick="paAuthGoogle()">Sign in with Google</button> </span><button class="mute-btn" id="authSignOutBtn" onclick="paAuthSignOut()" style="display:none">Sign out</button></span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<nav class="crumbs"><a href="../index.html">Home</a> / <a href="../simulators.html">Simulators</a> / API Playground</nav>
+<section class="section" id="playground">
+<h2>API Playground</h2>
+<p class="api-fictional"><b>Fictional reference API for learning, not a real bank API.</b> There is no real provider behind these examples and no real base URL. Do not copy these payloads into a real integration: every real bank documents its own provider, version, authentication, idempotency and error rules, and they differ by provider.</p>
+<p>Try payment API requests and responses against that fictional reference API. Pick an endpoint, read the request, then send a valid request and an invalid one to see how validation and errors work. Every example follows the same payment: USD 25,000 from Northgate Trading Ltd, London, to Tanaka Trading Pte Ltd, Singapore, end to end reference INV-8841. Correspondent charges are USD 20 + USD 22 = USD 42, so the beneficiary is expected to receive USD 24,958.00, matching the accounting simulator for the same payment.</p>
+<div class="api-assumptions"><h3>Assumptions of this fictional reference API</h3><ul><li><b>Base URL (fictional).</b> <code>https://api.example-bank.test/v1</code> (.test is a reserved domain that never resolves, so no request here can reach a real system).</li><li><b>Versioning.</b> The version is in the path (<code>/v1</code>). A new version is a new path (<code>/v2</code>); the provider publishes a changelog and a sunset date, and old versions keep working until that date. This is a teaching assumption, not a rule every provider follows.</li><li><b>Authentication and authorisation.</b> OAuth 2.0 bearer tokens, shown as <code>Authorization: Bearer &lt;access_token&gt;</code>, with a scope per operation (<code>payments:read</code>, <code>payments:write</code>). Mutual TLS and certificate-based client authentication, as used by real open-banking APIs, are assumed but not shown. No request in this playground is unauthenticated.</li><li><b>Asynchronous processing.</b> Creating, cancelling or enquiring about a payment returns 202 Accepted: the request was accepted for processing. Settlement, beneficiary credit and the final outcome always arrive later, by status enquiry or webhook. An HTTP success never means the payment settled or the beneficiary was credited.</li><li><b>Idempotency.</b> Every POST that changes something requires an <code>Idempotency-Key</code> header. Same key with the same body replays the original response; same key with a different body is 409 Conflict. Retries use the same key.</li><li><b>Correlation.</b> Every request carries <code>X-Request-ID</code> and every response echoes it, so a request can be traced in the bank’s logs.</li><li><b>Timeouts and retries.</b> If a request times out, do not simply resend a POST. Retry with the same <code>Idempotency-Key</code> so the bank returns the original response instead of executing twice. How long to wait before retrying is set by the provider.</li><li><b>Rate limits.</b> The provider limits how many requests a caller may make. Exceeding the limit returns 429 Too Many Requests with a <code>Retry-After</code> value; the caller must wait that long before retrying.</li><li><b>Errors.</b> Every error response carries an HTTP status, a business error code and a human-readable message. See the error catalogue below: schema errors, business errors and authentication errors are different things and carry different statuses.</li></ul></div>
+<div class="pf-two-pane"><div class="pf-pane-list"><div class="explorer-tabs">
+<button class="explorer-tab active" onclick="playgroundTab(0)">POST /v1/payments</button>
+<button class="explorer-tab" onclick="playgroundTab(1)">POST /v1/payments/validate</button>
+<button class="explorer-tab" onclick="playgroundTab(2)">GET /v1/payments/{payment_id}</button>
+<button class="explorer-tab" onclick="playgroundTab(3)">GET /v1/payments/{payment_id}/status</button>
+<button class="explorer-tab" onclick="playgroundTab(4)">POST /v1/payments/{payment_id}/cancel</button>
+<button class="explorer-tab" onclick="playgroundTab(5)">POST /v1/payments/{payment_id}/enquiries</button>
+<button class="explorer-tab" onclick="playgroundTab(6)">GET /v1/fx/quotes?from=GBP&amp;to=USD&amp;amount=19685.04</button>
+<button class="explorer-tab" onclick="playgroundTab(7)">GET /v1/payments?status=ACSC&amp;limit=20&amp;offset=0</button>
+<button class="explorer-tab" onclick="playgroundTab(8)">Webhook (inbound, from the bank to you)</button>
+</div></div><div class="pf-pane-detail">
+<div class="explorer-msg" id="playground-0" style="display:block">
+<h3>POST POST /v1/payments</h3>
+<p>Creates a new customer credit transfer instruction. The caller supplies debtor, creditor, amount, currency and value date, and the API returns a payment identification that can be used to track the payment. The response only confirms the instruction was accepted for processing: it does not mean the payment has settled or the beneficiary has been credited.</p>
+<p><b>Request headers</b></p><pre class="api-pre">
+Authorization: Bearer &lt;access_token&gt; (OAuth 2.0, scope payments:write)
+X-Request-ID: REQ-20261105-0001
+Idempotency-Key: IDEM-8841
+Content-Type: application/json
+</pre>
+<p><b>Request</b></p><pre class="api-pre">
+{
+  "debtor_name": "Northgate Trading Ltd",
+  "debtor_account": "GB29NWBK60161331926819",
+  "debtor_agent_bic": "NWBKGB2L",
+  "creditor_name": "Tanaka Trading Pte Ltd",
+  "creditor_address": {
+    "street": "1 Harbourfront Avenue",
+    "town": "Singapore",
+    "postcode": "098633",
+    "country": "SG"
+  },
+  "creditor_account": {
+    "bank_name": "DBS Bank Ltd, Singapore",
+    "bank_code": "7171",
+    "branch_code": "001",
+    "account_number": "1234567",
+    "note": "Singapore has no IBAN. Singapore accounts are identified by bank code + branch code + account number, not by IBAN."
+  },
+  "creditor_agent_bic": "DBSSSGSG",
+  "currency": "USD",
+  "amount": 25000.0,
+  "value_date": "2026-11-05",
+  "remittance_information": "INV-8841",
+  "end_to_end_id": "INV-8841",
+  "charge_bearer": "SHA",
+  "fx_quote_id": "FXQ-20261105-5510"
+}
+</pre><p><b>Validation rules</b></p><ul>
+<li>An Idempotency-Key header is required on this POST. The same key with the same body replays the original 202 response; the same key with a different body is rejected with 409 Conflict, so a retry can never double-pay.</li>
+<li>Authorization: Bearer access token (OAuth 2.0) with scope payments:write. A missing or expired token is 401 Unauthorized; a token without the scope is 403 Forbidden.</li>
+<li>X-Request-ID is required on every request and is echoed on every response, so a request can be traced in the bank's logs.</li>
+<li>Debtor name, debtor account and debtor agent BIC are required, and the creditor address is required for screening.</li>
+<li>Creditor account: Singapore has no IBAN, so the account is given as bank code 7171 + branch code 001 + account number. A Singapore account written as an IBAN (for example SG71...) is invalid and fails validation.</li>
+<li>Amount must be greater than zero and use no more than two decimal places for USD.</li>
+<li>Currency must be a valid three letter ISO 4217 code, such as USD, EUR or GBP.</li>
+<li>Value date must be a business day for the payment currency and not in the past.</li>
+<li>end_to_end_id INV-8841 is the debtor's reference for this payment and stays the same through the whole chain; the UETR is assigned by the bank and returned in the response.</li>
+<li>fx_quote_id is optional. When supplied, the rate from that quote is the rate applied.</li>
+</ul>
+<p><b>Success response:</b> HTTP 202 Accepted. 202 Accepted means the bank accepted the instruction for processing. It does NOT mean the payment settled or the beneficiary was credited. The payment then moves ACCP, ACSP, ACSC, ACCC, and only ACCC confirms the creditor's account was credited.</p>
+<p><b>Error response:</b> HTTP 422 Unprocessable Content. 422 means the request was well formed but failed a business validation rule (here the creditor account). No payment was created and nothing was debited.</p>
+<button class="api-btn" id="playground-send-ok-0" onclick="playgroundSend(0, true)">Send valid request</button> <button class="api-btn" id="playground-send-err-0" onclick="playgroundSend(0, false)">Send invalid request</button>
+<p class="api-status" id="playground-status-0" aria-live="polite" data-ok-status="202 Accepted" data-ok-note="202 Accepted means the bank accepted the instruction for processing. It does NOT mean the payment settled or the beneficiary was credited. The payment then moves ACCP, ACSP, ACSC, ACCC, and only ACCC confirms the creditor&#x27;s account was credited." data-err-status="422 Unprocessable Content" data-err-note="422 means the request was well formed but failed a business validation rule (here the creditor account). No payment was created and nothing was debited." data-kind="api"></p>
+<pre class="api-pre api-resp-ok" id="playground-ok-0" style="display:none">{
+  "payment_id": "PAY-20261105-8841",
+  "status": "ACCP",
+  "status_description": "Accepted for processing: technical validation and customer profile checks passed. Settlement has not started.",
+  "uetr": "4f8a2c1e-7b3d-4e9a-8c2f-1a5d6e7f8b90",
+  "end_to_end_id": "INV-8841",
+  "value_date": "2026-11-05",
+  "created_at": "2026-11-05T09:12:00Z",
+  "request_id": "REQ-20261105-0001",
+  "estimated_charges": {
+    "amount": 42.0,
+    "currency": "USD",
+    "breakdown": [
+      {
+        "description": "First correspondent charge",
+        "amount": 20.0
+      },
+      {
+        "description": "Second correspondent charge",
+        "amount": 22.0
+      }
+    ],
+    "note": "Estimate only. Correspondent banks deduct their charges in transit (charge bearer SHA), so the beneficiary is expected to receive USD 24,958.00. This matches the accounting simulator for the same payment (USD 20 + USD 22 = USD 42)."
+  },
+  "next_step": "Poll GET /v1/payments/PAY-20261105-8841/status or wait for the webhook. This response does not mean the payment has settled or the beneficiary has been credited."
+}</pre>
+<pre class="api-pre api-resp-err" id="playground-err-0" style="display:none">{
+  "error_code": "AC01",
+  "error_message": "Creditor account number is invalid",
+  "payment_id": null,
+  "status": "RJCT",
+  "request_id": "REQ-20261105-0001"
+}</pre>
+</div>
+<div class="explorer-msg" id="playground-1" style="display:none">
+<h3>POST POST /v1/payments/validate</h3>
+<p>Validates a payment instruction without creating it: same checks as initiation (account format, currency, amount, value date, screening pre-check), but no payment is created, nothing is debited and no funds move. Use it to catch errors before sending the real initiation.</p>
+<p><b>Request headers</b></p><pre class="api-pre">
+Authorization: Bearer &lt;access_token&gt; (OAuth 2.0, scope payments:write)
+X-Request-ID: REQ-20261105-0002
+Content-Type: application/json
+</pre>
+<p><b>Request</b></p><pre class="api-pre">
+{
+  "debtor_name": "Northgate Trading Ltd",
+  "debtor_account": "GB29NWBK60161331926819",
+  "debtor_agent_bic": "NWBKGB2L",
+  "creditor_name": "Tanaka Trading Pte Ltd",
+  "creditor_address": {
+    "street": "1 Harbourfront Avenue",
+    "town": "Singapore",
+    "postcode": "098633",
+    "country": "SG"
+  },
+  "creditor_account": {
+    "bank_name": "DBS Bank Ltd, Singapore",
+    "bank_code": "7171",
+    "branch_code": "001",
+    "account_number": "1234567",
+    "note": "Singapore has no IBAN. Singapore accounts are identified by bank code + branch code + account number, not by IBAN."
+  },
+  "creditor_agent_bic": "DBSSSGSG",
+  "currency": "USD",
+  "amount": 25000.0,
+  "value_date": "2026-11-05",
+  "remittance_information": "INV-8841",
+  "end_to_end_id": "INV-8841",
+  "charge_bearer": "SHA",
+  "fx_quote_id": "FXQ-20261105-5510"
+}
+</pre><p><b>Validation rules</b></p><ul>
+<li>Validation is read-only: it creates no payment and needs no Idempotency-Key, because there is nothing to duplicate.</li>
+<li>The same validation rules apply as for POST /v1/payments, so a payment that passes validation here should pass initiation, unless something changed in between.</li>
+<li>A pass here does not guarantee execution: full sanctions screening, funds checks and cut-off rules still run at initiation.</li>
+</ul>
+<p><b>Success response:</b> HTTP 200 OK. 200 OK with valid true means the instruction passes the checks. It is not a payment: there is no payment_id and nothing to track yet.</p>
+<p><b>Error response:</b> HTTP 422 Unprocessable Content. 422 lists every failed check with the field, the business code and a message, so the caller can fix the instruction before initiating.</p>
+<button class="api-btn" id="playground-send-ok-1" onclick="playgroundSend(1, true)">Send valid request</button> <button class="api-btn" id="playground-send-err-1" onclick="playgroundSend(1, false)">Send invalid request</button>
+<p class="api-status" id="playground-status-1" aria-live="polite" data-ok-status="200 OK" data-ok-note="200 OK with valid true means the instruction passes the checks. It is not a payment: there is no payment_id and nothing to track yet." data-err-status="422 Unprocessable Content" data-err-note="422 lists every failed check with the field, the business code and a message, so the caller can fix the instruction before initiating." data-kind="api"></p>
+<pre class="api-pre api-resp-ok" id="playground-ok-1" style="display:none">{
+  "valid": true,
+  "payment_id": null,
+  "checks": [
+    {
+      "check": "creditor_account_format",
+      "result": "pass"
+    },
+    {
+      "check": "currency_and_amount",
+      "result": "pass"
+    },
+    {
+      "check": "value_date",
+      "result": "pass"
+    },
+    {
+      "check": "sanctions_screening_precheck",
+      "result": "pass",
+      "note": "Pre-check only. Full screening runs when the payment is executed."
+    }
+  ],
+  "request_id": "REQ-20261105-0002",
+  "note": "Validation passed. No payment was created, nothing was debited, no funds moved."
+}</pre>
+<pre class="api-pre api-resp-err" id="playground-err-1" style="display:none">{
+  "valid": false,
+  "payment_id": null,
+  "errors": [
+    {
+      "field": "creditor_account.account_number",
+      "code": "AC01",
+      "message": "Creditor account number is invalid"
+    }
+  ],
+  "request_id": "REQ-20261105-0002"
+}</pre>
+</div>
+<div class="explorer-msg" id="playground-2" style="display:none">
+<h3>GET GET /v1/payments/{payment_id}</h3>
+<p>Retrieves the full record of one payment: debtor, creditor, amount, charges, value date and current status. This is the payment record; for the status history alone, use GET /v1/payments/{payment_id}/status.</p>
+<p><b>Request headers</b></p><pre class="api-pre">
+Authorization: Bearer &lt;access_token&gt; (OAuth 2.0, scope payments:read)
+X-Request-ID: REQ-20261105-0003
+</pre>
+<p><b>Request</b></p><pre class="api-pre">
+(No request body. GET requests do not carry a body. The payment identification is in the URL path only: GET /v1/payments/PAY-20261105-8841)
+</pre><p><b>Validation rules</b></p><ul>
+<li>Payment identification must be supplied in the path and must match an existing payment. A GET request has no body.</li>
+<li>Caller must be authorised to view the payment, normally the debtor or an operations user. A caller without access gets 403 Forbidden, not 404.</li>
+<li>The response always echoes X-Request-ID so the lookup can be traced.</li>
+</ul>
+<p><b>Success response:</b> HTTP 200 OK. 200 OK returns the stored payment record. ACSC means settlement completed on the debtor's account; it does not confirm the beneficiary was credited (that is ACCC). Charges here are the actual USD 42 deducted in transit, matching the accounting simulator.</p>
+<p><b>Error response:</b> HTTP 404 Not Found. 404 Not Found means no payment with that identification exists. The invalid request in this example asks for PAY-20261105-9999, which was never created.</p>
+<button class="api-btn" id="playground-send-ok-2" onclick="playgroundSend(2, true)">Send valid request</button> <button class="api-btn" id="playground-send-err-2" onclick="playgroundSend(2, false)">Send invalid request</button>
+<p class="api-status" id="playground-status-2" aria-live="polite" data-ok-status="200 OK" data-ok-note="200 OK returns the stored payment record. ACSC means settlement completed on the debtor&#x27;s account; it does not confirm the beneficiary was credited (that is ACCC). Charges here are the actual USD 42 deducted in transit, matching the accounting simulator." data-err-status="404 Not Found" data-err-note="404 Not Found means no payment with that identification exists. The invalid request in this example asks for PAY-20261105-9999, which was never created." data-kind="api"></p>
+<pre class="api-pre api-resp-ok" id="playground-ok-2" style="display:none">{
+  "payment_id": "PAY-20261105-8841",
+  "status": "ACSC",
+  "status_description": "Settlement completed on the debtor's account.",
+  "uetr": "4f8a2c1e-7b3d-4e9a-8c2f-1a5d6e7f8b90",
+  "end_to_end_id": "INV-8841",
+  "debtor_name": "Northgate Trading Ltd",
+  "debtor_account": "GB29NWBK60161331926819",
+  "creditor_name": "Tanaka Trading Pte Ltd",
+  "currency": "USD",
+  "amount": 25000.0,
+  "value_date": "2026-11-05",
+  "created_at": "2026-11-05T09:12:00Z",
+  "charges": {
+    "amount": 42.0,
+    "currency": "USD",
+    "breakdown": [
+      {
+        "description": "First correspondent charge",
+        "amount": 20.0
+      },
+      {
+        "description": "Second correspondent charge",
+        "amount": 22.0
+      }
+    ],
+    "beneficiary_receives": 24958.0
+  },
+  "request_id": "REQ-20261105-0003"
+}</pre>
+<pre class="api-pre api-resp-err" id="playground-err-2" style="display:none">{
+  "error_code": "NOT_FOUND",
+  "error_message": "No payment exists with identification PAY-20261105-9999",
+  "payment_id": "PAY-20261105-9999",
+  "request_id": "REQ-20261105-0003"
+}</pre>
+</div>
+<div class="explorer-msg" id="playground-3" style="display:none">
+<h3>GET GET /v1/payments/{payment_id}/status</h3>
+<p>Returns the current status and tracking history for one payment. It shows each stage the payment has passed, in time order with the most recent stage last, and the latest status code. Use this to find out where a payment is after initiation.</p>
+<p><b>Request headers</b></p><pre class="api-pre">
+Authorization: Bearer &lt;access_token&gt; (OAuth 2.0, scope payments:read)
+X-Request-ID: REQ-20261105-0004
+</pre>
+<p><b>Request</b></p><pre class="api-pre">
+(No request body. GET requests do not carry a body. The payment identification is in the URL path only: GET /v1/payments/PAY-20261105-8841/status)
+</pre><p><b>Validation rules</b></p><ul>
+<li>Payment identification must be supplied in the path and must match an existing payment. A GET request has no body.</li>
+<li>Status codes follow ISO 20022 values: ACTC, ACCP, ACSP, ACSC, ACCC, RJCT, PDNG. ACCP is the earlier acceptance and ACSP the later one; do not swap them.</li>
+<li>Tracking history is returned in time order, with the most recent stage last.</li>
+<li>Poll no faster than the interval the provider documents. Polling is how the outcome of an asynchronous initiation is learned; the initiation response itself never reports settlement.</li>
+</ul>
+<p><b>Success response:</b> HTTP 200 OK. 200 OK with the history array in time order, most recent stage last. ACSC confirms settlement on the debtor's account only; ACCC is the code that confirms the creditor's account was credited.</p>
+<p><b>Error response:</b> HTTP 404 Not Found. 404 Not Found: no payment with that identification exists. The invalid request in this example asks for PAY-20261105-9999.</p>
+<button class="api-btn" id="playground-send-ok-3" onclick="playgroundSend(3, true)">Send valid request</button> <button class="api-btn" id="playground-send-err-3" onclick="playgroundSend(3, false)">Send invalid request</button>
+<p class="api-status" id="playground-status-3" aria-live="polite" data-ok-status="200 OK" data-ok-note="200 OK with the history array in time order, most recent stage last. ACSC confirms settlement on the debtor&#x27;s account only; ACCC is the code that confirms the creditor&#x27;s account was credited." data-err-status="404 Not Found" data-err-note="404 Not Found: no payment with that identification exists. The invalid request in this example asks for PAY-20261105-9999." data-kind="api"></p>
+<pre class="api-pre api-resp-ok" id="playground-ok-3" style="display:none">{
+  "payment_id": "PAY-20261105-8841",
+  "status": "ACSC",
+  "status_description": "Settlement completed on the debtor's account. This does NOT confirm the beneficiary has been credited; that is ACCC.",
+  "uetr": "4f8a2c1e-7b3d-4e9a-8c2f-1a5d6e7f8b90",
+  "end_to_end_id": "INV-8841",
+  "amount": 25000.0,
+  "currency": "USD",
+  "value_date": "2026-11-05",
+  "history": [
+    {
+      "status": "ACCP",
+      "time": "2026-11-05T09:12:00Z",
+      "description": "Accepted for processing"
+    },
+    {
+      "status": "ACSP",
+      "time": "2026-11-05T09:14:00Z",
+      "description": "Accepted, settlement in process"
+    },
+    {
+      "status": "ACSC",
+      "time": "2026-11-05T09:20:00Z",
+      "description": "Settlement completed on the debtor's account"
+    }
+  ],
+  "request_id": "REQ-20261105-0004"
+}</pre>
+<pre class="api-pre api-resp-err" id="playground-err-3" style="display:none">{
+  "error_code": "NOT_FOUND",
+  "error_message": "No payment exists with identification PAY-20261105-9999",
+  "payment_id": "PAY-20261105-9999",
+  "request_id": "REQ-20261105-0004"
+}</pre>
+</div>
+<div class="explorer-msg" id="playground-4" style="display:none">
+<h3>POST POST /v1/payments/{payment_id}/cancel</h3>
+<p>Requests cancellation of a payment that has not yet settled. Cancellation is asynchronous: the bank sends a camt.056 cancellation request and the outcome arrives later by status enquiry or webhook, so the immediate response can only confirm the request was accepted, never that the payment is cancelled. Cancellation is not guaranteed once the payment has been executed or settled, and after the beneficiary has been credited it needs the beneficiary's consent.</p>
+<p><b>Request headers</b></p><pre class="api-pre">
+Authorization: Bearer &lt;access_token&gt; (OAuth 2.0, scope payments:write)
+X-Request-ID: REQ-20261105-0005
+Idempotency-Key: IDEM-8841-CXL
+Content-Type: application/json
+</pre>
+<p><b>Request</b></p><pre class="api-pre">
+{
+  "reason_code": "CUST",
+  "reason_text": "Customer asked to stop the payment, supplier changed bank details"
+}
+</pre><p><b>Validation rules</b></p><ul>
+<li>An Idempotency-Key header is required: a retried cancellation with the same key replays the original response instead of sending a second camt.056.</li>
+<li>Cancellation reason code: CUST is the customer-requested route (the customer asks their bank to stop the payment). A bank-initiated recall uses DUPL, TECH or FRAD under the EPC SCT recall procedure; those codes are a different procedure with scheme deadlines, not interchangeable labels.</li>
+<li>Payment must be in a cancellable state, such as accepted or pending, not already settled.</li>
+<li>Caller must be the debtor or an authorised operations user for the payment.</li>
+<li>A cancellation request after settlement must be rejected with guidance to request a return or a recall, not silently accepted.</li>
+</ul>
+<p><b>Success response:</b> HTTP 202 Accepted. 202 Accepted with cancellation_status REQUESTED means the request was accepted, not that the payment is cancelled. The outcome follows later; a positive answer returns the funds via pacs.004 with reason FOCR, a negative answer arrives as camt.029.</p>
+<p><b>Error response:</b> HTTP 409 Conflict. 409 Conflict means the payment is in a state that cannot be cancelled. A settled payment is not cancelled by this endpoint; it needs a recall, and after credit that needs the beneficiary's consent.</p>
+<button class="api-btn" id="playground-send-ok-4" onclick="playgroundSend(4, true)">Send valid request</button> <button class="api-btn" id="playground-send-err-4" onclick="playgroundSend(4, false)">Send invalid request</button>
+<p class="api-status" id="playground-status-4" aria-live="polite" data-ok-status="202 Accepted" data-ok-note="202 Accepted with cancellation_status REQUESTED means the request was accepted, not that the payment is cancelled. The outcome follows later; a positive answer returns the funds via pacs.004 with reason FOCR, a negative answer arrives as camt.029." data-err-status="409 Conflict" data-err-note="409 Conflict means the payment is in a state that cannot be cancelled. A settled payment is not cancelled by this endpoint; it needs a recall, and after credit that needs the beneficiary&#x27;s consent." data-kind="api"></p>
+<pre class="api-pre api-resp-ok" id="playground-ok-4" style="display:none">{
+  "payment_id": "PAY-20261105-8841",
+  "cancellation_id": "CXL-20261105-1201",
+  "status": "PDNG",
+  "cancellation_status": "REQUESTED",
+  "message": "Cancellation requested. The bank has sent a camt.056 cancellation request; the outcome arrives later by status enquiry or webhook. The payment is not yet cancelled.",
+  "request_id": "REQ-20261105-0005"
+}</pre>
+<pre class="api-pre api-resp-err" id="playground-err-4" style="display:none">{
+  "error_code": "ALREADY_SETTLED",
+  "error_message": "Payment has already settled and cannot be cancelled. A settled payment can only be recovered by a recall (camt.056) with the beneficiary's consent, answered by a pacs.004 return with reason FOCR or by a camt.029 refusal.",
+  "payment_id": "PAY-20261105-8841",
+  "request_id": "REQ-20261105-0005"
+}</pre>
+</div>
+<div class="explorer-msg" id="playground-5" style="display:none">
+<h3>POST POST /v1/payments/{payment_id}/enquiries</h3>
+<p>Submits a payment status enquiry for a payment that was already sent but has had no confirmation. This is the API equivalent of a pacs.028 status request: it asks the bank to check what happened to the payment. The enquiry itself does not change the payment, and the answer arrives later by status update or webhook.</p>
+<p><b>Request headers</b></p><pre class="api-pre">
+Authorization: Bearer &lt;access_token&gt; (OAuth 2.0, scope payments:read)
+X-Request-ID: REQ-20261105-0006
+Idempotency-Key: IDEM-8841-ENQ
+Content-Type: application/json
+</pre>
+<p><b>Request</b></p><pre class="api-pre">
+{
+  "reason": "NO_CONFIRMATION",
+  "detail": "No status update received within the expected window; confirm whether the payment settled."
+}
+</pre><p><b>Validation rules</b></p><ul>
+<li>Send an enquiry only after the payment was sent and no confirmation arrived within the expected window. It is the investigation step, not a way to hurry a payment that is still in flight.</li>
+<li>An Idempotency-Key header is required so a retried enquiry does not open a second investigation for the same payment.</li>
+<li>The answer to an enquiry is a status update (the equivalent of a pacs.002) or a resolution message (camt.029 for a recall investigation), delivered by status enquiry or webhook.</li>
+</ul>
+<p><b>Success response:</b> HTTP 202 Accepted. 202 Accepted means the enquiry was accepted for investigation. The answer comes later; an enquiry never settles, cancels or returns a payment by itself.</p>
+<p><b>Error response:</b> HTTP 404 Not Found. 404 Not Found: no payment with that identification exists, so there is nothing to enquire about. The invalid request in this example asks for PAY-20261105-9999.</p>
+<button class="api-btn" id="playground-send-ok-5" onclick="playgroundSend(5, true)">Send valid request</button> <button class="api-btn" id="playground-send-err-5" onclick="playgroundSend(5, false)">Send invalid request</button>
+<p class="api-status" id="playground-status-5" aria-live="polite" data-ok-status="202 Accepted" data-ok-note="202 Accepted means the enquiry was accepted for investigation. The answer comes later; an enquiry never settles, cancels or returns a payment by itself." data-err-status="404 Not Found" data-err-note="404 Not Found: no payment with that identification exists, so there is nothing to enquire about. The invalid request in this example asks for PAY-20261105-9999." data-kind="api"></p>
+<pre class="api-pre api-resp-ok" id="playground-ok-5" style="display:none">{
+  "enquiry_id": "ENQ-20261105-3301",
+  "payment_id": "PAY-20261105-8841",
+  "status": "PDNG",
+  "message": "Enquiry accepted. The bank will investigate and reply by status update or webhook; the enquiry itself does not change the payment.",
+  "request_id": "REQ-20261105-0006"
+}</pre>
+<pre class="api-pre api-resp-err" id="playground-err-5" style="display:none">{
+  "error_code": "NOT_FOUND",
+  "error_message": "No payment exists with identification PAY-20261105-9999",
+  "payment_id": "PAY-20261105-9999",
+  "request_id": "REQ-20261105-0006"
+}</pre>
+</div>
+<div class="explorer-msg" id="playground-6" style="display:none">
+<h3>GET GET /v1/fx/quotes?from=GBP&amp;to=USD&amp;amount=19685.04</h3>
+<p>Returns a foreign exchange quote for converting one currency to another. It gives the rate, the converted amount, the fee and how long the quote stays valid. The quote in this example prices the GBP funding leg of the USD 25,000 payment: GBP 19,685.04 at 1.27 converts to USD 25,000.00, and the initiate example references this quote by its quote_id.</p>
+<p><b>Request headers</b></p><pre class="api-pre">
+Authorization: Bearer &lt;access_token&gt; (OAuth 2.0, scope payments:read)
+X-Request-ID: REQ-20261105-0007
+</pre>
+<p><b>Request</b></p><pre class="api-pre">
+(No request body. GET requests do not carry a body. Parameters are in the URL query string: from=GBP, to=USD, amount=19685.04)
+</pre><p><b>Validation rules</b></p><ul>
+<li>From and to currencies must be different and both must be supported for the account.</li>
+<li>Amount must be greater than zero and within the daily foreign exchange limit.</li>
+<li>Quote is valid only until the valid until time, after which a fresh quote is required.</li>
+<li>Rate shown is the rate that will be applied if the payment uses the quote identification.</li>
+</ul>
+<p><b>Success response:</b> HTTP 200 OK. 200 OK returns the quote. The converted amount USD 25,000.00 is the amount the initiate example's payment is funded from, and the initiate request references this quote as FXQ-20261105-5510.</p>
+<p><b>Error response:</b> HTTP 422 Unprocessable Content. 422: the error matches the request that produced it. The invalid request in this example asks for GBP 50,000, above the daily FX limit of GBP 25,000.00, so no quote is issued.</p>
+<button class="api-btn" id="playground-send-ok-6" onclick="playgroundSend(6, true)">Send valid request</button> <button class="api-btn" id="playground-send-err-6" onclick="playgroundSend(6, false)">Send invalid request</button>
+<p class="api-status" id="playground-status-6" aria-live="polite" data-ok-status="200 OK" data-ok-note="200 OK returns the quote. The converted amount USD 25,000.00 is the amount the initiate example&#x27;s payment is funded from, and the initiate request references this quote as FXQ-20261105-5510." data-err-status="422 Unprocessable Content" data-err-note="422: the error matches the request that produced it. The invalid request in this example asks for GBP 50,000, above the daily FX limit of GBP 25,000.00, so no quote is issued." data-kind="api"></p>
+<pre class="api-pre api-resp-ok" id="playground-ok-6" style="display:none">{
+  "from_currency": "GBP",
+  "to_currency": "USD",
+  "rate": 1.27,
+  "converted_amount": 25000.0,
+  "fee": 15.0,
+  "fee_currency": "GBP",
+  "quote_id": "FXQ-20261105-5510",
+  "valid_until": "2026-11-05T15:30:00Z",
+  "request_id": "REQ-20261105-0007"
+}</pre>
+<pre class="api-pre api-resp-err" id="playground-err-6" style="display:none">{
+  "error_code": "AMOUNT_LIMIT_EXCEEDED",
+  "error_message": "Requested amount GBP 50,000.00 exceeds the daily FX limit of GBP 25,000.00 for this account",
+  "quote_id": null,
+  "request_id": "REQ-20261105-0007"
+}</pre>
+</div>
+<div class="explorer-msg" id="playground-7" style="display:none">
+<h3>GET GET /v1/payments?status=ACSC&amp;limit=20&amp;offset=0</h3>
+<p>Lists payments, newest first, with pagination. Use it to reconcile what the bank holds against your own ledger, instead of polling one payment at a time. Responses are pages: always follow the page fields, never assume one call returns everything.</p>
+<p><b>Request headers</b></p><pre class="api-pre">
+Authorization: Bearer &lt;access_token&gt; (OAuth 2.0, scope payments:read)
+X-Request-ID: REQ-20261105-0008
+</pre>
+<p><b>Request</b></p><pre class="api-pre">
+(No request body. GET requests do not carry a body. Parameters are in the URL query string: status=ACSC, limit=20, offset=0)
+</pre><p><b>Validation rules</b></p><ul>
+<li>limit and offset control paging. limit has a provider maximum; asking for more returns the maximum, not an error, in this reference API.</li>
+<li>Filter parameters such as status narrow the list. Unknown filters are ignored in this reference API, not rejected; real providers differ, so check the provider's documentation.</li>
+<li>A 429 response must be honoured: back off for the Retry-After period. Hammering the API after a 429 is how a temporary limit becomes a longer block.</li>
+<li>If a request times out, do not simply resend a POST. Retry with the same Idempotency-Key and X-Request-ID so the bank can return the original response instead of executing twice.</li>
+</ul>
+<p><b>Success response:</b> HTTP 200 OK. 200 OK returns one page and the page fields. total says how many payments match, has_more says whether another page exists; keep paging with offset until has_more is false.</p>
+<p><b>Error response:</b> HTTP 429 Too Many Requests. 429 Too Many Requests means the caller exceeded the provider's rate limit. The response carries a Retry-After of 60 seconds: wait that long, then retry. A POST must only be retried with the same Idempotency-Key, so the retry replays the original response instead of creating a second payment.</p>
+<button class="api-btn" id="playground-send-ok-7" onclick="playgroundSend(7, true)">Send valid request</button> <button class="api-btn" id="playground-send-err-7" onclick="playgroundSend(7, false)">Send invalid request</button>
+<p class="api-status" id="playground-status-7" aria-live="polite" data-ok-status="200 OK" data-ok-note="200 OK returns one page and the page fields. total says how many payments match, has_more says whether another page exists; keep paging with offset until has_more is false." data-err-status="429 Too Many Requests" data-err-note="429 Too Many Requests means the caller exceeded the provider&#x27;s rate limit. The response carries a Retry-After of 60 seconds: wait that long, then retry. A POST must only be retried with the same Idempotency-Key, so the retry replays the original response instead of creating a second payment." data-kind="api"></p>
+<pre class="api-pre api-resp-ok" id="playground-ok-7" style="display:none">{
+  "payments": [
+    {
+      "payment_id": "PAY-20261105-8841",
+      "status": "ACSC",
+      "end_to_end_id": "INV-8841",
+      "creditor_name": "Tanaka Trading Pte Ltd",
+      "currency": "USD",
+      "amount": 25000.0,
+      "value_date": "2026-11-05"
+    }
+  ],
+  "page": {
+    "limit": 20,
+    "offset": 0,
+    "total": 1,
+    "has_more": false
+  },
+  "request_id": "REQ-20261105-0008"
+}</pre>
+<pre class="api-pre api-resp-err" id="playground-err-7" style="display:none">{
+  "error_code": "RATE_LIMITED",
+  "error_message": "Too many requests. Retry after 60 seconds.",
+  "retry_after_seconds": 60,
+  "request_id": "REQ-20261105-0008"
+}</pre>
+</div>
+<div class="explorer-msg" id="playground-8" style="display:none">
+<h3>POST Webhook (inbound, from the bank to you)</h3>
+<p>A webhook is inbound to YOUR system: the bank POSTs a status event to the URL you registered, and your system returns 200 OK. It is not an endpoint you call on the bank's API, so there is no Send button here: the two buttons below show a sample delivery from the bank and a delivery with a bad signature. Your system must verify the signature before acting on the event.</p>
+<p><b>Request headers</b></p><pre class="api-pre">
+X-Bank-Signature: sha256=&lt;HMAC-SHA256 of the payload, using the shared secret&gt;
+Content-Type: application/json
+</pre>
+<p><b>Request</b></p><pre class="api-pre">
+{
+  "event_id": "EVT-20261105-7788",
+  "event": "payment.status.updated",
+  "payment_id": "PAY-20261105-8841",
+  "status": "ACSC",
+  "status_description": "Settlement completed on the debtor's account",
+  "event_time": "2026-11-05T10:15:00Z",
+  "uetr": "4f8a2c1e-7b3d-4e9a-8c2f-1a5d6e7f8b90",
+  "end_to_end_id": "INV-8841"
+}
+</pre><p><b>Validation rules</b></p><ul>
+<li>The event carries an event_id. Duplicate deliveries with the same event_id must be ignored by the receiver, because the bank may deliver the same event more than once.</li>
+<li>Verify the signature before acting: recompute HMAC-SHA256 over the payload with the shared secret and compare it with the X-Bank-Signature header. Never trust an unsigned event.</li>
+<li>Event must include payment identification, status code, UETR and event time in ISO format.</li>
+<li>Retry timing is set by each provider; there is no universal five-second rule. This reference API assumes the bank retries failed deliveries with backoff over several hours, but a real provider's schedule is in its own documentation, so check it before relying on retries.</li>
+<li>Return 200 promptly once the event is stored. Slow processing belongs in a queue behind the endpoint, not in the webhook handler.</li>
+</ul>
+<p><b>Success response:</b> HTTP 200 OK (returned by your system). Your system returns 200 OK after verifying the HMAC-SHA256 signature and storing the event. ACSC here means settlement completed on the debtor's account; it does not confirm beneficiary credit.</p>
+<p><b>Error response:</b> HTTP 401 Unauthorized (returned by your system). Your system returns 401 Unauthorized when the signature does not match, and must not act on the event. A rejected delivery may be retried by the bank.</p>
+<button class="api-btn" id="playground-send-ok-8" onclick="playgroundSend(8, true)">Show sample delivery</button> <button class="api-btn" id="playground-send-err-8" onclick="playgroundSend(8, false)">Show failed signature delivery</button>
+<p class="api-status" id="playground-status-8" aria-live="polite" data-ok-status="200 OK (returned by your system)" data-ok-note="Your system returns 200 OK after verifying the HMAC-SHA256 signature and storing the event. ACSC here means settlement completed on the debtor&#x27;s account; it does not confirm beneficiary credit." data-err-status="401 Unauthorized (returned by your system)" data-err-note="Your system returns 401 Unauthorized when the signature does not match, and must not act on the event. A rejected delivery may be retried by the bank." data-kind="inbound"></p>
+<pre class="api-pre api-resp-ok" id="playground-ok-8" style="display:none">{
+  "received": true,
+  "event_id": "EVT-20261105-7788",
+  "message": "Status update accepted"
+}</pre>
+<pre class="api-pre api-resp-err" id="playground-err-8" style="display:none">{
+  "error_code": "INVALID_SIGNATURE",
+  "error_message": "Webhook signature does not match, update rejected",
+  "received": false,
+  "event_id": "EVT-20261105-7788"
+}</pre>
+</div>
+</div></div>
+<div class="api-catalogue"><h3>Error catalogue: HTTP status is not the payment status</h3><p>An HTTP status says what happened to the <b>request</b>. The payment’s own status (ACCP, ACSP, ACSC, ACCC, RJCT, PDNG) says what happened to the <b>payment</b>, and it is always reported separately, in the response body and in the status history. A 202 Accepted response never means the payment settled or the beneficiary was credited.</p><table class="explorer-table"><tr><th>HTTP status</th><th>Meaning</th><th>Business code (example)</th><th>When it appears here</th></tr><tr><td><code>200 OK</code></td><td>Request succeeded; the response carries the result.</td><td>&mdash;</td><td>Validation, retrieve payment, retrieve status, FX quote, list. Also what your system returns for a good webhook delivery.</td></tr><tr><td><code>201 Created</code></td><td>A new resource was created synchronously and its location is returned.</td><td>&mdash;</td><td>Not used by this reference API: payment creation is asynchronous, so it returns 202, not 201.</td></tr><tr><td><code>202 Accepted</code></td><td>The request was accepted for processing. The outcome arrives later.</td><td>&mdash;</td><td>Initiate payment, request cancellation, submit an enquiry.</td></tr><tr><td><code>400 Bad Request</code></td><td>The request is malformed: bad JSON or a wrong field type.</td><td><code>INVALID_REQUEST</code></td><td>Schema errors. Different from a business rule failure, which is 422.</td></tr><tr><td><code>401 Unauthorized</code></td><td>Missing, expired or invalid credentials.</td><td><code>INVALID_TOKEN</code>, <code>INVALID_SIGNATURE</code> (webhook)</td><td>Bad access token; a webhook whose signature does not match.</td></tr><tr><td><code>403 Forbidden</code></td><td>Authenticated, but not allowed to do this.</td><td><code>INSUFFICIENT_SCOPE</code></td><td>A token without the required scope, or a caller asking for someone else’s payment.</td></tr><tr><td><code>404 Not Found</code></td><td>No resource with that identification exists.</td><td><code>NOT_FOUND</code></td><td>Retrieve, status or cancel for an unknown payment_id.</td></tr><tr><td><code>409 Conflict</code></td><td>The request conflicts with the current state.</td><td><code>ALREADY_SETTLED</code>, <code>IDEMPOTENCY_KEY_REUSED</code></td><td>Cancelling a settled payment; reusing an idempotency key with a different body.</td></tr><tr><td><code>422 Unprocessable Content</code></td><td>Well formed, but a business rule failed.</td><td><code>AC01</code> (invalid account), <code>AMOUNT_LIMIT_EXCEEDED</code></td><td>Invalid creditor account, an FX amount over the daily limit.</td></tr><tr><td><code>429 Too Many Requests</code></td><td>The caller exceeded the rate limit.</td><td><code>RATE_LIMITED</code></td><td>Too many calls. Honour the <code>Retry-After</code> value before retrying.</td></tr></table><p><b>Payment status codes (ISO 20022) are separate from HTTP statuses.</b> ACTC: technical validation passed. ACCP: accepted for processing (earlier acceptance). ACSP: accepted, settlement in process (later acceptance). ACSC: settlement completed on the debtor’s account. ACCC: settlement completed on the creditor’s account, the only code that confirms the beneficiary was credited. RJCT: rejected. PDNG: pending. “ACCEPTED” and “CANCELLED” are not ISO 20022 status codes and are never used here.</p></div>
+</section>
+</main>
+<footer><p>Payments Training Hub. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="../index.html">Home</a> &middot; <a href="../courses.html">Courses</a> &middot; <a href="../practice.html">Practice</a> &middot; <a href="../simulators.html">Simulators</a> &middot; <a href="../labs.html">Labs</a> &middot; <a href="../explorer.html">Explorer</a> &middot; <a href="../tests.html">Tests</a> &middot; <a href="../diagnostic.html">Diagnostic</a> &middot; <a href="../faq.html">Interview Ready Questions</a> &middot; <a href="../interview-prep.html">Interview Prep</a></p><p><a href="../about.html">About</a> &middot; <a href="../privacy.html">Privacy</a> &middot; <a href="../terms.html">Terms</a> &middot; <a href="../contact.html">Contact</a> &middot; <a href="../editorial-standards.html">Editorial Standards</a> &middot; <a href="../sources.html">Sources</a></p></footer>
+<script defer src="../assets/site.js"></script>
+<script defer src="../assets/bundles.js"></script>
+<script defer src="../assets/auth.js"></script>
+<script defer src="../assets/simulators.js"></script>
+<script defer src="../assets/nav.js"></script>
+<script defer src="../assets/pf-enhance.js"></script>
+</body>
+</html>

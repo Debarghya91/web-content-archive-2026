@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>T2 and TIPS Simulator | Payments Training Hub</title>
+<meta name="description" content="Settle a euro payment in T2 RTGS or in TIPS and watch the states change.">
+<link rel="canonical" href="https://www.paymentstraininghub.in/simulators/t2-tips.html">
+<meta property="og:url" content="https://www.paymentstraininghub.in/simulators/t2-tips.html">
+<meta property="og:title" content="T2 and TIPS Simulator | Payments Training Hub">
+<meta property="og:description" content="Settle a euro payment in T2 RTGS or in TIPS and watch the states change.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.in/assets/hero/hero-poster.jpg">
+<link rel="stylesheet" href="../assets/pf-theme.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="../index.html" class="brand">Payments <span>Training Hub</span></a><nav class="topnav"><a href="../index.html">Home</a> <a href="../courses.html">Courses</a> <a href="../practice.html">Practice</a> <a href="../simulators.html">Simulators</a> <a href="../labs.html">Labs</a> <a href="../explorer.html">Explorer</a> <a href="../tests.html">Tests</a></nav><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox" style="display:none"><span id="authState">Not signed in</span> <span id="authForm" style="display:none"><input id="authEmail" type="email" placeholder="Email for OTP" aria-label="Email for sign-in"> <button class="mute-btn" onclick="paAuthSendOtp()">Send code</button> <input id="authCode" type="text" placeholder="6-digit code" aria-label="One-time code" style="display:none"> <button class="mute-btn" id="authVerifyBtn" onclick="paAuthVerifyOtp()" style="display:none">Verify</button> <button class="mute-btn" onclick="paAuthGoogle()">Sign in with Google</button> </span><button class="mute-btn" id="authSignOutBtn" onclick="paAuthSignOut()" style="display:none">Sign out</button></span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<nav class="crumbs"><a href="../index.html">Home</a> / <a href="../simulators.html">Simulators</a> / T2 and TIPS Simulator</nav>
+<section class="section" id="sim-tips">
+<h2>T2 and TIPS Simulator</h2>
+<p>TARGET Services are T2 (CLM, Central Liquidity Management, plus RTGS), T2S, TIPS and ESMIG, under Guideline (EU) 2022/912. T2 and TIPS are separate systems with separate rules, states, messages and outcomes, and this simulator runs them as two separate flows. Pick a system first: the participant list, the controls and the state display all change.</p>
+<p><b>TIPS (instant payments).</b> TIPS settles instant payments in central bank money, around the clock (24/7/365), primarily SCT Inst. Its transaction lifecycle is Received, Validated, Reserved, then Settled, or Failed, Expired or Rejected. Those are TIPS internal transaction statuses, not ISO 20022 message status codes. Funds are reserved on the payer TIPS DCA while the beneficiary PSP decides. The SCT Inst scheme maximum execution timeline is 10 seconds end to end (5-7-9 second sub-timelines in the 2025 rulebook); the TIPS beneficiary-reply timeout is a separate, configurable TIPS system parameter, and its current value is not stated here because it could not be verified.</p>
+<p><b>T2 RTGS (large-value payments).</b> T2 settles euro payments one by one, in real time gross settlement, in central bank money, typically large-value and interbank payments; there is no minimum value. T2 has no Reserved state and no Expired state, and no published universal status sequence like TIPS. A payment order is validated, then settled at entry disposition if liquidity and FIFO conditions allow, otherwise queued with offsetting checks and optimisation, and settled or rejected at the cut-off (customer payments 17:00 CET, interbank payments 18:00 CET) or at its RejectTime. RTGS runs 02:30 to 18:00 CET on TARGET business days, closed weekends and TARGET holidays. T2 replaced TARGET2 on 20 March 2023. Every RTGS DCA holder must hold at least one main cash account (MCA) in CLM.</p>
+<p>Interbank settlement in either system credits the payee PSP account in central bank money. That is not the beneficiary customer account posting: the beneficiary PSP must then credit the beneficiary own account. Settlement in central bank money is final and irrevocable under the TARGET rules (Settlement Finality Directive 98/26/EC); finality does not prevent a later return of the customer payment by pacs.004.</p>
+<div class="simA-grid">
+<label class="simA-label">System <select id="simA-tipsSystem" onchange="simA_tipsPartChange()"><option value="TIPS" selected>TIPS, instant payments</option><option value="T2">T2 RTGS, large value payments</option></select></label>
+<label class="simA-label">Participant type <select id="simA-tipsPart" onchange="simA_tipsPartChange()"></select></label>
+<label class="simA-label">Liquidity available (EUR) <input id="simA-tipsLiq" type="number" step="0.01" min="0" value="5000" onchange="simA_tipsPartChange()"></label>
+<label class="simA-label">Payment amount (EUR) <input id="simA-tipsAmt" type="number" step="0.01" min="0.01" value="2000" onchange="simA_tipsPartChange()"></label>
+<label class="simA-label" id="simA-tipsCmbRow">Credit Memorandum Balance (CMB) limit for this reachable party (EUR) <input id="simA-tipsCmb" type="number" step="0.01" min="0" value="5000" onchange="simA_tipsPartChange()"></label>
+<span id="simA-tipsPayeeRow"><label class="simA-label">Payee bank response (TIPS only) <select id="simA-tipsPayee" onchange="simA_tipsPartChange()"><option value="accept" selected>Payee accepts</option><option value="reject-ac04">Payee rejects, closed account (AC04)</option><option value="reject-ac01">Payee rejects, incorrect account number (AC01)</option><option value="noreply">Payee does not reply in time</option></select></label></span>
+<span id="simA-tipsT2Row" style="display:none"><label class="simA-label">Payment priority (T2 only) <select id="simA-tipsPrio" onchange="simA_tipsPartChange()"><option value="normal" selected>Normal</option><option value="urgent">Urgent</option><option value="highly">Highly urgent</option></select></label> <label class="simA-label">Timed payment (T2 only) <select id="simA-tipsTimed" onchange="simA_tipsPartChange()"><option value="none" selected>None, cut-off applies</option><option value="reject">RejectTime 16:00 CET</option><option value="till">TillTime 17:30 CET, stays queued</option></select></label></span>
+</div>
+<div class="simA-panel" id="simA-tipsPartNote"></div>
+<div class="simA-controls"><button class="simA-btn" id="simA-tipsRunBtn" onclick="simA_tipsRun()">Run payment</button><button class="simA-btn" onclick="simA_tipsReset()">Reset</button></div>
+<p><b>Payment state: <span id="simA-tipsState">Not started</span></b></p>
+<ol class="simA-steps" id="simA-tipsSteps"></ol>
+<div class="simA-panel" id="simA-tipsResult"><p>Press Run payment to step through the flow for the selected system.</p></div>
+<div class="simA-panel"><h3>Not simulated here</h3><p>Investigation by pacs.028 (Payment Status Request, answered by pacs.002); recall by camt.056 with a positive recall answer by pacs.004, which is a separate settlement instruction, not a status report; non-time-critical TIPS payments with a 6-hour lifecycle; cross-currency (OCT Inst) legs with a 20-second leg timeout; and Verification of Payee, a PSP duty before the payer authorises a transfer under Regulation (EU) 2024/886. TIPS also settles more than SCT Inst, and T2 also processes pacs.009 (bank-to-bank credit transfer), pacs.010 (direct debit), pacs.004 (payment return) and camt.056 (revocation) on RTGS DCAs.</p></div>
+<h3>Liquidity Transfer Demo</h3>
+<p>Move liquidity between TARGET services. An inter-service liquidity transfer is two linked legs, one in each service, each via its own transit account: in CLM the source account is debited and the destination service dedicated transit account is credited; in the destination service the source service dedicated transit account is debited and the destination account is credited. There is one transit account per settlement currency in TIPS, and the euro transit account belongs to the ECB. A transfer between a TIPS DCA and an RTGS DCA goes via CLM, and the main cash account is not involved in that variant. Liquidity transfers use camt.050 to instruct and camt.025 as the receipt (RCON on success, RJCT on rejection), work only in the same currency, and settle or are rejected immediately. A camt.054 notification is sent to the owner of each debited or credited account, optionally on subscription, by the service that holds that account.</p>
+<div class="simA-grid">
+<label class="simA-label">Transfer route <select id="simA-tipsLtRoute"><option value="mca" selected>Main cash account (CLM) to TIPS DCA</option><option value="rtgs">RTGS DCA to TIPS DCA (via CLM, MCA not involved)</option></select></label>
+<label class="simA-label">Main cash account balance (EUR) <input id="simA-tipsLtBal" type="number" step="0.01" min="0" value="1000000"></label>
+<label class="simA-label">RTGS DCA balance (EUR) <input id="simA-tipsLtRtgs" type="number" step="0.01" min="0" value="800000"></label>
+<label class="simA-label">TIPS DCA balance (EUR) <input id="simA-tipsLtDca" type="number" step="0.01" min="0" value="5000"></label>
+<label class="simA-label">Transfer amount (EUR) <input id="simA-tipsLtAmt" type="number" step="0.01" min="0.01" value="500000"></label>
+<label class="simA-label">Direction <select id="simA-tipsLtDir"><option value="in" selected>Into the TIPS DCA</option><option value="out">Out of the TIPS DCA</option></select></label>
+</div>
+<div class="simA-controls"><button class="simA-btn" onclick="simA_tipsLiquidity()">Run liquidity transfer</button></div>
+<div id="simA-tipsLtOut"></div>
+</section>
+</main>
+<footer><p>Payments Training Hub. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="../index.html">Home</a> &middot; <a href="../courses.html">Courses</a> &middot; <a href="../practice.html">Practice</a> &middot; <a href="../simulators.html">Simulators</a> &middot; <a href="../labs.html">Labs</a> &middot; <a href="../explorer.html">Explorer</a> &middot; <a href="../tests.html">Tests</a> &middot; <a href="../diagnostic.html">Diagnostic</a> &middot; <a href="../faq.html">Interview Ready Questions</a> &middot; <a href="../interview-prep.html">Interview Prep</a></p><p><a href="../about.html">About</a> &middot; <a href="../privacy.html">Privacy</a> &middot; <a href="../terms.html">Terms</a> &middot; <a href="../contact.html">Contact</a> &middot; <a href="../editorial-standards.html">Editorial Standards</a> &middot; <a href="../sources.html">Sources</a></p></footer>
+<script defer src="../assets/site.js"></script>
+<script defer src="../assets/bundles.js"></script>
+<script defer src="../assets/auth.js"></script>
+<script defer src="../assets/simulators.js"></script>
+<script defer src="../assets/nav.js"></script>
+<script defer src="../assets/pf-enhance.js"></script>
+</body>
+</html>

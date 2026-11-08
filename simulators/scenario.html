@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>Scenario Simulator | Payments Training Hub</title>
+<meta name="description" content="Walk a payment going wrong, step by step: what happens, in which system, and how it gets resolved.">
+<link rel="canonical" href="https://www.paymentstraininghub.in/simulators/scenario.html">
+<meta property="og:url" content="https://www.paymentstraininghub.in/simulators/scenario.html">
+<meta property="og:title" content="Scenario Simulator | Payments Training Hub">
+<meta property="og:description" content="Walk a payment going wrong, step by step: what happens, in which system, and how it gets resolved.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.in/assets/hero/hero-poster.jpg">
+<link rel="stylesheet" href="../assets/pf-theme.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="../index.html" class="brand">Payments <span>Training Hub</span></a><nav class="topnav"><a href="../index.html">Home</a> <a href="../courses.html">Courses</a> <a href="../practice.html">Practice</a> <a href="../simulators.html">Simulators</a> <a href="../labs.html">Labs</a> <a href="../explorer.html">Explorer</a> <a href="../tests.html">Tests</a></nav><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox" style="display:none"><span id="authState">Not signed in</span> <span id="authForm" style="display:none"><input id="authEmail" type="email" placeholder="Email for OTP" aria-label="Email for sign-in"> <button class="mute-btn" onclick="paAuthSendOtp()">Send code</button> <input id="authCode" type="text" placeholder="6-digit code" aria-label="One-time code" style="display:none"> <button class="mute-btn" id="authVerifyBtn" onclick="paAuthVerifyOtp()" style="display:none">Verify</button> <button class="mute-btn" onclick="paAuthGoogle()">Sign in with Google</button> </span><button class="mute-btn" id="authSignOutBtn" onclick="paAuthSignOut()" style="display:none">Sign out</button></span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<nav class="crumbs"><a href="../index.html">Home</a> / <a href="../simulators.html">Simulators</a> / Scenario Simulator</nav>
+<section class="section" id="simulator">
+<h2>Scenario Simulator</h2>
+<p>Simulate a payment going wrong. Pick a scenario and walk the timeline: what happens, in which system, and how it gets resolved.</p>
+<div class="pf-two-pane"><div class="pf-pane-list"><div class="explorer-tabs">
+<button class="explorer-tab active" onclick="simulatorTab(0)">Payment Rejected</button>
+<button class="explorer-tab" onclick="simulatorTab(1)">Delayed Payment</button>
+<button class="explorer-tab" onclick="simulatorTab(2)">Returned Payment</button>
+<button class="explorer-tab" onclick="simulatorTab(3)">Duplicate Payment</button>
+<button class="explorer-tab" onclick="simulatorTab(4)">Payment Timeout</button>
+<button class="explorer-tab" onclick="simulatorTab(5)">Clearing System Outage</button>
+</div></div><div class="pf-pane-detail">
+<div class="explorer-msg" id="simulator-0" style="display:block">
+<h3>Payment Rejected</h3>
+<p><b>Trigger.</b> The pacs.008 fails CBPR+ validation at the London bank because the creditor address in Singapore is incomplete, so SWIFT rejects the message before it is sent.</p>
+<p class="sim-step-count" id="sim-count-0">Step 1 of 6 shown</p>
+<ol class="sim-timeline" id="sim-timeline-0">
+<li><b>T+0s</b> Customer submits payment (Customer Channel)<br>USD 25,000 to Singapore supplier, invoice INV-8841, beneficiary address missing the postal code.</li>
+<li class="sim-step-hidden"><b>T+2s</b> Hub validates instruction (Payment Hub)<br>Hub flags the missing postal code but allows the payment to continue to screening with a warning.</li>
+<li class="sim-step-hidden"><b>T+5s</b> Screening passes (Screening)<br>No sanctions or fraud match, payment is released for routing.</li>
+<li class="sim-step-hidden"><b>T+8s</b> SWIFT validation fails (SWIFT)<br>pacs.008 fails CBPR+ validation, the creditor address does not meet the structured address rule.</li>
+<li class="sim-step-hidden"><b>T+9s</b> Payment rejected (Payment Hub)<br>Hub marks the payment rejected, returns a pacs.002 with reason code BE04 for missing creditor address.</li>
+<li class="sim-step-hidden"><b>T+1h</b> Customer notified (Customer Channel)<br>Customer receives a message asking for the full beneficiary address so the payment can be corrected and resent.</li>
+</ol>
+<p><button class="api-btn" id="sim-next-0" onclick="simulatorStep(0)">Reveal next step</button> <button class="api-btn" onclick="simulatorShowAll(0)">Show full timeline</button></p>
+<p><b>Resolution.</b> Operations contact the customer the same day and ask for the full beneficiary address with postal code. The customer supplies the complete address, the payment is corrected in the hub and resent as a new pacs.008 the next morning. The payment reaches the Singapore supplier one business day late, and the bank waives the repeat sending fee as a goodwill gesture for the delay.</p>
+<p><b>Lesson.</b> Structured address data is mandatory under CBPR+, and a missing postal code is enough to reject a payment before it leaves the bank. Validate the full beneficiary address at the channel before the payment reaches SWIFT, so the customer can fix it while the instruction is still in front of them.</p>
+</div>
+<div class="explorer-msg" id="simulator-1" style="display:none">
+<h3>Delayed Payment</h3>
+<p><b>Trigger.</b> The USD nostro account in New York has insufficient funds at the SWIFT cut off, so the correspondent bank queues the payment until the London bank funds the account.</p>
+<p class="sim-step-count" id="sim-count-1">Step 1 of 6 shown</p>
+<ol class="sim-timeline" id="sim-timeline-1">
+<li><b>T+0s</b> Payment sent to SWIFT (SWIFT)<br>pacs.008 for USD 25,000 leaves London for the correspondent bank in New York.</li>
+<li class="sim-step-hidden"><b>T+30s</b> Correspondent receives payment (Correspondent Bank)<br>Correspondent checks the nostro balance and finds only USD 8,000 available.</li>
+<li class="sim-step-hidden"><b>T+1m</b> Payment queued (Correspondent Bank)<br>Payment is queued for funding and the London bank is alerted to the shortfall.</li>
+<li class="sim-step-hidden"><b>T+2h</b> Treasury funds nostro (Payment Hub)<br>London treasury transfers USD 30,000 to the New York nostro account.</li>
+<li class="sim-step-hidden"><b>T+2h 5m</b> Payment released (Correspondent Bank)<br>Correspondent releases the queued payment onward to Singapore.</li>
+<li class="sim-step-hidden"><b>T+3h</b> Payment settles in Singapore (Beneficiary Bank)<br>Supplier account is credited the same day, three hours later than planned.</li>
+</ol>
+<p><button class="api-btn" id="sim-next-1" onclick="simulatorStep(1)">Reveal next step</button> <button class="api-btn" onclick="simulatorShowAll(1)">Show full timeline</button></p>
+<p><b>Resolution.</b> Treasury monitors the nostro balance during the day and tops it up as soon as the alert arrives, so the queued payment is released within two hours. The payment still settles on the same value date, and the customer is told of the delay through tracking. Treasury then raises the minimum nostro balance for the USD account to prevent a repeat of the shortfall.</p>
+<p><b>Lesson.</b> Cross-border payments depend on nostro liquidity, and a shortfall at the correspondent will queue a payment even when every other stage is ready. Monitor nostro balances intraday, set alerts before the balance runs low, and fund the account before the SWIFT cut off so payments are not delayed.</p>
+</div>
+<div class="explorer-msg" id="simulator-2" style="display:none">
+<h3>Returned Payment</h3>
+<p><b>Trigger.</b> The beneficiary bank in Singapore cannot credit the payment because the supplier account was closed the previous week, so it returns the funds with a pacs.004.</p>
+<p class="sim-step-count" id="sim-count-2">Step 1 of 6 shown</p>
+<ol class="sim-timeline" id="sim-timeline-2">
+<li><b>T+0s</b> Payment settles in Singapore (Settlement)<br>USD 25,000 settles between the correspondent and the creditor agent.</li>
+<li class="sim-step-hidden"><b>T+5m</b> Beneficiary bank checks account (Beneficiary Bank)<br>Creditor agent finds the supplier account was closed on 28 October 2026.</li>
+<li class="sim-step-hidden"><b>T+10m</b> Credit fails (Beneficiary Bank)<br>Bank cannot post the credit and prepares a payment return.</li>
+<li class="sim-step-hidden"><b>T+15m</b> pacs.004 sent (Beneficiary Bank)<br>Bank sends a pacs.004 return with reason AC04 for closed account.</li>
+<li class="sim-step-hidden"><b>T+1h</b> London bank receives return (Payment Hub)<br>Hub matches the return to the original payment and credits the customer account.</li>
+<li class="sim-step-hidden"><b>T+2h</b> Customer contacted (Customer Channel)<br>Customer is told the payment was returned and is asked for the correct supplier account.</li>
+</ol>
+<p><button class="api-btn" id="sim-next-2" onclick="simulatorStep(2)">Reveal next step</button> <button class="api-btn" onclick="simulatorShowAll(2)">Show full timeline</button></p>
+<p><b>Resolution.</b> The London bank credits USD 25,000 back to the customer account on the same day the return arrives without delay, less any charges the correspondent deducted. The customer contacts the supplier, obtains the new account number, and sends a fresh payment the next day. The bank records the return reason AC04 and closes the original payment as returned, not as completed.</p>
+<p><b>Lesson.</b> A return is not a failure of the payment system, it is the correct handling of an unpayable credit. Always confirm the beneficiary account is still open before sending a large payment, especially to a supplier you have not paid recently, and keep the return reason code so the customer knows exactly what to fix.</p>
+</div>
+<div class="explorer-msg" id="simulator-3" style="display:none">
+<h3>Duplicate Payment</h3>
+<p><b>Trigger.</b> The customer channel retries a payment after a timeout and sends the same instruction twice, so the hub receives two identical USD 25,000 payments for the same invoice.</p>
+<p class="sim-step-count" id="sim-count-3">Step 1 of 6 shown</p>
+<ol class="sim-timeline" id="sim-timeline-3">
+<li><b>T+0s</b> Customer submits payment (Customer Channel)<br>Customer sends USD 25,000 for invoice INV-8841 and the channel shows a loading screen.</li>
+<li class="sim-step-hidden"><b>T+10s</b> Channel times out (Customer Channel)<br>The screen times out, the customer thinks the payment failed and submits it again.</li>
+<li class="sim-step-hidden"><b>T+12s</b> Second instruction arrives (Payment Hub)<br>Hub receives a second instruction with the same amount, beneficiary and invoice reference.</li>
+<li class="sim-step-hidden"><b>T+13s</b> Duplicate check runs (Payment Hub)<br>Hub compares amount, beneficiary, reference and time window and flags the second instruction as a likely duplicate.</li>
+<li class="sim-step-hidden"><b>T+14s</b> Second payment held (Payment Hub)<br>Second payment is held for review and the first payment continues normally.</li>
+<li class="sim-step-hidden"><b>T+30m</b> Operations confirm duplicate (Payment Hub)<br>Operations confirm the second payment is a duplicate and cancel it before it reaches SWIFT.</li>
+</ol>
+<p><button class="api-btn" id="sim-next-3" onclick="simulatorStep(3)">Reveal next step</button> <button class="api-btn" onclick="simulatorShowAll(3)">Show full timeline</button></p>
+<p><b>Resolution.</b> Operations cancel the duplicate instruction before it reaches SWIFT, so only one USD 25,000 payment is sent to Singapore. The customer is told that the first payment succeeded and the second was stopped as a duplicate. The channel team adds a clear success message and a warning not to resubmit after a timeout, and the hub duplicate window is kept at 24 hours for the same amount and beneficiary.</p>
+<p><b>Lesson.</b> A timeout is not proof a payment failed, and resubmitting creates a duplicate that can debit the customer twice. Use idempotency keys so a retry returns the original result instead of creating a new payment, and show the customer a clear status after a timeout instead of leaving them to guess.</p>
+</div>
+<div class="explorer-msg" id="simulator-4" style="display:none">
+<h3>Payment Timeout</h3>
+<p><b>Trigger.</b> The payment hub calls the screening engine and receives no reply within 30 seconds, so the payment stalls at screening with no status update for the customer.</p>
+<p class="sim-step-count" id="sim-count-4">Step 1 of 6 shown</p>
+<ol class="sim-timeline" id="sim-timeline-4">
+<li><b>T+0s</b> Payment reaches screening (Screening)<br>Hub sends the USD 25,000 payment to the screening engine for checks.</li>
+<li class="sim-step-hidden"><b>T+30s</b> No reply received (Payment Hub)<br>Screening engine does not reply within the 30 second timeout and the hub marks the call as timed out.</li>
+<li class="sim-step-hidden"><b>T+31s</b> Payment held safely (Payment Hub)<br>Hub holds the payment in screening state and does not release it without a screening result.</li>
+<li class="sim-step-hidden"><b>T+5m</b> Retry succeeds (Screening)<br>Hub retries the screening call and the engine returns a clear result.</li>
+<li class="sim-step-hidden"><b>T+6m</b> Payment released (Payment Hub)<br>Payment is released for routing and continues to SWIFT normally.</li>
+<li class="sim-step-hidden"><b>T+10m</b> Customer tracking updated (Customer Channel)<br>Tracking view updates from screening to sent, and the customer sees the payment is moving again.</li>
+</ol>
+<p><button class="api-btn" id="sim-next-4" onclick="simulatorStep(4)">Reveal next step</button> <button class="api-btn" onclick="simulatorShowAll(4)">Show full timeline</button></p>
+<p><b>Resolution.</b> The hub retries the screening call once after the timeout and receives a clear result, so the payment continues without manual work. The failed call is logged with its timing, and the screening team checks why the engine was slow. The customer sees a short delay in tracking but the payment still reaches Singapore on the same value date, so no compensation is needed.</p>
+<p><b>Lesson.</b> Never release a payment without a screening result, even when the screening system is slow. Hold the payment safely, retry with a clear limit, log the timeout, and keep the customer informed. A timeout is a system delay, not a reason to skip a control that protects the bank and the customer.</p>
+</div>
+<div class="explorer-msg" id="simulator-5" style="display:none">
+<h3>Clearing System Outage</h3>
+<p><b>Trigger.</b> The local clearing system in Singapore goes down for two hours during the business day, so payments that should clear before the cut off are held in a queue.</p>
+<p class="sim-step-count" id="sim-count-5">Step 1 of 6 shown</p>
+<ol class="sim-timeline" id="sim-timeline-5">
+<li><b>T+0s</b> Payments arrive for clearing (Clearing)<br>Ten payments, including the USD 25,000 supplier payment, arrive for the Singapore clearing cycle.</li>
+<li class="sim-step-hidden"><b>T+5m</b> Clearing system fails (Clearing)<br>The clearing system stops responding and the operator declares an outage.</li>
+<li class="sim-step-hidden"><b>T+10m</b> Payments queued (Payment Hub)<br>Hub holds the payments in a queue and alerts operations to the outage.</li>
+<li class="sim-step-hidden"><b>T+1h</b> Operator gives update (Clearing)<br>Clearing operator confirms the system will return within one hour and the cut off will be extended.</li>
+<li class="sim-step-hidden"><b>T+2h</b> System restored (Clearing)<br>Clearing system returns and the queued payments are processed in order.</li>
+<li class="sim-step-hidden"><b>T+2h 30m</b> Payments settle (Settlement)<br>All ten payments settle, including the USD 25,000 payment, on the same value date.</li>
+</ol>
+<p><button class="api-btn" id="sim-next-5" onclick="simulatorStep(5)">Reveal next step</button> <button class="api-btn" onclick="simulatorShowAll(5)">Show full timeline</button></p>
+<p><b>Resolution.</b> The clearing operator extends the cut off time so the queued payments can still settle on the same value date once the system returns. Operations monitor the queue, keep customers informed through tracking, and confirm each payment settles in order. The bank reviews its contingency plan and confirms the alternative clearing route that would be used if the outage had lasted past the extended cut off.</p>
+<p><b>Lesson.</b> A clearing outage does not mean the payments are lost, it means they wait in a queue until the system returns. Know the operator contingency plan, the extended cut off rules and the alternative route before an outage happens, and tell customers early so they can plan around the delay instead of chasing the bank.</p>
+</div>
+</div></div>
+</section>
+</main>
+<footer><p>Payments Training Hub. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="../index.html">Home</a> &middot; <a href="../courses.html">Courses</a> &middot; <a href="../practice.html">Practice</a> &middot; <a href="../simulators.html">Simulators</a> &middot; <a href="../labs.html">Labs</a> &middot; <a href="../explorer.html">Explorer</a> &middot; <a href="../tests.html">Tests</a> &middot; <a href="../diagnostic.html">Diagnostic</a> &middot; <a href="../faq.html">Interview Ready Questions</a> &middot; <a href="../interview-prep.html">Interview Prep</a></p><p><a href="../about.html">About</a> &middot; <a href="../privacy.html">Privacy</a> &middot; <a href="../terms.html">Terms</a> &middot; <a href="../contact.html">Contact</a> &middot; <a href="../editorial-standards.html">Editorial Standards</a> &middot; <a href="../sources.html">Sources</a></p></footer>
+<script defer src="../assets/site.js"></script>
+<script defer src="../assets/bundles.js"></script>
+<script defer src="../assets/auth.js"></script>
+<script defer src="../assets/simulators.js"></script>
+<script defer src="../assets/nav.js"></script>
+<script defer src="../assets/pf-enhance.js"></script>
+</body>
+</html>

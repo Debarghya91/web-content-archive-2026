@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>Payment Accounting Simulator | Payments Training Hub</title>
+<meta name="description" content="Every payment is a set of ledger entries, and every entry must balance.">
+<link rel="canonical" href="https://www.paymentstraininghub.in/simulators/accounting.html">
+<meta property="og:url" content="https://www.paymentstraininghub.in/simulators/accounting.html">
+<meta property="og:title" content="Payment Accounting Simulator | Payments Training Hub">
+<meta property="og:description" content="Every payment is a set of ledger entries, and every entry must balance.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.in/assets/hero/hero-poster.jpg">
+<link rel="stylesheet" href="../assets/pf-theme.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="../index.html" class="brand">Payments <span>Training Hub</span></a><nav class="topnav"><a href="../index.html">Home</a> <a href="../courses.html">Courses</a> <a href="../practice.html">Practice</a> <a href="../simulators.html">Simulators</a> <a href="../labs.html">Labs</a> <a href="../explorer.html">Explorer</a> <a href="../tests.html">Tests</a></nav><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox" style="display:none"><span id="authState">Not signed in</span> <span id="authForm" style="display:none"><input id="authEmail" type="email" placeholder="Email for OTP" aria-label="Email for sign-in"> <button class="mute-btn" onclick="paAuthSendOtp()">Send code</button> <input id="authCode" type="text" placeholder="6-digit code" aria-label="One-time code" style="display:none"> <button class="mute-btn" id="authVerifyBtn" onclick="paAuthVerifyOtp()" style="display:none">Verify</button> <button class="mute-btn" onclick="paAuthGoogle()">Sign in with Google</button> </span><button class="mute-btn" id="authSignOutBtn" onclick="paAuthSignOut()" style="display:none">Sign out</button></span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<nav class="crumbs"><a href="../index.html">Home</a> / <a href="../simulators.html">Simulators</a> / Payment Accounting Simulator</nav>
+<section class="section" id="sim-accounting">
+<h2>Payment Accounting Simulator</h2>
+<p>Every payment is a set of ledger entries, and every entry must balance: total debits equal total credits at every step. Pick a scenario, then step through the entries one at a time. Each step shows the T-account debits and credits and the running balances. "Balanced" means debits equal credits at each step; it does not prove the entries are on the right bank's books, so every scenario states whose books it shows.</p>
+<div class="simb-panel"><h3>Ledger map: which account is which</h3>
+<table class="explorer-table"><tr><th>Ledger / account</th><th>What it is</th><th>Balance-sheet treatment</th></tr>
+<tr><td><b>Customer ledger (core banking)</b></td><td>The bank's accounts for its customers: debtor and creditor accounts.</td><td>Liability to the customer.</td></tr>
+<tr><td><b>General ledger (GL)</b></td><td>The bank's own books: double entry, trial balance proven daily, formal period close separate.</td><td>Debits must equal credits.</td></tr>
+<tr><td><b>Nostro account</b></td><td>The bank's account with a correspondent bank: money the bank owns abroad.</td><td>Asset ('due from banks'). A credit reduces it.</td></tr>
+<tr><td><b>Vostro account</b></td><td>The mirror image on the correspondent's books: the same balance owed to the other bank.</td><td>Liability ('due to banks').</td></tr>
+<tr><td><b>Settlement account</b></td><td>The bank's account at the central bank (RTGS) or clearing house. Always state whose account at which system.</td><td>Asset (central-bank money).</td></tr>
+<tr><td><b>Clearing account (transit)</b></td><td>An internal transit account that holds funds briefly between two postings.</td><td>Must clear to zero by the end of the day.</td></tr>
+<tr><td><b>Suspense account</b></td><td>Holds unexplained items pending investigation, with a named owner and daily ageing.</td><td>Must be aged and cleared; never a routine transit account.</td></tr>
+</table><p>Every account in every step below is labelled with its ledger, so a customer account, a nostro account and a settlement account are never confused with each other. "Settlement account" is never used without stating whose settlement account at which system.</p></div>
+<div class="explorer-tabs">
+<button class="explorer-tab active" onclick="simB_acctScenario(0)">Scenario 1: USD 25,000 cross-border payment, London to Singapore</button>
+<button class="explorer-tab" onclick="simB_acctScenario(1)">Scenario 2: EUR 120 online card purchase (acquirer's books)</button>
+<button class="explorer-tab" onclick="simB_acctScenario(2)">Scenario 3: EUR 89.99 SEPA direct debit refund, SDD Core</button>
+<button class="explorer-tab" onclick="simB_acctScenario(3)">Reconciliation break 1: duplicate nostro debit, USD 25,000</button>
+<button class="explorer-tab" onclick="simB_acctScenario(4)">Reconciliation break 2: amount mismatch, a USD 15 fee never posted</button>
+<button class="explorer-tab" onclick="simB_acctScenario(5)">Reconciliation break 3: value-date and timing mismatch</button>
+<button class="explorer-tab" onclick="simB_acctScenario(6)">Reconciliation break 4: missing entry, hub record with no core-banking posting</button>
+<button class="explorer-tab" onclick="simB_acctScenario(7)">Reconciliation break 5: unmatched receipt parked in suspense</button>
+<button class="explorer-tab" onclick="simB_acctScenario(8)">Scenario 4: FX payment, GBP 20,000 buys USD 25,000</button>
+</div>
+<div class="simb-acct-scen" id="simb-acct-0" style="display:block">
+<p>A customer in London (Acme Manufacturing Ltd) pays USD 25,000 to Tanaka Trading Pte Ltd in Singapore. EndToEndId INV-8841, instruction INSTR-20261105-001, UETR a3e1f2b4-5c6d-4a7e-9b1c-2d3e4f5a6b7c, value date 2026-11-06, charge bearer SHAR. This scenario shows ONLY the originating (London) bank's books. The correspondents' and the beneficiary bank's books are shown separately, for explanation, in the panel below the steps, and are never posted here.</p>
+<div class="simb-acct-step" id="simb-acct-0-0" style="display:block">
+<h3>Step 1: Debit the customer (value date 2026-11-06)</h3>
+<p>The bank accepts the instruction and debits the customer account for the full USD 25,000. The money waits in the internal payment clearing account (a transit account) until the payment is sent onward. Every entry carries EndToEndId INV-8841 and the UETR above.</p>
+<table class="explorer-table"><tr><th>Account</th><th>Debit (USD)</th><th>Credit (USD)</th></tr>
+<tr><td>Customer account (liability to the customer, core banking)</td><td>25,000.00</td><td>-</td></tr>
+<tr><td>Payment clearing account (internal transit account)</td><td>-</td><td>25,000.00</td></tr>
+<tr><td><b>Total</b></td><td><b>25,000.00</b></td><td><b>25,000.00</b></td></tr></table>
+<p><b>Running balances after this step.</b></p>
+<table class="explorer-table"><tr><th>Account</th><th>Net balance</th></tr>
+<tr><td>Customer account (liability to the customer, core banking)</td><td>Dr 25,000.00</td></tr>
+<tr><td>Payment clearing account (internal transit account)</td><td>Cr 25,000.00</td></tr>
+</table></div>
+<div class="simb-acct-step" id="simb-acct-0-1" style="display:none">
+<h3>Step 2: Instruct the first correspondent (value date 2026-11-06)</h3>
+<p>The bank instructs its first correspondent bank in New York to pay onward. The nostro account is an asset of this bank ('due from banks'), so crediting it REDUCES it: the full USD 25,000 leaves the nostro when the correspondent acts. The nostro is credited in full, not net of downstream fees: the deductions happen downstream and do not reduce the originator's nostro debit. Instruction, nostro debit and confirmation are three different moments.</p>
+<table class="explorer-table"><tr><th>Account</th><th>Debit (USD)</th><th>Credit (USD)</th></tr>
+<tr><td>Payment clearing account (internal transit account)</td><td>25,000.00</td><td>-</td></tr>
+<tr><td>Nostro account, correspondent 1, New York (asset: due from banks)</td><td>-</td><td>25,000.00</td></tr>
+<tr><td><b>Total</b></td><td><b>25,000.00</b></td><td><b>25,000.00</b></td></tr></table>
+<p><b>Reconciliation check.</b> Reconciliation: the nostro statement (camt.053) for this account shows one debit of USD 25,000, value date 2026-11-06, EndToEndId INV-8841. It matches this step's credit of USD 25,000 on amount, value date and EndToEndId. The payment clearing account is back to zero, which is what reconciliation must prove at the end of the day.</p>
+<p><b>Running balances after this step.</b></p>
+<table class="explorer-table"><tr><th>Account</th><th>Net balance</th></tr>
+<tr><td>Customer account (liability to the customer, core banking)</td><td>Dr 25,000.00</td></tr>
+<tr><td>Payment clearing account (internal transit account)</td><td>0.00</td></tr>
+<tr><td>Nostro account, correspondent 1, New York (asset: due from banks)</td><td>Cr 25,000.00</td></tr>
+</table></div>
+<p><b><span id="simb-acct-prog-0">Step 1 of 2</span></b></p>
+<button class="api-btn" id="simb-acct-prev-0" onclick="simB_acctPrev(0)" disabled>Previous step</button> <button class="api-btn" id="simb-acct-next-0" onclick="simB_acctStep(0)">Next step</button> <button class="api-btn" onclick="simB_acctReset(0)">Restart scenario</button>
+<div class="simb-panel"><h3>What happens on other banks' books, and other notes</h3>
+<p>What happens downstream (other banks' books, shown for explanation, NOT posted on the originator's books). Correspondent 1 keeps USD 20 as its own income and forwards USD 24,980. Correspondent 2 keeps USD 22 as its own income and forwards USD 24,958. The beneficiary bank credits Tanaka Trading Pte Ltd with USD 24,958. The USD 42 (20 + 22) is the correspondents' income, never the originator's: the originator does not credit 'charges deducted in transit' as its own income, and it has no beneficiary account on its books. Charge bearer SHAR was instructed, so intermediaries may deduct from the principal. In many SWIFT gpi payments the amount is sent in full instead; whether deduction from principal is permitted depends on the charge bearer and the scheme, so always state it. The pacs.008 for this payment carries both charges (USD 20 + USD 22 = USD 42) and the beneficiary receives USD 24,958, so the XML explorer, this scenario and the state machine all tell one story.</p></div>
+<div class="simb-panel" id="simb-acct-final-0" style="display:none">
+<h3>What this scenario proves</h3>
+<p>On the originator's books, and only on the originator's books: the customer account shows a debit of USD 25,000 and the nostro account with correspondent 1 shows a credit of USD 25,000 in full. The payment clearing account ends at zero. The beneficiary receives USD 24,958 because the two correspondents deducted USD 20 and USD 22 on their own books. 'Balanced' means debits equal credits at each step; it does not prove the entries are on the right bank's books.</p></div>
+</div>
+<div class="simb-acct-scen" id="simb-acct-1" style="display:none">
+<p>A customer buys goods online for EUR 120 with a card. This scenario shows the ACQUIRER bank's books only, and states that up front. Illustrative example: an EU consumer credit card, so interchange is at the 0.3% cap (EUR 0.36); for a consumer debit card the cap is 0.2% (EUR 0.24). The scheme fee (EUR 0.07) and acquirer markup (EUR 0.48) are illustrative commercial figures for this merchant's contract, not capped rates, and they vary by scheme, card and merchant contract. The merchant account is held at the acquirer. The issuer's side is shown for explanation in the final panel, not posted here.</p>
+<div class="simb-acct-step" id="simb-acct-1-0" style="display:block">
+<h3>Step 1: Authorisation hold (memo only, no ledger entry)</h3>
+<p>The customer card is authorised for EUR 120. No money moves yet. An authorisation hold is a memo / available-balance hold: the available balance falls by EUR 120, but the ledger balance is unchanged until clearing posts. There is deliberately no debit and credit in this step, because a hold is not a double-entry GL posting.</p>
+<p><b>Memo only, not a GL posting.</b> Memo only, not a GL posting. Ledger balance unchanged: EUR 0.00. Available balance: EUR 120.00 lower. If the purchase never clears, the hold simply expires and the available balance is restored, with no ledger entry at all.</p>
+<p><b>Running balances after this step.</b></p>
+<table class="explorer-table"><tr><th>Account</th><th>Net balance</th></tr>
+</table></div>
+<div class="simb-acct-step" id="simb-acct-1-1" style="display:none">
+<h3>Step 2: Clearing splits the EUR 120</h3>
+<p>The purchase clears. The EUR 120 due from the scheme is split: EUR 119.09 to merchant settlement, EUR 0.36 owed as interchange to the issuing bank, EUR 0.07 owed as a scheme fee, and EUR 0.48 acquirer markup income. 0.36 plus 0.07 plus 0.48 plus 119.09 equals 120.00. Interchange compensates the issuer for the transaction service and guarantee; on a debit card there is no lending at all, so it is not a fee 'for lending the customer the money'.</p>
+<table class="explorer-table"><tr><th>Account</th><th>Debit (EUR)</th><th>Credit (EUR)</th></tr>
+<tr><td>Scheme clearing receivable (asset: due from the card scheme)</td><td>120.00</td><td>-</td></tr>
+<tr><td>Merchant settlement account (liability to the merchant)</td><td>-</td><td>119.09</td></tr>
+<tr><td>Interchange payable (liability to the issuer, via the scheme)</td><td>-</td><td>0.36</td></tr>
+<tr><td>Scheme fee payable (liability to the card scheme)</td><td>-</td><td>0.07</td></tr>
+<tr><td>Acquirer markup income</td><td>-</td><td>0.48</td></tr>
+<tr><td><b>Total</b></td><td><b>120.00</b></td><td><b>120.00</b></td></tr></table>
+<p><b>Running balances after this step.</b></p>
+<table class="explorer-table"><tr><th>Account</th><th>Net balance</th></tr>
+<tr><td>Scheme clearing receivable (asset: due from the card scheme)</td><td>Dr 120.00</td></tr>
+<tr><td>Merchant settlement account (liability to the merchant)</td><td>Cr 119.09</td></tr>
+<tr><td>Interchange payable (liability to the issuer, via the scheme)</td><td>Cr 0.36</td></tr>
+<tr><td>Scheme fee payable (liability to the card scheme)</td><td>Cr 0.07</td></tr>
+<tr><td>Acquirer markup income</td><td>Cr 0.48</td></tr>
+</table></div>
+<div class="simb-acct-step" id="simb-acct-1-2" style="display:none">
+<h3>Step 3: Receive settlement from the scheme</h3>
+<p>The scheme settles the EUR 120 to the acquirer. The clearing receivable is cleared and the acquirer's scheme settlement account is debited (an asset: cash held at the scheme).</p>
+<table class="explorer-table"><tr><th>Account</th><th>Debit (EUR)</th><th>Credit (EUR)</th></tr>
+<tr><td>Scheme settlement account (asset: cash at the scheme)</td><td>120.00</td><td>-</td></tr>
+<tr><td>Scheme clearing receivable (asset: due from the card scheme)</td><td>-</td><td>120.00</td></tr>
+<tr><td><b>Total</b></td><td><b>120.00</b></td><td><b>120.00</b></td></tr></table>
+<p><b>Running balances after this step.</b></p>
+<table class="explorer-table"><tr><th>Account</th><th>Net balance</th></tr>
+<tr><td>Scheme clearing receivable (asset: due from the card scheme)</td><td>0.00</td></tr>
+<tr><td>Merchant settlement account (liability to the merchant)</td><td>Cr 119.09</td></tr>
+<tr><td>Interchange payable (liability to the issuer, via the scheme)</td><td>Cr 0.36</td></tr>
+<tr><td>Scheme fee payable (liability to the card scheme)</td><td>Cr 0.07</td></tr>
+<tr><td>Acquirer markup income</td><td>Cr 0.48</td></tr>
+<tr><td>Scheme settlement account (asset: cash at the scheme)</td><td>Dr 120.00</td></tr>
+</table></div>
+<div class="simb-acct-step" id="simb-acct-1-3" style="display:none">
+<h3>Step 4: Pay the merchant EUR 119.09</h3>
+<p>The merchant settlement account is cleared and the merchant account (held at the acquirer) is credited with EUR 119.09, not EUR 120, because the fees were taken at clearing.</p>
+<table class="explorer-table"><tr><th>Account</th><th>Debit (EUR)</th><th>Credit (EUR)</th></tr>
+<tr><td>Merchant settlement account (liability to the merchant)</td><td>119.09</td><td>-</td></tr>
+<tr><td>Merchant account (liability to the merchant, core banking)</td><td>-</td><td>119.09</td></tr>
+<tr><td><b>Total</b></td><td><b>119.09</b></td><td><b>119.09</b></td></tr></table>
+<p><b>Running balances after this step.</b></p>
+<table class="explorer-table"><tr><th>Account</th><th>Net balance</th></tr>
+<tr><td>Scheme clearing receivable (asset: due from the card scheme)</td><td>0.00</td></tr>
+<tr><td>Merchant settlement account (liability to the merchant)</td><td>0.00</td></tr>
+<tr><td>Interchange payable (liability to the issuer, via the scheme)</td><td>Cr 0.36</td></tr>
+<tr><td>Scheme fee payable (liability to the card scheme)</td><td>Cr 0.07</td></tr>
+<tr><td>Acquirer markup income</td><td>Cr 0.48</td></tr>
+<tr><td>Scheme settlement account (asset: cash at the scheme)</td><td>Dr 120.00</td></tr>
+<tr><td>Merchant account (liability to the merchant, core banking)</td><td>Cr 119.09</td></tr>
+</table></div>
+<div class="simb-acct-step" id="simb-acct-1-4" style="display:none">
+<h3>Step 5: Pay interchange and the scheme fee through the scheme</h3>
+<p>The acquirer settles both fees in one net payment through the scheme settlement account: EUR 0.36 interchange and EUR 0.07 scheme fee, EUR 0.43 in total. The acquirer does not pay the issuer directly; the scheme nets the interchange to the issuer.</p>
+<table class="explorer-table"><tr><th>Account</th><th>Debit (EUR)</th><th>Credit (EUR)</th></tr>
+<tr><td>Interchange payable (liability to the issuer, via the scheme)</td><td>0.36</td><td>-</td></tr>
+<tr><td>Scheme fee payable (liability to the card scheme)</td><td>0.07</td><td>-</td></tr>
+<tr><td>Scheme settlement account (asset: cash at the scheme)</td><td>-</td><td>0.43</td></tr>
+<tr><td><b>Total</b></td><td><b>0.43</b></td><td><b>0.43</b></td></tr></table>
+<p><b>Running balances after this step.</b></p>
+<table class="explorer-table"><tr><th>Account</th><th>Net balance</th></tr>
+<tr><td>Scheme clearing receivable (asset: due from the card scheme)</td><td>0.00</td></tr>
+<tr><td>Merchant settlement account (liability to the merchant)</td><td>0.00</td></tr>
+<tr><td>Interchange payable (liability to the issuer, via the scheme)</td><td>0.00</td></tr>
+<tr><td>Scheme fee payable (liability to the card scheme)</td><td>0.00</td></tr>
+<tr><td>Acquirer markup income</td><td>Cr 0.48</td></tr>
+<tr><td>Scheme settlement account (asset: cash at the scheme)</td><td>Dr 119.57</td></tr>
+<tr><td>Merchant account (liability to the merchant, core banking)</td><td>Cr 119.09</td></tr>
+</table></div>
+<p><b><span id="simb-acct-prog-1">Step 1 of 5</span></b></p>
+<button class="api-btn" id="simb-acct-prev-1" onclick="simB_acctPrev(1)" disabled>Previous step</button> <button class="api-btn" id="simb-acct-next-1" onclick="simB_acctStep(1)">Next step</button> <button class="api-btn" onclick="simB_acctReset(1)">Restart scenario</button>
+<div class="simb-panel"><h3>What happens on other banks' books, and other notes</h3>
+<p>Card break, for completeness: an authorisation that never clears. The hold expires, the available balance is restored, and no GL entry is ever posted. A clearing amount that differs from the authorisation (partial capture) is a reconciliation break: match on the authorisation reference, investigate the clearing file, and post only the amount actually cleared.</p></div>
+<div class="simb-panel" id="simb-acct-final-1" style="display:none">
+<h3>What this scenario proves</h3>
+<p>On the acquirer's books: the scheme settlement account shows a debit of EUR 119.57 (cash held at the scheme), the merchant account shows a credit of EUR 119.09, and acquirer markup income shows EUR 0.48. The EUR 0.48 difference is the acquirer's profit, held as cash. Every clearing and payable account is back to zero. On the ISSUER's books (shown for explanation, not posted here): the issuer debits the cardholder EUR 120 for real when the purchase clears, which releases the memo hold, and records interchange receivable of EUR 0.36, settled via the scheme. The cardholder is debited exactly once, by the issuer, never by the acquirer.</p></div>
+</div>
+<div class="simb-acct-scen" id="simb-acct-2" style="display:none">
+<p>A creditor collects EUR 89.99 from a debtor by SEPA direct debit, mandate reference MND-2026-00417, and the debtor then asks for a refund. This is SDD CORE, stated explicitly: for an authorised Core collection the debtor may claim a refund within eight weeks of the debit, with no reason needed, and the creditor cannot refuse it. SDD B2B has no such refund right for authorised collections. Reason code MD06 (refund requested by the debtor, Core only). An unauthorised collection can be claimed for 13 months. This scenario shows the DEBTOR bank's books only. The creditor bank's debit of the creditor's account happens on the creditor bank's own books, and is shown for explanation, not posted here.</p>
+<div class="simb-acct-step" id="simb-acct-2-0" style="display:block">
+<h3>Step 1: Collect the direct debit</h3>
+<p>The creditor bank presents the direct debit. The debtor bank debits the debtor account EUR 89.99 and the funds wait in the interbank settlement account, owed to the creditor bank through the clearing system.</p>
+<table class="explorer-table"><tr><th>Account</th><th>Debit (EUR)</th><th>Credit (EUR)</th></tr>
+<tr><td>Debtor account (liability to the debtor, core banking)</td><td>89.99</td><td>-</td></tr>
+<tr><td>Interbank settlement, SDD clearing (liability to the creditor bank)</td><td>-</td><td>89.99</td></tr>
+<tr><td><b>Total</b></td><td><b>89.99</b></td><td><b>89.99</b></td></tr></table>
+<p><b>Running balances after this step.</b></p>
+<table class="explorer-table"><tr><th>Account</th><th>Net balance</th></tr>
+<tr><td>Debtor account (liability to the debtor, core banking)</td><td>Dr 89.99</td></tr>
+<tr><td>Interbank settlement, SDD clearing (liability to the creditor bank)</td><td>Cr 89.99</td></tr>
+</table></div>
+<div class="simb-acct-step" id="simb-acct-2-1" style="display:none">
+<h3>Step 2: Settle with the creditor bank</h3>
+<p>The debtor bank settles EUR 89.99 to the creditor bank through the settlement account at the central bank or clearing house. The creditor bank credits the creditor account EUR 89.99 on its own books. The debtor's bank cannot debit the creditor's account at another bank.</p>
+<table class="explorer-table"><tr><th>Account</th><th>Debit (EUR)</th><th>Credit (EUR)</th></tr>
+<tr><td>Interbank settlement, SDD clearing (liability to the creditor bank)</td><td>89.99</td><td>-</td></tr>
+<tr><td>Settlement account at the central bank / clearing house (asset, reduced by the payment)</td><td>-</td><td>89.99</td></tr>
+<tr><td><b>Total</b></td><td><b>89.99</b></td><td><b>89.99</b></td></tr></table>
+<p><b>Running balances after this step.</b></p>
+<table class="explorer-table"><tr><th>Account</th><th>Net balance</th></tr>
+<tr><td>Debtor account (liability to the debtor, core banking)</td><td>Dr 89.99</td></tr>
+<tr><td>Interbank settlement, SDD clearing (liability to the creditor bank)</td><td>0.00</td></tr>
+<tr><td>Settlement account at the central bank / clearing house (asset, reduced by the payment)</td><td>Cr 89.99</td></tr>
+</table></div>
+<div class="simb-acct-step" id="simb-acct-2-2" style="display:none">
+<h3>Step 3: Debtor requests a refund (MD06, SDD Core)</h3>
+<p>The debtor asks for a refund of the EUR 89.99 collection within the eight-week Core window, no reason needed. The debtor bank credits the debtor at once and records a refund receivable from the creditor bank, to be recovered through the interbank return (pacs.004). This is a refund (the debtor's claim after the debit), not a return (the creditor bank returning a collection before settlement) and not a reversal.</p>
+<table class="explorer-table"><tr><th>Account</th><th>Debit (EUR)</th><th>Credit (EUR)</th></tr>
+<tr><td>Interbank refund receivable (asset: due from the creditor bank)</td><td>89.99</td><td>-</td></tr>
+<tr><td>Debtor account (liability to the debtor, core banking)</td><td>-</td><td>89.99</td></tr>
+<tr><td><b>Total</b></td><td><b>89.99</b></td><td><b>89.99</b></td></tr></table>
+<p><b>Running balances after this step.</b></p>
+<table class="explorer-table"><tr><th>Account</th><th>Net balance</th></tr>
+<tr><td>Debtor account (liability to the debtor, core banking)</td><td>0.00</td></tr>
+<tr><td>Interbank settlement, SDD clearing (liability to the creditor bank)</td><td>0.00</td></tr>
+<tr><td>Settlement account at the central bank / clearing house (asset, reduced by the payment)</td><td>Cr 89.99</td></tr>
+<tr><td>Interbank refund receivable (asset: due from the creditor bank)</td><td>Dr 89.99</td></tr>
+</table></div>
+<div class="simb-acct-step" id="simb-acct-2-3" style="display:none">
+<h3>Step 4: Recover the refund from the creditor bank</h3>
+<p>The creditor bank returns EUR 89.99 through the interbank return (pacs.004) and debits the creditor account on its own books. The debtor bank's settlement account is debited and the refund receivable is cleared.</p>
+<table class="explorer-table"><tr><th>Account</th><th>Debit (EUR)</th><th>Credit (EUR)</th></tr>
+<tr><td>Settlement account at the central bank / clearing house (asset, reduced by the payment)</td><td>89.99</td><td>-</td></tr>
+<tr><td>Interbank refund receivable (asset: due from the creditor bank)</td><td>-</td><td>89.99</td></tr>
+<tr><td><b>Total</b></td><td><b>89.99</b></td><td><b>89.99</b></td></tr></table>
+<p><b>Running balances after this step.</b></p>
+<table class="explorer-table"><tr><th>Account</th><th>Net balance</th></tr>
+<tr><td>Debtor account (liability to the debtor, core banking)</td><td>0.00</td></tr>
+<tr><td>Interbank settlement, SDD clearing (liability to the creditor bank)</td><td>0.00</td></tr>
+<tr><td>Settlement account at the central bank / clearing house (asset, reduced by the payment)</td><td>0.00</td></tr>
+<tr><td>Interbank refund receivable (asset: due from the creditor bank)</td><td>0.00</td></tr>
+</table></div>
+<p><b><span id="simb-acct-prog-2">Step 1 of 4</span></b></p>
+<button class="api-btn" id="simb-acct-prev-2" onclick="simB_acctPrev(2)" disabled>Previous step</button> <button class="api-btn" id="simb-acct-next-2" onclick="simB_acctStep(2)">Next step</button> <button class="api-btn" onclick="simB_acctReset(2)">Restart scenario</button>
+<div class="simb-panel" id="simb-acct-final-2" style="display:none">
+<h3>What this scenario proves</h3>
+<p>On the debtor bank's books every account ends at zero: the debtor was debited EUR 89.99 and then refunded EUR 89.99, so the net effect on the debtor is zero, and the interbank legs net to zero as well. A refund is not a failed payment. It is a second, fully recorded payment in the opposite direction, with its own interbank leg (pacs.004) and reason code (MD06).</p></div>
+</div>
+<div class="simb-acct-scen" id="simb-acct-3" style="display:none">
+<p>Reconciliation break. Payment INV-8841, USD 25,000, EndToEndId INV-8841, UETR a3e1f2b4-5c6d-4a7e-9b1c-2d3e4f5a6b7c, value date 2026-11-06. The nostro statement (camt.053) shows TWO debits of USD 25,000 for the same EndToEndId; the internal ledger shows ONE. The payment itself is already settled, so its status does not change while this break is open. This scenario shows the originator bank's books only.</p>
+<div class="simb-acct-step" id="simb-acct-3-0" style="display:block">
+<h3>Step 1: The original posting (correct)</h3>
+<p>The original payment was posted once: the customer was debited USD 25,000 and the nostro account with correspondent 1 was credited USD 25,000 in full.</p>
+<table class="explorer-table"><tr><th>Account</th><th>Debit (USD)</th><th>Credit (USD)</th></tr>
+<tr><td>Customer account (liability to the customer, core banking)</td><td>25,000.00</td><td>-</td></tr>
+<tr><td>Nostro account, correspondent 1 (asset: due from banks)</td><td>-</td><td>25,000.00</td></tr>
+<tr><td><b>Total</b></td><td><b>25,000.00</b></td><td><b>25,000.00</b></td></tr></table>
+<p><b>Reconciliation check.</b> What does not match: the nostro statement shows a second debit of USD 25,000 with the same EndToEndId INV-8841 and the same value date, but there is no second instruction, no second MsgId and no second UETR. Why it might have happened: a correspondent retry after a timeout, or a duplicate file line. Systems and records to investigate: the nostro statement (camt.053), the hub record and event log, the correspondent's settlement confirmation, and the idempotency key. Evidence needed: the two statement lines, the single instruction, and the correspondent's confirmation of what it received. Payment status while open: settled, unchanged; the customer is NOT re-credited yet, because the funds may still be with the correspondent.</p>
+<p><b>Running balances after this step.</b></p>
+<table class="explorer-table"><tr><th>Account</th><th>Net balance</th></tr>
+<tr><td>Customer account (liability to the customer, core banking)</td><td>Dr 25,000.00</td></tr>
+<tr><td>Nostro account, correspondent 1 (asset: due from banks)</td><td>Cr 25,000.00</td></tr>
+</table></div>
+<div class="simb-acct-step" id="simb-acct-3-1" style="display:none">
+<h3>Step 2: Record the duplicate as a receivable (does not auto-resolve)</h3>
+<p>The duplicate is proven from the settlement evidence, so the second statement debit is recorded in the ledger as a receivable from correspondent 1, which brings the ledger into line with the statement. This needs operations approval: a duplicate is never auto-matched or auto-cleared.</p>
+<table class="explorer-table"><tr><th>Account</th><th>Debit (USD)</th><th>Credit (USD)</th></tr>
+<tr><td>Correspondent receivable, duplicate nostro debit (asset: due from correspondent 1)</td><td>25,000.00</td><td>-</td></tr>
+<tr><td>Nostro account, correspondent 1 (asset: due from banks)</td><td>-</td><td>25,000.00</td></tr>
+<tr><td><b>Total</b></td><td><b>25,000.00</b></td><td><b>25,000.00</b></td></tr></table>
+<p><b>Running balances after this step.</b></p>
+<table class="explorer-table"><tr><th>Account</th><th>Net balance</th></tr>
+<tr><td>Customer account (liability to the customer, core banking)</td><td>Dr 25,000.00</td></tr>
+<tr><td>Nostro account, correspondent 1 (asset: due from banks)</td><td>Cr 50,000.00</td></tr>
+<tr><td>Correspondent receivable, duplicate nostro debit (asset: due from correspondent 1)</td><td>Dr 25,000.00</td></tr>
+</table></div>
+<div class="simb-acct-step" id="simb-acct-3-2" style="display:none">
+<h3>Step 3: The return arrives and the break closes</h3>
+<p>Correspondent 1 confirms the duplicate and returns USD 25,000 via pacs.004. Only now, with the return in hand and operations approval recorded, does the break close.</p>
+<table class="explorer-table"><tr><th>Account</th><th>Debit (USD)</th><th>Credit (USD)</th></tr>
+<tr><td>Nostro account, correspondent 1 (asset: due from banks)</td><td>25,000.00</td><td>-</td></tr>
+<tr><td>Correspondent receivable, duplicate nostro debit (asset: due from correspondent 1)</td><td>-</td><td>25,000.00</td></tr>
+<tr><td><b>Total</b></td><td><b>25,000.00</b></td><td><b>25,000.00</b></td></tr></table>
+<p><b>Reconciliation check.</b> Resolution: duplicate nostro debit, recovered in full by pacs.004 return from correspondent 1. Correcting entries are Steps 2 and 3 above. The customer was never debited twice and never re-credited: the duplicate was the correspondent's, not the customer's.</p>
+<p><b>Running balances after this step.</b></p>
+<table class="explorer-table"><tr><th>Account</th><th>Net balance</th></tr>
+<tr><td>Customer account (liability to the customer, core banking)</td><td>Dr 25,000.00</td></tr>
+<tr><td>Nostro account, correspondent 1 (asset: due from banks)</td><td>Cr 25,000.00</td></tr>
+<tr><td>Correspondent receivable, duplicate nostro debit (asset: due from correspondent 1)</td><td>0.00</td></tr>
+</table></div>
+<p><b><span id="simb-acct-prog-3">Step 1 of 3</span></b></p>
+<button class="api-btn" id="simb-acct-prev-3" onclick="simB_acctPrev(3)" disabled>Previous step</button> <button class="api-btn" id="simb-acct-next-3" onclick="simB_acctStep(3)">Next step</button> <button class="api-btn" onclick="simB_acctReset(3)">Restart scenario</button>
+<div class="simb-panel" id="simb-acct-final-3" style="display:none">
+<h3>What this scenario proves</h3>
+<p>Final balances: customer account Dr USD 25,000, nostro account Cr USD 25,000, correspondent receivable zero. The break closed only on evidence (the pacs.004 return) plus approval, never automatically.</p></div>
+</div>
+<div class="simb-acct-scen" id="simb-acct-4" style="display:none">
+<p>Reconciliation break. Payment INV-9050, USD 75,000, EndToEndId INV-9050, value date 2026-11-06. The nostro statement shows a debit of USD 75,000; the internal ledger shows USD 75,015. The USD 15 difference is the bank's own fee to its customer, which was charged to the customer but never separated in the ledger. Originator bank's books only.</p>
+<div class="simb-acct-step" id="simb-acct-4-0" style="display:block">
+<h3>Step 1: The posting as it was made (fee omitted)</h3>
+<p>The customer was charged USD 75,015 in total (USD 75,000 payment plus the bank's own USD 15 fee), but the posting credited the whole USD 75,015 to the nostro account and never recorded the fee as income.</p>
+<table class="explorer-table"><tr><th>Account</th><th>Debit (USD)</th><th>Credit (USD)</th></tr>
+<tr><td>Customer account (liability to the customer, core banking)</td><td>75,015.00</td><td>-</td></tr>
+<tr><td>Nostro account, correspondent 1 (asset: due from banks)</td><td>-</td><td>75,015.00</td></tr>
+<tr><td><b>Total</b></td><td><b>75,015.00</b></td><td><b>75,015.00</b></td></tr></table>
+<p><b>Reconciliation check.</b> What does not match: statement debit USD 75,000 against ledger credit USD 75,015, a USD 15 amount break on the same EndToEndId INV-9050 and value date. Why it might have happened: the fee was charged to the customer but the fee leg was never posted. Systems and records to investigate: the nostro statement (camt.053), the customer fee schedule and the original instruction, and the hub charge record. Evidence needed: the statement line, the fee schedule showing the USD 15 fee, and the customer debit of USD 75,015. Payment status while open: settled, unchanged; a reconciliation break alone does not change a payment's status.</p>
+<p><b>Running balances after this step.</b></p>
+<table class="explorer-table"><tr><th>Account</th><th>Net balance</th></tr>
+<tr><td>Customer account (liability to the customer, core banking)</td><td>Dr 75,015.00</td></tr>
+<tr><td>Nostro account, correspondent 1 (asset: due from banks)</td><td>Cr 75,015.00</td></tr>
+</table></div>
+<div class="simb-acct-step" id="simb-acct-4-1" style="display:none">
+<h3>Step 2: Correcting entry, with finance approval</h3>
+<p>The USD 15 is posted to fee income with finance approval. The ledger is never edited to fit the statement: a wrong entry is corrected with a new entry, never by changing the original record.</p>
+<table class="explorer-table"><tr><th>Account</th><th>Debit (USD)</th><th>Credit (USD)</th></tr>
+<tr><td>Nostro account, correspondent 1 (asset: due from banks)</td><td>15.00</td><td>-</td></tr>
+<tr><td>Fee income, bank charges (income)</td><td>-</td><td>15.00</td></tr>
+<tr><td><b>Total</b></td><td><b>15.00</b></td><td><b>15.00</b></td></tr></table>
+<p><b>Reconciliation check.</b> Resolution: amount break caused by an unposted USD 15 bank fee. Correcting entry is Step 2. After it, the nostro credit is USD 75,000 and matches the statement exactly, and the fee income of USD 15 is recorded. The matching rule is updated so this fee pattern matches automatically next time, but only on reference plus amount plus value date, never on amount alone.</p>
+<p><b>Running balances after this step.</b></p>
+<table class="explorer-table"><tr><th>Account</th><th>Net balance</th></tr>
+<tr><td>Customer account (liability to the customer, core banking)</td><td>Dr 75,015.00</td></tr>
+<tr><td>Nostro account, correspondent 1 (asset: due from banks)</td><td>Cr 75,000.00</td></tr>
+<tr><td>Fee income, bank charges (income)</td><td>Cr 15.00</td></tr>
+</table></div>
+<p><b><span id="simb-acct-prog-4">Step 1 of 2</span></b></p>
+<button class="api-btn" id="simb-acct-prev-4" onclick="simB_acctPrev(4)" disabled>Previous step</button> <button class="api-btn" id="simb-acct-next-4" onclick="simB_acctStep(4)">Next step</button> <button class="api-btn" onclick="simB_acctReset(4)">Restart scenario</button>
+<div class="simb-panel" id="simb-acct-final-4" style="display:none">
+<h3>What this scenario proves</h3>
+<p>Final balances: customer account Dr USD 75,015, nostro account Cr USD 75,000, fee income Cr USD 15. The break closed on a posted correcting entry plus approval, with the reason recorded.</p></div>
+</div>
+<div class="simb-acct-scen" id="simb-acct-5" style="display:none">
+<p>Reconciliation break. Payment INV-9060, USD 40,000, EndToEndId INV-9060. The internal ledger records the payment with value date 2026-11-06, but the nostro statement shows the same USD 40,000 debit booked on 2026-11-06 with a value date of 2026-11-07. Originator bank's books only.</p>
+<div class="simb-acct-step" id="simb-acct-5-0" style="display:block">
+<h3>Step 1: The original posting (value date 2026-11-06)</h3>
+<p>The customer was debited USD 40,000 and the nostro account was credited USD 40,000, both with value date 2026-11-06, the date the customer was told the payment would settle.</p>
+<table class="explorer-table"><tr><th>Account</th><th>Debit (USD)</th><th>Credit (USD)</th></tr>
+<tr><td>Customer account (liability to the customer, core banking)</td><td>40,000.00</td><td>-</td></tr>
+<tr><td>Nostro account, correspondent 1 (asset: due from banks)</td><td>-</td><td>40,000.00</td></tr>
+<tr><td><b>Total</b></td><td><b>40,000.00</b></td><td><b>40,000.00</b></td></tr></table>
+<p><b>Reconciliation check.</b> What does not match: the amounts and the EndToEndId match, but the value dates do not. The statement entry has BookgDt 2026-11-06 and ValDt 2026-11-07. Why it might have happened: the instruction missed the correspondent's cut-off, so settlement value moved to the next business day. Systems and records to investigate: the nostro statement (camt.053, BookgDt versus ValDt), the cut-off calendar, and the hub value-date record. Evidence needed: the statement line showing both dates, and the cut-off time for the currency. Payment status while open: settled, unchanged; the money moved, one day later than promised.</p>
+<p><b>Running balances after this step.</b></p>
+<table class="explorer-table"><tr><th>Account</th><th>Net balance</th></tr>
+<tr><td>Customer account (liability to the customer, core banking)</td><td>Dr 40,000.00</td></tr>
+<tr><td>Nostro account, correspondent 1 (asset: due from banks)</td><td>Cr 40,000.00</td></tr>
+</table></div>
+<div class="simb-acct-step" id="simb-acct-5-1" style="display:none">
+<h3>Step 2: Timing difference, no ledger entry</h3>
+<p>This is a timing difference, not a missing amount: the USD 40,000 is not lost, it is one day late. No correcting entry is posted, because there is nothing to correct in the amounts. Operations confirms the cut-off, tells the customer the new value date, and notes any interest consequence. The break closes only when the value date passes and the statement confirms the debit with ValDt 2026-11-07.</p>
+<p><b>Memo only, not a GL posting.</b> No entry: timing only. The ledger amounts are correct; only the value date differs. A break that needs no entry still needs an owner, evidence and a recorded close, it is never closed by doing nothing.</p>
+<p><b>Running balances after this step.</b></p>
+<table class="explorer-table"><tr><th>Account</th><th>Net balance</th></tr>
+<tr><td>Customer account (liability to the customer, core banking)</td><td>Dr 40,000.00</td></tr>
+<tr><td>Nostro account, correspondent 1 (asset: due from banks)</td><td>Cr 40,000.00</td></tr>
+</table></div>
+<p><b><span id="simb-acct-prog-5">Step 1 of 2</span></b></p>
+<button class="api-btn" id="simb-acct-prev-5" onclick="simB_acctPrev(5)" disabled>Previous step</button> <button class="api-btn" id="simb-acct-next-5" onclick="simB_acctStep(5)">Next step</button> <button class="api-btn" onclick="simB_acctReset(5)">Restart scenario</button>
+<div class="simb-panel" id="simb-acct-final-5" style="display:none">
+<h3>What this scenario proves</h3>
+<p>Final balances: customer account Dr USD 40,000, nostro account Cr USD 40,000. The break was a value-date difference, resolved by evidence and a recorded close, not by an entry and not automatically.</p></div>
+</div>
+<div class="simb-acct-scen" id="simb-acct-6" style="display:none">
+<p>Reconciliation break. Payment INV-9070, USD 18,250, EndToEndId INV-9070, value date 2026-11-06. The hub record shows the payment was sent, and the nostro statement (camt.053) shows the USD 18,250 debit, but there is no posting on the customer account in core banking. Originator bank's books only.</p>
+<div class="simb-acct-step" id="simb-acct-6-0" style="display:block">
+<h3>Step 1: Investigation (no ledger entry exists yet)</h3>
+<p>Reconciliation finds the hub record and the statement line, but no core-banking posting. The payment went out, but the customer was never debited. This is the most dangerous kind of break: the bank has paid money it has not collected from its customer.</p>
+<p><b>Memo only, not a GL posting.</b> No entry yet: the break IS the missing entry. What does not match: hub record plus statement debit USD 18,250 against no customer-account posting. Why it might have happened: the core-banking posting failed after the payment was sent, or a posting batch was dropped. Systems and records to investigate: the hub event log, the core-banking posting queue and error log, and the nostro statement. Evidence needed: the hub record, the statement line, and the posting error. Payment status while open: settled, unchanged; the payment is not re-sent, and the customer is told promptly, because the debit will now appear late.</p>
+<p><b>Running balances after this step.</b></p>
+<table class="explorer-table"><tr><th>Account</th><th>Net balance</th></tr>
+</table></div>
+<div class="simb-acct-step" id="simb-acct-6-1" style="display:none">
+<h3>Step 2: Post the missing entry late, with approval</h3>
+<p>The missing posting is made now, with the original value date 2026-11-06, and with operations and finance approval. A posted entry is never deleted; a missing entry is posted late as a new, approved entry, and the late posting is recorded on the audit trail.</p>
+<table class="explorer-table"><tr><th>Account</th><th>Debit (USD)</th><th>Credit (USD)</th></tr>
+<tr><td>Customer account (liability to the customer, core banking)</td><td>18,250.00</td><td>-</td></tr>
+<tr><td>Nostro account, correspondent 1 (asset: due from banks)</td><td>-</td><td>18,250.00</td></tr>
+<tr><td><b>Total</b></td><td><b>18,250.00</b></td><td><b>18,250.00</b></td></tr></table>
+<p><b>Reconciliation check.</b> Resolution: missing core-banking posting, posted late in Step 2 with the original value date. After it, the customer debit matches the statement debit on amount, value date and EndToEndId, and the break closes.</p>
+<p><b>Running balances after this step.</b></p>
+<table class="explorer-table"><tr><th>Account</th><th>Net balance</th></tr>
+<tr><td>Customer account (liability to the customer, core banking)</td><td>Dr 18,250.00</td></tr>
+<tr><td>Nostro account, correspondent 1 (asset: due from banks)</td><td>Cr 18,250.00</td></tr>
+</table></div>
+<p><b><span id="simb-acct-prog-6">Step 1 of 2</span></b></p>
+<button class="api-btn" id="simb-acct-prev-6" onclick="simB_acctPrev(6)" disabled>Previous step</button> <button class="api-btn" id="simb-acct-next-6" onclick="simB_acctStep(6)">Next step</button> <button class="api-btn" onclick="simB_acctReset(6)">Restart scenario</button>
+<div class="simb-panel" id="simb-acct-final-6" style="display:none">
+<h3>What this scenario proves</h3>
+<p>Final balances: customer account Dr USD 18,250, nostro account Cr USD 18,250. The break closed only when the missing entry was posted with approval, never by assuming the posting would appear on its own.</p></div>
+</div>
+<div class="simb-acct-scen" id="simb-acct-7" style="display:none">
+<p>Reconciliation break. An unmatched receipt of USD 10,000 arrives on the nostro account (advised by camt.054) with no EndToEndId that matches any instruction. Originator bank's books only. A suspense account holds unexplained items pending investigation; it is never a routine transit account, and every suspense balance has a named owner and is aged daily.</p>
+<div class="simb-acct-step" id="simb-acct-7-0" style="display:block">
+<h3>Step 1: Park the receipt in suspense</h3>
+<p>The funds are received, so they must be recorded, but they cannot be credited to a customer yet because no instruction matches. They are parked in the suspense account with a named owner, not allocated on a guess.</p>
+<table class="explorer-table"><tr><th>Account</th><th>Debit (USD)</th><th>Credit (USD)</th></tr>
+<tr><td>Nostro account (asset: due from banks)</td><td>10,000.00</td><td>-</td></tr>
+<tr><td>Suspense account, unidentified receipts (liability, pending investigation)</td><td>-</td><td>10,000.00</td></tr>
+<tr><td><b>Total</b></td><td><b>10,000.00</b></td><td><b>10,000.00</b></td></tr></table>
+<p><b>Reconciliation check.</b> What does not match: a camt.054 credit of USD 10,000 with no matching hub record, MsgId or EndToEndId. Systems and records to investigate: the camt.054 notification, the nostro statement, the hub instruction log, and the sender's remittance information. Evidence needed: the notification, the sender's confirmation of what the money is for, and the matching instruction. Payment status while open: there is no payment to change the status of; the receipt stays in suspense, held, until it is matched or returned.</p>
+<p><b>Running balances after this step.</b></p>
+<table class="explorer-table"><tr><th>Account</th><th>Net balance</th></tr>
+<tr><td>Nostro account (asset: due from banks)</td><td>Dr 10,000.00</td></tr>
+<tr><td>Suspense account, unidentified receipts (liability, pending investigation)</td><td>Cr 10,000.00</td></tr>
+</table></div>
+<div class="simb-acct-step" id="simb-acct-7-1" style="display:none">
+<h3>Step 2: Investigation (no ledger entry)</h3>
+<p>Operations contacts the sender. The sender confirms the USD 10,000 is a payment for invoice INV-9120 from a customer whose EndToEndId was mistyped on the instruction. The match is proven from the sender's confirmation and the invoice, not from the amount alone.</p>
+<p><b>Memo only, not a GL posting.</b> No entry: investigation only. A suspected fraud or sanctions item found here would stay held and go to compliance, never be auto-matched or auto-allocated.</p>
+<p><b>Running balances after this step.</b></p>
+<table class="explorer-table"><tr><th>Account</th><th>Net balance</th></tr>
+<tr><td>Nostro account (asset: due from banks)</td><td>Dr 10,000.00</td></tr>
+<tr><td>Suspense account, unidentified receipts (liability, pending investigation)</td><td>Cr 10,000.00</td></tr>
+</table></div>
+<div class="simb-acct-step" id="simb-acct-7-2" style="display:none">
+<h3>Step 3: Allocate the receipt to the customer</h3>
+<p>With the match proven and approved, the suspense balance is allocated to the customer account. If no match had been found, the funds would be returned to the sender via pacs.004 after the bank's policy period, never kept as income.</p>
+<table class="explorer-table"><tr><th>Account</th><th>Debit (USD)</th><th>Credit (USD)</th></tr>
+<tr><td>Suspense account, unidentified receipts (liability, pending investigation)</td><td>10,000.00</td><td>-</td></tr>
+<tr><td>Customer account (liability to the customer, core banking)</td><td>-</td><td>10,000.00</td></tr>
+<tr><td><b>Total</b></td><td><b>10,000.00</b></td><td><b>10,000.00</b></td></tr></table>
+<p><b>Running balances after this step.</b></p>
+<table class="explorer-table"><tr><th>Account</th><th>Net balance</th></tr>
+<tr><td>Nostro account (asset: due from banks)</td><td>Dr 10,000.00</td></tr>
+<tr><td>Suspense account, unidentified receipts (liability, pending investigation)</td><td>0.00</td></tr>
+<tr><td>Customer account (liability to the customer, core banking)</td><td>Cr 10,000.00</td></tr>
+</table></div>
+<p><b><span id="simb-acct-prog-7">Step 1 of 3</span></b></p>
+<button class="api-btn" id="simb-acct-prev-7" onclick="simB_acctPrev(7)" disabled>Previous step</button> <button class="api-btn" id="simb-acct-next-7" onclick="simB_acctStep(7)">Next step</button> <button class="api-btn" onclick="simB_acctReset(7)">Restart scenario</button>
+<div class="simb-panel" id="simb-acct-final-7" style="display:none">
+<h3>What this scenario proves</h3>
+<p>Final balances: nostro account Dr USD 10,000, customer account Cr USD 10,000, suspense account zero. The suspense balance was cleared by a proven match plus approval, never automatically.</p></div>
+</div>
+<div class="simb-acct-scen" id="simb-acct-8" style="display:none">
+<p>A customer pays GBP 20,000 for a USD 25,000 payment to Tanaka Trading Pte Ltd, EndToEndId INV-8841, value date 2026-11-06. The customer rate is 1.2500 (GBP 20,000 buys USD 25,000). The bank executes in the market at 1.3000, so USD 25,000 costs it GBP 19,230.77. The GBP 769.23 difference is the bank's FX gain. Amounts below are in GBP, the bank's reporting currency; the nostro movement is USD 25,000, shown at its GBP equivalent at the execution rate. Originator bank's books only.</p>
+<div class="simb-acct-step" id="simb-acct-8-0" style="display:block">
+<h3>Step 1: Debit the customer GBP 20,000</h3>
+<p>The customer is debited GBP 20,000 at the agreed customer rate of 1.2500. The funds wait in the FX funding account until the bank buys the dollars.</p>
+<table class="explorer-table"><tr><th>Account</th><th>Debit (GBP (USD 25,000 at GBP equivalent))</th><th>Credit (GBP (USD 25,000 at GBP equivalent))</th></tr>
+<tr><td>Customer account, GBP (liability to the customer, core banking)</td><td>20,000.00</td><td>-</td></tr>
+<tr><td>FX funding account, GBP</td><td>-</td><td>20,000.00</td></tr>
+<tr><td><b>Total</b></td><td><b>20,000.00</b></td><td><b>20,000.00</b></td></tr></table>
+<p><b>Running balances after this step.</b></p>
+<table class="explorer-table"><tr><th>Account</th><th>Net balance</th></tr>
+<tr><td>Customer account, GBP (liability to the customer, core banking)</td><td>Dr 20,000.00</td></tr>
+<tr><td>FX funding account, GBP</td><td>Cr 20,000.00</td></tr>
+</table></div>
+<div class="simb-acct-step" id="simb-acct-8-1" style="display:none">
+<h3>Step 2: Buy USD 25,000 in the market at 1.3000</h3>
+<p>The bank buys USD 25,000 at the market rate of 1.3000, paying GBP 19,230.77 from the FX funding account, and the dollars arrive in the nostro account. The nostro movement is USD 25,000; GBP 19,230.77 is its equivalent at the execution rate.</p>
+<table class="explorer-table"><tr><th>Account</th><th>Debit (GBP (USD 25,000 at GBP equivalent))</th><th>Credit (GBP (USD 25,000 at GBP equivalent))</th></tr>
+<tr><td>Nostro account, USD 25,000 (asset, GBP 19,230.77 equivalent at 1.3000)</td><td>19,230.77</td><td>-</td></tr>
+<tr><td>FX funding account, GBP</td><td>19,230.77</td><td>-</td></tr>
+<tr><td>FX funding account, GBP</td><td>-</td><td>19,230.77</td></tr>
+<tr><td>GBP settlement account (asset, reduced by the GBP paid to the market)</td><td>-</td><td>19,230.77</td></tr>
+<tr><td><b>Total</b></td><td><b>38,461.54</b></td><td><b>38,461.54</b></td></tr></table>
+<p><b>Reconciliation check.</b> Check the arithmetic: GBP 20,000.00 at 1.2500 is USD 25,000.00, and USD 25,000.00 at 1.3000 is GBP 19,230.77. The GBP settlement account shows a credit here because this scenario starts from a zero opening balance; in the real ledger it is a reduction of the bank's GBP cash, not a liability.</p>
+<p><b>Running balances after this step.</b></p>
+<table class="explorer-table"><tr><th>Account</th><th>Net balance</th></tr>
+<tr><td>Customer account, GBP (liability to the customer, core banking)</td><td>Dr 20,000.00</td></tr>
+<tr><td>FX funding account, GBP</td><td>Cr 20,000.00</td></tr>
+<tr><td>Nostro account, USD 25,000 (asset, GBP 19,230.77 equivalent at 1.3000)</td><td>Dr 19,230.77</td></tr>
+<tr><td>GBP settlement account (asset, reduced by the GBP paid to the market)</td><td>Cr 19,230.77</td></tr>
+</table></div>
+<div class="simb-acct-step" id="simb-acct-8-2" style="display:none">
+<h3>Step 3: Recognise the FX gain GBP 769.23</h3>
+<p>The customer paid GBP 20,000.00 and the dollars cost GBP 19,230.77. The GBP 769.23 difference is the bank's FX gain on the trade, recognised as income. The dollars sit in the nostro account, ready to be sent onward on the value date.</p>
+<table class="explorer-table"><tr><th>Account</th><th>Debit (GBP (USD 25,000 at GBP equivalent))</th><th>Credit (GBP (USD 25,000 at GBP equivalent))</th></tr>
+<tr><td>FX funding account, GBP</td><td>769.23</td><td>-</td></tr>
+<tr><td>FX gain income, GBP</td><td>-</td><td>769.23</td></tr>
+<tr><td><b>Total</b></td><td><b>769.23</b></td><td><b>769.23</b></td></tr></table>
+<p><b>Running balances after this step.</b></p>
+<table class="explorer-table"><tr><th>Account</th><th>Net balance</th></tr>
+<tr><td>Customer account, GBP (liability to the customer, core banking)</td><td>Dr 20,000.00</td></tr>
+<tr><td>FX funding account, GBP</td><td>Cr 19,230.77</td></tr>
+<tr><td>Nostro account, USD 25,000 (asset, GBP 19,230.77 equivalent at 1.3000)</td><td>Dr 19,230.77</td></tr>
+<tr><td>GBP settlement account (asset, reduced by the GBP paid to the market)</td><td>Cr 19,230.77</td></tr>
+<tr><td>FX gain income, GBP</td><td>Cr 769.23</td></tr>
+</table></div>
+<p><b><span id="simb-acct-prog-8">Step 1 of 3</span></b></p>
+<button class="api-btn" id="simb-acct-prev-8" onclick="simB_acctPrev(8)" disabled>Previous step</button> <button class="api-btn" id="simb-acct-next-8" onclick="simB_acctStep(8)">Next step</button> <button class="api-btn" onclick="simB_acctReset(8)">Restart scenario</button>
+<div class="simb-panel" id="simb-acct-final-8" style="display:none">
+<h3>What this scenario proves</h3>
+<p>Final balances: customer account Dr GBP 20,000.00, nostro account Dr GBP 19,230.77 (USD 25,000), FX funding account Cr GBP 19,230.77 (the dollars still to be delivered onward), GBP settlement account Cr GBP 19,230.77 (cash paid to the market), FX gain income Cr GBP 769.23. The customer rate, the execution rate and the gain are all stated, so the learner can see where the GBP 769.23 came from.</p></div>
+</div>
+<div class="simb-panel"><h3>Message sent, payment accepted, payment settled, customer account credited: five different moments</h3>
+<p><b>Status ladder (pacs.002, in order).</b> ACTC: technical validation passed. ACCP: customer-profile checks passed, accepted for processing. ACSP: settlement in process. ACSC: settlement completed on the debtor account. ACCC: settlement completed on the creditor account. RJCT: rejected (before settlement). PDNG: pending. No business outcome is a status code: "rejected", "returned" and "recalled" describe what happened, the code describes the status.</p>
+<p><b>Message sent.</b> The bank has transmitted the payment message, for example a pacs.008, to the next bank. Nothing has moved yet except data. A sent message can still be rejected, returned, or lost in transit.</p>
+<p><b>Payment accepted (ACCP).</b> The receiving bank or clearing system has checked the message and accepted it for processing. Acceptance means the payment is well formed and will be processed. It does not mean the money has moved. In SEPA SCT a pacs.002 is normally sent only for rejections (no news means accepted); in SCT Inst it is a positive and negative confirmation; under CBPR+ only the negative (RJCT) notification is mandatory and positive statuses are by bilateral agreement.</p>
+<p><b>Payment settling (ACSP) and settled (ACSC).</b> ACSP means settlement is in process; ACSC means settlement is completed on the debtor account. Settlement differs by model. RTGS (CHAPS/T2/Fedwire): final and irrevocable on the central-bank posting. Nostro (correspondent banking): final on the nostro debit under the correspondent agreement, in commercial-bank money, not through a central-bank account. Deferred net settlement: the net position settles at the scheduled time. Instant payments (SCT Inst / TIPS / Faster Payments): the beneficiary is credited within the scheme maximum (10 seconds for SCT Inst), effectively simultaneous with interbank settlement; if the payee cannot be credited in time, the instant payment is rejected and the payer restored. On-us payments have no interbank settlement at all: they are an internal posting only.</p>
+<p><b>Customer account credited (ACCC).</b> The beneficiary bank has posted the funds to the beneficiary customer account, so the customer can see the money. This is the only one of the moments the beneficiary customer experiences directly. It can happen after settlement, or never: if the account is closed, the payment is returned instead, via pacs.004, which is a new payment after settlement. A rejection (pacs.002 RJCT) is different: it happens before settlement, when nothing has moved.</p></div>
+</section>
+</main>
+<footer><p>Payments Training Hub. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="../index.html">Home</a> &middot; <a href="../courses.html">Courses</a> &middot; <a href="../practice.html">Practice</a> &middot; <a href="../simulators.html">Simulators</a> &middot; <a href="../labs.html">Labs</a> &middot; <a href="../explorer.html">Explorer</a> &middot; <a href="../tests.html">Tests</a> &middot; <a href="../diagnostic.html">Diagnostic</a> &middot; <a href="../faq.html">Interview Ready Questions</a> &middot; <a href="../interview-prep.html">Interview Prep</a></p><p><a href="../about.html">About</a> &middot; <a href="../privacy.html">Privacy</a> &middot; <a href="../terms.html">Terms</a> &middot; <a href="../contact.html">Contact</a> &middot; <a href="../editorial-standards.html">Editorial Standards</a> &middot; <a href="../sources.html">Sources</a></p></footer>
+<script defer src="../assets/site.js"></script>
+<script defer src="../assets/bundles.js"></script>
+<script defer src="../assets/auth.js"></script>
+<script defer src="../assets/simulators.js"></script>
+<script defer src="../assets/nav.js"></script>
+<script defer src="../assets/pf-enhance.js"></script>
+</body>
+</html>

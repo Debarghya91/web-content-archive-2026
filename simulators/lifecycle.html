@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>Payment Lifecycle Simulator | Payments Training Hub</title>
+<meta name="description" content="One payment, USD 25,000, London to Singapore. Follow it stage by stage, reference INV-8841.">
+<link rel="canonical" href="https://www.paymentstraininghub.in/simulators/lifecycle.html">
+<meta property="og:url" content="https://www.paymentstraininghub.in/simulators/lifecycle.html">
+<meta property="og:title" content="Payment Lifecycle Simulator | Payments Training Hub">
+<meta property="og:description" content="One payment, USD 25,000, London to Singapore. Follow it stage by stage, reference INV-8841.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.in/assets/hero/hero-poster.jpg">
+<link rel="stylesheet" href="../assets/pf-theme.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="../index.html" class="brand">Payments <span>Training Hub</span></a><nav class="topnav"><a href="../index.html">Home</a> <a href="../courses.html">Courses</a> <a href="../practice.html">Practice</a> <a href="../simulators.html">Simulators</a> <a href="../labs.html">Labs</a> <a href="../explorer.html">Explorer</a> <a href="../tests.html">Tests</a></nav><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox" style="display:none"><span id="authState">Not signed in</span> <span id="authForm" style="display:none"><input id="authEmail" type="email" placeholder="Email for OTP" aria-label="Email for sign-in"> <button class="mute-btn" onclick="paAuthSendOtp()">Send code</button> <input id="authCode" type="text" placeholder="6-digit code" aria-label="One-time code" style="display:none"> <button class="mute-btn" id="authVerifyBtn" onclick="paAuthVerifyOtp()" style="display:none">Verify</button> <button class="mute-btn" onclick="paAuthGoogle()">Sign in with Google</button> </span><button class="mute-btn" id="authSignOutBtn" onclick="paAuthSignOut()" style="display:none">Sign out</button></span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<nav class="crumbs"><a href="../index.html">Home</a> / <a href="../simulators.html">Simulators</a> / Payment Lifecycle Simulator</nav>
+<section class="section" id="sim-lifecycle">
+<h2>Payment Lifecycle Simulator</h2>
+<p>One payment, USD 25,000 from a London corporate to a supplier in Singapore, reference INV-8841, end to end reference LON-SIN-25000-01. This is ONE correspondent cross-border variant, not a universal lifecycle: domestic credit transfer, instant payment, high-value RTGS, cross-border correspondent and on-us payments have different stages, messages, settlement mechanisms and timing. Use the rail selector to see which stages drop out on other rails. SWIFT is messaging only: it does not clear or settle. Press Start and watch the payment travel through the stages. Each stage names the payment event it demonstrates: initiation, payment acceptance, payment processing, correspondent receipt, settlement finality, beneficiary credit, notification and reconciliation. The events from payment acceptance onwards are distinct, never interchangeable: acceptance is not settlement, and settlement is not beneficiary credit. At each stage you see the time, the message exchanged, the validation result, the debits and credits, and the status change, plus what comes in, what goes out, what data is used, which system it touches, what happens on failure, and how it recovers. Timing is a fast case, not the standard: the beneficiary is credited about 41 minutes after initiation here. SWIFT gpi published figures are that nearly 60 percent of gpi payments are credited within 30 minutes and almost 100 percent within 24 hours, and the last mile at the beneficiary bank is the slow part. Same-day value depends on meeting the US correspondent cut-off and on London, New York and Singapore business days. Inject a failure to see the payment go into repair and come back.</p>
+<div class="simA-controls">
+<button class="simA-btn" onclick="simA_lifeStart()">Start</button>
+<button class="simA-btn" onclick="simA_lifePause()">Pause</button>
+<button class="simA-btn" onclick="simA_lifeStep()">Step</button>
+<button class="simA-btn" onclick="simA_lifeReset()">Reset</button>
+<label class="simA-label">Rail <select id="simA-lifeRail" onchange="simA_lifeSetRail()"><option value="crossborder" selected>Cross-border correspondent</option><option value="domestic">Domestic credit transfer</option><option value="instant">Instant payment</option><option value="rtgs">High-value RTGS</option><option value="onus">On-us (same bank)</option></select></label>
+<label class="simA-label">Speed <select id="simA-lifeSpeed" onchange="simA_lifeSetSpeed()"><option value="1" selected>1x</option><option value="2">2x</option><option value="4">4x</option></select></label>
+<label class="simA-label">Inject failure <select id="simA-lifeFailure" onchange="simA_lifeSetFailure()"><option value="none" selected>None</option><option value="screening">Screening hit (hold)</option><option value="fraud">Fraud rejection</option><option value="insufficient">Insufficient funds (AM04)</option><option value="duplicate">Duplicate payment (AM05)</option><option value="invalidbene">Invalid beneficiary account (AC01)</option><option value="routing">Correspondent offline</option><option value="timeout">Transmission timeout, no acknowledgement</option><option value="outage">Technical outage at transmission</option><option value="settlement">Settlement delay, nostro shortfall</option><option value="benebank">Beneficiary bank rejects the credit (AC04)</option></select></label>
+</div>
+<div class="simA-panel" id="simA-lifeRailNote"></div>
+<div class="simA-track"><div class="simA-track-fill" id="simA-lifeFill"></div><div class="simA-dot" id="simA-lifeDot"></div></div>
+<div class="simA-stage-nodes" id="simA-lifeNodes"></div>
+<div class="simA-panel" id="simA-lifePanel">
+<h3>Ready</h3><p>Press Start to send the USD 25,000 payment from London to Singapore, or press Step to move through the stages one at a time. You can also click a stage above to jump to it, but only to a stage already reached or the next one: jumping ahead is not a valid payment path, and a payment cannot be credited before it is settled.</p></div>
+<div class="simA-fail" id="simA-lifeFail" style="display:none"></div>
+<div class="simA-log"><h3>Run log</h3><ol id="simA-lifeLog"><li>Payment created. Awaiting start.</li></ol></div>
+</section>
+</main>
+<footer><p>Payments Training Hub. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="../index.html">Home</a> &middot; <a href="../courses.html">Courses</a> &middot; <a href="../practice.html">Practice</a> &middot; <a href="../simulators.html">Simulators</a> &middot; <a href="../labs.html">Labs</a> &middot; <a href="../explorer.html">Explorer</a> &middot; <a href="../tests.html">Tests</a> &middot; <a href="../diagnostic.html">Diagnostic</a> &middot; <a href="../faq.html">Interview Ready Questions</a> &middot; <a href="../interview-prep.html">Interview Prep</a></p><p><a href="../about.html">About</a> &middot; <a href="../privacy.html">Privacy</a> &middot; <a href="../terms.html">Terms</a> &middot; <a href="../contact.html">Contact</a> &middot; <a href="../editorial-standards.html">Editorial Standards</a> &middot; <a href="../sources.html">Sources</a></p></footer>
+<script defer src="../assets/site.js"></script>
+<script defer src="../assets/bundles.js"></script>
+<script defer src="../assets/auth.js"></script>
+<script defer src="../assets/simulators.js"></script>
+<script defer src="../assets/nav.js"></script>
+<script defer src="../assets/pf-enhance.js"></script>
+</body>
+</html>

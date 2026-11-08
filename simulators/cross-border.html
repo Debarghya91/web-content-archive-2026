@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>Cross-Border Payment Configurator | Payments Training Hub</title>
+<meta name="description" content="Build a cross-border payment and watch the chain, the charges, and the final amount change.">
+<link rel="canonical" href="https://www.paymentstraininghub.in/simulators/cross-border.html">
+<meta property="og:url" content="https://www.paymentstraininghub.in/simulators/cross-border.html">
+<meta property="og:title" content="Cross-Border Payment Configurator | Payments Training Hub">
+<meta property="og:description" content="Build a cross-border payment and watch the chain, the charges, and the final amount change.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.in/assets/hero/hero-poster.jpg">
+<link rel="stylesheet" href="../assets/pf-theme.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="../index.html" class="brand">Payments <span>Training Hub</span></a><nav class="topnav"><a href="../index.html">Home</a> <a href="../courses.html">Courses</a> <a href="../practice.html">Practice</a> <a href="../simulators.html">Simulators</a> <a href="../labs.html">Labs</a> <a href="../explorer.html">Explorer</a> <a href="../tests.html">Tests</a></nav><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox" style="display:none"><span id="authState">Not signed in</span> <span id="authForm" style="display:none"><input id="authEmail" type="email" placeholder="Email for OTP" aria-label="Email for sign-in"> <button class="mute-btn" onclick="paAuthSendOtp()">Send code</button> <input id="authCode" type="text" placeholder="6-digit code" aria-label="One-time code" style="display:none"> <button class="mute-btn" id="authVerifyBtn" onclick="paAuthVerifyOtp()" style="display:none">Verify</button> <button class="mute-btn" onclick="paAuthGoogle()">Sign in with Google</button> </span><button class="mute-btn" id="authSignOutBtn" onclick="paAuthSignOut()" style="display:none">Sign out</button></span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<nav class="crumbs"><a href="../index.html">Home</a> / <a href="../simulators.html">Simulators</a> / Cross-Border Payment Configurator</nav>
+<section class="section" id="sim-crossborder">
+<h2>Cross-Border Payment Configurator</h2>
+<p>Build a cross-border payment and watch the chain, the charges and the final amount change. The default is the classic worked example: USD 25,000, charges SHA, Wells Fargo deducts USD 20, Bank of New York Mellon deducts USD 22, and the beneficiary receives USD 24,958.00. Change any control to replay the payment a different way. All charges shown are illustrative example tariffs, not standard fees: correspondent and originator charges are commercial tariffs that vary by bank, agreement, amount, route and service level. The correspondent banks shown are illustrative examples for the chosen currency; real correspondent selection follows bilateral agreements and standard settlement instructions, not currency alone. The beneficiary bank own fee is excluded from this simplified model, so the amount credited to the beneficiary account equals the amount received by the beneficiary bank here. Since 22 November 2025 the CBPR+ coexistence period has ended: pacs.008 (replacing MT103) and pacs.009 COV (replacing MT202 COV) are the current cross-border formats, and MT103 / MT202 COV are legacy formats shown here only for reference.</p>
+<div class="simA-grid">
+<label class="simA-label">Originating bank (Debtor Agent) <select id="simA-cbOrig" onchange="simA_cbRender()"><option selected>Meridian Bank London</option><option>Harbour Bank Singapore</option><option>Alpine Bank Zurich</option></select></label>
+<label class="simA-label">Beneficiary bank (Creditor Agent) <select id="simA-cbBene" onchange="simA_cbRender()"><option>Meridian Bank London</option><option selected>Harbour Bank Singapore</option><option>Alpine Bank Zurich</option><option>Pacific Merchant Bank Singapore</option><option>Continental Bank Frankfurt</option></select></label>
+<label class="simA-label">Instructed currency <select id="simA-cbCcy" onchange="simA_cbRender()"><option selected>USD</option><option>EUR</option><option>GBP</option></select></label>
+<label class="simA-label">Beneficiary currency <select id="simA-cbBeneCcy" onchange="simA_cbRender()"><option selected>USD</option><option>EUR</option><option>GBP</option></select></label>
+<label class="simA-label">Illustrative FX rate (beneficiary units per 1 instructed unit, used only when the currencies differ) <input id="simA-cbFx" type="number" step="0.0001" min="0.0001" value="1.27" onchange="simA_cbRender()" oninput="simA_cbRender()"></label>
+<label class="simA-label">Amount <input id="simA-cbAmt" type="number" step="0.01" min="0.01" value="25000" onchange="simA_cbRender()" oninput="simA_cbRender()"></label>
+<label class="simA-label">Value date <input id="simA-cbValueDate" type="date" value="2026-11-05" onchange="simA_cbRender()"></label>
+<label class="simA-label">Correspondent banks <select id="simA-cbCorr" onchange="simA_cbRender()"><option value="1">1 correspondent</option><option value="2" selected>2 correspondents</option></select></label>
+<span class="simA-label">Method<br><label><input type="radio" name="simA-cbMethod" value="serial" checked onchange="simA_cbMethodChange()"> Serial</label> <label><input type="radio" name="simA-cbMethod" value="cover" onchange="simA_cbMethodChange()"> Cover</label></span>
+<span class="simA-label">Charge option<br><label><input type="radio" name="simA-cbCharge" value="SHA" checked onchange="simA_cbRender()"> SHA</label> <label><input type="radio" name="simA-cbCharge" value="OUR" onchange="simA_cbRender()"> OUR</label> <label><input type="radio" name="simA-cbCharge" value="BEN" onchange="simA_cbRender()"> BEN</label></span>
+<label class="simA-label">Settlement route <select id="simA-cbRoute" onchange="simA_cbRender()"><option value="newyork" selected>New York correspondent chain</option><option value="nostro">Direct nostro account, no intermediary</option><option value="chips">CHIPS / Fedwire settlement between US correspondents</option></select></label>
+<label class="simA-label">Correspondent 1 nostro balance <input id="simA-cbBal1" type="number" step="0.01" min="0" value="500000" onchange="simA_cbRender()" oninput="simA_cbRender()"></label>
+<label class="simA-label">Correspondent 2 nostro balance <input id="simA-cbBal2" type="number" step="0.01" min="0" value="500000" onchange="simA_cbRender()" oninput="simA_cbRender()"></label>
+<label class="simA-label">Screening outcome <select id="simA-cbScreen" onchange="simA_cbRender()"><option value="clear" selected>Clear at every agent</option><option value="hold">Sanctions hold at Correspondent 1</option></select></label>
+<label class="simA-label"><input type="checkbox" id="simA-cbCoverFirst" disabled onchange="simA_cbRender()"> Cover arrives before the announcement (cover method only)</label>
+</div>
+<div class="simA-controls"><button class="simA-btn" onclick="simA_cbClassic()">Load classic example</button></div>
+<div id="simA-cbChain"></div>
+<div id="simA-cbLanes"></div>
+<div id="simA-cbOrder"></div>
+<div id="simA-cbFields"></div>
+<div id="simA-cbCharges"></div>
+<div class="simA-panel" id="simA-cbNote"></div>
+</section>
+</main>
+<footer><p>Payments Training Hub. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="../index.html">Home</a> &middot; <a href="../courses.html">Courses</a> &middot; <a href="../practice.html">Practice</a> &middot; <a href="../simulators.html">Simulators</a> &middot; <a href="../labs.html">Labs</a> &middot; <a href="../explorer.html">Explorer</a> &middot; <a href="../tests.html">Tests</a> &middot; <a href="../diagnostic.html">Diagnostic</a> &middot; <a href="../faq.html">Interview Ready Questions</a> &middot; <a href="../interview-prep.html">Interview Prep</a></p><p><a href="../about.html">About</a> &middot; <a href="../privacy.html">Privacy</a> &middot; <a href="../terms.html">Terms</a> &middot; <a href="../contact.html">Contact</a> &middot; <a href="../editorial-standards.html">Editorial Standards</a> &middot; <a href="../sources.html">Sources</a></p></footer>
+<script defer src="../assets/site.js"></script>
+<script defer src="../assets/bundles.js"></script>
+<script defer src="../assets/auth.js"></script>
+<script defer src="../assets/simulators.js"></script>
+<script defer src="../assets/nav.js"></script>
+<script defer src="../assets/pf-enhance.js"></script>
+</body>
+</html>

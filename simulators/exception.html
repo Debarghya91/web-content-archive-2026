@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>Payment Exception Investigation Simulator | Payments Training Hub</title>
+<meta name="description" content="Seventeen exceptions, as operations sees them. Read the symptom, pick the first investigation step.">
+<link rel="canonical" href="https://www.paymentstraininghub.in/simulators/exception.html">
+<meta property="og:url" content="https://www.paymentstraininghub.in/simulators/exception.html">
+<meta property="og:title" content="Payment Exception Investigation Simulator | Payments Training Hub">
+<meta property="og:description" content="Seventeen exceptions, as operations sees them. Read the symptom, pick the first investigation step.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.in/assets/hero/hero-poster.jpg">
+<link rel="stylesheet" href="../assets/pf-theme.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="../index.html" class="brand">Payments <span>Training Hub</span></a><nav class="topnav"><a href="../index.html">Home</a> <a href="../courses.html">Courses</a> <a href="../practice.html">Practice</a> <a href="../simulators.html">Simulators</a> <a href="../labs.html">Labs</a> <a href="../explorer.html">Explorer</a> <a href="../tests.html">Tests</a></nav><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox" style="display:none"><span id="authState">Not signed in</span> <span id="authForm" style="display:none"><input id="authEmail" type="email" placeholder="Email for OTP" aria-label="Email for sign-in"> <button class="mute-btn" onclick="paAuthSendOtp()">Send code</button> <input id="authCode" type="text" placeholder="6-digit code" aria-label="One-time code" style="display:none"> <button class="mute-btn" id="authVerifyBtn" onclick="paAuthVerifyOtp()" style="display:none">Verify</button> <button class="mute-btn" onclick="paAuthGoogle()">Sign in with Google</button> </span><button class="mute-btn" id="authSignOutBtn" onclick="paAuthSignOut()" style="display:none">Sign out</button></span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<nav class="crumbs"><a href="../index.html">Home</a> / <a href="../simulators.html">Simulators</a> / Payment Exception Investigation Simulator</nav>
+<section class="section" id="sim-exception">
+<h2>Payment Exception Investigation Simulator</h2>
+<p>Twenty-one exceptions, as operations sees them. Read the symptom, pick the first investigation action you would take, and learn immediately whether it is right, what evidence it produces, and what happens next. Work through all 21 and see your score for correct first try investigations. Each scenario carries a timestamped message trail (MsgId, UETR, EndToEndId, status code) where one exists, because an investigation is proved by its audit trail, not by prose alone.</p>
+<p><b>Score: <span id="simb-exc-score">0</span> correct first try out of <span id="simb-exc-done">0</span> investigated (21 scenarios)</b> <button class="api-btn" onclick="simB_excReset()">Reset score</button></p>
+<div class="explorer-tabs">
+<button class="explorer-tab active" onclick="simB_excTab(0)">1. Insufficient funds</button>
+<button class="explorer-tab" onclick="simB_excTab(1)">2. Invalid account</button>
+<button class="explorer-tab" onclick="simB_excTab(2)">3. Invalid BIC</button>
+<button class="explorer-tab" onclick="simB_excTab(3)">4. Invalid IBAN</button>
+<button class="explorer-tab" onclick="simB_excTab(4)">5. Invalid XML</button>
+<button class="explorer-tab" onclick="simB_excTab(5)">6. Missing mandatory info</button>
+<button class="explorer-tab" onclick="simB_excTab(6)">7. Duplicate payment</button>
+<button class="explorer-tab" onclick="simB_excTab(7)">8. Sanctions hit</button>
+<button class="explorer-tab" onclick="simB_excTab(8)">9. Fraud alert</button>
+<button class="explorer-tab" onclick="simB_excTab(9)">10. FX failure</button>
+<button class="explorer-tab" onclick="simB_excTab(10)">11. Correspondent unavailable</button>
+<button class="explorer-tab" onclick="simB_excTab(11)">12. Clearing timeout</button>
+<button class="explorer-tab" onclick="simB_excTab(12)">13. Settlement failure</button>
+<button class="explorer-tab" onclick="simB_excTab(13)">14. Rejection</button>
+<button class="explorer-tab" onclick="simB_excTab(14)">15. Return</button>
+<button class="explorer-tab" onclick="simB_excTab(15)">16. Reconciliation mismatch</button>
+<button class="explorer-tab" onclick="simB_excTab(16)">17. Missing/delayed confirmation</button>
+<button class="explorer-tab" onclick="simB_excTab(17)">18. Recall request (camt.056)</button>
+<button class="explorer-tab" onclick="simB_excTab(18)">19. Customer cancellation before settlement</button>
+<button class="explorer-tab" onclick="simB_excTab(19)">20. Clearing rejection</button>
+<button class="explorer-tab" onclick="simB_excTab(20)">21. Routing failure</button>
+</div>
+<div class="simb-exc-scen" id="simb-exc-0" style="display:block">
+<h3>1. Insufficient funds</h3>
+<p><b>What operations sees.</b> A pacs.002 arrives with reason code AM04. The customer account held USD 8,000, but the payment was USD 25,000. The customer calls to ask where the money is.</p>
+<p><b>What is your first investigation action?</b></p>
+<button class="quiz-opt simb-exc-btn" id="simb-exc-0-0" onclick="simB_excAction(0, 0, true)">Check the account balance and the value date, then tell the customer the exact shortfall and ask for funds or a new instruction</button>
+<button class="quiz-opt simb-exc-btn" id="simb-exc-0-1" onclick="simB_excAction(0, 1, false)">Resend the payment immediately and hope the balance has changed</button>
+<button class="quiz-opt simb-exc-btn" id="simb-exc-0-2" onclick="simB_excAction(0, 2, false)">Raise a fraud case on the payment</button>
+<div class="simb-panel" id="simb-exc-fb-0" style="display:none"></div>
+<div id="simb-exc-data-0" style="display:none">
+<p data-why="Correct. AM04 means insufficient funds, and the first job is to confirm the facts on the account before anything else is promised." data-ev="The balance enquiry and the pacs.002 with AM04, which together prove the payment failed for funds, not for a system error." data-nx="Ask the customer to fund the account or send a corrected instruction for a lower amount, then treat it as a new payment."></p>
+<p data-why="Incorrect. Resending without checking the balance repeats the same rejection and can create a duplicate if the first attempt later settles." data-ev="A second pacs.002 with the same AM04 code, and no new information about the account." data-nx="Stop resending, check the balance, and contact the customer about the shortfall."></p>
+<p data-why="Incorrect. Nothing in the symptom points to fraud. A fraud case sends the investigation down the wrong queue and delays the real fix." data-ev="A fraud case with no fraud indicators, which the fraud team will close without action." data-nx="Close the fraud case, check the balance, and work the AM04 rejection properly."></p>
+</div></div>
+<div class="simb-exc-scen" id="simb-exc-1" style="display:none">
+<h3>2. Invalid account</h3>
+<p><b>What operations sees.</b> A pacs.002 arrives with reason code AC01. The beneficiary account number fails the modulus check at the beneficiary bank. The payment never reached the beneficiary.</p>
+<p><b>What is your first investigation action?</b></p>
+<button class="quiz-opt simb-exc-btn" id="simb-exc-1-0" onclick="simB_excAction(1, 0, true)">Match the pacs.002 to the original payment by reference, confirm AC01, and ask the customer for the correct account number</button>
+<button class="quiz-opt simb-exc-btn" id="simb-exc-1-1" onclick="simB_excAction(1, 1, false)">Change one digit of the account number and resend to see if it works</button>
+<button class="quiz-opt simb-exc-btn" id="simb-exc-1-2" onclick="simB_excAction(1, 2, false)">Credit the customer account and close the case without telling them</button>
+<div class="simb-panel" id="simb-exc-fb-1" style="display:none"></div>
+<div id="simb-exc-data-1" style="display:none">
+<p data-why="Correct. AC01 means incorrect account number, and only the customer can supply the right one. Matching first proves which payment failed." data-ev="The matched pacs.002 and original pacs.008 pair, plus the customer corrected account number on record." data-nx="Repair the payment with the corrected account number and resend it as a new instruction with a fresh InstrId, an unchanged EndToEndId (so the creditor can match it to the same underlying payment), and a new MsgId."></p>
+<p data-why="Incorrect. Guessing an account number can send money to the wrong person, which is far worse than a rejected payment." data-ev="A payment sent to an account the customer never authorised, and a possible recall case." data-nx="Stop, contact the customer, and wait for the correct account number in writing."></p>
+<p data-why="Incorrect. The funds may already have been re-credited, but the customer still needs to know why the payment failed and what to correct." data-ev="A ledger credit with no customer communication and no corrected instruction." data-nx="Notify the customer of the AC01 rejection and ask for the correct account number."></p>
+</div></div>
+<div class="simb-exc-scen" id="simb-exc-2" style="display:none">
+<h3>3. Invalid BIC</h3>
+<p><b>What operations sees.</b> The payment is held at validation. The beneficiary bank BIC in the instruction is not a live BIC in the directory, so routing cannot resolve the next hop.</p>
+<p><b>What is your first investigation action?</b></p>
+<button class="quiz-opt simb-exc-btn" id="simb-exc-2-0" onclick="simB_excAction(2, 0, true)">Check the BIC against the current BIC directory, look it up from the beneficiary bank identifier, and repair the payment</button>
+<button class="quiz-opt simb-exc-btn" id="simb-exc-2-1" onclick="simB_excAction(2, 1, false)">Send the payment without a BIC and let the next bank work it out</button>
+<button class="quiz-opt simb-exc-btn" id="simb-exc-2-2" onclick="simB_excAction(2, 2, false)">Ask the beneficiary bank by phone to accept the payment anyway</button>
+<div class="simb-panel" id="simb-exc-fb-2" style="display:none"></div>
+<div id="simb-exc-data-2" style="display:none">
+<p data-why="Correct. An invalid BIC is a reference data problem with a reference data fix. A BIC is looked up in the BIC directory, not derived from the IBAN by algorithm; where the IBAN country format carries a bank identifier, the directory lookup uses it." data-ev="The directory lookup showing the BIC as invalid, plus the BIC found in the BIC directory." data-nx="Repair the BIC, re-run validation, and release the payment to routing."></p>
+<p data-why="Incorrect. Sending without a valid BIC guarantees a rejection or a manual repair downstream, and it breaks straight through processing." data-ev="A rejection from the next bank for missing beneficiary agent information." data-nx="Hold the payment, fix the BIC from the directory, and then release it."></p>
+<p data-why="Incorrect. A phone call does not fix the routing data, and the payment system still cannot route a payment with an invalid BIC." data-ev="A phone note with no system change and a payment still held at validation." data-nx="Fix the BIC in the system from the directory or the IBAN, then release the payment."></p>
+</div></div>
+<div class="simb-exc-scen" id="simb-exc-3" style="display:none">
+<h3>4. Invalid IBAN</h3>
+<p><b>What operations sees.</b> Validation rejects the instruction. The beneficiary IBAN fails the modulus 97 check, so the account number cannot be real as written.</p>
+<p><b>What is your first investigation action?</b></p>
+<button class="quiz-opt simb-exc-btn" id="simb-exc-3-0" onclick="simB_excAction(3, 0, true)">Run the IBAN modulus check, show the customer exactly which character fails, and ask for a corrected IBAN</button>
+<button class="quiz-opt simb-exc-btn" id="simb-exc-3-1" onclick="simB_excAction(3, 1, false)">Drop the last two characters of the IBAN and resend</button>
+<button class="quiz-opt simb-exc-btn" id="simb-exc-3-2" onclick="simB_excAction(3, 2, false)">Convert the payment to a cheque and post it to the beneficiary</button>
+<div class="simb-panel" id="simb-exc-fb-3" style="display:none"></div>
+<div id="simb-exc-data-3" style="display:none">
+<p data-why="Correct. A failed modulus check proves the IBAN is wrong as written, and the fix must come from the customer or the beneficiary." data-ev="The modulus check result and the corrected IBAN supplied by the customer." data-nx="Re-validate with the corrected IBAN and release the payment."></p>
+<p data-why="Incorrect. Truncating an IBAN does not make it valid, and it risks sending money to a different account." data-ev="A second validation rejection, or worse, a payment to the wrong account." data-nx="Stop editing the IBAN, contact the customer, and get the correct IBAN."></p>
+<p data-why="Incorrect. Changing the payment method does not fix the bad account data, and it creates a new payment the customer never instructed." data-ev="A cheque instruction with no valid beneficiary account to pay into." data-nx="Keep the payment method, get the correct IBAN, and re-validate."></p>
+</div></div>
+<div class="simb-exc-scen" id="simb-exc-4" style="display:none">
+<h3>5. Invalid XML</h3>
+<p><b>What operations sees.</b> The receiving bank rejects a pacs.008 at its gateway. The message fails schema validation: a mandatory element is missing and a date is in the wrong format.</p>
+<p><b>What is your first investigation action?</b></p>
+<button class="quiz-opt simb-exc-btn" id="simb-exc-4-0" onclick="simB_excAction(4, 0, true)">Read the schema validation error, identify the missing element and the bad date, fix the message build, and resend</button>
+<button class="quiz-opt simb-exc-btn" id="simb-exc-4-1" onclick="simB_excAction(4, 1, false)">Ask the customer to send the payment again from online banking</button>
+<button class="quiz-opt simb-exc-btn" id="simb-exc-4-2" onclick="simB_excAction(4, 2, false)">Send the same message again unchanged and hope the receiver accepts it</button>
+<div class="simb-panel" id="simb-exc-fb-4" style="display:none"></div>
+<div id="simb-exc-data-4" style="display:none">
+<p data-why="Correct. This is a technical rejection, so the fix is in the system that built the message, not with the customer." data-ev="The schema error report naming the element and the corrected message that passes validation." data-nx="Resend the corrected message and confirm acceptance with a pacs.002 ACCP."></p>
+<p data-why="Incorrect. The customer instruction was fine. The error is in how the bank built the pacs.008, so a new customer instruction would fail the same way." data-ev="A second identical schema rejection and a confused customer." data-nx="Fix the message build in the payment engine and resend from the bank side."></p>
+<p data-why="Incorrect. A deterministic schema failure will fail every time, and repeated sends can create duplicate investigation records." data-ev="A second identical rejection with the same schema error." data-nx="Correct the message, validate it against the schema, then resend once."></p>
+</div></div>
+<div class="simb-exc-scen" id="simb-exc-5" style="display:none">
+<h3>6. Missing mandatory info</h3>
+<p><b>What operations sees.</b> A payment is held before screening. The debtor address is missing, and the receiving bank requires complete debtor data before it will accept the payment.</p>
+<p><b>What is your first investigation action?</b></p>
+<button class="quiz-opt simb-exc-btn" id="simb-exc-5-0" onclick="simB_excAction(5, 0, true)">Identify exactly which mandatory field is missing, get it from the customer record or the customer, add it, and re-run validation</button>
+<button class="quiz-opt simb-exc-btn" id="simb-exc-5-1" onclick="simB_excAction(5, 1, false)">Leave the field blank and add a note asking the receiver to fill it in</button>
+<button class="quiz-opt simb-exc-btn" id="simb-exc-5-2" onclick="simB_excAction(5, 2, false)">Delete the payment and tell the customer the bank cannot process it</button>
+<div class="simb-panel" id="simb-exc-fb-5" style="display:none"></div>
+<div id="simb-exc-data-5" style="display:none">
+<p data-why="Correct. The payment cannot proceed until the mandatory data exists, and the repair must be recorded with its source." data-ev="The validation report naming the missing field and the completed payment record." data-nx="Re-run validation and screening, then release the payment."></p>
+<p data-why="Incorrect. The receiving bank cannot invent debtor data, and it will reject or return the payment for incomplete information." data-ev="A rejection for missing creditor or debtor information." data-nx="Complete the field from an authorised source before sending."></p>
+<p data-why="Incorrect. The payment is repairable. Deleting it loses the instruction and forces the customer to start again for no reason." data-ev="A deleted instruction and an unnecessary customer complaint." data-nx="Repair the missing field and keep the original instruction reference."></p>
+</div></div>
+<div class="simb-exc-scen" id="simb-exc-6" style="display:none">
+<h3>7. Duplicate payment</h3>
+<p><b>What operations sees.</b> Reconciliation shows two USD 12,500 debits with the same reference INV-9100 against one customer instruction. The beneficiary may have been paid twice. Trail: pacs.008 MsgId PACS008-20261106-007, InstrId INSTR-20261106-007, EndToEndId INV-9100, UETR a3e1f2b4-5c6d-4a7e-9b1c-2d3e4f5a6b7c, 2026-11-06 09:05; second debit with the same EndToEndId at 09:41.</p>
+<p><b>What is your first investigation action?</b></p>
+<button class="quiz-opt simb-exc-btn" id="simb-exc-6-0" onclick="simB_excAction(6, 0, true)">Prove the duplicate from the settlement record, then send a camt.056 cancellation request with reason DUPL to the beneficiary bank</button>
+<button class="quiz-opt simb-exc-btn" id="simb-exc-6-1" onclick="simB_excAction(6, 1, false)">Resend the payment a third time to make sure one of them arrives</button>
+<button class="quiz-opt simb-exc-btn" id="simb-exc-6-2" onclick="simB_excAction(6, 2, false)">Debit the customer a second time to match the two debits</button>
+<div class="simb-panel" id="simb-exc-fb-6" style="display:none"></div>
+<div id="simb-exc-data-6" style="display:none">
+<p data-why="Correct. A pacs.004 can only be sent by the creditor agent on its own initiative; the debtor agent cannot 'request' a return through a pacs.004. Duplicate recovery by the originator side is a camt.056 cancellation/recall request with reason DUPL. The beneficiary bank then either returns the funds via pacs.004 carrying return reason FOCR (Following Cancellation Request) or refuses via camt.029. Under the EPC SCT recall procedure the request must be made within 10 banking business days (13 months for fraud) and the beneficiary bank answers within 15 banking business days." data-ev="Two settlement debits with the same reference and amount, matched to one instruction, plus the camt.056 (DUPL) request and the pacs.004/FOCR return or the camt.029 refusal." data-nx="Track the camt.056 until the pacs.004/FOCR return or the camt.029 refusal arrives, and check the idempotency key to find why the duplicate was created."></p>
+<p data-why="Incorrect. Resending makes the problem worse. There are already two payments for one instruction, and a third would be a third duplicate." data-ev="A third identical debit and a larger recovery problem." data-nx="Stop all resends, prove the duplicate, and recover the second payment by camt.056 (DUPL)."></p>
+<p data-why="Incorrect. The customer instructed one payment. Debiting them again charges them for the bank error." data-ev="A customer complaint and a second incorrect debit to reverse." data-nx="Recover the duplicate from the beneficiary bank by camt.056 (DUPL) and leave the customer account as instructed."></p>
+</div></div>
+<div class="simb-exc-scen" id="simb-exc-7" style="display:none">
+<h3>8. Sanctions hit</h3>
+<p><b>What operations sees.</b> Screening holds a USD 200,000 payment. The beneficiary name is a close fuzzy match to a name on a sanctions list. The payment cannot proceed until the match is cleared or confirmed.</p>
+<p><b>What is your first investigation action?</b></p>
+<button class="quiz-opt simb-exc-btn" id="simb-exc-7-0" onclick="simB_excAction(7, 0, true)">Open a screening case, compare the full name, date of birth, address, and country against the list entry, and record a clear or confirm decision</button>
+<button class="quiz-opt simb-exc-btn" id="simb-exc-7-1" onclick="simB_excAction(7, 1, false)">Release the payment because the customer is a long standing client</button>
+<button class="quiz-opt simb-exc-btn" id="simb-exc-7-2" onclick="simB_excAction(7, 2, false)">Cancel the payment and close the case without recording a decision</button>
+<div class="simb-panel" id="simb-exc-fb-7" style="display:none"></div>
+<div id="simb-exc-data-7" style="display:none">
+<p data-why="Correct. A fuzzy match is not a confirmed match. Only a documented comparison of the full party details can clear it or confirm it." data-ev="The screening case with the list entry, the comparison notes, and the recorded decision with approver." data-nx="Release the payment if cleared, or block it and escalate to compliance if confirmed."></p>
+<p data-why="Incorrect. A long relationship does not clear a sanctions match, and releasing without a recorded decision is a serious compliance breach." data-ev="A released payment with no screening decision on record, which auditors and regulators will treat as a control failure." data-nx="Keep the payment held and complete the documented match review."></p>
+<p data-why="Incorrect. Cancelling avoids the payment but leaves the match unresolved, so the next payment to the same party will hit the same way." data-ev="An unresolved screening alert that will fire again on the next payment." data-nx="Complete the comparison, record the decision, and then cancel or release on that basis."></p>
+</div></div>
+<div class="simb-exc-scen" id="simb-exc-8" style="display:none">
+<h3>9. Fraud alert</h3>
+<p><b>What operations sees.</b> The fraud engine scores a GBP 90,000 payment as high risk. The payee is new, the amount is ten times the customer normal payment, and the device is unrecognised.</p>
+<p><b>What is your first investigation action?</b></p>
+<button class="quiz-opt simb-exc-btn" id="simb-exc-8-0" onclick="simB_excAction(8, 0, true)">Hold the payment, contact the customer on a verified channel, and confirm whether they instructed it before releasing or blocking</button>
+<button class="quiz-opt simb-exc-btn" id="simb-exc-8-1" onclick="simB_excAction(8, 1, false)">Release the payment because the customer has enough balance</button>
+<button class="quiz-opt simb-exc-btn" id="simb-exc-8-2" onclick="simB_excAction(8, 2, false)">Block the payment and close the case without contacting the customer</button>
+<div class="simb-panel" id="simb-exc-fb-8" style="display:none"></div>
+<div id="simb-exc-data-8" style="display:none">
+<p data-why="Correct. A high risk score needs a human confirmation from the customer, and the contact must be on a channel the fraudster cannot control." data-ev="The fraud case, the risk score with reasons, and the recorded customer confirmation." data-nx="Release the payment if the customer confirms it, or block it and start the fraud recovery process if they do not."></p>
+<p data-why="Incorrect. Sufficient balance says nothing about whether the customer authorised the payment. Balance is not an identity check." data-ev="A released payment that may be an authorised push payment fraud, with the funds already gone." data-nx="Keep the payment held and verify the instruction with the customer."></p>
+<p data-why="Incorrect. Blocking without contact leaves a possibly genuine urgent payment stopped and the customer uninformed, which damages trust and may breach a contract." data-ev="A blocked genuine payment and a customer who learns about it from the beneficiary." data-nx="Contact the customer, confirm or deny the instruction, then act on their answer."></p>
+</div></div>
+<div class="simb-exc-scen" id="simb-exc-9" style="display:none">
+<h3>10. FX failure</h3>
+<p><b>What operations sees.</b> A USD 100,000 payment to Tokyo needs conversion to JPY, but the FX rate service returns no rate for the value date, so the payment cannot be priced or executed.</p>
+<p><b>What is your first investigation action?</b></p>
+<button class="quiz-opt simb-exc-btn" id="simb-exc-9-0" onclick="simB_excAction(9, 0, true)">Hold the payment, check the FX service and the value date calendar, then re-price once a valid rate is available</button>
+<button class="quiz-opt simb-exc-btn" id="simb-exc-9-1" onclick="simB_excAction(9, 1, false)">Use yesterday rate without telling anyone</button>
+<button class="quiz-opt simb-exc-btn" id="simb-exc-9-2" onclick="simB_excAction(9, 2, false)">Send the payment in USD and let the beneficiary bank convert it, without telling the customer</button>
+<div class="simb-panel" id="simb-exc-fb-9" style="display:none"></div>
+<div id="simb-exc-data-9" style="display:none">
+<p data-why="Correct. Without a rate the bank cannot tell the customer the converted amount, so the payment must wait for a valid rate rather than proceed on a guess." data-ev="The FX service error log, the value date check, and the re-priced payment with the applied rate recorded." data-nx="Re-price, confirm the converted amount with the customer if the agreement requires it, and release."></p>
+<p data-why="Incorrect. Using a stale rate without disclosure misprices the payment and can leave the bank or the customer with an unexpected loss." data-ev="A payment executed at the wrong rate and a reconciliation break on the converted amount." data-nx="Hold the payment, get a live rate for the correct value date, and record the rate applied."></p>
+<p data-why="Incorrect as worded here because it is done without telling the customer or checking the agreement. Sending in the debtor currency with conversion by the creditor agent is a normal cross-border pattern when it is agreed and disclosed; the error is doing it silently, which changes the charges and the amount the beneficiary receives." data-ev="A beneficiary credit in a different currency from the one instructed, with an unexplained shortfall." data-nx="Hold the payment, fix the rate, and execute in the instructed currency, or agree the conversion with the customer first."></p>
+</div></div>
+<div class="simb-exc-scen" id="simb-exc-10" style="display:none">
+<h3>11. Correspondent unavailable</h3>
+<p><b>What operations sees.</b> The correspondent bank in New York does not acknowledge the pacs.008 within the expected time. Its system is down, and the payment status is unknown. Trail: pacs.008 MsgId PACS008-20261105-001, EndToEndId INV-8841, UETR a3e1f2b4-5c6d-4a7e-9b1c-2d3e4f5a6b7c, sent 2026-11-05 09:05; no pacs.002 received by 09:35.</p>
+<p><b>What is your first investigation action?</b></p>
+<button class="quiz-opt simb-exc-btn" id="simb-exc-10-0" onclick="simB_excAction(10, 0, true)">Send a pacs.028 status request (FIToFI Payment Status Request) to the correspondent with the UETR, confirm whether the original payment was received, and only then decide on resend</button>
+<button class="quiz-opt simb-exc-btn" id="simb-exc-10-1" onclick="simB_excAction(10, 1, false)">Resend the payment immediately through a different correspondent</button>
+<button class="quiz-opt simb-exc-btn" id="simb-exc-10-2" onclick="simB_excAction(10, 2, false)">Assume the payment failed and credit the customer straight away</button>
+<div class="simb-panel" id="simb-exc-fb-10" style="display:none"></div>
+<div id="simb-exc-data-10" style="display:none">
+<p data-why="Correct. A timeout means unknown, not failed. A pacs.028 asks the next bank for the status of a payment already sent, and is answered by a pacs.002 status report. Resending before confirming risks a duplicate, so the status check comes first." data-ev="The pacs.028 status request with the UETR, and the correspondent's pacs.002 confirmation of receipt or non receipt." data-nx="Resend only if the correspondent confirms non receipt. Otherwise wait for its processing."></p>
+<p data-why="Incorrect. The first payment may have been received and may still settle. A second send through another route can pay the beneficiary twice." data-ev="Two live payments for one instruction and a duplicate recovery case." data-nx="Check the status of the first payment before sending anything else."></p>
+<p data-why="Incorrect. If the payment later settles, the bank will have both credited the customer and paid the beneficiary, which is a loss." data-ev="A customer credit plus a settled payment, leaving the bank out of pocket." data-nx="Keep the payment open, confirm the status, and only re-credit once non receipt is proven."></p>
+</div></div>
+<div class="simb-exc-scen" id="simb-exc-11" style="display:none">
+<h3>12. Clearing timeout</h3>
+<p><b>What operations sees.</b> A Faster Payments single immediate payment was submitted but no acknowledgement arrived within the timeout window. The clearing system may be slow, or the message may be lost. Trail: submission reference FPS-20261106-7781, EndToEndId INV-9080, sent 10:02; no acknowledgement by 10:03.</p>
+<p><b>What is your first investigation action?</b></p>
+<button class="quiz-opt simb-exc-btn" id="simb-exc-11-0" onclick="simB_excAction(11, 0, true)">Check the submission reference and the scheme status, and check for a scheme reversal: a timed-out Faster Payments single immediate payment is automatically reversed by the scheme, so confirm whether the reversal arrived before doing anything else</button>
+<button class="quiz-opt simb-exc-btn" id="simb-exc-11-1" onclick="simB_excAction(11, 1, false)">Submit the payment again with a new reference to get it through faster</button>
+<button class="quiz-opt simb-exc-btn" id="simb-exc-11-2" onclick="simB_excAction(11, 2, false)">Tell the customer the payment is lost and ask them to pay again</button>
+<div class="simb-panel" id="simb-exc-fb-11" style="display:none"></div>
+<div id="simb-exc-data-11" style="display:none">
+<p data-why="Correct for Faster Payments. A timed-out FPS single immediate payment is automatically reversed by the scheme; the correct check is the reversal and the scheme's credit service level (funds are usually available almost immediately, and can take up to 2 hours). FPS has no pacs.002-style acknowledgement model, so a blind resend is wrong. Only if the scheme confirms the instruction was never received may it be resent, once, with the same reference." data-ev="The clearing system enquiry result, the submission reference status, and the scheme reversal record (or its absence)." data-nx="If the reversal arrived, re-credit the customer and take a new instruction. If the scheme confirms non receipt, resend once with the same reference."></p>
+<p data-why="Incorrect. A new reference creates a second payment in the system, and if the first was accepted, the beneficiary will be paid twice." data-ev="Two payments with different references for one instruction, which reconciliation will flag as a duplicate." data-nx="Check the original reference and the scheme reversal first, and resend with the same reference only if it was not received."></p>
+<p data-why="Incorrect. The payment may be sitting in the clearing queue or already reversed. Telling the customer it is lost causes a duplicate instruction from the customer side." data-ev="A customer sending a second payment while the first is still in the queue or already reversed." data-nx="Confirm the clearing status and the reversal, then give the customer a factual update."></p>
+</div></div>
+<div class="simb-exc-scen" id="simb-exc-12" style="display:none">
+<h3>13. Settlement failure</h3>
+<p><b>What operations sees.</b> The RTGS settlement account (CHAPS/T2) has insufficient funds at the central bank cut-off. A batch of payments cleared but cannot settle, and the value date is at risk. Trail: RTGS queue report 16:40, value date 2026-11-06; payments queued since 15:55.</p>
+<p><b>What is your first investigation action?</b></p>
+<button class="quiz-opt simb-exc-btn" id="simb-exc-12-0" onclick="simB_excAction(12, 0, true)">Escalate to liquidity management, fund the RTGS account from pre-arranged intraday liquidity (secured against collateral), and settle the queued payments in priority order within the day, using queue resolution (offsetting and prioritisation)</button>
+<button class="quiz-opt simb-exc-btn" id="simb-exc-12-1" onclick="simB_excAction(12, 1, false)">Cancel all the payments in the batch and ask customers to resend</button>
+<button class="quiz-opt simb-exc-btn" id="simb-exc-12-2" onclick="simB_excAction(12, 2, false)">Debit the customer accounts a second time to fund settlement</button>
+<div class="simb-panel" id="simb-exc-fb-12" style="display:none"></div>
+<div id="simb-exc-data-12" style="display:none">
+<p data-why="Correct for RTGS. Settlement failure here is a funding problem, and the fix is funding plus priority order, not re-creating the payments. Queued RTGS payments that cannot settle are rejected at the cut-off, not carried to a 'next window': there is no next settlement window after the cut-off, so the funding must arrive within the day." data-ev="The RTGS settlement account balance, the intraday liquidity movement, and the settlement confirmations in priority order." data-nx="Confirm settlement for each payment, notify affected customers of any value date change, and review the liquidity forecast."></p>
+<p data-why="Incorrect. The payments are valid and cleared. Cancelling them creates work for every customer and loses the value dates for no reason." data-ev="A cancelled batch and hundreds of customer complaints for a funding problem." data-nx="Fund the RTGS account and settle the existing batch in priority order within the day."></p>
+<p data-why="Incorrect. The customers already paid. Debiting them again to fix the bank funding gap is wrong and will be reversed with complaints." data-ev="Duplicate customer debits and a second round of corrections." data-nx="Move the bank's own funds (intraday liquidity against collateral) to the RTGS settlement account and settle the batch."></p>
+</div></div>
+<div class="simb-exc-scen" id="simb-exc-13" style="display:none">
+<h3>14. Rejection</h3>
+<p><b>What operations sees.</b> A pacs.002 arrives rejecting a EUR 25,000 payment with reason code AC04, closed account. The beneficiary account was closed last month.</p>
+<p><b>What is your first investigation action?</b></p>
+<button class="quiz-opt simb-exc-btn" id="simb-exc-13-0" onclick="simB_excAction(13, 0, true)">Match the pacs.002 to the original payment, re-credit the customer in full, and tell them the account is closed and new details are needed</button>
+<button class="quiz-opt simb-exc-btn" id="simb-exc-13-1" onclick="simB_excAction(13, 1, false)">Resend the payment to the same closed account and hope it opens</button>
+<button class="quiz-opt simb-exc-btn" id="simb-exc-13-2" onclick="simB_excAction(13, 2, false)">Hold the funds in suspense and say nothing to the customer</button>
+<div class="simb-panel" id="simb-exc-fb-13" style="display:none"></div>
+<div id="simb-exc-data-13" style="display:none">
+<p data-why="Correct. A rejection (pacs.002 RJCT) happens BEFORE settlement: the money never left the bank in settled form, so the customer must be made whole and told exactly what to fix. A return (pacs.004) is different: it happens AFTER settlement, when the creditor agent cannot credit. The same reason code (AC04) in the two messages means different things at different times." data-ev="The matched pacs.002 and original payment pair, plus the customer re-credit entry." data-nx="Wait for new beneficiary details from the customer, then treat the corrected payment as a new instruction."></p>
+<p data-why="Incorrect. A closed account will reject the payment again, and each resend adds delay and investigation records." data-ev="A second AC04 rejection for the same account." data-nx="Re-credit the customer and ask for current beneficiary account details."></p>
+<p data-why="Incorrect. The funds belong to the customer and the reason is known. Silence leaves the customer expecting a payment that will never arrive." data-ev="An unexplained suspense balance and a customer complaint days later." data-nx="Re-credit the customer promptly and explain the AC04 rejection."></p>
+</div></div>
+<div class="simb-exc-scen" id="simb-exc-14" style="display:none">
+<h3>15. Return</h3>
+<p><b>What operations sees.</b> A pacs.004 arrives returning USD 85,000 less a USD 20 intermediary fee, so USD 84,980 comes back. Reason code AC04, closed account. This is a different payment from INV-8841: reference INV-9021, original USD 85,000, charge bearer SHAR. Trail: original pacs.008 MsgId PACS008-20261106-004, EndToEndId INV-9021, 2026-11-06; pacs.004 MsgId PACS004-20261107-003, 2026-11-07 09:30.</p>
+<p><b>What is your first investigation action?</b></p>
+<button class="quiz-opt simb-exc-btn" id="simb-exc-14-0" onclick="simB_excAction(14, 0, true)">Match the pacs.004 to the original payment, check the charge bearer (SHAR), credit the customer USD 84,980, post the USD 20 fee to charges, and explain the return</button>
+<button class="quiz-opt simb-exc-btn" id="simb-exc-14-1" onclick="simB_excAction(14, 1, false)">Credit the customer the full USD 85,000 and ignore the USD 20 difference</button>
+<button class="quiz-opt simb-exc-btn" id="simb-exc-14-2" onclick="simB_excAction(14, 2, false)">Send the returned funds back to the beneficiary bank as a new payment</button>
+<div class="simb-panel" id="simb-exc-fb-14" style="display:none"></div>
+<div id="simb-exc-data-14" style="display:none">
+<p data-why="Correct. A return must be matched, the customer credited with what actually came back, and the fee difference explained and posted. Whether the customer bears the deducted USD 20 depends on the charge bearer: under SHAR the intermediary fee is deducted from the principal, so the customer receives the net USD 84,980 and the USD 20 is posted to charges. Under OUR the customer would be made whole." data-ev="The matched pacs.004 and original payment pair, the charge-bearer record (SHAR), the customer credit of USD 84,980, and the USD 20 charges posting." data-nx="Ask the customer for new beneficiary details if they still want to pay, and record the return reason."></p>
+<p data-why="Incorrect. Crediting money the bank never received creates a USD 20 break that reconciliation will flag and someone must explain." data-ev="A USD 20 reconciliation break with no posting to explain it." data-nx="Credit USD 84,980, post USD 20 to charges under the SHAR charge bearer, and tell the customer why."></p>
+<p data-why="Incorrect. The beneficiary account is closed, so sending the money back repeats the failure and may lose the funds in transit." data-ev="A second failed payment to a closed account." data-nx="Credit the customer, explain the return, and wait for new instructions."></p>
+</div></div>
+<div class="simb-exc-scen" id="simb-exc-15" style="display:none">
+<h3>16. Reconciliation mismatch</h3>
+<p><b>What operations sees.</b> The nostro statement shows a USD 75,000 debit, but the internal ledger shows USD 75,015 for the same reference. A USD 15 correspondent fee was deducted and not recorded.</p>
+<p><b>What is your first investigation action?</b></p>
+<button class="quiz-opt simb-exc-btn" id="simb-exc-15-0" onclick="simB_excAction(15, 0, true)">Match on the net amount, post the USD 15 fee to the charges account, and close the break with the fee explanation recorded</button>
+<button class="quiz-opt simb-exc-btn" id="simb-exc-15-1" onclick="simB_excAction(15, 1, false)">Force the match by changing the internal amount to USD 75,000</button>
+<button class="quiz-opt simb-exc-btn" id="simb-exc-15-2" onclick="simB_excAction(15, 2, false)">Leave the break open and hope it clears next month</button>
+<div class="simb-panel" id="simb-exc-fb-15" style="display:none"></div>
+<div id="simb-exc-data-15" style="display:none">
+<p data-why="Correct. The difference is a known correspondent fee, so the match is real once the fee is posted, and the break closes with evidence." data-ev="The statement line, the internal entry, and the USD 15 charges posting that reconciles them." data-nx="Update the matching rule so the same fee pattern matches automatically next time, but only after operations approval, and only on reference plus amount plus value date, never on amount alone."></p>
+<p data-why="Incorrect. Changing the internal record to fit the statement hides the fee and falsifies the ledger." data-ev="A ledger that no longer reflects what the bank recorded, which auditors will treat as a control failure." data-nx="Post the fee properly and match on the net amount."></p>
+<p data-why="Incorrect. An unexplained break ages, and a small fee break hides real breaks if the team stops working the list." data-ev="An ageing break with no owner and no action, reported to management as unexplained." data-nx="Post the fee, close the break, and record the reason."></p>
+</div></div>
+<div class="simb-exc-scen" id="simb-exc-16" style="display:none">
+<h3>17. Missing/delayed confirmation</h3>
+<p><b>What operations sees.</b> A USD 120,000 payment was sent three days ago. No pacs.002 acknowledgement, no settlement confirmation, and no return has arrived. The customer asks if the supplier was paid. Trail: pacs.008 MsgId PACS008-20261103-002, EndToEndId INV-8802, UETR a3e1f2b4-5c6d-4a7e-9b1c-2d3e4f5a6b7c, sent 2026-11-03 11:20; no pacs.002, no pacs.004, no camt.029 since.</p>
+<p><b>What is your first investigation action?</b></p>
+<button class="quiz-opt simb-exc-btn" id="simb-exc-16-0" onclick="simB_excAction(16, 0, true)">Send a pacs.028 status request to the next bank in the chain with the UETR, keep the payment open, and give the customer a dated update</button>
+<button class="quiz-opt simb-exc-btn" id="simb-exc-16-1" onclick="simB_excAction(16, 1, false)">Tell the customer the payment definitely arrived because it was sent</button>
+<button class="quiz-opt simb-exc-btn" id="simb-exc-16-2" onclick="simB_excAction(16, 2, false)">Resend the payment so the supplier gets paid quickly</button>
+<div class="simb-panel" id="simb-exc-fb-16" style="display:none"></div>
+<div id="simb-exc-data-16" style="display:none">
+<p data-why="Correct. Silence is not an answer. A pacs.028 (FIToFI Payment Status Request) asks the next bank for the status of a payment already sent, and is answered by a pacs.002. For SCT Inst the originator bank sends pacs.028 if no response arrives after 25 seconds. The customer gets a factual update with a next step date." data-ev="The pacs.028 status request with the UETR, the payment trail so far, and the dated customer update." data-nx="Follow up on the investigation daily until a confirmation, rejection, or return arrives, then act on it."></p>
+<p data-why="Incorrect. Sent does not mean settled or credited. Assuring the customer without evidence risks a missed supplier deadline and a complaint." data-ev="A customer assurance with no confirmation behind it." data-nx="Investigate the status and report only what is confirmed."></p>
+<p data-why="Incorrect. The original payment may still settle, and a resend without confirmation is how duplicates are created." data-ev="A duplicate payment if the original later settles." data-nx="Investigate first, resend only if non receipt is confirmed."></p>
+</div></div>
+<div class="simb-exc-scen" id="simb-exc-17" style="display:none">
+<h3>18. Recall request (camt.056)</h3>
+<p><b>What operations sees.</b> A customer realises a USD 12,500 payment (INV-9100) was sent twice and asks for the duplicate back. The beneficiary account has already been credited. Trail: original pacs.008 MsgId PACS008-20261106-007, EndToEndId INV-9100, settled 2026-11-06; camt.056 not yet sent.</p>
+<p><b>What is your first investigation action?</b></p>
+<button class="quiz-opt simb-exc-btn" id="simb-exc-17-0" onclick="simB_excAction(17, 0, true)">Send a camt.056 cancellation request with reason DUPL to the beneficiary bank, and track the pacs.004/FOCR return or the camt.029 refusal</button>
+<button class="quiz-opt simb-exc-btn" id="simb-exc-17-1" onclick="simB_excAction(17, 1, false)">Send a pacs.004 return request to the beneficiary bank yourself</button>
+<button class="quiz-opt simb-exc-btn" id="simb-exc-17-2" onclick="simB_excAction(17, 2, false)">Debit the beneficiary account directly to take the money back</button>
+<div class="simb-panel" id="simb-exc-fb-17" style="display:none"></div>
+<div id="simb-exc-data-17" style="display:none">
+<p data-why="Correct. Once the beneficiary account has been credited, funds can only come back by recall (camt.056) with the beneficiary bank's agreement. A positive answer returns the funds via pacs.004 carrying return reason FOCR (Following Cancellation Request); a negative answer arrives as camt.029 (Resolution of Investigation). Under the EPC SCT recall procedure the request must be made within 10 banking business days (13 months for fraud) and the beneficiary bank answers within 15 banking business days." data-ev="The camt.056 (DUPL) request with the case reference, and the pacs.004/FOCR return or the camt.029 refusal." data-nx="If the pacs.004/FOCR return arrives, credit the customer. If camt.029 refuses, tell the customer the recall was refused and why."></p>
+<p data-why="Incorrect. A pacs.004 is sent by the creditor agent on its own initiative, not by the debtor agent as a request. The debtor agent's message is camt.056." data-ev="A message the receiving bank will reject as sent by the wrong party." data-nx="Send camt.056 (DUPL) and wait for the pacs.004/FOCR or camt.029 answer."></p>
+<p data-why="Incorrect. The debtor bank has no access to the beneficiary's account at another bank. Taking funds back needs the beneficiary bank's agreement through the recall flow." data-ev="An unauthorised debit attempt and a compliance incident." data-nx="Use the camt.056 recall flow and respect the beneficiary bank's answer."></p>
+</div></div>
+<div class="simb-exc-scen" id="simb-exc-18" style="display:none">
+<h3>19. Customer cancellation before settlement</h3>
+<p><b>What operations sees.</b> A customer calls an hour after instructing a USD 25,000 payment (INV-8841) and asks to cancel it. The payment has been accepted (ACCP) but has not yet settled (no ACSC). Trail: pacs.008 MsgId PACS008-20261105-001, EndToEndId INV-8841, UETR a3e1f2b4-5c6d-4a7e-9b1c-2d3e4f5a6b7c, status ACCP at 09:20, no settlement confirmation yet.</p>
+<p><b>What is your first investigation action?</b></p>
+<button class="quiz-opt simb-exc-btn" id="simb-exc-18-0" onclick="simB_excAction(18, 0, true)">Stop the payment inside the bank before it is sent onward, or send a camt.056 cancellation request if it has already been sent, then re-credit the customer once non-settlement is confirmed</button>
+<button class="quiz-opt simb-exc-btn" id="simb-exc-18-1" onclick="simB_excAction(18, 1, false)">Tell the customer the payment cannot be cancelled because it was already accepted</button>
+<button class="quiz-opt simb-exc-btn" id="simb-exc-18-2" onclick="simB_excAction(18, 2, false)">Re-credit the customer immediately without checking whether the payment settled</button>
+<div class="simb-panel" id="simb-exc-fb-18" style="display:none"></div>
+<div id="simb-exc-data-18" style="display:none">
+<p data-why="Correct. Cancellation is possible before settlement: if the payment is still inside the bank it is stopped and the customer is re-credited; if it has already been sent, the bank sends a camt.056 cancellation request and re-credits the customer only once the next bank confirms it was not settled. A camt.056 can be sent before settlement or after credit; the procedure and the consent needed differ." data-ev="The stop instruction or the camt.056 request, the confirmation of non-settlement, and the customer re-credit entry." data-nx="Confirm the payment is stopped, re-credit the customer, and close the case with the cancellation reason recorded."></p>
+<p data-why="Incorrect. Acceptance (ACCP) is not settlement (ACSC). A payment that is accepted but not yet settled can still be stopped or cancelled." data-ev="A customer who believes a payment they could have stopped has gone through." data-nx="Check the settlement status first: accepted is not settled."></p>
+<p data-why="Incorrect. If the payment has already settled, the bank would have both re-credited the customer and paid the beneficiary." data-ev="A customer credit plus a settled payment, leaving the bank out of pocket." data-nx="Confirm non-settlement first, then re-credit."></p>
+</div></div>
+<div class="simb-exc-scen" id="simb-exc-19" style="display:none">
+<h3>20. Clearing rejection</h3>
+<p><b>What operations sees.</b> Clearing rejects a EUR 25,000 SEPA payment with a pacs.002 RJCT, reason code AM05 (duplicate payment): the clearing house already holds a payment with the same MsgId. Trail: pacs.008 MsgId PACS008-20261106-011, EndToEndId INV-9090, sent 08:15; pacs.002 RJCT AM05 at 08:17.</p>
+<p><b>What is your first investigation action?</b></p>
+<button class="quiz-opt simb-exc-btn" id="simb-exc-19-0" onclick="simB_excAction(19, 0, true)">Match the pacs.002 RJCT to the original payment, confirm the duplicate from the MsgId, re-credit the customer for the rejected instruction, and investigate the duplicate submission</button>
+<button class="quiz-opt simb-exc-btn" id="simb-exc-19-1" onclick="simB_excAction(19, 1, false)">Resend the same payment with the same MsgId to get it through clearing</button>
+<button class="quiz-opt simb-exc-btn" id="simb-exc-19-2" onclick="simB_excAction(19, 2, false)">Treat the rejection as a return and wait for the funds to come back</button>
+<div class="simb-panel" id="simb-exc-fb-19" style="display:none"></div>
+<div id="simb-exc-data-19" style="display:none">
+<p data-why="Correct. A clearing rejection (pacs.002 RJCT) happens before settlement, so the money never left the bank in settled form and the customer is re-credited in full. A rejection is distinct from a timeout (no answer at all) and from a return (after settlement). The duplicate submission must be investigated so it is not sent again." data-ev="The matched pacs.002 RJCT (AM05) and original pacs.008 pair, the duplicate MsgId evidence, and the customer re-credit entry." data-nx="Find why the same MsgId was submitted twice, fix the submission, and take a new instruction if the customer still wants to pay."></p>
+<p data-why="Incorrect. The same MsgId is exactly what clearing rejected as a duplicate. Resending it repeats the rejection." data-ev="A second AM05 rejection for the same MsgId." data-nx="Re-credit the customer and investigate the duplicate submission; a new instruction needs a fresh MsgId."></p>
+<p data-why="Incorrect. A return (pacs.004) brings funds back after settlement. A rejection means nothing settled, so there are no funds to come back; the customer is re-credited from the bank's own holding." data-ev="A customer waiting for funds that were never sent." data-nx="Re-credit the customer now and explain the RJCT rejection."></p>
+</div></div>
+<div class="simb-exc-scen" id="simb-exc-20" style="display:none">
+<h3>21. Routing failure</h3>
+<p><b>What operations sees.</b> A USD 40,000 payment to a new destination country cannot be routed: no correspondent route exists in the routing table, and the intermediary bank that would carry it has rejected the route. Trail: instruction INV-9110, value date 2026-11-07; routing engine returned 'no route' at 14:20.</p>
+<p><b>What is your first investigation action?</b></p>
+<button class="quiz-opt simb-exc-btn" id="simb-exc-20-0" onclick="simB_excAction(20, 0, true)">Hold the payment, check the routing table and the correspondent directory, confirm the customer instruction and the value date and charges for any alternative route, and tell the customer before changing the route</button>
+<button class="quiz-opt simb-exc-btn" id="simb-exc-20-1" onclick="simB_excAction(20, 1, false)">Send the payment through any correspondent that will take it, without telling the customer</button>
+<button class="quiz-opt simb-exc-btn" id="simb-exc-20-2" onclick="simB_excAction(20, 2, false)">Cancel the payment and close the case without telling the customer why</button>
+<div class="simb-panel" id="simb-exc-fb-20" style="display:none"></div>
+<div id="simb-exc-data-20" style="display:none">
+<p data-why="Correct. A routing failure is not a reason to re-route silently: a different route changes the value date, the charges (OUR/SHA/BEN), the FX and the scheme rules, and can breach the customer's instructed rail. The alternative route needs the customer's agreement where the instruction specified the rail, and a new value date and charge disclosure where they change." data-ev="The routing engine 'no route' result, the correspondent directory check, and the customer agreement to any alternative route with its new value date and charges." data-nx="Release the payment on the agreed route, or return the instruction to the customer if no route can be agreed."></p>
+<p data-why="Incorrect. An unagreed route can change the amount the beneficiary receives, miss the value date, and breach the customer's instruction." data-ev="A payment that arrives late or short, with no record that the customer agreed to the route." data-nx="Hold the payment, find an agreed route, and disclose the new value date and charges."></p>
+<p data-why="Incorrect. The payment is repairable once a route is agreed. Cancelling silently loses the instruction and leaves the customer expecting a payment." data-ev="A cancelled instruction and a customer complaint." data-nx="Hold the payment, work the routing options, and agree the next step with the customer."></p>
+</div></div>
+<div class="simb-panel"><h3>Reject, return, recall, cancellation, reversal, repair, retry, investigation: keep them distinct</h3>
+<p><b>Reject</b> (pacs.002 RJCT): before settlement. Nothing settled, the customer is re-credited in full. <b>Return</b> (pacs.004): after settlement, when the creditor agent cannot credit (for example AC04 closed account). Only the creditor agent sends it. <b>Recall / cancellation request</b> (camt.056): the debtor agent asks for funds back, before settlement or after credit; the answer is a pacs.004 with reason FOCR (positive) or a camt.029 (negative). <b>Reversal</b>: a distinct R-transaction, for example pacs.007 for a SEPA direct debit reversal, or an automatic scheme reversal on a Faster Payments timeout. <b>Repair</b>: the same payment with corrected data, re-released as a new instruction with a fresh InstrId and the same EndToEndId. <b>Retry</b>: resending the same message with the same MsgId and UETR, only after proving the original was not received. <b>Investigation</b>: a pacs.028 status request (answered by pacs.002) when a payment already sent has no confirmation; for SCT Inst it is sent if no response arrives after 25 seconds.</p></div>
+</section>
+</main>
+<footer><p>Payments Training Hub. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="../index.html">Home</a> &middot; <a href="../courses.html">Courses</a> &middot; <a href="../practice.html">Practice</a> &middot; <a href="../simulators.html">Simulators</a> &middot; <a href="../labs.html">Labs</a> &middot; <a href="../explorer.html">Explorer</a> &middot; <a href="../tests.html">Tests</a> &middot; <a href="../diagnostic.html">Diagnostic</a> &middot; <a href="../faq.html">Interview Ready Questions</a> &middot; <a href="../interview-prep.html">Interview Prep</a></p><p><a href="../about.html">About</a> &middot; <a href="../privacy.html">Privacy</a> &middot; <a href="../terms.html">Terms</a> &middot; <a href="../contact.html">Contact</a> &middot; <a href="../editorial-standards.html">Editorial Standards</a> &middot; <a href="../sources.html">Sources</a></p></footer>
+<script defer src="../assets/site.js"></script>
+<script defer src="../assets/bundles.js"></script>
+<script defer src="../assets/auth.js"></script>
+<script defer src="../assets/simulators.js"></script>
+<script defer src="../assets/nav.js"></script>
+<script defer src="../assets/pf-enhance.js"></script>
+</body>
+</html>

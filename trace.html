@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>Interactive Payment Trace | Payments Training Hub</title>
+<meta name="description" content="Follow one USD 25,000 payment from London to Singapore through 20 stages, from initiation to settlement and statement.">
+<link rel="canonical" href="https://www.paymentstraininghub.in/trace.html">
+<meta property="og:url" content="https://www.paymentstraininghub.in/trace.html">
+<meta property="og:title" content="Interactive Payment Trace | Payments Training Hub">
+<meta property="og:description" content="Follow one USD 25,000 payment from London to Singapore through 20 stages, from initiation to settlement and statement.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.in/assets/hero/hero-poster.jpg">
+<link rel="stylesheet" href="assets/pf-theme.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="index.html" class="brand">Payments <span>Training Hub</span></a><nav class="topnav"><a href="index.html">Home</a> <a href="courses.html">Courses</a> <a href="practice.html">Practice</a> <a href="simulators.html">Simulators</a> <a href="labs.html">Labs</a> <a href="explorer.html">Explorer</a> <a href="tests.html">Tests</a></nav><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox" style="display:none"><span id="authState">Not signed in</span> <span id="authForm" style="display:none"><input id="authEmail" type="email" placeholder="Email for OTP" aria-label="Email for sign-in"> <button class="mute-btn" onclick="paAuthSendOtp()">Send code</button> <input id="authCode" type="text" placeholder="6-digit code" aria-label="One-time code" style="display:none"> <button class="mute-btn" id="authVerifyBtn" onclick="paAuthVerifyOtp()" style="display:none">Verify</button> <button class="mute-btn" onclick="paAuthGoogle()">Sign in with Google</button> </span><button class="mute-btn" id="authSignOutBtn" onclick="paAuthSignOut()" style="display:none">Sign out</button></span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<section class="section" id="trace">
+<h2>Interactive Payment Trace</h2>
+<p>One payment, USD 25,000 from London to Singapore. Select a stage and watch it travel. At every stage, see the incoming data, the processing logic, the outgoing message, the system response, and what can fail.</p>
+<div class="trace-progress"><div class="trace-progress-fill" id="traceProgressFill"></div></div>
+<p class="trace-counter"><b id="traceCounter">Stage 1 of 20</b> &nbsp;<button class="api-btn" id="tracePrev" onclick="tracePrev()" disabled>Previous stage</button> <button class="api-btn" id="tracePlay" onclick="tracePlayToggle()">Play the trace</button> <button class="api-btn" id="traceNext" onclick="traceNext()">Next stage</button></p>
+<div class="pf-two-pane"><div class="pf-pane-list"><div class="trace-stages">
+<button class="trace-btn active" onclick="traceStage(0)">1. Customer Channel</button>
+<button class="trace-btn" onclick="traceStage(1)">2. Authentication Service</button>
+<button class="trace-btn" onclick="traceStage(2)">3. Payment Hub</button>
+<button class="trace-btn" onclick="traceStage(3)">4. Payment Hub Validation</button>
+<button class="trace-btn" onclick="traceStage(4)">5. Payment Hub Duplicate Detection</button>
+<button class="trace-btn" onclick="traceStage(5)">6. Core Banking</button>
+<button class="trace-btn" onclick="traceStage(6)">7. Payment Hub Enrichment</button>
+<button class="trace-btn" onclick="traceStage(7)">8. Screening Engine</button>
+<button class="trace-btn" onclick="traceStage(8)">9. FX Pricing Engine</button>
+<button class="trace-btn" onclick="traceStage(9)">10. Routing Engine</button>
+<button class="trace-btn" onclick="traceStage(10)">11. Correspondent Banking</button>
+<button class="trace-btn" onclick="traceStage(11)">12. SWIFT Message Builder</button>
+<button class="trace-btn" onclick="traceStage(12)">13. SWIFT Gateway</button>
+<button class="trace-btn" onclick="traceStage(13)">14. SWIFT Status Handler</button>
+<button class="trace-btn" onclick="traceStage(14)">15. Clearing System</button>
+<button class="trace-btn" onclick="traceStage(15)">16. Settlement Engine</button>
+<button class="trace-btn" onclick="traceStage(16)">17. Beneficiary Bank Core</button>
+<button class="trace-btn" onclick="traceStage(17)">18. General Ledger</button>
+<button class="trace-btn" onclick="traceStage(18)">19. Notification Service</button>
+<button class="trace-btn" onclick="traceStage(19)">20. Reconciliation Engine</button>
+</div></div><div class="pf-pane-detail">
+<div class="trace-detail" id="trace-0" style="display:block">
+<h3>Stage 1: Customer Channel</h3>
+<p><b>Incoming data.</b> A London corporate treasurer logs into Meridian Bank online banking and enters a supplier payment of USD 25,000 to Harbour Bank Singapore, with the beneficiary name, account number, invoice reference INV-8841 and value date 5 November 2026.</p>
+<p><b>Processing logic.</b> The channel checks the form is complete, confirms the beneficiary details are present, shows the customer the amount, charges and value date, and holds the instruction in a draft state awaiting approval. No ledger entry is made yet and the payment state is entered.</p>
+<p><b>Outgoing message.</b> The draft instruction is passed to the authentication service with the debtor account, beneficiary details, amount, currency, value date and reference PAY-2026-1105-25000 attached, ready for the customer to approve it securely.</p>
+<p><b>System response.</b> The authentication service confirms it has received the instruction and returns a challenge request, so the channel prompts the treasurer to approve the payment with a one time code or a hardware token.</p>
+<p><b>What can fail.</b></p><ul>
+<li>Customer session times out before approval, so the instruction is never sent.</li>
+<li>Beneficiary account number fails the format check and the channel rejects the entry.</li>
+<li>Customer enters the wrong one time code three times and the session is locked.</li>
+</ul>
+</div>
+<div class="trace-detail" id="trace-1" style="display:none">
+<h3>Stage 2: Authentication Service</h3>
+<p><b>Incoming data.</b> The authentication service receives the draft instruction for USD 25,000 with reference PAY-2026-1105-25000, the debtor account, the beneficiary details and the device and session data of the treasurer who entered it.</p>
+<p><b>Processing logic.</b> The service checks the treasurer credentials, verifies the device, and issues a strong customer authentication challenge under SCA rules, matching the approval to the exact amount and beneficiary before it can proceed. The payment state moves to awaiting authentication.</p>
+<p><b>Outgoing message.</b> The approved instruction, signed with the authentication result and the challenge reference, is sent to the payment hub intake for processing, with the treasurer identity, approval time and authentication method attached to the record.</p>
+<p><b>System response.</b> The payment hub confirms receipt of the authenticated instruction, assigns the payment reference PAY-2026-1105-25000, and returns an acceptance so the channel can show the customer the payment is now in progress.</p>
+<p><b>What can fail.</b></p><ul>
+<li>The treasurer fails the authentication challenge, so the instruction is rejected and no payment is created.</li>
+<li>The device is not recognised, so the service asks for extra verification and the payment waits.</li>
+<li>The authentication service is unavailable, so the approval cannot complete and the draft is saved.</li>
+</ul>
+</div>
+<div class="trace-detail" id="trace-2" style="display:none">
+<h3>Stage 3: Payment Hub</h3>
+<p><b>Incoming data.</b> The payment hub receives the authenticated instruction from the channel, with the debtor GBP account, the USD 25,000 amount, the Harbour Bank Singapore beneficiary details, the value date and reference PAY-2026-1105-25000.</p>
+<p><b>Processing logic.</b> The hub assigns an internal payment identification, stamps the receipt time, stores the instruction in the payment database, and sets the state to received. No funds move yet, so the ledger is untouched and the customer account balance is unchanged.</p>
+<p><b>Outgoing message.</b> The stored instruction is passed to the validation engine with the full debtor and creditor data, the amount, currency, value date and reference attached, ready for format and business rule checks to begin.</p>
+<p><b>System response.</b> The validation engine confirms it has queued the instruction, and the hub updates the customer tracking view to show the payment as received, with the reference and the expected value date visible to the treasurer.</p>
+<p><b>What can fail.</b></p><ul>
+<li>The hub cannot store the instruction because the database is unavailable, so the payment is not accepted.</li>
+<li>The instruction arrives without an authentication result, so the hub rejects it as unauthorised.</li>
+<li>A system restart loses the queued instruction, so the channel must resend it with the same reference.</li>
+</ul>
+</div>
+<div class="trace-detail" id="trace-3" style="display:none">
+<h3>Stage 4: Payment Hub Validation</h3>
+<p><b>Incoming data.</b> The validation engine receives the stored instruction for USD 25,000 to Harbour Bank Singapore, with the debtor and creditor names, account numbers, BIC, value date, remittance reference INV-8841 and charge bearer SHA.</p>
+<p><b>Processing logic.</b> The engine checks the message format, the BIC and account structure, the currency and amount limits, the value date against business calendars, and the mandatory fields for the SWIFT route. The payment state stays received and no ledger entry is made while checks run.</p>
+<p><b>Outgoing message.</b> The instruction passes all checks and is sent to the duplicate detection service with the validated debtor, creditor, amount, currency, value date and reference PAY-2026-1105-25000 attached for the next control.</p>
+<p><b>System response.</b> The duplicate detection service confirms receipt and queues the instruction for comparison, and the hub records the validation result and updates the payment state to validated for the customer tracking view.</p>
+<p><b>What can fail.</b></p><ul>
+<li>The beneficiary BIC is invalid, so validation fails and the payment is rejected for repair.</li>
+<li>The value date falls on a currency holiday, so the payment is held until the next business day.</li>
+<li>A mandatory field is missing, so the payment waits in repair and the customer is asked to correct it.</li>
+</ul>
+</div>
+<div class="trace-detail" id="trace-4" style="display:none">
+<h3>Stage 5: Payment Hub Duplicate Detection</h3>
+<p><b>Incoming data.</b> The duplicate detection service receives the validated instruction for USD 25,000 to Harbour Bank Singapore, with the debtor account, beneficiary account, amount, currency, value date and remittance reference INV-8841.</p>
+<p><b>Processing logic.</b> The service compares the instruction against payments sent in the last 24 hours on amount, beneficiary, account, reference and channel, using exact and fuzzy matching, and finds no earlier payment with the same details. The payment state remains validated and no funds move.</p>
+<p><b>Outgoing message.</b> The instruction is cleared as not a duplicate and passed to the account validation service with the debtor account, the amount and the reference attached, so the bank can confirm the debit account exists and can fund the payment.</p>
+<p><b>System response.</b> The account validation service confirms receipt, and the hub records the duplicate check result, updates the payment state to duplicate checked, and keeps the tracking view current for the treasurer.</p>
+<p><b>What can fail.</b></p><ul>
+<li>The instruction matches a payment sent an hour earlier, so it is held as a suspected duplicate.</li>
+<li>The duplicate database is unavailable, so the payment waits rather than being released unchecked.</li>
+<li>A near match with a different invoice reference is flagged for manual review by operations.</li>
+</ul>
+</div>
+<div class="trace-detail" id="trace-5" style="display:none">
+<h3>Stage 6: Core Banking</h3>
+<p><b>Incoming data.</b> The core banking system receives the request to validate the debtor GBP account for the USD 25,000 payment, with the customer number, account number, value date and reference PAY-2026-1105-25000 attached.</p>
+<p><b>Processing logic.</b> Core banking confirms the account exists, belongs to the London corporate, is open and in good standing, and holds enough GBP to cover the USD 25,000 payment plus charges. The payment state moves to account validated, and the funds are earmarked but not yet debited.</p>
+<p><b>Outgoing message.</b> The account validation result, with the available balance and the earmarked amount, is returned to the payment hub, and the instruction is passed to enrichment with the confirmed debtor account and customer details attached.</p>
+<p><b>System response.</b> The hub records the validation result, updates the payment state to account validated, and tells the customer tracking view that the debit account is confirmed and the payment can continue to the next stage.</p>
+<p><b>What can fail.</b></p><ul>
+<li>The debtor account has insufficient funds, so the payment is rejected and the customer is notified.</li>
+<li>The debtor account is frozen, so the payment is held and operations must investigate before release.</li>
+<li>Core banking is unavailable, so the account check times out and the payment waits for retry.</li>
+</ul>
+</div>
+<div class="trace-detail" id="trace-6" style="display:none">
+<h3>Stage 7: Payment Hub Enrichment</h3>
+<p><b>Incoming data.</b> The enrichment service receives the validated instruction for USD 25,000, with the debtor account, the beneficiary name and account, the Harbour Bank Singapore BIC, the value date and reference PAY-2026-1105-25000.</p>
+<p><b>Processing logic.</b> The service adds the debtor address and legal entity details, the beneficiary bank name and country, the charge rule for SHA, the cut off time and the end to end reference, using customer and reference data from the hub. The payment state becomes enriched and the ledger is untouched.</p>
+<p><b>Outgoing message.</b> The enriched instruction, now complete with debtor, creditor, bank, charge and reference data, is sent to the screening engine for sanctions, anti money laundering and fraud checks before any funds can move.</p>
+<p><b>System response.</b> The screening engine confirms receipt and queues the payment for checks, and the hub records the enrichment result and updates the payment state to enriched, ready for screening to begin.</p>
+<p><b>What can fail.</b></p><ul>
+<li>The beneficiary bank details are missing from the reference data, so enrichment cannot complete and the payment is held.</li>
+<li>The debtor address is incomplete, so the payment waits for the customer data to be corrected.</li>
+<li>The reference data service is down, so enrichment retries and the payment stays in queue.</li>
+</ul>
+</div>
+<div class="trace-detail" id="trace-7" style="display:none">
+<h3>Stage 8: Screening Engine</h3>
+<p><b>Incoming data.</b> The screening engine receives the enriched instruction for USD 25,000, with the London debtor, the Singapore creditor, the banks, the countries, the purpose supplier payment and the invoice reference INV-8841.</p>
+<p><b>Processing logic.</b> The engine screens the debtor, creditor, banks and countries against sanctions lists, checks anti money laundering rules and fraud patterns, and scores the payment for unusual behaviour. No match is found, so the payment state moves to screened and the ledger remains unchanged.</p>
+<p><b>Outgoing message.</b> The engine returns a clear screening result to the hub, with the lists checked, the score and the clearance reference attached, and the payment is released for foreign exchange and routing to the next stage.</p>
+<p><b>System response.</b> The hub records the screening result, updates the payment state to screened, and forwards the instruction to the foreign exchange engine so the GBP debit can be converted into the USD 25,000 payment amount.</p>
+<p><b>What can fail.</b></p><ul>
+<li>A close name match to a sanctions entry holds the payment for manual review.</li>
+<li>A high fraud score blocks the payment and raises an alert for the fraud team.</li>
+<li>A screening system outage queues the payment until the engine is back online.</li>
+</ul>
+</div>
+<div class="trace-detail" id="trace-8" style="display:none">
+<h3>Stage 9: FX Pricing Engine</h3>
+<p><b>Incoming data.</b> The foreign exchange engine receives the screened instruction, with the debtor GBP account, the USD 25,000 payment amount, the value date 5 November 2026 and reference PAY-2026-1105-25000, and the request to convert pounds into dollars.</p>
+<p><b>Processing logic.</b> The engine takes a live GBP to USD rate, applies the agreed customer margin, and calculates the GBP debit needed to deliver exactly USD 25,000, then locks the rate in a quote valid for fifteen minutes. The payment state moves to FX quoted and no ledger entry is posted yet.</p>
+<p><b>Outgoing message.</b> The locked quote, with the rate, the GBP debit amount, the USD 25,000 credit amount and the quote expiry, is returned to the hub, and the instruction is passed to routing with the conversion details attached.</p>
+<p><b>System response.</b> The hub accepts the quote, records the rate and the GBP amount, and updates the payment state to FX applied, so the customer tracking view shows the debit amount in pounds and the credit amount in dollars.</p>
+<p><b>What can fail.</b></p><ul>
+<li>The FX rate moves beyond the agreed tolerance before the quote is accepted, so a fresh quote is needed.</li>
+<li>The quote expires while the payment waits, so the hub must request a new rate before continuing.</li>
+<li>The FX engine is unavailable, so the payment is queued until pricing returns.</li>
+</ul>
+</div>
+<div class="trace-detail" id="trace-9" style="display:none">
+<h3>Stage 10: Routing Engine</h3>
+<p><b>Incoming data.</b> The routing engine receives the screened and FX converted instruction for USD 25,000 to Harbour Bank Singapore, with the debtor and creditor banks, the currency, the value date and reference PAY-2026-1105-25000.</p>
+<p><b>Processing logic.</b> The engine checks SWIFT cut off times, correspondent relationships, nostro balances and costs, then selects the route through the Meridian Bank USD correspondent in New York to Harbour Bank Singapore. The payment state moves to routed and the ledger is still unchanged.</p>
+<p><b>Outgoing message.</b> The routed instruction is sent to correspondent selection with the chosen route, the settlement account, the charge bearer SHA and the value date attached, ready for the correspondent bank to be confirmed.</p>
+<p><b>System response.</b> Correspondent selection confirms it has the routed instruction, and the hub updates the payment state to routed, with the chosen path and the expected value date visible to operations and the customer.</p>
+<p><b>What can fail.</b></p><ul>
+<li>No correspondent holds enough USD liquidity, so the payment waits for funding.</li>
+<li>The SWIFT cut off time has passed, so the value date moves to the next business day.</li>
+<li>The chosen correspondent is offline and the engine must select an alternative route.</li>
+</ul>
+</div>
+<div class="trace-detail" id="trace-10" style="display:none">
+<h3>Stage 11: Correspondent Banking</h3>
+<p><b>Incoming data.</b> Correspondent selection receives the routed instruction for USD 25,000, with the New York correspondent route, the Harbour Bank Singapore beneficiary bank, the settlement account and reference PAY-2026-1105-25000.</p>
+<p><b>Processing logic.</b> The service checks the nostro balance at the New York correspondent, confirms the relationship agreement is active, verifies the RMA authorisation for the next bank, and confirms the correspondent can settle on the value date. The payment state becomes correspondent selected and the nostro is earmarked.</p>
+<p><b>Outgoing message.</b> The confirmed correspondent chain, with the New York correspondent, the Harbour Bank Singapore beneficiary bank and the settlement account, is sent to message generation so the pacs.008 can be built for transmission.</p>
+<p><b>System response.</b> Message generation confirms it has the correspondent chain, and the hub updates the payment state to correspondent selected, with the nostro account and the settlement route recorded for operations and reconciliation.</p>
+<p><b>What can fail.</b></p><ul>
+<li>The nostro balance is too low at the correspondent, so the payment queues until treasury funds the account.</li>
+<li>The RMA authorisation for the next bank has expired, so the payment is held while a new RMA is requested.</li>
+<li>The relationship agreement with the correspondent is suspended, so an alternative correspondent must be found.</li>
+</ul>
+</div>
+<div class="trace-detail" id="trace-11" style="display:none">
+<h3>Stage 12: SWIFT Message Builder</h3>
+<p><b>Incoming data.</b> The message builder receives the routed and confirmed instruction for USD 25,000 to Harbour Bank Singapore, with the full debtor, creditor, amount, currency, value date, charges and reference PAY-2026-1105-25000.</p>
+<p><b>Processing logic.</b> The builder creates a pacs.008 customer credit transfer, maps the enriched data into the ISO 20022 fields, adds the UETR and the end to end reference, and validates the message against CBPR+ rules. The payment state moves to message built and the ledger remains unchanged.</p>
+<p><b>Outgoing message.</b> The validated pacs.008 is sent to the SWIFT transmission gateway with the UETR, the debtor and creditor details, the USD 25,000 amount and the value date, ready to be signed and sent over the network.</p>
+<p><b>System response.</b> The transmission gateway confirms receipt of the pacs.008 and queues it for signing, and the hub updates the payment state to message built, with the UETR recorded so the customer can track the payment end to end.</p>
+<p><b>What can fail.</b></p><ul>
+<li>The pacs.008 fails CBPR+ validation because the creditor address is incomplete, so the message is rejected before sending.</li>
+<li>A mapping error leaves a mandatory field blank, so the message is returned to enrichment for correction.</li>
+<li>The UETR cannot be generated, so message creation stops and the payment waits for the service to recover.</li>
+</ul>
+</div>
+<div class="trace-detail" id="trace-12" style="display:none">
+<h3>Stage 13: SWIFT Gateway</h3>
+<p><b>Incoming data.</b> The SWIFT gateway receives the signed pacs.008 for USD 25,000 to Harbour Bank Singapore, with the UETR, the debtor and creditor details, the value date and reference PAY-2026-1105-25000, ready for transmission.</p>
+<p><b>Processing logic.</b> The gateway signs the message, checks the RMA authorisation for the receiving bank, encrypts the payload, and transmits the pacs.008 over the SWIFT network to the New York correspondent and Harbour Bank Singapore. The payment state moves to sent and the ledger is still unchanged.</p>
+<p><b>Outgoing message.</b> The pacs.008 leaves the gateway for the correspondent bank in New York and the creditor agent in Singapore, and a copy of the sent message with its network reference is returned to the hub for tracking and audit.</p>
+<p><b>System response.</b> The SWIFT network confirms delivery of the pacs.008, the hub records the network reference and updates the payment state to sent, and the customer tracking view shows the payment has left Meridian Bank London.</p>
+<p><b>What can fail.</b></p><ul>
+<li>The SWIFT network is unavailable and the message queues for retry.</li>
+<li>The RMA authorisation for the receiver is missing, so the network blocks the message.</li>
+<li>A wrong BIC sends the message to the wrong bank and a recall is needed.</li>
+</ul>
+</div>
+<div class="trace-detail" id="trace-13" style="display:none">
+<h3>Stage 14: SWIFT Status Handler</h3>
+<p><b>Incoming data.</b> The status handler receives a pacs.002 report from the New York correspondent for the USD 25,000 payment, with the UETR, reference PAY-2026-1105-25000 and the acceptance status code ACCP attached.</p>
+<p><b>Processing logic.</b> The handler matches the pacs.002 to the original pacs.008 by UETR and reference, reads the acceptance status, and records the correspondent acceptance time against the payment. The payment state moves to accepted and no ledger entry is posted at this stage.</p>
+<p><b>Outgoing message.</b> The acceptance is forwarded to the hub and to the customer tracking view, with the pacs.002 status, the acceptance time and the correspondent reference attached, so operations can see the payment is accepted downstream.</p>
+<p><b>System response.</b> The hub updates the payment state to accepted, confirms the correspondent has the instruction, and tells the tracking view that the payment is in transit to Harbour Bank Singapore for clearing and settlement.</p>
+<p><b>What can fail.</b></p><ul>
+<li>The pacs.002 reports a rejection, so the hub marks the payment rejected and alerts operations.</li>
+<li>The pacs.002 cannot be matched to any pacs.008, so it is held for investigation as an orphan status.</li>
+<li>No pacs.002 arrives within the expected window, so operations chase the correspondent for confirmation.</li>
+</ul>
+</div>
+<div class="trace-detail" id="trace-14" style="display:none">
+<h3>Stage 15: Clearing System</h3>
+<p><b>Incoming data.</b> The clearing stage receives the payment instruction in Singapore, with the pacs.008, the USD 25,000 amount, the Harbour Bank Singapore creditor agent, the value date 5 November 2026 and reference PAY-2026-1105-25000.</p>
+<p><b>Processing logic.</b> The creditor agent validates the pacs.008, checks the creditor account, confirms the value date is a business day in Singapore, and prepares the entry for the local clearing cycle. The payment state moves to clearing and the ledger is not yet updated.</p>
+<p><b>Outgoing message.</b> The cleared instruction is passed to settlement with the USD 25,000 amount, the creditor account and the value date confirmed, ready for the final settlement posting between the correspondent and the creditor agent.</p>
+<p><b>System response.</b> The settlement function confirms the instruction is ready, the hub updates the payment state to clearing complete, and the tracking view shows the payment has cleared in Singapore and is ready for settlement.</p>
+<p><b>What can fail.</b></p><ul>
+<li>The local clearing system is closed for a public holiday in Singapore, so the payment waits until the next clearing cycle.</li>
+<li>The creditor account is frozen, so clearing cannot complete and the payment is held.</li>
+<li>A clearing file format error rejects the batch and the payment must be resubmitted.</li>
+</ul>
+</div>
+<div class="trace-detail" id="trace-15" style="display:none">
+<h3>Stage 16: Settlement Engine</h3>
+<p><b>Incoming data.</b> The settlement engine receives the cleared instruction, with USD 25,000 to be settled between the New York correspondent and Harbour Bank Singapore on 5 November 2026 under reference PAY-2026-1105-25000.</p>
+<p><b>Processing logic.</b> The engine debits the Meridian Bank nostro account at the New York correspondent for USD 25,000 and credits the Harbour Bank Singapore settlement account for the same amount, then checks that both legs balance. The payment state moves to settled and the nostro balance falls by USD 25,000.</p>
+<p><b>Outgoing message.</b> The settlement confirmation, with the settlement reference and the balanced debit and credit legs, is sent to Harbour Bank Singapore and to the hub, and a pacs.002 status confirms settlement is complete.</p>
+<p><b>System response.</b> The hub receives the settlement confirmation, updates the payment state to settled, and the customer tracking view shows the funds have reached the beneficiary bank in Singapore and are ready for credit.</p>
+<p><b>What can fail.</b></p><ul>
+<li>The nostro account is overdrawn at settlement time, so the payment fails and must be retried after funding.</li>
+<li>A ledger posting error leaves the debit and credit unbalanced and the payment is held for reconciliation.</li>
+<li>The settlement system is down at the cut off and the value date slips.</li>
+</ul>
+</div>
+<div class="trace-detail" id="trace-16" style="display:none">
+<h3>Stage 17: Beneficiary Bank Core</h3>
+<p><b>Incoming data.</b> Harbour Bank Singapore receives the settled funds and the pacs.008, with instructions to credit USD 25,000 to the supplier account on 5 November 2026 under reference PAY-2026-1105-25000 and invoice INV-8841.</p>
+<p><b>Processing logic.</b> The bank screens the incoming payment, checks the creditor account number and name, matches the remittance reference to the supplier account, and prepares the credit posting for the stated value date. The payment state moves to credit pending and the supplier account is checked before posting.</p>
+<p><b>Outgoing message.</b> The bank credits USD 25,000 to the supplier account, sends a credit advice to the supplier, and returns a pacs.002 status confirming the beneficiary has been credited to Meridian Bank London.</p>
+<p><b>System response.</b> Meridian Bank receives the completion status, marks the payment as completed, and the London customer sees the delivery confirmation in online banking with the full tracking history and the value date.</p>
+<p><b>What can fail.</b></p><ul>
+<li>The creditor account number does not match the account name, so the bank holds the funds for verification.</li>
+<li>The creditor account is closed, so the bank returns the payment with a pacs.004.</li>
+<li>A final sanctions check flags the payment and the credit is delayed for review.</li>
+</ul>
+</div>
+<div class="trace-detail" id="trace-17" style="display:none">
+<h3>Stage 18: General Ledger</h3>
+<p><b>Incoming data.</b> The general ledger receives the completed payment record for USD 25,000, with the GBP debit amount, the FX rate, the nostro settlement legs, the fee of USD 25 and reference PAY-2026-1105-25000.</p>
+<p><b>Processing logic.</b> The ledger posts the customer debit in GBP, the nostro debit in USD, the fee income and the settlement entries, then checks that total debits equal total credits across the payment. The payment state moves to posted and the customer account balance now reflects the debit and the fee.</p>
+<p><b>Outgoing message.</b> The balanced ledger entries, with the payment reference, the value date and the account postings, are stored in the general ledger and passed to the notification service so the customer can be told the payment has been credited to the beneficiary.</p>
+<p><b>System response.</b> The notification service confirms it has the completed payment record, and the hub updates the payment state to posted, with the ledger balanced and the accounting ready for reconciliation at the end of the day.</p>
+<p><b>What can fail.</b></p><ul>
+<li>A posting error leaves the ledger unbalanced, so the entries are reversed and reposted by operations.</li>
+<li>The fee entry posts to the wrong income account, so a correction entry is needed before close of business.</li>
+<li>The ledger is closed for the day before the entries arrive, so they post on the next business day.</li>
+</ul>
+</div>
+<div class="trace-detail" id="trace-18" style="display:none">
+<h3>Stage 19: Notification Service</h3>
+<p><b>Incoming data.</b> The notification service receives the completed payment record for USD 25,000, with the debtor and creditor details, the value date, the charges and reference PAY-2026-1105-25000, ready to tell the customer.</p>
+<p><b>Processing logic.</b> The service builds the customer confirmation message, the supplier credit advice and the operations alert, using the payment reference, the amount, the value date and the tracking history. The payment state moves to notified and the ledger stays balanced with no new entries.</p>
+<p><b>Outgoing message.</b> The confirmation is sent to the London corporate by online banking and email, the credit advice is sent to the Singapore supplier, and the status update is pushed to the customer tracking view.</p>
+<p><b>System response.</b> The channel confirms the customer has been notified, the supplier advice is delivered, and the hub updates the payment state to notified, with all parties informed and the payment ready for final reconciliation.</p>
+<p><b>What can fail.</b></p><ul>
+<li>The customer email address is invalid, so the confirmation bounces and the channel shows it instead.</li>
+<li>The notification service is down, so messages queue and are sent when the service returns.</li>
+<li>The supplier advice is sent to the wrong contact, so operations resend it to the correct address.</li>
+</ul>
+</div>
+<div class="trace-detail" id="trace-19" style="display:none">
+<h3>Stage 20: Reconciliation Engine</h3>
+<p><b>Incoming data.</b> The reconciliation engine receives the posted payment record for USD 25,000, with the nostro debit, the settlement legs, the fee entry, the Harbour Bank statement lines and reference PAY-2026-1105-25000.</p>
+<p><b>Processing logic.</b> The engine matches the nostro debit to the New York correspondent statement, the settlement credit to the Harbour Bank statement, and the customer debit to the general ledger, checking amounts, value dates and references. All legs match, so the payment state moves to reconciled and the ledger is confirmed balanced.</p>
+<p><b>Outgoing message.</b> The matched reconciliation result, with the payment reference, the matched statement lines and the zero break amount, is stored in the reconciliation report and passed to the hub to close the payment.</p>
+<p><b>System response.</b> The hub marks the payment as closed and reconciled, the customer tracking view shows the final completed status, and the payment lifecycle ends with every ledger entry balanced and every statement line matched.</p>
+<p><b>What can fail.</b></p><ul>
+<li>The nostro statement shows a different amount, so a break is raised for operations to investigate.</li>
+<li>The Harbour Bank statement arrives late, so reconciliation waits until the statement is received.</li>
+<li>A value date mismatch between the ledger and the statement creates a break that must be resolved.</li>
+</ul>
+</div>
+</div></div>
+</section>
+</main>
+<footer><p>Payments Training Hub. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="index.html">Home</a> &middot; <a href="courses.html">Courses</a> &middot; <a href="practice.html">Practice</a> &middot; <a href="simulators.html">Simulators</a> &middot; <a href="labs.html">Labs</a> &middot; <a href="explorer.html">Explorer</a> &middot; <a href="tests.html">Tests</a> &middot; <a href="diagnostic.html">Diagnostic</a> &middot; <a href="faq.html">Interview Ready Questions</a> &middot; <a href="interview-prep.html">Interview Prep</a></p><p><a href="about.html">About</a> &middot; <a href="privacy.html">Privacy</a> &middot; <a href="terms.html">Terms</a> &middot; <a href="contact.html">Contact</a> &middot; <a href="editorial-standards.html">Editorial Standards</a> &middot; <a href="sources.html">Sources</a></p></footer>
+<script defer src="assets/site.js"></script>
+<script defer src="assets/bundles.js"></script>
+<script defer src="assets/auth.js"></script>
+<script defer src="assets/nav.js"></script>
+<script defer src="assets/pf-enhance.js"></script>
+</body>
+</html>
