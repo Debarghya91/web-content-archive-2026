@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>The messages exchanged in the SCT scheme: pain, pacs, camt | Payments Training Hub</title>
+<meta name="description" content="All SEPA messages are based on ISO 20022, using XML syntax. The European Payments Council publishes three main documents for each scheme, the rulebook,...">
+<link rel="canonical" href="https://www.paymentstraininghub.in/lessons/ch11s9.html">
+<meta property="og:url" content="https://www.paymentstraininghub.in/lessons/ch11s9.html">
+<meta property="og:title" content="The messages exchanged in the SCT scheme: pain, pacs, camt | Payments Training Hub">
+<meta property="og:description" content="All SEPA messages are based on ISO 20022, using XML syntax. The European Payments Council publishes three main documents for each scheme, the rulebook,...">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.in/assets/hero/hero-poster.jpg">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.paymentstraininghub.in/index.html"}, {"@type": "ListItem", "position": 2, "name": "Europe: SEPA and T2", "item": "https://www.paymentstraininghub.in/chapters/ch11-europe-sepa-and-t2.html"}, {"@type": "ListItem", "position": 3, "name": "The messages exchanged in the SCT scheme: pain, pacs, camt", "item": "https://www.paymentstraininghub.in/lessons/ch11s9.html"}]}</script>
+<link rel="stylesheet" href="../assets/studio.css">
+<link rel="stylesheet" href="../assets/pf-theme.css">
+<link rel="stylesheet" href="../assets/insight-components.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="../index.html" class="brand">Payments <span>Training Hub</span></a><nav class="topnav"><a href="../index.html">Home</a> <a href="../courses.html">Courses</a> <a href="../practice.html">Practice</a> <a href="../simulators.html">Simulators</a> <a href="../labs.html">Labs</a> <a href="../explorer.html">Explorer</a> <a href="../tests.html">Tests</a></nav><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox" style="display:none"><span id="authState">Not signed in</span> <span id="authForm" style="display:none"><input id="authEmail" type="email" placeholder="Email for OTP" aria-label="Email for sign-in"> <button class="mute-btn" onclick="paAuthSendOtp()">Send code</button> <input id="authCode" type="text" placeholder="6-digit code" aria-label="One-time code" style="display:none"> <button class="mute-btn" id="authVerifyBtn" onclick="paAuthVerifyOtp()" style="display:none">Verify</button> <button class="mute-btn" onclick="paAuthGoogle()">Sign in with Google</button> </span><button class="mute-btn" id="authSignOutBtn" onclick="paAuthSignOut()" style="display:none">Sign out</button></span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<div class="lesson-page">
+<div class="lesson-shell">
+<aside class="course-rail">
+<div class="rail-head">
+<h2>Europe: SEPA and T2</h2>
+<a class="rail-close" href="../chapters/ch11-europe-sepa-and-t2.html" aria-label="Close and go to chapter" title="Back to chapter">&times;</a>
+</div>
+<div class="goal-card">
+<div class="goal-head"><b>Today's goal &middot; <span id="side-progress-text">0 of 10 items</span></b><span class="goal-flag"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 21V4m0 1h11l-2.5 3.5L17 12H6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="goal-chev">&#94;</span></div>
+<p class="goal-body" id="side-goal-body">Complete 3 items today to stay at a good pace!</p>
+</div>
+<ul class="lesson-list"><li class="" data-lesson="ch11s1"><a href="ch11s1.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">What SEPA is and why it was created</span><span class="m">Video &middot; 2 min</span></span></a></li>
+<li class="" data-lesson="ch11s2"><a href="ch11s2.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">IBAN and the SEPA account identifier</span><span class="m">Video &middot; 2 min</span></span></a></li>
+<li class="" data-lesson="ch11s3"><a href="ch11s3.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">SEPA Credit Transfer: SCT</span><span class="m">Video &middot; 5 min</span></span></a></li>
+<li class="" data-lesson="ch11s4"><a href="ch11s4.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">SEPA Direct Debit: SDD</span><span class="m">Video &middot; 5 min</span></span></a></li>
+<li class="" data-lesson="ch11s5"><a href="ch11s5.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">SCT Inst: instant euro payments</span><span class="m">Video &middot; 5 min</span></span></a></li>
+<li class="" data-lesson="ch11s6"><a href="ch11s6.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">TARGET2 and T2: the Eurosystem RTGS</span><span class="m">Video &middot; 3 min</span></span></a></li>
+<li class="" data-lesson="ch11s7"><a href="ch11s7.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">How SEPA works across countries: a worked example</span><span class="m">Video &middot; 2 min</span></span></a></li>
+<li class="" data-lesson="ch11s8"><a href="ch11s8.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">SEPA instruments in depth: SCT, SCT Inst, SDD Core, SDD B2B</span><span class="m">Video &middot; 9 min</span></span></a></li>
+<li class="current" data-lesson="ch11s9"><a href="ch11s9.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">The messages exchanged in the SCT scheme: pain, pacs, camt</span><span class="m">Video &middot; 3 min</span></span></a></li>
+<li class="" data-lesson="ch11s10"><a href="ch11s10.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">SEPA Instant Payments Regulation: phased obligations from 2025</span><span class="m">Video &middot; 7 min</span></span></a></li></ul>
+</aside>
+<div class="lesson-main">
+<div class="studio" id="studio-studio-ch11s9">
+<div class="player">
+<div class="studio-canvas" id="studio-canvas-studio-ch11s9">
+<div class="ch-sec studio-scene-vis active" id="studio-vis-studio-ch11s9-0"><div class="beat-frames">
+<div class="beat-frame active" data-frame="0">
+<svg class="flow-desktop" viewBox="0 0 900 560" role="img" aria-label="Lesson visual">
+<defs><pattern id="bfd268" width="18" height="18" patternUnits="userSpaceOnUse"><path d="M18 0H0V18" fill="none" stroke="#182A44" stroke-width="1"/></pattern></defs>
+<rect x="0" y="0" width="900" height="560" fill="#0B1F3D"/>
+<rect x="0" y="0" width="900" height="560" fill="url(#bfd268)"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">SEPA</tspan> <tspan fill="#FFFFFF">messages</tspan></text>
+<path data-conn="c0" data-beat="0" d="M 212 210 L 408 210" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c0" data-beat="0" points="420,210 408,217 408,203" fill="#47DCDD"/>
+<path data-conn="c1" data-beat="1" d="M 480 210 L 676 210" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c1" data-beat="1" points="688,210 676,217 676,203" fill="#47DCDD"/>
+<path data-conn="c2" data-beat="2" d="M 718 266 L 718 280 L 718 280 L 718 308" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c2" data-beat="2" points="718,320 711,308 725,308" fill="#47DCDD"/>
+<path data-conn="c3" data-beat="3" d="M 688 350 L 492 350" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c3" data-beat="3" points="480,350 492,343 492,357" fill="#47DCDD"/>
+<path data-conn="c4" data-beat="4" d="M 420 350 L 224 350" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c4" data-beat="4" points="212,350 224,343 224,357" fill="#47DCDD"/>
+<g data-node="n0" class="bf-now" data-beat="0">
+<circle cx="182" cy="210" r="26" fill="#0A1826" stroke="#47DCDD" stroke-width="3"/>
+<circle cx="182" cy="210" r="6" fill="#47DCDD"/>
+<circle cx="156" cy="210" r="4" fill="#47DCDD"/>
+<circle cx="208" cy="210" r="4" fill="#45A4FF"/>
+<circle cx="182" cy="210" r="33" fill="none" stroke="#47DCDD" stroke-width="1" opacity="0.5"/>
+<text x="234" y="180" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="182" y="258" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">SEPA messages</text>
+</g>
+<g data-node="n1" class="bf-dim" data-beat="1">
+<circle cx="450" cy="210" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="450" cy="210" r="6" fill="#45A4FF"/>
+<circle cx="424" cy="210" r="4" fill="#47DCDD"/>
+<circle cx="476" cy="210" r="4" fill="#45A4FF"/>
+<text x="450" y="258" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Customer-to-bank</text>
+<text x="450" y="276" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">space</text>
+</g>
+<g data-node="n2" class="bf-dim" data-beat="2">
+<circle cx="718" cy="210" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="718" cy="210" r="6" fill="#45A4FF"/>
+<circle cx="692" cy="210" r="4" fill="#47DCDD"/>
+<circle cx="744" cy="210" r="4" fill="#45A4FF"/>
+<text x="718" y="258" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Pain messages</text>
+</g>
+<g data-node="n3" class="bf-dim" data-beat="3">
+<circle cx="718" cy="350" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="718" cy="350" r="6" fill="#45A4FF"/>
+<circle cx="692" cy="350" r="4" fill="#47DCDD"/>
+<circle cx="744" cy="350" r="4" fill="#45A4FF"/>
+<text x="718" y="398" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Camt.052</text>
+</g>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<circle cx="450" cy="350" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="450" cy="350" r="6" fill="#45A4FF"/>
+<circle cx="424" cy="350" r="4" fill="#47DCDD"/>
+<circle cx="476" cy="350" r="4" fill="#45A4FF"/>
+<text x="450" y="398" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Pacs messages</text>
+</g>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<circle cx="182" cy="350" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="182" cy="350" r="6" fill="#45A4FF"/>
+<circle cx="156" cy="350" r="4" fill="#47DCDD"/>
+<circle cx="208" cy="350" r="4" fill="#45A4FF"/>
+<text x="182" y="398" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Party</text>
+</g>
+<rect x="48" y="432" width="804" height="84" rx="10" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<text x="68" y="456" font-size="11" fill="#47DCDD" font-family="ui-monospace,Menlo,Consolas,monospace">MESSAGE TRACE</text>
+<text x="68" y="478" font-size="13" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">SEPA messages</text>
+<text x="68" y="504" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">All SEPA messages are based on ISO 20022, using XML syntax.</text>
+<text x="48" y="538" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 1 of 6</text>
+<circle cx="772" cy="534" r="4" fill="#47DCDD"/>
+<circle cx="788" cy="534" r="4" fill="#334155"/>
+<circle cx="804" cy="534" r="4" fill="#334155"/>
+<circle cx="820" cy="534" r="4" fill="#334155"/>
+<circle cx="836" cy="534" r="4" fill="#334155"/>
+<circle cx="852" cy="534" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 720" role="img" aria-label="Lesson visual, vertical layout">
+<defs><pattern id="bfd269" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="360" height="720" fill="#0B1F3D"/>
+<rect x="0" y="0" width="360" height="720" fill="url(#bfd269)"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">SEPA</tspan> <tspan fill="#FFFFFF">messages</tspan></text>
+<g data-node="n0" class="bf-now" data-beat="0">
+<rect x="24" y="66" width="312" height="72" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="44" cy="86" r="11" fill="#1D4ED8"/>
+<text x="44" y="90" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="324" y="90" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="180" y="104" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">SEPA messages</text>
+</g>
+<line data-conn="c0" data-beat="0" x1="180" y1="141" x2="180" y2="149" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c0" data-beat="0" points="180,161 173,149 187,149" fill="#DBEAFE"/>
+<g data-node="n1" class="bf-dim" data-beat="1">
+<rect x="24" y="164" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="184" r="11" fill="#1E3A5F"/>
+<text x="44" y="188" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="180" y="202" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Customer-to-bank space</text>
+</g>
+<line data-conn="c1" data-beat="1" x1="180" y1="239" x2="180" y2="247" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c1" data-beat="1" points="180,259 173,247 187,247" fill="#DBEAFE"/>
+<g data-node="n2" class="bf-dim" data-beat="2">
+<rect x="24" y="262" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="282" r="11" fill="#1E3A5F"/>
+<text x="44" y="286" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="180" y="300" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Pain messages</text>
+</g>
+<line data-conn="c2" data-beat="2" x1="180" y1="337" x2="180" y2="345" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c2" data-beat="2" points="180,357 173,345 187,345" fill="#DBEAFE"/>
+<g data-node="n3" class="bf-dim" data-beat="3">
+<rect x="24" y="360" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="380" r="11" fill="#1E3A5F"/>
+<text x="44" y="384" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="180" y="398" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Camt.052</text>
+</g>
+<line data-conn="c3" data-beat="3" x1="180" y1="435" x2="180" y2="443" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c3" data-beat="3" points="180,455 173,443 187,443" fill="#DBEAFE"/>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<rect x="24" y="458" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="478" r="11" fill="#1E3A5F"/>
+<text x="44" y="482" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="180" y="496" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Pacs messages</text>
+</g>
+<line data-conn="c4" data-beat="4" x1="180" y1="533" x2="180" y2="541" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c4" data-beat="4" points="180,553 173,541 187,541" fill="#DBEAFE"/>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="24" y="556" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="576" r="11" fill="#1E3A5F"/>
+<text x="44" y="580" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="180" y="594" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Party</text>
+</g>
+<g class="bf-paydot" style="--dx:0px;--dy:0px"><circle class="bf-pulse" cx="180" cy="66" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="180" cy="66" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="180" y="648" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">All SEPA messages are based on ISO</text>
+<text x="180" y="667" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">20022, using XML syntax.</text>
+<text x="24" y="708" font-size="12" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 1 of 6</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="1">
+<svg class="flow-desktop" viewBox="0 0 900 560" role="img" aria-label="Lesson visual">
+<defs><pattern id="bfd270" width="18" height="18" patternUnits="userSpaceOnUse"><path d="M18 0H0V18" fill="none" stroke="#182A44" stroke-width="1"/></pattern></defs>
+<rect x="0" y="0" width="900" height="560" fill="#0B1F3D"/>
+<rect x="0" y="0" width="900" height="560" fill="url(#bfd270)"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Customer-to-bank</tspan> <tspan fill="#FFFFFF">space</tspan></text>
+<path data-conn="c0" data-beat="0" d="M 212 210 L 408 210" stroke="#47DCDD" stroke-width="3" fill="none"/><polygon data-conn="c0" data-beat="0" points="420,210 408,217 408,203" fill="#47DCDD"/>
+<path data-conn="c1" data-beat="1" d="M 480 210 L 676 210" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c1" data-beat="1" points="688,210 676,217 676,203" fill="#47DCDD"/>
+<path data-conn="c2" data-beat="2" d="M 718 266 L 718 280 L 718 280 L 718 308" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c2" data-beat="2" points="718,320 711,308 725,308" fill="#47DCDD"/>
+<path data-conn="c3" data-beat="3" d="M 688 350 L 492 350" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c3" data-beat="3" points="480,350 492,343 492,357" fill="#47DCDD"/>
+<path data-conn="c4" data-beat="4" d="M 420 350 L 224 350" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c4" data-beat="4" points="212,350 224,343 224,357" fill="#47DCDD"/>
+<g data-node="n0" class="bf-done" data-beat="0">
+<circle cx="182" cy="210" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="182" cy="210" r="6" fill="#45A4FF"/>
+<circle cx="156" cy="210" r="4" fill="#47DCDD"/>
+<circle cx="208" cy="210" r="4" fill="#45A4FF"/>
+<text x="182" y="258" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">SEPA messages</text>
+</g>
+<g data-node="n1" class="bf-now" data-beat="1">
+<circle cx="450" cy="210" r="26" fill="#0A1826" stroke="#47DCDD" stroke-width="3"/>
+<circle cx="450" cy="210" r="6" fill="#47DCDD"/>
+<circle cx="424" cy="210" r="4" fill="#47DCDD"/>
+<circle cx="476" cy="210" r="4" fill="#45A4FF"/>
+<circle cx="450" cy="210" r="33" fill="none" stroke="#47DCDD" stroke-width="1" opacity="0.5"/>
+<text x="502" y="180" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="450" y="258" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Customer-to-bank</text>
+<text x="450" y="276" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">space</text>
+</g>
+<g data-node="n2" class="bf-dim" data-beat="2">
+<circle cx="718" cy="210" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="718" cy="210" r="6" fill="#45A4FF"/>
+<circle cx="692" cy="210" r="4" fill="#47DCDD"/>
+<circle cx="744" cy="210" r="4" fill="#45A4FF"/>
+<text x="718" y="258" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Pain messages</text>
+</g>
+<g data-node="n3" class="bf-dim" data-beat="3">
+<circle cx="718" cy="350" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="718" cy="350" r="6" fill="#45A4FF"/>
+<circle cx="692" cy="350" r="4" fill="#47DCDD"/>
+<circle cx="744" cy="350" r="4" fill="#45A4FF"/>
+<text x="718" y="398" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Camt.052</text>
+</g>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<circle cx="450" cy="350" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="450" cy="350" r="6" fill="#45A4FF"/>
+<circle cx="424" cy="350" r="4" fill="#47DCDD"/>
+<circle cx="476" cy="350" r="4" fill="#45A4FF"/>
+<text x="450" y="398" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Pacs messages</text>
+</g>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<circle cx="182" cy="350" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="182" cy="350" r="6" fill="#45A4FF"/>
+<circle cx="156" cy="350" r="4" fill="#47DCDD"/>
+<circle cx="208" cy="350" r="4" fill="#45A4FF"/>
+<text x="182" y="398" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Party</text>
+</g>
+<rect x="48" y="432" width="804" height="84" rx="10" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<text x="68" y="456" font-size="11" fill="#47DCDD" font-family="ui-monospace,Menlo,Consolas,monospace">MESSAGE TRACE</text>
+<text x="68" y="478" font-size="13" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">SEPA messages &gt; Customer-to-bank space</text>
+<text x="68" y="504" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">In the customer-to-bank space, messages sent from customer to bank are orders or instructions.</text>
+<text x="48" y="538" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 2 of 6</text>
+<circle cx="772" cy="534" r="4" fill="#334155"/>
+<circle cx="788" cy="534" r="4" fill="#47DCDD"/>
+<circle cx="804" cy="534" r="4" fill="#334155"/>
+<circle cx="820" cy="534" r="4" fill="#334155"/>
+<circle cx="836" cy="534" r="4" fill="#334155"/>
+<circle cx="852" cy="534" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 767" role="img" aria-label="Lesson visual, vertical layout">
+<defs><pattern id="bfd271" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="360" height="767" fill="#0B1F3D"/>
+<rect x="0" y="0" width="360" height="767" fill="url(#bfd271)"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Customer-to-bank</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">space</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="24" y="94" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="114" r="11" fill="#1E3A5F"/>
+<text x="44" y="118" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="180" y="132" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">SEPA messages</text>
+</g>
+<line data-conn="c0" data-beat="0" x1="180" y1="169" x2="180" y2="177" stroke="#60A5FA" stroke-width="2"/>
+<polygon data-conn="c0" data-beat="0" points="180,189 173,177 187,177" fill="#DBEAFE"/>
+<g data-node="n1" class="bf-now" data-beat="1">
+<rect x="24" y="192" width="312" height="72" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="44" cy="212" r="11" fill="#1D4ED8"/>
+<text x="44" y="216" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="324" y="216" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="180" y="230" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Customer-to-bank space</text>
+</g>
+<line data-conn="c1" data-beat="1" x1="180" y1="267" x2="180" y2="275" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c1" data-beat="1" points="180,287 173,275 187,275" fill="#DBEAFE"/>
+<g data-node="n2" class="bf-dim" data-beat="2">
+<rect x="24" y="290" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="310" r="11" fill="#1E3A5F"/>
+<text x="44" y="314" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="180" y="328" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Pain messages</text>
+</g>
+<line data-conn="c2" data-beat="2" x1="180" y1="365" x2="180" y2="373" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c2" data-beat="2" points="180,385 173,373 187,373" fill="#DBEAFE"/>
+<g data-node="n3" class="bf-dim" data-beat="3">
+<rect x="24" y="388" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="408" r="11" fill="#1E3A5F"/>
+<text x="44" y="412" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="180" y="426" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Camt.052</text>
+</g>
+<line data-conn="c3" data-beat="3" x1="180" y1="463" x2="180" y2="471" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c3" data-beat="3" points="180,483 173,471 187,471" fill="#DBEAFE"/>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<rect x="24" y="486" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="506" r="11" fill="#1E3A5F"/>
+<text x="44" y="510" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="180" y="524" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Pacs messages</text>
+</g>
+<line data-conn="c4" data-beat="4" x1="180" y1="561" x2="180" y2="569" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c4" data-beat="4" points="180,581 173,569 187,569" fill="#DBEAFE"/>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="24" y="584" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="604" r="11" fill="#1E3A5F"/>
+<text x="44" y="608" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="180" y="622" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Party</text>
+</g>
+<g class="bf-paydot" style="--dx:0px;--dy:-52px"><circle class="bf-pulse" cx="180" cy="182" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="180" cy="182" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="180" y="676" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">In the customer-to-bank space,</text>
+<text x="180" y="695" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">messages sent from customer to bank</text>
+<text x="180" y="714" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">are orders or instructions.</text>
+<text x="24" y="755" font-size="12" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 2 of 6</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="2">
+<svg class="flow-desktop" viewBox="0 0 900 560" role="img" aria-label="Lesson visual">
+<defs><pattern id="bfd272" width="18" height="18" patternUnits="userSpaceOnUse"><path d="M18 0H0V18" fill="none" stroke="#182A44" stroke-width="1"/></pattern></defs>
+<rect x="0" y="0" width="900" height="560" fill="#0B1F3D"/>
+<rect x="0" y="0" width="900" height="560" fill="url(#bfd272)"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Pain</tspan> <tspan fill="#FFFFFF">messages</tspan></text>
+<path data-conn="c0" data-beat="0" d="M 212 210 L 408 210" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c0" data-beat="0" points="420,210 408,217 408,203" fill="#47DCDD"/>
+<path data-conn="c1" data-beat="1" d="M 480 210 L 676 210" stroke="#47DCDD" stroke-width="3" fill="none"/><polygon data-conn="c1" data-beat="1" points="688,210 676,217 676,203" fill="#47DCDD"/>
+<path data-conn="c2" data-beat="2" d="M 718 266 L 718 280 L 718 280 L 718 308" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c2" data-beat="2" points="718,320 711,308 725,308" fill="#47DCDD"/>
+<path data-conn="c3" data-beat="3" d="M 688 350 L 492 350" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c3" data-beat="3" points="480,350 492,343 492,357" fill="#47DCDD"/>
+<path data-conn="c4" data-beat="4" d="M 420 350 L 224 350" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c4" data-beat="4" points="212,350 224,343 224,357" fill="#47DCDD"/>
+<g data-node="n0" class="bf-done" data-beat="0">
+<circle cx="182" cy="210" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="182" cy="210" r="6" fill="#45A4FF"/>
+<circle cx="156" cy="210" r="4" fill="#47DCDD"/>
+<circle cx="208" cy="210" r="4" fill="#45A4FF"/>
+<text x="182" y="258" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">SEPA messages</text>
+</g>
+<g data-node="n1" class="bf-done" data-beat="1">
+<circle cx="450" cy="210" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="450" cy="210" r="6" fill="#45A4FF"/>
+<circle cx="424" cy="210" r="4" fill="#47DCDD"/>
+<circle cx="476" cy="210" r="4" fill="#45A4FF"/>
+<text x="450" y="258" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Customer-to-bank</text>
+<text x="450" y="276" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">space</text>
+</g>
+<g data-node="n2" class="bf-now" data-beat="2">
+<circle cx="718" cy="210" r="26" fill="#0A1826" stroke="#47DCDD" stroke-width="3"/>
+<circle cx="718" cy="210" r="6" fill="#47DCDD"/>
+<circle cx="692" cy="210" r="4" fill="#47DCDD"/>
+<circle cx="744" cy="210" r="4" fill="#45A4FF"/>
+<circle cx="718" cy="210" r="33" fill="none" stroke="#47DCDD" stroke-width="1" opacity="0.5"/>
+<text x="770" y="180" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="718" y="258" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Pain messages</text>
+</g>
+<g data-node="n3" class="bf-dim" data-beat="3">
+<circle cx="718" cy="350" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="718" cy="350" r="6" fill="#45A4FF"/>
+<circle cx="692" cy="350" r="4" fill="#47DCDD"/>
+<circle cx="744" cy="350" r="4" fill="#45A4FF"/>
+<text x="718" y="398" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Camt.052</text>
+</g>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<circle cx="450" cy="350" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="450" cy="350" r="6" fill="#45A4FF"/>
+<circle cx="424" cy="350" r="4" fill="#47DCDD"/>
+<circle cx="476" cy="350" r="4" fill="#45A4FF"/>
+<text x="450" y="398" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Pacs messages</text>
+</g>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<circle cx="182" cy="350" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="182" cy="350" r="6" fill="#45A4FF"/>
+<circle cx="156" cy="350" r="4" fill="#47DCDD"/>
+<circle cx="208" cy="350" r="4" fill="#45A4FF"/>
+<text x="182" y="398" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Party</text>
+</g>
+<rect x="48" y="432" width="804" height="84" rx="10" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<text x="68" y="456" font-size="11" fill="#47DCDD" font-family="ui-monospace,Menlo,Consolas,monospace">MESSAGE TRACE</text>
+<text x="68" y="478" font-size="13" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">SEPA messages &gt; Customer-to-bank space &gt; Pain messages</text>
+<text x="68" y="504" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Pain messages are used exclusively in the customer-to-bank space.</text>
+<text x="48" y="538" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 3 of 6</text>
+<circle cx="772" cy="534" r="4" fill="#334155"/>
+<circle cx="788" cy="534" r="4" fill="#334155"/>
+<circle cx="804" cy="534" r="4" fill="#47DCDD"/>
+<circle cx="820" cy="534" r="4" fill="#334155"/>
+<circle cx="836" cy="534" r="4" fill="#334155"/>
+<circle cx="852" cy="534" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 720" role="img" aria-label="Lesson visual, vertical layout">
+<defs><pattern id="bfd273" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="360" height="720" fill="#0B1F3D"/>
+<rect x="0" y="0" width="360" height="720" fill="url(#bfd273)"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Pain</tspan> <tspan fill="#FFFFFF">messages</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="24" y="66" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="86" r="11" fill="#1E3A5F"/>
+<text x="44" y="90" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="180" y="104" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">SEPA messages</text>
+</g>
+<line data-conn="c0" data-beat="0" x1="180" y1="141" x2="180" y2="149" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c0" data-beat="0" points="180,161 173,149 187,149" fill="#DBEAFE"/>
+<g data-node="n1" class="bf-done" data-beat="1">
+<rect x="24" y="164" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="184" r="11" fill="#1E3A5F"/>
+<text x="44" y="188" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="180" y="202" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Customer-to-bank space</text>
+</g>
+<line data-conn="c1" data-beat="1" x1="180" y1="239" x2="180" y2="247" stroke="#60A5FA" stroke-width="2"/>
+<polygon data-conn="c1" data-beat="1" points="180,259 173,247 187,247" fill="#DBEAFE"/>
+<g data-node="n2" class="bf-now" data-beat="2">
+<rect x="24" y="262" width="312" height="72" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="44" cy="282" r="11" fill="#1D4ED8"/>
+<text x="44" y="286" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="324" y="286" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="180" y="300" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Pain messages</text>
+</g>
+<line data-conn="c2" data-beat="2" x1="180" y1="337" x2="180" y2="345" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c2" data-beat="2" points="180,357 173,345 187,345" fill="#DBEAFE"/>
+<g data-node="n3" class="bf-dim" data-beat="3">
+<rect x="24" y="360" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="380" r="11" fill="#1E3A5F"/>
+<text x="44" y="384" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="180" y="398" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Camt.052</text>
+</g>
+<line data-conn="c3" data-beat="3" x1="180" y1="435" x2="180" y2="443" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c3" data-beat="3" points="180,455 173,443 187,443" fill="#DBEAFE"/>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<rect x="24" y="458" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="478" r="11" fill="#1E3A5F"/>
+<text x="44" y="482" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="180" y="496" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Pacs messages</text>
+</g>
+<line data-conn="c4" data-beat="4" x1="180" y1="533" x2="180" y2="541" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c4" data-beat="4" points="180,553 173,541 187,541" fill="#DBEAFE"/>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="24" y="556" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="576" r="11" fill="#1E3A5F"/>
+<text x="44" y="580" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="180" y="594" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Party</text>
+</g>
+<g class="bf-paydot" style="--dx:0px;--dy:-52px"><circle class="bf-pulse" cx="180" cy="252" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="180" cy="252" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="180" y="648" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Pain messages are used exclusively in</text>
+<text x="180" y="667" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">the customer-to-bank space.</text>
+<text x="24" y="708" font-size="12" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 3 of 6</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="3">
+<svg class="flow-desktop" viewBox="0 0 900 560" role="img" aria-label="Lesson visual">
+<defs><pattern id="bfd274" width="18" height="18" patternUnits="userSpaceOnUse"><path d="M18 0H0V18" fill="none" stroke="#182A44" stroke-width="1"/></pattern></defs>
+<rect x="0" y="0" width="900" height="560" fill="#0B1F3D"/>
+<rect x="0" y="0" width="900" height="560" fill="url(#bfd274)"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Camt.052:</tspan> <tspan fill="#FFFFFF">Bank</tspan> <tspan fill="#FFFFFF">to</tspan> <tspan fill="#FFFFFF">Customer</tspan> <tspan fill="#FFFFFF">Account</tspan></text>
+<path data-conn="c0" data-beat="0" d="M 212 210 L 408 210" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c0" data-beat="0" points="420,210 408,217 408,203" fill="#47DCDD"/>
+<path data-conn="c1" data-beat="1" d="M 480 210 L 676 210" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c1" data-beat="1" points="688,210 676,217 676,203" fill="#47DCDD"/>
+<path data-conn="c2" data-beat="2" d="M 718 266 L 718 280 L 718 280 L 718 308" stroke="#47DCDD" stroke-width="3" fill="none"/><polygon data-conn="c2" data-beat="2" points="718,320 711,308 725,308" fill="#47DCDD"/>
+<path data-conn="c3" data-beat="3" d="M 688 350 L 492 350" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c3" data-beat="3" points="480,350 492,343 492,357" fill="#47DCDD"/>
+<path data-conn="c4" data-beat="4" d="M 420 350 L 224 350" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c4" data-beat="4" points="212,350 224,343 224,357" fill="#47DCDD"/>
+<g data-node="n0" class="bf-done" data-beat="0">
+<circle cx="182" cy="210" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="182" cy="210" r="6" fill="#45A4FF"/>
+<circle cx="156" cy="210" r="4" fill="#47DCDD"/>
+<circle cx="208" cy="210" r="4" fill="#45A4FF"/>
+<text x="182" y="258" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">SEPA messages</text>
+</g>
+<g data-node="n1" class="bf-done" data-beat="1">
+<circle cx="450" cy="210" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="450" cy="210" r="6" fill="#45A4FF"/>
+<circle cx="424" cy="210" r="4" fill="#47DCDD"/>
+<circle cx="476" cy="210" r="4" fill="#45A4FF"/>
+<text x="450" y="258" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Customer-to-bank</text>
+<text x="450" y="276" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">space</text>
+</g>
+<g data-node="n2" class="bf-done" data-beat="2">
+<circle cx="718" cy="210" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="718" cy="210" r="6" fill="#45A4FF"/>
+<circle cx="692" cy="210" r="4" fill="#47DCDD"/>
+<circle cx="744" cy="210" r="4" fill="#45A4FF"/>
+<text x="718" y="258" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Pain messages</text>
+</g>
+<g data-node="n3" class="bf-now" data-beat="3">
+<circle cx="718" cy="350" r="26" fill="#0A1826" stroke="#47DCDD" stroke-width="3"/>
+<circle cx="718" cy="350" r="6" fill="#47DCDD"/>
+<circle cx="692" cy="350" r="4" fill="#47DCDD"/>
+<circle cx="744" cy="350" r="4" fill="#45A4FF"/>
+<circle cx="718" cy="350" r="33" fill="none" stroke="#47DCDD" stroke-width="1" opacity="0.5"/>
+<text x="770" y="320" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="718" y="398" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Camt.052</text>
+</g>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<circle cx="450" cy="350" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="450" cy="350" r="6" fill="#45A4FF"/>
+<circle cx="424" cy="350" r="4" fill="#47DCDD"/>
+<circle cx="476" cy="350" r="4" fill="#45A4FF"/>
+<text x="450" y="398" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Pacs messages</text>
+</g>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<circle cx="182" cy="350" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="182" cy="350" r="6" fill="#45A4FF"/>
+<circle cx="156" cy="350" r="4" fill="#47DCDD"/>
+<circle cx="208" cy="350" r="4" fill="#45A4FF"/>
+<text x="182" y="398" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Party</text>
+</g>
+<rect x="48" y="432" width="804" height="84" rx="10" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<text x="68" y="456" font-size="11" fill="#47DCDD" font-family="ui-monospace,Menlo,Consolas,monospace">MESSAGE TRACE</text>
+<text x="68" y="478" font-size="13" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">SEPA messages &gt; Customer-to-bank space &gt; Pain messages &gt; Camt.052</text>
+<text x="68" y="504" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Camt.052 is the Bank to Customer Account Report for intraday positions.</text>
+<text x="48" y="538" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 4 of 6</text>
+<circle cx="772" cy="534" r="4" fill="#334155"/>
+<circle cx="788" cy="534" r="4" fill="#334155"/>
+<circle cx="804" cy="534" r="4" fill="#334155"/>
+<circle cx="820" cy="534" r="4" fill="#47DCDD"/>
+<circle cx="836" cy="534" r="4" fill="#334155"/>
+<circle cx="852" cy="534" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 748" role="img" aria-label="Lesson visual, vertical layout">
+<defs><pattern id="bfd275" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="360" height="748" fill="#0B1F3D"/>
+<rect x="0" y="0" width="360" height="748" fill="url(#bfd275)"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Camt.052:</tspan> <tspan fill="#FFFFFF">Bank</tspan> <tspan fill="#FFFFFF">to</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">Customer</tspan> <tspan fill="#FFFFFF">Account</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="24" y="94" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="114" r="11" fill="#1E3A5F"/>
+<text x="44" y="118" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="180" y="132" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">SEPA messages</text>
+</g>
+<line data-conn="c0" data-beat="0" x1="180" y1="169" x2="180" y2="177" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c0" data-beat="0" points="180,189 173,177 187,177" fill="#DBEAFE"/>
+<g data-node="n1" class="bf-done" data-beat="1">
+<rect x="24" y="192" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="212" r="11" fill="#1E3A5F"/>
+<text x="44" y="216" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="180" y="230" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Customer-to-bank space</text>
+</g>
+<line data-conn="c1" data-beat="1" x1="180" y1="267" x2="180" y2="275" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c1" data-beat="1" points="180,287 173,275 187,275" fill="#DBEAFE"/>
+<g data-node="n2" class="bf-done" data-beat="2">
+<rect x="24" y="290" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="310" r="11" fill="#1E3A5F"/>
+<text x="44" y="314" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="180" y="328" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Pain messages</text>
+</g>
+<line data-conn="c2" data-beat="2" x1="180" y1="365" x2="180" y2="373" stroke="#60A5FA" stroke-width="2"/>
+<polygon data-conn="c2" data-beat="2" points="180,385 173,373 187,373" fill="#DBEAFE"/>
+<g data-node="n3" class="bf-now" data-beat="3">
+<rect x="24" y="388" width="312" height="72" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="44" cy="408" r="11" fill="#1D4ED8"/>
+<text x="44" y="412" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="324" y="412" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="180" y="426" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Camt.052</text>
+</g>
+<line data-conn="c3" data-beat="3" x1="180" y1="463" x2="180" y2="471" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c3" data-beat="3" points="180,483 173,471 187,471" fill="#DBEAFE"/>
+<g data-node="n4" class="bf-dim" data-beat="4">
+<rect x="24" y="486" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="506" r="11" fill="#1E3A5F"/>
+<text x="44" y="510" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="180" y="524" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Pacs messages</text>
+</g>
+<line data-conn="c4" data-beat="4" x1="180" y1="561" x2="180" y2="569" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c4" data-beat="4" points="180,581 173,569 187,569" fill="#DBEAFE"/>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="24" y="584" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="604" r="11" fill="#1E3A5F"/>
+<text x="44" y="608" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="180" y="622" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Party</text>
+</g>
+<g class="bf-paydot" style="--dx:0px;--dy:-52px"><circle class="bf-pulse" cx="180" cy="378" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="180" cy="378" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="180" y="676" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Camt.052 is the Bank to Customer</text>
+<text x="180" y="695" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Account Report for intraday positions.</text>
+<text x="24" y="736" font-size="12" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 4 of 6</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="4">
+<svg class="flow-desktop" viewBox="0 0 900 560" role="img" aria-label="Lesson visual">
+<defs><pattern id="bfd276" width="18" height="18" patternUnits="userSpaceOnUse"><path d="M18 0H0V18" fill="none" stroke="#182A44" stroke-width="1"/></pattern></defs>
+<rect x="0" y="0" width="900" height="560" fill="#0B1F3D"/>
+<rect x="0" y="0" width="900" height="560" fill="url(#bfd276)"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Pacs</tspan> <tspan fill="#FFFFFF">messages</tspan></text>
+<path data-conn="c0" data-beat="0" d="M 212 210 L 408 210" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c0" data-beat="0" points="420,210 408,217 408,203" fill="#47DCDD"/>
+<path data-conn="c1" data-beat="1" d="M 480 210 L 676 210" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c1" data-beat="1" points="688,210 676,217 676,203" fill="#47DCDD"/>
+<path data-conn="c2" data-beat="2" d="M 718 266 L 718 280 L 718 280 L 718 308" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c2" data-beat="2" points="718,320 711,308 725,308" fill="#47DCDD"/>
+<path data-conn="c3" data-beat="3" d="M 688 350 L 492 350" stroke="#47DCDD" stroke-width="3" fill="none"/><polygon data-conn="c3" data-beat="3" points="480,350 492,343 492,357" fill="#47DCDD"/>
+<path data-conn="c4" data-beat="4" d="M 420 350 L 224 350" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c4" data-beat="4" points="212,350 224,343 224,357" fill="#47DCDD"/>
+<g data-node="n0" class="bf-done" data-beat="0">
+<circle cx="182" cy="210" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="182" cy="210" r="6" fill="#45A4FF"/>
+<circle cx="156" cy="210" r="4" fill="#47DCDD"/>
+<circle cx="208" cy="210" r="4" fill="#45A4FF"/>
+<text x="182" y="258" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">SEPA messages</text>
+</g>
+<g data-node="n1" class="bf-done" data-beat="1">
+<circle cx="450" cy="210" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="450" cy="210" r="6" fill="#45A4FF"/>
+<circle cx="424" cy="210" r="4" fill="#47DCDD"/>
+<circle cx="476" cy="210" r="4" fill="#45A4FF"/>
+<text x="450" y="258" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Customer-to-bank</text>
+<text x="450" y="276" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">space</text>
+</g>
+<g data-node="n2" class="bf-done" data-beat="2">
+<circle cx="718" cy="210" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="718" cy="210" r="6" fill="#45A4FF"/>
+<circle cx="692" cy="210" r="4" fill="#47DCDD"/>
+<circle cx="744" cy="210" r="4" fill="#45A4FF"/>
+<text x="718" y="258" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Pain messages</text>
+</g>
+<g data-node="n3" class="bf-done" data-beat="3">
+<circle cx="718" cy="350" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="718" cy="350" r="6" fill="#45A4FF"/>
+<circle cx="692" cy="350" r="4" fill="#47DCDD"/>
+<circle cx="744" cy="350" r="4" fill="#45A4FF"/>
+<text x="718" y="398" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Camt.052</text>
+</g>
+<g data-node="n4" class="bf-now" data-beat="4">
+<circle cx="450" cy="350" r="26" fill="#0A1826" stroke="#47DCDD" stroke-width="3"/>
+<circle cx="450" cy="350" r="6" fill="#47DCDD"/>
+<circle cx="424" cy="350" r="4" fill="#47DCDD"/>
+<circle cx="476" cy="350" r="4" fill="#45A4FF"/>
+<circle cx="450" cy="350" r="33" fill="none" stroke="#47DCDD" stroke-width="1" opacity="0.5"/>
+<text x="502" y="320" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="450" y="398" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Pacs messages</text>
+</g>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<circle cx="182" cy="350" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="182" cy="350" r="6" fill="#45A4FF"/>
+<circle cx="156" cy="350" r="4" fill="#47DCDD"/>
+<circle cx="208" cy="350" r="4" fill="#45A4FF"/>
+<text x="182" y="398" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Party</text>
+</g>
+<rect x="48" y="432" width="804" height="84" rx="10" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<text x="68" y="456" font-size="11" fill="#47DCDD" font-family="ui-monospace,Menlo,Consolas,monospace">MESSAGE TRACE</text>
+<text x="68" y="478" font-size="13" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">SEPA messages &gt; Customer-to-bank space &gt; Pain messages &gt; Camt.052 &gt; Pacs messages</text>
+<text x="68" y="504" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Pacs messages are used exclusively in the interbank space.</text>
+<text x="48" y="538" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 5 of 6</text>
+<circle cx="772" cy="534" r="4" fill="#334155"/>
+<circle cx="788" cy="534" r="4" fill="#334155"/>
+<circle cx="804" cy="534" r="4" fill="#334155"/>
+<circle cx="820" cy="534" r="4" fill="#334155"/>
+<circle cx="836" cy="534" r="4" fill="#47DCDD"/>
+<circle cx="852" cy="534" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 720" role="img" aria-label="Lesson visual, vertical layout">
+<defs><pattern id="bfd277" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="360" height="720" fill="#0B1F3D"/>
+<rect x="0" y="0" width="360" height="720" fill="url(#bfd277)"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Pacs</tspan> <tspan fill="#FFFFFF">messages</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="24" y="66" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="86" r="11" fill="#1E3A5F"/>
+<text x="44" y="90" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="180" y="104" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">SEPA messages</text>
+</g>
+<line data-conn="c0" data-beat="0" x1="180" y1="141" x2="180" y2="149" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c0" data-beat="0" points="180,161 173,149 187,149" fill="#DBEAFE"/>
+<g data-node="n1" class="bf-done" data-beat="1">
+<rect x="24" y="164" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="184" r="11" fill="#1E3A5F"/>
+<text x="44" y="188" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="180" y="202" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Customer-to-bank space</text>
+</g>
+<line data-conn="c1" data-beat="1" x1="180" y1="239" x2="180" y2="247" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c1" data-beat="1" points="180,259 173,247 187,247" fill="#DBEAFE"/>
+<g data-node="n2" class="bf-done" data-beat="2">
+<rect x="24" y="262" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="282" r="11" fill="#1E3A5F"/>
+<text x="44" y="286" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="180" y="300" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Pain messages</text>
+</g>
+<line data-conn="c2" data-beat="2" x1="180" y1="337" x2="180" y2="345" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c2" data-beat="2" points="180,357 173,345 187,345" fill="#DBEAFE"/>
+<g data-node="n3" class="bf-done" data-beat="3">
+<rect x="24" y="360" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="380" r="11" fill="#1E3A5F"/>
+<text x="44" y="384" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="180" y="398" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Camt.052</text>
+</g>
+<line data-conn="c3" data-beat="3" x1="180" y1="435" x2="180" y2="443" stroke="#60A5FA" stroke-width="2"/>
+<polygon data-conn="c3" data-beat="3" points="180,455 173,443 187,443" fill="#DBEAFE"/>
+<g data-node="n4" class="bf-now" data-beat="4">
+<rect x="24" y="458" width="312" height="72" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="44" cy="478" r="11" fill="#1D4ED8"/>
+<text x="44" y="482" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="324" y="482" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="180" y="496" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Pacs messages</text>
+</g>
+<line data-conn="c4" data-beat="4" x1="180" y1="533" x2="180" y2="541" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c4" data-beat="4" points="180,553 173,541 187,541" fill="#DBEAFE"/>
+<g data-node="n5" class="bf-dim" data-beat="5">
+<rect x="24" y="556" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="576" r="11" fill="#1E3A5F"/>
+<text x="44" y="580" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="180" y="594" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Party</text>
+</g>
+<g class="bf-paydot" style="--dx:0px;--dy:-52px"><circle class="bf-pulse" cx="180" cy="448" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="180" cy="448" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="180" y="648" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Pacs messages are used exclusively in</text>
+<text x="180" y="667" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">the interbank space.</text>
+<text x="24" y="708" font-size="12" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 5 of 6</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="5">
+<svg class="flow-desktop" viewBox="0 0 900 560" role="img" aria-label="Lesson visual">
+<defs><pattern id="bfd278" width="18" height="18" patternUnits="userSpaceOnUse"><path d="M18 0H0V18" fill="none" stroke="#182A44" stroke-width="1"/></pattern></defs>
+<rect x="0" y="0" width="900" height="560" fill="#0B1F3D"/>
+<rect x="0" y="0" width="900" height="560" fill="url(#bfd278)"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Party</tspan> <tspan fill="#FFFFFF">name</tspan></text>
+<path data-conn="c0" data-beat="0" d="M 212 210 L 408 210" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c0" data-beat="0" points="420,210 408,217 408,203" fill="#47DCDD"/>
+<path data-conn="c1" data-beat="1" d="M 480 210 L 676 210" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c1" data-beat="1" points="688,210 676,217 676,203" fill="#47DCDD"/>
+<path data-conn="c2" data-beat="2" d="M 718 266 L 718 280 L 718 280 L 718 308" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c2" data-beat="2" points="718,320 711,308 725,308" fill="#47DCDD"/>
+<path data-conn="c3" data-beat="3" d="M 688 350 L 492 350" stroke="#2A5C8C" stroke-width="2" fill="none"/><polygon data-conn="c3" data-beat="3" points="480,350 492,343 492,357" fill="#47DCDD"/>
+<path data-conn="c4" data-beat="4" d="M 420 350 L 224 350" stroke="#47DCDD" stroke-width="3" fill="none"/><polygon data-conn="c4" data-beat="4" points="212,350 224,343 224,357" fill="#47DCDD"/>
+<g data-node="n0" class="bf-done" data-beat="0">
+<circle cx="182" cy="210" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="182" cy="210" r="6" fill="#45A4FF"/>
+<circle cx="156" cy="210" r="4" fill="#47DCDD"/>
+<circle cx="208" cy="210" r="4" fill="#45A4FF"/>
+<text x="182" y="258" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">SEPA messages</text>
+</g>
+<g data-node="n1" class="bf-done" data-beat="1">
+<circle cx="450" cy="210" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="450" cy="210" r="6" fill="#45A4FF"/>
+<circle cx="424" cy="210" r="4" fill="#47DCDD"/>
+<circle cx="476" cy="210" r="4" fill="#45A4FF"/>
+<text x="450" y="258" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Customer-to-bank</text>
+<text x="450" y="276" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">space</text>
+</g>
+<g data-node="n2" class="bf-done" data-beat="2">
+<circle cx="718" cy="210" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="718" cy="210" r="6" fill="#45A4FF"/>
+<circle cx="692" cy="210" r="4" fill="#47DCDD"/>
+<circle cx="744" cy="210" r="4" fill="#45A4FF"/>
+<text x="718" y="258" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Pain messages</text>
+</g>
+<g data-node="n3" class="bf-done" data-beat="3">
+<circle cx="718" cy="350" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="718" cy="350" r="6" fill="#45A4FF"/>
+<circle cx="692" cy="350" r="4" fill="#47DCDD"/>
+<circle cx="744" cy="350" r="4" fill="#45A4FF"/>
+<text x="718" y="398" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Camt.052</text>
+</g>
+<g data-node="n4" class="bf-done" data-beat="4">
+<circle cx="450" cy="350" r="26" fill="#0A1826" stroke="#45A4FF" stroke-width="3"/>
+<circle cx="450" cy="350" r="6" fill="#45A4FF"/>
+<circle cx="424" cy="350" r="4" fill="#47DCDD"/>
+<circle cx="476" cy="350" r="4" fill="#45A4FF"/>
+<text x="450" y="398" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Pacs messages</text>
+</g>
+<g data-node="n5" class="bf-now" data-beat="5">
+<circle cx="182" cy="350" r="26" fill="#0A1826" stroke="#47DCDD" stroke-width="3"/>
+<circle cx="182" cy="350" r="6" fill="#47DCDD"/>
+<circle cx="156" cy="350" r="4" fill="#47DCDD"/>
+<circle cx="208" cy="350" r="4" fill="#45A4FF"/>
+<circle cx="182" cy="350" r="33" fill="none" stroke="#47DCDD" stroke-width="1" opacity="0.5"/>
+<text x="234" y="320" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="182" y="398" text-anchor="middle" font-size="14" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Party</text>
+</g>
+<rect x="48" y="432" width="804" height="84" rx="10" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<text x="68" y="456" font-size="11" fill="#47DCDD" font-family="ui-monospace,Menlo,Consolas,monospace">MESSAGE TRACE</text>
+<text x="68" y="478" font-size="13" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">SEPA messages &gt; Customer-to-bank space &gt; Pain messages &gt; Camt.052 &gt; Pacs messages &gt; Party</text>
+<text x="68" y="504" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">For example, a party name can have up to 140 characters under ISO 20022 rules, but in SEPA only 70</text>
+<text x="48" y="538" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 6 of 6</text>
+<circle cx="772" cy="534" r="4" fill="#334155"/>
+<circle cx="788" cy="534" r="4" fill="#334155"/>
+<circle cx="804" cy="534" r="4" fill="#334155"/>
+<circle cx="820" cy="534" r="4" fill="#334155"/>
+<circle cx="836" cy="534" r="4" fill="#334155"/>
+<circle cx="852" cy="534" r="4" fill="#47DCDD"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 739" role="img" aria-label="Lesson visual, vertical layout">
+<defs><pattern id="bfd279" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#1E3A5F"/></pattern></defs>
+<rect x="0" y="0" width="360" height="739" fill="#0B1F3D"/>
+<rect x="0" y="0" width="360" height="739" fill="url(#bfd279)"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Party</tspan> <tspan fill="#FFFFFF">name</tspan></text>
+<g data-node="n0" class="bf-done" data-beat="0">
+<rect x="24" y="66" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="86" r="11" fill="#1E3A5F"/>
+<text x="44" y="90" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">1</text>
+<text x="180" y="104" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">SEPA messages</text>
+</g>
+<line data-conn="c0" data-beat="0" x1="180" y1="141" x2="180" y2="149" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c0" data-beat="0" points="180,161 173,149 187,149" fill="#DBEAFE"/>
+<g data-node="n1" class="bf-done" data-beat="1">
+<rect x="24" y="164" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="184" r="11" fill="#1E3A5F"/>
+<text x="44" y="188" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">2</text>
+<text x="180" y="202" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Customer-to-bank space</text>
+</g>
+<line data-conn="c1" data-beat="1" x1="180" y1="239" x2="180" y2="247" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c1" data-beat="1" points="180,259 173,247 187,247" fill="#DBEAFE"/>
+<g data-node="n2" class="bf-done" data-beat="2">
+<rect x="24" y="262" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="282" r="11" fill="#1E3A5F"/>
+<text x="44" y="286" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">3</text>
+<text x="180" y="300" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Pain messages</text>
+</g>
+<line data-conn="c2" data-beat="2" x1="180" y1="337" x2="180" y2="345" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c2" data-beat="2" points="180,357 173,345 187,345" fill="#DBEAFE"/>
+<g data-node="n3" class="bf-done" data-beat="3">
+<rect x="24" y="360" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="380" r="11" fill="#1E3A5F"/>
+<text x="44" y="384" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">4</text>
+<text x="180" y="398" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Camt.052</text>
+</g>
+<line data-conn="c3" data-beat="3" x1="180" y1="435" x2="180" y2="443" stroke="#475569" stroke-width="2"/>
+<polygon data-conn="c3" data-beat="3" points="180,455 173,443 187,443" fill="#DBEAFE"/>
+<g data-node="n4" class="bf-done" data-beat="4">
+<rect x="24" y="458" width="312" height="72" rx="12" fill="#0E2138" stroke="#3B5B7A" stroke-width="2"/>
+<circle cx="44" cy="478" r="11" fill="#1E3A5F"/>
+<text x="44" y="482" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">5</text>
+<text x="180" y="496" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Pacs messages</text>
+</g>
+<line data-conn="c4" data-beat="4" x1="180" y1="533" x2="180" y2="541" stroke="#60A5FA" stroke-width="2"/>
+<polygon data-conn="c4" data-beat="4" points="180,553 173,541 187,541" fill="#DBEAFE"/>
+<g data-node="n5" class="bf-now" data-beat="5">
+<rect x="24" y="556" width="312" height="72" rx="12" fill="#14365E" stroke="#60A5FA" stroke-width="3"/>
+<circle cx="44" cy="576" r="11" fill="#1D4ED8"/>
+<text x="44" y="580" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">6</text>
+<text x="324" y="580" text-anchor="end" font-size="11" font-weight="700" fill="#C9A227" font-family="Arial, Helvetica, sans-serif">NOW</text>
+<text x="180" y="594" text-anchor="middle" font-size="16" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Party</text>
+</g>
+<g class="bf-paydot" style="--dx:0px;--dy:-52px"><circle class="bf-pulse" cx="180" cy="546" r="7" fill="none" stroke="#C9A227" stroke-width="2"/><circle cx="180" cy="546" r="7" fill="#C9A227" stroke="#FFFFFF" stroke-width="2"/></g>
+<text x="180" y="648" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">For example, a party name can have up to</text>
+<text x="180" y="667" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">140 characters under ISO 20022 rules, but</text>
+<text x="180" y="686" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">in SEPA only 70 characters are allowed.</text>
+<text x="24" y="727" font-size="12" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 6 of 6</text>
+</svg>
+</div>
+</div>
+<p class="xml-caption">Flow of the explanation in this lesson.</p></div>
+<div class="playerbar">
+<div class="studio-progress"><div class="studio-markers" id="studio-markers-studio-ch11s9"></div><input type="range" id="studio-slider-studio-ch11s9" min="0" max="1000" value="0" aria-label="Lesson timeline"></div>
+<div class="ctrl-row">
+<button class="ctrl-btn" id="studio-play-studio-ch11s9" onclick="studioTogglePlay('studio-ch11s9')" aria-label="Play lesson" title="Play lesson"><span class="ctrl-ic-play"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></span><span class="ctrl-ic-pause" style="display:none"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><rect x="6" y="5" width="4" height="14" fill="currentColor"/><rect x="14" y="5" width="4" height="14" fill="currentColor"/></svg></span></button>
+<button class="ctrl-btn studio-mute-btn" id="studio-mute-studio-ch11s9" onclick="studioToggleMute('studio-ch11s9')" aria-label="Mute narration" title="Mute / unmute narration"><svg class="studio-mute-icon" viewBox="0 0 24 24" width="28" height="28" fill="currentColor" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3z"/><path class="studio-mute-waves" d="M16 8.5a5 5 0 0 1 0 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><path class="studio-mute-waves" d="M18.5 6a9 9 0 0 1 0 12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><path class="studio-mute-x" d="M16 9.5l5 5M21 9.5l-5 5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" style="display:none"/></svg></button>
+<button class="ctrl-btn" onclick="studioSkip('studio-ch11s9', -10)" aria-label="Back 10 seconds" title="Back 10 seconds"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 5a7 7 0 1 1-6.32 4.06" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M5.5 3.5v5h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><text x="12" y="16.5" font-size="8" fill="currentColor" text-anchor="middle" font-weight="700">10</text></svg></button>
+<span class="studio-time ctrl-time" id="studio-time-studio-ch11s9">0:00 / 3:21</span>
+<button class="ctrl-btn" onclick="studioSkip('studio-ch11s9', 10)" aria-label="Forward 10 seconds" title="Forward 10 seconds"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 5a7 7 0 1 0 6.32 4.06" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M18.5 3.5v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><text x="12" y="16.5" font-size="8" fill="currentColor" text-anchor="middle" font-weight="700">10</text></svg></button>
+<span class="playerbar-spacer"></span>
+<span class="player-stage" id="studio-tag-studio-ch11s9">Step 1 of 6</span>
+<button class="ctrl-btn ctrl-step" id="studio-prevscene-studio-ch11s9" onclick="studioPrevScene('studio-ch11s9')" title="Previous step" aria-label="Previous step">&lsaquo;</button>
+<button class="ctrl-btn ctrl-step" id="studio-nextscene-studio-ch11s9" onclick="studioNextScene('studio-ch11s9')" title="Next step" aria-label="Next step">&rsaquo;</button>
+<button class="ctrl-btn ctrl-speed" id="studio-speedbtn-studio-ch11s9" onclick="studioCycleSpeed('studio-ch11s9')" title="Playback speed" aria-label="Playback speed">1x</button>
+<span class="ctrl-settings-wrap"><button class="ctrl-btn" onclick="studioToggleSettings('studio-ch11s9', event)" aria-label="Player settings" title="Settings"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5 5l2.1 2.1M16.9 16.9L19 19M19 5l-2.1 2.1M7.1 16.9L5 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button><span class="ctrl-popover" id="studio-settings-studio-ch11s9" style="display:none" onclick="event.stopPropagation()"><label class="ctrl-pop-row">Volume <input type="range" min="0" max="1" step="0.1" value="1" oninput="studioSetVolume('studio-ch11s9', this.value)" style="width:110px;accent-color:#3587FC"></label><button class="studio-btn" id="studio-captions-studio-ch11s9" onclick="studioToggleCaptions('studio-ch11s9')">Captions: On</button><button class="studio-btn" onclick="studioReplayScene('studio-ch11s9')">Replay scene</button></span></span>
+<button class="ctrl-btn" onclick="studioFullscreen('studio-ch11s9')" aria-label="Fullscreen" title="Fullscreen"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+</div>
+</div>
+</div>
+<p class="studio-caption" id="studio-caption-studio-ch11s9"></p>
+<p class="studio-loading" id="studio-loading-studio-ch11s9" style="display:none">Loading narration...</p>
+<p class="studio-error" id="studio-error-studio-ch11s9" role="alert" style="display:none"></p>
+<audio id="studio-audio-studio-ch11s9" preload="auto" src="../audio/ch11s9.mp3"></audio>
+</div>
+<div class="lesson-title-row">
+<h1>The messages exchanged in the SCT scheme: pain, pacs, camt</h1>
+<button class="save-note" type="button" onclick="pfToggleNote('studio-ch11s9')" title="Save a note on this lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L8 19l-4 1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg> Save note</button>
+</div>
+<p class="lesson-meta-line">Europe: SEPA and T2, Lesson 9 of 10, Narration 3:21, D05 Domestic payment systems</p>
+<p class="lesson-note-saved" id="studio-note-saved-studio-ch11s9" style="display:none">Note saved.</p>
+<div class="note-editor" id="studio-note-editor-studio-ch11s9" style="display:none"><textarea id="studio-note-text-studio-ch11s9" rows="3" placeholder="Write a note on this lesson..." aria-label="Lesson note"></textarea><div class="note-editor-row"><button class="studio-btn primary" onclick="pfSaveNote('studio-ch11s9')">Save note</button> <button class="studio-btn" onclick="pfToggleNote('studio-ch11s9')">Cancel</button></div></div>
+<div class="dive-deeper">
+<div class="dive-head"><button type="button" class="dive-toggle" onclick="pfToggleDive(this)" aria-expanded="true"><span class="dive-spark"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 2l2.2 6.8L21 11l-6.8 2.2L12 20l-2.2-6.8L3 11l6.8-2.2z" fill="currentColor"/></svg></span><span class="dive-title">Dive deeper on this topic</span><span class="dive-chev"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 14l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button></div>
+<div class="dive-btns"><button type="button" class="dive-btn" data-kind="practice" onclick="pfDive('studio-ch11s9', 'practice')">Give me practice questions</button><button type="button" class="dive-btn" data-kind="simple" onclick="pfDive('studio-ch11s9', 'simple')">Explain this topic in simple terms</button><button type="button" class="dive-btn" data-kind="summary" onclick="pfDive('studio-ch11s9', 'summary')">Give me a summary</button><button type="button" class="dive-btn" data-kind="example" onclick="pfDive('studio-ch11s9', 'example')">Give me real-life examples</button></div>
+<div class="dive-panel" id="dive-panel-studio-ch11s9"><div class="dive-panel-body"></div></div>
+<script type="application/json" id="pf-dive-data-studio-ch11s9">{"simple": "In plain words: all SEPA messages are based on ISO 20022, using XML syntax. That is the whole idea in one sentence, and the rest of the lesson shows how it works in a real bank.", "summary": "All SEPA messages are based on ISO 20022, using XML syntax. Key points: SEPA messages; Customer-to-bank space; Pain messages; Camt.052: Bank to Customer Account; Pacs messages; Party name.", "example": "A customer sends pain.001, Customer Credit Transfer Initiation, to instruct its bank to make a credit transfer. In the interbank space, camt messages are used to cancel orders or transactions and to reply to cancellation requests, for example camt.056, FI to FI Payment Cancellation Request, and camt.029, Resolution of Investigation."}</script>
+</div>
+<div class="lesson-feedback">
+<div class="fb-icons"><button type="button" class="fb-btn" data-kind="like" onclick="pfFeedback(this,'like')" aria-label="Like this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M7 21H4a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1h3v11zm0 0h9.6a2 2 0 0 0 1.9-1.4l1.6-5A2 2 0 0 0 18.2 12H15V6.5A2.5 2.5 0 0 0 12.5 4L11 7.5 8.6 10H7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button><button type="button" class="fb-btn" data-kind="dislike" onclick="pfFeedback(this,'dislike')" aria-label="Dislike this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M17 3h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1h-3V3zm0 0H7.4a2 2 0 0 0-1.9 1.4l-1.6 5A2 2 0 0 0 5.8 12H9v5.5A2.5 2.5 0 0 0 11.5 20L13 16.5l2.4-2.5H17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button><button type="button" class="fb-btn" data-kind="flag" onclick="pfFeedback(this,'flag')" aria-label="Flag this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M6 21V4m0 1h11l-2.5 3.5L17 12H6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+<button type="button" class="go-next" onclick="goLesson('ch11s10')" title="Next: SEPA Instant Payments Regulation: phased obligations from 2025">Go to next item &rarr;</button>
+</div>
+<div class="chips"><span class="chip">Remittance information</span><span class="chip">Charge bearer</span><span class="chip">Purpose code</span></div>
+<div class="card learn-card">
+<h2>What you will learn</h2>
+<p class="transcript"><b>Your objective.</b> By the end of this lesson, you will be able to explain messages exchanged in the sct scheme: PAIN, PACS, CAMT. All SEPA messages are based on ISO 20022, using XML syntax.</p>
+<p class="transcript"><b>Why it matters.</b> This matters because the rail decides how fast the money moves, what it costs, when it settles and what can go wrong. Choosing the wrong rail is a product and an operations failure.</p>
+<p class="transcript">Chapter objective: Learner explains SEPA credit transfer, SEPA direct debit, SEPA Instant, and TARGET2, including IBAN, BIC, cut-offs, and settlement, and traces a euro payment across Europe. Learner demonstrates this skill using realistic banking examples, explaining each step clearly and using correct terminology throughout.</p>
+<h3>Key learning points</h3>
+<ul id="studio-points-studio-ch11s9">
+<li>SEPA messages</li>
+<li>Customer-to-bank space</li>
+<li>Pain messages</li>
+<li>Camt.052: Bank to Customer Account</li>
+<li>Pacs messages</li>
+<li>Party name</li>
+</ul>
+<h3>Key terms</h3>
+<div id="studio-terms-studio-ch11s9">
+<p class="keyterm"><b>Remittance information:</b> Information that explains what a payment is for, such as invoice numbers, contract references or salary month.</p>
+<p class="keyterm"><b>Charge bearer:</b> A code that states who pays the charges for a payment. In ISO 20022 the values are DEBT for debtor, CRED for creditor, SHAR for shared and SLEV for service level.</p>
+<p class="keyterm"><b>Purpose code:</b> A code that states the commercial reason for a payment, such as supplier payment, salary or goods. Purpose codes are taken from an ISO external code list and support regulatory reporting, screening...</p>
+</div>
+<p class="studio-note">Payment flow diagram showing The messages exchanged in the SCT scheme: pain, pacs, camt.</p>
+</div>
+<div class="fw-card" id="pf-exercise-studio-ch11s9">
+<p class="fw-label">Practise this lesson</p>
+<h2>Exercise</h2>
+<p><b>Read the ISO 20022 message described in this lesson and identify its key parts.</b></p>
+<p>Use the message structure, fields and example in this lesson.</p>
+<ol class="fw-steps">
+<li><b>What to do.</b> List the main blocks of the message, name the field that carries the amount, and name the field that identifies the payment.</li>
+</ol>
+<p><button class="studio-btn" id="pf-ex-btn-studio-ch11s9" onclick="pfRevealExercise('studio-ch11s9')">Show the answer</button></p>
+<div class="fw-exercise-answer" id="pf-ex-answer-studio-ch11s9">
+<p><b>Correct result.</b> The message is made of blocks, each carrying a part of the payment instruction. The amount field and the identification field are the two a receiving bank checks first, because without them it cannot process or reconcile the payment.</p>
+<p><b>Why.</b> A message is only useful if you can read it. The blocks tell the receiving bank what to do, and the amount and identification fields are what it checks first.</p>
+</div>
+</div>
+<div class="fw-card" id="pf-quiz-studio-ch11s9" data-answer="2">
+<p class="fw-label">Check your understanding</p>
+<h2>Practice question</h2>
+<p><b>Which of the following best describes messages exchanged in the sct scheme: PAIN, PACS, CAMT?</b></p>
+<button type="button" class="quiz-opt" data-idx="0" onclick="pfCheckAnswer('studio-ch11s9', this)">For a business analyst, SEPA is a lesson in how standardisation creates scale</button>
+<button type="button" class="quiz-opt" data-idx="1" onclick="pfCheckAnswer('studio-ch11s9', this)">SEPA covers more than the European Union</button>
+<button type="button" class="quiz-opt" data-idx="2" onclick="pfCheckAnswer('studio-ch11s9', this)">All SEPA messages are based on ISO 20022, using XML syntax</button>
+<button type="button" class="quiz-opt" data-idx="3" onclick="pfCheckAnswer('studio-ch11s9', this)">The Single Euro Payments Area, known as SEPA, is one of the most ambitious payment projects in the world</button>
+<div class="quiz-feedback" id="pf-quiz-fb-studio-ch11s9"></div>
+<script type="application/json" id="pf-quiz-data-studio-ch11s9">{"why_wrong": ["This describes a different concept from this chapter, not messages exchanged in the sct scheme: PAIN, PACS, CAMT.", "This describes a different concept from this chapter, not messages exchanged in the sct scheme: PAIN, PACS, CAMT.", "", "This describes a different concept from this chapter, not messages exchanged in the sct scheme: PAIN, PACS, CAMT."], "explanation": "All SEPA messages are based on ISO 20022, using XML syntax. This is the core idea of the lesson."}</script>
+</div>
+<div class="fw-card">
+<p class="fw-label">Takeaway and next step</p>
+<h2>What to remember</h2>
+<p>Pain messages are never used between banks.</p>
+<p>Open the message type from this lesson and inspect its fields, then find the field that carries the amount.</p>
+<p><a class="fw-tool-link" href="../simulators/message-explorer.html">Open the ISO 20022 Message Explorer &rarr;</a></p>
+<p class="studio-note">Builds on "SEPA instruments in depth: SCT, SCT Inst, SDD Core, SDD B2B".</p>
+</div>
+<section class="upnext" id="studio-upnext-studio-ch11s9" style="display:none" aria-label="Up next">
+<span class="tag">Up next</span>
+<h2>Up next: SEPA Instant Payments Regulation: phased obligations from 2025</h2>
+<p>Lesson 10 of 10, Europe: SEPA and T2, Narration 6:40</p>
+<div class="row">
+<button class="studio-btn primary" onclick="goLessonAuto('ch11s10')">Next lesson &rarr;</button>
+<button class="studio-btn" onclick="goLesson('ch11s8')">&larr; Previous lesson</button>
+<button class="studio-btn" onclick="studioReplayLesson('studio-ch11s9')">Replay this lesson</button>
+</div>
+</section>
+<div class="lesson-nav">
+<button class="studio-btn" onclick="goLesson('ch11s8')" title="Previous lesson: SEPA instruments in depth: SCT, SCT Inst, SDD Core, SDD B2B">&larr; Previous</button>
+<button class="studio-btn" onclick="goChapterContents('ch11')">Chapter contents</button>
+<button class="studio-btn primary" onclick="goLesson('ch11s10')" title="Next lesson: SEPA Instant Payments Regulation: phased obligations from 2025">Next &rarr;</button>
+</div>
+<div class="card transcript-card">
+<h2>Transcript and full text</h2>
+<details class="studio-transcript" id="studio-transcript-details-studio-ch11s9"><summary>Show transcript</summary>
+<p class="transcript" id="studio-transcript-studio-ch11s9">All SEPA messages are based on ISO 20022, using XML syntax. The European Payments Council publishes three main documents for each scheme, the rulebook, the Customer-to-Bank Implementation Guidelines, and the Interbank Implementation Guidelines. New versions are usually published every year in November. The messages flow in two spaces. The customer-to-bank space is where customers and banks exchange messages. The interbank space is where banks exchange messages among themselves, directly or through a clearing and settlement mechanism. In the customer-to-bank space, messages sent from customer to bank are orders or instructions. Messages sent from bank to customer are reporting. The bank informs the customer about the execution of its payments. In the interbank space, banks exchange messages directly or through a CSM such as EBA STEP2. The message names all begin with four letters inherited from ISO 20022. PAIN stands for Payment Initiation. CAMT stands for Cash Management. PACS stands for Payment Clearing and Settlement. Pain messages are used exclusively in the customer-to-bank space. A customer sends pain.001, Customer Credit Transfer Initiation, to instruct its bank to make a credit transfer. The bank replies with pain.002, Customer Payment Status Report, to report whether the instruction was accepted, rejected, or completed. Pain messages are never used between banks. Camt messages appear in both spaces. In the customer-to-bank space, camt messages inform the customer about its cash position as a result of executed instructions or received payments. Camt.052 is the Bank to Customer Account Report for intraday positions. Camt.053 is the Bank to Customer Statement for end of day positions. Camt.054 is the Bank to Customer Debit Credit Notification for a single booking. Customers can also send camt messages to cancel orders. In the interbank space, camt messages are used to cancel orders or transactions and to reply to cancellation requests, for example camt.056, FI to FI Payment Cancellation Request, and camt.029, Resolution of Investigation. Pacs messages are used exclusively in the interbank space. They transfer money from one financial institution to another. Pacs.008, FI to FI Customer Credit Transfer, is the SCT interbank message. Pacs.009, Financial Institution Credit Transfer, is the bank to bank message. The numbers after the name carry meaning. In pacs.008.001.02, 008 is the message number, 001 is the variant, and 02 is the version. Only a subset of ISO 20022 message elements is allowed in SEPA messages, and SEPA rules further restrict some fields. For example, a party name can have up to 140 characters under ISO 20022 rules, but in SEPA only 70 characters are allowed. These differences are highlighted in the Implementation Guidelines for each scheme.</p>
+<div id="studio-paras-studio-ch11s9">
+<p class="transcript">All SEPA messages are based on ISO 20022, using XML syntax. The European Payments Council publishes three main documents for each scheme, the rulebook, the Customer-to-Bank Implementation Guidelines, and the Interbank Implementation Guidelines. New versions are usually published every year in November. The messages flow in two spaces. The customer-to-bank space is where customers and banks exchange messages. The interbank space is where banks exchange messages among themselves, directly or through a clearing and settlement mechanism. An analyst must know which space each message belongs to, because a message used in the wrong space will be rejected.</p>
+<p class="transcript">Follow the full message chain for one SCT payment of 25,000 euro from Munich to Lyon, in order. First, the customer sends a pain.001, Customer Credit Transfer Initiation, to the payer bank. Second, the payer bank replies with a pain.002, Customer Payment Status Report, confirming acceptance with status ACCP. Third, the payer bank sends a pacs.008, FI to FI Customer Credit Transfer, to the payee bank through STEP2. Fourth, the clearing system and the payee bank return pacs.002 status reports as the payment moves through ACSP to ACSC. Fifth, the payee bank credits the payee and the status becomes ACCC. Sixth, the payee bank sends a camt.054, Bank to Customer Debit Credit Notification, to tell the payee about the credit. Seventh, the credit appears on the payee's camt.053, Bank to Customer Statement. Seven messages, two spaces, one payment, and every one of them carries the same end to end reference so the chain can be followed.</p>
+<p class="transcript">In the customer-to-bank space, messages sent from customer to bank are orders or instructions. Messages sent from bank to customer are reporting. The bank informs the customer about the execution of its payments. In the interbank space, banks exchange messages directly or through a CSM such as EBA STEP2. The message names all begin with four letters inherited from ISO 20022. PAIN stands for Payment Initiation. CAMT stands for Cash Management. PACS stands for Payment Clearing and Settlement. The four letter prefix tells the analyst which family the message belongs to, and the number tells them which message it is.</p>
+<p class="transcript">Pain messages are used exclusively in the customer-to-bank space. A customer sends pain.001, Customer Credit Transfer Initiation, to instruct its bank to make a credit transfer. The bank replies with pain.002, Customer Payment Status Report, to report whether the instruction was accepted, rejected, or completed. A customer sends pain.008, Customer Direct Debit Initiation, to instruct its bank to collect a direct debit. A customer sends pain.007, Customer Payment Reversal, to reverse a direct debit it collected in error. Pain messages are never used between banks. An analyst who sees a pain.001 in an interbank flow has found a defect.</p>
+<p class="transcript">Camt messages appear in both spaces. In the customer-to-bank space, camt messages inform the customer about its cash position as a result of executed instructions or received payments. Camt.052 is the Bank to Customer Account Report for intraday positions. Camt.053 is the Bank to Customer Statement for end of day positions. Camt.054 is the Bank to Customer Debit Credit Notification for a single booking. Customers can also send camt messages to cancel orders. In the interbank space, camt messages are used to cancel orders or transactions and to reply to cancellation requests, for example camt.056, FI to FI Payment Cancellation Request, and camt.029, Resolution of Investigation. The same camt.056 that a payer bank sends to recall a payment is answered by the payee bank with a camt.029, which states whether the recall is accepted or refused.</p>
+<p class="transcript">Pacs messages are used exclusively in the interbank space. They transfer money from one financial institution to another. Pacs.008, FI to FI Customer Credit Transfer, is the SCT interbank message. Pacs.009, Financial Institution Credit Transfer, is the bank to bank message. Pacs.003, FI to FI Customer Direct Debit, is the SDD interbank message. Pacs.004, Payment Return, sends money back after settlement. Pacs.007, FI to FI Payment Reversal, reverses a direct debit. Pacs.002, FI to FI Payment Status Report, reports the status of any of these. The numbers after the name carry meaning. In pacs.008.001.02, 008 is the message number, 001 is the variant, and 02 is the version. The analyst must quote the full version in requirements, because a pacs.008.001.02 and a pacs.008.001.08 are different messages with different fields.</p>
+<p class="transcript">Only a subset of ISO 20022 message elements is allowed in SEPA messages, and SEPA rules further restrict some fields. For example, a party name can have up to 140 characters under ISO 20022 rules, but in SEPA only 70 characters are allowed. Remittance information is limited to 140 characters. These differences are highlighted in the Implementation Guidelines for each scheme, and the analyst must design the screens and the validations around the SEPA limits, not the ISO 20022 limits. A customer name of 90 characters is valid ISO 20022 and invalid SEPA, and a payment screen that accepts it will produce a pacs.008 that the clearing system rejects.</p>
+<p class="transcript">A field level example makes the restriction concrete. In the pacs.008 for our 25,000 euro payment, the group header carries the message identification and the creation date time. The payment information block carries the debtor, the debtor account with the IBAN, the debtor agent with the BIC, and the charge bearer, which for SCT is always the debtor, because the full amount must be credited. The credit transfer transaction information block carries the creditor, the creditor account with the IBAN, the creditor agent, the instructed amount of 25,000 euro, the purpose code, and the remittance information with the invoice number. Each block has mandatory, optional and conditional fields, and the implementation guidelines state which are which. The analyst's field mapping document should list every field in the pacs.008, state whether it is mandatory, optional or conditional, state the SEPA length limit, and state where the value comes from.</p>
+<p class="transcript">The analyst checklist for SEPA messages has four items. First, the message chain for each scheme, listing every message in order with its sender and receiver. Second, the field mapping for each message, with the SEPA limits and the source of each value. Third, the status flow, with the pacs.002 status at each stage and the reason code for each rejection and return. Fourth, the statement and notification design, stating when a camt.054 is sent and what the camt.053 contains. A message design that answers all four is a design that will pass scheme certification, because certification tests exactly these things.</p>
+</div>
+</details>
+<details class="studio-transcript"><summary>Full lesson text (all scenes)</summary><div id="studio-transcript-full-studio-ch11s9"></div></details>
+<p><button class="studio-btn primary" id="done-ch11s9" onclick="studioMarkSceneDone('studio-ch11s9')">Mark lesson complete</button> <span class="studio-note">Completing a lesson updates your progress dashboard on the homepage.</span></p>
+</div>
+<p class="studio-note">Scene timestamps are estimated by allocating the narration text proportionally across the real audio length. The audio playback position is the source of truth: pause freezes the visual, seeking restores the correct scene, replay restarts the scene animation.</p>
+</div>
+<script>window.__PA_STUDIO_QUEUE = window.__PA_STUDIO_QUEUE || []; window.__PA_STUDIO_QUEUE.push(["studio-ch11s9", {"sample_id": "studio-ch11s9", "chapter_id": "ch11", "title": "The messages exchanged in the SCT scheme: pain, pacs, camt", "domain": "D05 Domestic payment systems", "objective": "Learner explains SEPA credit transfer, SEPA direct debit, SEPA Instant, and TARGET2, including IBAN, BIC, cut-offs, and settlement, and traces a euro payment across Europe. Learner demonstrates this skill using realistic banking examples, explaining each step clearly and using correct terminology throughout.", "scenes": [{"id": "ch11s9", "section_id": "ch11s9", "title": "The messages exchanged in the SCT scheme: pain, pacs, camt", "audio": "../audio/ch11s9.mp3", "duration_sec": 201.3, "points": ["All SEPA messages are based on ISO 20022, using XML syntax.", "Follow the full message chain for one SCT payment of 25,000 euro from Munich to Lyon, in order.", "In the customer-to-bank space, messages sent from customer to bank are orders or instructions.", "Pain messages are used exclusively in the customer-to-bank space.", "Camt messages appear in both spaces."], "terms": [{"term": "Remittance information", "def": "Information that explains what a payment is for, such as invoice numbers, contract references or salary month."}, {"term": "Charge bearer", "def": "A code that states who pays the charges for a payment. In ISO 20022 the values are DEBT for debtor, CRED for creditor, SHAR for shared and SLEV for service level."}, {"term": "Purpose code", "def": "A code that states the commercial reason for a payment, such as supplier payment, salary or goods. Purpose codes are taken from an ISO external code list and support regulatory reporting, screening..."}], "transcript": "All SEPA messages are based on ISO 20022, using XML syntax. The European Payments Council publishes three main documents for each scheme, the rulebook, the Customer-to-Bank Implementation Guidelines, and the Interbank Implementation Guidelines. New versions are usually published every year in November. The messages flow in two spaces. The customer-to-bank space is where customers and banks exchange messages. The interbank space is where banks exchange messages among themselves, directly or through a clearing and settlement mechanism. In the customer-to-bank space, messages sent from customer to bank are orders or instructions. Messages sent from bank to customer are reporting. The bank informs the customer about the execution of its payments. In the interbank space, banks exchange messages directly or through a CSM such as EBA STEP2. The message names all begin with four letters inherited from ISO 20022. PAIN stands for Payment Initiation. CAMT stands for Cash Management. PACS stands for Payment Clearing and Settlement. Pain messages are used exclusively in the customer-to-bank space. A customer sends pain.001, Customer Credit Transfer Initiation, to instruct its bank to make a credit transfer. The bank replies with pain.002, Customer Payment Status Report, to report whether the instruction was accepted, rejected, or completed. Pain messages are never used between banks. Camt messages appear in both spaces. In the customer-to-bank space, camt messages inform the customer about its cash position as a result of executed instructions or received payments. Camt.052 is the Bank to Customer Account Report for intraday positions. Camt.053 is the Bank to Customer Statement for end of day positions. Camt.054 is the Bank to Customer Debit Credit Notification for a single booking. Customers can also send camt messages to cancel orders. In the interbank space, camt messages are used to cancel orders or transactions and to reply to cancellation requests, for example camt.056, FI to FI Payment Cancellation Request, and camt.029, Resolution of Investigation. Pacs messages are used exclusively in the interbank space. They transfer money from one financial institution to another. Pacs.008, FI to FI Customer Credit Transfer, is the SCT interbank message. Pacs.009, Financial Institution Credit Transfer, is the bank to bank message. The numbers after the name carry meaning. In pacs.008.001.02, 008 is the message number, 001 is the variant, and 02 is the version. Only a subset of ISO 20022 message elements is allowed in SEPA messages, and SEPA rules further restrict some fields. For example, a party name can have up to 140 characters under ISO 20022 rules, but in SEPA only 70 characters are allowed. These differences are highlighted in the Implementation Guidelines for each scheme.", "paragraphs": ["All SEPA messages are based on ISO 20022, using XML syntax. The European Payments Council publishes three main documents for each scheme, the rulebook, the Customer-to-Bank Implementation Guidelines, and the Interbank Implementation Guidelines. New versions are usually published every year in November. The messages flow in two spaces. The customer-to-bank space is where customers and banks exchange messages. The interbank space is where banks exchange messages among themselves, directly or through a clearing and settlement mechanism. An analyst must know which space each message belongs to, because a message used in the wrong space will be rejected.", "Follow the full message chain for one SCT payment of 25,000 euro from Munich to Lyon, in order. First, the customer sends a pain.001, Customer Credit Transfer Initiation, to the payer bank. Second, the payer bank replies with a pain.002, Customer Payment Status Report, confirming acceptance with status ACCP. Third, the payer bank sends a pacs.008, FI to FI Customer Credit Transfer, to the payee bank through STEP2. Fourth, the clearing system and the payee bank return pacs.002 status reports as the payment moves through ACSP to ACSC. Fifth, the payee bank credits the payee and the status becomes ACCC. Sixth, the payee bank sends a camt.054, Bank to Customer Debit Credit Notification, to tell the payee about the credit. Seventh, the credit appears on the payee's camt.053, Bank to Customer Statement. Seven messages, two spaces, one payment, and every one of them carries the same end to end reference so the chain can be followed.", "In the customer-to-bank space, messages sent from customer to bank are orders or instructions. Messages sent from bank to customer are reporting. The bank informs the customer about the execution of its payments. In the interbank space, banks exchange messages directly or through a CSM such as EBA STEP2. The message names all begin with four letters inherited from ISO 20022. PAIN stands for Payment Initiation. CAMT stands for Cash Management. PACS stands for Payment Clearing and Settlement. The four letter prefix tells the analyst which family the message belongs to, and the number tells them which message it is.", "Pain messages are used exclusively in the customer-to-bank space. A customer sends pain.001, Customer Credit Transfer Initiation, to instruct its bank to make a credit transfer. The bank replies with pain.002, Customer Payment Status Report, to report whether the instruction was accepted, rejected, or completed. A customer sends pain.008, Customer Direct Debit Initiation, to instruct its bank to collect a direct debit. A customer sends pain.007, Customer Payment Reversal, to reverse a direct debit it collected in error. Pain messages are never used between banks. An analyst who sees a pain.001 in an interbank flow has found a defect.", "Camt messages appear in both spaces. In the customer-to-bank space, camt messages inform the customer about its cash position as a result of executed instructions or received payments. Camt.052 is the Bank to Customer Account Report for intraday positions. Camt.053 is the Bank to Customer Statement for end of day positions. Camt.054 is the Bank to Customer Debit Credit Notification for a single booking. Customers can also send camt messages to cancel orders. In the interbank space, camt messages are used to cancel orders or transactions and to reply to cancellation requests, for example camt.056, FI to FI Payment Cancellation Request, and camt.029, Resolution of Investigation. The same camt.056 that a payer bank sends to recall a payment is answered by the payee bank with a camt.029, which states whether the recall is accepted or refused.", "Pacs messages are used exclusively in the interbank space. They transfer money from one financial institution to another. Pacs.008, FI to FI Customer Credit Transfer, is the SCT interbank message. Pacs.009, Financial Institution Credit Transfer, is the bank to bank message. Pacs.003, FI to FI Customer Direct Debit, is the SDD interbank message. Pacs.004, Payment Return, sends money back after settlement. Pacs.007, FI to FI Payment Reversal, reverses a direct debit. Pacs.002, FI to FI Payment Status Report, reports the status of any of these. The numbers after the name carry meaning. In pacs.008.001.02, 008 is the message number, 001 is the variant, and 02 is the version. The analyst must quote the full version in requirements, because a pacs.008.001.02 and a pacs.008.001.08 are different messages with different fields.", "Only a subset of ISO 20022 message elements is allowed in SEPA messages, and SEPA rules further restrict some fields. For example, a party name can have up to 140 characters under ISO 20022 rules, but in SEPA only 70 characters are allowed. Remittance information is limited to 140 characters. These differences are highlighted in the Implementation Guidelines for each scheme, and the analyst must design the screens and the validations around the SEPA limits, not the ISO 20022 limits. A customer name of 90 characters is valid ISO 20022 and invalid SEPA, and a payment screen that accepts it will produce a pacs.008 that the clearing system rejects.", "A field level example makes the restriction concrete. In the pacs.008 for our 25,000 euro payment, the group header carries the message identification and the creation date time. The payment information block carries the debtor, the debtor account with the IBAN, the debtor agent with the BIC, and the charge bearer, which for SCT is always the debtor, because the full amount must be credited. The credit transfer transaction information block carries the creditor, the creditor account with the IBAN, the creditor agent, the instructed amount of 25,000 euro, the purpose code, and the remittance information with the invoice number. Each block has mandatory, optional and conditional fields, and the implementation guidelines state which are which. The analyst's field mapping document should list every field in the pacs.008, state whether it is mandatory, optional or conditional, state the SEPA length limit, and state where the value comes from.", "The analyst checklist for SEPA messages has four items. First, the message chain for each scheme, listing every message in order with its sender and receiver. Second, the field mapping for each message, with the SEPA limits and the source of each value. Third, the status flow, with the pacs.002 status at each stage and the reason code for each rejection and return. Fourth, the statement and notification design, stating when a camt.054 is sent and what the camt.053 contains. A message design that answers all four is a design that will pass scheme certification, because certification tests exactly these things."], "accessibility": "Payment flow diagram showing The messages exchanged in the SCT scheme: pain, pacs, camt.", "visual_type": "payment_flow", "visual_choice_reason": "payment rails chapter", "beats": [{"t0": 0.0, "t1": 38.7, "title": "SEPA messages", "note": "All SEPA messages are based on ISO 20022, using XML syntax.", "highlight_nodes": ["n0"], "highlight_conns": [], "highlight_fields": []}, {"t0": 38.7, "t1": 74.1, "title": "Customer-to-bank space", "note": "In the customer-to-bank space, messages sent from customer to bank are orders or instructions.", "highlight_nodes": ["n1"], "highlight_conns": ["c0"], "highlight_fields": []}, {"t0": 74.1, "t1": 113.0, "title": "Pain messages", "note": "Pain messages are used exclusively in the customer-to-bank space.", "highlight_nodes": ["n2"], "highlight_conns": ["c1"], "highlight_fields": []}, {"t0": 113.0, "t1": 148.9, "title": "Camt.052: Bank to Customer Account", "note": "Camt.052 is the Bank to Customer Account Report for intraday positions.", "highlight_nodes": ["n3"], "highlight_conns": ["c2"], "highlight_fields": []}, {"t0": 148.9, "t1": 186.4, "title": "Pacs messages", "note": "Pacs messages are used exclusively in the interbank space.", "highlight_nodes": ["n4"], "highlight_conns": ["c3"], "highlight_fields": []}, {"t0": 186.4, "t1": 201.3, "title": "Party name", "note": "For example, a party name can have up to 140 characters under ISO 20022 rules, but in SEPA only 70 characters are allowed.", "highlight_nodes": ["n5"], "highlight_conns": ["c4"], "highlight_fields": []}], "framework": {"objective": "By the end of this lesson, you will be able to explain messages exchanged in the sct scheme: PAIN, PACS, CAMT. All SEPA messages are based on ISO 20022, using XML syntax.", "why_matters": "This matters because the rail decides how fast the money moves, what it costs, when it settles and what can go wrong. Choosing the wrong rail is a product and an operations failure.", "technical_example": "All SEPA messages are based on ISO 20022, using XML syntax.", "failure_recovery": "The bank replies with pain.002, Customer Payment Status Report, to report whether the instruction was accepted, rejected, or completed. In the interbank space, camt messages are used to cancel orders or transactions and to reply to cancellation requests, for example camt.056, FI to FI Payment Cancellation Request, and camt.029, Resolution of Investigation.", "exercise": {"task": "Read the ISO 20022 message described in this lesson and identify its key parts.", "info": "Use the message structure, fields and example in this lesson.", "action": "List the main blocks of the message, name the field that carries the amount, and name the field that identifies the payment.", "correct": "The message is made of blocks, each carrying a part of the payment instruction. The amount field and the identification field are the two a receiving bank checks first, because without them it cannot process or reconcile the payment.", "why": "A message is only useful if you can read it. The blocks tell the receiving bank what to do, and the amount and identification fields are what it checks first."}, "assessment": {"question": "Which of the following best describes messages exchanged in the sct scheme: PAIN, PACS, CAMT?", "options": ["For a business analyst, SEPA is a lesson in how standardisation creates scale", "SEPA covers more than the European Union", "All SEPA messages are based on ISO 20022, using XML syntax", "The Single Euro Payments Area, known as SEPA, is one of the most ambitious payment projects in the world"], "answer": 2, "explanation": "All SEPA messages are based on ISO 20022, using XML syntax. This is the core idea of the lesson.", "why_wrong": ["This describes a different concept from this chapter, not messages exchanged in the sct scheme: PAIN, PACS, CAMT.", "This describes a different concept from this chapter, not messages exchanged in the sct scheme: PAIN, PACS, CAMT.", "", "This describes a different concept from this chapter, not messages exchanged in the sct scheme: PAIN, PACS, CAMT."], "source": "generated:ch11s9"}, "takeaway": "Pain messages are never used between banks.", "prereq": "ch11s8", "next": "ch11s10", "connection_note": "Builds on \"SEPA instruments in depth: SCT, SCT Inst, SDD Core, SDD B2B\".", "tool": {"slug": "message-explorer", "label": "ISO 20022 Message Explorer", "url": "../simulators/message-explorer.html", "scenario": "Open the message type from this lesson and inspect its fields, then find the field that carries the amount."}, "simple": "In plain words: all SEPA messages are based on ISO 20022, using XML syntax. That is the whole idea in one sentence, and the rest of the lesson shows how it works in a real bank.", "summary": "All SEPA messages are based on ISO 20022, using XML syntax. Key points: SEPA messages; Customer-to-bank space; Pain messages; Camt.052: Bank to Customer Account; Pacs messages; Party name.", "example": "A customer sends pain.001, Customer Credit Transfer Initiation, to instruct its bank to make a credit transfer. In the interbank space, camt messages are used to cancel orders or transactions and to reply to cancellation requests, for example camt.056, FI to FI Payment Cancellation Request, and camt.029, Resolution of Investigation."}}], "chapter_title": "Europe: SEPA and T2", "meta_line": "Europe: SEPA and T2, Lesson 9 of 10, Narration 3:21, D05 Domestic payment systems", "next_id": "ch11s10", "next_title": "SEPA Instant Payments Regulation: phased obligations from 2025"}]);</script>
+</div>
+<nav class="tool-rail" aria-label="Lesson tools">
+<button type="button" class="rail-tool" onclick="pfOpenTranscript('studio-ch11s9')" title="Open transcript"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M7 3h7l4 4v14H7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M14 3v4h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 12h5M10 15.5h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span>Transcript</span></button>
+<button type="button" class="rail-tool" onclick="pfToggleNote('studio-ch11s9')" title="Write a note on this lesson"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L8 19l-4 1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>Notes</span></button>
+<button type="button" class="rail-tool" onclick="pfToggleFiles('studio-ch11s9')" title="Download lesson files"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>Files</span></button>
+</nav>
+<div class="fw-files-panel" id="pf-files-studio-ch11s9" style="display:none"><b>Lesson files</b><p><a href="../audio/ch11s9.mp3" download>Download narration (MP3)</a></p><p><a href="#" onclick="pfDownloadTranscript('studio-ch11s9');return false">Download transcript (.txt)</a></p></div>
+</div>
+</div>
+</main>
+<footer><p>Payments Training Hub. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="../index.html">Home</a> &middot; <a href="../courses.html">Courses</a> &middot; <a href="../practice.html">Practice</a> &middot; <a href="../simulators.html">Simulators</a> &middot; <a href="../labs.html">Labs</a> &middot; <a href="../explorer.html">Explorer</a> &middot; <a href="../tests.html">Tests</a> &middot; <a href="../diagnostic.html">Diagnostic</a> &middot; <a href="../faq.html">Interview Ready Questions</a> &middot; <a href="../interview-prep.html">Interview Prep</a></p><p><a href="../about.html">About</a> &middot; <a href="../privacy.html">Privacy</a> &middot; <a href="../terms.html">Terms</a> &middot; <a href="../contact.html">Contact</a> &middot; <a href="../editorial-standards.html">Editorial Standards</a> &middot; <a href="../sources.html">Sources</a></p></footer>
+<script defer src="../assets/site.js"></script>
+<script defer src="../assets/bundles.js"></script>
+<script defer src="../assets/auth.js"></script>
+<script defer src="../assets/studio.js"></script>
+<script defer src="../assets/insight-components.js"></script>
+<script defer src="../assets/nav.js"></script>
+<script defer src="../assets/pf-enhance.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+if(window.PFInsight){PFInsight.init();}
+});
+</script>
+</body>
+</html>
