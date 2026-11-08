@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ISO 20022 XML Interpretation | Payments Training Hub</title>
+<style>
+*{box-sizing:border-box}
+body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;margin:0;background:#F1F5F9;color:#0B1B33}
+header{background:#0B1B33;color:#fff;padding:22px 20px}
+header h1{margin:0;font-size:24px} header p{margin:6px 0 0;color:#BFDBFE}
+main{max-width:900px;margin:24px auto;padding:0 16px 40px}
+.card{background:#fff;border:1px solid #Dbe3ee;border-radius:12px;padding:20px;margin-bottom:16px}
+.btn{background:#1D4ED8;color:#fff;border:0;padding:10px 16px;border-radius:8px;font-weight:700;cursor:pointer}
+.btn.gold{background:#FBBF24;color:#0B1B33}
+pre{background:#0B1B33;color:#E2E8F0;padding:16px;border-radius:8px;overflow-x:auto;font-size:13px;line-height:1.6;white-space:pre-wrap}
+.el{cursor:pointer;border-bottom:2px dotted #FBBF24}
+.el:hover{background:#1D4ED8;color:#fff}
+#meaning{background:#EFF6FF;border-left:4px solid #FBBF24;padding:14px;border-radius:8px;min-height:56px;line-height:1.6}
+.opt{display:block;width:100%;text-align:left;background:#F8FAFC;border:1px solid #CBD5E1;padding:10px;border-radius:8px;margin:6px 0;cursor:pointer;font-size:15px}
+.opt.correct{background:#DCFCE7;border-color:#16A34A} .opt.wrong{background:#FEE2E2;border-color:#DC2626}
+.feedback{font-weight:700;margin:8px 0;line-height:1.5}
+</style>
+</head>
+<body>
+<header><h1>ISO 20022 XML Interpretation</h1><p>Payments Training Hub | Click any highlighted element in the pacs.008 to learn what it means.</p></header>
+<main>
+<div class="card">
+<h2>Sample pacs.008 Customer Credit Transfer</h2>
+<pre id="xml"></pre>
+<div id="meaning">Click a highlighted element above to see its meaning.</div>
+</div>
+<div class="card">
+<h2>Check your understanding <span id="score">Score: 0 of 5</span></h2>
+<div id="quiz"></div>
+<p><button class="btn gold" id="resetQuiz">Restart quiz</button></p>
+</div>
+</main>
+<script>
+var MEANINGS={
+"MsgId":"Message Identification: a unique reference for this message, assigned by the sender. Used to trace the message if anything goes wrong.",
+"CreDtTm":"Creation Date Time: when the message was created, in ISO format. Here 2026-11-08 at 09:15:00 UTC.",
+"NbOfTxs":"Number of Transactions: how many payment instructions this message carries. Here it is 1.",
+"IntrBkSttlmAmt":"Interbank Settlement Amount: the amount that will actually settle between banks, with its currency. Here EUR 250,000. This can differ from the instructed amount if fees are deducted.",
+"InstdAmt":"Instructed Amount: the amount the debtor asked to send, with its currency. Here GBP 125,000. This is the customer facing amount before any charges.",
+"ChrgBr":"Charge Bearer: who pays the charges. SHAR means shared, DEBT means debtor pays all, CRED means creditor pays all.",
+"EndToEndId":"End to End Identification: the reference that stays with the payment from debtor to creditor, across every bank and message. The beneficiary can use it to reconcile the receipt.",
+"UETR":"Unique End to End Transaction Reference: a UUID that uniquely identifies this payment globally. It is the single best key for tracing a payment across banks and systems.",
+"Dbtr":"Debtor: the party whose account is debited, the sender of the payment. Here Acme Trading Ltd.",
+"DbtrAcct":"Debtor Account: the account number (IBAN) that is debited.",
+"DbtrAgt":"Debtor Agent: the bank that holds the debtor's account and sends the payment on its behalf.",
+"Cdtr":"Creditor: the party who receives the funds, the beneficiary. Here Global Exports Pvt Ltd.",
+"CdtrAcct":"Creditor Account: the account number (IBAN) that is credited.",
+"CdtrAgt":"Creditor Agent: the bank that holds the creditor's account and credits the beneficiary.",
+"RmtInf":"Remittance Information: structured or unstructured text about the purpose of the payment, such as an invoice number. It helps the creditor reconcile.",
+"InstrId":"Instruction Identification: the sender's own instruction reference for this payment within the message.",
+"GrpHdr":"Group Header: the header block of the message, carrying the message ID, creation time and number of transactions.",
+"CdtTrfTxInf":"Credit Transfer Transaction Information: the block that carries one payment instruction, including amounts, debtor, creditor and references."
+};
+var XML_TEXT='<Document xmlns="urn:iso:std:iso:20022:tech:xsd:pacs.008.001.08">\n  <FIToFICstmrCdtTrf>\n    <GrpHdr>\n      <MsgId>MSG-2026-1108-001</MsgId>\n      <CreDtTm>2026-11-08T09:15:00Z</CreDtTm>\n      <NbOfTxs>1</NbOfTxs>\n    </GrpHdr>\n    <CdtTrfTxInf>\n      <PmtId>\n        <InstrId>INV-2026-8841</InstrId>\n        <EndToEndId>E2E-8841-ACME-2026</EndToEndId>\n        <UETR>7f3a1c2e-9b4d-4a8f-8e12-5c6d7e8f9012</UETR>\n      </PmtId>\n      <IntrBkSttlmAmt Ccy="EUR">250000.00</IntrBkSttlmAmt>\n      <InstdAmt Ccy="GBP">125000.00</InstdAmt>\n      <ChrgBr>SHAR</ChrgBr>\n      <Dbtr><Nm>Acme Trading Ltd</Nm></Dbtr>\n      <DbtrAcct><Id><IBAN>GB29ABCD12345678901234</IBAN></Id></DbtrAcct>\n      <DbtrAgt><FinInstnId><BICFI>BANKGB22</BICFI></FinInstnId></DbtrAgt>\n      <Cdtr><Nm>Global Exports Pvt Ltd</Nm></Cdtr>\n      <CdtrAcct><Id><IBAN>IN98765432109876</IBAN></Id></CdtrAcct>\n      <CdtrAgt><FinInstnId><BICFI>BANKINBB</BICFI></FinInstnId></CdtrAgt>\n      <RmtInf><Ustrd>Invoice 8841 supply of components</Ustrd></RmtInf>\n    </CdtTrfTxInf>\n  </FIToFICstmrCdtTrf>\n</Document>';
+function esc(s){ return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+function render(){
+  var html=esc(XML_TEXT);
+  Object.keys(MEANINGS).forEach(function(tag){
+    html=html.split("&lt;"+tag+"&gt;").join('&lt;<span class="el" data-tag="'+tag+'">'+tag+'</span>&gt;');
+    html=html.split("&lt;/"+tag+"&gt;").join('&lt;/<span class="el" data-tag="'+tag+'">'+tag+'</span>&gt;');
+  });
+  document.getElementById("xml").innerHTML=html;
+  document.querySelectorAll(".el").forEach(function(el){
+    el.addEventListener("click",function(){ document.getElementById("meaning").textContent=MEANINGS[el.getAttribute("data-tag")]; });
+  });
+}
+var QUIZ=[
+{q:"What is the UETR used for?",opts:["To show the charge bearer","To uniquely trace one payment globally across banks","To show the settlement amount","To name the creditor bank"],correct:1,why:"The UETR is a UUID that uniquely identifies the payment end to end. It is the best key for tracing."},
+{q:"What is the difference between IntrBkSttlmAmt and InstdAmt in this message?",opts:["They are always identical","IntrBkSttlmAmt is the amount that settles between banks (EUR 250,000); InstdAmt is the amount the debtor instructed (GBP 125,000)","InstdAmt is the fee amount","IntrBkSttlmAmt is the debtor name"],correct:1,why:"Instructed amount is what the customer asked to send. Interbank settlement amount is what actually settles between banks, and it can differ by currency or fees."},
+{q:"Who is the Dbtr in this message?",opts:["Global Exports Pvt Ltd","Bank INBB","Acme Trading Ltd","The clearing house"],correct:2,why:"Dbtr is the debtor, the sender whose account is debited. Here it is Acme Trading Ltd."},
+{q:"What does ChrgBr SHAR mean?",opts:["The debtor pays all charges","The creditor pays all charges","Charges are shared between debtor and creditor","No charges apply"],correct:2,why:"SHAR means shared. DEBT is debtor pays all, CRED is creditor pays all."},
+{q:"Which element would the beneficiary use to reconcile this receipt against an invoice?",opts:["CreDtTm","EndToEndId and RmtInf, which carry the end to end reference and invoice 8841","NbOfTxs","GrpHdr"],correct:1,why:"EndToEndId stays with the payment throughout, and RmtInf carries the invoice text. Together they let the creditor match the receipt."}
+];
+var score=0,answered=0;
+function buildQuiz(){
+  score=0; answered=0; document.getElementById("score").textContent="Score: 0 of 5";
+  var box=document.getElementById("quiz"); box.innerHTML="";
+  QUIZ.forEach(function(item,i){
+    var d=document.createElement("div"); d.innerHTML="<p><strong>Q"+(i+1)+": "+item.q+"</strong></p>";
+    var fb=document.createElement("p"); fb.className="feedback";
+    item.opts.forEach(function(opt,j){
+      var b=document.createElement("button"); b.className="opt"; b.textContent=opt;
+      b.addEventListener("click",function(){
+        if(b.parentNode.getAttribute("data-done")) return;
+        b.parentNode.setAttribute("data-done","1"); answered++;
+        var buttons=d.querySelectorAll(".opt"); buttons.forEach(function(x){x.disabled=true;});
+        if(j===item.correct){ b.classList.add("correct"); score++; fb.textContent="Correct. "+item.why; fb.style.color="#15803D"; }
+        else { b.classList.add("wrong"); buttons[item.correct].classList.add("correct"); fb.textContent="Not quite. "+item.why; fb.style.color="#B91C1C"; }
+        document.getElementById("score").textContent="Score: "+score+" of 5"+(answered===5?" | Quiz complete.":"");
+      });
+      d.appendChild(b);
+    });
+    d.appendChild(fb); box.appendChild(d);
+  });
+}
+document.getElementById("resetQuiz").addEventListener("click",buildQuiz);
+render(); buildQuiz();
+</script>
+</body>
+</html>

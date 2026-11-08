@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>Reconciliation War Room | Payments Academy | Payments Training Hub</title>
+<meta name="description" content="Reconciliation War Room: match payment instructions, clearing records, settlement records and bank statement entries, then resolve the exceptions.">
+<link rel="canonical" href="https://www.paymentstraininghub.in/reconciliation-war-room.html">
+<meta property="og:url" content="https://www.paymentstraininghub.in/reconciliation-war-room.html">
+<meta property="og:title" content="Reconciliation War Room | Payments Academy | Payments Training Hub">
+<meta property="og:description" content="Reconciliation War Room: match payment instructions, clearing records, settlement records and bank statement entries, then resolve the exceptions.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.in/assets/hero/hero-poster.jpg">
+
+<link rel="stylesheet" href="assets/site.css">
+<link rel="stylesheet" href="assets/pf-theme.css">
+<link rel="stylesheet" href="assets/pf-features.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="index.html" class="brand">Payments <span>Academy</span></a><nav class="topnav"><a href="index.html">Home</a> <a href="courses.html">Courses</a> <a href="tests.html">Tests</a> <a href="simulators.html">Simulators</a> <a href="practice.html">Practice</a> <a href="payment.html">Payment</a></nav><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox" style="display:none"><span id="authState">Not signed in</span> <span id="authForm" style="display:none"><input id="authEmail" type="email" placeholder="Email for OTP" aria-label="Email for sign-in"> <button class="mute-btn" onclick="paAuthSendOtp()">Send code</button> <input id="authCode" type="text" placeholder="6-digit code" aria-label="One-time code" style="display:none"> <button class="mute-btn" id="authVerifyBtn" onclick="paAuthVerifyOtp()" style="display:none">Verify</button> <button class="mute-btn" onclick="paAuthGoogle()">Sign in with Google</button> </span><button class="mute-btn" id="authSignOutBtn" onclick="paAuthSignOut()" style="display:none">Sign out</button></span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<div class="pf-feature">
+<nav class="crumbs"><a href="index.html">Home</a> / <a href="practice.html">Practice</a> / Reconciliation War Room</nav>
+<h1>Reconciliation War Room</h1>
+<p class="lede">Reconcile one business day of payments across four sources: payment instructions, clearing records, settlement records and bank statement entries. Value date: 5 November 2026. Find every break, categorise it, choose the right resolution, and watch the match rate recover as you clear the exceptions. All data is synthetic and for education only. Nothing here connects to a real banking system and nothing moves real money.</p>
+<div class="pf-note"><b>Matching rules.</b> Match on the payment reference first. Then the amount must match exactly, with no tolerance, so an amount difference is a real break. The currency must match. The value date must match within one business day: a one-day difference is a timing difference, not a break, but it must be flagged and confirmed. A record with no counterpart in the other sources is missing. The same reference appearing twice in one source is a duplicate. A payment that cleared but did not settle, or settled for a different amount, is a settlement discrepancy. Apply these rules to every item below.</div>
+<div class="pf-note"><b>How to play.</b> Each exception is worth 20 points: 10 points for the correct category and 10 points for the correct resolution action. Matched items need no action. There are 14 exceptions, so the total is 280 points. Click any item to open the four-way comparison, categorise it, then pick a resolution. Your best score is saved in this browser only.</div>
+<p id="bestLine" class="pf-tag">Best score: not attempted yet</p>
+
+<h2>Reconciliation statistics</h2>
+<div class="pf-kpi" id="statsKpis">
+<div class="kpi"><b id="statInstructions">0</b><span>Payment instructions</span></div>
+<div class="kpi"><b id="statClearing">0</b><span>Clearing records</span></div>
+<div class="kpi"><b id="statSettlement">0</b><span>Settlement records</span></div>
+<div class="kpi"><b id="statStatement">0</b><span>Statement entries</span></div>
+<div class="kpi"><b id="statMatched">0</b><span>Matched items</span></div>
+<div class="kpi"><b id="statExceptions">0</b><span>Exceptions outstanding</span></div>
+<div class="kpi"><b id="statResolved">0</b><span>Exceptions resolved</span></div>
+<div class="kpi"><b id="statMatchRate">0%</b><span>Match rate</span></div>
+</div>
+<div class="pf-tablewrap"><table>
+<thead><tr><th>Status</th><th>Count</th><th>Detail</th></tr></thead>
+<tbody id="statsTableBody"></tbody>
+</table></div>
+<p id="progressLine">No exceptions resolved yet. Resolve exceptions below to raise the match rate.</p>
+
+<h2>Your score</h2>
+<div class="pf-score" id="scoreBar"></div>
+<p id="scoreText">Score 0 of 280 points. Each correct categorisation earns 10 points and each correct resolution earns 10 points.</p>
+<div class="pf-btnrow"><button type="button" class="pf-btn danger" id="resetBtn">Reset all exceptions</button></div>
+
+<h2>Reconciliation items</h2>
+<div class="pf-inline">
+<div class="pf-field"><label for="filterStatus">Filter by status</label>
+<select id="filterStatus">
+<option value="all">All items</option>
+<option value="matched">Matched</option>
+<option value="missing">Missing</option>
+<option value="duplicate">Duplicate</option>
+<option value="amount">Amount mismatch</option>
+<option value="currency">Currency mismatch</option>
+<option value="timing">Timing difference</option>
+<option value="settlement">Settlement discrepancy</option>
+</select></div>
+<div class="pf-field"><label for="searchInput">Search by reference, amount or counterparty</label>
+<input type="text" id="searchInput" placeholder="e.g. PFT-2026-1105-017, 12500 or Alder" autocomplete="off"></div>
+<div class="pf-field"><button type="button" class="pf-btn secondary" id="clearFiltersBtn">Clear filters</button></div>
+</div>
+<p id="filterCount">Showing 26 of 26 items.</p>
+<div class="pf-tablewrap"><table>
+<thead><tr><th>Reference</th><th>Counterparty</th><th>Amount</th><th>Value date</th><th>Status</th><th>Action</th></tr></thead>
+<tbody id="reconTableBody"></tbody>
+</table></div>
+
+<div id="comparePanel" style="display:none">
+<h2 id="cmpTitle">Comparison</h2>
+<p class="lede" id="cmpIntro"></p>
+<h3>Four-way comparison</h3>
+<div class="pf-tablewrap"><table>
+<thead><tr><th>Field</th><th>Instruction</th><th>Clearing</th><th>Settlement</th><th>Statement</th></tr></thead>
+<tbody id="cmpTableBody"></tbody>
+</table></div>
+<p class="hint">Fields highlighted in red differ from the instruction. A missing record is shown as "No record".</p>
+<div id="matchedBox" style="display:none"><div class="pf-note"><b>Matched.</b> This item matches across all four sources. No categorisation or resolution is needed.</div></div>
+<div id="workBox" style="display:none">
+<h3>Step 1: Categorise the exception</h3>
+<div class="pf-inline">
+<div class="pf-field"><label for="catSelect">Exception type</label>
+<select id="catSelect">
+<option value="">Choose a category</option>
+<option value="missing">Missing transaction</option>
+<option value="duplicate">Duplicate entry</option>
+<option value="amount">Amount mismatch</option>
+<option value="currency">Currency mismatch</option>
+<option value="timing">Timing difference</option>
+<option value="settlement">Settlement discrepancy</option>
+</select></div>
+<div class="pf-field"><button type="button" class="pf-btn" id="checkCatBtn">Check category</button></div>
+</div>
+<div class="pf-fb" id="catFeedback" style="display:none"></div>
+<h3>Step 2: Resolve the exception</h3>
+<p>Pick the correct resolution action. You can answer Step 2 after a correct category, or try it straight away.</p>
+<div id="resOptions"></div>
+<div class="pf-btnrow"><button type="button" class="pf-btn" id="submitResBtn">Submit resolution</button></div>
+<div class="pf-fb" id="resFeedback" style="display:none"></div>
+<div class="pf-note" id="explainBox" style="display:none"></div>
+</div>
+<div class="pf-btnrow"><button type="button" class="pf-btn secondary" id="closePanelBtn">Back to the item list</button></div>
+</div>
+
+<div class="pf-note"><b>Teaching note.</b> This exercise is simplified for learning. Real reconciliation also covers fees, charges, partial settlements, returns and multi-day value date chains, and real breaks need approval and audit trails before any manual posting. Amounts here match exactly with no tolerance, which is stricter than some real operations that allow small rounding tolerances. Check current scheme and bank practice before relying on any of this in live work.</div>
+<div class="pf-btnrow"><a class="pf-btn secondary" href="practice.html">Back to Practice</a></div>
+</div>
+</main>
+<footer><p>Payments Academy. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="index.html">Home</a> &middot; <a href="courses.html">Courses</a> &middot; <a href="payment.html">Payment</a> &middot; <a href="tests.html">Tests</a> &middot; <a href="diagnostic.html">Diagnostic</a> &middot; <a href="practice.html">Practice</a> &middot; <a href="faq.html">700 Questions</a></p></footer>
+<script src="assets/site.js"></script>
+<script src="assets/auth.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/pf-enhance.js"></script>
+<script src="assets/pf-features.js"></script>
+<script src="assets/reconciliation-war-room.js"></script>
+</body>
+</html>

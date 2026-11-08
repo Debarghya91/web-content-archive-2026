@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>ISO 20022 Mapping Workbench | Payments Academy | Payments Training Hub</title>
+<meta name="description" content="ISO 20022 Mapping Workbench: map fields between ISO 20022 messages, validate required elements and generate the resulting XML, including a pain.001 to...">
+<link rel="canonical" href="https://www.paymentstraininghub.in/mapping-workbench.html">
+<meta property="og:url" content="https://www.paymentstraininghub.in/mapping-workbench.html">
+<meta property="og:title" content="ISO 20022 Mapping Workbench | Payments Academy | Payments Training Hub">
+<meta property="og:description" content="ISO 20022 Mapping Workbench: map fields between ISO 20022 messages, validate required elements and generate the resulting XML, including a pain.001 to...">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.in/assets/hero/hero-poster.jpg">
+
+<link rel="stylesheet" href="assets/site.css">
+<link rel="stylesheet" href="assets/pf-theme.css">
+<link rel="stylesheet" href="assets/pf-features.css">
+<style>
+.mw-list{max-height:480px;overflow-y:auto;padding-right:4px}
+.mw-field{border:1px solid #CBD5E1;border-radius:10px;padding:10px 12px;margin-bottom:8px;cursor:pointer;background:#fff}
+.mw-field:hover{border-color:var(--pf-teal)}
+.mw-field.sel{border-color:var(--pf-teal);background:#E3F5F3;box-shadow:0 0 0 2px rgba(19,168,158,.25)}
+.mw-field.mapped{border-color:#BFE3DF;background:#F2FAF9}
+.mw-field code{font-size:.85rem;color:var(--pf-navy);background:#EAF4F3;padding:.1rem .35rem;border-radius:4px;word-break:break-all}
+.mw-field-top{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.mw-field-label{font-size:.9rem;color:#4A5A73;margin-top:4px}
+.mw-field input{width:100%;box-sizing:border-box;margin-top:8px;font-family:Consolas,Menlo,monospace;font-size:.85rem;padding:7px 9px;border:1px solid #CBD5E1;border-radius:8px;color:var(--pf-navy)}
+.mw-val{font-family:Consolas,Menlo,monospace;font-size:.85rem;color:var(--pf-navy);display:block;margin-top:6px;word-break:break-all}
+.mw-mapped{font-size:.85rem;color:#0B6F68;margin-top:6px}
+.mw-selbox{background:#F4F6FA;border:1px solid #E2E8F0;border-radius:10px;padding:10px 14px;margin:12px 0;font-size:.93rem}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="index.html" class="brand">Payments <span>Academy</span></a><nav class="topnav"><a href="index.html">Home</a> <a href="courses.html">Courses</a> <a href="tests.html">Tests</a> <a href="simulators.html">Simulators</a> <a href="practice.html">Practice</a> <a href="payment.html">Payment</a></nav><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox" style="display:none"><span id="authState">Not signed in</span> <span id="authForm" style="display:none"><input id="authEmail" type="email" placeholder="Email for OTP" aria-label="Email for sign-in"> <button class="mute-btn" onclick="paAuthSendOtp()">Send code</button> <input id="authCode" type="text" placeholder="6-digit code" aria-label="One-time code" style="display:none"> <button class="mute-btn" id="authVerifyBtn" onclick="paAuthVerifyOtp()" style="display:none">Verify</button> <button class="mute-btn" onclick="paAuthGoogle()">Sign in with Google</button> </span><button class="mute-btn" id="authSignOutBtn" onclick="paAuthSignOut()" style="display:none">Sign out</button></span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<div class="pf-feature">
+<nav class="crumbs"><a href="index.html">Home</a> / <a href="practice.html">Practice</a> / ISO 20022 Mapping Workbench</nav>
+<h1>ISO 20022 Mapping Workbench</h1>
+<p class="lede">Map fields between ISO 20022 messages. Pick a source message and a target message, connect their fields, choose a transformation, validate the result and generate the target XML. Then try the guided exercise: turn a pain.001 customer instruction into a pacs.008 interbank payment. All data is synthetic and for education only. Nothing here connects to a real banking system and nothing moves real money.</p>
+<div class="pf-note"><b>Read this first: there is no universal one-to-one transformation between these messages.</b> Real mappings depend on the bank's canonical data model, its enrichment rules and its implementation guidelines for each message. A field that exists in one message may be split, combined, enriched or dropped in another, and the same source field can map differently at different banks. The workbench shows the standard element names and the most common mappings. The validation here is a simplified educational check of shapes and formats, not full scheme or implementation-guideline validation. Check current scheme rules and your bank's guidelines before relying on any mapping in live work.</div>
+<p><span class="pf-tag" id="overall-best">Best exercise score: not attempted yet</span></p>
+
+<h2>Message catalogue</h2>
+<p>Seven messages you will meet across a payment's life: initiation, interbank movement, status reporting, return, and account reporting.</p>
+<div class="pf-tablewrap"><table>
+<thead><tr><th>Message</th><th>Version</th><th class="wrap">Purpose</th><th class="wrap">Key fields</th></tr></thead>
+<tbody>
+<tr><td>pain.001</td><td>pain.001.001.03</td><td class="wrap">Customer Credit Transfer Initiation. A customer instructs its bank to make a credit transfer to a creditor.</td><td class="wrap">GrpHdr, PmtInf, Dbtr, DbtrAcct, DbtrAgt, CdtTrfTxInf, Amt, Cdtr, CdtrAcct, CdtrAgt, RmtInf</td></tr>
+<tr><td>pacs.008</td><td>pacs.008.001.08</td><td class="wrap">FI to FI Customer Credit Transfer. One financial institution instructs another to move a customer payment onward.</td><td class="wrap">GrpHdr, UETR, CdtTrfTxInf, PmtId, IntrBkSttlmAmt, Dbtr, DbtrAcct, DbtrAgt, Cdtr, CdtrAcct, CdtrAgt, RmtInf</td></tr>
+<tr><td>pacs.002</td><td>pacs.002.001.03</td><td class="wrap">FI to FI Payment Status Report. A bank reports the status of an earlier payment instruction, for example accepted or rejected.</td><td class="wrap">GrpHdr, OrgnlGrpInfAndSts, GrpSts, TxInfAndSts, TxSts, StsRsnInf</td></tr>
+<tr><td>pacs.004</td><td>pacs.004.001.02</td><td class="wrap">Payment Return. A bank returns a payment that cannot be applied, with the returned amount and a return reason code.</td><td class="wrap">GrpHdr, OrgnlGrpInf, TxInf, RtrdIntrBkSttlmAmt, RtrdInstdAmt, RtrRsnInf</td></tr>
+<tr><td>pain.002</td><td>pain.002.001.03</td><td class="wrap">Customer Payment Status Report. A bank tells its customer the status of a payment instruction the customer sent earlier.</td><td class="wrap">GrpHdr, OrgnlGrpInfAndSts, GrpSts, OrgnlPmtInfAndSts, TxInfAndSts, TxSts</td></tr>
+<tr><td>camt.053</td><td>camt.053.001.02</td><td class="wrap">Bank to Customer Statement. A bank sends an account statement with balances and booked entries for a period.</td><td class="wrap">GrpHdr, Stmt, Acct, Bal, Ntry, CdtDbtInd, Sts, NtryDtls</td></tr>
+<tr><td>camt.054</td><td>camt.054.001.02</td><td class="wrap">Bank to Customer Debit Credit Notification. A bank notifies its customer of a single debit or credit entry on the account.</td><td class="wrap">GrpHdr, Ntfctn, Acct, Ntry, CdtDbtInd, Sts, NtryDtls, RmtInf</td></tr>
+</tbody>
+</table></div>
+
+<h2>Mapping workbench</h2>
+<p>Choose a source message and a target message. The source panel shows the source XML and its fields with their values. Click a source field, then click a target field, choose a transformation and add the mapping. You can edit a source value in its box to see validation catch a bad amount, a bad IBAN or a bad date. A target field can only be mapped once, so remove a mapping before mapping the same target again.</p>
+<div class="pf-inline">
+<div class="pf-field"><label for="wb-source-select">Source message</label><select id="wb-source-select"></select></div>
+<div class="pf-field"><label for="wb-target-select">Target message</label><select id="wb-target-select"></select></div>
+</div>
+<div class="pf-grid">
+<section class="pf-card"><h3 id="wb-source-title">Source</h3><pre class="pf-code" id="wb-source-xml"></pre><div class="mw-list" id="wb-source-list"></div></section>
+<section class="pf-card"><h3 id="wb-target-title">Target</h3><div class="mw-list" id="wb-target-list"></div></section>
+</div>
+<div class="pf-card">
+<h3>Build a mapping</h3>
+<p class="mw-selbox" id="wb-sel-source">No source field selected yet. Click a field in the source panel.</p>
+<p class="mw-selbox" id="wb-sel-target">No target field selected yet. Click a field in the target panel.</p>
+<div class="pf-inline">
+<div class="pf-field"><label for="wb-transform">Transformation</label>
+<select id="wb-transform">
+<option value="direct">Direct copy: use the source value as it is</option>
+<option value="format">Format change: normalise the value for the target field</option>
+<option value="concat">Concatenation: join two source fields with a space</option>
+<option value="constant">Constant value: use a fixed value you type</option>
+</select></div>
+<div class="pf-field" id="wb-second-wrap" style="display:none"><label for="wb-second-source">Second source field (for concatenation)</label><select id="wb-second-source"></select></div>
+<div class="pf-field" id="wb-constant-wrap" style="display:none"><label for="wb-constant">Constant value</label><input type="text" id="wb-constant" placeholder="e.g. SHAR"></div>
+</div>
+<p>Format change normalises by type: amounts to two decimal places, IBANs without spaces and in upper case, dates from DD/MM/YYYY to YYYY-MM-DD, names trimmed. Concatenation joins two text fields with a space. A constant value is checked against the target field type when you validate.</p>
+<div class="pf-btnrow"><button type="button" class="pf-btn" id="wb-add-mapping">Add mapping</button></div>
+</div>
+<h3>Your mappings (<span id="wb-map-count">0 mappings</span>)</h3>
+<div class="pf-tablewrap"><table>
+<thead><tr><th>Source field</th><th>Transformation</th><th>Target field</th><th class="wrap">Resulting value</th><th>Status</th><th>Remove</th></tr></thead>
+<tbody id="wb-map-table-body"><tr><td colspan="6">No mappings yet. Select a source field and a target field, then click Add mapping.</td></tr></tbody>
+</table></div>
+<div class="pf-btnrow"><button type="button" class="pf-btn" id="wb-validate">Validate mappings</button><button type="button" class="pf-btn amber" id="wb-generate">Generate target XML</button><button type="button" class="pf-btn secondary" id="wb-clear">Clear mappings</button></div>
+<div class="pf-fb" id="wb-feedback" style="display:none"></div>
+<div class="pf-warn"><b>Before you generate.</b> The XML below is built only from the fields you mapped, and only in the standard structure shown. A real mapping also depends on the bank's canonical data model, enrichment rules and implementation guidelines, so the same pair of messages can map differently at different banks. The validation here checks shapes and formats only. It is not full scheme or implementation-guideline validation.</div>
+<div id="wb-xml-wrap" style="display:none">
+<h3>Generated XML</h3>
+<pre class="pf-code" id="wb-xml-out"></pre>
+<div class="pf-btnrow"><button type="button" class="pf-btn secondary" id="wb-copy-xml">Copy XML</button><button type="button" class="pf-btn secondary" id="wb-download-xml">Download XML</button></div>
+</div>
+
+<h2>Guided exercise: pain.001 to pacs.008</h2>
+<p class="lede">A corporate customer sent a pain.001 with one EUR 25,000 payment. Your job is to map it into the pacs.008 that the debtor bank sends onward to the creditor bank. Map the nine fields below, check your work against the reference mapping, then generate the pacs.008 XML. Each correct mapping earns 10 points. Generating the pacs.008 XML with all nine fields mapped earns 10 more. Total 100 points. Your best score is saved in this browser only.</p>
+<div class="pf-note"><b>The payment.</b> Meridian Trading Ltd pays Tan and Lee Supplies Pte Ltd EUR 25,000.00 for invoice INV-2026-0841. Debtor IBAN GB29NWBK60161331926819 (BIC NWBKGB2L). Creditor IBAN DE89370400440532013000 (BIC DEUTDEFF). EndToEndId MERIDIAN-2026-1106-0147. All data is synthetic.</div>
+<h3>The pain.001 instruction</h3>
+<pre class="pf-code" id="ex-source-xml"></pre>
+<p>Map these nine fields from the pain.001 to the pacs.008:</p>
+<ol>
+<li><b>Debtor name:</b> PmtInf.Dbtr.Nm to CdtTrfTxInf.Dbtr.Nm</li>
+<li><b>Debtor IBAN:</b> PmtInf.DbtrAcct.Id.IBAN to CdtTrfTxInf.DbtrAcct.Id.IBAN</li>
+<li><b>Debtor agent BIC:</b> PmtInf.DbtrAgt.FinInstnId.BIC to CdtTrfTxInf.DbtrAgt.FinInstnId.BIC</li>
+<li><b>EndToEndId:</b> PmtInf.CdtTrfTxInf.PmtId.EndToEndId to CdtTrfTxInf.PmtId.EndToEndId</li>
+<li><b>Instructed amount with currency:</b> PmtInf.CdtTrfTxInf.Amt.InstdAmt to CdtTrfTxInf.IntrBkSttlmAmt (or CdtTrfTxInf.InstdAmt)</li>
+<li><b>Creditor name:</b> PmtInf.CdtTrfTxInf.Cdtr.Nm to CdtTrfTxInf.Cdtr.Nm</li>
+<li><b>Creditor IBAN:</b> PmtInf.CdtTrfTxInf.CdtrAcct.Id.IBAN to CdtTrfTxInf.CdtrAcct.Id.IBAN</li>
+<li><b>Creditor agent BIC:</b> PmtInf.CdtTrfTxInf.CdtrAgt.FinInstnId.BIC to CdtTrfTxInf.CdtrAgt.FinInstnId.BIC</li>
+<li><b>Remittance information:</b> PmtInf.CdtTrfTxInf.RmtInf.Ustrd to CdtTrfTxInf.RmtInf.Ustrd</li>
+</ol>
+<div class="pf-grid">
+<section class="pf-card"><h3 id="ex-source-title">Source</h3><div class="mw-list" id="ex-source-list"></div></section>
+<section class="pf-card"><h3 id="ex-target-title">Target</h3><div class="mw-list" id="ex-target-list"></div></section>
+</div>
+<div class="pf-card">
+<h3>Build a mapping</h3>
+<p class="mw-selbox" id="ex-sel-source">No source field selected yet. Click a field in the source panel.</p>
+<p class="mw-selbox" id="ex-sel-target">No target field selected yet. Click a field in the target panel.</p>
+<div class="pf-inline">
+<div class="pf-field"><label for="ex-transform">Transformation</label>
+<select id="ex-transform">
+<option value="direct">Direct copy: use the source value as it is</option>
+<option value="format">Format change: normalise the value for the target field</option>
+<option value="concat">Concatenation: join two source fields with a space</option>
+<option value="constant">Constant value: use a fixed value you type</option>
+</select></div>
+<div class="pf-field" id="ex-second-wrap" style="display:none"><label for="ex-second-source">Second source field (for concatenation)</label><select id="ex-second-source"></select></div>
+<div class="pf-field" id="ex-constant-wrap" style="display:none"><label for="ex-constant">Constant value</label><input type="text" id="ex-constant" placeholder="e.g. SHAR"></div>
+</div>
+<p>For this exercise the expected transformation is a direct copy for every field. The amount keeps its currency, EUR, when it moves to the pacs.008.</p>
+<div class="pf-btnrow"><button type="button" class="pf-btn" id="ex-add-mapping">Add mapping</button></div>
+</div>
+<h3>Your exercise mappings (<span id="ex-map-count">0 mappings</span>)</h3>
+<div class="pf-tablewrap"><table>
+<thead><tr><th>Source field</th><th>Transformation</th><th>Target field</th><th class="wrap">Resulting value</th><th>Status</th><th>Remove</th></tr></thead>
+<tbody id="ex-map-table-body"><tr><td colspan="6">No mappings yet. Select a source field and a target field, then click Add mapping.</td></tr></tbody>
+</table></div>
+<div class="pf-btnrow"><button type="button" class="pf-btn" id="ex-validate">Validate mappings</button><button type="button" class="pf-btn" id="ex-check">Check my mappings</button><button type="button" class="pf-btn amber" id="ex-generate">Generate pacs.008 XML</button><button type="button" class="pf-btn danger" id="ex-reset">Reset exercise</button></div>
+<h3>Your score</h3>
+<div class="pf-score" id="ex-score-bar"></div>
+<p id="ex-score-text">Score 0 of 100 points. Each correct mapping earns 10 points, successful XML generation earns 10 more.</p>
+<p><span class="pf-tag" id="ex-best">Best exercise score: not attempted yet</span></p>
+<div class="pf-fb" id="ex-feedback" style="display:none"></div>
+<div id="ex-comparison-wrap" style="display:none">
+<h3>Reference comparison</h3>
+<div class="pf-tablewrap"><table>
+<thead><tr><th>Required field</th><th>Expected mapping</th><th>Your mapping</th><th>Result</th><th class="wrap">Why it maps this way</th></tr></thead>
+<tbody id="ex-comparison-body"></tbody>
+</table></div>
+</div>
+<div id="ex-xml-wrap" style="display:none">
+<h3>Generated pacs.008</h3>
+<pre class="pf-code" id="ex-xml-out"></pre>
+<div class="pf-btnrow"><button type="button" class="pf-btn secondary" id="ex-copy-xml">Copy XML</button><button type="button" class="pf-btn secondary" id="ex-download-xml">Download XML</button></div>
+</div>
+<p>The generated XML contains only the fields you mapped. In a real pacs.008 the header fields (GrpHdr.MsgId, CreDtTm, NbOfTxs) would also be present; they are filled in by the sending bank's system. The UETR is also normally added by the sending bank.</p>
+
+<div class="pf-note"><b>Teaching note.</b> These mappings follow the standard element names and the most common reading of the pain.001 to pacs.008 flow. Real banks differ: some enrich the pacs.008 with data the pain.001 never carried, some derive the interbank settlement amount from the instructed amount plus charges, and some apply their own implementation guidelines on top of the standard. Status codes used include ACCP (accepted) and ACSC (accepted settlement completed). Reason codes used include AC01 (incorrect account number) and AC04 (closed account). Check current scheme rules before relying on any of this in live work.</div>
+<div class="pf-btnrow"><button type="button" class="pf-btn danger" id="resetAllBtn">Reset Mapping Workbench progress</button> <a class="pf-btn secondary" href="practice.html">Back to Practice</a></div>
+</div>
+</main>
+<footer><p>Payments Academy. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="index.html">Home</a> &middot; <a href="courses.html">Courses</a> &middot; <a href="payment.html">Payment</a> &middot; <a href="tests.html">Tests</a> &middot; <a href="diagnostic.html">Diagnostic</a> &middot; <a href="practice.html">Practice</a> &middot; <a href="faq.html">700 Questions</a></p></footer>
+<script src="assets/site.js"></script>
+<script src="assets/auth.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/pf-enhance.js"></script>
+<script src="assets/pf-features.js"></script>
+<script src="assets/mapping-workbench.js"></script>
+</body>
+</html>

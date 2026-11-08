@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Payment Lifecycle Troubleshooting | Payments Training Hub</title>
+<style>
+*{box-sizing:border-box}
+body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;margin:0;background:#F1F5F9;color:#0B1B33}
+header{background:#0B1B33;color:#fff;padding:22px 20px}
+header h1{margin:0;font-size:24px} header p{margin:6px 0 0;color:#BFDBFE}
+main{max-width:900px;margin:24px auto;padding:0 16px 40px}
+.card{background:#fff;border:1px solid #Dbe3ee;border-radius:12px;padding:20px;margin-bottom:16px}
+.btn{background:#1D4ED8;color:#fff;border:0;padding:11px 18px;border-radius:8px;font-weight:700;cursor:pointer;margin-top:10px}
+.btn.gold{background:#FBBF24;color:#0B1B33}
+.stages{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.stage{background:#EFF6FF;border:2px solid #1D4ED8;padding:10px 14px;border-radius:8px;cursor:pointer;font-weight:700}
+.stage.selected{background:#1D4ED8;color:#fff}
+.stage.correct{background:#DCFCE7;border-color:#16A34A;color:#14532D}
+.stage.wrong{background:#FEE2E2;border-color:#DC2626;color:#7F1D1D}
+.opt{display:block;width:100%;text-align:left;background:#F8FAFC;border:1px solid #CBD5E1;padding:10px;border-radius:8px;margin:6px 0;cursor:pointer;font-size:15px}
+.opt.correct{background:#DCFCE7;border-color:#16A34A} .opt.wrong{background:#FEE2E2;border-color:#DC2626}
+.feedback{font-weight:700;line-height:1.6;min-height:24px}
+.scenario{background:#FFFBEB;border-left:4px solid #FBBF24;padding:14px;border-radius:8px;line-height:1.6}
+</style>
+</head>
+<body>
+<header><h1>Payment Lifecycle Troubleshooting</h1><p>Payments Training Hub | A payment is stuck. Find the stage where it stopped, then pick the most likely root cause.</p></header>
+<main>
+<div class="card">
+<p><strong id="counter">Scenario 1 of 5</strong> | <strong id="score">Score: 0</strong> (1 point for the right stage, 1 for the right cause)</p>
+<div class="scenario" id="scenario"></div>
+<h3>Step 1: Click the stage where the problem is</h3>
+<div class="stages" id="stages"></div>
+<h3>Step 2: Pick the most likely root cause</h3>
+<div id="causes"></div>
+<p class="feedback" id="feedback"></p>
+<p><button class="btn" id="nextBtn" disabled>Next scenario</button></p>
+</div>
+<div class="card" id="doneCard" style="display:none">
+<h2 id="doneTitle"></h2><p id="doneText"></p>
+<button class="btn gold" id="retryBtn">Try again</button>
+</div>
+</main>
+<script>
+var STAGES=["Initiation","Processing","Clearing","Settlement","Beneficiary credit","Reconciliation"];
+var SCEN=[
+{title:"Scenario 1: Payment never left the channel",text:"A corporate client submitted a payment file at 09:00. By 15:00 no payment has a UETR, no debit appears on the account, and operations cannot find the file in the payment hub. The client portal shows the file as uploaded.",stage:0,causes:["File validation failed silently and the file was never loaded into the hub","The beneficiary bank rejected the payment","The central bank settlement account has insufficient funds","The nostro reconciliation broke"],correctCause:0,why:"If nothing was debited and no UETR exists, the payment never entered the hub. A file that fails validation without a clear error is the classic cause at initiation."},
+{title:"Scenario 2: Payment held after screening",text:"A payment was debited at 10:00 and shows status Processing. At 16:00 it is still Processing, the customer has called twice, and no clearing message has been sent. The amount is EUR 250,000 to a new beneficiary in a high risk country.",stage:1,causes:["The beneficiary account number is invalid","Sanctions screening matched the beneficiary name and compliance is reviewing it","The clearing cut off was missed","The beneficiary bank is closed for a holiday"],correctCause:1,why:"A debit with no onward message and a long hold in Processing points to screening. A new beneficiary in a high risk country is a common sanctions match."},
+{title:"Scenario 3: Payment cleared but not settled",text:"The payment shows as cleared at 11:00 and the clearing house confirmed receipt. At 14:00 settlement has not happened, and the settlement queue shows the payment waiting behind other items. Other payments from the same bank settled normally.",stage:3,causes:["The payment missed the clearing cut off","Insufficient liquidity in the settlement account for this value, so it is queued","The beneficiary name is misspelled","The API idempotency key was reused"],correctCause:1,why:"Clearing succeeded, so the problem is after clearing. A payment waiting in the settlement queue while others settle normally usually means insufficient liquidity for that value."},
+{title:"Scenario 4: Settled but never credited",text:"Settlement is confirmed and the beneficiary bank acknowledged receipt at 12:00. At 17:00 the beneficiary says no credit has arrived. The beneficiary bank shows the funds in a suspense account.",stage:4,causes:["The payment was never sent","The beneficiary account number in the message does not match any live account, so the bank parked it in suspense","The sender's account has insufficient funds","The file was submitted twice"],correctCause:1,why:"Settlement is confirmed, so the funds reached the beneficiary bank. Funds sitting in suspense mean the bank could not apply them, usually because the account number does not match."},
+{title:"Scenario 5: Credit posted but reconciliation breaks",text:"The beneficiary confirms receipt on 8 November. On 9 November reconciliation shows a break: the internal ledger shows GBP 125,000 but the nostro statement shows GBP 124,950. No customer has complained.",stage:5,causes:["The payment was duplicated","An intermediary bank deducted a GBP 50 fee that was not expected in the ledger","The payment was rejected","The value date was wrong"],correctCause:1,why:"The payment completed, so the break is at reconciliation. A small difference of GBP 50 with no customer impact is typically an intermediary fee that was not booked in the ledger."}
+];
+var idx=0,score=0,stagePicked=false,stageCorrect=false;
+function show(){
+  var s=SCEN[idx];
+  document.getElementById("counter").textContent="Scenario "+(idx+1)+" of "+SCEN.length;
+  document.getElementById("score").textContent="Score: "+score;
+  document.getElementById("scenario").innerHTML="<strong>"+s.title+"</strong><br>"+s.text;
+  document.getElementById("feedback").textContent="Pick a stage first, then a cause.";
+  document.getElementById("nextBtn").disabled=true;
+  document.getElementById("nextBtn").textContent=(idx===SCEN.length-1)?"See my score":"Next scenario";
+  stagePicked=false; stageCorrect=false;
+  var st=document.getElementById("stages"); st.innerHTML="";
+  STAGES.forEach(function(name,i){
+    var b=document.createElement("button"); b.className="stage"; b.textContent=name;
+    b.addEventListener("click",function(){
+      if(stagePicked) return;
+      stagePicked=true;
+      st.querySelectorAll(".stage").forEach(function(x){x.disabled=true;});
+      if(i===s.stage){ b.classList.add("correct"); score++; stageCorrect=true; document.getElementById("feedback").textContent="Correct stage: "+name+". Now pick the most likely root cause."; }
+      else { b.classList.add("wrong"); st.children[s.stage].classList.add("correct"); document.getElementById("feedback").textContent="Not that stage. The problem is at "+STAGES[s.stage]+". Now pick the most likely root cause."; }
+      document.getElementById("score").textContent="Score: "+score;
+    });
+    st.appendChild(b);
+  });
+  var cb=document.getElementById("causes"); cb.innerHTML="";
+  s.causes.forEach(function(c,j){
+    var b=document.createElement("button"); b.className="opt"; b.textContent=c;
+    b.addEventListener("click",function(){
+      if(!stagePicked) { document.getElementById("feedback").textContent="Pick the stage first, then the cause."; return; }
+      if(b.parentNode.getAttribute("data-done")) return;
+      b.parentNode.setAttribute("data-done","1");
+      var buttons=cb.querySelectorAll(".opt"); buttons.forEach(function(x){x.disabled=true;});
+      var fb=document.getElementById("feedback");
+      if(j===s.correctCause){ b.classList.add("correct"); score++; fb.textContent="Correct. "+s.why; fb.style.color="#15803D"; }
+      else { b.classList.add("wrong"); buttons[s.correctCause].classList.add("correct"); fb.textContent="Not quite. "+s.why; fb.style.color="#B91C1C"; }
+      document.getElementById("score").textContent="Score: "+score;
+      document.getElementById("nextBtn").disabled=false;
+    });
+    cb.appendChild(b);
+  });
+}
+document.getElementById("nextBtn").addEventListener("click",function(){
+  if(idx<SCEN.length-1){ idx++; show(); }
+  else {
+    var card=document.getElementById("doneCard"); card.style.display="block";
+    document.getElementById("doneTitle").textContent="Troubleshooting complete: "+score+" of 10 points";
+    document.getElementById("doneText").textContent=score>=9?"Excellent. You can locate a stuck payment and find its cause.":score>=7?"Good work. Review the scenarios you missed and try again.":"Keep practising. Trace the payment stage by stage: if no UETR exists it never left initiation, if it is debited but not cleared look at processing, and if settlement is confirmed but no credit arrived look at the beneficiary bank.";
+    document.getElementById("nextBtn").disabled=true;
+  }
+});
+document.getElementById("retryBtn").addEventListener("click",function(){ idx=0; score=0; document.getElementById("doneCard").style.display="none"; show(); });
+show();
+</script>
+</body>
+</html>

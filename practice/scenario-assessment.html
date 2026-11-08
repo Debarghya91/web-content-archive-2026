@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Scenario Based Assessment | Payments Training Hub</title>
+<style>
+*{box-sizing:border-box}
+body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;margin:0;background:#F1F5F9;color:#0B1B33}
+header{background:#0B1B33;color:#fff;padding:22px 20px}
+header h1{margin:0;font-size:24px} header p{margin:6px 0 0;color:#BFDBFE}
+main{max-width:860px;margin:24px auto;padding:0 16px 40px}
+.card{background:#fff;border:1px solid #Dbe3ee;border-radius:12px;padding:20px;margin-bottom:16px}
+.btn{background:#1D4ED8;color:#fff;border:0;padding:11px 18px;border-radius:8px;font-weight:700;cursor:pointer;margin-top:10px}
+.btn.gold{background:#FBBF24;color:#0B1B33}
+.opt{display:block;width:100%;text-align:left;background:#F8FAFC;border:1px solid #CBD5E1;padding:12px;border-radius:8px;margin:8px 0;cursor:pointer;font-size:15px;line-height:1.5}
+.opt.correct{background:#DCFCE7;border-color:#16A34A} .opt.wrong{background:#FEE2E2;border-color:#DC2626}
+.feedback{font-weight:700;line-height:1.6;min-height:24px}
+.scenario{background:#FFFBEB;border-left:4px solid #FBBF24;padding:14px;border-radius:8px;line-height:1.6}
+.bar{height:10px;background:#E2E8F0;border-radius:6px;overflow:hidden}
+.bar div{height:100%;background:#1D4ED8;width:0%}
+</style>
+</head>
+<body>
+<header><h1>Scenario Based Assessment</h1><p>Payments Training Hub | Five realistic banking scenarios. Pick the best first action for each.</p></header>
+<main>
+<div class="card">
+<p><strong id="counter">Scenario 1 of 5</strong> | <strong id="score">Score: 0 of 5</strong></p>
+<div class="bar"><div id="barFill"></div></div>
+<div class="scenario" id="scenario"></div>
+<p><strong>What is the best first action?</strong></p>
+<div id="options"></div>
+<p class="feedback" id="feedback"></p>
+<p><button class="btn" id="nextBtn" disabled>Next scenario</button></p>
+</div>
+<div class="card" id="doneCard" style="display:none">
+<h2 id="doneTitle"></h2><p id="doneText"></p>
+<button class="btn gold" id="retryBtn">Retake the assessment</button>
+</div>
+</main>
+<script>
+var ITEMS=[
+{title:"Scenario 1: Channel to clearing",text:"A corporate client submits a salary file through the online channel at 09:00 for same day value. At 11:00 the file is still showing as received, with no payments released to clearing. Payroll must be credited today.",opts:["Wait until end of day and check again","Call the beneficiary bank to ask where the payments are","Check the file validation and hub intake status, then confirm whether the file loaded and whether any items failed validation","Resubmit the file immediately"],correct:2,why:"The file is stuck between channel and clearing, so the first action is to check intake: did the file load, did validation pass, and are items queued or failed? Resubmitting without checking risks duplicates, and waiting wastes the value date."},
+{title:"Scenario 2: pacs.008 rejection",text:"Your bank sends a pacs.008 for EUR 250,000. Minutes later a pacs.002 arrives with reason code AC01, incorrect account number. The debtor account has already been debited.",opts:["Send the payment again with the same details","Return the funds to the debtor, notify the customer with the exact reason, and ask for corrected account details","Call the creditor and ask them to accept the payment anyway","Hold the funds in suspense and wait for the customer to call"],correct:1,why:"AC01 means the account number is wrong, so the payment cannot be applied. The correct first action is to return the funds, tell the customer exactly why, and get corrected details. Sending the same details again will fail again."},
+{title:"Scenario 3: Debited not credited",text:"A customer shows a debit of GBP 125,000 on 8 November. The beneficiary says nothing arrived on 9 November. The payment has a UETR and shows as settled.",opts:["Tell the customer the payment is lost and start a refund","Trace the payment by UETR through each bank in the chain and ask the beneficiary bank for its posting status","Debit the customer again and send a replacement","Wait a week because cross border payments are always slow"],correct:1,why:"Settlement is confirmed, so the funds are with a bank in the chain. Trace by UETR stage by stage and ask the beneficiary bank whether it received and posted the payment. That locates the funds before any refund or replacement is considered."},
+{title:"Scenario 4: Duplicate API payment",text:"A client API timed out, retried the same payment, and the beneficiary was credited twice for GBP 50,000. The client is asking what happened and the beneficiary has spent the duplicate.",opts:["Debit the beneficiary account immediately without notice","Freeze further action and blame the client for retrying","Confirm which credit is genuine by matching references and timestamps, freeze the duplicate value if still available, and start a formal recall of the duplicate through the proper return process","Send a third payment to balance the account"],correct:2,why:"First establish which credit is genuine, then protect the duplicate value and recover it through the formal recall and return process, never by an unauthorised manual debit. Also fix the idempotency control so the retry cannot duplicate again."},
+{title:"Scenario 5: Sanctions delay",text:"A payment of USD 475,000 to a new beneficiary is held by sanctions screening for 24 hours. The customer is urgent, the beneficiary is waiting, and the payment is for a time sensitive shipment.",opts:["Release the payment immediately to meet the customer deadline","Tell the customer the payment failed and cancel it","Explain the review honestly, give a realistic timeframe, ask compliance for the review status, and request any extra information they need to decide","Bypass screening by splitting the payment into smaller amounts"],correct:2,why:"A sanctions hold cannot be released to meet a deadline, and splitting a payment to bypass screening is a serious breach. The right first action is honest communication, a realistic timeframe, and helping compliance decide quickly by supplying what they need."}
+];
+var idx=0,score=0;
+function show(){
+  var item=ITEMS[idx];
+  document.getElementById("counter").textContent="Scenario "+(idx+1)+" of "+ITEMS.length;
+  document.getElementById("score").textContent="Score: "+score+" of "+ITEMS.length;
+  document.getElementById("barFill").style.width=(100*idx/ITEMS.length)+"%";
+  document.getElementById("scenario").innerHTML="<strong>"+item.title+"</strong><br>"+item.text;
+  document.getElementById("feedback").textContent="";
+  document.getElementById("nextBtn").disabled=true;
+  document.getElementById("nextBtn").textContent=(idx===ITEMS.length-1)?"See my result":"Next scenario";
+  var box=document.getElementById("options"); box.innerHTML="";
+  item.opts.forEach(function(opt,j){
+    var b=document.createElement("button"); b.className="opt"; b.textContent=opt;
+    b.addEventListener("click",function(){
+      var buttons=box.querySelectorAll(".opt"); buttons.forEach(function(x){x.disabled=true;});
+      var fb=document.getElementById("feedback");
+      if(j===item.correct){ b.classList.add("correct"); score++; fb.textContent="Correct. "+item.why; fb.style.color="#15803D"; }
+      else { b.classList.add("wrong"); buttons[item.correct].classList.add("correct"); fb.textContent="Not the best first action. "+item.why; fb.style.color="#B91C1C"; }
+      document.getElementById("score").textContent="Score: "+score+" of "+ITEMS.length;
+      document.getElementById("nextBtn").disabled=false;
+    });
+    box.appendChild(b);
+  });
+}
+document.getElementById("nextBtn").addEventListener("click",function(){
+  if(idx<ITEMS.length-1){ idx++; show(); }
+  else {
+    document.getElementById("barFill").style.width="100%";
+    var card=document.getElementById("doneCard"); card.style.display="block";
+    var pct=Math.round(100*score/ITEMS.length);
+    document.getElementById("doneTitle").textContent="Assessment complete: "+score+" of "+ITEMS.length+" correct ("+pct+"%)";
+    document.getElementById("doneText").textContent=score===5?"Excellent. Your first actions are sound across channel, rejection, tracing, duplicate and sanctions cases.":score>=4?"Strong result. Review the scenario you missed and retake it to lock in the reasoning.":score>=3?"A solid start. Re-read the reasoning for each scenario, especially tracing by UETR and never bypassing screening.":"Keep practising. In every scenario, locate the payment first, then act through the proper process: never resubmit blindly, never debit manually, and never bypass a control to meet a deadline.";
+    document.getElementById("nextBtn").disabled=true;
+  }
+});
+document.getElementById("retryBtn").addEventListener("click",function(){ idx=0; score=0; document.getElementById("doneCard").style.display="none"; show(); });
+show();
+</script>
+</body>
+</html>

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Timed Mock Interview | Payments Training Hub</title>
+<style>
+*{box-sizing:border-box}
+body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;margin:0;background:#F1F5F9;color:#0B1B33}
+header{background:#0B1B33;color:#fff;padding:22px 20px}
+header h1{margin:0;font-size:24px} header p{margin:6px 0 0;color:#BFDBFE}
+main{max-width:860px;margin:24px auto;padding:0 16px 40px}
+.card{background:#fff;border:1px solid #Dbe3ee;border-radius:12px;padding:20px;margin-bottom:16px}
+label{font-weight:700;display:block;margin:10px 0 4px}
+select,textarea{width:100%;padding:10px;border:1px solid #94A3B8;border-radius:8px;font-size:15px}
+textarea{min-height:140px}
+.btn{background:#1D4ED8;color:#fff;border:0;padding:11px 18px;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;margin:6px 6px 0 0}
+.btn.gold{background:#FBBF24;color:#0B1B33} .btn.ghost{background:#fff;color:#1D4ED8;border:2px solid #1D4ED8}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+#timer{font-size:32px;font-weight:800;color:#1D4ED8} #timer.low{color:#DC2626}
+#question{font-size:18px;line-height:1.5}
+.model{background:#EFF6FF;border-left:4px solid #1D4ED8;padding:12px;border-radius:8px;margin:10px 0;line-height:1.6}
+.rubric label{display:inline-block;margin:4px 10px 4px 0;font-weight:400}
+.hidden{display:none}
+</style>
+</head>
+<body>
+<header><h1>Timed Mock Interview</h1><p>Payments Training Hub | Answer under time pressure, then score yourself honestly.</p></header>
+<main>
+<div class="card" id="setupCard">
+<label for="track">Track</label>
+<select id="track"><option>Payments General</option><option>Clearing and Settlement</option><option>Exception Handling</option><option>APIs and Integration</option></select>
+<label for="duration">Duration</label>
+<select id="duration"><option value="10">10 minutes</option><option value="20">20 minutes</option><option value="30">30 minutes</option></select>
+<button class="btn" id="startBtn">Start mock interview</button>
+<p>10 questions. Type your answer for each, then click Next. The timer ends the interview automatically.</p>
+</div>
+<div class="card hidden" id="quizCard">
+<p><span id="timer">10:00</span> &nbsp; <strong id="counter">Question 1 of 10</strong> &nbsp; <span id="trackLabel"></span></p>
+<p id="question"></p>
+<textarea id="answerBox" placeholder="Type your answer here..."></textarea>
+<p><button class="btn" id="nextQBtn">Next question</button> <button class="btn ghost" id="finishBtn">Finish now</button></p>
+</div>
+<div class="card hidden" id="resultCard">
+<h2>Your mock is complete</h2>
+<p id="summary"></p>
+<h3>Self-assessment rubric (1 to 5 for each)</h3>
+<div id="rubric"></div>
+<p><button class="btn gold" id="calcBtn">Calculate my rubric score</button> <span id="rubricScore"></span></p>
+<h3>Model answers for comparison</h3>
+<div id="models"></div>
+<p><button class="btn" id="restartBtn">Start a new mock</button></p>
+</div>
+</main>
+<script>
+var QUESTIONS=[
+{q:"Explain the difference between clearing and settlement.",a:"Clearing is the exchange and validation of payment instructions. Settlement is the actual movement of funds between banks, usually across central bank accounts. A payment is only final once settlement has happened."},
+{q:"What is an idempotency key and why does it matter?",a:"A unique key sent with a payment request. If the request is retried after a timeout, the server returns the original result instead of creating a duplicate payment."},
+{q:"A payment was debited but never credited. What is your first investigation step?",a:"Confirm the debit, locate the payment by end to end ID and UETR, then check each stage in order: release, clearing, settlement and beneficiary receipt."},
+{q:"What does HTTP 202 Accepted mean in a payment API?",a:"The request was accepted for processing but is not complete. Poll the status endpoint or wait for a webhook using the payment ID, and show the payment as pending."},
+{q:"How does net settlement differ from gross settlement?",a:"Gross settles each payment individually in full, which needs more liquidity but removes settlement risk. Net offsets payments and settles only the net amount, which saves liquidity but adds delay."},
+{q:"A beneficiary bank rejects a payment for an invalid account. What happens next?",a:"It returns a pacs.002 rejection with a reason code. The sending bank returns the funds to the sender, notifies the customer with the exact reason, and asks for corrected details."},
+{q:"What is a nostro account and why is reconciliation important?",a:"A nostro account is a bank account held with another bank. Reconciliation proves money sent and received matches the other bank's records, and breaks can reveal missing payments, duplicates or errors."},
+{q:"Explain serial versus cover payments.",a:"In a serial payment the full message travels bank to bank along the chain. In a cover payment the customer message goes directly to the beneficiary bank while a separate cover message moves the funds between correspondent banks."},
+{q:"A payment is held by sanctions screening. What do you tell the customer?",a:"Say the payment is under review and give a realistic timeframe, without sharing screening details. Compliance then releases or rejects it, and rejected funds are returned."},
+{q:"What is the risk if the same payment file is submitted twice?",a:"Duplicate debits and duplicate beneficiary credits. Prevent it with file hash checks, duplicate reference checks and idempotency controls, and reverse any duplicate through the proper return process."}
+];
+var CRITERIA=["Domain accuracy","Structure and clarity","Use of real examples","Handling of exceptions and edge cases","Confidence and completeness"];
+var idx=0,answers=[],secondsLeft=0,timerId=null;
+function fmt(s){var m=Math.floor(s/60),r=s%60;return (m<10?"0":"")+m+":"+(r<10?"0":"")+r;}
+function showQ(){
+  document.getElementById("counter").textContent="Question "+(idx+1)+" of "+QUESTIONS.length;
+  document.getElementById("question").textContent=QUESTIONS[idx].q;
+  document.getElementById("answerBox").value=answers[idx]||"";
+  document.getElementById("nextQBtn").textContent=(idx===QUESTIONS.length-1)?"Finish and review":"Next question";
+}
+function finish(){
+  clearInterval(timerId);
+  answers[idx]=document.getElementById("answerBox").value;
+  document.getElementById("quizCard").classList.add("hidden");
+  document.getElementById("resultCard").classList.remove("hidden");
+  var answered=answers.filter(function(a){return a&&a.trim().length>0;}).length;
+  document.getElementById("summary").textContent="You answered "+answered+" of "+QUESTIONS.length+" questions in the "+document.getElementById("track").value+" track. Score yourself below, then compare your answers with the models.";
+  var rub=document.getElementById("rubric"); rub.innerHTML="";
+  CRITERIA.forEach(function(c,ci){
+    var d=document.createElement("div"); d.innerHTML="<strong>"+c+"</strong><br>";
+    for(var v=1;v<=5;v++){ var lab=document.createElement("label"); lab.innerHTML='<input type="radio" name="rub'+ci+'" value="'+v+'"> '+v; d.appendChild(lab); }
+    rub.appendChild(d);
+  });
+  var mod=document.getElementById("models"); mod.innerHTML="";
+  QUESTIONS.forEach(function(item,i){
+    var d=document.createElement("div"); d.innerHTML="<p><strong>Q"+(i+1)+": "+item.q+"</strong></p><p><em>Your answer:</em> "+(answers[i]?answers[i].replace(/</g,"&lt;"):"(no answer)")+"</p><div class='model'><strong>Model answer:</strong> "+item.a+"</div>";
+    mod.appendChild(d);
+  });
+  document.getElementById("rubricScore").textContent="";
+}
+document.getElementById("startBtn").addEventListener("click",function(){
+  idx=0; answers=[]; secondsLeft=parseInt(document.getElementById("duration").value,10)*60;
+  document.getElementById("setupCard").classList.add("hidden");
+  document.getElementById("quizCard").classList.remove("hidden");
+  document.getElementById("resultCard").classList.add("hidden");
+  document.getElementById("trackLabel").textContent=document.getElementById("track").value;
+  document.getElementById("timer").textContent=fmt(secondsLeft);
+  document.getElementById("timer").classList.remove("low");
+  showQ();
+  clearInterval(timerId);
+  timerId=setInterval(function(){
+    secondsLeft--;
+    var t=document.getElementById("timer"); t.textContent=fmt(Math.max(0,secondsLeft));
+    if(secondsLeft<=60) t.classList.add("low");
+    if(secondsLeft<=0){ finish(); }
+  },1000);
+});
+document.getElementById("nextQBtn").addEventListener("click",function(){
+  answers[idx]=document.getElementById("answerBox").value;
+  if(idx<QUESTIONS.length-1){ idx++; showQ(); } else { finish(); }
+});
+document.getElementById("finishBtn").addEventListener("click",finish);
+document.getElementById("calcBtn").addEventListener("click",function(){
+  var total=0,count=0;
+  CRITERIA.forEach(function(c,ci){
+    var sel=document.querySelector('input[name="rub'+ci+'"]:checked');
+    if(sel){ total+=parseInt(sel.value,10); count++; }
+  });
+  document.getElementById("rubricScore").textContent=count===CRITERIA.length?("Total: "+total+" out of 25 ("+Math.round(100*total/25)+"%)"):("You rated "+count+" of "+CRITERIA.length+" criteria. Total so far: "+total+".");
+});
+document.getElementById("restartBtn").addEventListener("click",function(){
+  document.getElementById("resultCard").classList.add("hidden");
+  document.getElementById("setupCard").classList.remove("hidden");
+});
+</script>
+</body>
+</html>

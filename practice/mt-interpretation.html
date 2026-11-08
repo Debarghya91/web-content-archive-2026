@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MT Message Interpretation | Payments Training Hub</title>
+<style>
+*{box-sizing:border-box}
+body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;margin:0;background:#F1F5F9;color:#0B1B33}
+header{background:#0B1B33;color:#fff;padding:22px 20px}
+header h1{margin:0;font-size:24px} header p{margin:6px 0 0;color:#BFDBFE}
+main{max-width:900px;margin:24px auto;padding:0 16px 40px}
+.card{background:#fff;border:1px solid #Dbe3ee;border-radius:12px;padding:20px;margin-bottom:16px}
+.btn{background:#1D4ED8;color:#fff;border:0;padding:10px 16px;border-radius:8px;font-weight:700;cursor:pointer;margin:4px 4px 0 0}
+.btn.gold{background:#FBBF24;color:#0B1B33}
+.tabs button{background:#E2E8F0;border:0;padding:10px 16px;border-radius:8px;font-weight:700;cursor:pointer;margin-right:6px}
+.tabs button.active{background:#1D4ED8;color:#fff}
+pre{background:#0B1B33;color:#E2E8F0;padding:16px;border-radius:8px;overflow-x:auto;font-size:14px;line-height:1.7;white-space:pre-wrap}
+.field{cursor:pointer;border-bottom:2px dotted #FBBF24}
+.field:hover{background:#1D4ED8;color:#fff}
+#meaning{background:#EFF6FF;border-left:4px solid #FBBF24;padding:14px;border-radius:8px;min-height:56px;line-height:1.6}
+.opt{display:block;width:100%;text-align:left;background:#F8FAFC;border:1px solid #CBD5E1;padding:10px;border-radius:8px;margin:6px 0;cursor:pointer;font-size:15px}
+.opt.correct{background:#DCFCE7;border-color:#16A34A} .opt.wrong{background:#FEE2E2;border-color:#DC2626}
+.feedback{font-weight:700;margin:8px 0;line-height:1.5}
+.score{font-weight:700}
+</style>
+</head>
+<body>
+<header><h1>MT Message Interpretation</h1><p>Payments Training Hub | Click any field in the message to learn what it means, then test yourself.</p></header>
+<main>
+<div class="card">
+<div class="tabs">
+<button id="tab103" class="active">MT103 Customer Payment</button>
+<button id="tab202">MT202 Bank to Bank Payment</button>
+<button id="tab103b">MT103 Second Example</button>
+</div>
+<pre id="msg"></pre>
+<div id="meaning">Click a highlighted field above to see its meaning.</div>
+</div>
+<div class="card">
+<h2>Check your understanding <span class="score" id="score">Score: 0 of 5</span></h2>
+<div id="quiz"></div>
+<p><button class="btn gold" id="resetQuiz">Restart quiz</button></p>
+</div>
+</main>
+<script>
+var MEANINGS={
+"20":"Field 20, Transaction Reference Number: the sender's unique reference for this payment. It is used to trace the payment through every bank in the chain.",
+"23B":"Field 23B, Bank Operation Code: CRED means a normal credit transfer. Other codes include SPAY for a payment with a related SWIFT message and SSTD for a standard payment.",
+"32A":"Field 32A, Value Date, Currency and Amount: the date the funds should be available, the currency code, and the amount. Example: 261108 means 8 November 2026.",
+"50K":"Field 50K, Ordering Customer: the sender of the payment, with name and address. This is the party whose account is debited.",
+"52A":"Field 52A, Ordering Institution: the bank that instructed the payment on behalf of its customer, identified by its BIC.",
+"53B":"Field 53B, Sender's Correspondent: the account the sender uses to fund the payment, often a nostro account held with another bank.",
+"57A":"Field 57A, Account With Institution: the bank where the beneficiary holds an account, identified by its BIC. The payment is routed here.",
+"59":"Field 59, Beneficiary Customer: the final recipient of the funds, with name and account number. This is who gets credited.",
+"70":"Field 70, Remittance Information: free text describing the purpose of the payment, such as an invoice number. It helps the beneficiary reconcile the receipt.",
+"71A":"Field 71A, Details of Charges: OUR means the sender pays all charges, BEN means the beneficiary pays them, SHA means charges are shared between sender and beneficiary.",
+"72":"Field 72, Sender to Receiver Information: extra instructions for the receiving bank, such as to advise the beneficiary by phone or to handle a special case.",
+"21":"Field 21, Related Reference: links this message to an earlier message, for example the original MT103 when this is a cover or a return.",
+"58A":"Field 58A, Beneficiary Institution: in an MT202 this is the bank that should receive the funds on behalf of its customer."
+};
+var MESSAGES={
+msg103:"{1:F01BANKGB22AXXX0000000000}\n{2:I103BANKINBBXXXXN}\n{4:\n:20:INV-2026-8841\n:23B:CRED\n:32A:261108GBP125000,00\n:50K:/GB29ABCD12345678901234\nACME TRADING LTD\n14 HIGH STREET\nLONDON UK\n:52A:BANKGB22\n:57A:BANKINBB\n:59:/IN98765432109876\nGLOBAL EXPORTS PVT LTD\nMUMBAI IN\n:70:INVOICE 8841 SUPPLY OF COMPONENTS\n:71A:SHA\n-}",
+msg202:"{1:F01BANKGB22AXXX0000000000}\n{2:I202BANKDEFFXXXXN}\n{4:\n:20:COVER-2026-5520\n:21:INV-2026-8841\n:32A:261108EUR250000,00\n:52A:BANKGB22\n:53B:/DE89370400440532013000\n:58A:BANKDEFF\n:72:/BNF/PAYMENT COVER FOR MT103 INV-2026-8841\n-}",
+msg103b:"{1:F01BANKUS33XXXX0000000000}\n{2:I103BANKGB22XXXXN}\n{4:\n:20:PAY-2026-1190\n:23B:CRED\n:32A:261109USD47500,50\n:50K:/US12345678901234567890\nNORTHWIND SUPPLIES INC\nNEW YORK US\n:57A:BANKGB22\n:59:/GB29ABCD98765432109876\nRIVERSIDE CONSULTING LTD\nLONDON UK\n:70:CONSULTING FEES OCTOBER 2026\n:71A:OUR\n:72:/ACC/ADVISE BENEFICIARY BY EMAIL\n-}"
+};
+function render(key){
+  var text=MESSAGES[key];
+  var html=text.replace(/:(\d+[A-Z]?):/g,function(m,code){
+    if(MEANINGS[code]) return '<span class="field" data-code="'+code+'">:'+code+':</span>';
+    return m;
+  });
+  document.getElementById("msg").innerHTML=html;
+  document.querySelectorAll(".field").forEach(function(el){
+    el.addEventListener("click",function(){ document.getElementById("meaning").textContent=MEANINGS[el.getAttribute("data-code")]; });
+  });
+  document.getElementById("meaning").textContent="Click a highlighted field above to see its meaning.";
+}
+document.getElementById("tab103").addEventListener("click",function(){setTab("tab103","msg103");});
+document.getElementById("tab202").addEventListener("click",function(){setTab("tab202","msg202");});
+document.getElementById("tab103b").addEventListener("click",function(){setTab("tab103b","msg103b");});
+function setTab(id,key){ ["tab103","tab202","tab103b"].forEach(function(t){document.getElementById(t).classList.remove("active");}); document.getElementById(id).classList.add("active"); render(key); }
+var QUIZ=[
+{q:"In the first MT103, what does field :32A: tell you?",opts:["The beneficiary name","The value date, currency and amount: 8 Nov 2026, GBP 125,000","The charges instruction","The sender to receiver information"],correct:1,why:"32A always carries value date, currency and amount. Here it is 261108, GBP, 125000,00."},
+{q:"What does :71A: SHA mean?",opts:["The sender pays all charges","The beneficiary pays all charges","Charges are shared between sender and beneficiary","No charges apply"],correct:2,why:"SHA means shared. OUR is sender pays all, BEN is beneficiary pays all."},
+{q:"In the MT202, what is the role of field :58A:?",opts:["The ordering customer","The beneficiary institution that should receive the funds","The remittance information","The sender's correspondent account"],correct:1,why:"58A names the beneficiary institution in a bank to bank payment. The MT202 moves funds between banks."},
+{q:"What links the MT202 cover payment to the original customer payment?",opts:["Field :20: in the MT103","Field :21: Related Reference, INV-2026-8841","Field :70: Remittance Information","Field :72: Sender to Receiver Information"],correct:1,why:"Field 21 carries the related reference, here INV-2026-8841, which matches field 20 of the MT103."},
+{q:"In the second MT103, who is debited?",opts:["Riverside Consulting Ltd","Bank GB22","Northwind Supplies Inc, the ordering customer in field 50K","The beneficiary bank"],correct:2,why:"Field 50K is the ordering customer. Northwind Supplies Inc is the sender whose account is debited."}
+];
+var score=0,answered=0;
+function buildQuiz(){
+  score=0; answered=0; document.getElementById("score").textContent="Score: 0 of 5";
+  var box=document.getElementById("quiz"); box.innerHTML="";
+  QUIZ.forEach(function(item,i){
+    var d=document.createElement("div"); d.innerHTML="<p><strong>Q"+(i+1)+": "+item.q+"</strong></p>";
+    var fb=document.createElement("p"); fb.className="feedback";
+    item.opts.forEach(function(opt,j){
+      var b=document.createElement("button"); b.className="opt"; b.textContent=opt;
+      b.addEventListener("click",function(){
+        if(b.parentNode.getAttribute("data-done")) return;
+        b.parentNode.setAttribute("data-done","1"); answered++;
+        var buttons=d.querySelectorAll(".opt");
+        buttons.forEach(function(x){x.disabled=true;});
+        if(j===item.correct){ b.classList.add("correct"); score++; fb.textContent="Correct. "+item.why; fb.style.color="#15803D"; }
+        else { b.classList.add("wrong"); buttons[item.correct].classList.add("correct"); fb.textContent="Not quite. "+item.why; fb.style.color="#B91C1C"; }
+        document.getElementById("score").textContent="Score: "+score+" of 5"+(answered===5?" | Quiz complete.":"");
+      });
+      d.appendChild(b);
+    });
+    d.appendChild(fb); box.appendChild(d);
+  });
+}
+document.getElementById("resetQuiz").addEventListener("click",buildQuiz);
+render("msg103"); buildQuiz();
+</script>
+</body>
+</html>

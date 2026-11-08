@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MT to MX Mapping | Payments Training Hub</title>
+<style>
+*{box-sizing:border-box}
+body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;margin:0;background:#F1F5F9;color:#0B1B33}
+header{background:#0B1B33;color:#fff;padding:22px 20px}
+header h1{margin:0;font-size:24px} header p{margin:6px 0 0;color:#BFDBFE}
+main{max-width:860px;margin:24px auto;padding:0 16px 40px}
+.card{background:#fff;border:1px solid #Dbe3ee;border-radius:12px;padding:20px;margin-bottom:16px}
+.btn{background:#1D4ED8;color:#fff;border:0;padding:11px 18px;border-radius:8px;font-weight:700;cursor:pointer;margin-top:10px}
+.btn.gold{background:#FBBF24;color:#0B1B33}
+.mtbox{background:#0B1B33;color:#fff;padding:16px;border-radius:8px;font-size:18px;font-weight:700}
+.opt{display:block;width:100%;text-align:left;background:#F8FAFC;border:1px solid #CBD5E1;padding:12px;border-radius:8px;margin:8px 0;cursor:pointer;font-size:15px}
+.opt.correct{background:#DCFCE7;border-color:#16A34A} .opt.wrong{background:#FEE2E2;border-color:#DC2626}
+.opt:disabled{cursor:default}
+.feedback{font-weight:700;line-height:1.6;min-height:24px}
+.bar{height:10px;background:#E2E8F0;border-radius:6px;overflow:hidden}
+.bar div{height:100%;background:#1D4ED8;width:0%}
+</style>
+</head>
+<body>
+<header><h1>MT to MX Mapping</h1><p>Payments Training Hub | Match each MT103 field to its pacs.008 equivalent.</p></header>
+<main>
+<div class="card">
+<p><strong id="counter">Question 1 of 8</strong> | <strong id="score">Score: 0</strong></p>
+<div class="bar"><div id="barFill"></div></div>
+<div class="mtbox" id="mtField"></div>
+<p id="prompt"></p>
+<div id="options"></div>
+<p class="feedback" id="feedback"></p>
+<p><button class="btn" id="nextBtn" disabled>Next mapping</button></p>
+</div>
+<div class="card hidden" id="doneCard" style="display:none">
+<h2 id="doneTitle"></h2><p id="doneText"></p>
+<button class="btn gold" id="retryBtn">Try again</button>
+</div>
+</main>
+<script>
+var ITEMS=[
+{mt:":20: Transaction Reference Number",prompt:"Which pacs.008 element carries the sender's transaction reference?",opts:["PmtId / InstrId","GrpHdr / MsgId","RmtInf / Ustrd","Cdtr / Nm"],correct:0,why:"MT field 20 maps to InstrId inside PmtId. MsgId is the message level reference, not the instruction reference."},
+{mt:":32A: Value Date, Currency and Amount",prompt:"Which pacs.008 element carries the settlement amount and currency?",opts:["InstdAmt","IntrBkSttlmAmt","ChrgBr","NbOfTxs"],correct:1,why:"32A maps to IntrBkSttlmAmt, the interbank settlement amount with currency. InstdAmt is the instructed amount, which can differ."},
+{mt:":50K: Ordering Customer",prompt:"Which pacs.008 element names the sender whose account is debited?",opts:["Cdtr","Dbtr","CdtrAgt","DbtrAcct only"],correct:1,why:"50K maps to Dbtr (debtor). The account itself is DbtrAcct, but the party name is Dbtr."},
+{mt:":59: Beneficiary Customer",prompt:"Which pacs.008 element names the final recipient?",opts:["Dbtr","CdtrAgt","Cdtr","RmtInf"],correct:2,why:"59 maps to Cdtr (creditor). CdtrAgt is the creditor's bank, not the beneficiary itself."},
+{mt:":57A: Account With Institution",prompt:"Which pacs.008 element identifies the beneficiary's bank?",opts:["DbtrAgt","CdtrAgt","DbtrAcct","GrpHdr"],correct:1,why:"57A maps to CdtrAgt, the creditor agent. DbtrAgt is the debtor's bank."},
+{mt:":70: Remittance Information",prompt:"Which pacs.008 element carries the invoice or purpose text?",opts:["RmtInf / Ustrd","PmtId / UETR","ChrgBr","IntrBkSttlmAmt"],correct:0,why:"70 maps to RmtInf, usually as Ustrd (unstructured remittance information)."},
+{mt:":71A: Details of Charges",prompt:"Which pacs.008 element says who pays the charges?",opts:["ChrgBr","IntrBkSttlmAmt","EndToEndId","NbOfTxs"],correct:0,why:"71A maps to ChrgBr. SHAR, DEBT and CRED in pacs.008 match SHA, OUR and BEN in MT."},
+{mt:":52A: Ordering Institution",prompt:"Which pacs.008 element identifies the debtor's bank?",opts:["CdtrAgt","DbtrAgt","CdtrAcct","CdtTrfTxInf"],correct:1,why:"52A maps to DbtrAgt, the debtor agent. CdtrAgt is the other side of the payment."}
+];
+var idx=0,score=0;
+function show(){
+  var item=ITEMS[idx];
+  document.getElementById("counter").textContent="Question "+(idx+1)+" of "+ITEMS.length;
+  document.getElementById("score").textContent="Score: "+score;
+  document.getElementById("barFill").style.width=(100*idx/ITEMS.length)+"%";
+  document.getElementById("mtField").textContent="MT103 "+item.mt;
+  document.getElementById("prompt").textContent=item.prompt;
+  document.getElementById("feedback").textContent="";
+  document.getElementById("nextBtn").disabled=true;
+  document.getElementById("nextBtn").textContent=(idx===ITEMS.length-1)?"See my score":"Next mapping";
+  var box=document.getElementById("options"); box.innerHTML="";
+  item.opts.forEach(function(opt,j){
+    var b=document.createElement("button"); b.className="opt"; b.textContent=opt;
+    b.addEventListener("click",function(){
+      var buttons=box.querySelectorAll(".opt"); buttons.forEach(function(x){x.disabled=true;});
+      var fb=document.getElementById("feedback");
+      if(j===item.correct){ b.classList.add("correct"); score++; fb.textContent="Correct. "+item.why; fb.style.color="#15803D"; }
+      else { b.classList.add("wrong"); buttons[item.correct].classList.add("correct"); fb.textContent="Not quite. "+item.why; fb.style.color="#B91C1C"; }
+      document.getElementById("score").textContent="Score: "+score;
+      document.getElementById("nextBtn").disabled=false;
+    });
+    box.appendChild(b);
+  });
+}
+document.getElementById("nextBtn").addEventListener("click",function(){
+  if(idx<ITEMS.length-1){ idx++; show(); }
+  else {
+    document.getElementById("barFill").style.width="100%";
+    var card=document.getElementById("doneCard"); card.style.display="block";
+    document.getElementById("doneTitle").textContent="Mapping complete: "+score+" of "+ITEMS.length+" correct";
+    document.getElementById("doneText").textContent=score===ITEMS.length?"Excellent. You know the MT103 to pacs.008 mapping cold.":score>=6?"Good work. Review the ones you missed above by trying again.":"Keep practising. The key pairs are 20 to InstrId, 32A to IntrBkSttlmAmt, 50K to Dbtr, 59 to Cdtr, 57A to CdtrAgt, 70 to RmtInf, 71A to ChrgBr, and 52A to DbtrAgt.";
+    document.getElementById("nextBtn").disabled=true;
+  }
+});
+document.getElementById("retryBtn").addEventListener("click",function(){ idx=0; score=0; document.getElementById("doneCard").style.display="none"; show(); });
+show();
+</script>
+</body>
+</html>

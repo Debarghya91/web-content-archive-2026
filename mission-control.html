@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>Mission Control | Payments Academy | Payments Training Hub</title>
+<meta name="description" content="Mission Control: run payment operations through four live missions, a stuck payment, a duplicate, a clearing rejection and an API timeout, scored as...">
+<link rel="canonical" href="https://www.paymentstraininghub.in/mission-control.html">
+<meta property="og:url" content="https://www.paymentstraininghub.in/mission-control.html">
+<meta property="og:title" content="Mission Control | Payments Academy | Payments Training Hub">
+<meta property="og:description" content="Mission Control: run payment operations through four live missions, a stuck payment, a duplicate, a clearing rejection and an API timeout, scored as...">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.in/assets/hero/hero-poster.jpg">
+
+<link rel="stylesheet" href="assets/site.css">
+<link rel="stylesheet" href="assets/pf-theme.css">
+<link rel="stylesheet" href="assets/pf-features.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="index.html" class="brand">Payments <span>Academy</span></a><nav class="topnav"><a href="index.html">Home</a> <a href="courses.html">Courses</a> <a href="tests.html">Tests</a> <a href="simulators.html">Simulators</a> <a href="practice.html">Practice</a> <a href="payment.html">Payment</a></nav><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox" style="display:none"><span id="authState">Not signed in</span> <span id="authForm" style="display:none"><input id="authEmail" type="email" placeholder="Email for OTP" aria-label="Email for sign-in"> <button class="mute-btn" onclick="paAuthSendOtp()">Send code</button> <input id="authCode" type="text" placeholder="6-digit code" aria-label="One-time code" style="display:none"> <button class="mute-btn" id="authVerifyBtn" onclick="paAuthVerifyOtp()" style="display:none">Verify</button> <button class="mute-btn" onclick="paAuthGoogle()">Sign in with Google</button> </span><button class="mute-btn" id="authSignOutBtn" onclick="paAuthSignOut()" style="display:none">Sign out</button></span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<div class="pf-feature">
+<nav class="crumbs"><a href="index.html">Home</a> / <a href="practice.html">Practice</a> / Mission Control</nav>
+<h1>Mission Control</h1>
+<p class="lede">Run payment operations. Four live missions: a payment stuck in processing, a duplicate submission, a clearing rejection, and an API timeout. Investigate the evidence, make the decisions, and see the outcome scored. All data is synthetic and for education only. Nothing here connects to a real banking system and nothing moves real money.</p>
+<div class="pf-note"><b>How to play.</b> Pick a mission below. Read the transaction, the lifecycle, the timeline and the logs. Use the investigation tools in any order, each tool reveals one finding and earns 5 points the first time you use it. Then answer the two decision points. Each correct decision earns 20 points. The outcome appears after both decisions, and your best score is saved in this browser only.</div>
+<p id="overallBest" class="pf-tag">Best score: not attempted yet</p>
+
+<div id="dashboard">
+<h2>Mission dashboard</h2>
+<div class="pf-grid">
+<article class="pf-card amber"><span class="pf-tag amber">Medium</span><h3>Payment stuck in processing</h3><p>USD 48,250 from a London corporate to a Singapore supplier, held after screening.</p><p><b>USD 48,250.00</b> &middot; SWIFT gpi &middot; Status ACSP, held</p><p id="best-a">Best: not attempted yet</p><div class="pf-btnrow"><button type="button" class="pf-btn" data-mission-open="a">Open mission A</button></div></article>
+<article class="pf-card"><span class="pf-tag">Easy</span><h3>Duplicate payment submission</h3><p>The same EndToEndId submitted twice within minutes after a slow response.</p><p><b>EUR 32,150.00</b> &middot; SEPA Credit Transfer &middot; First settled, second held</p><p id="best-b">Best: not attempted yet</p><div class="pf-btnrow"><button type="button" class="pf-btn" data-mission-open="b">Open mission B</button></div></article>
+<article class="pf-card indigo"><span class="pf-tag amber">Medium</span><h3>Clearing rejection</h3><p>A EUR 120,000 SEPA credit transfer rejected at clearing with a pacs.002 rejection.</p><p><b>EUR 120,000.00</b> &middot; SEPA &middot; Status RJCT, reason AC01</p><p id="best-c">Best: not attempted yet</p><div class="pf-btnrow"><button type="button" class="pf-btn" data-mission-open="c">Open mission C</button></div></article>
+<article class="pf-card"><span class="pf-tag red">Hard</span><h3>API timeout</h3><p>A payment API call timed out after 30 seconds with no response.</p><p><b>USD 9,850.00</b> &middot; API initiated &middot; Status unknown</p><p id="best-d">Best: not attempted yet</p><div class="pf-btnrow"><button type="button" class="pf-btn" data-mission-open="d">Open mission D</button></div></article>
+</div>
+</div>
+
+<div id="missionPanel" style="display:none">
+<h2 id="mTitle">Mission</h2>
+<p class="lede" id="mScenario"></p>
+<h3>Transaction details</h3>
+<div class="pf-tablewrap"><table><tbody id="mTxn"></tbody></table></div>
+<h3>Payment lifecycle</h3>
+<div class="pf-flow" id="mFlow"></div>
+<h3>Event timeline</h3>
+<ul class="pf-timeline" id="mTimeline"></ul>
+<h3>System logs</h3>
+<pre class="pf-log" id="mLog"></pre>
+<h3>Investigation tools</h3>
+<p>Use the tools in any order. Each tool can be used once per attempt and earns 5 points. No tool blocks your progress.</p>
+<div class="pf-btnrow" id="mTools"></div>
+<div class="pf-fb" id="toolFinding" style="display:none"></div>
+<h3>Decision points</h3>
+<p>Answer both decisions. Each correct decision earns 20 points and shows an explanation. Once answered, a decision cannot be changed in this attempt. Use Reset to try again.</p>
+<div id="mDecisions"></div>
+<h3>Your score</h3>
+<div class="pf-score" id="scoreBar"></div>
+<p id="scoreText">Score 0 of 60 points. Tools earn 5 points each, correct decisions earn 20 points each.</p>
+<div class="pf-note" id="mOutcome" style="display:none"></div>
+<div class="pf-btnrow"><button type="button" class="pf-btn amber" id="resetBtn">Reset mission</button><button type="button" class="pf-btn secondary" id="backBtn">Back to dashboard</button></div>
+</div>
+
+<div class="pf-note"><b>Teaching note.</b> These missions are simplified for learning. Real screening, clearing and API behaviour varies by bank, scheme and system, and real cases involve more checks, approvals and audit steps than shown here. Status codes used include ACCP (accepted), ACSP (accepted, settlement in process) and RJCT (rejected). Reason code AC01 means incorrect account number. Check current scheme rules before relying on any of this in live work.</div>
+<div class="pf-btnrow"><button type="button" class="pf-btn danger" id="resetAllBtn">Reset Mission Control progress</button> <a class="pf-btn secondary" href="practice.html">Back to Practice</a></div>
+</div>
+</main>
+<footer><p>Payments Academy. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="index.html">Home</a> &middot; <a href="courses.html">Courses</a> &middot; <a href="payment.html">Payment</a> &middot; <a href="tests.html">Tests</a> &middot; <a href="diagnostic.html">Diagnostic</a> &middot; <a href="practice.html">Practice</a> &middot; <a href="faq.html">700 Questions</a></p></footer>
+<script src="assets/site.js"></script>
+<script src="assets/auth.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/pf-enhance.js"></script>
+<script src="assets/pf-features.js"></script>
+<script src="assets/mission-control.js"></script>
+</body>
+</html>

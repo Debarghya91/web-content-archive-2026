@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Random Interview Practice | Payments Training Hub</title>
+<style>
+*{box-sizing:border-box}
+body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;margin:0;background:#F1F5F9;color:#0B1B33}
+header{background:#0B1B33;color:#fff;padding:22px 20px}
+header h1{margin:0;font-size:24px}
+header p{margin:6px 0 0;color:#BFDBFE}
+header .gold{color:#FBBF24}
+main{max-width:860px;margin:24px auto;padding:0 16px 40px}
+.card{background:#fff;border:1px solid #Dbe3ee;border-radius:12px;padding:20px;margin-bottom:16px;box-shadow:0 2px 8px rgba(11,27,51,.06)}
+label{font-weight:700;display:block;margin:10px 0 4px}
+select,textarea{width:100%;padding:10px;border:1px solid #94A3B8;border-radius:8px;font-size:15px}
+.btn{background:#1D4ED8;color:#fff;border:0;padding:11px 18px;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;margin:6px 6px 0 0}
+.btn.gold{background:#FBBF24;color:#0B1B33}
+.btn.ghost{background:#fff;color:#1D4ED8;border:2px solid #1D4ED8}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.score{display:flex;gap:12px;flex-wrap:wrap}
+.score div{background:#EFF6FF;border:1px solid #BFDBFE;border-radius:8px;padding:10px 14px;font-weight:700}
+#question{font-size:19px;line-height:1.5}
+.tag{display:inline-block;background:#FEF3C7;color:#92400E;border-radius:20px;padding:3px 10px;font-size:13px;font-weight:700;margin-right:6px}
+#answer{background:#EFF6FF;border-left:4px solid #1D4ED8;padding:14px;border-radius:8px;display:none;white-space:pre-wrap;line-height:1.6}
+.progress{color:#475569;font-size:14px}
+</style>
+</head>
+<body>
+<header><h1>Random Interview Practice</h1><p><span class="gold">Payments Training Hub</span> | Pick a topic and difficulty, then practise one question at a time.</p></header>
+<main>
+<div class="card">
+<label for="topic">Topic</label>
+<select id="topic"><option value="all">All topics</option><option>Payment Integrations and System Design</option><option>APIs and Data Transfer</option><option>Clearing and Settlement</option><option>Exception Handling</option><option>Reconciliation</option></select>
+<label for="difficulty">Difficulty</label>
+<select id="difficulty"><option value="all">All levels</option><option>Foundation</option><option>Intermediate</option><option>Advanced</option></select>
+<button class="btn" id="nextBtn">Next question</button>
+<button class="btn ghost" id="resetBtn">Reset score</button>
+</div>
+<div class="card score">
+<div>Seen: <span id="seen">0</span></div>
+<div>Knew it: <span id="knew">0</span></div>
+<div>Need work: <span id="needWork">0</span></div>
+<div>Accuracy: <span id="accuracy">-</span></div>
+</div>
+<div class="card">
+<p class="progress" id="progress">Click Next question to start.</p>
+<p id="question">Your question will appear here.</p>
+<div id="answer"></div>
+<p>
+<button class="btn gold" id="revealBtn" disabled>Reveal model answer</button>
+<button class="btn" id="knewBtn" disabled>I knew this</button>
+<button class="btn ghost" id="workBtn" disabled>I need work on this</button>
+</p>
+</div>
+</main>
+<script>
+var BANK=[
+{topic:"Payment Integrations and System Design",level:"Foundation",q:"A corporate client wants to send 2,000 salary payments in one file. How would you design the flow from file upload to beneficiary credit?",a:"Start with file validation and schema checks, then split the file into individual payment instructions. Validate each beneficiary account, run sanctions and fraud screening, and hold failures in an exception queue. Release clean payments to clearing in batches, track each one by its end to end reference, and send a single status file back to the client with per item outcomes."},
+{topic:"Payment Integrations and System Design",level:"Intermediate",q:"How would you design a payment hub that supports both SWIFT cross border payments and domestic real time payments?",a:"Use a common payment instruction model with a routing layer that selects the rail by currency, country, value and cut off time. Keep rail specific mapping in adapters, so SWIFT uses MT or MX messages and the domestic rail uses its own format. Share screening, limits and reconciliation across rails, and keep a single payment status model so operations sees one view."},
+{topic:"Payment Integrations and System Design",level:"Advanced",q:"A payment hub must process 1 million payments a day with no single point of failure. What architectural choices matter most?",a:"Use horizontal scaling with stateless services, queue based processing, and idempotency keys so retries never duplicate a payment. Partition data by date and region, use database transactions only around the debit and credit legs, and design for graceful degradation so a slow downstream system queues work instead of blocking the whole hub."},
+{topic:"Payment Integrations and System Design",level:"Intermediate",q:"When would you choose a file based integration over an API integration for a corporate client?",a:"Choose files for high volume, batched, non urgent payments such as payroll or supplier runs, where the client already produces files from its ERP. Choose APIs for real time, low volume, interactive flows such as a single payment created from a web portal. Files suit bulk and scheduled work, APIs suit instant confirmation and status lookups."},
+{topic:"APIs and Data Transfer",level:"Foundation",q:"What is an idempotency key and why does it matter in a payment API?",a:"An idempotency key is a unique value the client sends with a payment request. If the request is retried because of a timeout, the server recognises the key and returns the original result instead of creating a second payment. It protects against duplicate debits when the network fails after the payment was already processed."},
+{topic:"APIs and Data Transfer",level:"Intermediate",q:"A payment API returns HTTP 202 Accepted. What does that mean and what should the client do next?",a:"202 means the request was accepted for processing but is not yet complete. The client should not assume the payment succeeded. It should poll the status endpoint or wait for a webhook, using the payment ID returned in the response, and show the payment as pending until a final status arrives."},
+{topic:"APIs and Data Transfer",level:"Advanced",q:"How would you design retry and timeout behaviour for a payment API that calls a slow clearing system?",a:"Set a short client timeout and a longer server side processing window, and always return a payment ID immediately so the client can track the payment. Use exponential backoff for retries, only retry safe operations, and never retry a payment creation without the same idempotency key. Log every attempt with a correlation ID so support can trace the full chain."},
+{topic:"APIs and Data Transfer",level:"Foundation",q:"What is the difference between a synchronous and an asynchronous payment API response?",a:"A synchronous response returns the final result in the same call, which suits fast validations and low value payments. An asynchronous response returns an acknowledgement first and the final result later, by polling or webhook. Async suits payments that need screening, clearing or settlement, where the final outcome takes time."},
+{topic:"Clearing and Settlement",level:"Foundation",q:"Explain the difference between clearing and settlement in plain terms.",a:"Clearing is the exchange and validation of payment instructions between banks, including sorting, netting and checks. Settlement is the actual movement of funds between banks, usually across central bank accounts. A payment can be cleared but not yet settled, and it is only final once settlement has happened."},
+{topic:"Clearing and Settlement",level:"Intermediate",q:"How does net settlement differ from gross settlement, and when is each used?",a:"In gross settlement each payment settles individually in full, which removes settlement risk but needs more liquidity. In net settlement payments are offset against each other and only the net amount settles, which saves liquidity but creates a delay and some dependency on other participants. High value systems use gross settlement, retail systems often use net settlement."},
+{topic:"Clearing and Settlement",level:"Advanced",q:"A cross border payment uses a cover payment. Explain the serial versus cover approach.",a:"In a serial payment the full payment message travels from bank to bank along the chain, carrying beneficiary details at each step. In a cover payment the customer payment message goes directly to the beneficiary bank while a separate cover message moves the funds between correspondent banks. Cover is faster for the beneficiary bank to process, but the two legs must be reconciled carefully."},
+{topic:"Clearing and Settlement",level:"Intermediate",q:"What happens if a payment misses its clearing cut off time?",a:"The payment is held for the next clearing cycle. The bank should tell the customer the revised value date, check whether the delay breaks any service level agreement, and consider an alternative faster rail if the payment is urgent. Operations should also check whether the hold was caused by a queue, a validation failure or a system delay."},
+{topic:"Exception Handling",level:"Foundation",q:"A beneficiary bank rejects a payment because the account number is invalid. What should happen next?",a:"The rejecting bank returns a pacs.002 rejection with a clear reason code. The sending bank reverses the debit or returns the funds to the sender, notifies the customer with the exact reason, and asks for corrected details. The case should be logged so the same error can be spotted if it repeats."},
+{topic:"Exception Handling",level:"Intermediate",q:"A payment was debited from the sender but never credited to the beneficiary. How do you investigate?",a:"First confirm the debit and find the payment by its end to end ID and UETR. Check each stage: was it released, cleared, settled, and did the beneficiary bank receive it? Request a status update from the next bank in the chain, check for a held or queued item, and if the funds are with an intermediary, raise a trace. Keep the customer updated at each step."},
+{topic:"Exception Handling",level:"Advanced",q:"The same payment appears twice in the beneficiary account. What is the likely cause and the correct first action?",a:"The likely cause is a duplicate submission, often a retried API call without an idempotency key or a file sent twice. The first action is to freeze the duplicate credit and confirm which copy is the genuine one by matching references, amounts and timestamps. Then reverse the duplicate through the proper return process, never by a manual debit, and fix the duplicate control that failed."},
+{topic:"Exception Handling",level:"Intermediate",q:"A payment is held by sanctions screening. What do you tell the customer and what happens behind the scenes?",a:"Tell the customer the payment is under review and give a realistic timeframe, without sharing screening details. Behind the scenes, compliance reviews the match, may ask for more information about the parties or purpose, and then releases or rejects the payment. If rejected, the funds are returned and the reason is recorded."},
+{topic:"Reconciliation",level:"Foundation",q:"What is nostro reconciliation and why does it matter?",a:"Nostro reconciliation matches the bank's own account held with another bank against its internal records. It matters because it proves that money sent and received matches what the other bank recorded. Breaks can reveal missing payments, duplicate credits, fees not expected, or fraud, and they must be resolved quickly."},
+{topic:"Reconciliation",level:"Intermediate",q:"A reconciliation break shows a payment settled but not credited to the beneficiary. What are the likely causes?",a:"Possible causes are a delayed beneficiary posting, a wrong account mapping, a payment held in a suspense account, or a value date difference. Check the settlement confirmation, the beneficiary bank's posting records, and any suspense entries. Resolve by posting correctly or returning the funds, and record the root cause."},
+{topic:"Reconciliation",level:"Advanced",q:"How would you design reconciliation controls for a high volume real time payment flow?",a:"Reconcile continuously rather than only at end of day, matching every payment at initiation, clearing, settlement and beneficiary credit. Use automated matching on reference, amount and value date, with tolerances only for expected fees. Alert on unmatched items within minutes, age breaks by severity, and track break resolution time as a key control metric."},
+{topic:"Reconciliation",level:"Foundation",q:"What is the difference between a return and a reversal in payments?",a:"A return is sent by the beneficiary bank when it cannot apply the payment, for example a closed account, and the funds go back through the normal return path. A reversal cancels an earlier instruction before settlement, often because of a duplicate or an error. Returns happen after receipt, reversals aim to stop the payment before it completes."}
+];
+var seen=0,knew=0,needWork=0,current=null,used=[];
+function filtered(){
+  var t=document.getElementById("topic").value, d=document.getElementById("difficulty").value;
+  return BANK.filter(function(item,i){ var okT=(t==="all"||item.topic===t); var okD=(d==="all"||item.level===d); return okT&&okD; });
+}
+function updateScore(){
+  document.getElementById("seen").textContent=seen;
+  document.getElementById("knew").textContent=knew;
+  document.getElementById("needWork").textContent=needWork;
+  document.getElementById("accuracy").textContent=(knew+needWork)>0?Math.round(100*knew/(knew+needWork))+"%":"-";
+}
+document.getElementById("nextBtn").addEventListener("click",function(){
+  var pool=filtered();
+  if(pool.length===0){ document.getElementById("question").textContent="No questions match that filter. Try All topics or All levels."; return; }
+  var available=pool.filter(function(item){ return used.indexOf(BANK.indexOf(item))===-1; });
+  if(available.length===0){ used=[]; available=pool; }
+  var pick=available[Math.floor(Math.random()*available.length)];
+  current=pick; used.push(BANK.indexOf(pick)); seen++;
+  document.getElementById("question").textContent=pick.q;
+  document.getElementById("progress").innerHTML='<span class="tag">'+pick.topic+'</span><span class="tag">'+pick.level+'</span> Question '+seen+' of the session.';
+  var ans=document.getElementById("answer"); ans.style.display="none"; ans.textContent=pick.a;
+  document.getElementById("revealBtn").disabled=false;
+  document.getElementById("knewBtn").disabled=true;
+  document.getElementById("workBtn").disabled=true;
+  updateScore();
+});
+document.getElementById("revealBtn").addEventListener("click",function(){
+  if(!current) return;
+  document.getElementById("answer").style.display="block";
+  document.getElementById("knewBtn").disabled=false;
+  document.getElementById("workBtn").disabled=false;
+  document.getElementById("revealBtn").disabled=true;
+});
+document.getElementById("knewBtn").addEventListener("click",function(){ knew++; updateScore(); document.getElementById("knewBtn").disabled=true; document.getElementById("workBtn").disabled=true; document.getElementById("progress").textContent="Recorded: knew it. Click Next question for another."; });
+document.getElementById("workBtn").addEventListener("click",function(){ needWork++; updateScore(); document.getElementById("knewBtn").disabled=true; document.getElementById("workBtn").disabled=true; document.getElementById("progress").textContent="Recorded: needs work. Review the model answer, then click Next question."; });
+document.getElementById("resetBtn").addEventListener("click",function(){ seen=0;knew=0;needWork=0;used=[];current=null;updateScore(); document.getElementById("question").textContent="Your question will appear here."; document.getElementById("answer").style.display="none"; document.getElementById("progress").textContent="Score reset. Click Next question to start."; });
+updateScore();
+</script>
+</body>
+</html>

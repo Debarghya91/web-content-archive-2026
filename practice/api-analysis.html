@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>API Request and Response Analysis | Payments Training Hub</title>
+<style>
+*{box-sizing:border-box}
+body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;margin:0;background:#F1F5F9;color:#0B1B33}
+header{background:#0B1B33;color:#fff;padding:22px 20px}
+header h1{margin:0;font-size:24px} header p{margin:6px 0 0;color:#BFDBFE}
+main{max-width:900px;margin:24px auto;padding:0 16px 40px}
+.card{background:#fff;border:1px solid #Dbe3ee;border-radius:12px;padding:20px;margin-bottom:16px}
+.btn{background:#1D4ED8;color:#fff;border:0;padding:10px 16px;border-radius:8px;font-weight:700;cursor:pointer}
+.btn.gold{background:#FBBF24;color:#0B1B33}
+.tabs button{background:#E2E8F0;border:0;padding:10px 16px;border-radius:8px;font-weight:700;cursor:pointer;margin-right:6px}
+.tabs button.active{background:#1D4ED8;color:#fff}
+pre{background:#0B1B33;color:#E2E8F0;padding:16px;border-radius:8px;overflow-x:auto;font-size:13px;line-height:1.6;white-space:pre-wrap}
+.opt{display:block;width:100%;text-align:left;background:#F8FAFC;border:1px solid #CBD5E1;padding:10px;border-radius:8px;margin:6px 0;cursor:pointer;font-size:15px}
+.opt.correct{background:#DCFCE7;border-color:#16A34A} .opt.wrong{background:#FEE2E2;border-color:#DC2626}
+.feedback{font-weight:700;margin:8px 0;line-height:1.5}
+</style>
+</head>
+<body>
+<header><h1>API Request and Response Analysis</h1><p>Payments Training Hub | Read a real style payment API call, then answer questions on status codes, idempotency and errors.</p></header>
+<main>
+<div class="card">
+<div class="tabs">
+<button id="tabReq" class="active">Request</button>
+<button id="tabOk">Success Response (201)</button>
+<button id="tabErr">Error Response (422)</button>
+</div>
+<pre id="panel"></pre>
+<p id="note"></p>
+</div>
+<div class="card">
+<h2>Check your understanding <span id="score">Score: 0 of 5</span></h2>
+<div id="quiz"></div>
+<p><button class="btn gold" id="resetQuiz">Restart quiz</button></p>
+</div>
+</main>
+<script>
+var PANELS={
+req:{text:'POST /v1/payments\nContent-Type: application/json\nIdempotency-Key: pay-2026-8841-acme\nAuthorization: Bearer TOKEN_HIDDEN\n\n{\n  "endToEndId": "E2E-8841-ACME-2026",\n  "debtorAccount": "GB29ABCD12345678901234",\n  "creditorAccount": "IN98765432109876",\n  "creditorName": "Global Exports Pvt Ltd",\n  "amount": { "value": "125000.00", "currency": "GBP" },\n  "valueDate": "2026-11-08",\n  "remittanceInformation": "Invoice 8841 supply of components",\n  "chargeBearer": "SHAR"\n}',note:"Note the Idempotency-Key header. It is the same on every retry of this payment, so a retried call cannot create a duplicate."},
+ok:{text:'HTTP/1.1 201 Created\nContent-Type: application/json\n\n{\n  "paymentId": "PAY-9f2c41ab-2026",\n  "endToEndId": "E2E-8841-ACME-2026",\n  "status": "ACCEPTED",\n  "uetr": "7f3a1c2e-9b4d-4a8f-8e12-5c6d7e8f9012",\n  "amount": { "value": "125000.00", "currency": "GBP" },\n  "estimatedCreditDate": "2026-11-08",\n  "links": { "status": "/v1/payments/PAY-9f2c41ab-2026" }\n}',note:"201 Created means the payment was accepted. Status ACCEPTED is not final: the payment still has to clear and settle."},
+err:{text:'HTTP/1.1 422 Unprocessable Entity\nContent-Type: application/json\n\n{\n  "error": {\n    "code": "INVALID_CREDITOR_ACCOUNT",\n    "message": "Creditor account number failed modulus validation.",\n    "field": "creditorAccount",\n    "paymentId": null,\n    "retryable": false\n  }\n}',note:"422 means the request was understood but failed validation. retryable false means retrying the same request will fail again: fix the account number first."}
+};
+function showPanel(key){
+  document.getElementById("panel").textContent=PANELS[key].text;
+  document.getElementById("note").textContent=PANELS[key].note;
+  ["tabReq","tabOk","tabErr"].forEach(function(t){document.getElementById(t).classList.remove("active");});
+  document.getElementById(key==="req"?"tabReq":key==="ok"?"tabOk":"tabErr").classList.add("active");
+}
+document.getElementById("tabReq").addEventListener("click",function(){showPanel("req");});
+document.getElementById("tabOk").addEventListener("click",function(){showPanel("ok");});
+document.getElementById("tabErr").addEventListener("click",function(){showPanel("err");});
+var QUIZ=[
+{q:"The success response is HTTP 201 with status ACCEPTED. What should the client do next?",opts:["Assume the beneficiary is already credited","Poll the status link or wait for a webhook, because ACCEPTED is not a final status","Send the payment again to be safe","Ignore the paymentId"],correct:1,why:"201 means created and accepted. The payment still needs clearing and settlement, so track it by paymentId until a final status arrives."},
+{q:"Why is the Idempotency-Key header important?",opts:["It encrypts the request","It lets the server return the original result on a retry instead of creating a duplicate payment","It sets the value date","It identifies the creditor bank"],correct:1,why:"If the first call timed out after processing, a retry with the same key returns the original payment instead of debiting twice."},
+{q:"The error response is 422 with retryable false. What is the correct action?",opts:["Retry immediately","Retry after 30 seconds","Fix the creditor account number, then send a new request","Retry with a different idempotency key"],correct:2,why:"422 is a validation failure, not a transient error. Retrying the same data will fail again. Fix the field named in the error first."},
+{q:"What is the difference between HTTP 422 and HTTP 500 in a payment API?",opts:["There is no difference","422 is a client data problem that will not fix itself; 500 is a server problem that may be retryable after a delay","500 means the payment succeeded","422 means the server is down"],correct:1,why:"422 means the request data is invalid. 500 means the server failed, so a careful retry with the same idempotency key may succeed."},
+{q:"The client times out after 10 seconds with no response. What is the safest next step?",opts:["Send a brand new payment request","Check the payment status by endToEndId before doing anything else","Assume the payment failed and debit the customer again","Wait a day and do nothing"],correct:1,why:"A timeout means the outcome is unknown: the payment may have been processed. Check status first, and only retry with the same idempotency key if no payment exists."}
+];
+var score=0,answered=0;
+function buildQuiz(){
+  score=0; answered=0; document.getElementById("score").textContent="Score: 0 of 5";
+  var box=document.getElementById("quiz"); box.innerHTML="";
+  QUIZ.forEach(function(item,i){
+    var d=document.createElement("div"); d.innerHTML="<p><strong>Q"+(i+1)+": "+item.q+"</strong></p>";
+    var fb=document.createElement("p"); fb.className="feedback";
+    item.opts.forEach(function(opt,j){
+      var b=document.createElement("button"); b.className="opt"; b.textContent=opt;
+      b.addEventListener("click",function(){
+        if(b.parentNode.getAttribute("data-done")) return;
+        b.parentNode.setAttribute("data-done","1"); answered++;
+        var buttons=d.querySelectorAll(".opt"); buttons.forEach(function(x){x.disabled=true;});
+        if(j===item.correct){ b.classList.add("correct"); score++; fb.textContent="Correct. "+item.why; fb.style.color="#15803D"; }
+        else { b.classList.add("wrong"); buttons[item.correct].classList.add("correct"); fb.textContent="Not quite. "+item.why; fb.style.color="#B91C1C"; }
+        document.getElementById("score").textContent="Score: "+score+" of 5"+(answered===5?" | Quiz complete.":"");
+      });
+      d.appendChild(b);
+    });
+    d.appendChild(fb); box.appendChild(d);
+  });
+}
+document.getElementById("resetQuiz").addEventListener("click",buildQuiz);
+showPanel("req"); buildQuiz();
+</script>
+</body>
+</html>
