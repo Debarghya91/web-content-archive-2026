@@ -119,6 +119,35 @@ function showBundleForChapter(chid){
   var b = PA_BUNDLE_MAP[chid] || 'full';
   showBundle(b);
 }
+/* ===== Chapter-coverage matrix filters (P2#7) ===== */
+/* Narrows the matrix by domain (hides other columns) and by bundle
+   (hides other rows). Both filters combine. */
+function paFilterCoverage(){
+  var dt = document.getElementById('cov-domain-filter');
+  var bt = document.getElementById('cov-bundle-filter');
+  var d = dt ? dt.value : '';
+  var b = bt ? bt.value : '';
+  var tbl = document.getElementById('cov-matrix');
+  if(!tbl) return;
+  var rows = tbl.getElementsByTagName('tr');
+  for(var i = 0; i < rows.length; i++){
+    var r = rows[i];
+    var rb = r.getAttribute('data-bundle');
+    if(rb){ r.style.display = (!b || rb === b) ? '' : 'none'; }
+    var cells = r.children;
+    for(var j = 0; j < cells.length; j++){
+      var cd = cells[j].getAttribute('data-domain');
+      if(cd){ cells[j].style.display = (!d || cd === d) ? '' : 'none'; }
+    }
+  }
+}
+function paResetCoverage(){
+  var dt = document.getElementById('cov-domain-filter');
+  var bt = document.getElementById('cov-bundle-filter');
+  if(dt) dt.value = '';
+  if(bt) bt.value = '';
+  paFilterCoverage();
+}
 function paRenderOrderSummary(bid){
   var data = null;
   try { data = JSON.parse(document.getElementById('bundle-data').textContent); } catch(e){}
@@ -213,14 +242,18 @@ function paUpdatePayArea(){
   paRenderPurchaseStatus();
   paRenderUpiClaims();
 }
-/* Purchase-status progression (Phase 4a): one visible tracker for the
-   selected course, derived only from what this browser can observe.
-   Order created when a course is selected; UPI payment submitted when a
-   claim exists for it; Verification pending while the claim is pending;
-   Payment verified and Access granted when the owner has granted access
-   after verifying the UTR (the bundle is in the owned list and a claim
-   exists). The receipt shows the claim id, amount, UTR and date, plus a
-   direct link to the purchased content once access is granted. */
+/* Purchase-status progression (Phase 4a, six steps from the second
+   ChatGPT review): one visible tracker for the selected course, derived
+   only from what this browser can observe. Order created when a course
+   is selected; Payment made by customer and UTR submitted when a claim
+   exists for it (the browser only learns about the payment when the
+   buyer submits the UTR, so both steps turn on the claim); Payment under
+   verification while the claim is pending; Payment verified and Access
+   granted when the owner has granted access after verifying the UTR
+   (the bundle is in the owned list and a claim exists). The receipt
+   shows the claim id, amount, UTR and date, plus a direct link to the
+   purchased content once access is granted. No turnaround time is
+   promised: verification is manual by the owner. */
 function paPurchaseContentLink(bid, b){
   if(bid === PA_SITUATIONS_BUNDLE) return 'situations.html';
   if(b && b.first_chapter) return 'chapters/' + b.first_chapter + '.html';
@@ -252,11 +285,15 @@ function paRenderPurchaseStatus(){
   var link = paPurchaseContentLink(bid, b);
   var html = '<h3>Purchase status: ' + b.name + '</h3><ol class="pay-status-list">';
   html += step(true, false, 'Order created', 'Price \u20B9' + Number(b.price).toLocaleString('en-IN') + '.');
-  html += step(!!claim, !claim, 'UPI payment submitted', claim ? ('UTR ' + claim.utr + ', submitted ' + claim.created_at) : 'Pay by UPI below, then submit your payment reference.');
-  html += step(verified, !!claim && !verified, 'Verification pending', verified ? 'The owner has verified your payment.' : (claim ? 'The owner checks your payment against its UTR by hand.' : ''));
+  html += step(!!claim, !claim, 'Payment made by customer', claim ? 'You paid by UPI and submitted the payment reference below.' : 'Pay by UPI below, then submit your payment reference.');
+  html += step(!!claim, false, 'UTR submitted', claim ? ('UTR ' + claim.utr + ', submitted ' + claim.created_at + '. Claim id: ' + claim.id) : '');
+  html += step(verified, !!claim && !verified, 'Payment under verification', verified ? 'The owner has verified your payment.' : (claim ? 'The owner checks your payment against its UTR by hand.' : ''));
   html += step(verified, false, 'Payment verified', verified ? 'Your payment matches the UTR you submitted.' : '');
   html += step(hasAccess, false, 'Access granted', hasAccess ? '<a href="' + link + '">Open your course</a>' : '');
   html += '</ol>';
+  if(claim && !verified){
+    html += '<p><a href="#pay-help">Payment deducted but access not granted yet? Read what to do.</a></p>';
+  }
   if(claim){
     html += '<h4>Receipt</h4><p>Course: ' + b.name + '<br>Amount: \u20B9' + Number(claim.amount).toLocaleString('en-IN')
       + '<br>UTR: ' + claim.utr + '<br>Claim id: ' + claim.id + '<br>Submitted: ' + claim.created_at

@@ -33,6 +33,14 @@
 <a class="pf-practice-card" href="reconciliation-war-room.html"><b>4. Reconciliation War Room</b><span>Match payment instructions, clearing records, settlement records and bank statement entries. Find the missing, the duplicates and the mismatches, then resolve the exceptions.</span><span class="meta">Practise &middot; 4 datasets &middot; Exceptions to resolve</span></a>
 <a class="pf-practice-card" href="ba-studio.html"><b>5. Payments Business Analyst Studio</b><span>Do the BA work. Turn a realistic payments scenario into business requirements, user stories, Gherkin acceptance criteria, process flows, field mappings and test cases, with feedback on your actual submission.</span><span class="meta">Build &middot; 5 scenarios &middot; Templates + feedback</span></a>
 </div>
+<h2>Your performance report</h2>
+<p>Best scores from your stored attempts in this browser, one row per experience. This report is per experience, not per topic: the stored attempts carry no topic tags, so scores cannot be broken down by topic.</p>
+<div class="pf-kpi" id="pfReportKpis"></div>
+<div class="pf-tablewrap"><table id="pfReportTable">
+<thead><tr><th>Experience</th><th>Best score</th><th>Attempts</th><th class="wrap">Last attempt</th></tr></thead>
+<tbody id="pfReportBody"><tr><td colspan="4">Loading your stored attempts.</td></tr></tbody>
+</table></div>
+<p class="pf-note" id="pfReportNote" style="display:none"></p>
 <div class="pf-note"><b>How scoring works.</b> Each experience scores your decisions and stores your best score in this browser only. Scores never leave your device. Reset any experience from its own page, or reset all practice progress below.</div>
 <div class="pf-btnrow"><button class="pf-btn danger" onclick="if(confirm('Reset all practice progress in this browser?')){PFFeatures.resetAllFeatures();location.reload();}">Reset all practice progress</button></div>
 <p class="pf-note" style="background:#fff;border-color:#E2E8F0">Already comfortable with the simulators? These five experiences sit on top of them: <a href="simulators.html">Simulators</a>, <a href="trace.html">Interactive Trace</a>, <a href="explorer.html">Message Explorer</a>, <a href="labs.html">Labs</a>, <a href="iso-lab.html">ISO Lab</a>, <a href="tests.html">Tests</a>.</p>
@@ -44,5 +52,57 @@
 <script src="assets/nav.js"></script>
 <script src="assets/pf-enhance.js"></script>
 <script src="assets/pf-features.js"></script>
+<script>
+(function(){
+  var EXPS = [
+    ["mission-control", "1. Mission Control"],
+    ["investigation-lab", "2. Payment Failure Investigation Lab"],
+    ["mapping-workbench", "3. ISO 20022 Mapping Workbench"],
+    ["reconciliation-war-room", "4. Reconciliation War Room"],
+    ["ba-studio", "5. Payments Business Analyst Studio"]
+  ];
+  function fmtDate(iso){
+    try { return new Date(iso).toLocaleDateString(undefined, {year: "numeric", month: "short", day: "numeric"}); }
+    catch(e){ return ""; }
+  }
+  function esc(s){
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function(c){
+      return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
+    });
+  }
+  var store = {};
+  try { store = (window.PFFeatures && window.PFFeatures.getAllScores) ? window.PFFeatures.getAllScores() : {}; }
+  catch(e){ store = {}; }
+  var body = document.getElementById("pfReportBody");
+  var attempted = 0, pctSum = 0, rows = "";
+  EXPS.forEach(function(pair){
+    var id = pair[0], name = pair[1], e = store[id];
+    if(!e){
+      rows += "<tr><td>" + esc(name) + "</td><td>Not attempted yet</td><td>0</td><td class=\"wrap\">-</td></tr>";
+      return;
+    }
+    attempted++;
+    var best = (typeof e.best === "number") ? e.best : e.score;
+    var total = e.bestTotal || e.total || 0;
+    var pct = total > 0 ? Math.round(best / total * 100) : 0;
+    pctSum += pct;
+    var last = e.label ? esc(e.label) : "";
+    if(e.when) last += (last ? " - " : "") + fmtDate(e.when);
+    rows += "<tr><td>" + esc(name) + "</td><td><b>" + best + " / " + total + "</b> (" + pct + "%)</td><td>" + (e.attempts || 1) + "</td><td class=\"wrap\">" + (last || "-") + "</td></tr>";
+  });
+  body.innerHTML = rows;
+  var kpis = document.getElementById("pfReportKpis");
+  if(attempted === 0){
+    kpis.innerHTML = "<div class=\"kpi\"><b>0 / 5</b><span>experiences attempted</span></div>";
+    var note = document.getElementById("pfReportNote");
+    note.style.display = "block";
+    note.innerHTML = "<b>No practice attempts stored in this browser yet.</b> Run any of the five experiences above and your best scores will appear here.";
+  } else {
+    var avg = Math.round(pctSum / attempted);
+    kpis.innerHTML = "<div class=\"kpi\"><b>" + attempted + " / 5</b><span>experiences attempted</span></div>" +
+      "<div class=\"kpi\"><b>" + avg + "%</b><span>average best score across attempted experiences</span></div>";
+  }
+})();
+</script>
 </body>
 </html>

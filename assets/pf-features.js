@@ -43,6 +43,9 @@
   function getScore(featureId){
     return readStore()[featureId] || null;
   }
+  function getAllScores(){
+    return readStore();
+  }
   function resetFeature(featureId){
     var s = readStore();
     delete s[featureId];
@@ -83,7 +86,7 @@
   }
   window.PFFeatures = {
     esc: esc, el: el, showFeedback: showFeedback, hideFeedback: hideFeedback,
-    recordScore: recordScore, getScore: getScore,
+    recordScore: recordScore, getScore: getScore, getAllScores: getAllScores,
     resetFeature: resetFeature, resetAllFeatures: resetAllFeatures,
     renderScoreBar: renderScoreBar, initTabs: initTabs, downloadText: downloadText
   };

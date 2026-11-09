@@ -23,9 +23,11 @@
  *      <div data-sit-visual> container, then call
  *      PFSituations.renderAll(document) to render every container.
  *   2. Direct: PFSituations.render(item) returns the HTML string.
- *   Call PFSituations.init() once on load. Interactions are wired by
- *   event delegation, so content added later works without a second
- *   init call.
+ *   The library initialises itself on load, so flow controls work
+ *   wherever it is included. PFSituations.init() is idempotent and
+ *   can also be called directly. Interactions are wired by event
+ *   delegation, so content added later works without a second init
+ *   call.
  *
  * Design tokens come from pf-theme.css variables (royal blue primary,
  * premium gold accents, deep executive navy). All SVG styling is by
@@ -424,6 +426,19 @@
       }
     });
     renderAll(document);
+  }
+
+  /* Auto-init on load so the flow controls work wherever this
+     library is included. Before this, init() was never called by
+     the built site, so the Play and Reveal next buttons did
+     nothing. init() is idempotent, so calling it directly as well
+     is harmless. */
+  if (typeof document !== 'undefined') {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
   }
 
   global.PFSituations = {
