@@ -16,7 +16,14 @@ var PA_SIT_LEVEL = '';
 var PA_SIT_RESOLUTION = '';
 var PA_SIT_QUERY = '';
 var PA_SIT_BOOKMARKED_ONLY = false;
+var PA_SIT_DASH_FILTER = '';
 var PA_SIT_PROGRESS_KEY = 'pa-situations-progress-v1';
+/* Mastery states (ChatGPT review P1#7, 9 Nov 2026). Opening a
+   situation marks it Read only; the learner marks the deeper states
+   themselves. Nothing else sets a state: opening is never proof of
+   mastery. */
+var PA_SIT_MASTERY_ORDER = ['read', 'understood', 'practised', 'reviewed'];
+var PA_SIT_MASTERY_LABELS = {read: 'Read', understood: 'Understood', practised: 'Practised', reviewed: 'Reviewed'};
 function paSitProgress(){
   try {
     var v = JSON.parse(localStorage.getItem(PA_SIT_PROGRESS_KEY));
@@ -25,13 +32,77 @@ function paSitProgress(){
       if(!v.bookmarked) v.bookmarked = {};
       if(!v.notes) v.notes = {};
       if(!v.review) v.review = {};
+      if(!v.mastery) v.mastery = {};
+      if(!v.last_at) v.last_at = '';
       return v;
     }
   } catch(e){}
-  return {completed: {}, bookmarked: {}, notes: {}, review: {}, last: ''};
+  return {completed: {}, bookmarked: {}, notes: {}, review: {}, last: '', mastery: {}, last_at: ''};
 }
 function paSitSaveProgress(p){
   try { localStorage.setItem(PA_SIT_PROGRESS_KEY, JSON.stringify(p)); } catch(e){}
+}
+function paSitMasteryOf(p, id){
+  if(!p || !p.mastery) return '';
+  var m = p.mastery[id];
+  return PA_SIT_MASTERY_ORDER.indexOf(m) !== -1 ? m : '';
+}
+/* Stage statistics, computed from local progress data. Shared by the
+   stage completion report and the downloadable report, so the two
+   never disagree. */
+function paSitStageStats(){
+  var p = paSitProgress();
+  var done = p.completed || {};
+  var stageTotals = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0};
+  var stageDone = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0};
+  var stageMastery = {};
+  [1, 2, 3, 4, 5, 6].forEach(function(s){
+    stageMastery[s] = {read: 0, understood: 0, practised: 0, reviewed: 0, none: 0};
+  });
+  var domTotals = {};
+  var domDone = {};
+  PA_SIT_ITEMS.forEach(function(it){
+    var s = it.stage || 3;
+    stageTotals[s] = (stageTotals[s] || 0) + 1;
+    if(done[it.id]) stageDone[s] = (stageDone[s] || 0) + 1;
+    var m = paSitMasteryOf(p, it.id);
+    if(m) stageMastery[s][m] += 1;
+    else stageMastery[s].none += 1;
+    var d = it.domain || 'Uncategorised';
+    domTotals[d] = (domTotals[d] || 0) + 1;
+    if(done[it.id]) domDone[d] = (domDone[d] || 0) + 1;
+  });
+  return {progress: p, done: done, totalDone: Object.keys(done).length,
+          stageTotals: stageTotals, stageDone: stageDone, stageMastery: stageMastery,
+          domTotals: domTotals, domDone: domDone};
+}
+/* The strongest and weakest operational areas, from the same stats.
+   An area is a domain with at least 3 situations, so a single item
+   cannot make an area look strong or weak. Returns null when nothing
+   is completed yet. */
+function paSitAreas(st){
+  if(!st.totalDone) return null;
+  var areas = Object.keys(st.domTotals).filter(function(d){ return st.domTotals[d] >= 3; }).map(function(d){
+    var dn = st.domDone[d] || 0;
+    return {name: d, total: st.domTotals[d], done: dn, rate: dn / st.domTotals[d]};
+  });
+  areas.sort(function(a, b){ return (b.rate - a.rate) || (b.done - a.done) || (a.name < b.name ? -1 : 1); });
+  if(!areas.length) return null;
+  return {best: areas[0], worst: areas[areas.length - 1]};
+}
+/* Stage-level mastery indicator: how much of a stage the learner has
+   really worked through, not just opened. A stage counts as Mastered
+   only when every situation in it is Reviewed. */
+function paSitStageMasteryLabel(totals, m){
+  var t = totals || 0;
+  if(!t) return 'No situations';
+  var deep = (m.practised || 0) + (m.reviewed || 0);
+  if((m.reviewed || 0) === t) return 'Mastered';
+  if(deep / t >= 0.75) return 'Strong';
+  if(deep / t >= 0.5) return 'Solid';
+  if(deep / t >= 0.25) return 'Building';
+  if((m.read || 0) + (m.understood || 0) + deep > 0) return 'Getting started';
+  return 'Not started';
 }
 function paSitVisibleItems(){
   return PA_SIT_ITEMS.filter(function(it){
@@ -44,6 +115,15 @@ function paSitVisibleItems(){
     if(PA_SIT_BOOKMARKED_ONLY){
       var p = paSitProgress();
       if(!p.bookmarked[it.id]) return false;
+    }
+    if(PA_SIT_DASH_FILTER === 'incomplete'){
+      var pd = paSitProgress();
+      if(pd.completed[it.id]) return false;
+    }
+    if(PA_SIT_DASH_FILTER === 'review'){
+      var pr = paSitProgress();
+      if(!pr.completed[it.id]) return false;
+      if(paSitMasteryOf(pr, it.id) === 'reviewed') return false;
     }
     if(PA_SIT_QUERY){
       var hay = ((it.title || '') + ' ' + (it.explain || '') + ' ' + (it.takeaway || '') + ' ' + ((it.messages || []).join(' '))).toLowerCase();
@@ -104,57 +184,39 @@ function paSitUpdateReviewCount(){
   var n = Object.keys(p.review || {}).length;
   el.textContent = 'You have reflected on ' + n + ' of ' + PA_SIT_REVIEW_PROMPTS.length + ' prompts.';
 }
-/* Stage-completion report (ChatGPT review P2#10, 9 Nov 2026):
-   per-stage completed counts, and the strongest and weakest
-   operational areas, computed from local progress data. An area is
-   a domain with at least 3 situations, so a single item cannot make
-   an area look strong or weak. When nothing is completed yet, the
-   report says so instead of naming areas. */
+/* Stage-completion report (ChatGPT review P2#10, 9 Nov 2026; mastery
+   indicator added by review P1#7): per-stage completed counts, a
+   stage-level mastery indicator from the Read, Understood, Practised
+   and Reviewed states, and the strongest and weakest operational
+   areas, all computed from local progress data. */
 function paSitRenderReport(){
   var box = document.getElementById('sit-report');
   if(!box) return;
-  var p = paSitProgress();
-  var done = p.completed || {};
-  var totalDone = Object.keys(done).length;
-  var stageTotals = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0};
-  var stageDone = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0};
-  var domTotals = {};
-  var domDone = {};
+  var st = paSitStageStats();
   var stageNames = {1: 'Payment mechanics', 2: 'Processing decisions', 3: 'Operational exceptions', 4: 'Cross-system consequences', 5: 'Complex banking scenarios', 6: 'Senior SME judgement'};
-  PA_SIT_ITEMS.forEach(function(it){
-    var s = it.stage || 3;
-    stageTotals[s] = (stageTotals[s] || 0) + 1;
-    if(done[it.id]) stageDone[s] = (stageDone[s] || 0) + 1;
-    var d = it.domain || 'Uncategorised';
-    domTotals[d] = (domTotals[d] || 0) + 1;
-    if(done[it.id]) domDone[d] = (domDone[d] || 0) + 1;
-  });
   var html = '<h3>Your stage completion report</h3>';
   [1, 2, 3, 4, 5, 6].forEach(function(s){
-    var t = stageTotals[s] || 0;
-    var dn = stageDone[s] || 0;
+    var t = st.stageTotals[s] || 0;
+    var dn = st.stageDone[s] || 0;
     var pct = t ? Math.round(dn / t * 100) : 0;
+    var m = st.stageMastery[s];
+    var label = paSitStageMasteryLabel(t, m);
     html += '<div class="sit-report-row"><span>Stage ' + s + ': ' + escHtml(stageNames[s]) + '</span>'
       + '<span class="sit-report-bar"><span class="sit-report-fill" style="width:' + pct + '%"></span></span>'
-      + '<span>' + dn + ' of ' + t + '</span></div>';
+      + '<span>' + dn + ' of ' + t + '</span></div>'
+      + '<p class="sit-report-mastery">Mastery: ' + escHtml(label) + ' (' + (m.read || 0) + ' read, ' + (m.understood || 0) + ' understood, ' + (m.practised || 0) + ' practised, ' + (m.reviewed || 0) + ' reviewed).</p>';
   });
   html += '<div class="sit-report-areas">';
-  if(!totalDone){
+  if(!st.totalDone){
     html += '<p>Complete a few situations and your strongest and weakest areas will appear here.</p>';
   } else {
-    var areas = Object.keys(domTotals).filter(function(d){ return domTotals[d] >= 3; }).map(function(d){
-      var dn = domDone[d] || 0;
-      return {name: d, total: domTotals[d], done: dn, rate: dn / domTotals[d]};
-    });
-    areas.sort(function(a, b){ return (b.rate - a.rate) || (b.done - a.done) || (a.name < b.name ? -1 : 1); });
-    if(areas.length){
-      var best = areas[0];
-      var worst = areas[areas.length - 1];
-      if(best.rate > 0){
-        html += '<p><strong>Strongest area:</strong> ' + escHtml(best.name) + ' (' + best.done + ' of ' + best.total + ' complete).</p>';
+    var ar = paSitAreas(st);
+    if(ar){
+      if(ar.best.rate > 0){
+        html += '<p><strong>Strongest area:</strong> ' + escHtml(ar.best.name) + ' (' + ar.best.done + ' of ' + ar.best.total + ' complete).</p>';
       }
-      if(worst !== best){
-        html += '<p><strong>Weakest area:</strong> ' + escHtml(worst.name) + ' (' + worst.done + ' of ' + worst.total + ' complete). Work through its situations next.</p>';
+      if(ar.worst !== ar.best){
+        html += '<p><strong>Weakest area:</strong> ' + escHtml(ar.worst.name) + ' (' + ar.worst.done + ' of ' + ar.worst.total + ' complete). Work through its situations next.</p>';
       }
     } else {
       html += '<p>Complete a few situations and your strongest and weakest areas will appear here.</p>';
@@ -163,6 +225,166 @@ function paSitRenderReport(){
   html += '</div>';
   box.innerHTML = html;
 }
+/* Personal dashboard (ChatGPT review P1#7, 9 Nov 2026): last
+   visited, bookmarked, incomplete and review queue, all from local
+   progress data. The review queue holds situations already marked
+   complete whose mastery state is not yet Reviewed, so the learner
+   revisits finished work instead of only opening new items. Lists
+   show the first 8 entries with the remaining count; the buttons
+   filter the catalogue to the full list. */
+function paSitDashListItems(list, cap){
+  var html = '<ul class="sit-dash-list">';
+  list.slice(0, cap).forEach(function(it){
+    var pos = PA_SIT_ITEMS.indexOf(it);
+    html += '<li><button type="button" onclick="paSitOpenByIndex(' + pos + ')">' + escHtml(it.title || it.id) + ' (Stage ' + (it.stage || '') + ')</button></li>';
+  });
+  html += '</ul>';
+  if(list.length > cap) html += '<p class="sit-dash-more">And ' + (list.length - cap) + ' more.</p>';
+  return html;
+}
+function paSitRenderDashboard(){
+  var box = document.getElementById('sit-dashboard');
+  if(!box) return;
+  var p = paSitProgress();
+  var html = '<h3>Your dashboard</h3><div class="sit-dash-grid">';
+  html += '<div class="sit-dash-card"><h4>Continue where you left off</h4>';
+  if(p.last){
+    var li = PA_SIT_ITEMS.filter(function(it){ return it.id === p.last; })[0];
+    if(li){
+      var when = '';
+      if(p.last_at){
+        try { when = 'Last visited ' + new Date(p.last_at).toLocaleString() + '.'; } catch(e){ when = ''; }
+      }
+      var pos = PA_SIT_ITEMS.indexOf(li);
+      html += '<p><strong>' + escHtml(li.title || li.id) + '</strong> (Stage ' + (li.stage || '') + ')</p>'
+        + (when ? '<p class="sit-note">' + escHtml(when) + '</p>' : '')
+        + '<p><button type="button" class="sit-btn sit-btn-primary" onclick="paSitOpenByIndex(' + pos + ')">Continue</button></p>';
+    } else {
+      html += '<p>Your last situation is no longer in the product. Open any situation to start again.</p>';
+    }
+  } else {
+    html += '<p>Open a situation and it will appear here as your last-visited item.</p>';
+  }
+  html += '</div>';
+  var bm = PA_SIT_ITEMS.filter(function(it){ return p.bookmarked[it.id]; });
+  html += '<div class="sit-dash-card"><h4>Bookmarked (' + bm.length + ')</h4>';
+  if(bm.length) html += paSitDashListItems(bm, 8);
+  else html += '<p>Nothing bookmarked yet. Use Bookmark on any situation to keep it here.</p>';
+  html += '</div>';
+  var inc = PA_SIT_ITEMS.filter(function(it){ return !p.completed[it.id]; });
+  html += '<div class="sit-dash-card"><h4>Not yet complete (' + inc.length + ')</h4>';
+  if(inc.length){
+    html += paSitDashListItems(inc, 8);
+    html += '<p><button type="button" class="sit-btn sit-btn-secondary" onclick="paSitDashFilter(\'incomplete\')">Show incomplete in the catalogue</button></p>';
+  } else {
+    html += '<p>Every situation is marked complete.</p>';
+  }
+  html += '</div>';
+  var queue = PA_SIT_ITEMS.filter(function(it){
+    return p.completed[it.id] && paSitMasteryOf(p, it.id) !== 'reviewed';
+  });
+  html += '<div class="sit-dash-card"><h4>Review queue (' + queue.length + ')</h4>';
+  if(queue.length){
+    html += '<p>Complete, but not yet Reviewed. Revisit one and mark it Reviewed when you have worked through it again.</p>';
+    html += paSitDashListItems(queue, 8);
+    html += '<p><button type="button" class="sit-btn sit-btn-secondary" onclick="paSitDashFilter(\'review\')">Show review queue in the catalogue</button></p>';
+  } else if(p.completed && Object.keys(p.completed).length){
+    html += '<p>Nothing to review. Every completed situation is Reviewed.</p>';
+  } else {
+    html += '<p>Complete a situation first. Finished situations that are not yet Reviewed will wait here.</p>';
+  }
+  html += '</div></div>';
+  html += '<div class="sit-dash-actions">'
+    + '<button type="button" class="sit-btn sit-btn-secondary" onclick="paSitDownloadReport()">Download stage completion report</button> '
+    + '<span class="sit-dash-status" id="sit-report-status" aria-live="polite"></span></div>';
+  if(PA_SIT_DASH_FILTER === 'incomplete' || PA_SIT_DASH_FILTER === 'review'){
+    var label = PA_SIT_DASH_FILTER === 'incomplete' ? 'incomplete situations' : 'situations waiting for review';
+    html += '<p class="sit-note">The catalogue is showing ' + label + ' only. <button type="button" class="sit-btn sit-btn-secondary" onclick="paSitDashFilter(\'\')">Show all situations</button></p>';
+  }
+  box.innerHTML = html;
+}
+function paSitDashFilter(f){
+  PA_SIT_DASH_FILTER = f || '';
+  PA_SIT_INDEX = 0;
+  paSitRender();
+}
+/* Mastery controls for the open situation. Opening marks it Read;
+   the learner marks the deeper states themselves by clicking. */
+function paSitRenderMastery(item){
+  var box = document.getElementById('sit-mastery-box');
+  if(!box) return;
+  if(!item){ box.innerHTML = ''; return; }
+  var p = paSitProgress();
+  var cur = paSitMasteryOf(p, item.id) || 'read';
+  var html = '<h4>How well do you know this situation?</h4>'
+    + '<p class="sit-note">Opening a situation marks it Read. Mark the deeper states yourself when you have worked through it.</p>'
+    + '<div class="sit-mastery-btns" role="group" aria-label="Mastery state">';
+  PA_SIT_MASTERY_ORDER.forEach(function(m){
+    html += '<button type="button" class="sit-btn' + (cur === m ? ' sit-btn-primary' : ' sit-btn-secondary') + '" aria-pressed="' + (cur === m) + '" onclick="paSitSetMastery(\'' + m + '\')">'+ PA_SIT_MASTERY_LABELS[m] + '</button> ';
+  });
+  html += '</div><p class="sit-mastery-state" aria-live="polite">Current state: <strong>' + escHtml(PA_SIT_MASTERY_LABELS[cur]) + '</strong>.</p>';
+  box.innerHTML = html;
+}
+function paSitSetMastery(state){
+  var list = paSitVisibleItems();
+  var item = list[PA_SIT_INDEX];
+  if(!item) return;
+  if(PA_SIT_MASTERY_ORDER.indexOf(state) === -1) return;
+  var p = paSitProgress();
+  if(!p.mastery) p.mastery = {};
+  p.mastery[item.id] = state;
+  paSitSaveProgress(p);
+  paSitRender();
+}
+/* Downloadable stage completion report (ChatGPT review P1#7, 9 Nov
+   2026). User data only: per-stage completed counts and mastery,
+   strongest and weakest areas, bookmarks, notes and review prompts.
+   Situation content is never included. This is a learning record,
+   not a certificate. */
+function paSitDownloadReport(){
+  var st = paSitStageStats();
+  var stageNames = {1: 'Payment mechanics', 2: 'Processing decisions', 3: 'Operational exceptions', 4: 'Cross-system consequences', 5: 'Complex banking scenarios', 6: 'Senior SME judgement'};
+  var lines = [];
+  lines.push('Payment Situations: stage completion report');
+  lines.push('Exported: ' + new Date().toISOString());
+  lines.push('');
+  lines.push('You have completed ' + st.totalDone + ' of ' + PA_SIT_ITEMS.length + ' situations.');
+  lines.push('');
+  [1, 2, 3, 4, 5, 6].forEach(function(s){
+    var t = st.stageTotals[s] || 0;
+    var dn = st.stageDone[s] || 0;
+    var m = st.stageMastery[s];
+    lines.push('Stage ' + s + ': ' + stageNames[s] + ' - ' + dn + ' of ' + t + ' complete. Mastery: ' + paSitStageMasteryLabel(t, m)
+      + ' (' + (m.read || 0) + ' read, ' + (m.understood || 0) + ' understood, ' + (m.practised || 0) + ' practised, ' + (m.reviewed || 0) + ' reviewed, ' + (m.none || 0) + ' not opened).');
+  });
+  lines.push('');
+  var ar = paSitAreas(st);
+  if(ar){
+    if(ar.best.rate > 0) lines.push('Strongest area: ' + ar.best.name + ' (' + ar.best.done + ' of ' + ar.best.total + ' complete).');
+    if(ar.worst !== ar.best) lines.push('Weakest area: ' + ar.worst.name + ' (' + ar.worst.done + ' of ' + ar.worst.total + ' complete). Work through its situations next.');
+  } else {
+    lines.push('No strongest or weakest area yet: complete a few situations first.');
+  }
+  var p = st.progress;
+  var marks = Object.keys(p.bookmarked || {}).length;
+  var notes = Object.keys(p.notes || {}).filter(function(k){ return (p.notes[k] || '').trim(); }).length;
+  var rev = Object.keys(p.review || {}).length;
+  lines.push('');
+  lines.push('Bookmarked: ' + marks + '. Situations with notes: ' + notes + '. Stage 6 review prompts reflected on: ' + rev + ' of ' + PA_SIT_REVIEW_PROMPTS.length + '.');
+  lines.push('');
+  lines.push('This report is your own learning record from this browser. It is not a certificate or an accredited qualification.');
+  var blob = new Blob([lines.join('\n')], {type: 'text/plain'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = 'payment-situations-stage-report.txt';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+  var stEl = document.getElementById('sit-report-status');
+  if(stEl) stEl.textContent = 'Report downloaded. Situation content is never included.';
+}
 function paSitUpdateProgressLine(){
   var line = document.getElementById('sit-progress-line');
   if(!line) return;
@@ -170,12 +392,13 @@ function paSitUpdateProgressLine(){
   var done = Object.keys(p.completed || {}).length;
   var marks = Object.keys(p.bookmarked || {}).length;
   var notes = Object.keys(p.notes || {}).filter(function(k){ return (p.notes[k] || '').trim(); }).length;
+  var rev = Object.keys(p.mastery || {}).filter(function(k){ return p.mastery[k] === 'reviewed'; }).length;
   var last = '';
   if(p.last){
     var li = PA_SIT_ITEMS.filter(function(it){ return it.id === p.last; })[0];
     if(li) last = ' Continue where you left off: ' + li.title + '.';
   }
-  line.textContent = 'You have completed ' + done + ' of ' + PA_SIT_ITEMS.length + ' situations. ' + marks + ' bookmarked. ' + notes + ' with notes.' + last;
+  line.textContent = 'You have completed ' + done + ' of ' + PA_SIT_ITEMS.length + ' situations. ' + marks + ' bookmarked. ' + notes + ' with notes. ' + rev + ' reviewed.' + last;
 }
 function paSitRenderCatalogue(list){
   var cat = document.getElementById('sit-catalogue');
@@ -187,8 +410,10 @@ function paSitRenderCatalogue(list){
     var p = paSitProgress();
     var mark = p.bookmarked[it.id] ? ' \u2605 ' : '';
     var done = p.completed[it.id] ? ' \u2713 ' : '';
+    var mast = paSitMasteryOf(p, it.id);
+    var mastTag = (mast === 'understood' || mast === 'practised' || mast === 'reviewed') ? ' \u00b7 ' + PA_SIT_MASTERY_LABELS[mast] : '';
     html += '<button type="button" class="sit-catalogue-item' + (it === cur ? ' active' : '') + '" data-sit-cat="' + i + '" onclick="paSitJump(' + i + ')">'
-      + '<span class="sit-cat-stage">Stage ' + (it.stage || '') + ' &middot; ' + pos + ' of ' + PA_SIT_ITEMS.length + mark + done + '</span>'
+      + '<span class="sit-cat-stage">Stage ' + (it.stage || '') + ' &middot; ' + pos + ' of ' + PA_SIT_ITEMS.length + mark + done + mastTag + '</span>'
       + escHtml(it.title || it.id || '') + '</button>';
   });
   cat.innerHTML = html;
@@ -273,6 +498,7 @@ function paSitRender(){
   paSitUpdateProgressLine();
   paSitRenderReport();
   paSitRenderReview();
+  paSitRenderDashboard();
   if(!PA_SIT_ITEMS.length){
     box.innerHTML = '<p class="sit-note">The situations are being prepared.</p>';
     return;
@@ -282,6 +508,7 @@ function paSitRender(){
     paSitRenderCatalogue(list);
     paSitRenderRelated(null);
     paSitRenderNote(null);
+    paSitRenderMastery(null);
     return;
   }
   if(PA_SIT_INDEX >= list.length) PA_SIT_INDEX = list.length - 1;
@@ -299,11 +526,23 @@ function paSitRender(){
   paSitRenderCatalogue(list);
   paSitRenderRelated(item);
   paSitRenderNote(item);
+  paSitRenderMastery(item);
   paSitSyncActionButtons(item);
   paSitApplyDeterrents();
   var p = paSitProgress();
   p.last = item.id;
+  p.last_at = new Date().toISOString();
+  if(!p.mastery) p.mastery = {};
+  /* Opening a situation marks it Read only. Deeper states are set by
+     the learner through the mastery controls, never here. */
+  if(!p.mastery[item.id]) p.mastery[item.id] = 'read';
   paSitSaveProgress(p);
+  /* Refresh the progress line, dashboard and report with the newly
+     recorded visit and Read state; they rendered above before this
+     item was recorded. */
+  paSitUpdateProgressLine();
+  paSitRenderDashboard();
+  paSitRenderReport();
 }
 function paSitOpenByIndex(i){
   var idx = parseInt(i, 10);
@@ -314,6 +553,7 @@ function paSitOpenByIndex(i){
   if(at === -1){
     PA_SIT_STAGE = ''; PA_SIT_DOMAIN = ''; PA_SIT_MESSAGE = ''; PA_SIT_FAILURE = '';
     PA_SIT_LEVEL = ''; PA_SIT_RESOLUTION = ''; PA_SIT_QUERY = ''; PA_SIT_BOOKMARKED_ONLY = false;
+    PA_SIT_DASH_FILTER = '';
     paSitSyncFilterControls();
     PA_SIT_INDEX = idx;
   } else {
@@ -417,16 +657,18 @@ function paSitApplyDeterrents(){
 }
 /* Export and restore of the buyer own data (ChatGPT review P1#4,
    9 Nov 2026). The export is user data only: completed, bookmarked,
-   notes, the Stage 6 review and where they left off. Situation
-   content is never included. Restore replaces the stored progress
-   in this browser with the imported file after validation, and
-   reports the result in the workspace bar. */
+   notes, mastery states, the Stage 6 review and where they left off.
+   Situation content is never included. Restore replaces the stored
+   progress in this browser with the imported file after validation,
+   and reports the result in the workspace bar. Format version 2 adds
+   mastery states and the last-visited time; version 1 files still
+   import, with mastery left empty. */
 function paSitExportData(){
   var st = document.getElementById('sit-data-status');
   var p = paSitProgress();
   var payload = {
     format: 'payment-situations-user-data',
-    version: 1,
+    version: 2,
     exported_at: new Date().toISOString(),
     product: 'situations-500',
     data: {
@@ -434,7 +676,9 @@ function paSitExportData(){
       bookmarked: p.bookmarked || {},
       notes: p.notes || {},
       last: p.last || '',
-      review: p.review || {}
+      last_at: p.last_at || '',
+      review: p.review || {},
+      mastery: p.mastery || {}
     }
   };
   var blob = new Blob([JSON.stringify(payload, null, 2)], {type: 'application/json'});
@@ -446,7 +690,7 @@ function paSitExportData(){
   a.click();
   document.body.removeChild(a);
   setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
-  if(st) st.textContent = 'Exported your notes, bookmarks and progress. Situation content is never included.';
+  if(st) st.textContent = 'Exported your notes, bookmarks, progress and mastery states. Situation content is never included.';
 }
 function paSitImportFile(input){
   var st = document.getElementById('sit-data-status');
@@ -460,7 +704,7 @@ function paSitImportFile(input){
       if(parsed && parsed.format && parsed.format !== 'payment-situations-user-data') throw new Error('wrong file');
       var d = (parsed && parsed.data) ? parsed.data : parsed;
       if(!d || typeof d !== 'object' || Array.isArray(d)) throw new Error('bad shape');
-      var clean = {completed: {}, bookmarked: {}, notes: {}, last: '', review: {}};
+      var clean = {completed: {}, bookmarked: {}, notes: {}, last: '', last_at: '', review: {}, mastery: {}};
       ['completed', 'bookmarked'].forEach(function(k){
         var v = d[k];
         if(v && typeof v === 'object' && !Array.isArray(v)){
@@ -473,8 +717,14 @@ function paSitImportFile(input){
         });
       }
       if(typeof d.last === 'string') clean.last = d.last;
+      if(typeof d.last_at === 'string') clean.last_at = d.last_at;
       if(d.review && typeof d.review === 'object' && !Array.isArray(d.review)){
         Object.keys(d.review).forEach(function(id){ if(d.review[id]) clean.review[id] = true; });
+      }
+      if(d.mastery && typeof d.mastery === 'object' && !Array.isArray(d.mastery)){
+        Object.keys(d.mastery).forEach(function(id){
+          if(PA_SIT_MASTERY_ORDER.indexOf(d.mastery[id]) !== -1) clean.mastery[id] = d.mastery[id];
+        });
       }
       paSitSaveProgress(clean);
       ok = true;
@@ -484,7 +734,7 @@ function paSitImportFile(input){
     if(ok){
       var rv = document.getElementById('sit-review');
       if(rv) rv.removeAttribute('data-sit-rendered');
-      if(st) st.textContent = 'Imported. Your notes, bookmarks, progress and review are restored in this browser.';
+      if(st) st.textContent = 'Imported. Your notes, bookmarks, progress, mastery states and review are restored in this browser.';
       paSitRender();
     } else {
       if(st) st.textContent = 'That file is not a Payment Situations export. Nothing was changed.';

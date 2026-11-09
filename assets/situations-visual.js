@@ -320,6 +320,20 @@
       html += '<p class="sit-explain">' + esc(item.resolution_text) + '</p>';
     }
     if (item.takeaway) html += '<p class="sit-takeaway"><strong>One thing to remember:</strong> ' + esc(item.takeaway) + '</p>';
+    /* Go deeper (ChatGPT review P1#7, 9 Nov 2026): a related lesson
+       and a related simulator for this situation, computed at build
+       time from the situation's own domain and messages. A link
+       renders only when the build found a genuine match; an item
+       without one shows no link rather than a wrong one. */
+    if (item.related) {
+      var goLinks = [];
+      if (item.related.lesson) goLinks.push('<a href="' + esc(item.related.lesson.url) + '">' + esc(item.related.lesson.label) + '</a>');
+      if (item.related.simulator) goLinks.push('<a href="' + esc(item.related.simulator.url) + '">' + esc(item.related.simulator.label) + '</a>');
+      if (goLinks.length) {
+        html += '<h4 class="sit-case-label">Go deeper</h4>';
+        html += '<p class="sit-related-links">' + goLinks.join(' &middot; ') + '</p>';
+      }
+    }
     html += '</section>';
     return html;
   }
