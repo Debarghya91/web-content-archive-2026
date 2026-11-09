@@ -751,6 +751,18 @@ function paSitImportFile(input){
 function paSitLoadSamples(){
   var box = document.getElementById('sit-samples-list');
   if(!box) return;
+  /* 10 Nov 2026 (ChatGPT review 5 priority 6): the samples are now
+     server-rendered as static HTML, so when they are already in the
+     page, just render the visuals from the embedded JSON and skip the
+     samples file entirely. */
+  if(box.querySelectorAll('.sit-sample-item').length){
+    if(window.PFSituations){
+      window.PFSituations.renderAll(box);
+      if(window.PFSituations.init) window.PFSituations.init();
+    }
+    paSitProtectElement(box);
+    return;
+  }
   if(window.PA_SITUATION_SAMPLES && window.PA_SITUATION_SAMPLES.length){
     paSitRenderSamples(window.PA_SITUATION_SAMPLES);
     return;
