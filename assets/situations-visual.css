@@ -1,0 +1,92 @@
+/* PaymentForge situations visual component.
+ *
+ * Companion stylesheet for content/situations-visual.js. Uses the
+ * pf-theme.css design tokens (royal blue primary, premium gold
+ * accents, deep executive navy). Visuals render on the light page
+ * surface. All text stays dark on light, never invisible.
+ *
+ * Copy deterrents are NOT applied here by default. The situations
+ * page adds .sit-protected to the content area only after access is
+ * granted, so the paywall and product description stay selectable.
+ *
+ * No em dashes anywhere in this file.
+ */
+
+/* ---------- Item shell ---------- */
+.sit-item{background:var(--pf-surface,#FFFFFF);border:1px solid var(--pf-line,#E2E8F0);border-radius:var(--pf-radius,12px);padding:20px 22px;margin:18px 0;box-shadow:var(--pf-shadow,0 1px 2px rgba(11,31,61,.06),0 4px 16px rgba(11,31,61,.06))}
+.sit-eyebrow{color:var(--pf-royal-dark,#1E40AF);font-weight:700;text-transform:uppercase;letter-spacing:.08em;font-size:12px;margin:0 0 8px}
+.sit-title{font-size:20px;color:var(--pf-navy,#0B1F3D);margin:4px 0 6px;line-height:1.3}
+.sit-source{font-size:13px;color:var(--pf-muted,#5B6B85);margin:0 0 12px}
+.sit-explain{color:var(--pf-ink-2,#1F2A44);font-size:15px;line-height:1.65;margin:14px 0}
+.sit-takeaway{background:var(--pf-gold-tint,#FBF6E3);border-left:3px solid var(--pf-gold,#C9A227);border-radius:0 8px 8px 0;padding:10px 14px;color:var(--pf-ink-2,#1F2A44);font-size:15px;line-height:1.6;margin:14px 0 0}
+.sit-takeaway strong{color:var(--pf-navy,#0B1F3D)}
+.sit-note{color:var(--pf-muted,#5B6B85);font-size:14px;font-style:italic}
+
+/* ---------- Buttons ---------- */
+.sit-btn{display:inline-flex;align-items:center;gap:6px;border-radius:8px;padding:10px 18px;font-size:15px;font-weight:600;cursor:pointer;line-height:1.3;border:1px solid transparent;min-height:44px;box-sizing:border-box}
+.sit-btn-primary{background:var(--pf-royal,#1D4ED8);color:#fff;border-color:var(--pf-royal,#1D4ED8)}
+.sit-btn-primary:hover{background:var(--pf-royal-dark,#1E40AF)}
+.sit-btn-secondary{background:#fff;color:var(--pf-royal-dark,#1E40AF);border-color:var(--pf-royal,#1D4ED8)}
+.sit-btn-secondary:hover{background:var(--pf-royal-tint,#E8EEFB)}
+.sit-btn:disabled{opacity:.55;cursor:default}
+.sit-flow-controls{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:6px 0 14px}
+.sit-flow-status{font-size:14px;font-weight:700;color:var(--pf-navy,#0B1F3D)}
+
+/* ---------- Visual wrapper and SVG ---------- */
+.sit-visual-wrap{background:var(--pf-surface-2,#F8FAFC);border:1px solid var(--pf-line,#E2E8F0);border-radius:var(--pf-radius,12px);padding:14px;margin:10px 0;overflow-x:auto}
+.sit-svg{display:block;width:100%;height:auto;max-width:720px;margin:0 auto}
+.sit-svg text{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.sit-connector{stroke:#94A3B8;stroke-width:2;fill:none}
+.sit-arrow-head{fill:#94A3B8}
+
+/* Flow nodes: hidden until revealed. The current node gets a gold
+   outline, finished nodes get a royal tint and a royal number. */
+.sit-node{opacity:0;transform:translateY(8px);transition:opacity .45s ease,transform .45s ease}
+.sit-node.sit-shown{opacity:1;transform:translateY(0)}
+.sit-node-shape{fill:#FFFFFF;stroke:#CBD5E1;stroke-width:2}
+.sit-node-decision .sit-node-shape{fill:#FFFBEB;stroke:#C9A227}
+.sit-node.sit-now .sit-node-shape{stroke:#C9A227;stroke-width:3}
+.sit-node.sit-done .sit-node-shape{fill:#E8EEFB;stroke:#1D4ED8}
+.sit-node-num{fill:#5B6B85}
+.sit-node.sit-now .sit-node-num{fill:#C9A227}
+.sit-node.sit-done .sit-node-num{fill:#1D4ED8}
+.sit-node-num-text{fill:#FFFFFF;font-size:17px;font-weight:700}
+.sit-node-title{fill:#0B1F3D;font-size:17px;font-weight:700;text-anchor:middle}
+.sit-node-title-left{fill:#0B1F3D;font-size:17px;font-weight:700;text-anchor:start}
+.sit-node-note{fill:#5B6B85;font-size:14px;text-anchor:middle}
+.sit-node-note-left{fill:#5B6B85;font-size:14px;text-anchor:start}
+
+/* Stacked chart segments. Eight fixed colours so the same segment
+   position always has the same colour across items. */
+.sit-seg-0{fill:#1D4ED8}
+.sit-seg-1{fill:#C9A227}
+.sit-seg-2{fill:#0B1F3D}
+.sit-seg-3{fill:#15803D}
+.sit-seg-4{fill:#7C3AED}
+.sit-seg-5{fill:#B45309}
+.sit-seg-6{fill:#0E7490}
+.sit-seg-7{fill:#BE185D}
+.sit-seg-label{fill:#FFFFFF;font-size:13px;font-weight:700}
+.sit-legend{list-style:none;margin:12px 0 0;padding:0}
+.sit-legend li{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px;margin:8px 0;color:var(--pf-ink-2,#1F2A44);font-size:15px;line-height:1.5}
+.sit-swatch{display:inline-block;width:14px;height:14px;border-radius:4px;flex:0 0 auto;transform:translateY(2px)}
+.sit-legend-label{font-weight:700;color:var(--pf-navy,#0B1F3D)}
+.sit-legend-value{font-weight:700;color:var(--pf-royal-dark,#1E40AF)}
+.sit-legend-note{color:var(--pf-muted,#5B6B85);flex-basis:100%;padding-left:22px}
+
+/* Labelled diagram: gold centre, royal parts. */
+.sit-centre-shape{fill:#0B1F3D;stroke:#0B1F3D;stroke-width:2}
+.sit-centre-title{fill:#FFFFFF;font-size:17px;font-weight:700;text-anchor:middle}
+.sit-part-shape{fill:#FFFFFF;stroke:#1D4ED8;stroke-width:2}
+.sit-part-label{fill:#0B1F3D;font-size:15px;font-weight:700;text-anchor:middle}
+.sit-part-note{fill:#5B6B85;font-size:13px;text-anchor:middle}
+
+/* Copy deterrents, applied by the situations page only to unlocked
+   paid content (class .sit-protected on the content area). */
+.sit-protected,.sit-protected *{user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.sit-protected img,.sit-protected svg{-webkit-user-drag:none;user-drag:none}
+
+/* Reduced motion: no reveal animation, everything visible. */
+@media (prefers-reduced-motion: reduce){
+  .sit-node{opacity:1;transform:none;transition:none}
+}

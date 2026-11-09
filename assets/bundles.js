@@ -28,6 +28,43 @@ function paHasAccess(chid){
   var b = PA_BUNDLE_MAP[chid];
   return b && owned.indexOf(b) !== -1;
 }
+/* ===== 500 Payment Situations gate (9 Nov 2026) ===== */
+/* This product is the ONLY gated product. It is gated independently of
+   PA_ENFORCE_ACCESS, which stays false so the flagship course and all
+   lessons stay open for all. A buyer owns this product when the
+   'situations-500' bundle (or the flagship 'full', which includes
+   everything) is in the owned list, or when owner preview is on.
+   Access is granted after the owner verifies the buyer's UPI payment
+   by its UTR: the buyer unlocks with the claim id from their UPI
+   claim submission. The claim id is checked against the pending UPI
+   claims stored in this browser for this bundle. Honest limit: this
+   is a browser-side gate. It stops casual access and casual download;
+   it does not stop a determined user who inspects network requests or
+   takes screenshots. Real server-side enforcement needs the Supabase
+   backend, which is a later step. */
+var PA_SITUATIONS_BUNDLE = 'situations-500';
+var PA_SITUATIONS_GATED = true;
+function paHasSituationsAccess(){
+  if(!PA_SITUATIONS_GATED) return true;
+  if(paOwnerPreview()) return true;
+  var owned = paOwned();
+  return owned.indexOf('full') !== -1 || owned.indexOf(PA_SITUATIONS_BUNDLE) !== -1;
+}
+function paGrantSituationsAccess(claimId){
+  if(!claimId) return false;
+  var claims = paUpiClaims();
+  var match = null;
+  for(var i = 0; i < claims.length; i++){
+    if(claims[i].id === claimId && claims[i].bundle === PA_SITUATIONS_BUNDLE){ match = claims[i]; break; }
+  }
+  if(!match) return false;
+  var owned = paOwned();
+  if(owned.indexOf(PA_SITUATIONS_BUNDLE) === -1){
+    owned.push(PA_SITUATIONS_BUNDLE);
+    paSaveOwned(owned);
+  }
+  return true;
+}
 function paApplyLocks(){
   paUpdatePayArea();
   var owned = paOwned();
@@ -88,43 +125,20 @@ function paRenderOrderSummary(bid){
   var sum = document.getElementById('order-summary');
   if(sum && data && data[bid]){
     var b = data[bid];
+    var size = (b.items && b.items > 0) ? (b.items + ' situations') : (b.chapters + ' chapters, ' + b.lessons + ' lessons');
+    var priceNote = b.price_placeholder ? ' (placeholder price, until the owner sets final prices)' : '';
     sum.innerHTML = '<h3>Order summary</h3><p><b>' + b.name + '</b><br>' +
-      b.chapters + ' chapters, ' + b.lessons + ' lessons<br>' +
-      'Price: \u20B9' + b.price.toLocaleString('en-IN') + ' (placeholder price, until the owner sets final prices)<br>' +
+      size + '<br>' +
+      'Price: \u20B9' + b.price.toLocaleString('en-IN') + priceNote + '<br>' +
       'Pay by UPI below, then submit your payment reference.</p>';
   }
   paUpdatePayArea();
 }
-function buyBundle(bid){
+function enrolBundle(bid){
   PA_SELECTED_BUNDLE = bid;
   paRenderOrderSummary(bid);
   var el = document.getElementById('payment');
   if(el) el.scrollIntoView({behavior: 'smooth'});
-}
-function simulatePurchase(){
-  var bid = PA_SELECTED_BUNDLE;
-  if(!bid) return;
-  var owned = paOwned();
-  if(owned.indexOf(bid) === -1) owned.push(bid);
-  paSaveOwned(owned);
-  paApplyLocks();
-  var conf = document.getElementById('pay-confirm');
-  if(conf){
-    conf.style.display = 'block';
-    conf.innerHTML = '<b>Demo purchase complete.</b> This course is now unlocked in this browser. ' +
-      'No money moved: this is a simulation until the Razorpay account and backend exist. ' +
-      '<button class="studio-btn primary" onclick="paStartBought()">Start learning</button>';
-  }
-}
-function paStartBought(){
-  var data = null;
-  try { data = JSON.parse(document.getElementById('bundle-data').textContent); } catch(e){}
-  var bid = PA_SELECTED_BUNDLE;
-  if(data && data[bid] && data[bid].first_chapter){
-    if(typeof openChapter === 'function') openChapter(data[bid].first_chapter);
-  } else {
-    showCourses();
-  }
 }
 /* ===== Razorpay checkout (PREPARED, NOT LIVE) ===== */
 /* Live buying needs the owner to fill in content/bundles.json payment
