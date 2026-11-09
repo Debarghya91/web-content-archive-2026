@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>Payment Gateway vs Payment Hub Guide | Payments Training Hub</title>
+<meta name="description" content="A payment gateway and a payment hub sound similar, but they solve different problems for different customers. Confusing them is one of the most common erro">
+<link rel="canonical" href="https://www.paymentstraininghub.in/guides/payment-gateway-vs-payment-hub.html">
+<meta property="og:url" content="https://www.paymentstraininghub.in/guides/payment-gateway-vs-payment-hub.html">
+<meta property="og:title" content="Payment Gateway vs Payment Hub Guide | Payments Training Hub">
+<meta property="og:description" content="A payment gateway and a payment hub sound similar, but they solve different problems for different customers. Confusing them is one of the most common erro">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.in/assets/hero/hero-poster.jpg">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Organization", "name": "Payments Training Hub", "url": "https://www.paymentstraininghub.in"}, {"@type": "WebSite", "name": "Payments Training Hub", "url": "https://www.paymentstraininghub.in", "description": "Payments Training Hub: professional payments training, 706 narrated lessons across 95 chapters covering ISO 20022, SWIFT, SEPA, cross-border payments, cards and settlement.", "inLanguage": "en"}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.paymentstraininghub.in/index.html"}, {"@type": "ListItem", "position": 2, "name": "Guides", "item": "https://www.paymentstraininghub.in/guides.html"}, {"@type": "ListItem", "position": 3, "name": "Payment Gateway vs Payment Hub", "item": "https://www.paymentstraininghub.in/guides/payment-gateway-vs-payment-hub.html"}]}</script>
+<link rel="stylesheet" href="../assets/pf-theme.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="../index.html" class="brand">Payments <span>Training Hub</span></a><nav class="topnav"><a href="../index.html">Home</a> <a href="../dashboard.html">Dashboard</a> <a href="../courses.html">Courses</a> <a href="../flows.html">Flows</a> <a href="../practice.html">Practice</a> <a href="../reference.html" class="active">Reference</a> <a href="../situations.html">Situations</a> </nav><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox" class="auth-note">Free lessons need no sign-in. Sign-in is optional.</span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<section class="section guide-page">
+<nav class="crumbs"><a href="../index.html">Home</a> / <a href="../guides.html">Guides</a> / Payment Systems and Architecture</nav>
+<h1>Payment Gateway vs Payment Hub</h1>
+<h2>What it is</h2>
+<p>A <b>payment gateway</b> and a <b>payment hub</b> sound similar, but they solve different problems for different customers. Confusing them is one of the most common errors in payments conversations, and it leads to requirements that ask the wrong system to do the wrong job.</p>
+<p>A <b>payment gateway</b> is the merchant-facing front door for accepting payments. When a customer pays on a website or in an app, the gateway takes the card details, checks them, and routes the payment to the merchant's acquirer. It is built for merchants: online shops, subscription businesses, marketplaces, and apps. Examples are the checkout services offered by Stripe, Adyen, and Checkout.com.</p>
+<p>A <b>payment hub</b> is the bank-side central system that processes payments for the bank itself. It receives payment instructions from all the bank's channels, validates them, enriches them, routes them to the right clearing system, and tracks them through to settlement. It is built for banks: it handles domestic payments, cross-border payments, bulk files, and API instructions in one place.</p>
+<p>The short version: a gateway helps a merchant <b>take</b> money from customers. A hub helps a bank <b>move</b> money for its customers. A single purchase can involve both: the customer pays through a gateway, and the money is then moved and settled through the bank's hub and the clearing systems.</p>
+<h2>Why it matters</h2>
+<p>The two systems are bought, built, and specified by different teams, and they fail in different ways. A merchant choosing a gateway cares about checkout conversion, card acceptance rates, fraud tools, and settlement timing. A bank building a hub cares about straight through processing, clearing connectivity, liquidity, reconciliation, and regulatory reporting. A requirement that mixes the two will be built wrong.</p>
+<p>For a business analyst, the distinction decides which system a requirement belongs to. "The customer should be able to pay by card at checkout" is a gateway requirement. "The bank should route the payment to Faster Payments and reconcile it the same day" is a hub requirement. "The merchant should receive the funds the next business day" touches both, and the BA has to trace the flow across the gateway, the acquirer, the scheme, and the hub to write it correctly.</p>
+<p>For an interview candidate, this comparison is a common question because it tests whether the candidate understands the payments ecosystem rather than just one product. A candidate who can draw both systems, explain who uses each one, and describe how they connect will do well.</p>
+<h2>How it works in a bank</h2>
+<p><b>How a gateway works.</b> A customer buys something on a website for 120 pounds and pays by card. The checkout page sends the card details to the gateway. The gateway tokenises the card number, replacing it with a token so the merchant never stores the real card details. It runs fraud checks and 3-D Secure authentication, then sends an authorisation request to the merchant's acquirer. The acquirer routes it through the card scheme (Visa or Mastercard) to the cardholder's bank, the issuer. The issuer checks the balance and the fraud score and returns an authorisation: approved or declined. The whole authorisation takes a few seconds, and the customer sees "payment successful". The money itself moves later, when the gateway batches the day's authorised payments into a clearing file and the acquirer settles with the merchant's bank.</p>
+<p><b>How a hub works.</b> A customer instructs a payment through the bank's mobile app, branch, corporate file, or API. The hub receives the instruction, validates it, enriches it with routing data, and runs sanctions screening and fraud checks. It debits the customer's account through the core banking system, builds the clearing message (a pacs.008 for a cross-border payment, or the domestic format for a local payment), and sends it to the clearing system. It tracks the payment status and sends updates back to the channel. The hub handles every payment type the bank offers, not just cards.</p>
+<p><b>How they connect.</b> A gateway is often a <b>component inside or beside a hub</b>. A bank that offers merchant acquiring runs a gateway for its merchants, and the gateway feeds into the bank's hub: the gateway authorises the card payment, and the hub settles the merchant, reconciles the card scheme files, and moves the funds. A bank that does not offer acquiring connects to external gateways instead, and the hub receives the settlement files from the acquirer and reconciles them against the merchant accounts.</p>
+<p>The connection also runs the other way. A merchant's gateway settles funds into the merchant's bank account, and that settlement is a payment that travels through the bank's hub and the clearing systems. The gateway and the hub are two systems in one flow, and the reconciliation between them is where most breaks happen.</p>
+<h2>Worked example</h2>
+<p>An online retailer sells a pair of shoes for 85 pounds. A customer pays by card at checkout.</p>
+<p><b>The gateway side.</b> The retailer's website uses a payment gateway. The customer enters the card details, and the gateway tokenises them and runs 3-D Secure. The customer confirms the payment in their banking app. The gateway sends the authorisation request to the retailer's acquirer, which routes it through Visa to the customer's bank. The issuer approves it. The gateway tells the retailer the payment is authorised, and the retailer ships the shoes. The customer sees the payment immediately.</p>
+<p><b>The hub side.</b> The customer's bank received the authorisation request through Visa. Its payment hub processed the authorisation: it checked the account, placed a hold on the 85 pounds, and recorded the transaction. At the end of the day, the gateway batches the retailer's authorised payments and sends a clearing file to the acquirer. The acquirer settles with the retailer's bank. The retailer's bank receives the funds through its hub, credits the retailer's account, and reconciles the settlement against the gateway's report. The retailer receives the 85 pounds, less the acquirer's fee, the next business day.</p>
+<p><b>The reconciliation.</b> The retailer's finance team compares three records: the gateway's report of authorised payments, the acquirer's settlement file, and the bank statement. All three should agree. If the gateway authorised a payment but the settlement file is missing it, or the bank statement shows a different amount, the difference goes to an exceptions queue. This reconciliation is the most common operational pain in the gateway-to-hub flow, and it is where a BA's requirements matter most.</p>
+<h2>Technical detail</h2>
+<p><b>The comparison.</b></p>
+<p>| Aspect | Payment gateway | Payment hub |</p>
+<p>|---|---|---|</p>
+<p>| Who uses it | Merchants, online shops, apps, marketplaces | Banks and their customers |</p>
+<p>| What it does | Accepts card and wallet payments at checkout | Processes all payment types for the bank |</p>
+<p>| Main job | Authorise the payment and tokenise card details | Validate, route, settle, and track payments |</p>
+<p>| Payment types | Cards, wallets, buy now pay later, local methods | Domestic, cross-border, bulk files, instant, cards |</p>
+<p>| Settlement | Batches authorisations into a clearing file; merchant is paid later | Settles in real time or through clearing systems |</p>
+<p>| Key messages | Card authorisation, clearing files, 3-D Secure | pacs.008, pacs.009, pain.001, domestic formats |</p>
+<p>| Fraud and compliance | 3-D Secure, fraud scoring, tokenisation | Sanctions screening, fraud detection, AML |</p>
+<p>| Who builds it | Payment service providers, acquirers | The bank, or a vendor selling hub software |</p>
+<p><b>Tokenisation.</b> A gateway replaces the card number with a token, a random string that has no value if stolen. The merchant stores the token, not the card number. This keeps the merchant out of the scope of the strictest card data rules and reduces the damage if the merchant is breached.</p>
+<p><b>Authorisation versus settlement.</b> A gateway authorisation is a promise, not a payment. It confirms the issuer will pay, and it places a hold on the customer's funds. The actual money moves later, at clearing and settlement. A payment can be authorised and never settled, for example if the merchant cancels the order. A hub, by contrast, usually settles the payment as part of processing it, though some hub flows also separate authorisation from settlement.</p>
+<p><b>Routing.</b> A gateway routes a card payment to the acquirer and the scheme. A hub routes a payment to the right clearing system or correspondent bank, based on currency, amount, destination, value date, and cost. Both use routing tables, but the gateway's routing is about card schemes and acquirers, and the hub's routing is about rails and correspondents.</p>
+<p><b>Idempotency.</b> Both systems must handle duplicate instructions. If a checkout page is submitted twice, the gateway must charge the customer once. If a channel sends the same instruction twice, the hub must process it once. Both use idempotency keys, and a missing key is a common and expensive defect in both.</p>
+<h2>Common mistakes</h2>
+<p><b>Calling a gateway a hub.</b> A gateway is not a hub. It does not process bulk files, it does not connect to clearing systems, and it does not manage nostro accounts. A requirement that asks a gateway to route a payment to CHAPS is asking the wrong system.</p>
+<p><b>Expecting a gateway to settle instantly.</b> A gateway authorises in seconds, but the merchant is paid at settlement, usually the next business day. A merchant who expects the funds the same day will be disappointed, and a BA who promises same-day settlement from a gateway is promising something the gateway does not control.</p>
+<p><b>Forgetting the reconciliation.</b> The gateway report, the acquirer settlement file, and the bank statement must agree. A design that has no reconciliation between the gateway and the hub will leave the finance team matching payments by hand in spreadsheets.</p>
+<p><b>Storing card details instead of tokens.</b> A merchant that stores real card numbers takes on the full burden of card data security rules and a large breach risk. The gateway's tokenisation exists to prevent this, and bypassing it is a serious design error.</p>
+<p><b>Treating authorisation as settlement.</b> An authorised payment can still fail at clearing, be reversed, or be charged back. Reporting an authorised payment as revenue before settlement overstates the merchant's position and causes reconciliation breaks.</p>
+<p><b>Designing the hub without a card acquiring channel.</b> A bank that offers merchant acquiring needs its hub to accept the gateway's settlement files and reconcile them. A hub designed only for account-to-account payments will not serve the acquiring business.</p>
+<h2>Related lessons</h2>
+<ul>
+<li>Payment hub architecture.</li>
+<li>Payment routing and orchestration.</li>
+<li>Card payments: authorisation, clearing, and settlement.</li>
+<li>Payment lifecycle and its distinct stages.</li>
+<li>Clearing versus settlement.</li>
+<li>Payment exception handling and reconciliation.</li>
+</ul>
+<h2>Chapters that cover this topic</h2><p>The full course teaches this topic in depth. Start with these chapters.</p><ul><li><a href="../chapters/ch30-payment-gateway-architecture.html">Payment Gateway Architecture</a></li><li><a href="../chapters/ch25-payment-hub-architecture.html">Payment Hub Architecture</a></li><li><a href="../chapters/ch48-payment-hub-enterprise-architecture.html">Payment Hub: Enterprise Architecture</a></li><li><a href="../chapters/ch32-digital-wallets-and-pos-systems.html">Digital Wallets and POS Systems</a></li></ul>
+<p><a class="studio-btn" href="../guides.html">&larr; Back to all guides</a></p>
+</section>
+</main>
+<footer><p>Payments Training Hub. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="../index.html">Home</a> &middot; <a href="../courses.html">Courses</a> &middot; <a href="../flows.html">Flows</a> &middot; <a href="../situations.html">Situations</a> &middot; <a href="../dashboard.html">Dashboard</a> &middot; <a href="../portfolio.html">Portfolio</a> &middot; <a href="../domains.html">Reference</a> &middot; <a href="../labs-simulators.html">Labs &amp; Simulators</a> &middot; <a href="../practice.html">Practice</a> &middot; <a href="../simulators.html">Simulators</a> &middot; <a href="../labs.html">Labs</a> &middot; <a href="../explorer.html">Explorer</a> &middot; <a href="../tests.html">Tests</a> &middot; <a href="../diagnostic.html">Diagnostic</a> &middot; <a href="../faq.html">Interview Ready Questions</a> &middot; <a href="../interview-prep.html">Interview Prep</a></p><p><a href="../about.html">About</a> &middot; <a href="../founder.html">Founder</a> &middot; <a href="../methodology.html">Methodology</a> &middot; <a href="../privacy.html">Privacy</a> &middot; <a href="../terms.html">Terms</a> &middot; <a href="../refund.html">Refunds</a> &middot; <a href="../contact.html">Contact</a> &middot; <a href="../editorial-standards.html">Editorial Standards</a> &middot; <a href="../sources.html">Sources</a> &middot; <a href="../references-policy.html">References Policy</a> &middot; <a href="../corrections.html">Corrections Policy</a></p><p><a href="../domains.html">Domains</a> &middot; <a href="../reference/mt103-to-pacs008.html">MT103 to pacs.008 Reference</a> &middot; <a href="../reference.html">Reference Library</a> &middot; <a href="../insights.html">Insights and Scenarios</a></p></footer>
+<script defer src="../assets/site.js"></script>
+<script defer src="../assets/bundles.js"></script>
+<script defer src="../assets/auth.js"></script>
+<script defer src="../assets/nav.js"></script>
+<script defer src="../assets/pf-enhance.js"></script>
+</body>
+</html>

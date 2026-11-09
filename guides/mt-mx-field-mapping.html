@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>MT to MX Field Mapping Guide | Payments Training Hub</title>
+<meta name="description" content="MT to MX field mapping is the translation of each field in a SWIFT MT message into the equivalent element in an ISO 20022 MX message, and back again. MT me">
+<link rel="canonical" href="https://www.paymentstraininghub.in/guides/mt-mx-field-mapping.html">
+<meta property="og:url" content="https://www.paymentstraininghub.in/guides/mt-mx-field-mapping.html">
+<meta property="og:title" content="MT to MX Field Mapping Guide | Payments Training Hub">
+<meta property="og:description" content="MT to MX field mapping is the translation of each field in a SWIFT MT message into the equivalent element in an ISO 20022 MX message, and back again. MT me">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.in/assets/hero/hero-poster.jpg">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Organization", "name": "Payments Training Hub", "url": "https://www.paymentstraininghub.in"}, {"@type": "WebSite", "name": "Payments Training Hub", "url": "https://www.paymentstraininghub.in", "description": "Payments Training Hub: professional payments training, 706 narrated lessons across 95 chapters covering ISO 20022, SWIFT, SEPA, cross-border payments, cards and settlement.", "inLanguage": "en"}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.paymentstraininghub.in/index.html"}, {"@type": "ListItem", "position": 2, "name": "Guides", "item": "https://www.paymentstraininghub.in/guides.html"}, {"@type": "ListItem", "position": 3, "name": "MT to MX Field Mapping", "item": "https://www.paymentstraininghub.in/guides/mt-mx-field-mapping.html"}]}</script>
+<link rel="stylesheet" href="../assets/pf-theme.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="../index.html" class="brand">Payments <span>Training Hub</span></a><nav class="topnav"><a href="../index.html">Home</a> <a href="../dashboard.html">Dashboard</a> <a href="../courses.html">Courses</a> <a href="../flows.html">Flows</a> <a href="../practice.html">Practice</a> <a href="../reference.html" class="active">Reference</a> <a href="../situations.html">Situations</a> </nav><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox" class="auth-note">Free lessons need no sign-in. Sign-in is optional.</span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<section class="section guide-page">
+<nav class="crumbs"><a href="../index.html">Home</a> / <a href="../guides.html">Guides</a> / ISO 20022</nav>
+<h1>MT to MX Field Mapping</h1>
+<h2>What it is</h2>
+<p><b>MT to MX field mapping</b> is the translation of each field in a SWIFT MT message into the equivalent element in an ISO 20022 MX message, and back again. MT messages are the older SWIFT format: fixed text blocks with numbered fields, such as field 59 for the beneficiary. MX messages are the newer ISO 20022 format: structured XML with named elements, such as the Cdtr block for the creditor.</p>
+<p>Mapping is the core work of the migration from MT to MX. A bank cannot send a pacs.008 until it knows how each MT103 field becomes a pacs.008 element. It cannot receive a pacs.008 until it knows how each element maps back to the fields its downstream systems expect. And during the coexistence period, it must translate in both directions, because some counterparties send MT and others send MX.</p>
+<p>This guide is the prose companion to the site's interactive mapping workbench. It covers the three mappings that matter most in payments: MT103 to pacs.008, MT202 to pacs.009, and MT101 to pain.001. It also covers the MT202 COV split, which is the mapping that causes the most errors.</p>
+<h2>Why it matters</h2>
+<p>The quality of a bank's migration depends on the quality of its field mapping. A mechanical mapping that copies MT free text into MX unstructured elements gains nothing from the migration: the bank sends MX messages that carry MT quality data, and its straight through processing does not improve. A good mapping enriches the data, turning free text into structured elements, and the bank's payments get faster and cleaner.</p>
+<p>Field mapping matters because MT and MX are not the same shape. MT fields are short and unstructured. Field 59 carries a beneficiary name and address in four lines of free text, and each bank parses it differently. The pacs.008 Cdtr block carries the name, the structured address, and the account as separate named elements. Mapping field 59 to the Cdtr block is not a copy: it is a parsing and enrichment exercise, and it is often imperfect.</p>
+<p>For a business analyst, field mapping is the most detailed work in a migration programme. The mapping document is the specification that developers build from and testers test against. A BA who can read a mapping, spot a missing field, and challenge a lossy translation is doing the work that decides whether the migration succeeds. For an interview candidate, field mapping is the topic that proves hands-on migration experience rather than textbook knowledge.</p>
+<h2>How it works in a bank</h2>
+<p>A bank builds its field mapping in three layers. The <b>message map</b> says which MT message becomes which MX message. The <b>field map</b> says which MT field becomes which MX element. The <b>value map</b> says how the values translate: how a charge code in MT becomes a charge bearer in MX, how a date format changes, and how a code list maps.</p>
+<p><b>The message map.</b> The main MT to MX mappings for payments are:</p>
+<p>| MT message | MX message | What it does |</p>
+<p>|---|---|---|</p>
+<p>| MT103 | pacs.008 | Customer credit transfer |</p>
+<p>| MT202 | pacs.009 | Bank to bank credit transfer |</p>
+<p>| MT202 COV | pacs.008 plus pacs.009 | Cover payment, the customer instruction travels as pacs.008 and the funds as pacs.009 |</p>
+<p>| MT101 | pain.001 | Customer credit transfer initiation, request for transfer |</p>
+<p>| MT900 | camt.054 | Confirmation of debit |</p>
+<p>| MT910 | camt.054 | Confirmation of credit |</p>
+<p>| MT940 | camt.053 | Customer statement message |</p>
+<p>| MT950 | camt.053 | Statement message |</p>
+<p>| MT199 | camt.056 or camt.029 | Free format message, used for investigations and cancellations |</p>
+<p>| MT192 | camt.056 | Request for cancellation |</p>
+<p><b>The field map for MT103 to pacs.008.</b> The customer credit transfer is the most common mapping, and the one most BAs will work on.</p>
+<p>| MT103 field | pacs.008 element | Notes |</p>
+<p>|---|---|---|</p>
+<p>| 20, Transaction Reference Number | InstrId, EndToEndId | The sender's reference becomes both the instruction ID and the end-to-end ID |</p>
+<p>| 23B, Bank Operation Code | No direct element | The transfer type is conveyed by the message type itself; pacs.008 is a customer credit transfer |</p>
+<p>| 32A, Value Date, Currency, Interbank Settled Amount | IntrBkSttlmAmt, IntrBkSttlmDt | The amount and the date are carried as separate elements |</p>
+<p>| 33B, Currency, Instructed Amount | InstdAmt | The amount the customer instructed, which can differ from the settlement amount |</p>
+<p>| 50a, Ordering Customer | Dbtr | 50K carries name and address; 50F carries the structured customer identification |</p>
+<p>| 52a, Ordering Institution | DbtrAgt | The bank that ordered the payment, when it is different from the sender |</p>
+<p>| 53a, Sender's Correspondent | SttlmInf, SttlmAcct | The settlement account, or dropped when settlement is through the receiver's account |</p>
+<p>| 54a, Receiver's Correspondent | No direct element | Settlement account information is carried in the settlement block where relevant |</p>
+<p>| 56a, Intermediary Institution | IntrmyAgt1 | The first intermediary in the chain; further intermediaries use IntrmyAgt2 and IntrmyAgt3 |</p>
+<p>| 57a, Account With Institution | CdtrAgt | The bank where the beneficiary holds an account |</p>
+<p>| 59a, Beneficiary Customer | Cdtr, CdtrAcct | The name and structured address go in Cdtr; the account number goes in CdtrAcct |</p>
+<p>| 70, Remittance Information | RmtInf | Free text maps to unstructured remittance information; structured remittance uses Strd |</p>
+<p>| 71A, Details of Charges | ChrgBr | OUR becomes DEBT, BEN becomes CRED, SHA becomes SHAR |</p>
+<p>| 72, Sender to Receiver Information | InstrForNxtAgt | Instructions for the next bank in the chain |</p>
+<p>| No MT equivalent | UETR | The Unique End-to-end Transaction Reference is new in MX and must be generated |</p>
+<p><b>The field map for MT202 to pacs.009.</b> The bank to bank transfer is simpler, because there is no customer data to enrich.</p>
+<p>| MT202 field | pacs.009 element | Notes |</p>
+<p>|---|---|---|</p>
+<p>| 20, Transaction Reference Number | InstrId, EndToEndId | The sender's reference becomes both IDs |</p>
+<p>| 21, Related Reference | RltdRmtInf or EndToEndId | The reference to the related transaction, often the underlying customer payment |</p>
+<p>| 32A, Value Date, Currency, Interbank Settled Amount | IntrBkSttlmAmt, IntrBkSttlmDt | The amount and the date as separate elements |</p>
+<p>| 52a, Ordering Institution | Dbtr | In pacs.009 the debtor is the ordering bank itself |</p>
+<p>| 53a, Sender's Correspondent | SttlmInf, SttlmAcct | The settlement account |</p>
+<p>| 56a, Intermediary Institution | IntrmyAgt1 | The first intermediary in the chain |</p>
+<p>| 57a, Account With Institution | CdtrAgt | The bank holding the beneficiary bank's account |</p>
+<p>| 58a, Beneficiary Institution | Cdtr | The bank that should receive the funds |</p>
+<p>| 72, Sender to Receiver Information | InstrForNxtAgt | Instructions for the next bank |</p>
+<p><b>The field map for MT101 to pain.001.</b> The customer initiation message is the one corporate customers send to their bank.</p>
+<p>| MT101 field | pain.001 element | Notes |</p>
+<p>|---|---|---|</p>
+<p>| 20, Sender's Reference | PmtInfId or InstrId | The reference for the payment instruction |</p>
+<p>| 21R, Customer Specified Reference | EndToEndId | The customer's own reference, carried end to end |</p>
+<p>| 23E, Instruction Code | PmtTpInf, InstrPrty or CtgyPurp | The instruction type, such as urgent or salary payment |</p>
+<p>| 30, Requested Execution Date | ReqdExctnDt | The date the customer wants the payment executed |</p>
+<p>| 32B, Currency, Instructed Amount | InstdAmt | The currency and amount the customer instructed |</p>
+<p>| 50a, Ordering Customer | Dbtr, DbtrAcct | The customer and their account |</p>
+<p>| 52a, Ordering Institution | DbtrAgt | The customer's bank, when different from the sender |</p>
+<p>| 57a, Account With Institution | CdtrAgt | The beneficiary's bank |</p>
+<p>| 59a, Beneficiary Customer | Cdtr, CdtrAcct | The beneficiary and their account |</p>
+<p>| 70, Remittance Information | RmtInf | Free text or structured remittance information |</p>
+<p>| 71A, Details of Charges | ChrgBr | OUR becomes DEBT, BEN becomes CRED, SHA becomes SHAR |</p>
+<p>| 77B, Regulatory Reporting | RgltryRptg | Regulatory information required by the ordering bank's country |</p>
+<p><b>The MT202 COV split.</b> The cover payment is the hardest mapping. Under MT, a cover payment is two messages: an MT103 that goes directly to the beneficiary bank, and an MT202 COV that moves the funds through the correspondent chain. Under MX, it is also two messages, but the split is different: the customer instruction travels as a <b>pacs.008</b>, and the funds move as a <b>pacs.009 COV</b>, the cover variant of the bank to bank transfer. The pacs.009 COV carries the underlying customer information from the pacs.008, so every bank in the chain can screen the payment. A bank that maps MT202 COV to a plain pacs.009 CORE loses the customer data and breaks the screening chain.</p>
+<p><b>The pacs.009 variants.</b> The pacs.009 has three variants: <b>CORE</b> is the standard bank to bank credit transfer. <b>COV</b> is the cover variant, which carries the underlying customer credit transfer information. <b>ADV</b> is the advice variant, used when the message advises a bank of a credit transfer rather than instructing it. The variant is declared in the message, and the receiving bank treats each one differently.</p>
+<h2>Worked example</h2>
+<p>A UK company pays a supplier in France 12,500 euro. The company, Northgate Retail Ltd, instructs its bank through a corporate file. The bank's payment hub builds the message.</p>
+<p><b>Under MT</b>, the bank sends an MT103. Field 20 carries the reference NGR-2026-1187. Field 32A carries the value date, EUR, and 12,500. Field 33B carries EUR 12,500. Field 50K carries Northgate Retail Ltd and its London address. Field 59 carries the supplier, Lyon Textiles SARL, and its account number. Field 70 carries the invoice reference INV-2026-0931. Field 71A carries SHA.</p>
+<p><b>Under MX</b>, the bank sends a pacs.008. The instruction ID and the end-to-end ID both carry NGR-2026-1187. The interbank settlement amount carries EUR 12,500 and the settlement date carries the value date. The instructed amount carries EUR 12,500. The debtor block carries Northgate Retail Ltd with a structured address: street, town, country, postcode as separate elements. The creditor block carries Lyon Textiles SARL the same way. The remittance information carries INV-2026-0931. The charge bearer carries SHAR. And a UETR is generated, a 36-character identifier that has no MT equivalent and that will stay with the payment for its whole journey.</p>
+<p><b>The enrichment.</b> The MT103 carried the addresses as free text in fields 50K and 59. The pacs.008 carries them as structured elements. The bank's mapping had to parse the free text into street, town, country, and postcode. The town and country parsed cleanly. The postcode was missing from the customer record, so the bank's data team had to add it before the pacs.008 could be sent. This is the enrichment work that a mechanical mapping skips, and it is the reason the bank ran a data remediation programme before its cutover.</p>
+<h2>Technical detail</h2>
+<p><b>Structured addresses.</b> The hardest part of any MT to MX mapping is the address. MT fields carry addresses as up to four lines of free text. MX carries them as named elements: street name, building number, town, postcode, country. The mapping must parse the free text, and the parsing is often imperfect. A bank that cannot parse an address reliably must either enrich its customer data before migration or send the address as unstructured text in the MX message, which defeats the purpose.</p>
+<p><b>Charge bearer mapping.</b> The charge codes map exactly: OUR becomes DEBT, BEN becomes CRED, SHA becomes SHAR. This is a value map, not a field map, and it is one of the few mappings that is a straight translation. A bank that maps OUR to CRED has inverted the charges, and the beneficiary will receive the wrong amount.</p>
+<p><b>Truncation.</b> MT fields have fixed lengths. Field 70 is four lines of 35 characters. The pacs.008 remittance information can carry 140 characters of unstructured text, and structured remittance information can carry more. A mapping that truncates the remittance information to fit the MT limit loses data. A mapping that carries the full MT text into MX is safe, but it does not use the structured remittance elements that let the beneficiary reconcile automatically.</p>
+<p><b>The UETR.</b> The UETR has no MT equivalent. It must be generated by the ordering bank for every pacs.008 and pacs.009. A bank that forgets to generate it sends a message that cannot be tracked on SWIFT gpi, and a customer asking where their payment is cannot be answered.</p>
+<p><b>Return and investigation messages.</b> The mapping does not stop at payment messages. Returns use pacs.004, cancellations use camt.056, and investigation resolutions use camt.029. Each of these has its own field map, and each carries reason codes that differ from the MT equivalents. A bank that maps only the payment messages and not the exception messages will fail on its first return.</p>
+<p><b>Testing the mapping.</b> A mapping is tested with real messages, not with a checklist. The bank sends a pacs.008 to a test counterparty, the counterparty returns a pacs.002, and the bank checks that the status, the amounts, and the references all match. The bank also tests the reverse direction, receiving a pacs.008 and mapping it back to the fields its downstream systems expect. Both directions must be tested, because a mapping that works one way can lose data the other way.</p>
+<h2>Common mistakes</h2>
+<p><b>Mechanical mapping without enrichment.</b> Copying MT free text into MX unstructured elements gains nothing from the migration. The structured address fields are left empty, the remittance information stays unstructured, and the bank's straight through processing does not improve. The mapping must enrich the data, not just reformat it.</p>
+<p><b>Mapping field 32A to the instructed amount.</b> Field 32A is the interbank settled amount. Field 33B is the instructed amount. They differ when charges are deducted or currency is converted. Mapping 32A to InstdAmt causes the beneficiary to receive the wrong amount and creates a reconciliation break.</p>
+<p><b>Dropping field 72.</b> Field 72 carries instructions for the next bank, such as a payment type code or a regulatory instruction. It is easy to overlook because it is free text, but dropping it can cause the receiving bank to process the payment incorrectly.</p>
+<p><b>Forgetting the UETR.</b> The UETR is new and has no MT equivalent, so it is easy to forget. A pacs.008 without a UETR cannot be tracked, and the bank will not be able to answer customer queries about the payment.</p>
+<p><b>Mapping MT202 COV to pacs.009 CORE.</b> The cover payment must map to pacs.009 COV, which carries the underlying customer information. Mapping it to CORE loses the customer data and breaks the screening chain. This is the single most common mapping error in the MT202 COV flow.</p>
+<p><b>Testing only the happy path.</b> Migration testing must cover rejections, returns, recalls, and investigations, because those flows use different messages and different reason codes in MX. A bank that only tests successful payments will fail on its first exception.</p>
+<h2>Related lessons</h2>
+<ul>
+<li>MT to MX migration and the CBPR+ programme.</li>
+<li>ISO 20022 explained: the standard and its messages.</li>
+<li>The pacs.008 message in detail.</li>
+<li>The pacs.009 message and its CORE, COV, and ADV variants.</li>
+<li>The pain.001 message and customer initiation.</li>
+<li>Serial versus cover payments.</li>
+<li>The MT103 message and its fields.</li>
+</ul>
+<h2>Chapters that cover this topic</h2><p>The full course teaches this topic in depth. Start with these chapters.</p><ul><li><a href="../chapters/ch8-mt-to-mx-migration-and-cbpr.html">MT to MX Migration and CBPR+</a></li><li><a href="../chapters/ch38-payment-data-model-and-mapping.html">Payment Data Model and Mapping</a></li><li><a href="../chapters/ch67-iso-20022-technical-implementation.html">ISO 20022 Technical Implementation</a></li><li><a href="../chapters/ch7-pacs-008-deep-dive.html">pacs.008 Deep Dive</a></li></ul>
+<p><a class="studio-btn" href="../guides.html">&larr; Back to all guides</a></p>
+</section>
+</main>
+<footer><p>Payments Training Hub. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="../index.html">Home</a> &middot; <a href="../courses.html">Courses</a> &middot; <a href="../flows.html">Flows</a> &middot; <a href="../situations.html">Situations</a> &middot; <a href="../dashboard.html">Dashboard</a> &middot; <a href="../portfolio.html">Portfolio</a> &middot; <a href="../domains.html">Reference</a> &middot; <a href="../labs-simulators.html">Labs &amp; Simulators</a> &middot; <a href="../practice.html">Practice</a> &middot; <a href="../simulators.html">Simulators</a> &middot; <a href="../labs.html">Labs</a> &middot; <a href="../explorer.html">Explorer</a> &middot; <a href="../tests.html">Tests</a> &middot; <a href="../diagnostic.html">Diagnostic</a> &middot; <a href="../faq.html">Interview Ready Questions</a> &middot; <a href="../interview-prep.html">Interview Prep</a></p><p><a href="../about.html">About</a> &middot; <a href="../founder.html">Founder</a> &middot; <a href="../methodology.html">Methodology</a> &middot; <a href="../privacy.html">Privacy</a> &middot; <a href="../terms.html">Terms</a> &middot; <a href="../refund.html">Refunds</a> &middot; <a href="../contact.html">Contact</a> &middot; <a href="../editorial-standards.html">Editorial Standards</a> &middot; <a href="../sources.html">Sources</a> &middot; <a href="../references-policy.html">References Policy</a> &middot; <a href="../corrections.html">Corrections Policy</a></p><p><a href="../domains.html">Domains</a> &middot; <a href="../reference/mt103-to-pacs008.html">MT103 to pacs.008 Reference</a> &middot; <a href="../reference.html">Reference Library</a> &middot; <a href="../insights.html">Insights and Scenarios</a></p></footer>
+<script defer src="../assets/site.js"></script>
+<script defer src="../assets/bundles.js"></script>
+<script defer src="../assets/auth.js"></script>
+<script defer src="../assets/nav.js"></script>
+<script defer src="../assets/pf-enhance.js"></script>
+</body>
+</html>
