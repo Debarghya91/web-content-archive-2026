@@ -18,9 +18,27 @@
 <link rel="stylesheet" href="../assets/studio.css">
 <link rel="stylesheet" href="../assets/pf-theme.css">
 <link rel="stylesheet" href="../assets/insight-components.css">
+<style>
+
+/* ===== Process Flows section and lesson embeds ===== */
+.flow-count{color:var(--pf-muted,#5B6B85);font-size:15px}
+.flow-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;margin:12px 0 28px}
+.flow-card{background:var(--pf-surface,#FFFFFF);border:1px solid var(--pf-line,#E2E8F0);border-radius:var(--pf-radius,12px);padding:18px 20px;box-shadow:var(--pf-shadow,0 1px 2px rgba(11,31,61,.06),0 4px 16px rgba(11,31,61,.06))}
+.flow-card h3{color:var(--pf-navy,#0B1F3D);margin:0 0 8px}
+.flow-card p{color:var(--pf-ink-2,#1F2A44)}
+.flow-video{width:100%;border-radius:8px;background:#0B1F3D;display:block}
+.flow-coming{background:var(--pf-gold-tint,#FBF6E3);border:1px solid var(--pf-gold,#C9A227);border-radius:8px;padding:12px 14px;color:var(--pf-ink-2,#1F2A44)}
+.flow-explained{font-size:14px;color:var(--pf-muted,#5B6B85)}
+.flow-explained a{color:var(--pf-navy,#0B1F3D);font-weight:600}
+.flow-embed{background:var(--pf-surface,#FFFFFF);border:1px solid var(--pf-line,#E2E8F0);border-radius:var(--pf-radius,12px);padding:18px 20px;margin:20px 0;box-shadow:var(--pf-shadow,0 1px 2px rgba(11,31,61,.06),0 4px 16px rgba(11,31,61,.06))}
+.flow-embed h3{color:var(--pf-navy,#0B1F3D);margin:0 0 8px}
+.flow-embed-title{font-weight:700;color:var(--pf-navy,#0B1F3D);margin:10px 0 6px}
+.flow-embed .flow-video{max-width:640px}
+
+</style>
 </head>
 <body>
-<header class="topbar"><div class="topbar-row"><a href="../index.html" class="brand">Payments <span>Training Hub</span></a><nav class="topnav"><a href="../index.html">Home</a> <a href="../courses.html">Courses</a> <a href="../flows.html">Flows</a> <a href="../situations.html">Situations</a> <a href="../domains.html">Reference</a> <a href="../labs-simulators.html">Labs &amp; Simulators</a></nav><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox" style="display:none"><span id="authState">Not signed in</span> <span id="authForm" style="display:none"><input id="authEmail" type="email" placeholder="Email for OTP" aria-label="Email for sign-in"> <button class="mute-btn" onclick="paAuthSendOtp()">Send code</button> <input id="authCode" type="text" placeholder="6-digit code" aria-label="One-time code" style="display:none"> <button class="mute-btn" id="authVerifyBtn" onclick="paAuthVerifyOtp()" style="display:none">Verify</button> <button class="mute-btn" onclick="paAuthGoogle()">Sign in with Google</button> </span><button class="mute-btn" id="authSignOutBtn" onclick="paAuthSignOut()" style="display:none">Sign out</button></span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<header class="topbar"><div class="topbar-row"><a href="../index.html" class="brand">Payments <span>Training Hub</span></a><nav class="topnav"><a href="../index.html">Home</a> <a href="../courses.html">Academy</a> <a href="../flows.html">Process</a> <a href="../practice.html">Practice</a> <a href="../reference.html">Reference</a> <a href="../situations.html">Situations</a></nav><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox" class="auth-note">Free lessons need no sign-in. Sign-in is optional.</span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
 <main>
 <div class="lesson-page">
 <div class="lesson-shell">
@@ -49,7 +67,7 @@
 <div class="beat-frame active" data-frame="0">
 <svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
 <rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
-<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">TIPS</tspan> <tspan fill="#FFFFFF">uses</tspan> <tspan fill="#FFFFFF">a</tspan> <tspan fill="#FFFFFF">deposit</tspan> <tspan fill="#FFFFFF">model</tspan></text>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">TIPS</tspan> <tspan fill="#FFFFFF">and</tspan> <tspan fill="#FFFFFF">deposit</tspan> <tspan fill="#FFFFFF">model</tspan></text>
 <rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
 <rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
 <text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
@@ -59,7 +77,7 @@
 <g data-node="n0" data-beat="0">
 <rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
 <text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
-<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">TIPS</tspan><tspan fill="#CBD5E1"> - liquidity, which means that a participant</tspan></text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">TIPS and deposit model</tspan><tspan fill="#CBD5E1"> - uses a deposit model for liquidity</tspan></text>
 <text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
 </g>
 <g data-node="n1" data-beat="1" opacity="0.55">
@@ -77,7 +95,7 @@
 <g data-node="n3" data-beat="3" opacity="0.55">
 <rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
 <text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
-<text x="112" y="328" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Simplicity</tspan><tspan fill="#CBD5E1"> - transfers are fast and reliable</tspan></text>
+<text x="112" y="328" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">One reason liquidity transfers</tspan><tspan fill="#CBD5E1"> - simplicity is one reason liquidity transfers</tspan></text>
 <text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
 </g>
 <g data-node="n4" data-beat="4" opacity="0.55">
@@ -104,55 +122,57 @@
 <circle cx="836" cy="480" r="4" fill="#334155"/>
 <circle cx="852" cy="480" r="4" fill="#334155"/>
 </svg>
-<svg class="flow-mobile" viewBox="0 0 360 739" role="img" aria-label="Lesson visual, vertical layout">
-<rect x="0" y="0" width="360" height="739" fill="#0B1F3D"/>
-<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">TIPS</tspan> <tspan fill="#FFFFFF">uses</tspan> <tspan fill="#FFFFFF">a</tspan></text>
-<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">deposit</tspan> <tspan fill="#FFFFFF">model</tspan></text>
+<svg class="flow-mobile" viewBox="0 0 360 779" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="779" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">TIPS</tspan> <tspan fill="#FFFFFF">and</tspan> <tspan fill="#FFFFFF">deposit</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">model</tspan></text>
 <rect x="24" y="86" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
 <text x="180" y="104" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">STARTED</text>
 <g data-node="n0" data-beat="0" opacity="1">
-<rect x="24" y="120" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
-<text x="180" y="139" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">TIPS</text>
-<text x="180" y="157" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">liquidity, which means that a participant</text>
-<text x="180" y="175" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+<rect x="24" y="120" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="139" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">TIPS and deposit</text>
+<text x="180" y="157" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">model</text>
+<text x="180" y="175" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">uses a deposit model for liquidity</text>
+<text x="180" y="193" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
 </g>
 <g data-node="n1" data-beat="1" opacity="0.55">
-<rect x="24" y="192" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
-<text x="180" y="211" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Deposit model</text>
-<text x="180" y="229" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">keeps the instant payment liquidity separate</text>
-<text x="180" y="247" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+<rect x="24" y="212" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="231" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Deposit model</text>
+<text x="180" y="249" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">keeps the instant payment liquidity separate</text>
+<text x="180" y="267" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
 </g>
 <g data-node="n2" data-beat="2" opacity="0.55">
-<rect x="24" y="264" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
-<text x="180" y="283" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">No reservation of</text>
-<text x="180" y="301" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">funds</text>
-<text x="180" y="319" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">second basic rule is that there is no</text>
-<text x="180" y="337" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+<rect x="24" y="284" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="303" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">No reservation of</text>
+<text x="180" y="321" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">funds</text>
+<text x="180" y="339" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">second basic rule is that there is no</text>
+<text x="180" y="357" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
 </g>
 <g data-node="n3" data-beat="3" opacity="0.55">
-<rect x="24" y="356" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
-<text x="180" y="375" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Simplicity</text>
-<text x="180" y="393" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">transfers are fast and reliable</text>
-<text x="180" y="411" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+<rect x="24" y="376" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="395" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">One reason liquidity</text>
+<text x="180" y="413" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">transfers</text>
+<text x="180" y="431" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">simplicity is one reason liquidity transfers</text>
+<text x="180" y="449" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
 </g>
 <g data-node="n4" data-beat="4" opacity="0.55">
-<rect x="24" y="428" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
-<text x="180" y="447" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Transfer</text>
-<text x="180" y="465" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">If it does not, the transfer is rejected</text>
-<text x="180" y="483" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+<rect x="24" y="468" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="487" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Transfer</text>
+<text x="180" y="505" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">If it does not, the transfer is rejected</text>
+<text x="180" y="523" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
 </g>
 <g data-node="n5" data-beat="5" opacity="0.55">
-<rect x="24" y="500" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
-<text x="180" y="519" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Deposit model</text>
-<text x="180" y="537" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">working</text>
-<text x="180" y="555" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">designed.</text>
-<text x="180" y="573" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+<rect x="24" y="540" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="559" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Deposit model</text>
+<text x="180" y="577" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">working</text>
+<text x="180" y="595" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">designed.</text>
+<text x="180" y="613" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
 </g>
-<text x="180" y="600" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">TIPS uses a deposit model for liquidity,</text>
-<text x="180" y="619" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">which means that a participant holds its</text>
-<text x="180" y="638" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">instant payment liquidity in a TIPS</text>
-<text x="180" y="657" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Dedicated Cash Account, known as a TIPS</text>
-<text x="180" y="676" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">DCA,</text>
+<text x="180" y="640" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">TIPS uses a deposit model for liquidity,</text>
+<text x="180" y="659" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">which means that a participant holds its</text>
+<text x="180" y="678" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">instant payment liquidity in a TIPS</text>
+<text x="180" y="697" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Dedicated Cash Account, known as a TIPS</text>
+<text x="180" y="716" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">DCA,</text>
 </svg>
 </div>
 <div class="beat-frame" data-frame="1">
@@ -168,7 +188,7 @@
 <g data-node="n0" data-beat="0">
 <rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
 <text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
-<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">TIPS</tspan><tspan fill="#CBD5E1"> - liquidity, which means that a participant</tspan></text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">TIPS and deposit model</tspan><tspan fill="#CBD5E1"> - uses a deposit model for liquidity</tspan></text>
 <text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
 </g>
 <g data-node="n1" data-beat="1">
@@ -186,7 +206,7 @@
 <g data-node="n3" data-beat="3" opacity="0.55">
 <rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
 <text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
-<text x="112" y="328" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Simplicity</tspan><tspan fill="#CBD5E1"> - transfers are fast and reliable</tspan></text>
+<text x="112" y="328" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">One reason liquidity transfers</tspan><tspan fill="#CBD5E1"> - simplicity is one reason liquidity transfers</tspan></text>
 <text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
 </g>
 <g data-node="n4" data-beat="4" opacity="0.55">
@@ -212,51 +232,53 @@
 <circle cx="836" cy="480" r="4" fill="#334155"/>
 <circle cx="852" cy="480" r="4" fill="#334155"/>
 </svg>
-<svg class="flow-mobile" viewBox="0 0 360 654" role="img" aria-label="Lesson visual, vertical layout">
-<rect x="0" y="0" width="360" height="654" fill="#0B1F3D"/>
+<svg class="flow-mobile" viewBox="0 0 360 694" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="694" fill="#0B1F3D"/>
 <text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Deposit</tspan> <tspan fill="#FFFFFF">model</tspan></text>
 <rect x="24" y="58" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
 <text x="180" y="76" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
 <g data-node="n0" data-beat="0" opacity="1">
-<rect x="24" y="92" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
-<text x="180" y="111" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">TIPS</text>
-<text x="180" y="129" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">liquidity, which means that a participant</text>
-<text x="180" y="147" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+<rect x="24" y="92" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="111" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">TIPS and deposit</text>
+<text x="180" y="129" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">model</text>
+<text x="180" y="147" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">uses a deposit model for liquidity</text>
+<text x="180" y="165" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
 </g>
 <g data-node="n1" data-beat="1" opacity="1">
-<rect x="24" y="164" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
-<text x="180" y="183" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Deposit model</text>
-<text x="180" y="201" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">keeps the instant payment liquidity separate</text>
-<text x="180" y="219" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+<rect x="24" y="184" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="203" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Deposit model</text>
+<text x="180" y="221" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">keeps the instant payment liquidity separate</text>
+<text x="180" y="239" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
 </g>
 <g data-node="n2" data-beat="2" opacity="0.55">
-<rect x="24" y="236" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
-<text x="180" y="255" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">No reservation of</text>
-<text x="180" y="273" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">funds</text>
-<text x="180" y="291" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">second basic rule is that there is no</text>
-<text x="180" y="309" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+<rect x="24" y="256" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="275" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">No reservation of</text>
+<text x="180" y="293" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">funds</text>
+<text x="180" y="311" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">second basic rule is that there is no</text>
+<text x="180" y="329" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
 </g>
 <g data-node="n3" data-beat="3" opacity="0.55">
-<rect x="24" y="328" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
-<text x="180" y="347" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Simplicity</text>
-<text x="180" y="365" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">transfers are fast and reliable</text>
-<text x="180" y="383" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+<rect x="24" y="348" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="367" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">One reason liquidity</text>
+<text x="180" y="385" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">transfers</text>
+<text x="180" y="403" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">simplicity is one reason liquidity transfers</text>
+<text x="180" y="421" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
 </g>
 <g data-node="n4" data-beat="4" opacity="0.55">
-<rect x="24" y="400" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
-<text x="180" y="419" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Transfer</text>
-<text x="180" y="437" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">If it does not, the transfer is rejected</text>
-<text x="180" y="455" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+<rect x="24" y="440" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="459" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Transfer</text>
+<text x="180" y="477" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">If it does not, the transfer is rejected</text>
+<text x="180" y="495" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
 </g>
 <g data-node="n5" data-beat="5" opacity="0.55">
-<rect x="24" y="472" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
-<text x="180" y="491" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Deposit model</text>
-<text x="180" y="509" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">working</text>
-<text x="180" y="527" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">designed.</text>
-<text x="180" y="545" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+<rect x="24" y="512" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="531" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Deposit model</text>
+<text x="180" y="549" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">working</text>
+<text x="180" y="567" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">designed.</text>
+<text x="180" y="585" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
 </g>
-<text x="180" y="572" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The deposit model keeps the instant</text>
-<text x="180" y="591" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">payment liquidity separate and visible.</text>
+<text x="180" y="612" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The deposit model keeps the instant</text>
+<text x="180" y="631" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">payment liquidity separate and visible.</text>
 </svg>
 </div>
 <div class="beat-frame" data-frame="2">
@@ -272,7 +294,7 @@
 <g data-node="n0" data-beat="0">
 <rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
 <text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
-<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">TIPS</tspan><tspan fill="#CBD5E1"> - liquidity, which means that a participant</tspan></text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">TIPS and deposit model</tspan><tspan fill="#CBD5E1"> - uses a deposit model for liquidity</tspan></text>
 <text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
 </g>
 <g data-node="n1" data-beat="1">
@@ -290,7 +312,7 @@
 <g data-node="n3" data-beat="3" opacity="0.55">
 <rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
 <text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
-<text x="112" y="328" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Simplicity</tspan><tspan fill="#CBD5E1"> - transfers are fast and reliable</tspan></text>
+<text x="112" y="328" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">One reason liquidity transfers</tspan><tspan fill="#CBD5E1"> - simplicity is one reason liquidity transfers</tspan></text>
 <text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
 </g>
 <g data-node="n4" data-beat="4" opacity="0.55">
@@ -317,59 +339,61 @@
 <circle cx="836" cy="480" r="4" fill="#334155"/>
 <circle cx="852" cy="480" r="4" fill="#334155"/>
 </svg>
-<svg class="flow-mobile" viewBox="0 0 360 701" role="img" aria-label="Lesson visual, vertical layout">
-<rect x="0" y="0" width="360" height="701" fill="#0B1F3D"/>
+<svg class="flow-mobile" viewBox="0 0 360 741" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="741" fill="#0B1F3D"/>
 <text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">No</tspan> <tspan fill="#FFFFFF">reservation</tspan> <tspan fill="#FFFFFF">of</tspan></text>
 <text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">funds</tspan></text>
 <rect x="24" y="86" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
 <text x="180" y="104" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
 <g data-node="n0" data-beat="0" opacity="1">
-<rect x="24" y="120" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
-<text x="180" y="139" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">TIPS</text>
-<text x="180" y="157" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">liquidity, which means that a participant</text>
-<text x="180" y="175" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+<rect x="24" y="120" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="139" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">TIPS and deposit</text>
+<text x="180" y="157" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">model</text>
+<text x="180" y="175" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">uses a deposit model for liquidity</text>
+<text x="180" y="193" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
 </g>
 <g data-node="n1" data-beat="1" opacity="1">
-<rect x="24" y="192" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
-<text x="180" y="211" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Deposit model</text>
-<text x="180" y="229" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">keeps the instant payment liquidity separate</text>
-<text x="180" y="247" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+<rect x="24" y="212" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="231" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Deposit model</text>
+<text x="180" y="249" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">keeps the instant payment liquidity separate</text>
+<text x="180" y="267" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
 </g>
 <g data-node="n2" data-beat="2" opacity="1">
-<rect x="24" y="264" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
-<text x="180" y="283" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">No reservation of</text>
-<text x="180" y="301" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">funds</text>
-<text x="180" y="319" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">second basic rule is that there is no</text>
-<text x="180" y="337" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+<rect x="24" y="284" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="303" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">No reservation of</text>
+<text x="180" y="321" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">funds</text>
+<text x="180" y="339" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">second basic rule is that there is no</text>
+<text x="180" y="357" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
 </g>
 <g data-node="n3" data-beat="3" opacity="0.55">
-<rect x="24" y="356" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
-<text x="180" y="375" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Simplicity</text>
-<text x="180" y="393" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">transfers are fast and reliable</text>
-<text x="180" y="411" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+<rect x="24" y="376" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="395" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">One reason liquidity</text>
+<text x="180" y="413" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">transfers</text>
+<text x="180" y="431" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">simplicity is one reason liquidity transfers</text>
+<text x="180" y="449" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
 </g>
 <g data-node="n4" data-beat="4" opacity="0.55">
-<rect x="24" y="428" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
-<text x="180" y="447" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Transfer</text>
-<text x="180" y="465" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">If it does not, the transfer is rejected</text>
-<text x="180" y="483" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+<rect x="24" y="468" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="487" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Transfer</text>
+<text x="180" y="505" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">If it does not, the transfer is rejected</text>
+<text x="180" y="523" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
 </g>
 <g data-node="n5" data-beat="5" opacity="0.55">
-<rect x="24" y="500" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
-<text x="180" y="519" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Deposit model</text>
-<text x="180" y="537" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">working</text>
-<text x="180" y="555" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">designed.</text>
-<text x="180" y="573" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+<rect x="24" y="540" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="559" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Deposit model</text>
+<text x="180" y="577" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">working</text>
+<text x="180" y="595" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">designed.</text>
+<text x="180" y="613" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
 </g>
-<text x="180" y="600" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The second basic rule is that there is no</text>
-<text x="180" y="619" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">reservation of funds in a liquidity</text>
-<text x="180" y="638" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">transfer, unlike an instant payment.</text>
+<text x="180" y="640" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The second basic rule is that there is no</text>
+<text x="180" y="659" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">reservation of funds in a liquidity</text>
+<text x="180" y="678" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">transfer, unlike an instant payment.</text>
 </svg>
 </div>
 <div class="beat-frame" data-frame="3">
 <svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
 <rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
-<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Simplicity</tspan> <tspan fill="#FFFFFF">is</tspan> <tspan fill="#FFFFFF">one</tspan> <tspan fill="#FFFFFF">reason</tspan> <tspan fill="#FFFFFF">liquidity</tspan></text>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">One</tspan> <tspan fill="#FFFFFF">reason</tspan> <tspan fill="#FFFFFF">liquidity</tspan> <tspan fill="#FFFFFF">transfers</tspan></text>
 <rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
 <rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
 <text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
@@ -379,7 +403,7 @@
 <g data-node="n0" data-beat="0">
 <rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
 <text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
-<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">TIPS</tspan><tspan fill="#CBD5E1"> - liquidity, which means that a participant</tspan></text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">TIPS and deposit model</tspan><tspan fill="#CBD5E1"> - uses a deposit model for liquidity</tspan></text>
 <text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
 </g>
 <g data-node="n1" data-beat="1">
@@ -397,7 +421,7 @@
 <g data-node="n3" data-beat="3">
 <rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
 <text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
-<text x="112" y="328" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Simplicity</tspan><tspan fill="#CBD5E1"> - transfers are fast and reliable</tspan></text>
+<text x="112" y="328" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">One reason liquidity transfers</tspan><tspan fill="#CBD5E1"> - simplicity is one reason liquidity transfers</tspan></text>
 <text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
 </g>
 <g data-node="n4" data-beat="4" opacity="0.55">
@@ -423,53 +447,55 @@
 <circle cx="836" cy="480" r="4" fill="#334155"/>
 <circle cx="852" cy="480" r="4" fill="#334155"/>
 </svg>
-<svg class="flow-mobile" viewBox="0 0 360 701" role="img" aria-label="Lesson visual, vertical layout">
-<rect x="0" y="0" width="360" height="701" fill="#0B1F3D"/>
-<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Simplicity</tspan> <tspan fill="#FFFFFF">is</tspan> <tspan fill="#FFFFFF">one</tspan></text>
-<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">reason</tspan> <tspan fill="#FFFFFF">liquidity</tspan></text>
+<svg class="flow-mobile" viewBox="0 0 360 741" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="741" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">One</tspan> <tspan fill="#FFFFFF">reason</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">liquidity</tspan> <tspan fill="#FFFFFF">transfers</tspan></text>
 <rect x="24" y="86" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
 <text x="180" y="104" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
 <g data-node="n0" data-beat="0" opacity="1">
-<rect x="24" y="120" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
-<text x="180" y="139" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">TIPS</text>
-<text x="180" y="157" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">liquidity, which means that a participant</text>
-<text x="180" y="175" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+<rect x="24" y="120" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="139" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">TIPS and deposit</text>
+<text x="180" y="157" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">model</text>
+<text x="180" y="175" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">uses a deposit model for liquidity</text>
+<text x="180" y="193" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
 </g>
 <g data-node="n1" data-beat="1" opacity="1">
-<rect x="24" y="192" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
-<text x="180" y="211" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Deposit model</text>
-<text x="180" y="229" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">keeps the instant payment liquidity separate</text>
-<text x="180" y="247" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+<rect x="24" y="212" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="231" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Deposit model</text>
+<text x="180" y="249" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">keeps the instant payment liquidity separate</text>
+<text x="180" y="267" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
 </g>
 <g data-node="n2" data-beat="2" opacity="1">
-<rect x="24" y="264" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
-<text x="180" y="283" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">No reservation of</text>
-<text x="180" y="301" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">funds</text>
-<text x="180" y="319" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">second basic rule is that there is no</text>
-<text x="180" y="337" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+<rect x="24" y="284" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="303" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">No reservation of</text>
+<text x="180" y="321" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">funds</text>
+<text x="180" y="339" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">second basic rule is that there is no</text>
+<text x="180" y="357" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
 </g>
 <g data-node="n3" data-beat="3" opacity="1">
-<rect x="24" y="356" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
-<text x="180" y="375" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Simplicity</text>
-<text x="180" y="393" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">transfers are fast and reliable</text>
-<text x="180" y="411" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+<rect x="24" y="376" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="395" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">One reason liquidity</text>
+<text x="180" y="413" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">transfers</text>
+<text x="180" y="431" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">simplicity is one reason liquidity transfers</text>
+<text x="180" y="449" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
 </g>
 <g data-node="n4" data-beat="4" opacity="0.55">
-<rect x="24" y="428" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
-<text x="180" y="447" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Transfer</text>
-<text x="180" y="465" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">If it does not, the transfer is rejected</text>
-<text x="180" y="483" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+<rect x="24" y="468" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="487" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Transfer</text>
+<text x="180" y="505" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">If it does not, the transfer is rejected</text>
+<text x="180" y="523" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
 </g>
 <g data-node="n5" data-beat="5" opacity="0.55">
-<rect x="24" y="500" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
-<text x="180" y="519" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Deposit model</text>
-<text x="180" y="537" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">working</text>
-<text x="180" y="555" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">designed.</text>
-<text x="180" y="573" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+<rect x="24" y="540" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="559" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Deposit model</text>
+<text x="180" y="577" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">working</text>
+<text x="180" y="595" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">designed.</text>
+<text x="180" y="613" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
 </g>
-<text x="180" y="600" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">That simplicity is one reason liquidity</text>
-<text x="180" y="619" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">transfers are fast and reliable, even at</text>
-<text x="180" y="638" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">high volumes.</text>
+<text x="180" y="640" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">That simplicity is one reason liquidity</text>
+<text x="180" y="659" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">transfers are fast and reliable, even at</text>
+<text x="180" y="678" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">high volumes.</text>
 </svg>
 </div>
 <div class="beat-frame" data-frame="4">
@@ -485,7 +511,7 @@
 <g data-node="n0" data-beat="0">
 <rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
 <text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
-<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">TIPS</tspan><tspan fill="#CBD5E1"> - liquidity, which means that a participant</tspan></text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">TIPS and deposit model</tspan><tspan fill="#CBD5E1"> - uses a deposit model for liquidity</tspan></text>
 <text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
 </g>
 <g data-node="n1" data-beat="1">
@@ -503,7 +529,7 @@
 <g data-node="n3" data-beat="3">
 <rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
 <text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
-<text x="112" y="328" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Simplicity</tspan><tspan fill="#CBD5E1"> - transfers are fast and reliable</tspan></text>
+<text x="112" y="328" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">One reason liquidity transfers</tspan><tspan fill="#CBD5E1"> - simplicity is one reason liquidity transfers</tspan></text>
 <text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
 </g>
 <g data-node="n4" data-beat="4">
@@ -530,54 +556,56 @@
 <circle cx="836" cy="480" r="4" fill="#45A4FF"/>
 <circle cx="852" cy="480" r="4" fill="#334155"/>
 </svg>
-<svg class="flow-mobile" viewBox="0 0 360 720" role="img" aria-label="Lesson visual, vertical layout">
-<rect x="0" y="0" width="360" height="720" fill="#0B1F3D"/>
+<svg class="flow-mobile" viewBox="0 0 360 760" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="760" fill="#0B1F3D"/>
 <text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Transfer:</tspan> <tspan fill="#FFFFFF">rejected</tspan></text>
 <text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">immediately</tspan></text>
 <rect x="24" y="86" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
 <text x="180" y="104" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
 <g data-node="n0" data-beat="0" opacity="1">
-<rect x="24" y="120" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
-<text x="180" y="139" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">TIPS</text>
-<text x="180" y="157" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">liquidity, which means that a participant</text>
-<text x="180" y="175" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+<rect x="24" y="120" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="139" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">TIPS and deposit</text>
+<text x="180" y="157" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">model</text>
+<text x="180" y="175" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">uses a deposit model for liquidity</text>
+<text x="180" y="193" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
 </g>
 <g data-node="n1" data-beat="1" opacity="1">
-<rect x="24" y="192" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
-<text x="180" y="211" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Deposit model</text>
-<text x="180" y="229" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">keeps the instant payment liquidity separate</text>
-<text x="180" y="247" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+<rect x="24" y="212" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="231" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Deposit model</text>
+<text x="180" y="249" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">keeps the instant payment liquidity separate</text>
+<text x="180" y="267" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
 </g>
 <g data-node="n2" data-beat="2" opacity="1">
-<rect x="24" y="264" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
-<text x="180" y="283" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">No reservation of</text>
-<text x="180" y="301" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">funds</text>
-<text x="180" y="319" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">second basic rule is that there is no</text>
-<text x="180" y="337" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+<rect x="24" y="284" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="303" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">No reservation of</text>
+<text x="180" y="321" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">funds</text>
+<text x="180" y="339" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">second basic rule is that there is no</text>
+<text x="180" y="357" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
 </g>
 <g data-node="n3" data-beat="3" opacity="1">
-<rect x="24" y="356" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
-<text x="180" y="375" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Simplicity</text>
-<text x="180" y="393" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">transfers are fast and reliable</text>
-<text x="180" y="411" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+<rect x="24" y="376" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="395" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">One reason liquidity</text>
+<text x="180" y="413" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">transfers</text>
+<text x="180" y="431" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">simplicity is one reason liquidity transfers</text>
+<text x="180" y="449" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
 </g>
 <g data-node="n4" data-beat="4" opacity="1">
-<rect x="24" y="428" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
-<text x="180" y="447" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Transfer</text>
-<text x="180" y="465" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">If it does not, the transfer is rejected</text>
-<text x="180" y="483" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+<rect x="24" y="468" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="487" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Transfer</text>
+<text x="180" y="505" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">If it does not, the transfer is rejected</text>
+<text x="180" y="523" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
 </g>
 <g data-node="n5" data-beat="5" opacity="0.55">
-<rect x="24" y="500" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
-<text x="180" y="519" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Deposit model</text>
-<text x="180" y="537" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">working</text>
-<text x="180" y="555" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">designed.</text>
-<text x="180" y="573" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+<rect x="24" y="540" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="559" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Deposit model</text>
+<text x="180" y="577" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">working</text>
+<text x="180" y="595" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">designed.</text>
+<text x="180" y="613" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
 </g>
-<text x="180" y="600" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">If it does not, the transfer is rejected</text>
-<text x="180" y="619" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">immediately, and the bank knows at once</text>
-<text x="180" y="638" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">that it must fund its main account before it</text>
-<text x="180" y="657" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">tries again.</text>
+<text x="180" y="640" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">If it does not, the transfer is rejected</text>
+<text x="180" y="659" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">immediately, and the bank knows at once</text>
+<text x="180" y="678" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">that it must fund its main account before it</text>
+<text x="180" y="697" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">tries again.</text>
 </svg>
 </div>
 <div class="beat-frame" data-frame="5">
@@ -593,7 +621,7 @@
 <g data-node="n0" data-beat="0">
 <rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
 <text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
-<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">TIPS</tspan><tspan fill="#CBD5E1"> - liquidity, which means that a participant</tspan></text>
+<text x="112" y="226" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">TIPS and deposit model</tspan><tspan fill="#CBD5E1"> - uses a deposit model for liquidity</tspan></text>
 <text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
 </g>
 <g data-node="n1" data-beat="1">
@@ -611,7 +639,7 @@
 <g data-node="n3" data-beat="3">
 <rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
 <text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
-<text x="112" y="328" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Simplicity</tspan><tspan fill="#CBD5E1"> - transfers are fast and reliable</tspan></text>
+<text x="112" y="328" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">One reason liquidity transfers</tspan><tspan fill="#CBD5E1"> - simplicity is one reason liquidity transfers</tspan></text>
 <text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
 </g>
 <g data-node="n4" data-beat="4">
@@ -637,52 +665,54 @@
 <circle cx="836" cy="480" r="4" fill="#334155"/>
 <circle cx="852" cy="480" r="4" fill="#45A4FF"/>
 </svg>
-<svg class="flow-mobile" viewBox="0 0 360 682" role="img" aria-label="Lesson visual, vertical layout">
-<rect x="0" y="0" width="360" height="682" fill="#0B1F3D"/>
+<svg class="flow-mobile" viewBox="0 0 360 722" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="722" fill="#0B1F3D"/>
 <text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Deposit</tspan> <tspan fill="#FFFFFF">model</tspan></text>
 <text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">working</tspan></text>
 <rect x="24" y="86" width="312" height="26" rx="8" fill="#0C1626" stroke="#2DD4BF" stroke-width="1.5"/>
 <text x="180" y="104" text-anchor="middle" font-size="12" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">COMPLETE</text>
 <g data-node="n0" data-beat="0" opacity="1">
-<rect x="24" y="120" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
-<text x="180" y="139" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">TIPS</text>
-<text x="180" y="157" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">liquidity, which means that a participant</text>
-<text x="180" y="175" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+<rect x="24" y="120" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="139" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">TIPS and deposit</text>
+<text x="180" y="157" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">model</text>
+<text x="180" y="175" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">uses a deposit model for liquidity</text>
+<text x="180" y="193" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
 </g>
 <g data-node="n1" data-beat="1" opacity="1">
-<rect x="24" y="192" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
-<text x="180" y="211" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Deposit model</text>
-<text x="180" y="229" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">keeps the instant payment liquidity separate</text>
-<text x="180" y="247" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+<rect x="24" y="212" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="231" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Deposit model</text>
+<text x="180" y="249" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">keeps the instant payment liquidity separate</text>
+<text x="180" y="267" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
 </g>
 <g data-node="n2" data-beat="2" opacity="1">
-<rect x="24" y="264" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
-<text x="180" y="283" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">No reservation of</text>
-<text x="180" y="301" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">funds</text>
-<text x="180" y="319" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">second basic rule is that there is no</text>
-<text x="180" y="337" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+<rect x="24" y="284" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="303" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">No reservation of</text>
+<text x="180" y="321" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">funds</text>
+<text x="180" y="339" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">second basic rule is that there is no</text>
+<text x="180" y="357" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
 </g>
 <g data-node="n3" data-beat="3" opacity="1">
-<rect x="24" y="356" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
-<text x="180" y="375" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Simplicity</text>
-<text x="180" y="393" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">transfers are fast and reliable</text>
-<text x="180" y="411" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+<rect x="24" y="376" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="395" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">One reason liquidity</text>
+<text x="180" y="413" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">transfers</text>
+<text x="180" y="431" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">simplicity is one reason liquidity transfers</text>
+<text x="180" y="449" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
 </g>
 <g data-node="n4" data-beat="4" opacity="1">
-<rect x="24" y="428" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
-<text x="180" y="447" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Transfer</text>
-<text x="180" y="465" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">If it does not, the transfer is rejected</text>
-<text x="180" y="483" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+<rect x="24" y="468" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="487" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Transfer</text>
+<text x="180" y="505" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">If it does not, the transfer is rejected</text>
+<text x="180" y="523" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
 </g>
 <g data-node="n5" data-beat="5" opacity="1">
-<rect x="24" y="500" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
-<text x="180" y="519" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Deposit model</text>
-<text x="180" y="537" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">working</text>
-<text x="180" y="555" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">designed.</text>
-<text x="180" y="573" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+<rect x="24" y="540" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="559" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Deposit model</text>
+<text x="180" y="577" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">working</text>
+<text x="180" y="595" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">designed.</text>
+<text x="180" y="613" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
 </g>
-<text x="180" y="600" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">That is the deposit model working as</text>
-<text x="180" y="619" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">designed.</text>
+<text x="180" y="640" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">That is the deposit model working as</text>
+<text x="180" y="659" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">designed.</text>
 </svg>
 </div>
 </div>
@@ -735,10 +765,10 @@
 <p class="transcript">Chapter objective: Learner explains TIPS instant payments and liquidity transfers, describes SCT Inst, Non-Euro and SIP flows, and distinguishes TIPS DCA, AS Technical Account and Transit Accounts. Learner uses real amounts, banks and message names to show how instant payments and liquidity transfers work.</p>
 <h3>Key learning points</h3>
 <ul id="studio-points-studio-ch59s4">
-<li>TIPS uses a deposit model</li>
+<li>TIPS and deposit model</li>
 <li>Deposit model</li>
 <li>No reservation of funds</li>
-<li>Simplicity is one reason liquidity</li>
+<li>One reason liquidity transfers</li>
 <li>Transfer: rejected immediately</li>
 <li>Deposit model working</li>
 </ul>
@@ -783,6 +813,12 @@
 <p><a class="fw-tool-link" href="../simulators/t2-tips.html">Open the T2/TIPS Simulator &rarr;</a></p>
 <p class="studio-note">Builds on "Messages and Statuses: pacs.008.001.08 and pacs.002.001.10".</p>
 </div>
+<div class="fw-card" id="pf-depth-studio-ch59s4">
+<p class="fw-label">Advanced depth</p>
+<h2>Worked at message level</h2>
+<p><b>Worked example.</b> For example, a bank in Germany might move EUR 10 million from its TARGET main cash account to its TIPS DCA at the start of the day, use EUR 6 million of it for instant payments during the day, and move EUR 4 million back at the end of the day.</p>
+<p><b>When it goes wrong.</b> That rule sounds obvious, but it matters in practice, because a bank that holds liquidity in several currencies must manage each currency separately, and a funding error in one currency cannot be fixed by moving money from another currency through TIPS.</p>
+</div>
 <section class="upnext" id="studio-upnext-studio-ch59s4" style="display:none" aria-label="Up next">
 <span class="tag">Up next</span>
 <h2>Up next: camt.050, camt.025 and camt.054, A2A and U2A Modes, TIPS DCA vs TIPS AS Technical Account</h2>
@@ -815,7 +851,14 @@
 </div>
 <p class="studio-note">Scene timestamps are estimated by allocating the narration text proportionally across the real audio length. The audio playback position is the source of truth: pause freezes the visual, seeking restores the correct scene, replay restarts the scene animation.</p>
 </div>
-<script>window.__PA_STUDIO_QUEUE = window.__PA_STUDIO_QUEUE || []; window.__PA_STUDIO_QUEUE.push(["studio-ch59s4", {"sample_id": "studio-ch59s4", "chapter_id": "ch59", "title": "Liquidity Transfers in TIPS: The Deposit Model and the Three Basic Rules", "domain": "D05 Domestic payment systems", "objective": "Learner explains TIPS instant payments and liquidity transfers, describes SCT Inst, Non-Euro and SIP flows, and distinguishes TIPS DCA, AS Technical Account and Transit Accounts. Learner uses real amounts, banks and message names to show how instant payments and liquidity transfers work.", "scenes": [{"id": "ch59s4", "section_id": "ch59s4", "title": "Liquidity Transfers in TIPS: The Deposit Model and the Three Basic Rules", "audio": "../audio/ch59s4.mp3", "duration_sec": 221.5, "points": ["TIPS uses a deposit model for liquidity, which means that a participant holds its instant payment liquidity in a TIPS Dedicated Cash Account, known as a TIPS DCA, and that account is funded by moving money from the...", "The first basic rule for liquidity transfers in TIPS is that a transfer can only take place between accounts in the same currency.", "The second basic rule is that there is no reservation of funds in a liquidity transfer, unlike an instant payment.", "The third basic rule is that a liquidity transfer is settled or rejected immediately, with no intermediate waiting state.", "These three rules together make liquidity management in TIPS predictable, and that predictability matters for banks that settle thousands of instant payments every hour."], "terms": [{"term": "Liquidity transfer", "def": "A movement of funds between accounts held by the same participant to manage liquidity, for example from a main cash account to a dedicated cash account."}, {"term": "Liquidity", "def": "Cash or assets that a bank can use immediately to meet payment obligations. Banks manage liquidity by forecasting inflows and outflows, funding nostro and settlement accounts, and using central bank..."}, {"term": "Reject", "def": "A payment instruction that is refused before settlement because it fails validation, screening or account checks."}], "transcript": "TIPS uses a deposit model for liquidity, which means that a participant holds its instant payment liquidity in a TIPS Dedicated Cash Account, known as a TIPS DCA, and that account is funded by moving money from the participant main cash account in TARGET. The TIPS DCA is like a wallet that a bank tops up in the morning and uses through the day to settle instant payments, and the bank can move money back to its main account when it no longer needs it in TIPS. For example, a bank in Germany might move EUR 10 million from its TARGET main cash account to its TIPS DCA at the start of the day, use EUR 6 million of it for instant payments during the day, and move EUR 4 million back at the end of the day. The deposit model keeps the instant payment liquidity separate and visible. The first basic rule for liquidity transfers in TIPS is that a transfer can only take place between accounts in the same currency. A euro liquidity transfer can only move euro between a euro main cash account and a euro TIPS DCA, and a Swedish krona transfer can only move krona between krona accounts. A bank cannot use a liquidity transfer to convert euro into krona, and it cannot fund a euro TIPS DCA from a krona main cash account. That rule sounds obvious, but it matters in practice, because a bank that holds liquidity in several currencies must manage each currency separately, and a funding error in one currency cannot be fixed by moving money from another currency through TIPS. The second basic rule is that there is no reservation of funds in a liquidity transfer, unlike an instant payment. In an instant payment, TIPS reserves the funds on the payer TIPS DCA while the payee bank decides, and that reservation protects the payment. In a liquidity transfer, there is no payee bank decision to wait for, and no reservation is needed, because the transfer is a simple movement of funds between two accounts owned by the same participant or by the system itself. The transfer is checked, and then it either settles or it is rejected, with no waiting period in between. That simplicity is one reason liquidity transfers are fast and reliable, even at high volumes. The third basic rule is that a liquidity transfer is settled or rejected immediately, with no intermediate waiting state. When a bank instructs a liquidity transfer of EUR 500,000 from its TARGET main cash account to its TIPS DCA, TIPS and TARGET together check the instruction, verify the funds, and either settle it at once or reject it at once. There is no reserved state, no ten second window for a counterparty to answer, and no expiry to manage. If the main cash account has enough funds, the EUR 500,000 moves immediately. If it does not, the transfer is rejected immediately, and the bank knows at once that it must fund its main account before it tries again. These three rules together make liquidity management in TIPS predictable, and that predictability matters for banks that settle thousands of instant payments every hour. A treasurer who knows that a liquidity transfer only works in the same currency, that it has no reservation, and that it settles or fails immediately, can plan funding with confidence. For example, a bank in France that expects EUR 20 million of instant payment outflows in the afternoon can move EUR 20 million into its TIPS DCA in the morning, knowing the transfer will settle at once, and it can move any surplus back in the evening, knowing that transfer will also settle at once. That is the deposit model working as designed.", "paragraphs": ["TIPS uses a deposit model for liquidity, which means that a participant holds its instant payment liquidity in a TIPS Dedicated Cash Account, known as a TIPS DCA, and that account is funded by moving money from the participant main cash account in TARGET. The TIPS DCA is like a wallet that a bank tops up in the morning and uses through the day to settle instant payments, and the bank can move money back to its main account when it no longer needs it in TIPS. For example, a bank in Germany might move EUR 10 million from its TARGET main cash account to its TIPS DCA at the start of the day, use EUR 6 million of it for instant payments during the day, and move EUR 4 million back at the end of the day. The deposit model keeps the instant payment liquidity separate and visible.", "The first basic rule for liquidity transfers in TIPS is that a transfer can only take place between accounts in the same currency. A euro liquidity transfer can only move euro between a euro main cash account and a euro TIPS DCA, and a Swedish krona transfer can only move krona between krona accounts. A bank cannot use a liquidity transfer to convert euro into krona, and it cannot fund a euro TIPS DCA from a krona main cash account. That rule sounds obvious, but it matters in practice, because a bank that holds liquidity in several currencies must manage each currency separately, and a funding error in one currency cannot be fixed by moving money from another currency through TIPS.", "The second basic rule is that there is no reservation of funds in a liquidity transfer, unlike an instant payment. In an instant payment, TIPS reserves the funds on the payer TIPS DCA while the payee bank decides, and that reservation protects the payment. In a liquidity transfer, there is no payee bank decision to wait for, and no reservation is needed, because the transfer is a simple movement of funds between two accounts owned by the same participant or by the system itself. The transfer is checked, and then it either settles or it is rejected, with no waiting period in between. That simplicity is one reason liquidity transfers are fast and reliable, even at high volumes.", "The third basic rule is that a liquidity transfer is settled or rejected immediately, with no intermediate waiting state. When a bank instructs a liquidity transfer of EUR 500,000 from its TARGET main cash account to its TIPS DCA, TIPS and TARGET together check the instruction, verify the funds, and either settle it at once or reject it at once. There is no reserved state, no ten second window for a counterparty to answer, and no expiry to manage. If the main cash account has enough funds, the EUR 500,000 moves immediately. If it does not, the transfer is rejected immediately, and the bank knows at once that it must fund its main account before it tries again.", "These three rules together make liquidity management in TIPS predictable, and that predictability matters for banks that settle thousands of instant payments every hour. A treasurer who knows that a liquidity transfer only works in the same currency, that it has no reservation, and that it settles or fails immediately, can plan funding with confidence. For example, a bank in France that expects EUR 20 million of instant payment outflows in the afternoon can move EUR 20 million into its TIPS DCA in the morning, knowing the transfer will settle at once, and it can move any surplus back in the evening, knowing that transfer will also settle at once. That is the deposit model working as designed."], "accessibility": "Payment flow diagram showing Liquidity Transfers in TIPS: The Deposit Model and the Three Basic Rules.", "visual_type": "payment_flow", "visual_choice_reason": "payment rails chapter", "beats": [{"t0": 0.0, "t1": 44.5, "title": "TIPS uses a deposit model", "note": "TIPS uses a deposit model for liquidity, which means that a participant holds its instant payment liquidity in a TIPS Dedicated Cash Account, known as a TIPS DCA,", "highlight_nodes": ["n0"], "highlight_conns": [], "highlight_fields": []}, {"t0": 44.5, "t1": 92.6, "title": "Deposit model", "note": "The deposit model keeps the instant payment liquidity separate and visible.", "highlight_nodes": ["n1"], "highlight_conns": ["c0"], "highlight_fields": []}, {"t0": 92.6, "t1": 129.6, "title": "No reservation of funds", "note": "The second basic rule is that there is no reservation of funds in a liquidity transfer, unlike an instant payment.", "highlight_nodes": ["n2"], "highlight_conns": ["c1"], "highlight_fields": []}, {"t0": 129.6, "t1": 168.7, "title": "Simplicity is one reason liquidity", "note": "That simplicity is one reason liquidity transfers are fast and reliable, even at high volumes.", "highlight_nodes": ["n3"], "highlight_conns": ["c2"], "highlight_fields": []}, {"t0": 168.7, "t1": 218.6, "title": "Transfer: rejected immediately", "note": "If it does not, the transfer is rejected immediately, and the bank knows at once that it must fund its main account before it tries again.", "highlight_nodes": ["n4"], "highlight_conns": ["c3"], "highlight_fields": []}, {"t0": 218.6, "t1": 221.5, "title": "Deposit model working", "note": "That is the deposit model working as designed.", "highlight_nodes": ["n5"], "highlight_conns": ["c4"], "highlight_fields": []}], "node_ids": ["n0", "n1", "n2", "n3", "n4", "n5"], "framework": {"objective": "By the end of this lesson, you will be able to explain liquidity transfers in TIPS: the deposit model and the three basic rules. TIPS uses a deposit model for liquidity, which means that a participant holds its instant payment liquidity in a TIPS Dedicated Cash Account, known as a TIPS DCA, and that account is funded by moving money from the.", "why_matters": "This matters because the rail decides how fast the money moves, what it costs, when it settles and what can go wrong. Choosing the wrong rail is a product and an operations failure.", "technical_example": "For example, a bank in Germany might move EUR 10 million from its TARGET main cash account to its TIPS DCA at the start of the day, use EUR 6 million of it for instant payments during the day, and move EUR 4 million back at the end of the day.", "failure_recovery": "That rule sounds obvious, but it matters in practice, because a bank that holds liquidity in several currencies must manage each currency separately, and a funding error in one currency cannot be fixed by moving money from another currency through TIPS.", "exercise": {"action": "State the deposit model, work out the end of day position, and state the three basic rules.", "correct": "TIPS uses a deposit model for liquidity: the participant holds its instant payment liquidity in a TIPS Dedicated Cash Account, funded by moving money from its Main Cash Account. The bank moves EUR 10 million in at the start of the day, uses EUR 6 million for instant payments, and moves EUR 4 million back at the end of the day. The three basic rules are: a transfer can only take place between accounts in the same currency; there is no reservation of funds in a liquidity transfer, unlike an instant payment; and a liquidity transfer is settled or rejected immediately, with no intermediate waiting state.", "info": "Use the deposit model and the three basic rules in this lesson.", "task": "A bank in Germany moves EUR 10 million from its TARGET main cash account to its TIPS DCA at the start of the day, uses EUR 6 million for instant payments, and moves EUR 4 million back at the end of the day. Explain the deposit model, work out the position, and state the three basic rules for liquidity transfers.", "why": "Liquidity management in TIPS is predictable by design. A bank that treats a liquidity transfer like an instant payment, expecting a reservation or a queue, will misread its own funding position."}, "assessment": {"answer": 0, "explanation": "TIPS uses a deposit model for liquidity, which means that a participant holds its instant payment liquidity in a TIPS Dedicated Cash Account, and that account is funded by moving money from the participant Main Cash Account. The three basic rules are: a transfer can only take place between accounts in the same currency; there is no reservation of funds in a liquidity transfer, unlike an instant payment; and a liquidity transfer is settled or rejected immediately, with no intermediate waiting state.", "options": ["The bank holds its instant payment liquidity in a TIPS DCA funded from its Main Cash Account, and a liquidity transfer moves only within one currency, with no reservation, and settles or is rejected immediately.", "A bank can move liquidity between currencies through TIPS, because TIPS converts the funds as part of the transfer.", "A liquidity transfer reserves funds like an instant payment, so the money is held until the transfer completes.", "A liquidity transfer waits in a queue when funds are short, and settles later when liquidity arrives."], "question": "A bank in Germany moves EUR 10 million from its TARGET main cash account to its TIPS DCA at the start of the day, uses EUR 6 million for instant payments, and moves EUR 4 million back at the end of the day. Which statement about the TIPS deposit model and the three basic rules is correct?", "source": "generated:ch59s4", "why_wrong": ["This is wrong. A transfer can only take place between accounts in the same currency, and a funding error in one currency cannot be fixed by moving money from another currency.", "This is wrong. There is no reservation of funds in a liquidity transfer, unlike an instant payment.", "This is wrong. A liquidity transfer is settled or rejected immediately, with no intermediate waiting state."]}, "takeaway": "That is the deposit model working as designed.", "prereq": "ch59s3", "next": "ch59s5", "connection_note": "Builds on \"Messages and Statuses: pacs.008.001.08 and pacs.002.001.10\".", "tool": {"slug": "t2-tips", "label": "T2/TIPS Simulator", "url": "../simulators/t2-tips.html", "scenario": "Settle a payment like the one in this lesson and watch the liquidity and finality behaviour."}, "simple": "In plain words: tIPS uses a deposit model for liquidity, which means that a participant holds its instant payment liquidity in a TIPS Dedicated Cash Account, known as a TIPS DCA, and that account is funded by moving money from the. That is the whole idea in one sentence, and the rest of the lesson shows how it works in a real bank.", "summary": "TIPS uses a deposit model for liquidity, which means that a participant holds its instant payment liquidity in a TIPS Dedicated Cash Account, known as a TIPS DCA, and that account is funded by moving money from the participant main cash account in TARGET. Key points: TIPS uses a deposit model; Deposit model; No reservation of funds; Simplicity is one reason liquidity; Transfer: rejected immediately; Deposit model working.", "example": "The TIPS DCA is like a wallet that a bank tops up in the morning and uses through the day to settle instant payments, and the bank can move money back to its main account when it no longer needs it in TIPS. For example, a bank in Germany might move EUR 10 million from its TARGET main cash account to its TIPS DCA at the start of the day, use EUR 6 million of it for instant payments during the day, and move EUR 4 million back at the end of the day."}}], "chapter_title": "TIPS in Depth: Instant Payments and Liquidity Transfers", "meta_line": "TIPS in Depth: Instant Payments and Liquidity Transfers, Lesson 4 of 7, Narration 3:41, D05 Domestic payment systems", "next_id": "ch59s5", "next_title": "camt.050, camt.025 and camt.054, A2A and U2A Modes, TIPS DCA vs TIPS AS Technical Account"}]);</script>
+<script>window.__PA_STUDIO_QUEUE = window.__PA_STUDIO_QUEUE || []; window.__PA_STUDIO_QUEUE.push(["studio-ch59s4", {"sample_id": "studio-ch59s4", "chapter_id": "ch59", "title": "Liquidity Transfers in TIPS: The Deposit Model and the Three Basic Rules", "domain": "D05 Domestic payment systems", "objective": "Learner explains TIPS instant payments and liquidity transfers, describes SCT Inst, Non-Euro and SIP flows, and distinguishes TIPS DCA, AS Technical Account and Transit Accounts. Learner uses real amounts, banks and message names to show how instant payments and liquidity transfers work.", "scenes": [{"id": "ch59s4", "section_id": "ch59s4", "title": "Liquidity Transfers in TIPS: The Deposit Model and the Three Basic Rules", "audio": "../audio/ch59s4.mp3", "duration_sec": 221.5, "points": ["TIPS uses a deposit model for liquidity, which means that a participant holds its instant payment liquidity in a TIPS Dedicated Cash Account, known as a TIPS DCA, and that account is funded by moving money from the...", "The first basic rule for liquidity transfers in TIPS is that a transfer can only take place between accounts in the same currency.", "The second basic rule is that there is no reservation of funds in a liquidity transfer, unlike an instant payment.", "The third basic rule is that a liquidity transfer is settled or rejected immediately, with no intermediate waiting state.", "These three rules together make liquidity management in TIPS predictable, and that predictability matters for banks that settle thousands of instant payments every hour."], "terms": [{"term": "Liquidity transfer", "def": "A movement of funds between accounts held by the same participant to manage liquidity, for example from a main cash account to a dedicated cash account."}, {"term": "Liquidity", "def": "Cash or assets that a bank can use immediately to meet payment obligations. Banks manage liquidity by forecasting inflows and outflows, funding nostro and settlement accounts, and using central bank..."}, {"term": "Reject", "def": "A payment instruction that is refused before settlement because it fails validation, screening or account checks."}], "transcript": "TIPS uses a deposit model for liquidity, which means that a participant holds its instant payment liquidity in a TIPS Dedicated Cash Account, known as a TIPS DCA, and that account is funded by moving money from the participant main cash account in TARGET. The TIPS DCA is like a wallet that a bank tops up in the morning and uses through the day to settle instant payments, and the bank can move money back to its main account when it no longer needs it in TIPS. For example, a bank in Germany might move EUR 10 million from its TARGET main cash account to its TIPS DCA at the start of the day, use EUR 6 million of it for instant payments during the day, and move EUR 4 million back at the end of the day. The deposit model keeps the instant payment liquidity separate and visible. The first basic rule for liquidity transfers in TIPS is that a transfer can only take place between accounts in the same currency. A euro liquidity transfer can only move euro between a euro main cash account and a euro TIPS DCA, and a Swedish krona transfer can only move krona between krona accounts. A bank cannot use a liquidity transfer to convert euro into krona, and it cannot fund a euro TIPS DCA from a krona main cash account. That rule sounds obvious, but it matters in practice, because a bank that holds liquidity in several currencies must manage each currency separately, and a funding error in one currency cannot be fixed by moving money from another currency through TIPS. The second basic rule is that there is no reservation of funds in a liquidity transfer, unlike an instant payment. In an instant payment, TIPS reserves the funds on the payer TIPS DCA while the payee bank decides, and that reservation protects the payment. In a liquidity transfer, there is no payee bank decision to wait for, and no reservation is needed, because the transfer is a simple movement of funds between two accounts owned by the same participant or by the system itself. The transfer is checked, and then it either settles or it is rejected, with no waiting period in between. That simplicity is one reason liquidity transfers are fast and reliable, even at high volumes. The third basic rule is that a liquidity transfer is settled or rejected immediately, with no intermediate waiting state. When a bank instructs a liquidity transfer of EUR 500,000 from its TARGET main cash account to its TIPS DCA, TIPS and TARGET together check the instruction, verify the funds, and either settle it at once or reject it at once. There is no reserved state, no ten second window for a counterparty to answer, and no expiry to manage. If the main cash account has enough funds, the EUR 500,000 moves immediately. If it does not, the transfer is rejected immediately, and the bank knows at once that it must fund its main account before it tries again. These three rules together make liquidity management in TIPS predictable, and that predictability matters for banks that settle thousands of instant payments every hour. A treasurer who knows that a liquidity transfer only works in the same currency, that it has no reservation, and that it settles or fails immediately, can plan funding with confidence. For example, a bank in France that expects EUR 20 million of instant payment outflows in the afternoon can move EUR 20 million into its TIPS DCA in the morning, knowing the transfer will settle at once, and it can move any surplus back in the evening, knowing that transfer will also settle at once. That is the deposit model working as designed.", "paragraphs": ["TIPS uses a deposit model for liquidity, which means that a participant holds its instant payment liquidity in a TIPS Dedicated Cash Account, known as a TIPS DCA, and that account is funded by moving money from the participant main cash account in TARGET. The TIPS DCA is like a wallet that a bank tops up in the morning and uses through the day to settle instant payments, and the bank can move money back to its main account when it no longer needs it in TIPS. For example, a bank in Germany might move EUR 10 million from its TARGET main cash account to its TIPS DCA at the start of the day, use EUR 6 million of it for instant payments during the day, and move EUR 4 million back at the end of the day. The deposit model keeps the instant payment liquidity separate and visible.", "The first basic rule for liquidity transfers in TIPS is that a transfer can only take place between accounts in the same currency. A euro liquidity transfer can only move euro between a euro main cash account and a euro TIPS DCA, and a Swedish krona transfer can only move krona between krona accounts. A bank cannot use a liquidity transfer to convert euro into krona, and it cannot fund a euro TIPS DCA from a krona main cash account. That rule sounds obvious, but it matters in practice, because a bank that holds liquidity in several currencies must manage each currency separately, and a funding error in one currency cannot be fixed by moving money from another currency through TIPS.", "The second basic rule is that there is no reservation of funds in a liquidity transfer, unlike an instant payment. In an instant payment, TIPS reserves the funds on the payer TIPS DCA while the payee bank decides, and that reservation protects the payment. In a liquidity transfer, there is no payee bank decision to wait for, and no reservation is needed, because the transfer is a simple movement of funds between two accounts owned by the same participant or by the system itself. The transfer is checked, and then it either settles or it is rejected, with no waiting period in between. That simplicity is one reason liquidity transfers are fast and reliable, even at high volumes.", "The third basic rule is that a liquidity transfer is settled or rejected immediately, with no intermediate waiting state. When a bank instructs a liquidity transfer of EUR 500,000 from its TARGET main cash account to its TIPS DCA, TIPS and TARGET together check the instruction, verify the funds, and either settle it at once or reject it at once. There is no reserved state, no ten second window for a counterparty to answer, and no expiry to manage. If the main cash account has enough funds, the EUR 500,000 moves immediately. If it does not, the transfer is rejected immediately, and the bank knows at once that it must fund its main account before it tries again.", "These three rules together make liquidity management in TIPS predictable, and that predictability matters for banks that settle thousands of instant payments every hour. A treasurer who knows that a liquidity transfer only works in the same currency, that it has no reservation, and that it settles or fails immediately, can plan funding with confidence. For example, a bank in France that expects EUR 20 million of instant payment outflows in the afternoon can move EUR 20 million into its TIPS DCA in the morning, knowing the transfer will settle at once, and it can move any surplus back in the evening, knowing that transfer will also settle at once. That is the deposit model working as designed."], "accessibility": "Payment flow diagram showing Liquidity Transfers in TIPS: The Deposit Model and the Three Basic Rules.", "visual_type": "payment_flow", "visual_choice_reason": "payment rails chapter", "beats": [{"t0": 0.0, "t1": 44.5, "title": "TIPS and deposit model", "note": "TIPS uses a deposit model for liquidity, which means that a participant holds its instant payment liquidity in a TIPS Dedicated Cash Account, known as a TIPS DCA,", "highlight_nodes": ["n0"], "highlight_conns": [], "highlight_fields": []}, {"t0": 44.5, "t1": 92.6, "title": "Deposit model", "note": "The deposit model keeps the instant payment liquidity separate and visible.", "highlight_nodes": ["n1"], "highlight_conns": ["c0"], "highlight_fields": []}, {"t0": 92.6, "t1": 129.6, "title": "No reservation of funds", "note": "The second basic rule is that there is no reservation of funds in a liquidity transfer, unlike an instant payment.", "highlight_nodes": ["n2"], "highlight_conns": ["c1"], "highlight_fields": []}, {"t0": 129.6, "t1": 168.7, "title": "One reason liquidity transfers", "note": "That simplicity is one reason liquidity transfers are fast and reliable, even at high volumes.", "highlight_nodes": ["n3"], "highlight_conns": ["c2"], "highlight_fields": []}, {"t0": 168.7, "t1": 218.6, "title": "Transfer: rejected immediately", "note": "If it does not, the transfer is rejected immediately, and the bank knows at once that it must fund its main account before it tries again.", "highlight_nodes": ["n4"], "highlight_conns": ["c3"], "highlight_fields": []}, {"t0": 218.6, "t1": 221.5, "title": "Deposit model working", "note": "That is the deposit model working as designed.", "highlight_nodes": ["n5"], "highlight_conns": ["c4"], "highlight_fields": []}], "node_ids": ["n0", "n1", "n2", "n3", "n4", "n5"], "framework": {"objective": "By the end of this lesson, you will be able to explain liquidity transfers in TIPS: the deposit model and the three basic rules. TIPS uses a deposit model for liquidity, which means that a participant holds its instant payment liquidity in a TIPS Dedicated Cash Account, known as a TIPS DCA, and that account is funded by moving money from the.", "why_matters": "This matters because the rail decides how fast the money moves, what it costs, when it settles and what can go wrong. Choosing the wrong rail is a product and an operations failure.", "technical_example": "For example, a bank in Germany might move EUR 10 million from its TARGET main cash account to its TIPS DCA at the start of the day, use EUR 6 million of it for instant payments during the day, and move EUR 4 million back at the end of the day.", "failure_recovery": "That rule sounds obvious, but it matters in practice, because a bank that holds liquidity in several currencies must manage each currency separately, and a funding error in one currency cannot be fixed by moving money from another currency through TIPS.", "exercise": {"action": "State the deposit model, work out the end of day position, and state the three basic rules.", "correct": "TIPS uses a deposit model for liquidity: the participant holds its instant payment liquidity in a TIPS Dedicated Cash Account, funded by moving money from its Main Cash Account. The bank moves EUR 10 million in at the start of the day, uses EUR 6 million for instant payments, and moves EUR 4 million back at the end of the day. The three basic rules are: a transfer can only take place between accounts in the same currency; there is no reservation of funds in a liquidity transfer, unlike an instant payment; and a liquidity transfer is settled or rejected immediately, with no intermediate waiting state.", "info": "Use the deposit model and the three basic rules in this lesson.", "task": "A bank in Germany moves EUR 10 million from its TARGET main cash account to its TIPS DCA at the start of the day, uses EUR 6 million for instant payments, and moves EUR 4 million back at the end of the day. Explain the deposit model, work out the position, and state the three basic rules for liquidity transfers.", "why": "Liquidity management in TIPS is predictable by design. A bank that treats a liquidity transfer like an instant payment, expecting a reservation or a queue, will misread its own funding position."}, "assessment": {"answer": 0, "explanation": "TIPS uses a deposit model for liquidity, which means that a participant holds its instant payment liquidity in a TIPS Dedicated Cash Account, and that account is funded by moving money from the participant Main Cash Account. The three basic rules are: a transfer can only take place between accounts in the same currency; there is no reservation of funds in a liquidity transfer, unlike an instant payment; and a liquidity transfer is settled or rejected immediately, with no intermediate waiting state.", "options": ["The bank holds its instant payment liquidity in a TIPS DCA funded from its Main Cash Account, and a liquidity transfer moves only within one currency, with no reservation, and settles or is rejected immediately.", "A bank can move liquidity between currencies through TIPS, because TIPS converts the funds as part of the transfer.", "A liquidity transfer reserves funds like an instant payment, so the money is held until the transfer completes.", "A liquidity transfer waits in a queue when funds are short, and settles later when liquidity arrives."], "question": "A bank in Germany moves EUR 10 million from its TARGET main cash account to its TIPS DCA at the start of the day, uses EUR 6 million for instant payments, and moves EUR 4 million back at the end of the day. Which statement about the TIPS deposit model and the three basic rules is correct?", "source": "generated:ch59s4", "why_wrong": ["This is wrong. A transfer can only take place between accounts in the same currency, and a funding error in one currency cannot be fixed by moving money from another currency.", "This is wrong. There is no reservation of funds in a liquidity transfer, unlike an instant payment.", "This is wrong. A liquidity transfer is settled or rejected immediately, with no intermediate waiting state."]}, "takeaway": "That is the deposit model working as designed.", "prereq": "ch59s3", "next": "ch59s5", "connection_note": "Builds on \"Messages and Statuses: pacs.008.001.08 and pacs.002.001.10\".", "tool": {"slug": "t2-tips", "label": "T2/TIPS Simulator", "url": "../simulators/t2-tips.html", "scenario": "Settle a payment like the one in this lesson and watch the liquidity and finality behaviour."}, "simple": "In plain words: tIPS uses a deposit model for liquidity, which means that a participant holds its instant payment liquidity in a TIPS Dedicated Cash Account, known as a TIPS DCA, and that account is funded by moving money from the. That is the whole idea in one sentence, and the rest of the lesson shows how it works in a real bank.", "summary": "TIPS uses a deposit model for liquidity, which means that a participant holds its instant payment liquidity in a TIPS Dedicated Cash Account, known as a TIPS DCA, and that account is funded by moving money from the participant main cash account in TARGET. Key points: TIPS uses a deposit model; Deposit model; No reservation of funds; Simplicity is one reason liquidity; Transfer: rejected immediately; Deposit model working.", "example": "The TIPS DCA is like a wallet that a bank tops up in the morning and uses through the day to settle instant payments, and the bank can move money back to its main account when it no longer needs it in TIPS. For example, a bank in Germany might move EUR 10 million from its TARGET main cash account to its TIPS DCA at the start of the day, use EUR 6 million of it for instant payments during the day, and move EUR 4 million back at the end of the day."}}], "chapter_title": "TIPS in Depth: Instant Payments and Liquidity Transfers", "meta_line": "TIPS in Depth: Instant Payments and Liquidity Transfers, Lesson 4 of 7, Narration 3:41, D05 Domestic payment systems", "next_id": "ch59s5", "next_title": "camt.050, camt.025 and camt.054, A2A and U2A Modes, TIPS DCA vs TIPS AS Technical Account"}]);</script>
+<aside class="flow-embed">
+<h3>Watch the process flow</h3>
+<p class="flow-embed-title">SEPA Instant Credit Transfer</p>
+<video class="flow-video" controls preload="none" src="https://paymentforge-videos.pages.dev/sct-inst-v1.mp4"></video>
+<p class="flow-explained">Explained in: <a href="../chapters/ch93-sepa-in-depth.html">SEPA in depth</a>, <a href="../chapters/ch59-tips-in-depth-instant-payments-and-liquidity-transfers.html">TIPS in Depth: Instant Payments and Liquidity Transfers</a>, <a href="../chapters/ch11-europe-sepa-and-t2.html">Europe: SEPA and T2</a> &middot; <a href="../flows.html">All process flows</a></p>
+</aside>
+<aside class="lesson-related"><h3>Related</h3><p><a href="../situations.html?domain=D05%20Domestic%20payment%20systems">Payment Situations in D05 Domestic payment systems</a> &middot; <a href="../reference.html">Reference Library</a> &middot; <a href="../practice.html">Practice: labs, simulators and tests</a></p></aside>
 </div>
 <nav class="tool-rail" aria-label="Lesson tools">
 <button type="button" class="rail-tool" onclick="pfOpenTranscript('studio-ch59s4')" title="Open transcript"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M7 3h7l4 4v14H7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M14 3v4h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 12h5M10 15.5h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span>Transcript</span></button>

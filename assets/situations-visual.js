@@ -1,6 +1,6 @@
 /* PaymentForge situations visual component.
  *
- * One reusable library for the 500 Payment Situations product. Every
+ * One reusable library for the Payment Situations product. Every
  * situation renders through these components; no bespoke implementation
  * per item. The visuals are inline SVG and DOM, never image or video
  * files, so there is nothing to download.
@@ -35,8 +35,10 @@
  * with aria-live status. Reduced motion: when prefers-reduced-motion
  * is set, the flow shows all steps statically and never auto-plays.
  *
- * Attribution: the item source is shown only as a short source label
- * (for example "Source: Paiementor"). No other person names appear.
+ * Attribution: the item source is shown only as a short evidence-type
+ * label (for example "Source: Public post"). No person names appear
+ * in learner-facing text; the source id and URL stay in the internal
+ * source_ref field of the item data.
  *
  * No em dashes anywhere in this file.
  */
@@ -189,6 +191,12 @@
     });
     html += '</ul>';
     if (st.note) html += '<p class="sit-note">' + esc(st.note) + '</p>';
+    /* The bar is normalised to 100, so a percentage chart totals 100%.
+       A money chart totals the raw sum in its own unit. */
+    var totalText = (!st.unit || st.unit === '%')
+      ? 'Total: 100%. Amounts are illustrative unless the note says otherwise.'
+      : 'Total: ' + total + ' ' + esc(st.unit) + '. Amounts are illustrative unless the note says otherwise.';
+    html += '<p class="sit-total">' + totalText + '</p>';
     return html;
   }
 
@@ -239,7 +247,27 @@
     return '<p class="sit-note">' + esc(msg) + '</p>';
   }
 
-  /* ---------- Item shell: header, visual, explanation, takeaway ---------- */
+  /* ---------- Item shell: the case format ---------- */
+  /* Every situation is presented as one professional case, in the
+     same order every time. Blocks come from the item's own fields;
+     a block is left out when the item has no field for it, never
+     filled with invented text. Situation is the title. What is
+     happening is the explanation. Visual investigation is the visual.
+     Possible explanations, SME analysis and Resolution render only
+     when the item carries those optional fields. One thing to
+     remember is the takeaway. */
+  function sourceLabel(item) {
+    /* Learner-facing source labels show the evidence type only, never
+       a person name. The shipped data already carries the evidence
+       type; the name check below covers raw data used in development.
+       The source id and URL stay in the internal source_ref field. */
+    var s = String(item.source || '').toLowerCase();
+    if (s === 'article and reader comments') return 'Article and reader comments';
+    if (s === 'public post') return 'Public post';
+    if (s.indexOf('paiementor') !== -1) return 'Article and reader comments';
+    if (s) return 'Public post';
+    return '';
+  }
   function render(item) {
     item = item || {};
     var id = item.id ? 'sit-' + String(item.id).replace(/[^A-Za-z0-9_-]/g, '') : nextId('sit');
@@ -249,13 +277,47 @@
     else if (type === 'stacked') visual = renderStacked(item, id);
     else visual = renderDiagram(item, id);
     var html = '<section class="sit-item" id="' + esc(id) + '" data-sit-item="' + esc(item.id || '') + '">';
-    html += '<p class="sit-eyebrow">' + esc(item.module || 'Payment Situations')
-      + (item.seq ? ' &middot; Situation ' + esc(item.seq) : '') + '</p>';
+    var eyebrow = [];
+    if (item.stage) eyebrow.push('Stage ' + esc(item.stage) + ': ' + esc(item.stage_name || ''));
+    if (item.seq) eyebrow.push('Situation ' + esc(item.seq));
+    if (item.domain) eyebrow.push(esc(item.domain));
+    if (item.level) eyebrow.push(esc(item.level));
+    html += '<p class="sit-eyebrow">' + (eyebrow.length ? eyebrow.join(' &middot; ') : 'Payment Situations') + '</p>';
+    html += '<p class="sit-case-label">Situation</p>';
     html += '<h3 class="sit-title">' + esc(item.title || 'Untitled situation') + '</h3>';
-    if (item.source) html += '<p class="sit-source">Source: ' + esc(item.source) + '</p>';
+    var label = sourceLabel(item);
+    if (label) html += '<p class="sit-source">Source: ' + esc(label) + '</p>';
+    var chips = [];
+    (item.messages || []).forEach(function (m) { chips.push(m); });
+    if (item.failure_category) chips.push(item.failure_category);
+    if (item.resolution) chips.push('Resolution: ' + item.resolution);
+    if (chips.length) {
+      html += '<p class="sit-meta">' + chips.map(function (c) {
+        return '<span class="sit-chip">' + esc(c) + '</span>';
+      }).join(' ') + '</p>';
+    }
+    if (item.explain) {
+      html += '<h4 class="sit-case-label">What is happening</h4>';
+      html += '<p class="sit-explain">' + esc(item.explain) + '</p>';
+    }
+    html += '<h4 class="sit-case-label">Visual investigation</h4>';
     html += '<div class="sit-visual" data-sit-type="' + esc(type) + '">' + visual + '</div>';
-    if (item.explain) html += '<p class="sit-explain">' + esc(item.explain) + '</p>';
-    if (item.takeaway) html += '<p class="sit-takeaway"><strong>Remember:</strong> ' + esc(item.takeaway) + '</p>';
+    if (item.explanations && item.explanations.length) {
+      html += '<h4 class="sit-case-label">Possible explanations</h4><ul class="sit-case-list">';
+      item.explanations.forEach(function (e) {
+        html += '<li>' + esc(e) + '</li>';
+      });
+      html += '</ul>';
+    }
+    if (item.sme_analysis) {
+      html += '<h4 class="sit-case-label">SME analysis</h4>';
+      html += '<p class="sit-explain">' + esc(item.sme_analysis) + '</p>';
+    }
+    if (item.resolution_text) {
+      html += '<h4 class="sit-case-label">Resolution</h4>';
+      html += '<p class="sit-explain">' + esc(item.resolution_text) + '</p>';
+    }
+    if (item.takeaway) html += '<p class="sit-takeaway"><strong>One thing to remember:</strong> ' + esc(item.takeaway) + '</p>';
     html += '</section>';
     return html;
   }
