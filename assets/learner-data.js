@@ -31,6 +31,10 @@
   var LEARNER_KEY = "payments-academy-learner-v1";
   var BACKUP_FORMAT = "payments-training-hub-backup";
   var BACKUP_VERSION = 1;
+  // Date of the last backup download, so the dashboard can remind a
+  // learner who has progress but no backup yet (10 Nov 2026, ChatGPT
+  // review 4 priority 8: progress export reminders).
+  var BACKUP_DATE_KEY = "payments-academy-backup-date-v1";
   var BACKUP_KEYS = [PROGRESS_KEY, TESTS_KEY, DIAGNOSTIC_KEY, LABS_KEY,
     ISO_KEY, SIT_KEY, FEATURES_KEY, SIMS_KEY, CLAIMS_KEY, LEARNER_KEY];
   var BACKUP_PREFIXES = ["pa-note-", "pa-studio-bookmark-"];
@@ -332,6 +336,15 @@
         '<p><a class="studio-btn primary" href="diagnostic.html">Take the placement test</a> ' +
         '<a class="studio-btn" href="lessons/ch1s1.html">Start Lesson 1: What is a Payment</a></p>';
     } else {
+      // Backup reminder (10 Nov 2026, ChatGPT review 4 priority 8):
+      // a learner with progress but no backup yet gets one nudge at the
+      // top of the dashboard, linking to the backup section below.
+      var _backupDate = null;
+      try { _backupDate = safeStore().getItem(BACKUP_DATE_KEY); } catch (e) {}
+      if (!_backupDate) {
+        h += '<p class="pa-notice"><strong>Back up your progress.</strong> Everything here lives in this browser only. ' +
+          '<a href="#backup">Download a backup</a> so a cleared browser or a new device does not wipe it.</p>';
+      }
       h += '<div class="hp-dash">';
       if (summary.nextLesson) {
         var nl = summary.nextLesson;
@@ -777,6 +790,7 @@
     var today = new Date().toISOString().slice(0, 10);
     downloadText("payments-training-hub-backup-" + today + ".json",
       JSON.stringify(backup, null, 2));
+    try { safeStore().setItem(BACKUP_DATE_KEY, today); } catch (e) {}
     var r = document.getElementById("pa-backup-result");
     if (r) r.textContent = "Backup downloaded. Keep the file somewhere safe; it is the only copy of your progress outside this browser.";
   }
