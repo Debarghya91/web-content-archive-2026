@@ -43,7 +43,7 @@ function paHasAccess(chid){
    takes screenshots. Real server-side enforcement needs the Supabase
    backend, which is a later step. */
 var PA_SITUATIONS_BUNDLE = 'situations-500';
-var PA_SITUATIONS_GATED = true;
+var PA_SITUATIONS_GATED = false; /* TEMPORARY owner unlock 9 Nov 2026: user testing the situations product; re-lock to true when he says so. */
 function paHasSituationsAccess(){
   if(!PA_SITUATIONS_GATED) return true;
   if(paOwnerPreview()) return true;
