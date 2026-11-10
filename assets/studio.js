@@ -820,6 +820,60 @@ function pfDismissQuiz(btn){
     card.appendChild(b);
   }
 }
+/* Multi-question lesson quiz (10 Nov 2026): one tap per option,
+   instant feedback per question, and a score line for the whole quiz.
+   When every question is answered, the result is saved in this
+   browser under payments-academy-progress-v1 (quiz: lesson id mapped
+   to true when every answer was correct), which is the store the
+   dashboard already reads for its quiz totals. A quiz answer also
+   counts as learning activity for the day, for the dashboard streak. */
+function pfCheckQuizAnswer(sampleId, qidx, btn){
+  var q = document.getElementById('pf-quiz-q-' + sampleId + '-' + qidx);
+  if(!q || !btn) return;
+  var opts = q.querySelectorAll('.quiz-opt');
+  var answer = parseInt(q.getAttribute('data-answer'), 10);
+  var chosen = parseInt(btn.getAttribute('data-idx'), 10);
+  for(var i = 0; i < opts.length; i++){
+    opts[i].disabled = true;
+    if(i === answer) opts[i].classList.add('correct');
+    if(i === chosen && chosen !== answer) opts[i].classList.add('wrong');
+  }
+  var fb = document.getElementById('pf-quiz-fb-' + sampleId + '-' + qidx);
+  if(fb){
+    var expl = '';
+    try { expl = JSON.parse(document.getElementById('pf-quiz-data-' + sampleId + '-' + qidx).textContent).explanation || ''; } catch(e){}
+    var head = (chosen === answer) ? '<b>Correct.</b> ' : '<b>Not quite.</b> ';
+    fb.innerHTML = head + (expl ? '<h4 class="quiz-fb-h">Why this is the answer</h4><p>' + expl + '</p>' : '');
+    fb.classList.add('open');
+  }
+  var card = document.getElementById('pf-quiz-' + sampleId);
+  if(!card) return;
+  var total = parseInt(card.getAttribute('data-total'), 10) || 0;
+  var qs = card.querySelectorAll('.pf-quiz-q');
+  var done = 0, correct = 0;
+  for(var j = 0; j < qs.length; j++){
+    var picked = qs[j].querySelector('.quiz-opt.wrong');
+    var right = qs[j].querySelector('.quiz-opt.correct');
+    var anyDisabled = qs[j].querySelector('.quiz-opt:disabled');
+    if(anyDisabled){ done++; if(!picked && right) correct++; }
+  }
+  var score = document.getElementById('pf-quiz-score-' + sampleId);
+  if(score){
+    score.textContent = done >= total
+      ? ('You scored ' + correct + ' out of ' + total + '. ' + (correct === total ? 'All correct, well done.' : 'Re-read the lesson and try again on your next visit.'))
+      : ('Answered ' + done + ' of ' + total + ' questions.');
+  }
+  if(done >= total && total > 0){
+    var lid = sampleId.replace(/^studio-/, '');
+    try {
+      var p = JSON.parse(localStorage.getItem('payments-academy-progress-v1')) || {};
+      if(!p.quiz) p.quiz = {};
+      p.quiz[lid] = (correct === total);
+      localStorage.setItem('payments-academy-progress-v1', JSON.stringify(p));
+    } catch(e){}
+    if(typeof paRecordActivity === 'function'){ try { paRecordActivity('quizzes'); } catch(e){} }
+  }
+}
 /* Reveal the exercise answer. */
 function pfRevealExercise(sampleId){
   var ans = document.getElementById('pf-ex-answer-' + sampleId);

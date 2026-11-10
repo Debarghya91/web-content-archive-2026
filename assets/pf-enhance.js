@@ -1,3 +1,27 @@
+/* ===== Learning activity log (10 Nov 2026): one browser-local record
+   of which days had real learning activity, so the dashboard can show
+   a streak and a weekly goal. Stored under
+   payments-academy-activity-v1 as {days: {YYYY-MM-DD: {lessons: n,
+   quizzes: n}}, recorded: {lessonId: YYYY-MM-DD}}. A lesson completion
+   is recorded once per lesson id. Nothing leaves the browser. ===== */
+function paRecordActivity(kind, lessonId){
+  try{
+    var key = 'payments-academy-activity-v1';
+    var raw = null;
+    try { raw = localStorage.getItem(key); } catch(e){ return; }
+    var data = raw ? JSON.parse(raw) : {};
+    if(!data.days) data.days = {};
+    if(!data.recorded) data.recorded = {};
+    if(lessonId && data.recorded[lessonId]) return;
+    var today = new Date();
+    var iso = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
+    if(!data.days[iso]) data.days[iso] = {};
+    data.days[iso][kind] = (data.days[iso][kind] || 0) + 1;
+    if(lessonId) data.recorded[lessonId] = iso;
+    try { localStorage.setItem(key, JSON.stringify(data)); } catch(e){}
+  }catch(e){}
+}
+
 /* PaymentForge enhancements: additive, no behaviour replaced */
 (function(){
   try{var cur=document.querySelector('.side .lesson-list li.current');

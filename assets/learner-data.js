@@ -14,6 +14,11 @@
      pa-note-<id>, pa-studio-bookmark-<id>  BA Studio notes and bookmarks
      payments-academy-simulators-v1  simulator visits, recorded on
        each simulator page (10/10 plan, 9 Nov 2026)
+     payments-academy-activity-v1    days with learning activity
+       ({days: {YYYY-MM-DD: {lessons: n, quizzes: n}}, recorded:
+       {lessonId: YYYY-MM-DD}}), written by paRecordActivity in
+       pf-enhance.js when a lesson completes or a quiz is answered
+     payments-academy-weekly-goal-v1  lessons-per-week goal (default 5)
    No em dashes are used in any user-facing string in this file.
 */
 (function (root) {
@@ -29,6 +34,9 @@
   var SIMS_KEY = "payments-academy-simulators-v1";
   var CLAIMS_KEY = "pa-upi-claims-v1";
   var LEARNER_KEY = "payments-academy-learner-v1";
+  var ACTIVITY_KEY = "payments-academy-activity-v1";
+  var GOAL_KEY = "payments-academy-weekly-goal-v1";
+  var DEFAULT_GOAL = 5;
   var BACKUP_FORMAT = "payments-training-hub-backup";
   var BACKUP_VERSION = 1;
   // Date of the last backup download, so the dashboard can remind a
@@ -36,7 +44,8 @@
   // review 4 priority 8: progress export reminders).
   var BACKUP_DATE_KEY = "payments-academy-backup-date-v1";
   var BACKUP_KEYS = [PROGRESS_KEY, TESTS_KEY, DIAGNOSTIC_KEY, LABS_KEY,
-    ISO_KEY, SIT_KEY, FEATURES_KEY, SIMS_KEY, CLAIMS_KEY, LEARNER_KEY];
+    ISO_KEY, SIT_KEY, FEATURES_KEY, SIMS_KEY, CLAIMS_KEY, LEARNER_KEY,
+    ACTIVITY_KEY, GOAL_KEY];
   var BACKUP_PREFIXES = ["pa-note-", "pa-studio-bookmark-"];
 
   var lastData = null;
@@ -302,6 +311,50 @@
       simRows.some(function (s) { return s.when; }) ||
       capstonesDone > 0;
 
+    /* ---------- dashboard v2 (10 Nov 2026): streak and weekly goal.
+       Activity days come from the browser-local activity log (lesson
+       completions and quiz answers, written by paRecordActivity) plus
+       test attempts and the placement test, which already carry their
+       own completion dates. A streak counts consecutive active days
+       ending today, or ending yesterday when today has no activity yet.
+       The weekly goal counts lessons completed Monday to Sunday. */
+    var activity = readJson(store, ACTIVITY_KEY) || {};
+    var activityDays = activity.days || {};
+    var activeDates = {};
+    Object.keys(activityDays).forEach(function (d) { activeDates[d] = true; });
+    attempts.forEach(function (a) {
+      if (a && a.completed_at) activeDates[String(a.completed_at).slice(0, 10)] = true;
+    });
+    if (diagnostic && diagnostic.completed_at) {
+      activeDates[String(diagnostic.completed_at).slice(0, 10)] = true;
+    }
+    function isoOf(d) {
+      return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") +
+        "-" + String(d.getDate()).padStart(2, "0");
+    }
+    var streak = 0;
+    var cursor = new Date();
+    if (!activeDates[isoOf(cursor)]) cursor.setDate(cursor.getDate() - 1);
+    while (activeDates[isoOf(cursor)]) {
+      streak++;
+      cursor.setDate(cursor.getDate() - 1);
+    }
+    var todayDow = new Date().getDay();
+    var monday = new Date();
+    monday.setDate(monday.getDate() - ((todayDow + 6) % 7));
+    var weekLessons = 0;
+    Object.keys(activityDays).forEach(function (d) {
+      if (d >= isoOf(monday) && activityDays[d] && activityDays[d].lessons) {
+        weekLessons += activityDays[d].lessons;
+      }
+    });
+    var weeklyGoal = DEFAULT_GOAL;
+    try {
+      var storedGoal = parseInt(store.getItem(GOAL_KEY), 10);
+      if (storedGoal > 0 && storedGoal <= 70) weeklyGoal = storedGoal;
+    } catch (e) {}
+    var weekStartLabel = fmtDate(isoOf(monday));
+
     return {
       lessonsDone: lessonsDoneCount, lessonsTotal: lessonsTotal,
       chaptersDone: chapterDoneCount, chaptersTotal: data.totals.chapters,
@@ -322,19 +375,24 @@
       sitNotes: Object.keys(sitNotes).length,
       sitReview: Object.keys(sitReview).length, sitLast: sit.last || "",
       sitStageDone: sitStageDone, sitStageTotals: sitTotals, sitTotal: sitTotal,
-      achievements: achievements.slice(0, 8), hasAnything: hasAnything
+      achievements: achievements.slice(0, 8), hasAnything: hasAnything,
+      streak: streak, weekLessons: weekLessons, weeklyGoal: weeklyGoal,
+      weekStartLabel: weekStartLabel
     };
   }
 
   /* ---------- dashboard page ---------- */
   function dashboardHTML(summary, data) {
     var h = "";
-    h += '<section class="section"><h2>Continue learning</h2>';
+    h += '<section class="section"><h2>Continue where you left off</h2>';
     if (!summary.hasAnything) {
-      h += '<p>You have not started yet, and that is fine. Your progress will appear here as you learn. ' +
-        'The quickest start is the placement test, or Lesson 1 of Chapter 1.</p>' +
-        '<p><a class="studio-btn primary" href="diagnostic.html">Take the placement test</a> ' +
-        '<a class="studio-btn" href="lessons/ch1s1.html">Start Lesson 1: What is a Payment</a></p>';
+      h += '<p>You have not started yet, and that is fine. Three steps get you going, and each one takes only a few minutes.</p>' +
+        '<ol class="pa-onboard">' +
+        '<li><b>Step 1: find your level.</b> <a href="diagnostic.html">Take the placement test</a> (15 minutes). It tells you exactly which course to start with.</li>' +
+        '<li><b>Step 2: start Session 1.</b> <a href="courses.html#guided-path">Open the 8-session guided path</a> and work through Session 1, payment fundamentals. Each session maps to the chapters below it.</li>' +
+        '<li><b>Step 3: set a weekly goal.</b> Pick a number of lessons per week below. Your dashboard tracks it, and your streak counts the days you learn.</li>' +
+        '</ol>' +
+        '<p>Or skip the plan and start reading: <a href="lessons/ch1s1.html">Lesson 1: What is a Payment</a>. Your progress appears here as you learn, in this browser only.</p>';
     } else {
       // Backup reminder (10 Nov 2026, ChatGPT review 4 priority 8):
       // a learner with progress but no backup yet gets one nudge at the
@@ -379,6 +437,13 @@
       '<div class="hp-dash">' +
       '<div class="hp-dash-card"><b>' + summary.lessonsDone + ' / ' + summary.lessonsTotal + '</b>' +
       '<span>Lessons completed</span>' + bar(summary.lessonsDone, summary.lessonsTotal) + '</div>' +
+      '<div class="hp-dash-card"><b>' + summary.weekLessons + ' of ' + summary.weeklyGoal + ' lessons this week</b>' +
+      '<span>Weekly goal, week starting ' + esc(summary.weekStartLabel) + '</span>' + bar(summary.weekLessons, summary.weeklyGoal) +
+      '<p>Goal: ' + [3, 5, 7, 10].map(function (n) {
+        return '<button type="button" class="pa-goal-btn' + (n === summary.weeklyGoal ? ' active' : '') + '" onclick="PALearner.setWeeklyGoal(' + n + ')">' + n + '</button>';
+      }).join(' ') + ' lessons a week</p></div>' +
+      '<div class="hp-dash-card"><b>' + summary.streak + (summary.streak === 1 ? ' day' : ' days') + '</b>' +
+      '<span>Learning streak: consecutive days with a lesson, a quiz or a test. A day counts when you finish a lesson, answer a quiz or take a test.</span></div>' +
       '<div class="hp-dash-card"><b>' + summary.chaptersDone + ' / ' + summary.chaptersTotal + '</b>' +
       '<span>Chapters completed (a chapter counts when every lesson in it is done)</span>' +
       bar(summary.chaptersDone, summary.chaptersTotal) + '</div>' +
@@ -777,6 +842,15 @@
     box.innerHTML = dashboardHTML(lastSummary, data);
     return lastSummary;
   }
+  /* Weekly goal (10 Nov 2026, dashboard v2): save the learner's
+     lessons-per-week goal in this browser and re-render the dashboard
+     so the new goal shows at once. */
+  function setWeeklyGoal(n) {
+    var goal = parseInt(n, 10);
+    if (!(goal > 0 && goal <= 70)) return;
+    try { safeStore().setItem(GOAL_KEY, String(goal)); } catch (e) { return; }
+    if (lastData) renderDashboard("pa-dashboard", lastData);
+  }
   function renderPortfolio(containerId, data) {
     lastData = data;
     var box = document.getElementById(containerId);
@@ -918,6 +992,7 @@
     renderDashboard: renderDashboard, renderPortfolio: renderPortfolio,
     exportBackup: exportBackup, previewBackupFile: previewBackupFile,
     confirmRestore: confirmRestore, saveLearnerName: saveLearnerName,
+    setWeeklyGoal: setWeeklyGoal,
     printPortfolio: printPortfolio, downloadPortfolio: downloadPortfolio,
     downloadLabRecord: downloadLabRecord
   };
