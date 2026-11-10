@@ -125,7 +125,7 @@
     html += '<defs><marker id="' + esc(id) + '-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="sit-arrow-head"/></marker></defs>';
     nodes.forEach(function (n, i) {
       if (i < nodes.length - 1) {
-        html += '<line x1="' + cx + '" y1="' + n.y1 + '" x2="' + cx + '" y2="' + nodes[i + 1].y0 + '" class="sit-connector" marker-end="url(#' + esc(id) + '-arrow)"/>';
+        html += '<line x1="' + cx + '" y1="' + n.y1 + '" x2="' + cx + '" y2="' + nodes[i + 1].y0 + '" class="sit-connector" data-sit-step="' + (i + 1) + '" marker-end="url(#' + esc(id) + '-arrow)"/>';
       }
     });
     nodes.forEach(function (n, i) {
@@ -350,6 +350,7 @@
       node.innerHTML = render(item);
       node.setAttribute('data-sit-rendered', '1');
       applyFlowState(node);
+      observeFlowAutoplay(node);
     });
   }
 
@@ -378,6 +379,10 @@
       s.classList.toggle('sit-now', i === idx);
       if (i < idx) s.classList.add('sit-done');
       else s.classList.remove('sit-done');
+    });
+    block.querySelectorAll('.sit-connector[data-sit-step]').forEach(function (c) {
+      var step = parseInt(c.getAttribute('data-sit-step') || '0', 10);
+      c.classList.toggle('sit-shown', step <= idx);
     });
     applyFlowState(block);
   }
@@ -416,7 +421,40 @@
     flowSteps(block).forEach(function (s) {
       s.classList.remove('sit-shown', 'sit-now', 'sit-done');
     });
+    block.querySelectorAll('.sit-connector[data-sit-step]').forEach(function (c) {
+      c.classList.remove('sit-shown');
+    });
     applyFlowState(block);
+  }
+
+  /* Autoplay on scroll: when a flow visual scrolls into view, start
+     its Play auto-advance once. Never auto-plays when reduced motion
+     is set, never replays a flow that is already fully shown, and
+     never restarts a flow the learner already finished. */
+  var flowObserver = null;
+  function observeFlowAutoplay(block) {
+    if (reducedMotion) return;
+    if (typeof IntersectionObserver === 'undefined') return;
+    if (!block.querySelector('.sit-node')) return;
+    if (block.getAttribute('data-sit-observed') === '1') return;
+    block.setAttribute('data-sit-observed', '1');
+    if (!flowObserver) {
+      flowObserver = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) return;
+          var b = entry.target;
+          flowObserver.unobserve(b);
+          if (b.getAttribute('data-sit-autoplayed') === '1') return;
+          b.setAttribute('data-sit-autoplayed', '1');
+          var steps = flowSteps(b);
+          var shown = 0;
+          steps.forEach(function (s) { if (s.classList.contains('sit-shown')) shown += 1; });
+          if (shown >= steps.length) return;
+          flowPlay(b);
+        });
+      }, { threshold: 0.5 });
+    }
+    flowObserver.observe(block);
   }
 
   function init() {

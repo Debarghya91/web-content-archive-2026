@@ -63,6 +63,11 @@
 }
 .sit-svg text{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
 .sit-connector{stroke:#94A3B8;stroke-width:2;fill:none}
+/* Flow connectors are hidden until the step they lead into is
+   revealed. Only connectors carrying data-sit-step are hidden;
+   diagram connectors have no step and stay visible. */
+.sit-connector[data-sit-step]{opacity:0;transition:opacity .45s ease}
+.sit-connector[data-sit-step].sit-shown{opacity:1}
 .sit-arrow-head{fill:#94A3B8}
 
 /* Flow nodes: hidden until revealed. The current node gets a gold
@@ -115,4 +120,5 @@
 /* Reduced motion: no reveal animation, everything visible. */
 @media (prefers-reduced-motion: reduce){
   .sit-node{opacity:1;transform:none;transition:none}
+  .sit-connector[data-sit-step]{opacity:1;transition:none}
 }
