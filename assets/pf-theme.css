@@ -378,6 +378,8 @@ body:has(.lesson-page) .header-inner{max-width:1906px}
   .lesson-shell .fw-card{order:9}
   .lesson-shell .studio-caption{order:1}
   .lesson-shell .studio-error{order:1}
+  .lesson-shell .studio-audio-actions{order:1}
+  .lesson-shell .studio-noscript{order:1}
   .lesson-shell .upnext{order:10}
   .lesson-shell .transcript-card{order:11}
   .lesson-shell .studio-note{order:12}
@@ -473,6 +475,23 @@ body:has(.lesson-page) .header-inner{max-width:1906px}
 /* First-play buffering state (Nov 2026): shown until the narration can
    actually play. Mirrored in visual_engine.py STUDIO_CSS; keep both in sync. */
 .studio-loading{display:none;color:var(--pf-royal-dark);background:var(--pf-royal-tint);border:1px solid #BFDBFE;border-radius:var(--pf-radius-sm);padding:10px 14px;margin:0 16px 12px;font-size:14px}
+/* Audio fallbacks (10 Nov 2026): a big Play button when autoplay is
+   blocked, a clear error with Retry when both audio hosts fail, a
+   download link, and a note when the diagram is missing. Mirrored in
+   visual_engine.py STUDIO_CSS; keep both in sync. */
+.studio-play-overlay{position:absolute;left:50%;top:42%;transform:translate(-50%,-50%);z-index:15;display:none;flex-direction:column;align-items:center;gap:10px;background:transparent;border:0;cursor:pointer;padding:8px}
+.studio-play-overlay .studio-play-circle{width:76px;height:76px;border-radius:50%;background:var(--pf-royal);border:3px solid var(--pf-gold);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(0,0,0,.45)}
+.studio-play-overlay:hover .studio-play-circle{background:var(--pf-royal-dark)}
+.studio-play-overlay span.studio-play-label{color:#fff;font-size:15px;font-weight:700;background:rgba(3,10,20,.65);border-radius:8px;padding:4px 10px}
+.studio-error .studio-error-title{display:block;font-weight:700;margin-bottom:4px}
+.studio-error-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:10px}
+.studio-error a{color:var(--pf-error);font-weight:700;text-decoration:underline}
+.studio-audio-actions{display:flex;gap:18px;flex-wrap:wrap;align-items:center;margin:10px 16px 12px;font-size:14px}
+.studio-audio-actions a{color:var(--pf-royal-dark);font-weight:700;text-decoration:none}
+.studio-audio-actions a:hover{text-decoration:underline}
+.studio-diagram-fallback{color:#E2E8F0;background:#0E2138;border:1px solid #1E3A5F;border-radius:8px;padding:16px 18px;font-size:15px;line-height:1.6;max-width:640px;text-align:left}
+.studio-noscript{color:var(--pf-ink-2);background:var(--pf-gold-tint);border:1px solid var(--pf-gold);border-radius:8px;padding:12px 16px;margin:12px 16px;font-size:14px;line-height:1.6}
+.studio-noscript a{color:var(--pf-royal-dark);font-weight:700}
 .studio-note{color:var(--pf-muted);font-size:13px;margin-top:12px}
 /* Diagram highlight: palette royal, not the old light-teal/sky-blue. */
 .studio-canvas .node-active rect{stroke:var(--pf-royal) !important;stroke-width:3 !important}

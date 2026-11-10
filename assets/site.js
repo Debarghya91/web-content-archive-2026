@@ -525,6 +525,9 @@ function showTrace(which){
 
 
 
+
+
+
 /* ===== Payments Academy interactive features ===== */
 function showMode(anchor, btn){
   document.querySelectorAll('.mode-tab').forEach(function(b){b.classList.remove('active')});

@@ -6,6 +6,14 @@
 /* text against the real audio duration). Never claimed as precise. */
 var PA_STUDIO_DATA = {};
 var PA_STUDIOS = {};
+/* Audio failover (10 Nov 2026): the mirror audio host. ONE constant, in
+   this one place, so the fallback URL changes in a single spot if the
+   mirror host moves. The player tries the primary audio URL first; on a
+   load error or an 8-second load timeout it switches the audio source to
+   AUDIO_FALLBACK_HOST + '/audio/<lesson>.mp3' and retries automatically.
+   Only when both hosts fail does the error box appear. */
+var AUDIO_FALLBACK_HOST = 'https://paymentforge-audio-backup.pages.dev';
+var AUDIO_LOAD_TIMEOUT_MS = 8000;
 function studioInit(sampleId){
   var data = PA_STUDIO_DATA[sampleId];
   var root = document.getElementById('studio-' + sampleId);
@@ -38,7 +46,14 @@ function studioInit(sampleId){
      refresh from the real audio position. */
   audio.addEventListener('waiting', function(){ studioShowLoading(sampleId, true); });
   audio.addEventListener('canplay', function(){ studioShowLoading(sampleId, false); });
-  audio.addEventListener('playing', function(){ studioShowLoading(sampleId, false); studioRefresh(sampleId); });
+  audio.addEventListener('playing', function(){ studioShowLoading(sampleId, false); studioRefresh(sampleId); studioSetPlayLabel(sampleId); });
+  /* Audio failover (10 Nov 2026): a load error, or no playable data
+     within AUDIO_LOAD_TIMEOUT_MS, switches the source to the mirror host
+     automatically. 'loadeddata'/'canplay' from either host clears the
+     timer, so a working clip never trips the failover. */
+  audio.addEventListener('error', function(){ studioAudioFailed(sampleId); });
+  audio.addEventListener('loadeddata', function(){ studioAudioLoaded(sampleId); });
+  audio.addEventListener('canplay', function(){ studioAudioLoaded(sampleId); });
   /* After any seek completes, re-sync the display from the real audio
      position, so a seek the browser applied late (or not at all) cannot
      leave the timeline showing a stale time. */
@@ -114,6 +129,10 @@ function studioInit(sampleId){
   showControls();
   studioRenderMarkers(sampleId);
   studioLoadScene(sampleId, 0, false);
+  /* The big Play button must be visible from the start when the narration
+     is not playing (for example autoplay blocked): the 'play' event hides
+     it as soon as sound starts, so it never covers a playing lesson. */
+  if(audio.paused) studioShowPlayOverlay(sampleId, true);
   studioSyncMuteButton(sampleId);
   studioRestoreBookmark(sampleId);
 }
@@ -133,6 +152,13 @@ function studioPlayAudio(sampleId, fromUser){
   if(p && p.catch){
     p.catch(function(){
       studioShowLoading(sampleId, false);
+      /* A failed load (no audio source) goes through failover, not the
+         autoplay path: retrying play on a dead source never helps, and
+         the mirror host may answer where the primary did not. */
+      if(st.audio && (st.audio.networkState === 3 || (st.audio.readyState === 0 && st.audio.error))){
+        studioAudioFailed(sampleId);
+        return;
+      }
       if(fromUser){
         studioShowError(sampleId, 'Playback could not start. Tap Play again.');
       } else {
@@ -207,6 +233,9 @@ function studioTryPlay(sampleId, fromUser){
      ahead of the audio, so there is nothing to catch up to. */
   studioStopVisual(sampleId);
   st.audio.muted = (typeof soundMuted !== 'undefined') ? soundMuted : st.audio.muted;
+  /* A user-initiated play is a play the failover must resume after a
+     host switch, so the mirror picks up where the primary stopped. */
+  st.audioPlayWanted = true;
   studioPlayAudio(sampleId, fromUser);
 }
 function studioShowError(sampleId, msg){
@@ -223,7 +252,173 @@ function studioHideError(sampleId){
 }
 function studioShowPlayOverlay(sampleId, show){
   var o = document.getElementById('studio-overlay-' + sampleId);
-  if(o) o.style.display = show ? 'flex' : 'none';
+  if(!o) return;
+  /* Once both audio hosts have failed, the Play button stays hidden: the
+     error box with Retry is the way back, and a Play button that can
+     never produce sound would be a dead end. */
+  if(show){
+    var st = PA_STUDIOS[sampleId];
+    if(st && st.audioFailed) return;
+  }
+  o.style.display = show ? 'flex' : 'none';
+}
+/* ---- Audio failover (10 Nov 2026) ---- */
+/* The player tries the primary audio URL first. On a load error or an
+   8-second load timeout it switches to the mirror host automatically and
+   retries, without the learner doing anything. Only when both hosts fail
+   does the error box appear, with Retry and a link to the transcript. */
+function studioAudioFileName(sampleId){
+  var st = PA_STUDIOS[sampleId];
+  var src = (st && st.audio) ? (st.audio.currentSrc || st.audio.src || '') : '';
+  var parts = src.split('/');
+  return parts[parts.length - 1] || '';
+}
+function studioFallbackAudioUrl(sampleId){
+  return AUDIO_FALLBACK_HOST + '/audio/' + studioAudioFileName(sampleId);
+}
+function studioUpdateDownloadLinks(sampleId, url){
+  var st = PA_STUDIOS[sampleId];
+  var lid = '';
+  if(st && st.data && st.data.scenes && st.data.scenes[0]) lid = st.data.scenes[0].id || '';
+  if(!lid){
+    var m = /^studio-(.+)$/.exec(sampleId || '');
+    if(m) lid = m[1];
+  }
+  if(!lid || !url) return;
+  /* Every download link for this lesson (the one under the player and
+     the one in the Files panel) follows the host that is actually
+     serving the audio, so a learner on the mirror downloads from it. */
+  document.querySelectorAll('a.pf-audio-download[data-lesson="' + lid + '"]').forEach(function(a){
+    a.setAttribute('href', url);
+  });
+}
+function studioArmAudioLoadTimer(sampleId){
+  var st = PA_STUDIOS[sampleId];
+  if(!st) return;
+  studioDisarmAudioLoadTimer(sampleId);
+  st.audioLoadTimer = setTimeout(function(){
+    var s2 = PA_STUDIOS[sampleId];
+    if(!s2 || !s2.audio) return;
+    /* Still nothing playable after 8 seconds. If the browser has not
+       received even the audio metadata yet (readyState 0), nothing is
+       arriving at all, so fail over. If metadata arrived (readyState 1
+       or more) the download is progressing, just slowly, so give it up
+       to three more 8-second windows before failing over. A hung
+       connection never reaches readyState 1, so it still fails over
+       on the first timeout instead of waiting forever. */
+    if(s2.audio.readyState < 2 && !s2.audioFailed){
+      if(s2.audio.readyState >= 1){
+        s2.audioLoadWaits = (s2.audioLoadWaits || 0) + 1;
+        if(s2.audioLoadWaits <= 3){
+          studioArmAudioLoadTimer(sampleId);
+          return;
+        }
+      }
+      studioAudioFailed(sampleId);
+    }
+  }, AUDIO_LOAD_TIMEOUT_MS);
+}
+function studioDisarmAudioLoadTimer(sampleId){
+  var st = PA_STUDIOS[sampleId];
+  if(st && st.audioLoadTimer){ clearTimeout(st.audioLoadTimer); st.audioLoadTimer = null; }
+}
+function studioAudioLoaded(sampleId){
+  /* First playable data from either host: the load worked, so stop the
+     failover timer and clear any earlier failure state. */
+  studioDisarmAudioLoadTimer(sampleId);
+  var st = PA_STUDIOS[sampleId];
+  if(st) st.audioFailed = false;
+}
+function studioAudioFailed(sampleId){
+  var st = PA_STUDIOS[sampleId];
+  if(!st || !st.audio || st.audioFailed) return;
+  studioDisarmAudioLoadTimer(sampleId);
+  studioShowLoading(sampleId, false);
+  if(!st.audioFailedOver){
+    /* First failure: switch silently to the mirror host and retry. The
+       learner sees only a brief loading state. Resume from the same
+       position when the failure happened mid-lesson. */
+    st.audioFailedOver = true;
+    var mirror = studioFallbackAudioUrl(sampleId);
+    var wasPlaying = !st.audio.paused;
+    var wantPlay = st.wantAutoplay || wasPlaying || !!st.audioPlayWanted;
+    var pos = st.audio.currentTime || 0;
+    st.audio.src = mirror;
+    if(pos > 1){
+      st.audio.addEventListener('loadedmetadata', function(){
+        try { st.audio.currentTime = pos; } catch(e){}
+      }, {once: true});
+    }
+    studioUpdateDownloadLinks(sampleId, mirror);
+    try { st.audio.load(); } catch(e){}
+    studioArmAudioLoadTimer(sampleId);
+    studioShowLoading(sampleId, true);
+    if(wantPlay) studioPlayAudio(sampleId, false);
+    return;
+  }
+  /* Both hosts failed: show the fallback box with Retry and a link to
+     the transcript. Nothing else to try automatically. */
+  st.audioFailed = true;
+  studioShowAudioError(sampleId);
+}
+function studioShowAudioError(sampleId){
+  var e = document.getElementById('studio-error-' + sampleId);
+  if(!e) return;
+  var st = PA_STUDIOS[sampleId];
+  var dl = (st && st.audio) ? (st.audio.currentSrc || st.audio.src || '') : '';
+  e.innerHTML = '';
+  var t = document.createElement('span');
+  t.className = 'studio-error-title';
+  t.textContent = 'Audio could not be loaded';
+  e.appendChild(t);
+  e.appendChild(document.createTextNode('The narration did not load from either audio host. You can still read the full lesson below, or download the audio and play it in another app.'));
+  var row = document.createElement('span');
+  row.className = 'studio-error-actions';
+  var retry = document.createElement('button');
+  retry.type = 'button';
+  retry.className = 'studio-btn';
+  retry.textContent = 'Retry audio';
+  retry.setAttribute('onclick', "studioRetryAudio('" + sampleId + "')");
+  row.appendChild(retry);
+  var tr = document.createElement('a');
+  tr.href = '#studio-transcript-details-' + sampleId;
+  tr.textContent = 'Read the transcript';
+  tr.setAttribute('onclick', "studioOpenTranscript('" + sampleId + "');return false;");
+  row.appendChild(tr);
+  if(dl){
+    var d = document.createElement('a');
+    d.href = dl;
+    d.textContent = 'Download audio (MP3)';
+    d.setAttribute('download', '');
+    row.appendChild(d);
+  }
+  e.appendChild(row);
+  e.style.display = 'block';
+  studioShowPlayOverlay(sampleId, false);
+}
+function studioRetryAudio(sampleId){
+  var st = PA_STUDIOS[sampleId];
+  if(!st || !st.audio) return;
+  /* Start over from the primary host: the failover chain runs again
+     (primary, then mirror) if the problem is still there. */
+  st.audioFailed = false;
+  st.audioFailedOver = false;
+  studioHideError(sampleId);
+  var primary = st.primaryAudioUrl || ((st.data.scenes[0] || {}).audio || '');
+  if(!primary) return;
+  st.audio.src = primary;
+  studioUpdateDownloadLinks(sampleId, primary);
+  try { st.audio.load(); } catch(e){}
+  studioArmAudioLoadTimer(sampleId);
+  studioShowLoading(sampleId, true);
+  studioPlayAudio(sampleId, true);
+}
+function studioOpenTranscript(sampleId){
+  var d = document.getElementById('studio-transcript-details-' + sampleId);
+  if(d){
+    d.open = true;
+    d.scrollIntoView({behavior: 'smooth', block: 'nearest'});
+  }
 }
 function studioClearEndTimer(sampleId){
   var st = PA_STUDIOS[sampleId];
@@ -272,14 +467,26 @@ function studioLoadScene(sampleId, idx, autoplay){
   var audio = st.audio;
   var wasPlaying = !audio.paused;
   var setSrc = function(url){
+    /* Remember the primary URL for Retry, clear any earlier failure
+       state, point the download links at this host, and start the load
+       timer: if nothing is playable within 8 seconds the player fails
+       over to the mirror host on its own. */
+    st.primaryAudioUrl = url;
+    st.audioFailedOver = false;
+    st.audioFailed = false;
+    st.audioLoadWaits = 0;
+    studioHideError(sampleId);
+    studioUpdateDownloadLinks(sampleId, url);
     audio.src = url;
     audio.currentTime = 0;
+    studioArmAudioLoadTimer(sampleId);
     /* The open-page autoplay attempt: studioInit sets wantAutoplay, and
        this runs once the source is set, whether paAudioUrl answered
        synchronously or not. A refusal here is expected on iOS Safari
        before the first tap, so it shows the big play overlay, not an error. */
     if(st.wantAutoplay){
       st.wantAutoplay = false;
+      st.audioPlayWanted = true;
       studioPlayAudio(sampleId, false);
     } else if(autoplay || wasPlaying) {
       studioPlayAudio(sampleId, true);
@@ -516,10 +723,18 @@ function studioSetPlayLabel(sampleId, playing){
     b.setAttribute('aria-label', playing ? 'Pause lesson' : 'Play lesson');
   }
   /* The big play overlay is the video-player state: shown whenever the
-     narration is not playing, hidden while it plays. */
-  studioShowPlayOverlay(sampleId, !playing);
-  if(playing){
-    studioHideError(sampleId);
+     narration is not really playing, hidden while it plays. A 'play'
+     event alone is not proof of sound: it fires when play() is invoked,
+     even for a dead source with no data yet, so hiding the overlay and
+     the error box on it left a failed load with no visible Play button
+     and no error. Only readyState 2 or more (real audio data, confirmed
+     by the 'playing' event below) counts as playing. Until then the Play
+     button stays visible, so a stalled or failed load never leaves the
+     learner with no way to start the audio. */
+  var reallyPlaying = !!(playing && st && st.audio && st.audio.readyState >= 2);
+  studioShowPlayOverlay(sampleId, !reallyPlaying);
+  if(reallyPlaying){
+    if(!st.audioFailed) studioHideError(sampleId);
     studioHideUpNext(sampleId);
     /* Refresh the caption from the current beat, so a stale caption
        from a blocked autoplay never survives into playback. */
