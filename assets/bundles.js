@@ -34,14 +34,12 @@ function paHasAccess(chid){
    lessons stay open for all. A buyer owns this product when the
    'situations-500' bundle (or the flagship 'full', which includes
    everything) is in the owned list, or when owner preview is on.
-   Access is granted after the owner verifies the buyer's UPI payment
-   by its UTR: the buyer unlocks with the claim id from their UPI
-   claim submission. The claim id is checked against the pending UPI
-   claims stored in this browser for this bundle. Honest limit: this
-   is a browser-side gate. It stops casual access and casual download;
-   it does not stop a determined user who inspects network requests or
-   takes screenshots. Real server-side enforcement needs the Supabase
-   backend, which is a later step. */
+   Purchases are made in the iOS app (owner decision 11 Nov 2026); the
+   manual UPI payment flow and its claim-id unlock were removed with it.
+   Honest limit: this is a browser-side gate. It stops casual access and
+   casual download; it does not stop a determined user who inspects
+   network requests or takes screenshots. Real server-side enforcement
+   needs the Supabase backend, which is a later step. */
 var PA_SITUATIONS_BUNDLE = 'situations-500';
 var PA_SITUATIONS_GATED = false; /* TEMPORARY owner unlock 9 Nov 2026: user testing the situations product; re-lock to true when he says so. */
 function paHasSituationsAccess(){
@@ -50,23 +48,7 @@ function paHasSituationsAccess(){
   var owned = paOwned();
   return owned.indexOf('full') !== -1 || owned.indexOf(PA_SITUATIONS_BUNDLE) !== -1;
 }
-function paGrantSituationsAccess(claimId){
-  if(!claimId) return false;
-  var claims = paUpiClaims();
-  var match = null;
-  for(var i = 0; i < claims.length; i++){
-    if(claims[i].id === claimId && claims[i].bundle === PA_SITUATIONS_BUNDLE){ match = claims[i]; break; }
-  }
-  if(!match) return false;
-  var owned = paOwned();
-  if(owned.indexOf(PA_SITUATIONS_BUNDLE) === -1){
-    owned.push(PA_SITUATIONS_BUNDLE);
-    paSaveOwned(owned);
-  }
-  return true;
-}
 function paApplyLocks(){
-  paUpdatePayArea();
   var owned = paOwned();
   document.querySelectorAll('.chapter-card').forEach(function(card){
     var chid = card.getAttribute('data-chapter');
@@ -148,30 +130,12 @@ function paResetCoverage(){
   if(bt) bt.value = '';
   paFilterCoverage();
 }
-function paRenderOrderSummary(bid){
-  var data = null;
-  try { data = JSON.parse(document.getElementById('bundle-data').textContent); } catch(e){}
-  var sum = document.getElementById('order-summary');
-  if(sum && data && data[bid]){
-    var b = data[bid];
-    var size = (b.items && b.items > 0) ? (b.items + ' situations') : (b.chapters + ' chapters, ' + b.lessons + ' lessons');
-    if(b.price_placeholder){
-      sum.innerHTML = '<h3>Order summary</h3><p><b>' + b.name + '</b><br>' +
-        size + '<br>' +
-        'Price: Pricing to be announced.<br>' +
-        'This course is not on sale yet, so there is no payment step.</p>';
-    } else {
-      sum.innerHTML = '<h3>Order summary</h3><p><b>' + b.name + '</b><br>' +
-        size + '<br>' +
-        'Price: \u20B9' + b.price.toLocaleString('en-IN') + '<br>' +
-        'Pay by UPI below, then submit your payment reference.</p>';
-    }
-  }
-  paUpdatePayArea();
-}
+/* No web checkout (owner decision 11 Nov 2026): purchases are made in
+   the iOS app. enrolBundle only takes the learner to the "How to buy"
+   section. The multipage build overrides this with navigation to
+   payment.html. */
 function enrolBundle(bid){
   PA_SELECTED_BUNDLE = bid;
-  paRenderOrderSummary(bid);
   var el = document.getElementById('payment');
   if(el) el.scrollIntoView({behavior: 'smooth'});
 }
@@ -200,210 +164,6 @@ var PA_RAZORPAY_CONFIG = (function(){
 function paRazorpayReady(){
   var c = PA_RAZORPAY_CONFIG;
   return !!(c && (c.keyId || (c.links && Object.keys(c.links).some(function(k){ return !!c.links[k]; }))));
-}
-/* ===== Direct UPI (LIVE, owner decision 8 Nov 2026) ===== */
-/* Payments go straight to the owner's UPI ID (deb.arghya@ptyes).
-   No payment gateway, no merchant account. The buyer pays by QR or
-   UPI intent, then submits the UTR on this page. The claim is stored
-   in this browser (localStorage) with status "pending"; the owner
-   verifies the payment by its UTR and grants access manually.
-   The Razorpay checkout below stays dormant and is never called. */
-var PA_UPI_CLAIMS_KEY = 'pa-upi-claims-v1';
-function paUpiConfig(){
-  try {
-    var el = document.getElementById('upi-config');
-    if(el) return JSON.parse(el.textContent);
-  } catch(e){}
-  return {provider: 'direct', payee_id: '', payee_name: '', uris: {}};
-}
-function paUpiClaims(){
-  try { var v = JSON.parse(localStorage.getItem(PA_UPI_CLAIMS_KEY)); if(Array.isArray(v)) return v; } catch(e){}
-  return [];
-}
-function paSaveUpiClaims(list){
-  try { localStorage.setItem(PA_UPI_CLAIMS_KEY, JSON.stringify(list)); return true; } catch(e){ return false; }
-}
-function paUpdatePayArea(){
-  var area = document.getElementById('pay-area');
-  var bid = PA_SELECTED_BUNDLE;
-  var data = null;
-  try { data = JSON.parse(document.getElementById('bundle-data').textContent); } catch(e){}
-  var placeholder = !!(data && data[bid] && data[bid].price_placeholder);
-  if(area){
-    if(!bid || placeholder){
-      area.style.display = 'none';
-    } else {
-      area.style.display = 'block';
-      document.querySelectorAll('.upi-panel').forEach(function(p){
-        p.style.display = (p.getAttribute('data-bundle') === bid) ? 'block' : 'none';
-      });
-    }
-  }
-  paRenderPurchaseStatus();
-  paRenderUpiClaims();
-}
-/* Purchase-status progression (Phase 4a, six steps from the second
-   ChatGPT review): one visible tracker for the selected course, derived
-   only from what this browser can observe. Order created when a course
-   is selected; Payment made by customer and UTR submitted when a claim
-   exists for it (the browser only learns about the payment when the
-   buyer submits the UTR, so both steps turn on the claim); Payment under
-   verification while the claim is pending; Payment verified and Access
-   granted when the owner has granted access after verifying the UTR
-   (the bundle is in the owned list and a claim exists). The receipt
-   shows the claim id, amount, UTR and date, plus a direct link to the
-   purchased content once access is granted. No turnaround time is
-   promised: verification is manual by the owner. */
-function paPurchaseContentLink(bid, b){
-  if(bid === PA_SITUATIONS_BUNDLE) return 'situations.html';
-  if(b && b.first_chapter) return 'chapters/' + b.first_chapter + '.html';
-  return 'courses.html';
-}
-function paRenderPurchaseStatus(){
-  var box = document.getElementById('purchase-status');
-  if(!box) return;
-  var bid = PA_SELECTED_BUNDLE;
-  if(!bid){ box.innerHTML = ''; return; }
-  var data = null;
-  try { data = JSON.parse(document.getElementById('bundle-data').textContent); } catch(e){}
-  var b = (data && data[bid]) ? data[bid] : {name: bid, price: 0};
-  if(b.price_placeholder){
-    box.innerHTML = '<h3>Purchase status</h3><p><b>' + b.name + '</b> is not on sale yet. '
-      + 'Pricing has not been announced, so there is no order and no payment to track.</p>';
-    return;
-  }
-  var claims = paUpiClaims().filter(function(c){ return c.bundle === bid; });
-  var claim = claims.length ? claims[claims.length - 1] : null;
-  var owned = paOwned();
-  var hasAccess = owned.indexOf(bid) !== -1 || (bid === PA_SITUATIONS_BUNDLE && owned.indexOf('full') !== -1);
-  var verified = !!claim && hasAccess;
-  function step(done, current, label, note){
-    var cls = done ? 'done' : (current ? 'current' : 'todo');
-    var mark = done ? 'Done' : (current ? 'Current step' : 'Not yet');
-    return '<li class="' + cls + '"><b>' + label + '</b> (' + mark + ')' + (note ? '<br>' + note : '') + '</li>';
-  }
-  var link = paPurchaseContentLink(bid, b);
-  var html = '<h3>Purchase status: ' + b.name + '</h3><ol class="pay-status-list">';
-  html += step(true, false, 'Order created', 'Price \u20B9' + Number(b.price).toLocaleString('en-IN') + '.');
-  html += step(!!claim, !claim, 'Payment made by customer', claim ? 'You paid by UPI and submitted the payment reference below.' : 'Pay by UPI below, then submit your payment reference.');
-  html += step(!!claim, false, 'UTR submitted', claim ? ('UTR ' + claim.utr + ', submitted ' + claim.created_at + '. Claim id: ' + claim.id) : '');
-  html += step(verified, !!claim && !verified, 'Payment under verification', verified ? 'The owner has verified your payment.' : (claim ? 'The owner checks your payment against its UTR by hand.' : ''));
-  html += step(verified, false, 'Payment verified', verified ? 'Your payment matches the UTR you submitted.' : '');
-  html += step(hasAccess, false, 'Access granted', hasAccess ? '<a href="' + link + '">Open your course</a>' : '');
-  html += '</ol>';
-  if(claim && !verified){
-    html += '<p><a href="#pay-help">Payment deducted but access not granted yet? Read what to do.</a></p>';
-  }
-  if(claim){
-    html += '<h4>Receipt</h4><p>Course: ' + b.name + '<br>Amount: \u20B9' + Number(claim.amount).toLocaleString('en-IN')
-      + '<br>UTR: ' + claim.utr + '<br>Claim id: ' + claim.id + '<br>Submitted: ' + claim.created_at
-      + '<br>Status: <b>' + (verified ? 'verified' : claim.status) + '</b>'
-      + (hasAccess ? '<br><a href="' + link + '">Open your course</a>' : '')
-      + '</p>';
-  }
-  html += '<p class="bundle-meta">Your purchase records live in this browser only. If you clear this browser, keep your UTR and claim id: they are the proof of your payment.</p>';
-  box.innerHTML = html;
-}
-function paRenderUpiClaims(){
-  var box = document.getElementById('upi-claims');
-  if(!box) return;
-  var claims = paUpiClaims();
-  if(!claims.length){ box.innerHTML = ''; return; }
-  var html = '<h4>Your submitted payments</h4><ul class="upi-claim-list">';
-  claims.forEach(function(c){
-    html += '<li><b>' + c.bundle_name + '</b> (\u20B9' + Number(c.amount).toLocaleString('en-IN') + ')<br>' +
-      'UTR: ' + c.utr + '<br>' +
-      'Submitted: ' + c.created_at + '<br>' +
-      'Status: <b>' + c.status + '</b> (the owner verifies the payment, then grants access)</li>';
-  });
-  html += '</ul><p class="bundle-meta">These records live in this browser only. '
-    + 'If you clear this browser, keep your UTR: it is the proof of your payment.</p>';
-  box.innerHTML = html;
-}
-function paUpiShotPreview(input){
-  var prev = document.getElementById('upi-shot-preview');
-  if(!prev) return;
-  var f = input && input.files && input.files[0];
-  if(!f){ prev.style.display = 'none'; prev.removeAttribute('src'); return; }
-  if(f.size > 2 * 1024 * 1024){
-    var st = document.getElementById('upi-claim-status');
-    if(st) st.textContent = 'Screenshot is over 2 MB. Please use a smaller image.';
-    input.value = '';
-    prev.style.display = 'none';
-    return;
-  }
-  var r = new FileReader();
-  r.onload = function(){ prev.src = r.result; prev.style.display = 'block'; };
-  r.readAsDataURL(f);
-}
-function paSubmitUpiClaim(ev){
-  if(ev) ev.preventDefault();
-  var st = document.getElementById('upi-claim-status');
-  function fail(msg){ if(st) st.textContent = msg; return false; }
-  var bid = PA_SELECTED_BUNDLE;
-  if(!bid) return fail('Pick a course first.');
-  var _bd = null;
-  try { _bd = JSON.parse(document.getElementById('bundle-data').textContent); } catch(e){}
-  if(_bd && _bd[bid] && _bd[bid].price_placeholder) return fail('Pricing for this course has not been announced yet. There is no payment to submit.');
-  var name = (document.getElementById('upi-name').value || '').trim();
-  var email = (document.getElementById('upi-email').value || '').trim();
-  var utr = (document.getElementById('upi-utr').value || '').trim();
-  if(!name) return fail('Please enter your name.');
-  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return fail('Please enter a valid email address.');
-  if(utr.replace(/[^A-Za-z0-9]/g, '').length < 6) return fail('Please enter the UTR / transaction reference from your UPI app (at least 6 characters).');
-  var data = null;
-  try { data = JSON.parse(document.getElementById('bundle-data').textContent); } catch(e){}
-  var b = (data && data[bid]) ? data[bid] : {name: bid, price: 0};
-  var shotInput = document.getElementById('upi-shot');
-  var file = shotInput && shotInput.files && shotInput.files[0];
-  function storeClaim(shotDataUrl){
-    var claim = {
-      id: 'UPIC-' + Date.now().toString(36) + Math.floor(Math.random() * 1296).toString(36),
-      bundle: bid,
-      bundle_name: b.name,
-      amount: b.price,
-      name: name,
-      email: email,
-      utr: utr,
-      screenshot: shotDataUrl || null,
-      status: 'pending',
-      created_at: new Date().toISOString()
-    };
-    var claims = paUpiClaims();
-    claims.push(claim);
-    if(!paSaveUpiClaims(claims)){
-      return fail('Could not save the claim in this browser (storage full or blocked). Please keep your UTR and try again, or contact the owner.');
-    }
-    var conf = document.getElementById('pay-confirm');
-    if(conf){
-      conf.style.display = 'block';
-      conf.innerHTML = '<b>Payment received, access will be granted after verification.</b><br>' +
-        'Course: ' + b.name + '<br>' +
-        'Amount: \u20B9' + Number(b.price).toLocaleString('en-IN') + '<br>' +
-        'UTR: ' + utr + '<br>' +
-        'Claim id: ' + claim.id + '<br>' +
-        'The owner verifies your payment against this UTR, then grants access to the course. '
-        + 'Keep your claim id and UTR safe.';
-    }
-    if(st) st.textContent = '';
-    var form = document.getElementById('upi-claim-form');
-    if(form) form.reset();
-    var prev = document.getElementById('upi-shot-preview');
-    if(prev){ prev.style.display = 'none'; prev.removeAttribute('src'); }
-    paRenderPurchaseStatus();
-    paRenderUpiClaims();
-    return false;
-  }
-  if(file){
-    if(file.size > 2 * 1024 * 1024) return fail('Screenshot is over 2 MB. Please use a smaller image.');
-    var reader = new FileReader();
-    reader.onload = function(){ storeClaim(reader.result); };
-    reader.onerror = function(){ storeClaim(null); };
-    reader.readAsDataURL(file);
-  } else {
-    storeClaim(null);
-  }
-  return false;
 }
 function paLoadRazorpayScript(callback){
   if(window.Razorpay){ callback(); return; }
@@ -454,9 +214,7 @@ function paStartRazorpayCheckout(bid){
         }
         paAuthCurrentUserEmail().then(function(email){
           paLoadRazorpayScript(function(){
-            var data2 = null;
-            try { data2 = JSON.parse(document.getElementById('bundle-data').textContent); } catch(e){}
-            var bname = (data2 && data2[bid]) ? data2[bid].name : bid;
+            var bname = bid;
             var options = {
               key: data.key_id,
               order_id: data.order_id,
