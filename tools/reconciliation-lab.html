@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>Reconciliation Laboratory | Payments Training Hub</title>
+<meta name="description" content="Interactive reconciliation laboratory: match bank statement lines to ledger entries, find the breaks, and choose the fix.">
+<link rel="canonical" href="https://www.paymentstraininghub.com/tools/reconciliation-lab.html">
+<meta property="og:url" content="https://www.paymentstraininghub.com/tools/reconciliation-lab.html">
+<meta property="og:title" content="Reconciliation Laboratory | Payments Training Hub">
+<meta property="og:description" content="Interactive reconciliation laboratory: match bank statement lines to ledger entries, find the breaks, and choose the fix.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.com/assets/hero/hero-poster.jpg">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Organization", "name": "Payments Training Hub", "url": "https://www.paymentstraininghub.com"}, {"@type": "WebSite", "name": "Payments Training Hub", "url": "https://www.paymentstraininghub.com", "description": "Payments Training Hub: professional payments training, 746 narrated lessons across 100 chapters covering ISO 20022, SWIFT, SEPA, cross-border payments, cards and settlement.", "inLanguage": "en"}]}</script>
+<link rel="stylesheet" href="../assets/pf-theme.css">
+<link rel="stylesheet" href="../assets/hub-assistant.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="../index.html" class="brand">Payments <span>Training Hub</span></a><nav class="topnav"><a href="../index.html">Home</a> <a href="../dashboard.html">Dashboard</a> <a href="../courses.html">Courses</a> <a href="../flows.html">Flows</a> <a href="../practice.html" class="active">Practice</a> <a href="../reference.html">Reference</a> <a href="../situations.html">Situations</a> </nav><form class="pf-search" role="search" action="#" onsubmit="return false"><input id="pf-search" type="search" placeholder="Search lessons, guides, situations..." aria-label="Search the academy" autocomplete="off" data-prefix="../"><div class="pf-search-results" id="pf-search-results" hidden></div></form><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox"><span id="authState">Not signed in</span> <a id="authSignInLink" href="../signin.html">Sign in</a> <a id="authDashLink" href="../dashboard.html" style="display:none">Dashboard</a> <button class="mute-btn" id="authSignOutBtn" onclick="paAuthSignOut()" style="display:none">Sign out</button></span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<style>
+.recon-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0}
+@media (max-width: 760px){.recon-grid{grid-template-columns:1fr}}
+.recon-col h3{margin:0 0 8px 0;color:var(--pf-navy)}
+.recon-item{display:block;width:100%;text-align:left;background:var(--pf-surface);border:1px solid var(--pf-line-2);border-radius:10px;padding:10px 12px;margin:0 0 8px 0;cursor:pointer;font-size:15px;line-height:1.5;color:var(--pf-ink-2)}
+.recon-item:hover{border-color:var(--pf-royal)}
+.recon-item.recon-selected{border:2px solid var(--pf-royal);background:var(--pf-royal-tint)}
+.recon-item.recon-matched{border:2px solid #15803D;background:#F0FDF4;cursor:default}
+.recon-item.recon-break{border:2px solid var(--pf-gold);background:var(--pf-gold-tint);cursor:default}
+.recon-item:disabled{cursor:default}
+.recon-note{font-size:14px;color:var(--pf-muted);margin:8px 0}
+.recon-found{border-left:4px solid var(--pf-gold);background:var(--pf-gold-tint);padding:10px 14px;border-radius:0 10px 10px 0;margin:12px 0}
+.recon-good{border-left:4px solid #15803D;background:#F0FDF4;padding:10px 14px;border-radius:0 10px 10px 0;margin:12px 0}
+.recon-bad{border-left:4px solid #B91C1C;background:#FEF2F2;padding:10px 14px;border-radius:0 10px 10px 0;margin:12px 0}
+.recon-opt{display:block;width:100%;text-align:left;background:var(--pf-surface);border:1px solid var(--pf-line-2);border-radius:10px;padding:10px 12px;margin:0 0 8px 0;cursor:pointer;font-size:15px;line-height:1.5;color:var(--pf-ink-2)}
+.recon-opt:hover{border-color:var(--pf-royal)}
+.recon-opt:disabled{cursor:default}
+.recon-opt.recon-right{border:2px solid #15803D;background:#F0FDF4}
+.recon-opt.recon-wrong{border:2px solid #B91C1C;background:#FEF2F2}
+.recon-score{font-size:17px;font-weight:700;color:var(--pf-navy);background:var(--pf-royal-tint);border:1px solid var(--pf-royal);border-radius:10px;padding:12px 16px;margin:16px 0}
+.recon-journal{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:var(--pf-royal-tint);border-radius:10px;padding:12px 16px;font-size:14px;line-height:1.6;color:var(--pf-navy);white-space:pre-wrap}
+</style>
+<section class="section">
+<nav class="crumbs" aria-label="Breadcrumb"><a href="../index.html">Home</a> &rsaquo; <span>Reconciliation Laboratory</span></nav>
+<h1>Reconciliation Laboratory: Match the Statement to the Ledger</h1>
+<p>Reconciliation is the daily proof that the money is where the books say it is. A bank statement says what actually happened to an account. The internal ledger says what the bank thinks happened. When the two agree, the books are right. When they do not agree, something needs finding and fixing, and the difference must be explained to the last unit of currency. This laboratory lets you practise that matching on realistic cases. Everything runs in your browser. Nothing is sent to a server, nothing is stored, and no payment is made.</p>
+
+<div class="lesson-box"><h2>How to use</h2>
+<ol>
+<li>Read the worked example first. It shows a full nostro reconciliation with one real break and one timing difference, and the journals that fix the break.</li>
+<li>Then work the five exercises. In each one, click a bank statement line, then click the ledger entry that belongs to it. A green pair is an exact match. An amber pair is the same payment with a difference, and that difference is the break.</li>
+<li>When every pair is matched, the leftover lines are the breaks. Answer the two questions for the exercise: what the break is, and what the correct resolution is.</li>
+<li>Each exercise is worth 2 points, one for naming the break and one for the resolution. Your score out of 10 is shown at the top of the exercises and again at the end.</li>
+<li>Use the reset button on any exercise to try it again from the start.</li>
+</ol>
+<p><strong>Golden rule:</strong> a reconciliation difference is never written off as a rounding error and never parked in the suspense account to make the numbers agree. Every difference is either a timing difference that clears on the next statement, or a real error with a named owner and a correction posted the same day.</p>
+</div>
+
+<div class="lesson-box"><h2>The four accounts you will reconcile</h2>
+<table class="pf-table">
+<thead><tr><th>Account</th><th>What it is</th><th>What you reconcile it against</th></tr></thead>
+<tbody>
+<tr><td>Nostro account</td><td>Our account held with a correspondent bank abroad, in foreign currency. When we pay a customer in another currency, the money leaves this account.</td><td>The correspondent bank statement, line by line, every day.</td></tr>
+<tr><td>Vostro account</td><td>A foreign bank account held with us, in our books. The foreign bank sees it as its nostro account with us.</td><td>Our own ledger and the statement we send to the account holder.</td></tr>
+<tr><td>Settlement account</td><td>The account at the clearing system or central bank where cleared funds finally settle. It is where a clearing cycle ends and the money actually moves.</td><td>The clearing system settlement statement for each cycle.</td></tr>
+<tr><td>Suspense account</td><td>A temporary holding account for items that cannot yet be posted to their proper account, usually because a reference is missing or unclear.</td><td>Itself. The suspense account must clear to nil. Every entry needs an owner and a target date.</td></tr>
+</tbody>
+</table>
+<p><strong>The matching rule is the same for all four:</strong> match by reference first, then check the amount, the currency, and the value date. A line that matches on reference but not on amount or date is not a match. It is a break, and it needs a reason.</p>
+</div>
+
+<div class="lesson-box"><h2>How a payment flows through the accounts</h2>
+<p>Matching only works if you know where each entry is supposed to appear. Follow one outward payment from instruction to statement.</p>
+<ol>
+<li><strong>Instruction arrives.</strong> A pacs.008 or MT103 is received and validated. The ledger posts it: debit the customer account, credit the outward payment clearing account.</li>
+<li><strong>The payment is released.</strong> The clearing account is debited and the nostro account is credited or debited, depending on the direction of the payment. For an outward payment, the nostro account is debited when the correspondent bank pays out.</li>
+<li><strong>Settlement.</strong> The funds move through the settlement account at the clearing system. The clearing system confirms the settlement cycle, and the settlement account is reconciled against the clearing system statement.</li>
+<li><strong>Statement.</strong> The correspondent bank statement shows the debit or credit on the nostro account, with the value date, the amount, and the reference.</li>
+<li><strong>Reconciliation.</strong> The statement line is matched to the ledger entry. Amount, currency, value date and reference must all agree. Anything unmatched is listed as a break with an owner and a deadline.</li>
+</ol>
+<p>Transaction matching is step 5 for one payment. Settlement matching is the same check applied to a whole clearing cycle: every instruction in the cycle must appear in the settlement account, and the cycle total must agree with the clearing system statement.</p>
+</div>
+
+<div class="lesson-box"><h2>Worked example: nostro reconciliation with a break</h2>
+<p>A USD nostro account with our US correspondent bank. Opening balance on 12 November 2026 is USD 500,000.00. Work through the statement and the ledger, then read the reconciliation. There is one real break, a transposed amount, and one timing difference, a payment in transit.</p>
+<h3>Bank statement, 12 to 13 November 2026</h3>
+<table class="pf-table">
+<thead><tr><th>Date</th><th>Description</th><th>Debit</th><th>Credit</th><th>Balance</th></tr></thead>
+<tbody>
+<tr><td>12 Nov</td><td>Opening balance</td><td></td><td></td><td>500,000.00</td></tr>
+<tr><td>12 Nov</td><td>MT103 receipt, Harbor Trading Ltd, ref REF-880</td><td></td><td>125,000.00</td><td>625,000.00</td></tr>
+<tr><td>12 Nov</td><td>Outward MT103 payment, ref REF-881</td><td>48,250.00</td><td></td><td>576,750.00</td></tr>
+<tr><td>12 Nov</td><td>Nostro account charges</td><td>2,400.00</td><td></td><td>574,350.00</td></tr>
+<tr><td>13 Nov</td><td>FX settlement, sale of EUR</td><td></td><td>75,000.00</td><td>649,350.00</td></tr>
+<tr><td>13 Nov</td><td>Transfer to settlement account</td><td>250,000.00</td><td></td><td>399,350.00</td></tr>
+<tr><td></td><td><strong>Closing balance per statement</strong></td><td></td><td></td><td><strong>399,350.00</strong></td></tr>
+</tbody>
+</table>
+<h3>Internal ledger, 12 to 13 November 2026</h3>
+<table class="pf-table">
+<thead><tr><th>Date</th><th>Description</th><th>Debit</th><th>Credit</th><th>Balance</th></tr></thead>
+<tbody>
+<tr><td>12 Nov</td><td>Opening balance</td><td></td><td></td><td>500,000.00</td></tr>
+<tr><td>12 Nov</td><td>Receipt REF-880, Harbor Trading Ltd</td><td></td><td>125,000.00</td><td>625,000.00</td></tr>
+<tr><td>12 Nov</td><td>Outward payment REF-881</td><td>48,520.00</td><td></td><td>576,480.00</td></tr>
+<tr><td>12 Nov</td><td>Nostro account charges</td><td>2,400.00</td><td></td><td>574,080.00</td></tr>
+<tr><td>13 Nov</td><td>FX settlement, sale of EUR</td><td></td><td>75,000.00</td><td>649,080.00</td></tr>
+<tr><td>13 Nov</td><td>Transfer to settlement account</td><td>250,000.00</td><td></td><td>399,080.00</td></tr>
+<tr><td>13 Nov</td><td>Outward payment REF-890, in transit</td><td>15,000.00</td><td></td><td>384,080.00</td></tr>
+<tr><td></td><td><strong>Closing balance per ledger</strong></td><td></td><td></td><td><strong>384,080.00</strong></td></tr>
+</tbody>
+</table>
+<p>Match the lines. The receipt, the charges, the FX settlement and the transfer all agree. Two items do not. First, the outward payment REF-881 is 48,250.00 on the statement but 48,520.00 in the ledger. The digits 25 and 52 are swapped: a transposition error of 270.00, and the ledger has overstated the payment, so the ledger balance is 270.00 too low. Second, the outward payment REF-890 of 15,000.00 is in the ledger but not on the statement. It was released on 13 November and is still in transit. It is a timing difference, not an error, and it needs no journal entry.</p>
+<h3>Reconciliation</h3>
+<table class="pf-table">
+<tbody>
+<tr><td>Balance per bank statement</td><td>399,350.00</td></tr>
+<tr><td>Less: payment in transit, REF-890, value date 13 Nov, expected to clear 16 Nov</td><td>(15,000.00)</td></tr>
+<tr><td><strong>Adjusted statement balance</strong></td><td><strong>384,350.00</strong></td></tr>
+<tr><td>Balance per internal ledger</td><td>384,080.00</td></tr>
+<tr><td>Add: correction of transposed amount, REF-881 posted as 48,520.00 instead of 48,250.00</td><td>270.00</td></tr>
+<tr><td><strong>Adjusted ledger balance</strong></td><td><strong>384,350.00</strong></td></tr>
+<tr><td><strong>Difference after adjustments</strong></td><td><strong>0.00</strong></td></tr>
+</tbody>
+</table>
+<p>The difference is fully explained: 15,000.00 of timing difference plus 270.00 of transposition error equals the 15,270.00 gap between the two closing balances. The correction journal for the break is:</p>
+<p class="recon-journal">Dr  Nostro account                270.00
+Cr  Outward payment clearing     270.00
+Correction of REF-881, posted as 48,520.00 instead of 48,250.00.
+Debits equal credits. The ledger then shows the payment at 48,250.00.</p>
+<p>The in-transit payment needs no entry. When it appears on the next statement, the statement balance falls by 15,000.00 and both sides agree at 384,350.00 without any further action.</p>
+</div>
+
+<div class="lesson-box"><h2>Suspense account handling</h2>
+<p>Sometimes money arrives and the bank cannot tell whose it is. A reference is missing, truncated, or unreadable. The money is real, so it must be recorded, but it cannot be forced into a customer account on a guess. That is what the suspense account is for: a clearly labelled waiting room, not a hiding place.</p>
+<p><strong>Example.</strong> An MT103 receipt of USD 12,600.00 arrives with an incomplete reference. The beneficiary cannot be identified, so operations posts it to suspense on the day it arrives:</p>
+<p class="recon-journal">Dr  Nostro account                          12,600.00
+Cr  Suspense account, unidentified receipts  12,600.00
+Receipt with incomplete reference, beneficiary unknown.
+Debits equal credits.</p>
+<p>Two days later the sending bank confirms the reference and the beneficiary is identified as Meridian Imports Ltd. The suspense entry is cleared in full:</p>
+<p class="recon-journal">Dr  Suspense account, unidentified receipts  12,600.00
+Cr  Customer account, Meridian Imports Ltd    12,600.00
+Beneficiary identified. Suspense balance after this entry: nil.</p>
+<p><strong>The rules that keep suspense honest:</strong></p>
+<ol>
+<li>Every suspense entry has a named owner and a target date for clearing, written on the entry itself.</li>
+<li>The suspense account is reviewed every morning. Anything older than 5 business days is escalated to the operations manager.</li>
+<li>A suspense entry is cleared in full when the facts are known. It is never split across accounts to make a reconciliation agree.</li>
+<li>A break is never parked in suspense to hide it. Suspense is for money whose owner is genuinely unknown, not for errors. Errors get a correction journal, not a suspense entry.</li>
+</ol>
+</div>
+
+<div class="lesson-box"><h2>Two differences that are not errors: FX and value date</h2>
+<h3>FX difference</h3>
+<p>A EUR receipt is booked in the ledger at the rate agreed when the payment was instructed, but the correspondent bank settles it at the rate ruling when the funds arrive. The two rates are rarely identical, so the USD amounts differ. That is an FX difference, and it is resolved by recognising the gain or loss, not by treating the item as a break.</p>
+<p><strong>Example.</strong> A receipt of EUR 25,000.00 is booked at 1.0900, which is USD 27,250.00. The correspondent settles it at 1.0880, which is USD 27,200.00. The difference is USD 50.00, and the ledger expected 50.00 more than the bank credited. The correction is:</p>
+<p class="recon-journal">Dr  FX loss            50.00
+Cr  Nostro account    50.00
+EUR 25,000.00 settled at 1.0880 instead of the booked 1.0900.
+Debits equal credits.</p>
+<p>If the settled rate had been higher than the booked rate, the same entry would run the other way round as an FX gain. Either way, the difference is explained and posted, and the nostro account then agrees with the statement.</p>
+<h3>Value-date difference</h3>
+<p>A payment can carry one date in the ledger and a different date on the statement, with the same amount and the same reference. That is a timing difference, not an error. It happens when the value date falls on a day the clearing system is closed.</p>
+<p><strong>Example.</strong> A payment is released with value date 25 December. 25 December is a TARGET2 holiday, so the clearing system does not settle it that day. The ledger shows 25 December, the statement shows the next TARGET2 business day, and the amount and reference are identical. No journal is needed. The item is noted as a timing difference and confirmed on the next statement. Weekends work the same way: a payment released on Friday 13 November appears on the statement on Monday 16 November.</p>
+</div>
+
+<div class="lesson-box"><h2>The exercises: find the break, choose the fix</h2>
+<p>Five short cases. Each one shows a bank statement and the matching internal ledger for a USD nostro account. Match the lines, find what is left over or what differs, name the break, and choose the resolution. All amounts are in USD and all references are complete unless the case says otherwise.</p>
+<p class="recon-score" id="total-score">Your score: 0 of 10</p>
+<div id="exercises"></div>
+</div>
+
+<div class="lesson-box"><h2>The daily reconciliation routine</h2>
+<p>Use this checklist every morning until it is habit. It is the routine that keeps the five break types above from turning into losses.</p>
+<ol>
+<li>Pull the nostro and settlement account statements for the previous business day.</li>
+<li>Match every statement line to a ledger entry by reference, then check the amount, the currency and the value date.</li>
+<li>List every unmatched item and classify it: timing difference, missing entry, duplicate, amount difference, FX difference, or value-date difference.</li>
+<li>Post corrections for real errors the same day. A correction posted tomorrow is a day the books were wrong.</li>
+<li>Age the suspense account every morning. Escalate anything older than 5 business days to the operations manager.</li>
+<li>Confirm the adjusted statement balance equals the adjusted ledger balance. The difference after adjustments must be nil.</li>
+<li>Sign off the reconciliation and file it with the break list, so the next person can see exactly what is open and who owns it.</li>
+</ol>
+<p><strong>What good looks like:</strong> every item matched or explained, no difference unexplained, no suspense entry older than 5 business days, and a signed reconciliation filed before the next business day starts.</p>
+</div>
+
+<div class="lesson-box"><h2>Keep practising with the companion tools</h2>
+<p><a href="../tools/xml-sandbox.html">XML and MT Sandbox</a>: paste a pacs.008 or MT103 and validate it before it is released, so the errors in these exercises never reach the ledger.</p>
+<p><a href="../tools/routing-decisions.html">Routing Decision Tree</a>: a payment came back rejected or returned. Pick the reason code and work out the root cause and the fix.</p>
+<p><a href="../reference/exception-lifecycles.html">Exception and Investigation Lifecycles</a>: the full lifecycle of a return, a recall and an investigation, with camt.056 and camt.029.</p>
+</div>
+
+<script>
+(function () {
+  var EXERCISES = [
+    {
+      id: 'ex1',
+      title: 'Exercise 1: A credit on the statement that the ledger never saw',
+      intro: 'Match the statement lines to the ledger entries. One statement line has no ledger entry at all. All amounts are in USD.',
+      statement: [
+        { id: 'A', group: 'A', amount: 20000, date: '10 Nov', label: '10 Nov | Credit +20,000.00 | MT103 receipt, ref REF-101 | Harbor Trading Ltd' },
+        { id: 'B', group: 'B', amount: -5000, date: '10 Nov', label: '10 Nov | Debit -5,000.00 | Outward payment, ref REF-102' },
+        { id: 'C', group: null, amount: 8400, date: '11 Nov', label: '11 Nov | Credit +8,400.00 | MT103 receipt, ref REF-103 | Meridian Imports Ltd' }
+      ],
+      ledger: [
+        { id: '1', group: 'A', amount: 20000, date: '10 Nov', label: '10 Nov | Credit +20,000.00 | Receipt REF-101 | Harbor Trading Ltd' },
+        { id: '2', group: 'B', amount: -5000, date: '10 Nov', label: '10 Nov | Debit -5,000.00 | Payment REF-102' }
+      ],
+      leftover: 'Statement line C is left over: a credit of 8,400.00 for ref REF-103 that has no ledger entry. The bank received the money, but operations never posted it.',
+      breakQ: {
+        q: 'What is the break?',
+        options: [
+          'A receipt the ledger never posted: a missing entry',
+          'The same payment posted twice: a duplicate',
+          'Two digits swapped in the amount: an amount difference',
+          'A rate that moved between booking and settlement: an FX difference'
+        ],
+        correct: 0,
+        why: 'Correct. The statement shows an 8,400.00 credit for REF-103 and the ledger has no entry for it at all. That is a missing entry, not a duplicate or an amount difference.'
+      },
+      resolveQ: {
+        q: 'What is the correct resolution?',
+        options: [
+          'Post the missing ledger entry for 8,400.00',
+          'Ignore it. The statement will correct itself.',
+          'Send the 8,400.00 back to the sender.',
+          'Park it in the suspense account and leave it there.'
+        ],
+        correct: 0,
+        why: 'Correct. The reference is complete and the beneficiary is known, so the entry is posted: debit Nostro account 8,400.00, credit Customer account, Meridian Imports Ltd 8,400.00. Suspense is only for money whose owner is unknown, and ignoring it leaves the books wrong.',
+        journal: 'Dr  Nostro account                        8,400.00\nCr  Customer account, Meridian Imports Ltd  8,400.00\nMissing receipt REF-103 now posted. Debits equal credits.'
+      }
+    },
+    {
+      id: 'ex2',
+      title: 'Exercise 2: One payment, posted twice',
+      intro: 'Match the statement lines to the ledger entries. One ledger entry is a second posting of a payment the bank only made once. All amounts are in USD.',
+      statement: [
+        { id: 'A', group: 'A', amount: -30000, date: '11 Nov', label: '11 Nov | Debit -30,000.00 | Outward payment, ref REF-201' },
+        { id: 'B', group: 'B', amount: 12000, date: '11 Nov', label: '11 Nov | Credit +12,000.00 | Receipt, ref REF-202' },
+        { id: 'C', group: 'C', amount: -1150, date: '12 Nov', label: '12 Nov | Debit -1,150.00 | Nostro account charges, ref CHG-77' }
+      ],
+      ledger: [
+        { id: '1', group: 'A', amount: -30000, date: '11 Nov', label: '11 Nov | Debit -30,000.00 | Payment REF-201' },
+        { id: '2', group: 'A', amount: -30000, date: '11 Nov', label: '11 Nov | Debit -30,000.00 | Payment REF-201' },
+        { id: '3', group: 'B', amount: 12000, date: '11 Nov', label: '11 Nov | Credit +12,000.00 | Receipt REF-202' },
+        { id: '4', group: 'C', amount: -1150, date: '12 Nov', label: '12 Nov | Debit -1,150.00 | Charges CHG-77' }
+      ],
+      leftover: 'One ledger entry is left over: a second debit of 30,000.00 for REF-201. The bank debited the account once, but the ledger posted the payment twice.',
+      breakQ: {
+        q: 'What is the break?',
+        options: [
+          'The same payment posted twice in the ledger: a duplicate',
+          'A receipt the ledger never posted: a missing entry',
+          'Two digits swapped in the amount: an amount difference',
+          'The same payment on different dates: a value-date difference'
+        ],
+        correct: 0,
+        why: 'Correct. Two ledger entries carry the same reference, the same amount and the same date, but the statement shows a single debit. The payment was posted twice, most likely after a retry or a file sent twice.'
+      },
+      resolveQ: {
+        q: 'What is the correct resolution?',
+        options: [
+          'Reverse the duplicate ledger entry and check the duplicate control',
+          'Recall the payment from the beneficiary',
+          'Leave it. It will net off next month.',
+          'Post the 30,000.00 difference to the suspense account'
+        ],
+        correct: 0,
+        why: 'Correct. The bank only paid once, so there is nothing to recall. The fix is in the ledger: debit Nostro account 30,000.00, credit Outward payment clearing 30,000.00, which reverses the second posting. Then check why the duplicate control did not stop it.',
+        journal: 'Dr  Nostro account               30,000.00\nCr  Outward payment clearing    30,000.00\nReversal of the duplicate posting of REF-201. Debits equal credits.'
+      }
+    },
+    {
+      id: 'ex3',
+      title: 'Exercise 3: Two digits swapped',
+      intro: 'Match the statement lines to the ledger entries. One pair carries the same reference but different amounts. All amounts are in USD.',
+      statement: [
+        { id: 'A', group: 'A', amount: -64300, date: '12 Nov', label: '12 Nov | Debit -64,300.00 | Outward payment, ref REF-301' },
+        { id: 'B', group: 'B', amount: 9750, date: '12 Nov', label: '12 Nov | Credit +9,750.00 | Receipt, ref REF-302' }
+      ],
+      ledger: [
+        { id: '1', group: 'A', amount: -64030, date: '12 Nov', label: '12 Nov | Debit -64,030.00 | Payment REF-301' },
+        { id: '2', group: 'B', amount: 9750, date: '12 Nov', label: '12 Nov | Credit +9,750.00 | Receipt REF-302' }
+      ],
+      leftover: 'Pair A is matched by reference, but the amounts differ: the statement shows 64,300.00 and the ledger shows 64,030.00. The digits 30 and 03 are swapped, a difference of 270.00.',
+      breakQ: {
+        q: 'What is the break?',
+        options: [
+          'The amount was keyed with two digits swapped: an amount difference',
+          'The same payment posted twice: a duplicate',
+          'A rate that moved between booking and settlement: an FX difference',
+          'A receipt the ledger never posted: a missing entry'
+        ],
+        correct: 0,
+        why: 'Correct. The reference matches, so it is the same payment, but 64,300.00 became 64,030.00 in the ledger. Transposed digits are the classic keying error, and the difference here is exactly 270.00.'
+      },
+      resolveQ: {
+        q: 'What is the correct resolution?',
+        options: [
+          'Correct the ledger entry by 270.00',
+          'Ask the customer to pay the 270.00 difference',
+          'Post 270.00 to the suspense account',
+          'Change the statement to match the ledger'
+        ],
+        correct: 0,
+        why: 'Correct. The ledger understated the debit by 270.00, so the nostro balance is 270.00 too high. The correction is: debit Outward payment clearing 270.00, credit Nostro account 270.00. The statement is the record of what actually happened, so the ledger is corrected to match it, never the other way round.',
+        journal: 'Dr  Outward payment clearing  270.00\nCr  Nostro account            270.00\nCorrection of REF-301, posted as 64,030.00 instead of 64,300.00.\nDebits equal credits.'
+      }
+    },
+    {
+      id: 'ex4',
+      title: 'Exercise 4: The rate moved between booking and settlement',
+      intro: 'Match the statement lines to the ledger entries. One pair carries the same EUR amount but different USD amounts, because the rate moved. All amounts are in USD unless marked EUR.',
+      statement: [
+        { id: 'A', group: 'A', amount: 43280, date: '13 Nov', label: '13 Nov | Credit +43,280.00 | FX settlement, EUR 40,000.00 at 1.0820, ref FX-401' },
+        { id: 'B', group: 'B', amount: -7200, date: '13 Nov', label: '13 Nov | Debit -7,200.00 | Outward payment, ref REF-402' }
+      ],
+      ledger: [
+        { id: '1', group: 'A', amount: 43400, date: '13 Nov', label: '13 Nov | Credit +43,400.00 | FX settlement, EUR 40,000.00 at 1.0850, ref FX-401' },
+        { id: '2', group: 'B', amount: -7200, date: '13 Nov', label: '13 Nov | Debit -7,200.00 | Payment REF-402' }
+      ],
+      leftover: 'Pair A is matched by reference, but the USD amounts differ: the ledger booked EUR 40,000.00 at 1.0850, which is 43,400.00, and the bank settled it at 1.0820, which is 43,280.00. The difference is 120.00.',
+      breakQ: {
+        q: 'What is the break?',
+        options: [
+          'The exchange rate moved between booking and settlement: an FX difference',
+          'The same payment posted twice: a duplicate',
+          'The amount was keyed with two digits swapped: an amount difference',
+          'A receipt the ledger never posted: a missing entry'
+        ],
+        correct: 0,
+        why: 'Correct. The EUR amount is identical on both sides, so nothing was keyed wrong and nothing is missing. Only the rate changed, from 1.0850 to 1.0820, which moves the USD amount by 120.00.'
+      },
+      resolveQ: {
+        q: 'What is the correct resolution?',
+        options: [
+          'Post the 120.00 to the FX gain and loss account',
+          'Ask the customer to pay the 120.00',
+          'Post 120.00 to the suspense account',
+          'Re-book the whole receipt at the new rate and delete the old entry'
+        ],
+        correct: 0,
+        why: 'Correct. The ledger expected 43,400.00 but the bank credited 43,280.00, so the nostro account is 120.00 short of the booking. The difference is an FX loss: debit FX loss 120.00, credit Nostro account 120.00. The customer owes nothing, and suspense is for unknown owners, not for known rate movements.',
+        journal: 'Dr  FX loss         120.00\nCr  Nostro account  120.00\nEUR 40,000.00 settled at 1.0820 instead of the booked 1.0850.\nDebits equal credits.'
+      }
+    },
+    {
+      id: 'ex5',
+      title: 'Exercise 5: Same payment, different day',
+      intro: 'Match the statement lines to the ledger entries. One pair carries the same reference and the same amount, but different dates. All amounts are in USD.',
+      statement: [
+        { id: 'A', group: 'A', amount: -18500, date: '16 Nov', label: '16 Nov (Mon) | Debit -18,500.00 | Outward payment, ref REF-501' },
+        { id: 'B', group: 'B', amount: 6300, date: '16 Nov', label: '16 Nov (Mon) | Credit +6,300.00 | Receipt, ref REF-502' }
+      ],
+      ledger: [
+        { id: '1', group: 'A', amount: -18500, date: '13 Nov', label: '13 Nov (Fri) | Debit -18,500.00 | Payment REF-501' },
+        { id: '2', group: 'B', amount: 6300, date: '16 Nov', label: '16 Nov (Mon) | Credit +6,300.00 | Receipt REF-502' }
+      ],
+      leftover: 'Pair A is matched by reference and amount, but the dates differ: the ledger shows Friday 13 Nov and the statement shows Monday 16 Nov. 14 and 15 Nov are Saturday and Sunday, so the payment could not settle over the weekend.',
+      breakQ: {
+        q: 'What is the break?',
+        options: [
+          'The same payment on different dates: a value-date difference',
+          'The same payment posted twice: a duplicate',
+          'Two digits swapped in the amount: an amount difference',
+          'A rate that moved between booking and settlement: an FX difference'
+        ],
+        correct: 0,
+        why: 'Correct. The reference and the amount agree exactly, so nothing is missing, duplicated or mis-keyed. Only the date differs, and the gap is a weekend. That is a value-date, or timing, difference.'
+      },
+      resolveQ: {
+        q: 'What is the correct resolution?',
+        options: [
+          'No entry is needed. Note it as a timing difference and confirm it clears.',
+          'Post a correcting entry for 18,500.00.',
+          'Ask the bank to change the statement date.',
+          'Move the ledger entry to 16 Nov.'
+        ],
+        correct: 0,
+        why: 'Correct. A timing difference clears by itself when the next statement arrives, so posting anything would double count the payment. The ledger date is the true release date and stays as it is. The item is noted as a timing difference and checked on the next statement.',
+        journal: 'No journal entry. Timing difference only.\nThe payment was released on Friday 13 Nov and settled on Monday 16 Nov.\nNote it, and confirm it on the next statement.'
+      }
+    }
+  ];
+
+  var totalScore = 0;
+  var scoreEl = document.getElementById('total-score');
+  var host = document.getElementById('exercises');
+
+  function escHtml(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  function fmt(n) {
+    var s = Math.abs(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    return (n < 0 ? '-' : '') + s;
+  }
+
+  function updateScore() {
+    scoreEl.textContent = 'Your score: ' + totalScore + ' of 10';
+  }
+
+  function buildExercise(ex) {
+    var wrap = document.createElement('div');
+    wrap.className = 'lesson-box';
+    wrap.id = 'wrap-' + ex.id;
+
+    var html = '<h2>' + escHtml(ex.title) + '</h2>'
+      + '<p>' + escHtml(ex.intro) + '</p>'
+      + '<div class="recon-grid">'
+      + '<div class="recon-col"><h3>Bank statement</h3><div class="recon-list" data-side="s"></div></div>'
+      + '<div class="recon-col"><h3>Internal ledger</h3><div class="recon-list" data-side="l"></div></div>'
+      + '</div>'
+      + '<p class="recon-note" data-role="hint">Click a statement line, then click the ledger entry that belongs to it.</p>'
+      + '<div data-role="found"></div>'
+      + '<div data-role="questions"></div>'
+      + '<p><button type="button" class="studio-btn" data-role="reset">Reset this exercise</button></p>';
+    wrap.innerHTML = html;
+
+    var sList = wrap.querySelector('[data-side="s"]');
+    var lList = wrap.querySelector('[data-side="l"]');
+    var hint = wrap.querySelector('[data-role="hint"]');
+    var found = wrap.querySelector('[data-role="found"]');
+    var questions = wrap.querySelector('[data-role="questions"]');
+
+    var state = {
+      matchedGroups: {},
+      matchedItems: {},
+      selectedS: null,
+      selectedL: null,
+      breakDone: false,
+      resolveDone: false,
+      done: false
+    };
+
+    function renderItems() {
+      sList.innerHTML = '';
+      ex.statement.forEach(function (item) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'recon-item';
+        b.textContent = item.label;
+        b.setAttribute('data-id', item.id);
+        if (state.matchedItems['s' + item.id]) { b.disabled = true; b.classList.add(state.matchedItems['s' + item.id]); }
+        if (state.selectedS === item.id) { b.classList.add('recon-selected'); }
+        b.addEventListener('click', function () { selectItem('s', item.id); });
+        sList.appendChild(b);
+      });
+      lList.innerHTML = '';
+      ex.ledger.forEach(function (item) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'recon-item';
+        b.textContent = item.label;
+        b.setAttribute('data-id', item.id);
+        if (state.matchedItems['l' + item.id]) { b.disabled = true; b.classList.add(state.matchedItems['l' + item.id]); }
+        if (state.selectedL === item.id) { b.classList.add('recon-selected'); }
+        b.addEventListener('click', function () { selectItem('l', item.id); });
+        lList.appendChild(b);
+      });
+    }
+
+    function findItem(side, id) {
+      var list = side === 's' ? ex.statement : ex.ledger;
+      for (var i = 0; i < list.length; i++) { if (list[i].id === id) { return list[i]; } }
+      return null;
+    }
+
+    function groupsRemaining() {
+      var groups = {};
+      ex.statement.forEach(function (it) { if (it.group) { groups[it.group] = true; } });
+      ex.ledger.forEach(function (it) { if (it.group) { groups[it.group] = true; } });
+      var count = 0;
+      Object.keys(groups).forEach(function (g) { if (!state.matchedGroups[g]) { count++; } });
+      return count;
+    }
+
+    function selectItem(side, id) {
+      if (state.done) { return; }
+      if (side === 's') {
+        state.selectedS = (state.selectedS === id) ? null : id;
+      } else {
+        state.selectedL = (state.selectedL === id) ? null : id;
+      }
+      renderItems();
+      if (state.selectedS && state.selectedL) { tryMatch(); }
+    }
+
+    function tryMatch() {
+      var s = findItem('s', state.selectedS);
+      var l = findItem('l', state.selectedL);
+      state.selectedS = null;
+      state.selectedL = null;
+      if (!s || !l) { renderItems(); return; }
+      if (!s.group || !l.group || s.group !== l.group) {
+        hint.textContent = 'Those two do not belong together. Check the reference on each line before you try again.';
+        renderItems();
+        return;
+      }
+      var kind = 'recon-matched';
+      var note = '';
+      if (s.amount !== l.amount) {
+        kind = 'recon-break';
+        var diff = Math.abs(s.amount - l.amount);
+        note = 'Same reference, different amount. The difference is ' + fmt(diff) + '. This is the break for this pair.';
+      } else if (s.date !== l.date) {
+        kind = 'recon-break';
+        note = 'Same reference and amount, but the dates differ: ledger ' + l.date + ', statement ' + s.date + '. This is the break for this pair.';
+      }
+      state.matchedGroups[s.group] = true;
+      state.matchedItems['s' + s.id] = kind;
+      state.matchedItems['l' + l.id] = kind;
+      if (kind === 'recon-matched') {
+        hint.textContent = 'Matched. ' + groupsRemaining() + ' pair(s) still to match.';
+      } else {
+        hint.textContent = 'Matched, with a difference. ' + groupsRemaining() + ' pair(s) still to match.';
+      }
+      if (note) {
+        var d = document.createElement('div');
+        d.className = 'recon-found';
+        d.textContent = note;
+        found.appendChild(d);
+      }
+      renderItems();
+      if (groupsRemaining() === 0) { showLeftover(); }
+    }
+
+    function showLeftover() {
+      var d = document.createElement('div');
+      d.className = 'recon-found';
+      d.innerHTML = '<strong>What is left over:</strong> ' + escHtml(ex.leftover);
+      found.appendChild(d);
+      renderQuestions();
+    }
+
+    function renderQuestions() {
+      questions.innerHTML = '';
+      askQuestion(ex.breakQ, 'break');
+      askQuestion(ex.resolveQ, 'resolve');
+    }
+
+    function askQuestion(qd, which) {
+      var box = document.createElement('div');
+      var h = document.createElement('p');
+      h.innerHTML = '<strong>' + escHtml(qd.q) + '</strong>';
+      box.appendChild(h);
+      qd.options.forEach(function (opt, i) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'recon-opt';
+        b.textContent = opt;
+        b.addEventListener('click', function () {
+          var opts = box.querySelectorAll('.recon-opt');
+          opts.forEach(function (o) { o.disabled = true; });
+          var fb = document.createElement('div');
+          if (i === qd.correct) {
+            b.classList.add('recon-right');
+            fb.className = 'recon-good';
+            fb.textContent = qd.why;
+            if (which === 'break' && !state.breakDone) { state.breakDone = true; totalScore += 1; updateScore(); }
+            if (which === 'resolve' && !state.resolveDone) { state.resolveDone = true; totalScore += 1; updateScore(); }
+            if (qd.journal) {
+              var j = document.createElement('p');
+              j.className = 'recon-journal';
+              j.textContent = qd.journal;
+              box.appendChild(j);
+            }
+          } else {
+            b.classList.add('recon-wrong');
+            fb.className = 'recon-bad';
+            fb.textContent = 'Not quite. ' + qd.why;
+          }
+          box.appendChild(fb);
+          checkDone();
+        });
+        box.appendChild(b);
+      });
+      questions.appendChild(box);
+    }
+
+    function checkDone() {
+      if (state.breakDone && state.resolveDone && !state.done) {
+        state.done = true;
+        var d = document.createElement('div');
+        d.className = 'recon-good';
+        d.innerHTML = '<strong>Exercise complete.</strong> You named the break and chose the right resolution. Your score is now ' + totalScore + ' of 10.';
+        questions.appendChild(d);
+      }
+    }
+
+    wrap.querySelector('[data-role="reset"]').addEventListener('click', function () {
+      state.matchedGroups = {};
+      state.matchedItems = {};
+      state.selectedS = null;
+      state.selectedL = null;
+      state.breakDone = false;
+      state.resolveDone = false;
+      state.done = false;
+      found.innerHTML = '';
+      questions.innerHTML = '';
+      hint.textContent = 'Click a statement line, then click the ledger entry that belongs to it.';
+      renderItems();
+    });
+
+    renderItems();
+    return wrap;
+  }
+
+  EXERCISES.forEach(function (ex) {
+    host.appendChild(buildExercise(ex));
+  });
+})();
+</script>
+</section>
+</main>
+<footer><p>Payments Training Hub. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="../index.html">Home</a> &middot; <a href="../courses.html">Courses</a> &middot; <a href="../flows.html">Flows</a> &middot; <a href="../situations.html">Situations</a> &middot; <a href="../dashboard.html">Dashboard</a> &middot; <a href="../portfolio.html">Portfolio</a> &middot; <a href="../domains.html">Reference</a> &middot; <a href="../labs-simulators.html">Labs &amp; Simulators</a> &middot; <a href="../practice.html">Practice</a> &middot; <a href="../simulators.html">Simulators</a> &middot; <a href="../labs.html">Labs</a> &middot; <a href="../explorer.html">Explorer</a> &middot; <a href="../tests.html">Tests</a> &middot; <a href="../diagnostic.html">Diagnostic</a> &middot; <a href="../faq.html">Interview Ready Questions</a> &middot; <a href="../interview-prep.html">Interview Prep</a></p><p><a href="../about.html">About</a> &middot; <a href="../founder.html">Founder</a> &middot; <a href="../methodology.html">Methodology</a> &middot; <a href="../privacy.html">Privacy</a> &middot; <a href="../terms.html">Terms</a> &middot; <a href="../refund.html">Refunds</a> &middot; <a href="../contact.html">Contact</a> &middot; <a href="../editorial-standards.html">Editorial Standards</a> &middot; <a href="../sources.html">Sources</a> &middot; <a href="../references-policy.html">References Policy</a> &middot; <a href="../corrections.html">Corrections Policy</a></p><p><a href="../domains.html">Domains</a> &middot; <a href="../reference/mt103-to-pacs008.html">MT103 to pacs.008 Reference</a> &middot; <a href="../reference.html">Reference Library</a> &middot; <a href="../insights.html">Insights and Scenarios</a></p><p><a href="../course-map.html">Course Map</a> &middot; <a href="../pricing.html">Pricing</a> &middot; <a href="../teams.html">For Teams</a> &middot; <a href="../artifacts.html">BA Artifact Library</a> &middot; <a href="../reference/mt-iso-mapping.html">MT to ISO 20022 Mapping</a> &middot; <a href="../reference/clearing-systems.html">Clearing Systems</a> &middot; <a href="../reference/regulatory-compliance.html">Regulatory Compliance</a> &middot; <a href="../reference/exception-lifecycles.html">Exception Lifecycles</a> &middot; <a href="../reference/upi-operational.html">UPI Operational Pathway</a> &middot; <a href="../reference/sepa-guide.html">SEPA Scheme Guide</a> &middot; <a href="../tools/xml-sandbox.html">XML and MT Sandbox</a> &middot; <a href="../tools/routing-decisions.html">Routing Decision Tree</a> &middot; <a href="../tools/reconciliation-lab.html">Reconciliation Laboratory</a> &middot; <a href="../tools/investigation-lab.html">Payment Investigation Lab</a></p><p><a href="../support.html">Help and Support</a> &middot; <a href="../changelog.html">Changelog</a> &middot; <a href="../licensing.html">Licensing</a></p></footer>
+<div id="hub-assistant" class="hub-assistant" data-prefix="../" data-expanded="false"><div class="hub-mascot" id="hub-mascot" role="button" tabindex="0" aria-label="Open the Hub Assistant chat"><svg class="hub-mascot-svg" viewBox="0 0 80 96" aria-hidden="true"><path d="M64 8 L66.5 15 L74 17.5 L66.5 20 L64 27 L61.5 20 L54 17.5 L61.5 15 Z" fill="#C9A227"/><path d="M40 12 C54 12 62 22 62 34 L62 64 C62 78 52 88 40 88 C28 88 18 78 18 64 L18 32" fill="none" stroke="#1D4ED8" stroke-width="7" stroke-linecap="round"/><path d="M40 28 C47 28 51 32 51 38 L51 60 C51 68 47 73 40 73 C33 73 29 68 29 60 L29 36" fill="none" stroke="#1D4ED8" stroke-width="7" stroke-linecap="round"/><path d="M18 32 L18 26" stroke="#C9A227" stroke-width="7" stroke-linecap="round"/><circle cx="34" cy="38" r="5" fill="#fff" stroke="#0B1F3D" stroke-width="1.5"/><circle cx="46" cy="38" r="5" fill="#fff" stroke="#0B1F3D" stroke-width="1.5"/><circle cx="35" cy="39" r="2.2" fill="#0B1F3D"/><circle cx="47" cy="39" r="2.2" fill="#0B1F3D"/><path d="M34 50 Q40 56 46 50" fill="none" stroke="#0B1F3D" stroke-width="2.5" stroke-linecap="round"/></svg><span class="hub-mascot-label">Hub Assistant</span><span class="hub-hide" id="hub-hide" role="button" tabindex="0" aria-label="Hide assistant">&times;</span></div><div class="hub-panel" id="hub-panel" hidden><div class="hub-panel-head"><svg class="hub-mini" viewBox="0 0 80 96" aria-hidden="true"><path d="M40 12 C54 12 62 22 62 34 L62 64 C62 78 52 88 40 88 C28 88 18 78 18 64 L18 32" fill="none" stroke="#1D4ED8" stroke-width="7" stroke-linecap="round"/><path d="M40 28 C47 28 51 32 51 38 L51 60 C51 68 47 73 40 73 C33 73 29 68 29 60 L29 36" fill="none" stroke="#1D4ED8" stroke-width="7" stroke-linecap="round"/><path d="M18 32 L18 26" stroke="#C9A227" stroke-width="7" stroke-linecap="round"/></svg><div class="hub-panel-title"><b>Hub Assistant</b><span>Payments Training Hub chat assistant</span></div><button type="button" class="hub-close" id="hub-close" aria-label="Close chat">&times;</button></div><div class="hub-messages" id="hub-messages" aria-live="polite"></div><div class="hub-starters" id="hub-starters"><button type="button" class="hub-chip" data-q="What is an MT103?">What is an MT103?</button><button type="button" class="hub-chip" data-q="How does a pacs.008 work?">How does a pacs.008 work?</button><button type="button" class="hub-chip" data-q="Explain nostro and vostro">Explain nostro and vostro</button></div><form class="hub-input-row" id="hub-form"><input id="hub-input" type="text" placeholder="Ask about payments..." autocomplete="off" aria-label="Ask the Hub Assistant"><button type="submit">Send</button></form></div><button type="button" class="hub-dot" id="hub-dot" aria-label="Show the Hub Assistant"></button></div>
+<script defer src="../assets/site.js"></script>
+<script defer src="../assets/bundles.js"></script>
+<script defer src="../assets/auth.js"></script>
+<script defer src="../assets/learner-sync.js"></script>
+<script defer src="../assets/site-search.js"></script>
+<script defer src="../assets/hub-assistant.js"></script>
+<script defer src="../assets/codehl.js"></script>
+<script defer src="../assets/nav.js"></script>
+<script defer src="../assets/pf-enhance.js"></script>
+</body>
+</html>

@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>UPI Operational Pathway | Payments Training Hub</title>
+<meta name="description" content="UPI operational pathway: NPCI, PSP and TPAP roles, VPA, pay and collect flows, intent and QR, mandates and AutoPay, timeouts and reversals, UDIR,...">
+<link rel="canonical" href="https://www.paymentstraininghub.com/reference/upi-operational.html">
+<meta property="og:url" content="https://www.paymentstraininghub.com/reference/upi-operational.html">
+<meta property="og:title" content="UPI Operational Pathway | Payments Training Hub">
+<meta property="og:description" content="UPI operational pathway: NPCI, PSP and TPAP roles, VPA, pay and collect flows, intent and QR, mandates and AutoPay, timeouts and reversals, UDIR,...">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.com/assets/hero/hero-poster.jpg">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Organization", "name": "Payments Training Hub", "url": "https://www.paymentstraininghub.com"}, {"@type": "WebSite", "name": "Payments Training Hub", "url": "https://www.paymentstraininghub.com", "description": "Payments Training Hub: professional payments training, 746 narrated lessons across 100 chapters covering ISO 20022, SWIFT, SEPA, cross-border payments, cards and settlement.", "inLanguage": "en"}]}</script>
+<link rel="stylesheet" href="../assets/pf-theme.css">
+<link rel="stylesheet" href="../assets/hub-assistant.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="../index.html" class="brand">Payments <span>Training Hub</span></a><nav class="topnav"><a href="../index.html">Home</a> <a href="../dashboard.html">Dashboard</a> <a href="../courses.html">Courses</a> <a href="../flows.html">Flows</a> <a href="../practice.html">Practice</a> <a href="../reference.html" class="active">Reference</a> <a href="../situations.html">Situations</a> </nav><form class="pf-search" role="search" action="#" onsubmit="return false"><input id="pf-search" type="search" placeholder="Search lessons, guides, situations..." aria-label="Search the academy" autocomplete="off" data-prefix="../"><div class="pf-search-results" id="pf-search-results" hidden></div></form><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox"><span id="authState">Not signed in</span> <a id="authSignInLink" href="../signin.html">Sign in</a> <a id="authDashLink" href="../dashboard.html" style="display:none">Dashboard</a> <button class="mute-btn" id="authSignOutBtn" onclick="paAuthSignOut()" style="display:none">Sign out</button></span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<section class="section">
+<nav class="crumbs"><a href="../index.html">Home</a> / <a href="../reference.html">Reference</a> / UPI Operational Pathway</nav>
+<h1>UPI Operational Pathway</h1>
+<p>UPI, the Unified Payments Interface, is India's instant retail
+payment system. This page teaches how UPI works end to end, from the
+moment a customer taps pay to the moment the money settles between
+banks. It is a learning guide, not a payment page. There is no UPI ID
+and no checkout on this website, and nothing on this page sends money.
+Payments for the course happen in the Payments Training Hub iOS app.
+What this page covers is the operation: the roles, the address, the pay
+and collect flows, how a payment is started, what happens when it times
+out, how mandates and AutoPay work, how disputes are resolved, and how
+settlement and reconciliation work. Every figure below comes from the
+course lessons. Where a limit or a timeline is set by an NPCI circular
+or by the bank itself, the page says so and tells you to check the
+current circular, because NPCI changes these values and a printed
+number goes stale.</p>
+<div class="lesson-box"><h2>How to read this page</h2>
+<p>UPI is a four corner system with a central switch. A customer, a
+merchant, two banks and NPCI all take part in one payment, and the
+payment is only complete when the final confirmation arrives. Read the
+roles first, then the pay flow, then the collect flow, then the failure
+cases. The failure cases are the part a business analyst gets wrong
+most often: a timeout is not a failure, a pending payment must never be
+retried blind, and a debit without a credit must be reversed. If you
+remember only one rule from this page, remember that one.</p></div>
+
+<h2>1. The five roles in one payment</h2>
+<p>One UPI payment can involve five parties. Confusing any two of them
+misassigns responsibility when a payment fails, so learn the split
+before anything else.</p>
+<table class="pf-table">
+<tr><th>Role</th><th>What it does</th><th>What it never does</th></tr>
+<tr><td>NPCI, the National Payments Corporation of India</td><td>Operates the UPI switch. Validates the message, finds the banks from the VPAs, routes the debit and credit instructions, holds the transaction status, and settles the net positions between banks through the Reserve Bank of India.</td><td>It does not hold customer funds and it does not decide whether a single customer may pay. That decision belongs to the remitter bank.</td></tr>
+<tr><td>PSP bank, the Payment Service Provider bank</td><td>Provides the UPI service to the app the customer uses. It authenticates the customer, handles the debit side of the instruction, and passes the request to the NPCI switch.</td><td>It is not always the bank that holds the payer account, and it does not hold the customer money for the PSP app. The money sits with the remitter bank.</td></tr>
+<tr><td>TPAP, the Third Party Application Provider</td><td>A non-bank company that builds the UPI app the customer taps, such as a wallet or a payment app. It onboards the customer, shows the screen, takes the UPI PIN, and connects to the NPCI switch through its sponsor PSP bank.</td><td>It does not hold customer funds and it does not move money. A failure in the TPAP app is not a failure in the bank account, and the two must never be confused in an incident report.</td></tr>
+<tr><td>Remitter bank</td><td>Holds the payer account. Checks the balance and the UPI PIN, debits the account, and confirms the debit to the switch.</td><td>It does not credit the payee. That is the beneficiary bank's job.</td></tr>
+<tr><td>Beneficiary bank</td><td>Holds the receiver account. Receives the credit instruction from the switch, credits the payee, and confirms the credit.</td><td>It does not decide whether the payer may pay. That is the remitter bank's job.</td></tr>
+</table>
+<p>The PSP bank and the remitter bank are often the same bank, but they
+do not have to be. A customer can use a TPAP app sponsored by one bank
+while the money comes from an account at a different bank. When a
+payment fails, the first question is always which role failed: the app,
+the PSP bank, the switch, the remitter bank or the beneficiary bank.
+Each role owns a different fix.</p>
+
+<h2>2. The address: VPA</h2>
+<p>UPI turns a bank account into a simple address called a Virtual
+Payment Address, or VPA. It looks like an email address, for example
+rahul@okhdfcbank. The VPA maps to one specific bank account, and the
+bank that issued the VPA holds the mapping. A payer never needs the
+payee account number or IFSC, which keeps account details private. A
+customer can hold more than one VPA for the same account, and can
+change the VPA without changing the account. When a VPA is deactivated
+or transferred to another bank, the mapping must be updated or payments
+to the old VPA will fail, so the requirements for any UPI product must
+cover VPA creation, uniqueness, deactivation and transfer. The VPA is
+also the key the NPCI switch uses to route a payment to the correct
+bank: the switch reads the VPA, finds the beneficiary bank, and routes
+from there.</p>
+
+<h2>3. The pay flow, step by step</h2>
+<p>A pay request is the flow where the payer starts the payment. It
+moves through six clear steps, and the status at each step is explicit:
+initiated, debited, credited, or confirmed. The payment is only
+complete when the final confirmation arrives.</p>
+<ol>
+<li><strong>The payer starts it.</strong> The payer enters the payee
+VPA or scans a QR code, types the amount, and confirms with the UPI
+PIN. The UPI PIN authenticates every debit. A wrong PIN blocks the
+payment, and repeated wrong attempts can lock the facility.</li>
+<li><strong>The app sends a pay request.</strong> The TPAP app sends
+the request to its PSP bank, which forwards it to the NPCI switch.</li>
+<li><strong>NPCI validates and routes.</strong> The switch validates
+the VPA, finds the beneficiary bank, and routes a debit instruction to
+the remitter bank.</li>
+<li><strong>The remitter bank debits.</strong> The remitter bank checks
+the balance and the PIN, debits the payer account, and confirms the
+debit back to the switch.</li>
+<li><strong>The beneficiary bank credits.</strong> NPCI routes a credit
+instruction to the beneficiary bank, which credits the payee account
+and confirms the credit.</li>
+<li><strong>NPCI sends the final confirmation.</strong> The switch
+sends the success response to the app. Only now is the payment
+complete.</li>
+</ol>
+<p>UPI works around the clock, every day of the year, and a normal
+payment is credited in seconds. The general per transaction limit is one
+lakh rupees, with higher limits for specific categories such as tax
+payments, up to five lakh rupees for specified categories since December
+2024, as set by NPCI. Banks may set lower daily limits of their own.
+Always check the current NPCI circular and the remitter bank's own
+limits before writing a limit into a requirement, because both can
+change.</p>
+
+<h2>4. The collect flow, step by step</h2>
+<p>A collect request is the reverse: the payee asks the payer for money,
+and the payer approves it. A merchant collecting a bill, or a friend
+requesting a share of a dinner bill, both use the collect flow. It
+follows the same path as the pay flow, in reverse order of initiation.</p>
+<ol>
+<li><strong>The payee requests.</strong> The merchant or payee sends a
+collect request stating the amount and the reason, through their app
+and bank to the NPCI switch.</li>
+<li><strong>The payer is asked.</strong> The switch routes the request
+to the payer, who sees it in the UPI app with the payee name and the
+amount.</li>
+<li><strong>The payer approves with the UPI PIN.</strong> Approval is
+an explicit act. Without the PIN, nothing moves.</li>
+<li><strong>Debit, credit, confirmation.</strong> The same three steps
+run as in the pay flow: the remitter bank debits, the beneficiary bank
+credits, and NPCI sends the final confirmation.</li>
+<li><strong>Expiry.</strong> A collect request that is not approved
+expires. The expiry period is set by the scheme and the app, so the
+requirements must state it, and the payee must be told clearly when a
+request has expired rather than left wondering.</li>
+</ol>
+<p>Collect and pay are not interchangeable in dispute handling. A
+collect dispute is about whether the payer authorised that specific
+collection. A pay dispute is about whether the payer intended that
+specific payment. The system must record which flow was used for every
+transaction, because the dispute path differs.</p>
+
+<h2>5. How a payment is started: intent and QR</h2>
+<p>A UPI payment has to be started from somewhere. The two common
+starting points are intent and QR, and a BA must know both, because the
+merchant integration depends on which one is used.</p>
+<table class="pf-table">
+<tr><th>Starting point</th><th>How it works</th><th>When it is used</th></tr>
+<tr><td>Intent</td><td>A deep link from a merchant app or website that opens the payer's UPI app with the payment details already filled in: payee VPA, amount, and a transaction note. The payer reviews the details and confirms with the UPI PIN. Nothing is paid until the payer confirms.</td><td>Online checkout, in-app purchase, and any flow where the customer is already inside an app or a browser and needs to be handed to the UPI app to pay.</td></tr>
+<tr><td>QR code</td><td>A printed or on-screen code that carries the payee VPA, and optionally the amount. A static QR carries only the payee, so the payer types the amount. A dynamic QR carries the payee and the amount, so the payer only confirms. Scanning the code opens the UPI app with the details filled in.</td><td>Shops, street vendors, restaurants, and bills, anywhere the payer is standing in front of the payee. A dynamic QR is safer than a static one for fixed prices, because the amount cannot be typed wrong.</td></tr>
+</table>
+<p>Both starting points end in the same place: the payer confirms with
+the UPI PIN and the six step pay flow runs. The starting point changes
+only how the details get into the app, never how the money moves. A
+tampered QR code is a real fraud risk, because the code can be replaced
+with a different payee VPA, so merchant QR codes must be verified and
+the payer must always check the payee name on the confirmation screen
+before entering the PIN.</p>
+
+<h2>6. Sequence diagrams in words: three end to end flows</h2>
+<p>These sequences are the whole payment, written out so a BA can trace
+every hop and every confirmation. Read them top to bottom. Each arrow
+is a message, and each message has a sender, a receiver, and a
+confirmation that must come back.</p>
+<div class="lesson-box"><h2>Sequence A: a pay flow, end to end</h2>
+<p>Payer app &rarr; PSP bank: pay request, payee VPA, amount, payer
+authentication.<br>
+PSP bank &rarr; NPCI switch: forwarded pay request.<br>
+NPCI switch &rarr; remitter bank: debit instruction, after validating
+the VPA and finding the beneficiary bank.<br>
+Remitter bank &rarr; NPCI switch: debit confirmation, after checking
+balance and PIN and debiting the payer account.<br>
+NPCI switch &rarr; beneficiary bank: credit instruction.<br>
+Beneficiary bank &rarr; NPCI switch: credit confirmation, after
+crediting the payee account.<br>
+NPCI switch &rarr; payer app: final success response.<br>
+Result: the payer is debited, the payee is credited, and both sides
+hold a confirmed status. If any confirmation in this chain does not
+arrive, the payment is not complete, and the timeout rules in section 7
+apply.</p></div>
+<div class="lesson-box"><h2>Sequence B: a collect flow, end to end</h2>
+<p>Payee app &rarr; beneficiary bank: collect request, amount, reason.<br>
+Beneficiary bank &rarr; NPCI switch: forwarded collect request.<br>
+NPCI switch &rarr; payer app: collect request shown to the payer, with
+payee name and amount.<br>
+Payer app &rarr; PSP bank: payer approval with UPI PIN.<br>
+PSP bank &rarr; NPCI switch: approved collect request.<br>
+NPCI switch &rarr; remitter bank: debit instruction.<br>
+Remitter bank &rarr; NPCI switch: debit confirmation.<br>
+NPCI switch &rarr; beneficiary bank: credit instruction.<br>
+Beneficiary bank &rarr; NPCI switch: credit confirmation.<br>
+NPCI switch &rarr; both apps: final success response.<br>
+Result: the same debit, credit and confirmation as a pay flow, started
+from the payee side. If the payer declines or the request expires, no
+money moves and the payee is told the request was declined or expired.</p></div>
+<div class="lesson-box"><h2>Sequence C: a mandate execution (AutoPay), end to end</h2>
+<p>Merchant &rarr; NPCI switch: mandate execution request, citing the
+mandate reference, amount, and date.<br>
+NPCI switch &rarr; customer bank: execution instruction.<br>
+Customer bank: checks mandate active, amount within maximum, date
+within validity, cumulative total within limit, and any pre-debit
+notification already sent. If any check fails, the execution is rejected
+before the account is debited, with a reason code to the merchant.<br>
+Customer bank &rarr; NPCI switch: debit confirmation.<br>
+NPCI switch &rarr; merchant bank: credit instruction.<br>
+Merchant bank &rarr; NPCI switch: credit confirmation.<br>
+NPCI switch &rarr; merchant: execution confirmation with the
+transaction reference.<br>
+Result: the recurring payment is collected without the customer acting
+on the day, and the customer is notified before and after the debit as
+the mandate terms require.</p></div>
+
+<h2>7. Timeouts: pending is not failed</h2>
+<p>A timeout does not mean the payment failed. A timeout happens when
+one bank or the switch does not respond within the allowed time, so the
+app cannot tell the customer whether the money moved. The transaction
+status is pending, not failed, and the money may already have been
+debited. The correct action is never to send the payment again straight
+away. The app must first call the check transaction status service,
+which asks NPCI and the banks for the final status of the original
+transaction. If the check confirms the credit happened, the app shows
+success. If the check confirms the debit happened but the credit did
+not, the remitter bank must reverse the debit. Blind retries are the
+most common cause of duplicate debits in UPI, so the status check
+before any retry is a hard rule. A screen that says failed when the real
+status is pending will drive the customer to retry and create a
+duplicate debit, so the status wording in the app is itself a
+requirement, not a cosmetic detail.</p>
+
+<h2>8. Failures, duplicates and reversals</h2>
+<table class="pf-table">
+<tr><th>Outcome</th><th>What happened</th><th>What must happen next</th></tr>
+<tr><td>Failed transaction</td><td>The debit never happened. Causes include insufficient funds, an invalid VPA, a wrong UPI PIN, or a beneficiary account that cannot accept credits.</td><td>Nothing moves. The customer can correct the detail and try again. The app must show the reason in plain language so the customer knows what to fix.</td></tr>
+<tr><td>Pending, then success</td><td>A timeout left the status unknown, and the status check confirms the credit happened.</td><td>The app shows success for the original transaction. No retry is sent.</td></tr>
+<tr><td>Pending, then debit without credit</td><td>The status check confirms the payer was debited but the payee was not credited.</td><td>The remitter bank must reverse the debit automatically, so the payer gets the money back. The reversal timeline is set by the NPCI procedural guidelines, so check the current circular rather than relying on a printed number.</td></tr>
+<tr><td>Duplicate debit</td><td>A retry created a second debit for the same purchase. It is detected by matching the original transaction reference and amount.</td><td>The bank must reverse the duplicate debit. Reconciliation must be built around the transaction reference, the only reliable way to match a debit, a credit, a reversal, and a complaint.</td></tr>
+<tr><td>Wrong credit</td><td>The payment reached the wrong payee, usually because the payer typed the wrong VPA or scanned a tampered QR code.</td><td>The payer must raise a dispute through the bank. Recovery depends on the beneficiary bank and the beneficiary's consent, and it is not automatic, so prevention through the payee name check matters more than the cure.</td></tr>
+</table>
+
+<h2>9. Mandates and AutoPay</h2>
+<p>A UPI mandate is a standing instruction registered on the UPI
+platform that authorises a merchant to collect payments from a customer
+bank account through UPI, up to a defined maximum amount and within a
+defined period. The customer creates the mandate by approving it in the
+UPI app with the UPI PIN, and the mandate is stored by NPCI and linked
+to the customer bank account and the merchant. The merchant can then
+present collections against the mandate on the agreed dates, and the
+customer bank debits the account automatically, subject to the mandate
+limits. A BA must document the mandate fields: the merchant name, the
+maximum amount per debit, the frequency, the start date, the end date,
+the purpose, and the unique mandate reference that appears on the
+customer bank statement.</p>
+<p>The collect flow and the pay flow are two different ways a mandate
+can be used, and they must not be confused. In a collect flow the
+merchant initiates the collection, for example a mutual fund house
+collecting a monthly SIP, and the customer does not need to act on the
+debit date. In a pay flow the customer initiates the payment, for
+example by tapping pay on a subscription renewal screen, and the mandate
+is used to authorise the payment without re-entering the full details.
+The system must record which flow was used for each transaction,
+because the dispute handling differs: a collect flow dispute is about
+whether the merchant was authorised to collect, while a pay flow
+dispute is about whether the customer intended that specific payment.</p>
+<p>Mandate creation is a multi step journey. The merchant sends a
+mandate request with the amount, frequency and validity, the customer
+receives it in the UPI app, reviews the details, and approves it by
+entering the UPI PIN. The app sends the approval to the customer bank
+through the NPCI switch, the bank validates the account and registers
+the mandate, and the merchant receives a confirmation with the mandate
+reference. If the customer declines, the merchant must receive a clear
+rejection and must not retry the mandate request repeatedly. The
+requirements should state the expiry time for a pending mandate
+request, typically 24 hours, and the customer message when a mandate
+request is received from an unknown merchant.</p>
+<p>Each execution must check that the mandate is active, that the
+amount does not exceed the maximum, that the date is within the validity
+period, and that the total of all executions does not exceed any
+cumulative limit. If any check fails, the execution must be rejected
+before the account is debited, and the merchant must receive a reason
+code. For higher value mandates, the regulator requires an additional
+customer approval before execution, so the BA must capture the threshold
+for pre-debit notification and its timing, often 24 hours before the
+debit. The customer must always be able to cancel the mandate from the
+UPI app, and cancellation must stop future executions immediately.</p>
+
+<h2>10. Disputes: UDIR</h2>
+<p>UDIR, the Unified Dispute and Issue Resolution framework, is NPCI's
+online system for raising and resolving UPI disputes. When a customer
+reports a problem, such as a debit without a credit, a wrong credit, a
+duplicate debit, or a failed transaction where the money left the
+account, the complaint is registered and routed to the banks involved,
+and each party must respond within the timeline the NPCI procedural
+guidelines set. The framework covers the dispute categories, the
+evidence each side must provide, the time limit for resolution, and
+escalation when the first bank does not resolve it. The exact timelines
+and the category list are set by NPCI and change over time, so this
+page does not print them as fixed numbers. Check the current NPCI
+procedural guidelines and the bank's own dispute policy before writing
+a timeline into a requirement. What a BA must always specify is the
+complaint reference the customer receives, the status the customer can
+track, the evidence the bank needs (transaction reference, amount, date,
+VPA), and the escalation path if the bank does not resolve the complaint
+inside the guideline timeline.</p>
+
+<h2>11. Settlement and reconciliation</h2>
+<p>UPI settles between banks on a net basis through the Reserve Bank of
+India. During the day, NPCI nets the positions between banks: what each
+bank owes and what each bank is owed across all UPI transactions, and
+the net amounts move in settlement cycles. The number and timing of the
+cycles are set by NPCI and RBI operating rules and can change, so this
+page does not state a fixed cycle count. A BA must confirm the current
+cycle schedule from the operating rules before designing a settlement
+report.</p>
+<p>Reconciliation is the daily discipline that proves the money is
+where the system says it is. It is built around the transaction
+reference, the only reliable key that links a debit, a credit, a
+reversal, and a complaint. A complete reconciliation matches four
+things for every transaction: the customer debit in the remitter bank,
+the credit in the beneficiary bank, the net settlement position with
+NPCI, and any reversal or complaint that followed. The breaks to watch
+for are debits without credits, credits without debits, duplicate
+debits, and reversals that were raised but never posted. Every break
+needs an owner, a deadline, and an escalation path, because an
+unreconciled break is a customer complaint waiting to happen. The
+settlement account itself is a nostro style account held for this
+purpose, and its balance must be checked daily against the NPCI
+settlement report.</p>
+
+<div class="lesson-box"><h2>What a BA must document for any UPI feature</h2>
+<ul>
+<li>The roles involved, and which bank or provider owns each step.</li>
+<li>The VPA rules: format, uniqueness, deactivation, transfer.</li>
+<li>The flow used, pay or collect, and the exact status at each step.</li>
+<li>The timeout behaviour, the status check call, and the rule that no retry happens before the check.</li>
+<li>The reversal rules, including who reverses and the NPCI timeline reference.</li>
+<li>The limits: per transaction, per day, and per category, with the NPCI circular cited.</li>
+<li>The mandate fields, if mandates are in scope, including the pre-debit notification and cancellation.</li>
+<li>The dispute path: complaint reference, evidence, UDIR category, and escalation.</li>
+<li>The reconciliation design: transaction reference as the key, the four way match, and the break owners.</li>
+</ul></div>
+
+<div class="lesson-box"><h2>Related chapters</h2><ul><li><a href="../chapters/ch9-india-upi-imps-neft-rtgs.html">India: UPI, IMPS, NEFT, RTGS</a></li><li><a href="../chapters/ch33-indian-payments-deep-dive-nach-bbps-fema.html">Indian Payments Deep Dive: NACH, BBPS, FEMA</a></li></ul></div>
+<p><a class="studio-btn primary" href="../reference.html">Back to Reference</a></p>
+</section>
+</main>
+<footer><p>Payments Training Hub. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="../index.html">Home</a> &middot; <a href="../courses.html">Courses</a> &middot; <a href="../flows.html">Flows</a> &middot; <a href="../situations.html">Situations</a> &middot; <a href="../dashboard.html">Dashboard</a> &middot; <a href="../portfolio.html">Portfolio</a> &middot; <a href="../domains.html">Reference</a> &middot; <a href="../labs-simulators.html">Labs &amp; Simulators</a> &middot; <a href="../practice.html">Practice</a> &middot; <a href="../simulators.html">Simulators</a> &middot; <a href="../labs.html">Labs</a> &middot; <a href="../explorer.html">Explorer</a> &middot; <a href="../tests.html">Tests</a> &middot; <a href="../diagnostic.html">Diagnostic</a> &middot; <a href="../faq.html">Interview Ready Questions</a> &middot; <a href="../interview-prep.html">Interview Prep</a></p><p><a href="../about.html">About</a> &middot; <a href="../founder.html">Founder</a> &middot; <a href="../methodology.html">Methodology</a> &middot; <a href="../privacy.html">Privacy</a> &middot; <a href="../terms.html">Terms</a> &middot; <a href="../refund.html">Refunds</a> &middot; <a href="../contact.html">Contact</a> &middot; <a href="../editorial-standards.html">Editorial Standards</a> &middot; <a href="../sources.html">Sources</a> &middot; <a href="../references-policy.html">References Policy</a> &middot; <a href="../corrections.html">Corrections Policy</a></p><p><a href="../domains.html">Domains</a> &middot; <a href="../reference/mt103-to-pacs008.html">MT103 to pacs.008 Reference</a> &middot; <a href="../reference.html">Reference Library</a> &middot; <a href="../insights.html">Insights and Scenarios</a></p><p><a href="../course-map.html">Course Map</a> &middot; <a href="../pricing.html">Pricing</a> &middot; <a href="../teams.html">For Teams</a> &middot; <a href="../artifacts.html">BA Artifact Library</a> &middot; <a href="../reference/mt-iso-mapping.html">MT to ISO 20022 Mapping</a> &middot; <a href="../reference/clearing-systems.html">Clearing Systems</a> &middot; <a href="../reference/regulatory-compliance.html">Regulatory Compliance</a> &middot; <a href="../reference/exception-lifecycles.html">Exception Lifecycles</a> &middot; <a href="../reference/upi-operational.html">UPI Operational Pathway</a> &middot; <a href="../reference/sepa-guide.html">SEPA Scheme Guide</a> &middot; <a href="../tools/xml-sandbox.html">XML and MT Sandbox</a> &middot; <a href="../tools/routing-decisions.html">Routing Decision Tree</a> &middot; <a href="../tools/reconciliation-lab.html">Reconciliation Laboratory</a> &middot; <a href="../tools/investigation-lab.html">Payment Investigation Lab</a></p><p><a href="../support.html">Help and Support</a> &middot; <a href="../changelog.html">Changelog</a> &middot; <a href="../licensing.html">Licensing</a></p></footer>
+<div id="hub-assistant" class="hub-assistant" data-prefix="../" data-expanded="false"><div class="hub-mascot" id="hub-mascot" role="button" tabindex="0" aria-label="Open the Hub Assistant chat"><svg class="hub-mascot-svg" viewBox="0 0 80 96" aria-hidden="true"><path d="M64 8 L66.5 15 L74 17.5 L66.5 20 L64 27 L61.5 20 L54 17.5 L61.5 15 Z" fill="#C9A227"/><path d="M40 12 C54 12 62 22 62 34 L62 64 C62 78 52 88 40 88 C28 88 18 78 18 64 L18 32" fill="none" stroke="#1D4ED8" stroke-width="7" stroke-linecap="round"/><path d="M40 28 C47 28 51 32 51 38 L51 60 C51 68 47 73 40 73 C33 73 29 68 29 60 L29 36" fill="none" stroke="#1D4ED8" stroke-width="7" stroke-linecap="round"/><path d="M18 32 L18 26" stroke="#C9A227" stroke-width="7" stroke-linecap="round"/><circle cx="34" cy="38" r="5" fill="#fff" stroke="#0B1F3D" stroke-width="1.5"/><circle cx="46" cy="38" r="5" fill="#fff" stroke="#0B1F3D" stroke-width="1.5"/><circle cx="35" cy="39" r="2.2" fill="#0B1F3D"/><circle cx="47" cy="39" r="2.2" fill="#0B1F3D"/><path d="M34 50 Q40 56 46 50" fill="none" stroke="#0B1F3D" stroke-width="2.5" stroke-linecap="round"/></svg><span class="hub-mascot-label">Hub Assistant</span><span class="hub-hide" id="hub-hide" role="button" tabindex="0" aria-label="Hide assistant">&times;</span></div><div class="hub-panel" id="hub-panel" hidden><div class="hub-panel-head"><svg class="hub-mini" viewBox="0 0 80 96" aria-hidden="true"><path d="M40 12 C54 12 62 22 62 34 L62 64 C62 78 52 88 40 88 C28 88 18 78 18 64 L18 32" fill="none" stroke="#1D4ED8" stroke-width="7" stroke-linecap="round"/><path d="M40 28 C47 28 51 32 51 38 L51 60 C51 68 47 73 40 73 C33 73 29 68 29 60 L29 36" fill="none" stroke="#1D4ED8" stroke-width="7" stroke-linecap="round"/><path d="M18 32 L18 26" stroke="#C9A227" stroke-width="7" stroke-linecap="round"/></svg><div class="hub-panel-title"><b>Hub Assistant</b><span>Payments Training Hub chat assistant</span></div><button type="button" class="hub-close" id="hub-close" aria-label="Close chat">&times;</button></div><div class="hub-messages" id="hub-messages" aria-live="polite"></div><div class="hub-starters" id="hub-starters"><button type="button" class="hub-chip" data-q="What is an MT103?">What is an MT103?</button><button type="button" class="hub-chip" data-q="How does a pacs.008 work?">How does a pacs.008 work?</button><button type="button" class="hub-chip" data-q="Explain nostro and vostro">Explain nostro and vostro</button></div><form class="hub-input-row" id="hub-form"><input id="hub-input" type="text" placeholder="Ask about payments..." autocomplete="off" aria-label="Ask the Hub Assistant"><button type="submit">Send</button></form></div><button type="button" class="hub-dot" id="hub-dot" aria-label="Show the Hub Assistant"></button></div>
+<script defer src="../assets/site.js"></script>
+<script defer src="../assets/bundles.js"></script>
+<script defer src="../assets/auth.js"></script>
+<script defer src="../assets/learner-sync.js"></script>
+<script defer src="../assets/site-search.js"></script>
+<script defer src="../assets/hub-assistant.js"></script>
+<script defer src="../assets/codehl.js"></script>
+<script defer src="../assets/nav.js"></script>
+<script defer src="../assets/pf-enhance.js"></script>
+</body>
+</html>

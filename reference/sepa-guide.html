@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>SEPA Scheme-Level Competence | Payments Training Hub</title>
+<meta name="description" content="SEPA scheme-level competence: SCT, SCT Inst, SDD Core and B2B, IBAN and BIC, EPC rulebooks, R-transactions, Verification of Payee, PSD2 and PSD3.">
+<link rel="canonical" href="https://www.paymentstraininghub.com/reference/sepa-guide.html">
+<meta property="og:url" content="https://www.paymentstraininghub.com/reference/sepa-guide.html">
+<meta property="og:title" content="SEPA Scheme-Level Competence | Payments Training Hub">
+<meta property="og:description" content="SEPA scheme-level competence: SCT, SCT Inst, SDD Core and B2B, IBAN and BIC, EPC rulebooks, R-transactions, Verification of Payee, PSD2 and PSD3.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.com/assets/hero/hero-poster.jpg">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Organization", "name": "Payments Training Hub", "url": "https://www.paymentstraininghub.com"}, {"@type": "WebSite", "name": "Payments Training Hub", "url": "https://www.paymentstraininghub.com", "description": "Payments Training Hub: professional payments training, 746 narrated lessons across 100 chapters covering ISO 20022, SWIFT, SEPA, cross-border payments, cards and settlement.", "inLanguage": "en"}]}</script>
+<link rel="stylesheet" href="../assets/pf-theme.css">
+<link rel="stylesheet" href="../assets/hub-assistant.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="../index.html" class="brand">Payments <span>Training Hub</span></a><nav class="topnav"><a href="../index.html">Home</a> <a href="../dashboard.html">Dashboard</a> <a href="../courses.html">Courses</a> <a href="../flows.html">Flows</a> <a href="../practice.html">Practice</a> <a href="../reference.html" class="active">Reference</a> <a href="../situations.html">Situations</a> </nav><form class="pf-search" role="search" action="#" onsubmit="return false"><input id="pf-search" type="search" placeholder="Search lessons, guides, situations..." aria-label="Search the academy" autocomplete="off" data-prefix="../"><div class="pf-search-results" id="pf-search-results" hidden></div></form><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox"><span id="authState">Not signed in</span> <a id="authSignInLink" href="../signin.html">Sign in</a> <a id="authDashLink" href="../dashboard.html" style="display:none">Dashboard</a> <button class="mute-btn" id="authSignOutBtn" onclick="paAuthSignOut()" style="display:none">Sign out</button></span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<section class="section">
+<nav class="crumbs"><a href="../index.html">Home</a> / <a href="../reference.html">Reference</a> / SEPA Scheme-Level Competence</nav>
+<h1>SEPA Scheme-Level Competence</h1>
+<p>SEPA, the Single Euro Payments Area, is the framework that lets a
+payment in euro move across European countries as easily as a domestic
+payment. This page is the scheme-level reference: the four schemes, the
+participants, the account identifiers, the credit transfer and direct
+debit schemes in depth, the instant scheme and its regulation, the
+R-transactions, Verification of Payee, PSD2 and PSD3, and the EPC
+rulebooks that govern it all. The figures below come from the course
+lessons and from the scheme rulebooks they cite. Where a timeline or a
+limit is set by a rulebook version or a regulation, the page names the
+source. Rulebook versions change every year, typically taking effect in
+November, so always check the current EPC rulebook before treating a
+timeline in this page as the final word.</p>
+<div class="lesson-box"><h2>How to read this page</h2>
+<p>SEPA is four schemes, not one. SCT moves money by credit transfer.
+SCT Inst moves it instantly. SDD Core collects money by direct debit
+from consumers. SDD B2B collects it from businesses. Each scheme has
+its own rulebook, its own messages, and its own exception handling, and
+a business analyst who applies SCT rules to an SDD collection will get
+the answer wrong. Read the schemes first, then the scheme you are
+working on, then the regulation that sits above them all.</p></div>
+
+<h2>1. The four schemes</h2>
+<table class="pf-table">
+<tr><th>Scheme</th><th>What it does</th><th>Who uses it</th><th>Key message set</th></tr>
+<tr><td>SCT, SEPA Credit Transfer</td><td>Moves euro from a payer account to a payee account, across SEPA countries, in one business day at most.</td><td>Businesses paying suppliers, salaries and invoices; consumers paying bills and people.</td><td>pain.001 customer to bank, pacs.008 interbank, pacs.002 status, camt reporting.</td></tr>
+<tr><td>SCT Inst, SEPA Instant Credit Transfer</td><td>Moves euro in seconds, 24 hours a day, 365 days a year, with a maximum execution time of 10 seconds.</td><td>Anyone who needs money to arrive now: instant payouts, urgent supplier payments, person to person transfers.</td><td>Same pacs.008 as SCT, with an instant marker, plus pacs.028 status investigation when the 10 seconds expire.</td></tr>
+<tr><td>SDD Core, SEPA Direct Debit Core</td><td>Collects euro from a consumer account on the basis of a mandate the debtor signed. The debtor can claim a refund within 8 weeks of the debit, no questions asked.</td><td>Utilities, telecoms, insurers and subscription businesses collecting from consumers.</td><td>Mandate, pain.008 collections, pacs.003 interbank, pacs.002 and pacs.004 for rejects, returns and refunds.</td></tr>
+<tr><td>SDD B2B, SEPA Direct Debit Business to Business</td><td>Collects euro from a business account on the basis of a mandate. There is no refund right. The debtor bank must verify the mandate before the first collection.</td><td>Business to business collections where both sides are companies and the debtor has agreed to give up the refund right.</td><td>Same message set as SDD Core, with the B2B scheme identifier and the mandate verification step.</td></tr>
+</table>
+<p>The European Payments Council, the EPC, writes and manages all four
+rulebooks. The EPC is an association of payment service providers, not
+a regulator, and its authority comes from the banks that adhere to its
+schemes. A rulebook is the contract that binds every participating bank
+to the same behaviour, the same timelines, the same message formats and
+the same exception handling.</p>
+
+<h2>2. Participants and the four-corner model</h2>
+<p>Every SEPA payment follows the four-corner model. The originator
+instructs their bank, the originator bank sends the payment through the
+interbank space, the beneficiary bank receives it, and the beneficiary
+is credited. The four corners are the originator, the originator
+payment service provider, the beneficiary payment service provider, and
+the beneficiary. Between the two banks sits a clearing and settlement
+mechanism, which routes the messages and settles the money, and for
+instant payments that mechanism is TIPS, the TARGET Instant Payment
+Settlement service, which settles in central bank money around the
+clock. A payment service provider can be a bank or a licensed payment
+institution. What matters is not the type of firm but whether it
+adheres to the scheme and is reachable: a bank that is not reachable
+under a scheme cannot receive payments under it, and the EPC register
+records who is reachable for each scheme.</p>
+
+<h2>3. IBAN and BIC</h2>
+<p>The account identifier in SEPA is the IBAN, the International Bank
+Account Number, defined by ISO 13616. An IBAN is up to 34 characters
+long: a two letter country code, two check digits, and the national
+account number, known as the BBAN. The check digits let a system catch
+a mistyped IBAN before the payment is sent, which is why the IBAN must
+be validated at the point of entry, not after the payment fails. The
+bank identifier is the BIC, the Business Identifier Code, defined by
+ISO 9362, with 8 or 11 characters: bank code, country code, location
+code, and an optional branch code. In SEPA the IBAN is the primary
+identifier and the BIC is generally not required from the customer,
+because the payment can be routed from the IBAN alone, but the BIC
+still appears in bank to bank messages and in the bank's own records. A
+BA must never design a screen that asks for an account number and sort
+code for a SEPA payment. The identifiers are IBAN and, where needed,
+BIC.</p>
+
+<h2>4. SCT in depth</h2>
+<p>SCT is the workhorse scheme. The flow, in the four-corner model, is:
+the originator sends a pain.001 customer credit transfer initiation to
+the originator bank; the originator bank validates it and sends a
+pacs.008 FI to FI customer credit transfer to the beneficiary bank
+through the clearing mechanism; the beneficiary bank credits the
+beneficiary and sends a pacs.002 payment status report back; both banks
+report to their customers with camt.052 and camt.053 account reports.
+The maximum execution time is one business day from the moment the
+originator bank receives a complete instruction, as set by PSD2 and the
+SCT rulebook. In practice many banks credit the same day, but the rule
+is one business day, and a requirement must promise the rule, not the
+practice. If the beneficiary bank cannot apply the credit, it returns
+the payment with a pacs.004 payment return, carrying a return reason
+code so the originator bank can tell the originator exactly why the
+money came back. The common reasons are a closed account, an invalid
+IBAN, or an account that cannot accept credits, and each one needs a
+different customer message.</p>
+
+<h2>5. SCT Inst in depth: the 10-second rule</h2>
+<p>SCT Inst was launched on 21 November 2017, and it changed the
+expectation of what a bank payment is. It runs 24 hours a day, 365 days
+a year, and the rulebook sets a maximum execution time of 10 seconds
+from the moment the originator bank receives a complete and valid
+instruction to the moment the beneficiary bank credits the account. The
+message is the same pacs.008 used for SCT, with an instant marker, and
+settlement happens in central bank money through TIPS or another
+instant clearing system. The scheme is voluntary for banks, but the
+Instant Payments Regulation has made participation effectively
+mandatory, which is covered in section 6.</p>
+<p>The 10-second rule is measured precisely. The clock starts when the
+originator bank receives a complete and valid instruction, and it stops
+when the beneficiary bank has credited the payee account and the
+confirmation has been sent. The interbank leg must complete inside that
+window, which means the originator bank cannot run a slow sanctions
+screen, cannot wait for a batch, and cannot hold the payment for a
+manual review without breaking the deadline. When the 10 seconds expire
+without a confirmation, the payment is in an uncertain state, and the
+originator bank must investigate using the pacs.028 payment status
+request. The investigation, not a guess, decides whether the payment
+settled or not, and the bank must never credit or debit twice on the
+basis of an assumption. This is the SCT Inst equivalent of the UPI
+timeout rule: uncertain means investigate, never retry blind.</p>
+
+<h2>6. The Instant Payments Regulation</h2>
+<p>The Instant Payments Regulation, Regulation (EU) 2024/886, turned a
+voluntary scheme into a legal obligation. It entered into force in April
+2024. Payment service providers in the euro area had to be able to
+receive instant payments by 9 January 2025, and they must be able to
+send them by 9 October 2025. The regulation also says the price of an
+instant payment must not exceed the price of a regular credit transfer,
+which ended the premium pricing many banks charged for instant payments.
+It requires Verification of Payee, covered in section 9. And it changed
+sanctions screening for instant payments: instead of screening every
+payment against EU sanctions lists in real time, a provider must verify
+its own customers against the lists at least once a day and immediately
+when a list changes, because a per-transaction screen cannot be done
+inside 10 seconds. Any deadline or obligation in this section comes
+from the regulation itself, and a BA working on instant payments must
+read the regulation text, not a summary of it.</p>
+
+<h2>7. SDD Core versus SDD B2B</h2>
+<table class="pf-table">
+<tr><th>Point</th><th>SDD Core</th><th>SDD B2B</th></tr>
+<tr><td>Debtor</td><td>Consumer or business. The scheme is built for consumers.</td><td>Business only, and both debtor and creditor must be businesses.</td></tr>
+<tr><td>Mandate</td><td>Signed by the debtor and held by the creditor. The debtor bank does not verify the mandate before the first collection.</td><td>Signed by the debtor and verified by the debtor bank before the first collection. The debtor must tell its bank the mandate exists.</td></tr>
+<tr><td>Refund right</td><td>The debtor can claim a refund within 8 weeks of the debit, no questions asked, for an authorised collection. After 8 weeks, and up to 13 months, a refund is only available for an unauthorised collection.</td><td>There is no refund right. Once the collection is made, the debtor cannot claim it back through the scheme. This is the price of the B2B scheme, and it must be explained to the debtor before the mandate is signed.</td></tr>
+<tr><td>Collection timeline</td><td>First collection and subsequent collections follow the scheme timeline in the rulebook. The creditor must send the collection in time for the due date, and the debtor must be notified in advance.</td><td>Same message flow as Core, but the mandate verification step means the first collection cannot run until the debtor bank has confirmed the mandate.</td></tr>
+<tr><td>Typical use</td><td>Utilities, telecoms, insurance, subscriptions, any recurring consumer payment.</td><td>Business to business supplier payments where the debtor accepts the loss of the refund right in exchange for the collection certainty.</td></tr>
+</table>
+<p>Choosing the wrong scheme is a real operational error. A creditor who
+collects from a consumer under B2B has no valid mandate, and a debtor
+who signs a B2B mandate expecting a Core refund right will be refused.
+The scheme must be stated on the mandate and on the collection, and the
+debtor bank must check it.</p>
+
+<h2>8. Mandates and e-mandate</h2>
+<p>A mandate is the debtor's authorisation for the creditor to collect
+by direct debit. It states the creditor name and identifier, the debtor
+name and IBAN, the type of collection, the reference, and the date it
+was signed. The creditor holds the mandate and must produce it if the
+debtor disputes a collection. A paper mandate is signed on paper and
+stored by the creditor. An electronic mandate is created online, and
+the e-mandate service lets the debtor approve the mandate through their
+own bank, using the bank's authentication, so the mandate is verified
+at creation rather than disputed later. The e-mandate flow uses ISO
+20022 messages to pass the mandate data between the creditor, the
+debtor bank, and the creditor bank, and the mandate reference it
+produces is the key that links every later collection to the original
+authorisation. A BA must document the mandate fields, the storage
+period, the cancellation route, and what happens to collections already
+sent when a mandate is cancelled. Cancellation stops future collections.
+It does not refund collections already made, and that distinction must
+be clear to the debtor.</p>
+
+<h2>9. Collections, step by step</h2>
+<p>An SDD collection moves in four steps. First, the creditor sends a
+pain.008 customer direct debit initiation to the creditor bank, listing
+the collections due on a given date, each with its mandate reference.
+Second, the creditor bank sends a pacs.003 FI to FI customer direct
+debit to the debtor bank through the clearing mechanism. Third, the
+debtor bank checks the mandate and the account, debits the debtor, and
+sends a pacs.002 status report. Fourth, the creditor bank credits the
+creditor. The due date is the date the debtor account is debited, and
+the creditor must send the collection early enough for the debtor bank
+to process it by that date, following the timeline in the rulebook. A
+collection sent late is rejected, not delayed, so the creditor's
+cut-off discipline is part of the product design, not an operational
+afterthought.</p>
+
+<h2>10. R-transactions: rejects, returns, refunds, reversals</h2>
+<p>R-transactions are everything that goes wrong with a direct debit
+after it is sent. The scheme defines each one precisely, and each one
+has its own message and its own deadline. The deadlines are in the
+rulebook and change with the version, so check the current rulebook
+rather than relying on a printed number here.</p>
+<table class="pf-table">
+<tr><th>R-transaction</th><th>What it means</th><th>Message</th></tr>
+<tr><td>Reject</td><td>The debtor bank refuses the collection before debiting, for example the account is closed, the IBAN is invalid, or the mandate reference does not match.</td><td>pacs.002 payment status report, with a reject reason code.</td></tr>
+<tr><td>Return</td><td>The debtor bank debited the account and then returned the money, for example because the account had insufficient funds when the collection was presented.</td><td>pacs.004 payment return, with a return reason code.</td></tr>
+<tr><td>Refund</td><td>The debtor claims the money back. Under SDD Core, an authorised collection can be refunded within 8 weeks of the debit with no reason needed. After 8 weeks, and up to 13 months, a refund is only available for an unauthorised collection. Under SDD B2B there is no refund right at all.</td><td>pacs.004 payment return, raised by the debtor bank on the debtor's instruction.</td></tr>
+<tr><td>Refusal</td><td>The debtor tells the debtor bank, before the due date, not to pay a specific collection.</td><td>Debtor bank instruction, handled before the debit is made.</td></tr>
+<tr><td>Reversal</td><td>The creditor asks for the collection to be reversed, for example because it collected the wrong amount or collected twice. The reversal is raised by the creditor bank.</td><td>pain.007 customer payment reversal and pacs.007 FI to FI payment reversal, with reason codes such as AM05 for duplicate, MS02 for not specified reason, and MS03 for a reason not specified by the agent.</td></tr>
+</table>
+<p>The worked example in the course is a monthly utility collection of
+EUR 89.99. The mandate is signed once, the pain.008 is sent before each
+due date, the pacs.003 moves the collection to the debtor bank, the
+debtor is debited on the due date, and the creditor is credited. If the
+debtor claims a refund inside 8 weeks, the debtor bank returns it with
+a pacs.004 and the creditor must accept it without argument. If the
+creditor collected twice, the creditor raises a reversal with a
+pacs.007. The reason code on each R-transaction is what the next system
+acts on, so the reason code must be recorded exactly, never summarised
+away.</p>
+
+<h2>11. Verification of Payee</h2>
+<p>Verification of Payee is a check that the name the payer typed
+matches the name of the account holder for the IBAN they typed, and it
+runs before the payment is sent. It exists because authorised push
+payment fraud, where a fraudster tricks a payer into sending money to
+an account the fraudster controls, had become the largest fraud type on
+credit transfers. Verification of Payee is required by the Instant
+Payments Regulation, Regulation (EU) 2024/886, and payment service
+providers in the euro area must offer it from 9 October 2025, for
+instant payments and for regular credit transfers. It does not check
+whether the payee is honest. It checks whether the name matches the
+account.</p>
+<p>The matching has four outcomes, and the payer must be shown the
+outcome in plain language. A match means the name and the account
+agree, and the payment proceeds. A close match means the name is
+similar but not identical, for example a missing middle name or a small
+spelling difference, and the payer is shown the account holder name as
+held by the payee bank so they can decide. A no match means the name
+does not agree with the account, and the payer is warned clearly before
+they proceed. The fourth outcome, cannot check, means the payee bank
+does not offer Verification of Payee, or the account type cannot be
+checked, and the payer must be told that the check could not be done.
+The payer can still proceed after a no match in most implementations,
+but they do so against a warning, and that decision matters for
+liability. For a company payee, the check is against the legal name
+held by the payee bank, which is often different from the trading name
+on the invoice, and that mismatch produces close match outcomes that
+confuse payers. Bulk files are a special case: a corporate uploading a
+file with a thousand payments needs the check to run on each one, and
+the file must not be rejected wholesale because one payment produced a
+no match. The check must also work for accounts held at payment
+institutions, not just banks, and for accounts in other SEPA countries,
+which means the matching service must work across borders.</p>
+
+<h2>12. PSD2 and PSD3</h2>
+<p>PSD2, Directive (EU) 2015/2366, is the law in force. It requires
+strong customer authentication for electronic payments, it opened
+banking to licensed third parties through APIs, and it sets the rules
+for consent: an account information provider reads balances and
+transactions only with the customer consent, the consent lasts up to 90
+days, the customer can revoke it at any time, and the bank must enforce
+the revocation on every call, so a token that was valid yesterday is
+invalid today if the consent has been revoked. A payment initiation
+provider can start a payment from the customer account with consent,
+and it never sees the customer password. For a BA, the work PSD2
+creates is in consent screens, scopes, revocation behaviour, and the
+liability if a third party accesses data after the consent is revoked.</p>
+<p>PSD3 is the agreed successor to PSD2, and it is not law yet. As of 7
+November 2026, the position in the course lessons is: political
+agreement was reached on 27 November 2025, final compromise texts were
+published on 23 April 2026, and formal adoption and Official Journal
+publication are expected in December 2026 or January 2027, with most
+Payment Services Regulation obligations applying about 21 months later,
+around the second half of 2028. Until then PSD2 remains the law in
+force. As agreed, PSD3 would tighten fraud rules, improve the way banks
+and third parties share fraud information, strengthen refund rights
+when fraud happens, clarify how payment verification should work, and
+improve accessibility, so authentication must work for customers who
+cannot use a phone app or a fingerprint. For a business analyst, PSD3
+is not a new idea, it is PSD2 made stronger, clearer and fairer once it
+becomes law, and the work it creates is in fraud controls,
+verification, consent screens and accessible authentication journeys.
+Check the Official Journal for the adopted text before citing PSD3 as
+law, because until it is published there, it is an agreement, not a
+rule.</p>
+
+<h2>13. The EPC rulebooks: how they are written and changed</h2>
+<p>A rulebook has a fixed structure, and knowing the structure saves
+hours when a change lands. The rulebook itself states the rules: who
+can participate, what the payment must contain, what the timelines are,
+and how exceptions are handled. The implementation guidelines state how
+to build it: the message formats, the field definitions, the character
+sets and the examples. The scheme management rules state how the scheme
+is governed: how change requests are made, how they are decided, and
+how a participant can be suspended or removed. When a bank receives a
+new rulebook version, the first task is to read the change log, which
+lists every rule that changed, because the changes are the work, not
+the whole document.</p>
+<p>The change cycle is annual and consultative. A change request can be
+submitted by any stakeholder, a bank, a vendor, a corporate, or a
+regulator, and it is reviewed by the Scheme Management Board. Change
+requests that are accepted go to a public consultation, typically open
+for 90 days, where any interested party can comment. After
+consultation, the board approves the final version, the rulebook is
+published, and banks are given an implementation period, usually several
+months, before the effective date. New rulebook versions typically take
+effect in November, which is why the fourth quarter is rulebook season
+for every European payments team. The EPC register records which banks
+adhere to each scheme, and a bank that is not in the register for a
+scheme cannot receive payments under it.</p>
+
+<h2>14. Settlement: TIPS and T2</h2>
+<p>Settlement is where the money actually moves between banks, and SEPA
+separates the message from the money. For SCT, settlement happens
+through a clearing and settlement mechanism agreed between the banks,
+in central bank money or commercial bank money depending on the
+mechanism. For SCT Inst, settlement happens through TIPS, the TARGET
+Instant Payment Settlement service, which settles in central bank money
+around the clock, so an instant payment is final the moment it is
+credited. T2, the Eurosystem real time gross settlement system, settles
+high value euro payments individually and immediately, and it is the
+system behind the large value leg of European payments. A BA must keep
+the three layers separate: the scheme rulebook says what the payment
+must contain, the clearing mechanism moves the messages, and the
+settlement system moves the money. A payment can be correctly messaged
+and still fail to settle, and a settled payment can still be returned,
+so the status of each layer must be tracked separately.</p>
+
+<div class="lesson-box"><h2>What a BA must document for any SEPA feature</h2>
+<ul>
+<li>The scheme, SCT, SCT Inst, SDD Core or SDD B2B, and the rulebook version it follows.</li>
+<li>The IBAN and BIC validation at the point of entry, including the check digit test.</li>
+<li>The execution timeline promised, one business day for SCT, 10 seconds for SCT Inst, and the rulebook source for each.</li>
+<li>The R-transaction handling: which reason codes apply, who raises them, and the deadlines from the current rulebook.</li>
+<li>The mandate fields and storage, the e-mandate route if used, and the cancellation path.</li>
+<li>The Verification of Payee outcomes and the plain language shown for each, including bulk file handling.</li>
+<li>The PSD2 consent and authentication requirements, and the PSD3 position, agreed but not yet law.</li>
+<li>The reachability check: is the beneficiary bank in the EPC register for this scheme.</li>
+<li>The settlement layer: which clearing mechanism and which settlement system, and the finality point.</li>
+</ul></div>
+
+<div class="lesson-box"><h2>Related chapters</h2><ul><li><a href="../chapters/ch11-europe-sepa-and-t2.html">Europe: SEPA and T2</a></li><li><a href="../chapters/ch61-sepa-credit-transfer-deep-dive.html">SEPA Credit Transfer Deep Dive</a></li><li><a href="../chapters/ch62-sepa-direct-debit-deep-dive.html">SEPA Direct Debit Deep Dive</a></li><li><a href="../chapters/ch93-sepa-in-depth.html">SEPA in depth</a></li></ul></div>
+<p><a class="studio-btn primary" href="../reference.html">Back to Reference</a></p>
+</section>
+</main>
+<footer><p>Payments Training Hub. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="../index.html">Home</a> &middot; <a href="../courses.html">Courses</a> &middot; <a href="../flows.html">Flows</a> &middot; <a href="../situations.html">Situations</a> &middot; <a href="../dashboard.html">Dashboard</a> &middot; <a href="../portfolio.html">Portfolio</a> &middot; <a href="../domains.html">Reference</a> &middot; <a href="../labs-simulators.html">Labs &amp; Simulators</a> &middot; <a href="../practice.html">Practice</a> &middot; <a href="../simulators.html">Simulators</a> &middot; <a href="../labs.html">Labs</a> &middot; <a href="../explorer.html">Explorer</a> &middot; <a href="../tests.html">Tests</a> &middot; <a href="../diagnostic.html">Diagnostic</a> &middot; <a href="../faq.html">Interview Ready Questions</a> &middot; <a href="../interview-prep.html">Interview Prep</a></p><p><a href="../about.html">About</a> &middot; <a href="../founder.html">Founder</a> &middot; <a href="../methodology.html">Methodology</a> &middot; <a href="../privacy.html">Privacy</a> &middot; <a href="../terms.html">Terms</a> &middot; <a href="../refund.html">Refunds</a> &middot; <a href="../contact.html">Contact</a> &middot; <a href="../editorial-standards.html">Editorial Standards</a> &middot; <a href="../sources.html">Sources</a> &middot; <a href="../references-policy.html">References Policy</a> &middot; <a href="../corrections.html">Corrections Policy</a></p><p><a href="../domains.html">Domains</a> &middot; <a href="../reference/mt103-to-pacs008.html">MT103 to pacs.008 Reference</a> &middot; <a href="../reference.html">Reference Library</a> &middot; <a href="../insights.html">Insights and Scenarios</a></p><p><a href="../course-map.html">Course Map</a> &middot; <a href="../pricing.html">Pricing</a> &middot; <a href="../teams.html">For Teams</a> &middot; <a href="../artifacts.html">BA Artifact Library</a> &middot; <a href="../reference/mt-iso-mapping.html">MT to ISO 20022 Mapping</a> &middot; <a href="../reference/clearing-systems.html">Clearing Systems</a> &middot; <a href="../reference/regulatory-compliance.html">Regulatory Compliance</a> &middot; <a href="../reference/exception-lifecycles.html">Exception Lifecycles</a> &middot; <a href="../reference/upi-operational.html">UPI Operational Pathway</a> &middot; <a href="../reference/sepa-guide.html">SEPA Scheme Guide</a> &middot; <a href="../tools/xml-sandbox.html">XML and MT Sandbox</a> &middot; <a href="../tools/routing-decisions.html">Routing Decision Tree</a> &middot; <a href="../tools/reconciliation-lab.html">Reconciliation Laboratory</a> &middot; <a href="../tools/investigation-lab.html">Payment Investigation Lab</a></p><p><a href="../support.html">Help and Support</a> &middot; <a href="../changelog.html">Changelog</a> &middot; <a href="../licensing.html">Licensing</a></p></footer>
+<div id="hub-assistant" class="hub-assistant" data-prefix="../" data-expanded="false"><div class="hub-mascot" id="hub-mascot" role="button" tabindex="0" aria-label="Open the Hub Assistant chat"><svg class="hub-mascot-svg" viewBox="0 0 80 96" aria-hidden="true"><path d="M64 8 L66.5 15 L74 17.5 L66.5 20 L64 27 L61.5 20 L54 17.5 L61.5 15 Z" fill="#C9A227"/><path d="M40 12 C54 12 62 22 62 34 L62 64 C62 78 52 88 40 88 C28 88 18 78 18 64 L18 32" fill="none" stroke="#1D4ED8" stroke-width="7" stroke-linecap="round"/><path d="M40 28 C47 28 51 32 51 38 L51 60 C51 68 47 73 40 73 C33 73 29 68 29 60 L29 36" fill="none" stroke="#1D4ED8" stroke-width="7" stroke-linecap="round"/><path d="M18 32 L18 26" stroke="#C9A227" stroke-width="7" stroke-linecap="round"/><circle cx="34" cy="38" r="5" fill="#fff" stroke="#0B1F3D" stroke-width="1.5"/><circle cx="46" cy="38" r="5" fill="#fff" stroke="#0B1F3D" stroke-width="1.5"/><circle cx="35" cy="39" r="2.2" fill="#0B1F3D"/><circle cx="47" cy="39" r="2.2" fill="#0B1F3D"/><path d="M34 50 Q40 56 46 50" fill="none" stroke="#0B1F3D" stroke-width="2.5" stroke-linecap="round"/></svg><span class="hub-mascot-label">Hub Assistant</span><span class="hub-hide" id="hub-hide" role="button" tabindex="0" aria-label="Hide assistant">&times;</span></div><div class="hub-panel" id="hub-panel" hidden><div class="hub-panel-head"><svg class="hub-mini" viewBox="0 0 80 96" aria-hidden="true"><path d="M40 12 C54 12 62 22 62 34 L62 64 C62 78 52 88 40 88 C28 88 18 78 18 64 L18 32" fill="none" stroke="#1D4ED8" stroke-width="7" stroke-linecap="round"/><path d="M40 28 C47 28 51 32 51 38 L51 60 C51 68 47 73 40 73 C33 73 29 68 29 60 L29 36" fill="none" stroke="#1D4ED8" stroke-width="7" stroke-linecap="round"/><path d="M18 32 L18 26" stroke="#C9A227" stroke-width="7" stroke-linecap="round"/></svg><div class="hub-panel-title"><b>Hub Assistant</b><span>Payments Training Hub chat assistant</span></div><button type="button" class="hub-close" id="hub-close" aria-label="Close chat">&times;</button></div><div class="hub-messages" id="hub-messages" aria-live="polite"></div><div class="hub-starters" id="hub-starters"><button type="button" class="hub-chip" data-q="What is an MT103?">What is an MT103?</button><button type="button" class="hub-chip" data-q="How does a pacs.008 work?">How does a pacs.008 work?</button><button type="button" class="hub-chip" data-q="Explain nostro and vostro">Explain nostro and vostro</button></div><form class="hub-input-row" id="hub-form"><input id="hub-input" type="text" placeholder="Ask about payments..." autocomplete="off" aria-label="Ask the Hub Assistant"><button type="submit">Send</button></form></div><button type="button" class="hub-dot" id="hub-dot" aria-label="Show the Hub Assistant"></button></div>
+<script defer src="../assets/site.js"></script>
+<script defer src="../assets/bundles.js"></script>
+<script defer src="../assets/auth.js"></script>
+<script defer src="../assets/learner-sync.js"></script>
+<script defer src="../assets/site-search.js"></script>
+<script defer src="../assets/hub-assistant.js"></script>
+<script defer src="../assets/codehl.js"></script>
+<script defer src="../assets/nav.js"></script>
+<script defer src="../assets/pf-enhance.js"></script>
+</body>
+</html>

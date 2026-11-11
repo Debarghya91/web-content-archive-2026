@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>Payment Investigation Lab | Payments Training Hub</title>
+<meta name="description" content="End-to-end payment investigation exercises: trace a payment, find the fault, and choose the repair.">
+<link rel="canonical" href="https://www.paymentstraininghub.com/tools/investigation-lab.html">
+<meta property="og:url" content="https://www.paymentstraininghub.com/tools/investigation-lab.html">
+<meta property="og:title" content="Payment Investigation Lab | Payments Training Hub">
+<meta property="og:description" content="End-to-end payment investigation exercises: trace a payment, find the fault, and choose the repair.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.com/assets/hero/hero-poster.jpg">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Organization", "name": "Payments Training Hub", "url": "https://www.paymentstraininghub.com"}, {"@type": "WebSite", "name": "Payments Training Hub", "url": "https://www.paymentstraininghub.com", "description": "Payments Training Hub: professional payments training, 746 narrated lessons across 100 chapters covering ISO 20022, SWIFT, SEPA, cross-border payments, cards and settlement.", "inLanguage": "en"}]}</script>
+<link rel="stylesheet" href="../assets/pf-theme.css">
+<link rel="stylesheet" href="../assets/hub-assistant.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="../index.html" class="brand">Payments <span>Training Hub</span></a><nav class="topnav"><a href="../index.html">Home</a> <a href="../dashboard.html">Dashboard</a> <a href="../courses.html">Courses</a> <a href="../flows.html">Flows</a> <a href="../practice.html" class="active">Practice</a> <a href="../reference.html">Reference</a> <a href="../situations.html">Situations</a> </nav><form class="pf-search" role="search" action="#" onsubmit="return false"><input id="pf-search" type="search" placeholder="Search lessons, guides, situations..." aria-label="Search the academy" autocomplete="off" data-prefix="../"><div class="pf-search-results" id="pf-search-results" hidden></div></form><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox"><span id="authState">Not signed in</span> <a id="authSignInLink" href="../signin.html">Sign in</a> <a id="authDashLink" href="../dashboard.html" style="display:none">Dashboard</a> <button class="mute-btn" id="authSignOutBtn" onclick="paAuthSignOut()" style="display:none">Sign out</button></span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<section class="section">
+<nav class="crumbs" aria-label="Breadcrumb"><a href="../index.html">Home</a> &rsaquo; <span>Investigation Lab</span></nav>
+<h1>Payment Investigation Lab</h1>
+<p>Reading about a payment is not the same as investigating one. Each exercise below drops you into a real problem, with the transaction details, the people involved and the messages on file. You trace the payment, choose the next action at each decision point, and find out whether your choice helped or made it worse. There is no single right answer to memorise. There is a correct order of checks, and a wrong order costs money.</p>
+<p>Everything runs in your browser. Nothing is sent to a server, nothing is stored except a small note of which exercises you have finished, and no payment is made.</p>
+
+<div class="lesson-box"><h2>How to use</h2>
+<ol>
+<li>Pick an investigation below. Read the scenario, the transaction details, the participants and the messages involved before you start.</li>
+<li>Click "Start the investigation". You will face three decision points. At each one, choose the next action. A correct first choice scores a point. A wrong choice explains why it is wrong, and you pick again.</li>
+<li>Watch the investigation path at the top of the exercise. It shows the checks in the right order, and each correct choice ticks one off.</li>
+<li>After the third decision point you get the full picture: the root cause, the resolution with its accounting and reconciliation impact, the customer impact, and the preventive controls.</li>
+<li>Work all six. A payment professional needs all six skills: telling a decision from money moved, catching a duplicate before it settles, holding for screening without overriding it, chasing a recall to its answer, respecting a cut-off, and checking the real nostro balance before promising settlement.</li>
+</ol>
+<p><strong>Golden rules, from the lessons:</strong> a camt.029 is a decision, it does not move money. Only a pacs.004 moves money back. Never refund before the funds are received and reconciled. Never re-send a rejected payment unchanged. Never override a sanctions screening hold. A cut-off is a wall, not a suggestion. The mirror nostro holds no funds.</p>
+</div>
+
+<div class="lesson-box"><h2>Pick an investigation</h2>
+<p id="inv-summary">Six investigations. Each one takes about five minutes.</p>
+<div id="inv-list"></div>
+<noscript><p>This lab needs JavaScript. Please enable JavaScript and reload the page.</p></noscript>
+</div>
+
+<div id="inv-panel" aria-live="polite"></div>
+
+<script>
+(function () {
+  var EXERCISES = [
+    {
+      id: "gbp250",
+      title: "The GBP 250 that never came back",
+      tagline: "A cancellation was accepted, but the refund never arrived. Find out where the money stopped.",
+      source: "Based on the owner's GBP 250 camt.029 template case.",
+      messages: ["pacs.008", "camt.056", "camt.029", "pacs.004"],
+      scenario: "A customer asks the bank to cancel a GBP 250 payment. The bank sends a camt.056 cancellation request. A positive camt.029 comes back: cancellation accepted. The customer is told the refund is on its way. Days pass. The GBP 250 never arrives.",
+      details: [
+        ["Amount", "GBP 250"],
+        ["Original payment", "pacs.008, customer credit transfer"],
+        ["Cancellation request", "camt.056, sent by the debtor bank"],
+        ["Investigation answer", "camt.029, positive, cancellation accepted"],
+        ["Expected return", "pacs.004, not received"],
+        ["Route", "Debtor bank, intermediary bank, beneficiary bank"]
+      ],
+      participants: ["Customer (debtor)", "Debtor bank (us)", "Intermediary bank", "Beneficiary bank"],
+      path: [
+        "Read the camt.029, and note what it does and does not prove",
+        "Check whether the pacs.004 return has arrived",
+        "Ask the intermediary bank for the status of the pacs.004",
+        "Confirm the funds are received, reconciled and cleared before refunding"
+      ],
+      steps: [
+        {
+          prompt: "The positive camt.029 has arrived. It says the cancellation is accepted. What do you do first?",
+          options: [
+            { label: "Check whether the pacs.004 return has arrived and whether the funds have been received and reconciled, before you tell the customer anything about a refund.", correct: true, feedback: "Correct. A camt.029 is a decision, not money. It says the beneficiary bank accepted the cancellation. It does not move funds. Only the pacs.004 moves the money back, and only a reconciled receipt proves the funds are back." },
+            { label: "Tell the customer the refund is on its way, because the camt.029 says the cancellation was accepted.", correct: false, feedback: "Not yet. The camt.029 is a decision, not money. If you tell the customer the refund is coming before the pacs.004 arrives, you are promising money the bank does not have yet. That is exactly what went wrong in this case." },
+            { label: "Send another camt.056 to chase the cancellation.", correct: false, feedback: "No. The cancellation is already accepted, so a second camt.056 does not help. It creates a duplicate investigation and confuses the beneficiary bank. The missing piece is the pacs.004, not another cancellation request." }
+          ]
+        },
+        {
+          prompt: "The pacs.004 has not arrived. The funds are not back. Where do you look next?",
+          options: [
+            { label: "Ask the intermediary bank for the status of the pacs.004, because the return travels back through the same correspondent chain and can be held at an intermediary.", correct: true, feedback: "Correct. A return follows the payment chain back. The beneficiary bank may have released it, and an intermediary may be holding it. You find that out by asking the intermediary, not by guessing." },
+            { label: "Assume the beneficiary bank refused the cancellation and close the case.", correct: false, feedback: "No. A positive camt.029 means the beneficiary bank accepted the cancellation. Silence on the pacs.004 is not a refusal. It means the return is stuck somewhere in the chain." },
+            { label: "Credit the debtor from the bank's own funds to keep the customer happy.", correct: false, feedback: "No. This is the mistake the original case made. If you pay out the bank's own money before the funds arrive, the bank is short GBP 250 and has no return to cover it. Never refund before the funds are received and reconciled." }
+          ]
+        },
+        {
+          prompt: "The intermediary confirms the pacs.004 is held for sanctions screening. What is the correct action?",
+          options: [
+            { label: "Wait for the screening outcome and the pacs.004. Keep three statuses separate: cancellation status, return status, and funds received. Refund only once the funds are received, reconciled and cleared by compliance.", correct: true, feedback: "Correct. A sanctions hold is not a loss and not a refusal. It is a pause while screening decides. The three statuses stay separate, and the refund waits for evidence: the pacs.004, a reconciled receipt, and compliance clearance." },
+            { label: "Ask the intermediary to release the pacs.004 straight away.", correct: false, feedback: "No. You cannot override a sanctions screening hold. Only the screening outcome releases it. Asking for an early release does not speed it up and puts the bank at risk." },
+            { label: "Tell the customer the money is lost.", correct: false, feedback: "No. A hold is not a loss. The funds are held pending a screening decision. The customer needs a clear status and a next step, not a conclusion the bank cannot support." }
+          ]
+        }
+      ],
+      conclusion: {
+        rootCause: "The pacs.004 return was stuck at an intermediary bank for sanctions screening. The bank treated a positive camt.029 as proof the money was back, and paid the customer from its own funds before the return arrived.",
+        resolution: "Wait for the pacs.004. When it arrives, match it to the original payment by end-to-end ID, reconcile the amount to the nostro or settlement account, confirm compliance clearance, and only then credit the debtor. The refund is made from the returned funds, not from the bank's own money.",
+        ledger: [
+          ["Customer account (debtor)", "GBP 250", "", "Original pacs.008: customer debited, funds sent"],
+          ["Nostro / settlement account", "", "GBP 250", "Original pacs.008: funds settled out through the nostro"],
+          ["Bank suspense / own funds", "GBP 250", "", "The mistake: bank pays the customer early, from its own money"],
+          ["Customer account (debtor)", "", "GBP 250", "The mistake: customer credited early, but no return has arrived"],
+          ["Nostro / settlement account", "GBP 250", "", "Correct return: pacs.004 received into the nostro"],
+          ["Customer account (debtor)", "", "GBP 250", "Correct return: customer refunded from the returned funds"]
+        ],
+        customerImpact: "The customer waited days for a refund that had not arrived, and was told the money was on its way when it was not. Trust was damaged, and the bank had paid out its own money, leaving it short until the return arrived.",
+        controls: [
+          "Keep three statuses separate: cancellation status, return status, and funds received and reconciled.",
+          "Never refund on a camt.029 alone. Require the pacs.004, a reconciled receipt, and compliance clearance.",
+          "Add handling for compliance holds and conflicting responses, so a held return is tracked, not forgotten.",
+          "The real requirement is not 'When do we refund?' It is 'What evidence proves it is safe to refund?'"
+        ],
+        related: [
+          ["../reference/exception-lifecycles.html", "Exception lifecycles reference"],
+          ["../tools/routing-decisions.html", "Routing decision tree"],
+          ["../reference/mt-iso-mapping.html", "MT to ISO 20022 mapping"]
+        ]
+      }
+    },
+    {
+      id: "duplicate",
+      title: "Paid twice from one file",
+      tagline: "A supplier was paid EUR 12,000 twice. The file carried the same instruction twice, and no check caught it.",
+      source: "Based on Situation PAI-C010: EUR 12,000 paid twice from one pacs.008 file.",
+      messages: ["pain.001", "pacs.008", "camt.056", "pacs.004"],
+      scenario: "A corporate customer sends a bulk pain.001 file. The bank builds a pacs.008 file and pays a supplier EUR 12,000. The next day the same supplier is paid EUR 12,000 again. The file contained the same transaction twice, and no duplicate check ran before processing.",
+      details: [
+        ["Amount", "EUR 12,000, paid twice"],
+        ["Customer file", "pain.001, bulk file with one instruction repeated"],
+        ["Bank file", "pacs.008, built with the same payment inside it twice"],
+        ["Duplicate check", "None ran before processing"],
+        ["Identifiers", "InstrId and EndToEndId, the same on both payments"]
+      ],
+      participants: ["Corporate customer", "Debtor bank (us)", "Supplier", "Supplier's bank"],
+      path: [
+        "Compare the InstrId and EndToEndId of both payments",
+        "Confirm the file carried one instruction twice",
+        "Check the ledger: did both payments settle?",
+        "Recall the duplicate and add a pre-processing duplicate check"
+      ],
+      steps: [
+        {
+          prompt: "You notice the supplier was paid EUR 12,000 twice. What do you check first?",
+          options: [
+            { label: "Check the InstrId and EndToEndId of both payments in the pacs.008 file to confirm they are the same instruction duplicated.", correct: true, feedback: "Correct. The unique identification on each payment is the control that catches a duplicate. Same amount to the same supplier on consecutive days is a signal, but only matching IDs prove it is one instruction paid twice." },
+            { label: "Assume the customer sent two separate payments and do nothing.", correct: false, feedback: "No. Same amount, same supplier, consecutive days: that is a duplicate signal, not a coincidence. Check the IDs first. Doing nothing leaves a double payment in place." },
+            { label: "Immediately send a camt.056 recall for the second payment.", correct: false, feedback: "Not yet. Confirm it is a duplicate first. A recall for a legitimate second payment would be wrong and would damage the supplier relationship. Check the IDs, then act." }
+          ]
+        },
+        {
+          prompt: "The IDs match. The same instruction appears twice in the file. What went wrong?",
+          options: [
+            { label: "The duplicate check on unique identification did not run before processing, so the file was processed with the same payment inside it twice.", correct: true, feedback: "Correct. Duplicate detection is a pre-processing discipline, not a post-payment investigation. The check must run on InstrId and EndToEndId before any payment in the file is processed. A file received is not a file checked." },
+            { label: "The supplier requested two payments.", correct: false, feedback: "No. The customer sent one instruction. The file duplicated it. The supplier did not ask to be paid twice." },
+            { label: "The pacs.008 was corrupted in transit.", correct: false, feedback: "No. The file was built with the payment twice. This is a pre-processing failure, not a transmission error. The fix is a duplicate check before processing, not a better network." }
+          ]
+        },
+        {
+          prompt: "Both payments settled. What do you do to recover the second EUR 12,000 and prevent a repeat?",
+          options: [
+            { label: "Send a camt.056 recall for the duplicate, contact the supplier's bank, and add a mandatory duplicate check on InstrId and EndToEndId that runs before any payment in a file is processed.", correct: true, feedback: "Correct. Recovery goes through a recall and the beneficiary bank, and prevention goes through a pre-processing check. Both parts matter: recover this one, and make sure the next file cannot do the same thing." },
+            { label: "Debit the supplier's account directly to take the money back.", correct: false, feedback: "No. You cannot debit another bank's customer. Recovery goes through a camt.056 recall and the beneficiary bank, with the supplier's agreement where the funds are still there." },
+            { label: "Write off the EUR 12,000 as a cost of doing business.", correct: false, feedback: "No. A duplicate is recoverable through recall. Writing it off without trying is a loss the bank should not accept, and it leaves the missing control in place for the next file." }
+          ]
+        }
+      ],
+      conclusion: {
+        rootCause: "No duplicate check ran on unique identification before processing. The bulk pain.001 file carried one instruction twice, the pacs.008 was built with the same payment inside it twice, and both payments settled.",
+        resolution: "Send a camt.056 recall for the duplicate payment and work with the supplier's bank. When the pacs.004 returns the funds, reverse the duplicate debit. At the same time, add a mandatory duplicate check on InstrId and EndToEndId that runs before any payment in a file is processed, and reject a file that contains a duplicate instruction.",
+        ledger: [
+          ["Customer account", "EUR 12,000", "", "First payment: valid, customer debited"],
+          ["Nostro / settlement account", "", "EUR 12,000", "First payment: funds settled out"],
+          ["Customer account", "EUR 12,000", "", "Duplicate payment: customer debited a second time"],
+          ["Nostro / settlement account", "", "EUR 12,000", "Duplicate payment: funds settled out again"],
+          ["Nostro / settlement account", "EUR 12,000", "", "Return: pacs.004 received after recall"],
+          ["Customer account", "", "EUR 12,000", "Return: duplicate debit reversed, customer refunded"]
+        ],
+        customerImpact: "The corporate customer overpaid its supplier by EUR 12,000, which affected its cash flow and broke its reconciliation. The supplier was paid double, which creates a recovery conversation the bank would rather not have.",
+        controls: [
+          "Run the duplicate check on InstrId and EndToEndId before any payment in a file is processed.",
+          "Reject a file that contains a duplicate instruction, rather than processing it and investigating later.",
+          "Keep three controls separate: unique identification on every payment, the duplicate check before processing, and release for settlement.",
+          "A file received is not a file checked."
+        ],
+        related: [
+          ["../tools/xml-sandbox.html", "XML and MT sandbox"],
+          ["../tools/routing-decisions.html", "Routing decision tree (AM05, DUPL)"],
+          ["../reference/exception-lifecycles.html", "Exception lifecycles reference"]
+        ]
+      }
+    },
+    {
+      id: "sanctions",
+      title: "Held for sanctions screening",
+      tagline: "A EUR 50,000 payment is waiting, and the screening team is retyping the name by hand. Work out why it is held, and what must happen before it moves.",
+      source: "Based on Situation ABH-02: EUR 50,000 sent, the screening team still retyped it by hand.",
+      messages: ["pacs.008", "screening result", "camt.029", "pacs.002"],
+      scenario: "A corporate sends EUR 50,000 to a supplier. The payment carries full structured ISO 20022 data. But the payment is held. The screening team is retyping the beneficiary name by hand into a separate screen, and the payment has waited two hours for a manual all-clear.",
+      details: [
+        ["Amount", "EUR 50,000"],
+        ["Message", "pacs.008 with full structured beneficiary data"],
+        ["Screening tool", "Reads only the free-text remittance line"],
+        ["Manual step", "Analyst retypes the beneficiary name into a separate screening screen"],
+        ["Wait so far", "Two hours for a manual all-clear"],
+        ["Lists checked", "Sanctions lists, including OFAC and EU lists"]
+      ],
+      participants: ["Corporate customer", "Debtor bank (us)", "Screening and compliance team", "Supplier's bank"],
+      path: [
+        "Check the screening result and which field the tool actually read",
+        "Confirm the structured beneficiary fields carry the data",
+        "Hand a possible match to compliance for review",
+        "Release only on compliance clearance in writing"
+      ],
+      steps: [
+        {
+          prompt: "The payment has waited two hours. What do you check first?",
+          options: [
+            { label: "Check the screening result and which field the screening tool actually read, because a hold means screening has not cleared it yet, not that it was rejected.", correct: true, feedback: "Correct. A hold is not a reject. Sanctions screening holds a payment pending a decision. It does not reject it outright. The first check is the screening result and which field the tool read." },
+            { label: "Assume the payment was rejected and tell the customer it failed.", correct: false, feedback: "No. A hold is not a reject. If you tell the customer the payment failed, you are giving them a wrong answer and closing a case that is still open. Check the screening result first." },
+            { label: "Release the payment manually to clear the backlog.", correct: false, feedback: "No. Never override a sanctions screening hold. Only the screening outcome releases a held payment. Releasing it by hand puts the bank at risk of a sanctions breach." }
+          ]
+        },
+        {
+          prompt: "You find the screening tool reads only the free-text remittance line, not the structured beneficiary fields. What is the problem?",
+          options: [
+            { label: "The control reads the envelope, not the data inside the message, so the structured ISO 20022 fields are not being screened and the team is retyping names by hand.", correct: true, feedback: "Correct. The message was rich, but the control read the envelope, not the data inside it. Structured fields only help when the checks are built on them. That is why the team is retyping the name and the payment waits two hours." },
+            { label: "The message has no beneficiary data.", correct: false, feedback: "No. The pacs.008 carries full structured beneficiary data. The tool is not reading it. The data is there, the control is looking in the wrong place." },
+            { label: "The sanctions list is out of date.", correct: false, feedback: "No. The list is current. The problem is which field the tool reads. Updating the list would not fix a tool that reads the remittance line instead of the structured fields." }
+          ]
+        },
+        {
+          prompt: "The screening returns a possible name match. What do you do?",
+          options: [
+            { label: "Hold the payment, hand the case to compliance with the full payment details and the screening result, and only release on compliance clearance in writing.", correct: true, feedback: "Correct. Only compliance decides whether a match is a false positive. Operations holds the payment, gives compliance the full details, and waits for a written clearance. That is the hold, not reject, discipline." },
+            { label: "Release the payment because the match is probably a false positive.", correct: false, feedback: "No. Only compliance decides whether a match is a false positive. Operations must not release on a guess. A wrong release on a true match is a sanctions breach." },
+            { label: "Reject the payment and close the case.", correct: false, feedback: "No. A possible match is a hold for review, not an automatic reject. Compliance decides. Rejecting it outright closes a payment that might be legitimate and leaves the customer without an answer." }
+          ]
+        }
+      ],
+      conclusion: {
+        rootCause: "The screening tool read only the free-text remittance line, not the structured ISO 20022 beneficiary fields. The team retyped names by hand, the payment waited two hours, and a possible name match needed a compliance decision that operations could not make alone.",
+        resolution: "Hold the payment while compliance reviews the possible match. If compliance clears it in writing, release the payment normally and it settles through the nostro. If it is a true match, follow the sanctions procedure: do not release, and handle the payment exactly as compliance directs. Fix the tool so screening reads the structured fields (creditor name, creditor account, purpose) instead of the free-text line.",
+        ledger: [
+          ["Customer account", "", "", "No movement while held: the payment has not settled"],
+          ["Nostro / settlement account", "", "", "No movement while held: no funds have left the bank"],
+          ["Customer account", "EUR 50,000", "", "On clearance and release: customer debited"],
+          ["Nostro / settlement account", "", "EUR 50,000", "On clearance and release: funds settled out"],
+          ["Customer account", "", "", "On a true match: payment not released, no debit, compliance procedure applies"]
+        ],
+        customerImpact: "The supplier waited two hours and more for EUR 50,000, and the customer had no clear answer while the payment sat in screening. A correct hold protects the bank and the customer from a sanctions breach, but a slow, manual hold damages trust and the supplier relationship.",
+        controls: [
+          "Screening must read the structured ISO 20022 fields (creditor name, creditor account, purpose), not the free-text remittance line.",
+          "Hold, not reject, is the default for a possible match. Only compliance decides.",
+          "Release only on compliance clearance in writing. Operations never overrides a screening hold.",
+          "A message is a control point only when validation, screening and reconciliation actually read its fields."
+        ],
+        related: [
+          ["../reference/regulatory-compliance.html", "Regulatory compliance reference"],
+          ["../reference/exception-lifecycles.html", "Exception lifecycles reference"],
+          ["../tools/routing-decisions.html", "Routing decision tree (RR04, AG01)"]
+        ]
+      }
+    },
+    {
+      id: "wrongbeneficiary",
+      title: "Sent to the wrong beneficiary",
+      tagline: "EUR 45,000 went to the wrong account. The recall went out, and the only answer was silence.",
+      source: "Based on Situations PAI-C015 and PAI-C030: a recall sent with no answer, and a recall after the beneficiary had spent the funds.",
+      messages: ["pacs.008", "camt.056", "camt.029", "pacs.004"],
+      scenario: "A EUR 45,000 payment went to the wrong beneficiary. The originator bank sent a camt.056 recall. Days passed. No answer came, and no one could close the case. The beneficiary bank has now replied that the beneficiary has already spent the funds.",
+      details: [
+        ["Amount", "EUR 45,000, sent to the wrong beneficiary"],
+        ["Recall", "camt.056, sent by the originator bank"],
+        ["Response", "camt.029, not received for days"],
+        ["Return", "pacs.004, not received"],
+        ["Beneficiary bank reply", "The beneficiary has already spent the funds"]
+      ],
+      participants: ["Originator and customer", "Originator bank (us)", "Beneficiary bank", "Wrong beneficiary"],
+      path: [
+        "Chase the beneficiary bank for the camt.029 response",
+        "Confirm whether the funds are still there",
+        "Decide what a recall can and cannot do once funds are spent",
+        "Tell the customer plainly and keep the case open"
+      ],
+      steps: [
+        {
+          prompt: "The camt.056 recall was sent days ago and no camt.029 has arrived. What do you do?",
+          options: [
+            { label: "Chase the beneficiary bank for the camt.029, because the recall is open until the response arrives and silence is not an answer.", correct: true, feedback: "Correct. A camt.029 answers a camt.056 by stating whether the recall has been accepted or refused. The originator bank cannot close the recall until that response arrives. Sending a recall proves nothing. Only the answer closes the question." },
+            { label: "Assume the recall was accepted and tell the customer the money is coming back.", correct: false, feedback: "No. Without a camt.029 you do not know whether the recall was accepted or refused. Telling the customer the money is coming back is a promise the bank cannot keep yet." },
+            { label: "Send another camt.056.", correct: false, feedback: "No. A second camt.056 creates a duplicate investigation. Chase the response to the first one. The beneficiary bank needs to answer the recall that is already open." }
+          ]
+        },
+        {
+          prompt: "The beneficiary bank replies that the beneficiary has already spent the funds. What does that mean?",
+          options: [
+            { label: "The recall cannot complete by message alone. The beneficiary bank must ask its customer whether it agrees, and if the funds are gone the recovery is a claim against the beneficiary, not a message.", correct: true, feedback: "Correct. Once the money has been spent, a recall is a request, not a reversal. The beneficiary bank can ask its customer, but it cannot return money that is no longer there. The recovery becomes a claim against the beneficiary." },
+            { label: "The recall will still return the money automatically.", correct: false, feedback: "No. A recall does not reverse a payment. It asks the beneficiary bank to return the money, and that only works if the beneficiary agrees and the funds are still there. Spent funds cannot be returned by message." },
+            { label: "The beneficiary bank must pay the money back from its own funds.", correct: false, feedback: "No. The beneficiary bank is not liable for its customer's spending. It must ask its customer whether it agrees to return the funds. If the funds are gone, the bank cannot manufacture them." }
+          ]
+        },
+        {
+          prompt: "What do you tell the customer, and what do you do next?",
+          options: [
+            { label: "Tell the customer plainly that the recall depends on the beneficiary agreeing and the funds still being there, keep the case open, and if the money is gone, help the customer pursue a claim against the beneficiary.", correct: true, feedback: "Correct. The customer needs an honest answer, not a promise. The case stays open until there is a camt.029 and either a pacs.004 or a claim. That is the only way to close it with evidence." },
+            { label: "Tell the customer the money is definitely coming back.", correct: false, feedback: "No. You cannot promise a return when the funds are spent. That promise would be broken, and the customer would learn the bank cannot be trusted on the next problem either." },
+            { label: "Close the case because the recall was sent.", correct: false, feedback: "No. Sending the recall does not close the case. Only the camt.029 and the pacs.004, or a claim where the funds are gone, close it. A sent recall with no answer is an open case." }
+          ]
+        }
+      ],
+      conclusion: {
+        rootCause: "The payment was sent to the wrong beneficiary, and by the time the recall went out the beneficiary had already spent the funds. A camt.056 asks for a return. It cannot reverse a payment, and it cannot return money that is no longer there.",
+        resolution: "If the beneficiary agrees and the funds are present, the beneficiary bank returns them by pacs.004, and the original payment is reversed on receipt. If the funds are spent, there is no pacs.004. The recovery is then a claim against the beneficiary, and the customer needs to pursue it with the bank's help. Either way, the case stays open until there is evidence: a camt.029, and then a pacs.004 or a claim.",
+        ledger: [
+          ["Customer account", "EUR 45,000", "", "Original payment: customer debited"],
+          ["Nostro / settlement account", "", "EUR 45,000", "Original payment: funds settled out"],
+          ["Nostro / settlement account", "EUR 45,000", "", "If returned: pacs.004 received into the nostro"],
+          ["Customer account", "", "EUR 45,000", "If returned: customer refunded from the returned funds"],
+          ["Customer account", "", "", "If spent: no return, no credit. Recovery is a claim against the beneficiary"]
+        ],
+        customerImpact: "EUR 45,000 is at risk, the customer waited days with no answer, and the money may be gone for good if the beneficiary spent it. The customer learns the hard way that a recall is a request, not a reversal, and that the bank must be honest about that from the start.",
+        controls: [
+          "Verify the beneficiary name and account before release, using confirmation of payee or verification of payee where it is available.",
+          "Check the IBAN and the name together. A correct IBAN with the wrong name is still a wrong payment.",
+          "Track a recall as open until the camt.029 arrives. Treat an accepted recall as a decision, not as money moved, and wait for the pacs.004.",
+          "Never promise a return before the pacs.004. Tell the customer what the recall can and cannot do."
+        ],
+        related: [
+          ["../reference/exception-lifecycles.html", "Exception lifecycles reference"],
+          ["../tools/routing-decisions.html", "Routing decision tree (BE01, AC01)"],
+          ["../reference/mt-iso-mapping.html", "MT to ISO 20022 mapping"]
+        ]
+      }
+    },
+    {
+      id: "cutoff",
+      title: "Five minutes past cut-off",
+      tagline: "A EUR 50,000 payment was sent five minutes after the clearing cut-off. The customer expected it in the same cycle. It waited for the next one.",
+      source: "Based on Situation RUN6-010: a EUR 50,000 payment arrived after cut-off, and the cycle had already closed.",
+      messages: ["pacs.008", "TARGET2 calendar", "pacs.002", "camt.053"],
+      scenario: "A EUR 50,000 payment was sent five minutes after the clearing cut-off. The customer expected it in the same cycle. It waited for the next one, because the cut-off had already fixed the cycle. The customer is now asking why the payment did not settle today.",
+      details: [
+        ["Amount", "EUR 50,000"],
+        ["Sent", "Five minutes after the clearing cut-off"],
+        ["Customer expectation", "Same cycle, same day settlement"],
+        ["Cut-off", "17:00 CET customer-payment cut-off for TARGET2"],
+        ["Value date requested", "Same day"],
+        ["Actual value date", "Next TARGET2 business day"]
+      ],
+      participants: ["Customer", "Debtor bank (us)", "Clearing system (TARGET2)", "Beneficiary bank"],
+      path: [
+        "Check the creation time against the cut-off table",
+        "Confirm the requested value date against the TARGET2 calendar",
+        "Move the value date to the next TARGET2 business day",
+        "Tell the customer the new value date and agree an earlier release next time"
+      ],
+      steps: [
+        {
+          prompt: "The customer complains the EUR 50,000 did not settle today. What do you check first?",
+          options: [
+            { label: "Check the creation time against the cut-off for the clearing system and the requested value date, because a payment after cut-off cannot settle that day.", correct: true, feedback: "Correct. A cut-off is a hard time limit, not a guideline. Once it passes, netting runs on the transactions already in the cycle, and anything later is simply not in it. The creation time against the cut-off table is the first check." },
+            { label: "Assume the payment failed and re-send it.", correct: false, feedback: "No. The payment did not fail. It missed the cut-off and is queued for the next cycle. Re-sending it creates a duplicate payment, which is a worse problem than a one-day delay." },
+            { label: "Tell the customer the beneficiary bank is slow.", correct: false, feedback: "No. The delay is the cut-off, not the beneficiary bank. Blaming the other bank is wrong, and it stops you fixing the real cause, which is the release time." }
+          ]
+        },
+        {
+          prompt: "The payment was created after the 17:00 CET customer cut-off for a same-day value date. What is the correct value date?",
+          options: [
+            { label: "The next TARGET2 business day, because the cut-off is a hard time limit and the payment settles in the next cycle.", correct: true, feedback: "Correct. The requested value date does not override the cut-off. The payment is valid, it simply settles on the next TARGET2 business day. The value date moves with it." },
+            { label: "Today, because the customer asked for today.", correct: false, feedback: "No. A requested value date does not override the cut-off. The clearing system settles it on the next business day whether the customer asked for today or not." },
+            { label: "The payment should be cancelled.", correct: false, feedback: "No. A cut-off miss is not a failure. The payment is valid and settles on the next business day. Cancelling it and re-sending would only create more work and a possible duplicate." }
+          ]
+        },
+        {
+          prompt: "What do you tell the customer, and how do you prevent this next time?",
+          options: [
+            { label: "Tell the customer the new value date (next business day), and agree an earlier release time for future same-day payments so they clear the cut-off.", correct: true, feedback: "Correct. The customer needs the real value date, and the bank needs an earlier release time for same-day payments. Both parts fix the problem: this payment, and the next one." },
+            { label: "Tell the customer the payment is lost.", correct: false, feedback: "No. The payment is not lost. It is queued and will settle on the next business day. Telling the customer it is lost creates panic and a complaint for no reason." },
+            { label: "Promise same-day settlement for the next payment without changing the release time.", correct: false, feedback: "No. Without an earlier release, the next payment will miss the cut-off too. A promise without a changed release time is a promise the bank will break again." }
+          ]
+        }
+      ],
+      conclusion: {
+        rootCause: "The payment was released five minutes after the clearing cut-off. A cut-off is a wall, not a suggestion. Once it passes, netting runs on the transactions already in the cycle, and the late payment waits for the next cycle.",
+        resolution: "The payment settles on the next TARGET2 business day. The value date moves to that day. There is no re-send and no cancellation. The customer is told the new value date, and the bank agrees an earlier release time for future same-day payments so they clear the cut-off.",
+        ledger: [
+          ["Customer account", "", "", "Today: no movement, the payment is queued for the next cycle"],
+          ["Nostro / settlement account", "", "", "Today: no movement, settlement happens next business day"],
+          ["Customer account", "EUR 50,000", "", "Next TARGET2 business day: customer debited"],
+          ["Nostro / settlement account", "", "EUR 50,000", "Next TARGET2 business day: funds settled out"],
+          ["Customer account", "", "", "Value date: next TARGET2 business day, not the requested same day"]
+        ],
+        customerImpact: "The beneficiary receives EUR 50,000 a day late, which can mean a late payment to a supplier and a difficult conversation for the customer. The customer expected same-day settlement and got next-day settlement, because the release missed the cut-off by five minutes.",
+        controls: [
+          "Name the cut-off in every payment design. Every payment needs its cut-off stated, not assumed.",
+          "Release same-day payments well before the cut-off, with a buffer for file processing and checks.",
+          "Show the value date to the customer before release, so a late release is visible before it is sent.",
+          "Do not promise same-day settlement after the cut-off. A cut-off is a wall, not a suggestion."
+        ],
+        related: [
+          ["../reference/clearing-systems.html", "Clearing systems reference"],
+          ["../tools/routing-decisions.html", "Routing decision tree (TM01)"],
+          ["../tools/xml-sandbox.html", "XML and MT sandbox (TARGET2 calendar check)"]
+        ]
+      }
+    },
+    {
+      id: "nostro",
+      title: "The mirror says funded, the nostro is empty",
+      tagline: "The books show USD 250,000 available. The real account at the other bank shows zero. The payment cannot settle.",
+      source: "Based on Situations RUN4-001 and PAI-C077: the mirror nostro, and a nostro debited twice because two banks read one account.",
+      messages: ["camt.053", "pacs.008", "pacs.009", "MT202"],
+      scenario: "A bank needs USD 250,000 from its nostro account to settle a payment. Its own books, the mirror nostro, show USD 250,000 available. The real account at the other bank shows zero. The payment cannot settle, and no one can say why until the real balance is checked.",
+      details: [
+        ["Amount needed", "USD 250,000"],
+        ["Mirror nostro (own books)", "USD 250,000 available"],
+        ["Real nostro (at the other bank)", "USD 0, never funded"],
+        ["Account", "USD nostro with the correspondent bank"],
+        ["Statement", "camt.053, bank to customer statement"]
+      ],
+      participants: ["Our bank, treasury and operations (us)", "Correspondent bank (holds the nostro)", "Beneficiary bank"],
+      path: [
+        "Check the real nostro balance at the correspondent bank",
+        "Reconcile the mirror to the real account",
+        "Fund the real nostro before promising settlement",
+        "Settle the payment and reconcile daily from then on"
+      ],
+      steps: [
+        {
+          prompt: "The mirror nostro shows USD 250,000 available but the payment cannot settle. What do you check first?",
+          options: [
+            { label: "Check the real nostro balance at the correspondent bank, through the camt.053 statement or the account servicing portal, because the mirror holds no funds, it only reflects what the real account should show.", correct: true, feedback: "Correct. The mirror is kept in the real account's currency so the bank can work out what the real account should show, but the mirror holds no funds. The real funds sit in the real account at the other bank. Only the real balance tells you whether the payment can settle." },
+            { label: "Trust the mirror and re-send the payment.", correct: false, feedback: "No. The mirror is not money. Re-sending a payment the nostro cannot fund will fail again. The mirror shows what the account should hold, not what it does hold." },
+            { label: "Assume the correspondent bank made an error.", correct: false, feedback: "No. The real account was never funded. This is a funding gap, not a correspondent error. The first check is the real balance, not a complaint to the other bank." }
+          ]
+        },
+        {
+          prompt: "The real nostro shows zero. It was never funded. What does that mean for the payment?",
+          options: [
+            { label: "The payment cannot settle until the nostro is funded. You must fund the account, or use an alternative route, before promising settlement.", correct: true, feedback: "Correct. Settlement needs real funds in the real account. The payment waits until the nostro is funded. Promising settlement from an unfunded nostro is promising money the bank does not have." },
+            { label: "The payment can settle anyway because the mirror shows funds.", correct: false, feedback: "No. Settlement needs real funds in the real account. The mirror cannot settle a payment. The mirror is a reflection, not a balance." },
+            { label: "The nostro and vostro are two different accounts, so use the vostro.", correct: false, feedback: "No. Nostro and vostro are the same account seen from two sides. The bank that holds the account calls it a vostro, the bank that owns it calls it a nostro. There is only one account and one balance." }
+          ]
+        },
+        {
+          prompt: "How do you fix this and prevent it happening again?",
+          options: [
+            { label: "Fund the real nostro, check the real balance before promising any payment, and reconcile the mirror to the real account (camt.053) daily so a funding gap is caught before a payment is promised.", correct: true, feedback: "Correct. Fund the real account, check the real balance before promising settlement, and reconcile the mirror to the camt.053 daily. That catches a funding gap before a customer is promised money the bank cannot pay." },
+            { label: "Increase the mirror balance in your own books.", correct: false, feedback: "No. Changing the mirror does not put funds in the real account. The mirror is a record, not a balance. The real account is what needs funding." },
+            { label: "Promise the customer the payment will settle and hope the nostro is funded in time.", correct: false, feedback: "No. Never promise settlement from an unfunded nostro. Confirm the real balance first. A promise made on a mirror balance is a promise the bank cannot keep." }
+          ]
+        }
+      ],
+      conclusion: {
+        rootCause: "The real nostro was never funded. The mirror nostro in the bank's own books showed USD 250,000, and the team mistook the mirror for real funds. Nostro and vostro are one account with two names, and the mirror holds no money.",
+        resolution: "Fund the real nostro at the correspondent bank, then settle the payment from it. Reconcile the mirror to the real account every day using the camt.053 statement, so a funding gap is caught before a payment is promised. Check the real balance before promising settlement, every time.",
+        ledger: [
+          ["Settlement account (own funds)", "USD 250,000", "", "Funding: move funds to the nostro"],
+          ["Nostro at correspondent bank", "", "USD 250,000", "Funding: real nostro now holds USD 250,000"],
+          ["Mirror nostro (own books)", "", "", "Funding: mirror updated to reflect the real account, it holds no funds itself"],
+          ["Nostro at correspondent bank", "USD 250,000", "", "Payment: nostro debited to settle the payment"],
+          ["Beneficiary settlement", "", "USD 250,000", "Payment: funds settled to the beneficiary bank"],
+          ["Mirror nostro (own books)", "", "", "Payment: mirror updated to match the real account after settlement"]
+        ],
+        customerImpact: "The payment was delayed, the beneficiary waited, and the bank's liquidity planning failed in front of the customer. A payment promised from an unfunded nostro is a promise the bank cannot keep, and it damages trust more than an honest delay would have.",
+        controls: [
+          "Check the real nostro balance before promising any payment. The mirror is not a balance.",
+          "Reconcile the mirror to the real account daily, using the camt.053 statement.",
+          "Fund the nostro before the payment, not after. Settlement needs real funds in the real account.",
+          "Treat nostro and vostro as one account with one balance. Never debit it twice for one payment."
+        ],
+        related: [
+          ["../reference/clearing-systems.html", "Clearing systems reference"],
+          ["../reference/mt-iso-mapping.html", "MT to ISO 20022 mapping"],
+          ["../tools/routing-decisions.html", "Routing decision tree"]
+        ]
+      }
+    }
+  ];
+
+  var listEl = document.getElementById('inv-list');
+  var summaryEl = document.getElementById('inv-summary');
+  var panelEl = document.getElementById('inv-panel');
+  var STORE_KEY = 'pth-investigation-lab-done-v1';
+
+  function escHtml(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  function loadDone() {
+    try {
+      var raw = localStorage.getItem(STORE_KEY);
+      var arr = raw ? JSON.parse(raw) : [];
+      var out = {};
+      arr.forEach(function (id) { out[id] = true; });
+      return out;
+    } catch (e) { return {}; }
+  }
+
+  function saveDone(done) {
+    try {
+      var arr = Object.keys(done).filter(function (k) { return done[k]; });
+      localStorage.setItem(STORE_KEY, JSON.stringify(arr));
+    } catch (e) { /* private mode or storage off: progress is in-memory only */ }
+  }
+
+  var done = loadDone();
+
+  function doneCount() {
+    var n = 0;
+    EXERCISES.forEach(function (ex) { if (done[ex.id]) n++; });
+    return n;
+  }
+
+  function renderList() {
+    var n = doneCount();
+    summaryEl.textContent = 'Six investigations. Each one takes about five minutes. You have finished ' + n + ' of 6.';
+    var html = '';
+    EXERCISES.forEach(function (ex) {
+      var badge = done[ex.id] ? ' <span style="color:#14532D;font-weight:700;">Finished</span>' : '';
+      html += '<div class="lesson-box"><h2>' + escHtml(ex.title) + badge + '</h2>'
+        + '<p>' + escHtml(ex.tagline) + '</p>'
+        + '<p><strong>Messages involved:</strong> ' + ex.messages.map(escHtml).join(', ') + '</p>'
+        + '<p>' + escHtml(ex.source) + '</p>'
+        + '<p><button type="button" class="studio-btn primary" data-ex="' + escHtml(ex.id) + '">Start this investigation</button></p></div>';
+    });
+    listEl.innerHTML = html;
+    var btns = listEl.querySelectorAll('button[data-ex]');
+    btns.forEach(function (b) {
+      b.addEventListener('click', function () { startExercise(b.getAttribute('data-ex')); });
+    });
+  }
+
+  var current = null;
+  var stepIndex = 0;
+  var stepFirstTry = [];
+  var stepAnswered = [];
+
+  function findExercise(id) {
+    for (var i = 0; i < EXERCISES.length; i++) {
+      if (EXERCISES[i].id === id) return EXERCISES[i];
+    }
+    return null;
+  }
+
+  function pathHtml(ex, upto) {
+    var items = ex.path.map(function (label, i) {
+      var mark = i < upto ? '&#10003; ' : '';
+      var style = i < upto ? ' style="color:#14532D;font-weight:700;"' : '';
+      return '<li' + style + '>' + mark + escHtml(label) + '</li>';
+    }).join('');
+    return '<div class="lesson-box"><h2>Investigation path</h2><p>Checks in the right order. Each correct choice ticks one off.</p><ol>' + items + '</ol></div>';
+  }
+
+  function startExercise(id) {
+    current = findExercise(id);
+    if (!current) return;
+    stepIndex = 0;
+    stepFirstTry = [];
+    stepAnswered = [];
+    var ex = current;
+    var details = ex.details.map(function (row) {
+      return '<tr><td><strong>' + escHtml(row[0]) + '</strong></td><td>' + escHtml(row[1]) + '</td></tr>';
+    }).join('');
+    var parts = ex.participants.map(function (p) { return '<li>' + escHtml(p) + '</li>'; }).join('');
+    panelEl.innerHTML = '<div class="lesson-box"><h2>' + escHtml(ex.title) + '</h2>'
+      + '<p>' + escHtml(ex.scenario) + '</p>'
+      + '<h3>Transaction details</h3>'
+      + '<table class="pf-table"><tbody>' + details + '</tbody></table>'
+      + '<h3>Participants</h3><ul>' + parts + '</ul>'
+      + '<p><strong>Messages involved:</strong> ' + ex.messages.map(escHtml).join(', ') + '</p>'
+      + '<p>' + escHtml(ex.source) + '</p>'
+      + '<p><button type="button" class="studio-btn primary" id="inv-begin">Start the investigation</button> '
+      + '<button type="button" class="studio-btn" id="inv-back-list">Back to all investigations</button></p></div>'
+      + '<div id="inv-steps"></div>';
+    panelEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    document.getElementById('inv-begin').addEventListener('click', function () { renderStep(0); });
+    document.getElementById('inv-back-list').addEventListener('click', function () {
+      panelEl.innerHTML = '';
+      renderList();
+    });
+  }
+
+  function renderStep(i) {
+    var ex = current;
+    stepIndex = i;
+    var step = ex.steps[i];
+    var stepsEl = document.getElementById('inv-steps');
+    var opts = step.options.map(function (opt, idx) {
+      return '<p><button type="button" class="studio-btn" data-opt="' + idx + '" style="text-align:left;white-space:normal;width:100%;">' + escHtml(opt.label) + '</button></p>';
+    }).join('');
+    stepsEl.innerHTML = pathHtml(ex, i)
+      + '<div class="lesson-box"><h2>Decision point ' + (i + 1) + ' of ' + ex.steps.length + '</h2>'
+      + '<p><strong>' + escHtml(step.prompt) + '</strong></p>'
+      + opts
+      + '<div id="inv-feedback" aria-live="polite"></div>'
+      + '<p id="inv-continue-wrap"></p></div>';
+    var btns = stepsEl.querySelectorAll('button[data-opt]');
+    btns.forEach(function (b) {
+      b.addEventListener('click', function () { chooseOption(i, parseInt(b.getAttribute('data-opt'), 10), b); });
+    });
+  }
+
+  function chooseOption(i, optIdx, btn) {
+    var ex = current;
+    if (stepAnswered[i]) return;
+    var step = ex.steps[i];
+    var opt = step.options[optIdx];
+    var feedbackEl = document.getElementById('inv-feedback');
+    if (stepFirstTry[i] === undefined) stepFirstTry[i] = true;
+    if (opt.correct) {
+      stepAnswered[i] = true;
+      btn.style.borderColor = '#14532D';
+      btn.style.color = '#14532D';
+      btn.style.fontWeight = '700';
+      feedbackEl.innerHTML = '<p><strong>Correct.</strong> ' + escHtml(opt.feedback) + '</p>';
+      var wrap = document.getElementById('inv-continue-wrap');
+      var last = i === ex.steps.length - 1;
+      wrap.innerHTML = '<button type="button" class="studio-btn primary" id="inv-next">' + (last ? 'See the full picture' : 'Continue to decision point ' + (i + 2)) + '</button>';
+      document.getElementById('inv-next').addEventListener('click', function () {
+        if (last) showConclusion();
+        else renderStep(i + 1);
+      });
+    } else {
+      stepFirstTry[i] = false;
+      btn.disabled = true;
+      btn.style.opacity = '0.45';
+      feedbackEl.innerHTML = '<p><strong>Not the best choice.</strong> ' + escHtml(opt.feedback) + ' Try another option.</p>';
+    }
+  }
+
+  function showConclusion() {
+    var ex = current;
+    var score = 0;
+    stepFirstTry.forEach(function (v) { if (v) score++; });
+    done[ex.id] = true;
+    saveDone(done);
+    var ledger = ex.conclusion.ledger.map(function (row) {
+      return '<tr><td>' + escHtml(row[0]) + '</td><td>' + escHtml(row[1]) + '</td><td>' + escHtml(row[2]) + '</td><td>' + escHtml(row[3]) + '</td></tr>';
+    }).join('');
+    var controls = ex.conclusion.controls.map(function (c) { return '<li>' + escHtml(c) + '</li>'; }).join('');
+    var related = ex.conclusion.related.map(function (r) {
+      return '<li><a href="' + escHtml(r[0]) + '">' + escHtml(r[1]) + '</a></li>';
+    }).join('');
+    var verdict = score === ex.steps.length
+      ? 'You got every decision right first time. That is the standard for a payments professional.'
+      : 'You got ' + score + ' of ' + ex.steps.length + ' decisions right first time. Run it again and aim for all three first time.';
+    var stepsEl = document.getElementById('inv-steps');
+    stepsEl.innerHTML = pathHtml(ex, ex.path.length)
+      + '<div class="lesson-box"><h2>The full picture</h2>'
+      + '<p><strong>Your score: ' + score + ' of ' + ex.steps.length + ' decisions right first time.</strong> ' + escHtml(verdict) + '</p>'
+      + '<h3>Root cause</h3><p>' + escHtml(ex.conclusion.rootCause) + '</p>'
+      + '<h3>Resolution</h3><p>' + escHtml(ex.conclusion.resolution) + '</p>'
+      + '<h3>Accounting and reconciliation impact</h3>'
+      + '<p>Simplified double-entry view. The real ledger carries more lines, but these are the entries that decide whether the case balances.</p>'
+      + '<table class="pf-table"><thead><tr><th>Account</th><th>Debit</th><th>Credit</th><th>What it means</th></tr></thead><tbody>' + ledger + '</tbody></table>'
+      + '<h3>Customer impact</h3><p>' + escHtml(ex.conclusion.customerImpact) + '</p>'
+      + '<h3>Preventive controls</h3><ol>' + controls + '</ol>'
+      + '<h3>Keep learning</h3><ul>' + related + '</ul>'
+      + '<p><button type="button" class="studio-btn primary" id="inv-restart">Run this investigation again</button> '
+      + '<button type="button" class="studio-btn" id="inv-back-list-2">Back to all investigations</button></p></div>';
+    renderList();
+    stepsEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    document.getElementById('inv-restart').addEventListener('click', function () { startExercise(ex.id); });
+    document.getElementById('inv-back-list-2').addEventListener('click', function () {
+      panelEl.innerHTML = '';
+      renderList();
+    });
+  }
+
+  renderList();
+})();
+</script>
+</section>
+</main>
+<footer><p>Payments Training Hub. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="../index.html">Home</a> &middot; <a href="../courses.html">Courses</a> &middot; <a href="../flows.html">Flows</a> &middot; <a href="../situations.html">Situations</a> &middot; <a href="../dashboard.html">Dashboard</a> &middot; <a href="../portfolio.html">Portfolio</a> &middot; <a href="../domains.html">Reference</a> &middot; <a href="../labs-simulators.html">Labs &amp; Simulators</a> &middot; <a href="../practice.html">Practice</a> &middot; <a href="../simulators.html">Simulators</a> &middot; <a href="../labs.html">Labs</a> &middot; <a href="../explorer.html">Explorer</a> &middot; <a href="../tests.html">Tests</a> &middot; <a href="../diagnostic.html">Diagnostic</a> &middot; <a href="../faq.html">Interview Ready Questions</a> &middot; <a href="../interview-prep.html">Interview Prep</a></p><p><a href="../about.html">About</a> &middot; <a href="../founder.html">Founder</a> &middot; <a href="../methodology.html">Methodology</a> &middot; <a href="../privacy.html">Privacy</a> &middot; <a href="../terms.html">Terms</a> &middot; <a href="../refund.html">Refunds</a> &middot; <a href="../contact.html">Contact</a> &middot; <a href="../editorial-standards.html">Editorial Standards</a> &middot; <a href="../sources.html">Sources</a> &middot; <a href="../references-policy.html">References Policy</a> &middot; <a href="../corrections.html">Corrections Policy</a></p><p><a href="../domains.html">Domains</a> &middot; <a href="../reference/mt103-to-pacs008.html">MT103 to pacs.008 Reference</a> &middot; <a href="../reference.html">Reference Library</a> &middot; <a href="../insights.html">Insights and Scenarios</a></p><p><a href="../course-map.html">Course Map</a> &middot; <a href="../pricing.html">Pricing</a> &middot; <a href="../teams.html">For Teams</a> &middot; <a href="../artifacts.html">BA Artifact Library</a> &middot; <a href="../reference/mt-iso-mapping.html">MT to ISO 20022 Mapping</a> &middot; <a href="../reference/clearing-systems.html">Clearing Systems</a> &middot; <a href="../reference/regulatory-compliance.html">Regulatory Compliance</a> &middot; <a href="../reference/exception-lifecycles.html">Exception Lifecycles</a> &middot; <a href="../reference/upi-operational.html">UPI Operational Pathway</a> &middot; <a href="../reference/sepa-guide.html">SEPA Scheme Guide</a> &middot; <a href="../tools/xml-sandbox.html">XML and MT Sandbox</a> &middot; <a href="../tools/routing-decisions.html">Routing Decision Tree</a> &middot; <a href="../tools/reconciliation-lab.html">Reconciliation Laboratory</a> &middot; <a href="../tools/investigation-lab.html">Payment Investigation Lab</a></p><p><a href="../support.html">Help and Support</a> &middot; <a href="../changelog.html">Changelog</a> &middot; <a href="../licensing.html">Licensing</a></p></footer>
+<div id="hub-assistant" class="hub-assistant" data-prefix="../" data-expanded="false"><div class="hub-mascot" id="hub-mascot" role="button" tabindex="0" aria-label="Open the Hub Assistant chat"><svg class="hub-mascot-svg" viewBox="0 0 80 96" aria-hidden="true"><path d="M64 8 L66.5 15 L74 17.5 L66.5 20 L64 27 L61.5 20 L54 17.5 L61.5 15 Z" fill="#C9A227"/><path d="M40 12 C54 12 62 22 62 34 L62 64 C62 78 52 88 40 88 C28 88 18 78 18 64 L18 32" fill="none" stroke="#1D4ED8" stroke-width="7" stroke-linecap="round"/><path d="M40 28 C47 28 51 32 51 38 L51 60 C51 68 47 73 40 73 C33 73 29 68 29 60 L29 36" fill="none" stroke="#1D4ED8" stroke-width="7" stroke-linecap="round"/><path d="M18 32 L18 26" stroke="#C9A227" stroke-width="7" stroke-linecap="round"/><circle cx="34" cy="38" r="5" fill="#fff" stroke="#0B1F3D" stroke-width="1.5"/><circle cx="46" cy="38" r="5" fill="#fff" stroke="#0B1F3D" stroke-width="1.5"/><circle cx="35" cy="39" r="2.2" fill="#0B1F3D"/><circle cx="47" cy="39" r="2.2" fill="#0B1F3D"/><path d="M34 50 Q40 56 46 50" fill="none" stroke="#0B1F3D" stroke-width="2.5" stroke-linecap="round"/></svg><span class="hub-mascot-label">Hub Assistant</span><span class="hub-hide" id="hub-hide" role="button" tabindex="0" aria-label="Hide assistant">&times;</span></div><div class="hub-panel" id="hub-panel" hidden><div class="hub-panel-head"><svg class="hub-mini" viewBox="0 0 80 96" aria-hidden="true"><path d="M40 12 C54 12 62 22 62 34 L62 64 C62 78 52 88 40 88 C28 88 18 78 18 64 L18 32" fill="none" stroke="#1D4ED8" stroke-width="7" stroke-linecap="round"/><path d="M40 28 C47 28 51 32 51 38 L51 60 C51 68 47 73 40 73 C33 73 29 68 29 60 L29 36" fill="none" stroke="#1D4ED8" stroke-width="7" stroke-linecap="round"/><path d="M18 32 L18 26" stroke="#C9A227" stroke-width="7" stroke-linecap="round"/></svg><div class="hub-panel-title"><b>Hub Assistant</b><span>Payments Training Hub chat assistant</span></div><button type="button" class="hub-close" id="hub-close" aria-label="Close chat">&times;</button></div><div class="hub-messages" id="hub-messages" aria-live="polite"></div><div class="hub-starters" id="hub-starters"><button type="button" class="hub-chip" data-q="What is an MT103?">What is an MT103?</button><button type="button" class="hub-chip" data-q="How does a pacs.008 work?">How does a pacs.008 work?</button><button type="button" class="hub-chip" data-q="Explain nostro and vostro">Explain nostro and vostro</button></div><form class="hub-input-row" id="hub-form"><input id="hub-input" type="text" placeholder="Ask about payments..." autocomplete="off" aria-label="Ask the Hub Assistant"><button type="submit">Send</button></form></div><button type="button" class="hub-dot" id="hub-dot" aria-label="Show the Hub Assistant"></button></div>
+<script defer src="../assets/site.js"></script>
+<script defer src="../assets/bundles.js"></script>
+<script defer src="../assets/auth.js"></script>
+<script defer src="../assets/learner-sync.js"></script>
+<script defer src="../assets/site-search.js"></script>
+<script defer src="../assets/hub-assistant.js"></script>
+<script defer src="../assets/codehl.js"></script>
+<script defer src="../assets/nav.js"></script>
+<script defer src="../assets/pf-enhance.js"></script>
+</body>
+</html>
