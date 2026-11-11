@@ -126,3 +126,55 @@ function pfRevealDetail(el){
     el.scrollIntoView({behavior:'smooth',block:'start'});
   }
 }
+
+/* Copy protection (11 Nov 2026): watermark + copy guards on content
+   pages only (lessons, situations, guides, FAQ). The CSS in
+   pf-theme.css already disables text selection on the same containers;
+   this is the second layer: it blocks the right-click menu and the
+   Copy/Cut commands (keyboard, menu and Edit menu) when the selection
+   sits inside protected content. Form fields, links, buttons and the
+   header search are never blocked. This stops casual copying only:
+   screenshots, OCR and view-source still work, so it is friction,
+   not a guarantee. */
+(function(){
+  var PROTECTED = '.lesson-main, .sit-case, .sit-catalogue, .guide-page, .faq-answer, .pf-search-results';
+  function inProtected(node){
+    if(!node) return false;
+    if(node.nodeType === 3) node = node.parentNode;
+    if(!node || !node.closest) return false;
+    return !!node.closest(PROTECTED);
+  }
+  function isFormField(el){
+    return el && /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName || '');
+  }
+  /* Faint watermark overlay on content pages only. */
+  try{
+    if(document.querySelector('.lesson-main, .sit-case, .sit-catalogue, .guide-page, .faq-answer')){
+      var wm = document.createElement('div');
+      wm.className = 'pf-watermark';
+      wm.setAttribute('aria-hidden', 'true');
+      document.body.appendChild(wm);
+    }
+  }catch(e){}
+  document.addEventListener('contextmenu', function(e){
+    if(inProtected(e.target) && !isFormField(e.target)) e.preventDefault();
+  });
+  document.addEventListener('copy', function(e){
+    if(isFormField(e.target)) return;
+    var sel = window.getSelection && window.getSelection();
+    if(sel && sel.rangeCount && inProtected(sel.anchorNode)) e.preventDefault();
+  });
+  document.addEventListener('cut', function(e){
+    if(isFormField(e.target)) return;
+    var sel = window.getSelection && window.getSelection();
+    if(sel && sel.rangeCount && inProtected(sel.anchorNode)) e.preventDefault();
+  });
+  document.addEventListener('keydown', function(e){
+    if(!(e.ctrlKey || e.metaKey)) return;
+    var k = (e.key || '').toLowerCase();
+    if(k !== 'c' && k !== 'x') return;
+    if(isFormField(e.target)) return;
+    var sel = window.getSelection && window.getSelection();
+    if(sel && sel.rangeCount && !sel.isCollapsed && inProtected(sel.anchorNode)) e.preventDefault();
+  });
+})();
