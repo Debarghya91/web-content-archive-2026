@@ -10,7 +10,6 @@
      payments-academy-isolab-v1    ISO lab exercises marked done
      pa-situations-progress-v1     situations completed, bookmarks, notes
      pf-features-progress-v1       practice experience best scores
-     pa-upi-claims-v1              situations purchase claims (backup only)
      pa-note-<id>, pa-studio-bookmark-<id>  BA Studio notes and bookmarks
      payments-academy-simulators-v1  simulator visits, recorded on
        each simulator page (10/10 plan, 9 Nov 2026)
@@ -32,7 +31,6 @@
   var SIT_KEY = "pa-situations-progress-v1";
   var FEATURES_KEY = "pf-features-progress-v1";
   var SIMS_KEY = "payments-academy-simulators-v1";
-  var CLAIMS_KEY = "pa-upi-claims-v1";
   var LEARNER_KEY = "payments-academy-learner-v1";
   var ACTIVITY_KEY = "payments-academy-activity-v1";
   var GOAL_KEY = "payments-academy-weekly-goal-v1";
@@ -44,7 +42,7 @@
   // review 4 priority 8: progress export reminders).
   var BACKUP_DATE_KEY = "payments-academy-backup-date-v1";
   var BACKUP_KEYS = [PROGRESS_KEY, TESTS_KEY, DIAGNOSTIC_KEY, LABS_KEY,
-    ISO_KEY, SIT_KEY, FEATURES_KEY, SIMS_KEY, CLAIMS_KEY, LEARNER_KEY,
+    ISO_KEY, SIT_KEY, FEATURES_KEY, SIMS_KEY, LEARNER_KEY,
     ACTIVITY_KEY, GOAL_KEY];
   var BACKUP_PREFIXES = ["pa-note-", "pa-studio-bookmark-"];
 
@@ -410,7 +408,7 @@
           esc(nl.chapterTitle) + ', lesson ' + nl.n + ' of ' + nl.chapterTotal + '</span>' +
           '<p><a href="' + esc(nl.url) + '">Open this lesson</a></p></div>';
       } else if (summary.allLessonsDone) {
-        h += '<div class="hp-dash-card"><b>All 706 lessons complete</b><span>You finished the whole curriculum. ' +
+        h += '<div class="hp-dash-card"><b>All 746 lessons complete</b><span>You finished the whole curriculum. ' +
           'Retake a test or work a capstone to keep it sharp.</span>' +
           '<p><a href="tests.html">Retake a test</a></p></div>';
       }
