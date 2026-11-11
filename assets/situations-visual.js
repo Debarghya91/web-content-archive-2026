@@ -270,6 +270,38 @@
     if (s) return 'Public post';
     return '';
   }
+  /* ---------- Ledger impact (11 Nov 2026, top-20 item 16) ----------
+     Double-entry ledger impact for every situation, so a learner sees
+     what moves where, not just what message was sent. The settlement
+     model is detected from the situation's own text (messages, title,
+     explanation); when no model can be pinned down, both models are
+     shown with a note that it depends on the rail. */
+  function ledgerModel(item) {
+    var hay = ((item.title || '') + ' ' + (item.explain || '') + ' ' + ((item.messages || []).join(' '))).toLowerCase();
+    if (/\b(rtgs|fedwire|chaps|target2|\bt2\b)\b/.test(hay)) return 'RTGS';
+    if (/\b(upi|imps|faster payments|\bfps\b|tips|pix|paynow|promptpay|instant)\b/.test(hay)) return 'Instant';
+    if (/\b(nostro|vostro|correspondent|cover payment|serial payment)\b/.test(hay)) return 'Correspondent';
+    if (/\b(netting|net settlement|deferred|batch|\bach\b|bacs|nach|clearing house)\b/.test(hay)) return 'DNS';
+    return 'Both';
+  }
+  function ledgerHtml(item) {
+    var model = ledgerModel(item);
+    var note = '';
+    if (model === 'RTGS') note = 'This situation runs on an RTGS rail: each payment settles gross, in real time, in central bank money.';
+    else if (model === 'Instant') note = 'This situation runs on an instant rail: settlement is immediate, in central bank money or prefunded funds.';
+    else if (model === 'Correspondent') note = 'This situation moves through correspondent banking: the nostro and vostro accounts carry the funds between the two banks.';
+    else if (model === 'DNS') note = 'This situation settles by deferred net settlement: payments net to one position per bank per cycle, and only the net amount moves.';
+    else note = 'The settlement model depends on the rail used. Both models are shown so you can compare them.';
+    var h = '<h4 class="sit-case-label">Ledger impact: what moves where</h4>';
+    h += '<p class="sit-explain">' + esc(note) + ' Every payment is double entry: the customer leg and the settlement leg must balance. If the customer account moves but the settlement leg does not, the payment is not complete.</p>';
+    h += '<table class="pf-table"><thead><tr><th>Account</th><th>RTGS (gross, real time)</th><th>Deferred net settlement (DNS)</th></tr></thead><tbody>';
+    h += '<tr><td><b>Customer account</b></td><td>Debited at once when the payment is released; credited at once when it arrives. No value-date gap.</td><td>Debited or credited at the clearing cut-off, not at instruction time. Value dating follows the scheme rules.</td></tr>';
+    h += '<tr><td><b>Nostro / vostro account</b></td><td>Debited at the correspondent or central bank settlement account at the same moment as the customer leg. No intraday float between the banks.</td><td>No nostro movement until the net settlement. The bilateral position builds up through the cycle and is settled once.</td></tr>';
+    h += '<tr><td><b>Clearing house / settlement account</b></td><td>Settlement in central bank money at the moment of the payment. No net position, no settlement risk between the two banks.</td><td>Individual payments net to one position per bank per cycle. A single net settlement entry moves between settlement accounts at the cycle time.</td></tr>';
+    h += '</tbody></table>';
+    return h;
+  }
+
   function render(item) {
     item = item || {};
     var id = item.id ? 'sit-' + String(item.id).replace(/[^A-Za-z0-9_-]/g, '') : nextId('sit');
@@ -320,6 +352,7 @@
       html += '<p class="sit-explain">' + esc(item.resolution_text) + '</p>';
     }
     if (item.takeaway) html += '<p class="sit-takeaway"><strong>One thing to remember:</strong> ' + esc(item.takeaway) + '</p>';
+    html += ledgerHtml(item);
     /* Go deeper (ChatGPT review P1#7, 9 Nov 2026): a related lesson
        and a related simulator for this situation, computed at build
        time from the situation's own domain and messages. A link
