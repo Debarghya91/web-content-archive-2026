@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>Regulatory Compliance Reference | Payments Training Hub</title>
+<meta name="description" content="Regulatory compliance reference: SWIFT CBPR+ baseline rules, sanctions screening triggers, and Basel III and IV intraday liquidity management.">
+<link rel="canonical" href="https://www.paymentstraininghub.com/reference/regulatory-compliance.html">
+<meta property="og:url" content="https://www.paymentstraininghub.com/reference/regulatory-compliance.html">
+<meta property="og:title" content="Regulatory Compliance Reference | Payments Training Hub">
+<meta property="og:description" content="Regulatory compliance reference: SWIFT CBPR+ baseline rules, sanctions screening triggers, and Basel III and IV intraday liquidity management.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.com/assets/hero/hero-poster.jpg">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Organization", "name": "Payments Training Hub", "url": "https://www.paymentstraininghub.com"}, {"@type": "WebSite", "name": "Payments Training Hub", "url": "https://www.paymentstraininghub.com", "description": "Payments Training Hub: professional payments training, 746 narrated lessons across 100 chapters covering ISO 20022, SWIFT, SEPA, cross-border payments, cards and settlement.", "inLanguage": "en"}]}</script>
+<link rel="stylesheet" href="../assets/pf-theme.css">
+<link rel="stylesheet" href="../assets/hub-assistant.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="../index.html" class="brand">Payments <span>Training Hub</span></a><nav class="topnav"><a href="../index.html">Home</a> <a href="../dashboard.html">Dashboard</a> <a href="../courses.html">Courses</a> <a href="../flows.html">Flows</a> <a href="../practice.html">Practice</a> <a href="../reference.html" class="active">Reference</a> <a href="../situations.html">Situations</a> </nav><form class="pf-search" role="search" action="#" onsubmit="return false"><input id="pf-search" type="search" placeholder="Search lessons, guides, situations..." aria-label="Search the academy" autocomplete="off" data-prefix="../"><div class="pf-search-results" id="pf-search-results" hidden></div></form><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox" class="auth-note">Free lessons need no sign-in. Sign-in is optional.</span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<section class="section">
+<nav class="crumbs"><a href="../index.html">Home</a> / <a href="../reference.html">Reference</a> / Regulatory Compliance</nav>
+<h1>Regulatory Compliance Reference</h1>
+<p>This page covers three regulatory subjects a payments business
+analyst must be able to explain: the SWIFT CBPR+ programme that
+governs the move from MT to ISO 20022 for cross-border payments,
+sanctions screening and what happens when a payment is held, and the
+Basel intraday liquidity monitoring tools that govern a bank's
+participation in real-time gross settlement systems. Each section names
+its source so a reader can check the current position, because all
+three subjects change as usage guidelines, sanctions lists, and
+supervisory expectations are updated.</p>
+<h2>SWIFT CBPR+ baseline rules</h2>
+<p>CBPR+ is the SWIFT community programme that defines how cross-border
+payments use ISO 20022. It is not a regulation and it is not a single
+rulebook: it is a set of usage guidelines, market practice, and
+migration rules agreed by the SWIFT community, published by SWIFT, and
+adopted by banks that send cross-border payments over the SWIFT
+network. A bank that follows CBPR+ can send a pacs.008 that another
+CBPR+ bank can read, validate, and process straight through. A bank
+that does not follow it will have payments rejected or repaired by
+hand.</p>
+<h3>The migration from MT to MX</h3>
+<p>Cross-border payments migrated from MT to MX over a coexistence
+period that ran from November 2022 to November 2025. During
+coexistence, a bank could send either an MT103 or a pacs.008, and
+receiving banks had to accept both. At the end of the coexistence
+period, MT messages for cross-border payments were retired from the
+SWIFT network for the migrated message types, and ISO 20022 became
+the standard. Payments that still arrive as MT after the migration
+must be handled under the receiving bank's own arrangements, and a BA
+should confirm what those arrangements are rather than assuming an MT
+payment will still be accepted.</p>
+<p>The migration also changed the data a payment must carry. ISO 20022
+messages are richer than MT messages: they carry structured party
+information, structured remittance information, and a unique
+end-to-end transaction reference, the UETR, which identifies a payment
+across every bank in the chain and is used for tracking. A payment
+without a UETR, or with a UETR that does not match the payment, cannot
+be tracked reliably, so the UETR must be generated once, carried
+unchanged through the chain, and stored by every bank that handles the
+payment.</p>
+<h3>Usage guidelines</h3>
+<p>The CBPR+ usage guidelines are the binding detail. The ISO 20022
+schema defines what is possible; the usage guidelines define what is
+permitted on the SWIFT network. They state which elements are
+mandatory, which code values are allowed, which character sets apply,
+and how MT fields map to MX elements. They also state the version of
+each message that must be used, for example pacs.008.001.10 for a
+customer credit transfer. A specification that names only the message
+and not the usage guideline version is incomplete, because the usage
+guidelines are updated and the rules change with them.</p>
+<h3>Structured addresses</h3>
+<p>CBPR+ requires structured addresses for the parties to a payment.
+The minimum is the town name and the country, with street name,
+building number, postcode, and other elements as separate fields
+where the data is available. During the migration, hybrid addresses
+were accepted: a structured town name and country combined with
+unstructured address lines. The CBPR+ roadmap moves from hybrid to
+fully structured addresses, and the usage guidelines state the date
+from which hybrid addresses stop being accepted. Check the current
+usage guidelines for that date before writing it into a
+specification, because it is set by the programme and can change.</p>
+<p>Structured addresses matter for two reasons. First, screening: a
+sanctions screening engine matches names and addresses, and a
+structured address gives it clean fields to match against. Second,
+straight-through processing: a receiving bank can validate a
+structured address automatically, while an unstructured address line
+has to be read by a person or parsed by a machine that may get it
+wrong.</p>
+<h3>Coexistence period</h3>
+<p>The coexistence period is the part of the migration most often
+misunderstood. Coexistence did not mean that MT and MX were
+equivalent: it meant that both were accepted while banks migrated.
+During coexistence, a bank that sent MT and a bank that sent MX had to
+be able to work together, which meant translation between the two
+formats, with the data loss described on the mapping reference page.
+After coexistence ended, translation is no longer the normal path, and
+a bank that still sends MT for a migrated message type is outside the
+CBPR+ baseline. A BA should record the coexistence dates that applied
+to each message type, because different message types migrated on
+different timetables.</p>
+<div class="lesson-box"><h2>CBPR+ in one paragraph</h2>
+<p>CBPR+ is the SWIFT community programme that tells banks how to use
+ISO 20022 for cross-border payments: which message versions, which
+elements are mandatory, which code values are allowed, and how
+addresses and references are structured. It is published as usage
+guidelines, it replaced MT for cross-border payments after a
+coexistence period, and it is the first document to check whenever a
+cross-border payment fails validation.</p></div>
+<h2>Sanctions screening triggers</h2>
+<p>Sanctions screening is the check a bank runs on a payment against
+sanctions lists before it releases the payment. The lists that matter
+most in cross-border payments are the OFAC list published by the US
+Office of Foreign Assets Control, including the Specially Designated
+Nationals list; the EU consolidated list of persons, groups, and
+entities subject to EU financial sanctions; and the United Nations
+Security Council sanctions lists. A bank must also screen against the
+lists that apply in every jurisdiction it operates in, and against its
+own internal watchlists.</p>
+<h3>How name matching works</h3>
+<p>Screening is name matching, and name matching is approximate. An
+exact match on a name is a hit, but screening engines also use fuzzy
+matching to catch spelling variations, transliteration differences,
+and name order differences. A name written in a different script, a
+name with an extra middle name, or a name with a common spelling
+variation can all produce a match. Screening engines also match on
+other fields, such as date of birth, nationality, address, and
+identification numbers, where those are available, to separate a real
+match from a false positive.</p>
+<p>That is why data quality matters. A payment with a misspelled
+beneficiary name, a missing date of birth, or an unstructured address
+is more likely to produce a false positive, and a false positive holds
+the payment while a person investigates it. A payment with a full
+structured name and address, and identification where the usage
+guideline requires it, is more likely to pass screening without
+intervention.</p>
+<h3>What a hit does</h3>
+<p>A screening hit does not reject the payment outright. It holds the
+payment. The payment is stopped in the queue, the screening team is
+notified, and an investigation starts. The payment stays held while
+the investigation runs, and it is released only if the investigation
+concludes that the hit was a false positive. If the investigation
+concludes that the hit is a real match, the payment is blocked, and
+the bank follows its sanctions policy and its legal obligations, which
+can include reporting to the relevant authority and freezing the
+funds. The difference matters: a held payment can still be released,
+a rejected payment cannot, and a blocked payment has legal
+consequences that a rejected payment does not.</p>
+<h3>The investigation loop</h3>
+<p>The investigation loop has four steps. First, the screening engine
+raises an alert with the matched list entry and the fields that
+matched. Second, an analyst reviews the alert, compares the payment
+data with the list entry, and decides whether it is a false positive,
+a possible match that needs more information, or a confirmed match.
+Third, if more information is needed, the analyst requests it from
+the customer, the sending bank, or the beneficiary bank. Fourth, the
+analyst records the decision and the evidence, releases the payment if
+the hit was a false positive, or escalates it if it was not. Every
+step must be recorded, because a regulator can ask for the evidence
+behind a decision to release a payment that produced a hit.</p>
+<h3>Where camt.029, camt.056, and pacs.002 fit</h3>
+<p>When a payment is held for screening, the banks in the chain need to
+talk to each other, and they do it with ISO 20022 messages. A bank
+that needs information about a payment sends an investigation request,
+and the bank that answers it sends a camt.029, Resolution of
+Investigation, with the outcome. A bank that wants a payment
+cancelled, for example because screening has confirmed a match, sends
+a camt.056, FI to FI Payment Cancellation Request, and the bank that
+receives it answers with a camt.029 stating whether the cancellation
+was accepted or rejected.</p>
+<p>A payment that is rejected because of screening is reported with a
+pacs.002, Payment Status Report, with a rejected status. The pacs.002
+carries a status code and a reason code, so the sender knows the
+payment was rejected and why. The reason codes that matter for
+screening outcomes are the standard ISO 20022 return and rejection
+reason codes, and the exact code depends on the usage guideline in
+force. A BA should record which reason code the bank uses for a
+sanctions rejection, because the code is what the sender's system
+reads, not the free-text explanation.</p>
+<table class="pf-table">
+<thead><tr><th>Screening outcome</th><th>What happens to the payment</th><th>Message used</th><th>What the sender sees</th></tr></thead>
+<tbody>
+<tr><td>No hit</td><td>Released normally</td><td>None, or pacs.002 with an accepted status where the scheme requires it</td><td>Payment proceeds</td></tr>
+<tr><td>Possible hit, under investigation</td><td>Held in the queue</td><td>Investigation messages between the banks, answered with camt.029</td><td>Payment is delayed with no final status yet</td></tr>
+<tr><td>False positive confirmed</td><td>Released</td><td>camt.029 recording the resolution, pacs.002 with an accepted status where required</td><td>Payment proceeds, usually with a note that the alert was cleared</td></tr>
+<tr><td>Confirmed match</td><td>Blocked, not released</td><td>camt.056 to cancel where the payment has already been sent onward, camt.029 with the outcome</td><td>Payment is not released, and the bank follows its sanctions policy</td></tr>
+<tr><td>Payment rejected on screening grounds</td><td>Rejected and not settled</td><td>pacs.002 with a rejected status and a reason code</td><td>A rejection with a reason code the sender can act on</td></tr>
+</tbody>
+</table>
+<h2>Basel III and IV: intraday liquidity management</h2>
+<p>Intraday liquidity is the liquidity a bank needs during the day to
+settle payments, as opposed to the liquidity it needs at the end of
+the day. A bank can be solvent and well capitalised and still fail to
+settle a payment at 11 in the morning if it does not have the funds in
+its central bank account at that moment. That is why the Basel
+Committee on Banking Supervision published monitoring tools for
+intraday liquidity management, and why supervisors expect banks to
+monitor intraday liquidity daily and report on it regularly.</p>
+<p>Intraday liquidity matters for RTGS participation because an RTGS
+system settles each payment individually and immediately. A bank that
+cannot fund a payment when it is submitted will have the payment
+queued or rejected, and a queue in one bank can delay payments across
+the whole system. A bank that manages its intraday liquidity well can
+settle on time, use its collateral efficiently, and avoid expensive
+intraday credit. A bank that manages it badly will see payments queue,
+customers complain, and supervisors ask questions.</p>
+<h3>The BCBS intraday liquidity monitoring tools</h3>
+<p>The Basel Committee's monitoring tools for intraday liquidity
+management are seven measures, published by the Committee and used by
+supervisors. They are:</p>
+<table class="pf-table">
+<thead><tr><th>Tool</th><th>What it measures</th><th>Why it matters</th></tr></thead>
+<tbody>
+<tr><td>Daily maximum liquidity need</td><td>The largest net cumulative outflow during the day, meaning the most liquidity the bank needed at any point in the day</td><td>Shows the real size of the bank's intraday need, which is larger than its end-of-day position suggests</td></tr>
+<tr><td>Available intraday liquidity</td><td>The liquidity available at the start of the business day, including the account balance and intraday credit lines</td><td>Shows whether the bank starts the day with enough to meet its expected need</td></tr>
+<tr><td>Total value of payments</td><td>The total value of payments settled during the day</td><td>Shows the scale of the bank's payment activity and how it changes over time</td></tr>
+<tr><td>Time-specific obligations</td><td>The value of payments that must settle at a specific time, such as CLS pay-ins or ancillary system settlements</td><td>Shows the payments that cannot be delayed, so the bank must hold liquidity for them at a specific time</td></tr>
+<tr><td>Value of payments made on behalf of customers</td><td>The value of customer payments the bank settles, as opposed to its own payments</td><td>Shows how much of the intraday need comes from customers, whose behaviour the bank cannot control directly</td></tr>
+<tr><td>Intraday credit lines</td><td>The value of intraday credit lines available to the bank and the value actually used</td><td>Shows how much the bank relies on intraday credit and whether its lines are large enough</td></tr>
+<tr><td>Throughput</td><td>The proportion of payments settled by a given time of day, measured against the total for the day</td><td>Shows whether the bank is settling payments evenly through the day or leaving them until late, which creates risk for the whole system</td></tr>
+</tbody>
+</table>
+<h3>What a bank must report</h3>
+<p>Banks monitor these tools daily as part of their liquidity
+management, and report them to their supervisor on a regular basis,
+normally monthly, in the format the supervisor requires. The report
+covers the bank's intraday liquidity position, its use of intraday
+credit, its throughput, and its largest intraday needs. A supervisor
+uses the report to see whether the bank understands its intraday
+liquidity, whether it holds enough, and whether its behaviour, such as
+leaving payments until late in the day, creates risk for other
+participants. The reporting frequency and the exact format are set by
+the supervisor, so a specification should name the supervisor and the
+reporting requirement that applies to the bank, rather than assuming
+one frequency fits all banks.</p>
+<h3>Why intraday liquidity matters for RTGS participation</h3>
+<p>RTGS participation is a promise: a bank that joins an RTGS system
+promises to settle its payments on time, in central bank money, when
+they are submitted. That promise can only be kept if the bank manages
+its intraday liquidity. The tools above exist so a bank can prove it
+is keeping the promise, and so a supervisor can see when it is not.
+A BA working on an RTGS project must understand this, because the
+liquidity arrangements, the queue handling, the collateral, and the
+throughput targets are all part of the specification, not just the
+message format.</p>
+<div class="lesson-box"><h2>What a BA must document for compliance</h2>
+<p>For CBPR+, record the usage guideline version and the message
+versions. For sanctions screening, record the lists screened against,
+the matching rules, the hold and release process, and the messages
+used to communicate with other banks. For intraday liquidity, record
+the monitoring tools, the reporting requirement, and the liquidity
+arrangements for each RTGS system the bank uses.</p></div>
+<div class="lesson-box"><h2>Related chapters</h2><ul><li><a href="../chapters/ch23-sanctions-screening.html">Sanctions Screening</a></li><li><a href="../chapters/ch24-aml-kyc-and-fraud-prevention.html">AML, KYC and Fraud Prevention</a></li><li><a href="../chapters/ch81-gdpr-bsa-aml-and-operational-resilience.html">GDPR, BSA/AML and operational resilience</a></li><li><a href="../chapters/ch8-mt-to-mx-migration-and-cbpr.html">MT to MX Migration and CBPR+</a></li></ul></div>
+<p><a class="studio-btn primary" href="../reference.html">Back to Reference</a></p>
+</section>
+
+</main>
+<footer><p>Payments Training Hub. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="../index.html">Home</a> &middot; <a href="../courses.html">Courses</a> &middot; <a href="../flows.html">Flows</a> &middot; <a href="../situations.html">Situations</a> &middot; <a href="../dashboard.html">Dashboard</a> &middot; <a href="../portfolio.html">Portfolio</a> &middot; <a href="../domains.html">Reference</a> &middot; <a href="../labs-simulators.html">Labs &amp; Simulators</a> &middot; <a href="../practice.html">Practice</a> &middot; <a href="../simulators.html">Simulators</a> &middot; <a href="../labs.html">Labs</a> &middot; <a href="../explorer.html">Explorer</a> &middot; <a href="../tests.html">Tests</a> &middot; <a href="../diagnostic.html">Diagnostic</a> &middot; <a href="../faq.html">Interview Ready Questions</a> &middot; <a href="../interview-prep.html">Interview Prep</a></p><p><a href="../about.html">About</a> &middot; <a href="../founder.html">Founder</a> &middot; <a href="../methodology.html">Methodology</a> &middot; <a href="../privacy.html">Privacy</a> &middot; <a href="../terms.html">Terms</a> &middot; <a href="../refund.html">Refunds</a> &middot; <a href="../contact.html">Contact</a> &middot; <a href="../editorial-standards.html">Editorial Standards</a> &middot; <a href="../sources.html">Sources</a> &middot; <a href="../references-policy.html">References Policy</a> &middot; <a href="../corrections.html">Corrections Policy</a></p><p><a href="../domains.html">Domains</a> &middot; <a href="../reference/mt103-to-pacs008.html">MT103 to pacs.008 Reference</a> &middot; <a href="../reference.html">Reference Library</a> &middot; <a href="../insights.html">Insights and Scenarios</a></p><p><a href="../course-map.html">Course Map</a> &middot; <a href="../pricing.html">Pricing</a> &middot; <a href="../teams.html">For Teams</a> &middot; <a href="../artifacts.html">BA Artifact Library</a> &middot; <a href="../reference/mt-iso-mapping.html">MT to ISO 20022 Mapping</a> &middot; <a href="../reference/clearing-systems.html">Clearing Systems</a> &middot; <a href="../reference/regulatory-compliance.html">Regulatory Compliance</a> &middot; <a href="../reference/exception-lifecycles.html">Exception Lifecycles</a> &middot; <a href="../tools/xml-sandbox.html">XML and MT Sandbox</a> &middot; <a href="../tools/routing-decisions.html">Routing Decision Tree</a></p><p><a href="../support.html">Help and Support</a> &middot; <a href="../changelog.html">Changelog</a> &middot; <a href="../licensing.html">Licensing</a></p></footer>
+<div id="hub-assistant" class="hub-assistant" data-prefix="../" data-expanded="false"><div class="hub-mascot" id="hub-mascot" role="button" tabindex="0" aria-label="Open the Hub Assistant chat"><svg class="hub-mascot-svg" viewBox="0 0 80 96" aria-hidden="true"><path d="M64 8 L66.5 15 L74 17.5 L66.5 20 L64 27 L61.5 20 L54 17.5 L61.5 15 Z" fill="#C9A227"/><path d="M40 12 C54 12 62 22 62 34 L62 64 C62 78 52 88 40 88 C28 88 18 78 18 64 L18 32" fill="none" stroke="#1D4ED8" stroke-width="7" stroke-linecap="round"/><path d="M40 28 C47 28 51 32 51 38 L51 60 C51 68 47 73 40 73 C33 73 29 68 29 60 L29 36" fill="none" stroke="#1D4ED8" stroke-width="7" stroke-linecap="round"/><path d="M18 32 L18 26" stroke="#C9A227" stroke-width="7" stroke-linecap="round"/><circle cx="34" cy="38" r="5" fill="#fff" stroke="#0B1F3D" stroke-width="1.5"/><circle cx="46" cy="38" r="5" fill="#fff" stroke="#0B1F3D" stroke-width="1.5"/><circle cx="35" cy="39" r="2.2" fill="#0B1F3D"/><circle cx="47" cy="39" r="2.2" fill="#0B1F3D"/><path d="M34 50 Q40 56 46 50" fill="none" stroke="#0B1F3D" stroke-width="2.5" stroke-linecap="round"/></svg><span class="hub-mascot-label">Hub Assistant</span><span class="hub-hide" id="hub-hide" role="button" tabindex="0" aria-label="Hide assistant">&times;</span></div><div class="hub-panel" id="hub-panel" hidden><div class="hub-panel-head"><svg class="hub-mini" viewBox="0 0 80 96" aria-hidden="true"><path d="M40 12 C54 12 62 22 62 34 L62 64 C62 78 52 88 40 88 C28 88 18 78 18 64 L18 32" fill="none" stroke="#1D4ED8" stroke-width="7" stroke-linecap="round"/><path d="M40 28 C47 28 51 32 51 38 L51 60 C51 68 47 73 40 73 C33 73 29 68 29 60 L29 36" fill="none" stroke="#1D4ED8" stroke-width="7" stroke-linecap="round"/><path d="M18 32 L18 26" stroke="#C9A227" stroke-width="7" stroke-linecap="round"/></svg><div class="hub-panel-title"><b>Hub Assistant</b><span>Payments Training Hub chat assistant</span></div><button type="button" class="hub-close" id="hub-close" aria-label="Close chat">&times;</button></div><div class="hub-messages" id="hub-messages" aria-live="polite"></div><div class="hub-starters" id="hub-starters"><button type="button" class="hub-chip" data-q="What is an MT103?">What is an MT103?</button><button type="button" class="hub-chip" data-q="How does a pacs.008 work?">How does a pacs.008 work?</button><button type="button" class="hub-chip" data-q="Explain nostro and vostro">Explain nostro and vostro</button></div><form class="hub-input-row" id="hub-form"><input id="hub-input" type="text" placeholder="Ask about payments..." autocomplete="off" aria-label="Ask the Hub Assistant"><button type="submit">Send</button></form></div><button type="button" class="hub-dot" id="hub-dot" aria-label="Show the Hub Assistant"></button></div>
+<script defer src="../assets/site.js"></script>
+<script defer src="../assets/bundles.js"></script>
+<script defer src="../assets/auth.js"></script>
+<script defer src="../assets/site-search.js"></script>
+<script defer src="../assets/hub-assistant.js"></script>
+<script defer src="../assets/codehl.js"></script>
+<script defer src="../assets/nav.js"></script>
+<script defer src="../assets/pf-enhance.js"></script>
+</body>
+</html>

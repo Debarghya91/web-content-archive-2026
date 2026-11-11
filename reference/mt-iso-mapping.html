@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>MT to ISO 20022 Mapping Reference | Payments Training Hub</title>
+<meta name="description" content="Field-level MT to ISO 20022 mapping reference: MT103 to pacs.008, MT202 to pacs.009, MT940 to camt.053, with truncation, character sets and XML...">
+<link rel="canonical" href="https://www.paymentstraininghub.com/reference/mt-iso-mapping.html">
+<meta property="og:url" content="https://www.paymentstraininghub.com/reference/mt-iso-mapping.html">
+<meta property="og:title" content="MT to ISO 20022 Mapping Reference | Payments Training Hub">
+<meta property="og:description" content="Field-level MT to ISO 20022 mapping reference: MT103 to pacs.008, MT202 to pacs.009, MT940 to camt.053, with truncation, character sets and XML...">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.com/assets/hero/hero-poster.jpg">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Organization", "name": "Payments Training Hub", "url": "https://www.paymentstraininghub.com"}, {"@type": "WebSite", "name": "Payments Training Hub", "url": "https://www.paymentstraininghub.com", "description": "Payments Training Hub: professional payments training, 746 narrated lessons across 100 chapters covering ISO 20022, SWIFT, SEPA, cross-border payments, cards and settlement.", "inLanguage": "en"}]}</script>
+<link rel="stylesheet" href="../assets/pf-theme.css">
+<link rel="stylesheet" href="../assets/hub-assistant.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="../index.html" class="brand">Payments <span>Training Hub</span></a><nav class="topnav"><a href="../index.html">Home</a> <a href="../dashboard.html">Dashboard</a> <a href="../courses.html">Courses</a> <a href="../flows.html">Flows</a> <a href="../practice.html">Practice</a> <a href="../reference.html" class="active">Reference</a> <a href="../situations.html">Situations</a> </nav><form class="pf-search" role="search" action="#" onsubmit="return false"><input id="pf-search" type="search" placeholder="Search lessons, guides, situations..." aria-label="Search the academy" autocomplete="off" data-prefix="../"><div class="pf-search-results" id="pf-search-results" hidden></div></form><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox" class="auth-note">Free lessons need no sign-in. Sign-in is optional.</span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<section class="section">
+<nav class="crumbs"><a href="../index.html">Home</a> / <a href="../reference.html">Reference</a> / MT to ISO 20022 Mapping</nav>
+<h1>MT to ISO 20022 Mapping Reference</h1>
+<p>Cross-border payments are moving from SWIFT MT messages to ISO 20022
+MX messages. This page is the field-level reference for that move. It
+covers the message pairs a business analyst meets most often, the
+MT103 to pacs.008 field mapping in detail, what is lost in translation,
+the character sets, and how to validate an MX message against its
+schema. Message versions are stated where they are fixed by the
+CBPR+ usage guidelines. Where a version depends on the scheme or the
+receiving bank, the page says so.</p>
+<div class="lesson-box"><h2>How to read this page</h2>
+<p>MT is the SWIFT FIN message format: fixed fields, tagged blocks, and
+the SWIFT X character set. MX is the ISO 20022 XML format: named
+elements in a defined order, validated against an XML schema, and
+written in UTF-8. A mapping is never a word-for-word translation. Some
+MT fields have an exact MX element, some map to a different element
+with a narrower meaning, and some have no MX equivalent at all. The
+tables below mark each case. Always check the current CBPR+ usage
+guidelines and the receiving bank's own usage guidelines before
+treating a mapping as final, because usage guidelines can restrict an
+element that the base schema leaves open.</p></div>
+<h2>Message-level mapping</h2>
+<p>The table below lists the common MT to MX pairs. The version numbers
+shown are the versions named in the CBPR+ usage guidelines for
+cross-border payments. Other schemes, such as SEPA or a domestic
+high-value system, may use a different version of the same message, so
+confirm the version with the scheme before building to it.</p>
+<table class="pf-table">
+<thead><tr><th>MT message</th><th>MT name</th><th>ISO 20022 message</th><th>ISO 20022 name</th><th>Mapping note</th></tr></thead>
+<tbody>
+<tr><td>MT103</td><td>Single Customer Credit Transfer</td><td>pacs.008.001.10</td><td>FI to FI Customer Credit Transfer</td><td>The core cross-border customer payment. Field-level mapping is in the next table.</td></tr>
+<tr><td>MT202</td><td>General Financial Institution Transfer</td><td>pacs.009.001.08</td><td>Financial Institution Credit Transfer</td><td>Bank to bank payment, including the settlement leg of a customer payment.</td></tr>
+<tr><td>MT202COV</td><td>General Financial Institution Transfer (cover)</td><td>pacs.009.001.08 with cover</td><td>Financial Institution Credit Transfer</td><td>The cover leg carries the underlying customer payment details in the UndrlygCstmrCdtTrf element, so the intermediary bank can screen and reconcile the underlying payment.</td></tr>
+<tr><td>MT101</td><td>Request for Transfer</td><td>pain.001.001.11</td><td>Customer Credit Transfer Initiation</td><td>MT101 is a bank-to-bank instruction carrying a customer request. pain.001 is the customer-to-bank initiation message. The two are not interchangeable in a live flow without checking who sends what to whom.</td></tr>
+<tr><td>MT940</td><td>Customer Statement Message</td><td>camt.053.001.08</td><td>Bank to Customer Statement</td><td>Interim statement, normally intraday. Maps to camt.053 with a statement type that marks it as interim rather than end of day.</td></tr>
+<tr><td>MT942</td><td>Interim Transaction Report</td><td>camt.052.001.08</td><td>Bank to Customer Account Report</td><td>Intraday transaction report. camt.052 is the report message, camt.053 is the statement message, and the two must not be confused.</td></tr>
+<tr><td>MT950</td><td>Statement Message</td><td>camt.053.001.08</td><td>Bank to Customer Statement</td><td>End of day statement. Same message as MT940 maps to, distinguished by the statement period and type.</td></tr>
+<tr><td>MT900</td><td>Confirmation of Debit</td><td>camt.054.001.08</td><td>Bank to Customer Debit Credit Notification</td><td>Debit notification. In camt.054 the direction is carried by the notification entry, not by a separate message type.</td></tr>
+<tr><td>MT910</td><td>Confirmation of Credit</td><td>camt.054.001.08</td><td>Bank to Customer Debit Credit Notification</td><td>Credit notification. Same message as MT900 maps to, distinguished by the credit or debit mark on the entry.</td></tr>
+<tr><td>MT196</td><td>Answers (to a query)</td><td>camt.029 (version per usage guideline)</td><td>Resolution of Investigation</td><td>MT196 answers a query raised by an MT192 or MT195. In ISO 20022 the answer is a camt.029, and the query it answers is identified by the investigation identification.</td></tr>
+<tr><td>MT199</td><td>Free Format Message</td><td>camt.029 or pacs.002 (version per usage guideline)</td><td>Resolution of Investigation, or Payment Status Report</td><td>MT199 has no single MX equivalent because it is free format. What it maps to depends on what it is used for: an investigation answer maps to camt.029, a payment status update maps to pacs.002.</td></tr>
+</tbody>
+</table>
+<h2>MT103 to pacs.008.001.10: field-level mapping</h2>
+<p>The paths below are XPaths from the document root of a pacs.008.001.10
+message. Mandatory or optional is stated as the CBPR+ usage guideline
+treats it, not as the bare schema treats it: the schema leaves many
+elements optional that the usage guidelines require in practice. Where
+the usage guideline and the schema disagree, the usage guideline wins
+for a live payment.</p>
+<table class="pf-table">
+<thead><tr><th>MT field</th><th>MT content</th><th>ISO 20022 element</th><th>XPath</th><th>Data type and max length</th><th>M/O</th><th>Mapping note</th></tr></thead>
+<tbody>
+<tr><td>:20:</td><td>Sender's Reference</td><td>Instruction Identification</td><td>/Document/FIToFICstmrCdtTrf/CdtTrfTxInf/PmtId/InstrId</td><td>Max35Text, 35 characters</td><td>Mandatory</td><td>The sender's own reference. Some banks also copy it into EndToEndId when no separate end-to-end reference exists, but the two identifiers are not the same thing and must not be assumed equal.</td></tr>
+<tr><td>:23B:</td><td>Bank Operation Code</td><td>Service Level code</td><td>/Document/FIToFICstmrCdtTrf/CdtTrfTxInf/PmtTpInf/SvcLvl/Cd</td><td>Max35Text code, 35 characters</td><td>Optional</td><td>MT codes such as CRED and SPAY do not all have a direct service level code. Check the CBPR+ usage guidelines for which codes are permitted and how each one is translated.</td></tr>
+<tr><td>:32A:</td><td>Value Date, Currency Code, Amount</td><td>Interbank Settlement Date and Interbank Settlement Amount</td><td>/Document/FIToFICstmrCdtTrf/CdtTrfTxInf/IntrBkSttlmDt and .../IntrBkSttlmAmt</td><td>ISODate for the date; ActiveCurrencyAndAmount for the amount, 18 digits in total with up to 5 fraction digits</td><td>Mandatory</td><td>One MT field becomes two MX elements. The currency code moves into the amount element as the Ccy attribute. The value date must be a valid business date for the settlement currency.</td></tr>
+<tr><td>:50a:</td><td>Ordering Customer</td><td>Debtor</td><td>/Document/FIToFICstmrCdtTrf/CdtTrfTxInf/Dbtr/Nm, Dbtr/PstlAdr, Dbtr/Id</td><td>Name Max140Text; account identification Max34Text for an IBAN</td><td>Mandatory in practice</td><td>Option A (BIC) maps to the debtor identification, option K (name and address) maps to the debtor name and postal address, option F (party identifier) maps to the debtor identification with a scheme code. CBPR+ requires the debtor name, and structured address elements where the usage guideline requires them.</td></tr>
+<tr><td>:52a:</td><td>Ordering Institution</td><td>Debtor Agent</td><td>/Document/FIToFICstmrCdtTrf/CdtTrfTxInf/DbtrAgt/FinInstnId/BICFI</td><td>BICFIIdentifier, 8 or 11 characters</td><td>Optional</td><td>The financial institution that services the ordering customer. Present when the ordering institution is not the sender of the message.</td></tr>
+<tr><td>:53a:</td><td>Sender's Correspondent</td><td>No direct equivalent</td><td>None in pacs.008</td><td>Not applicable</td><td>Optional in MT, lost in MX</td><td>pacs.008 has no sender's correspondent element. The information is normally dropped in translation, and any settlement account detail is carried in the settlement instruction or the cover payment instead. This is a known gap to flag in migration testing.</td></tr>
+<tr><td>:56a:</td><td>Intermediary Institution</td><td>Intermediary Agent 1</td><td>/Document/FIToFICstmrCdtTrf/CdtTrfTxInf/IntrmyAgt1/FinInstnId/BICFI</td><td>BICFIIdentifier, 8 or 11 characters</td><td>Optional</td><td>Option A (BIC) maps cleanly. Option D (name and address) maps to the intermediary agent name and postal address. Account details with the intermediary have no standard element in every version, so confirm with the receiving bank how an intermediary account is carried.</td></tr>
+<tr><td>:57a:</td><td>Account With Institution</td><td>Creditor Agent</td><td>/Document/FIToFICstmrCdtTrf/CdtTrfTxInf/CdtrAgt/FinInstnId/BICFI</td><td>BICFIIdentifier, 8 or 11 characters</td><td>Optional in schema, required in practice</td><td>The beneficiary's bank. Required in practice for a cross-border payment even though the schema marks it optional, because the next bank in the chain needs it to route the payment.</td></tr>
+<tr><td>:59:</td><td>Beneficiary Customer</td><td>Creditor and Creditor Account</td><td>/Document/FIToFICstmrCdtTrf/CdtTrfTxInf/Cdtr/Nm, Cdtr/PstlAdr, CdtrAcct/Id/IBAN or CdtrAcct/Id/Othr/Id</td><td>Name Max140Text; IBAN Max34Text</td><td>Mandatory</td><td>The account number in :59: maps to the creditor account. An IBAN goes in the IBAN element. A non-IBAN account number goes in the Other identification element, with the account scheme named where the usage guideline requires it.</td></tr>
+<tr><td>:70:</td><td>Remittance Information</td><td>Remittance Information, unstructured or structured</td><td>/Document/FIToFICstmrCdtTrf/CdtTrfTxInf/RmtInf/Ustrd or RmtInf/Strd</td><td>Max140Text per unstructured occurrence, 140 characters</td><td>Optional</td><td>MT field 70 holds up to 140 characters in 4 lines of 35. In pacs.008 each unstructured occurrence also holds 140 characters, and more than one occurrence is permitted, so longer text can be carried. Structured remittance, such as an invoice reference, goes in the structured element instead. See the truncation section below.</td></tr>
+<tr><td>:71A:</td><td>Details of Charges</td><td>Charge Bearer code</td><td>/Document/FIToFICstmrCdtTrf/CdtTrfTxInf/ChrgBr/Cd</td><td>Code: DEBT, CRED, SHAR, SLEV</td><td>Mandatory</td><td>OUR maps to DEBT, BEN maps to CRED, SHA maps to SHAR. SLEV is the service level charges code used in some schemes. The code decides who pays the charges, so a wrong mapping here is a commercial error, not a formatting error.</td></tr>
+<tr><td>:72:</td><td>Sender to Receiver Information</td><td>Instruction for Creditor Agent</td><td>/Document/FIToFICstmrCdtTrf/CdtTrfTxInf/InstrForCdtrAgt/InstrInf</td><td>Max140Text per instruction, 140 characters</td><td>Optional</td><td>Only coded instructions with a recognised code carry over cleanly, for example a code that tells the next bank to telephone the beneficiary. Free text in field 72 is often lost in translation or moved to supplementary data by bilateral agreement. Never put payment-critical information only in field 72.</td></tr>
+</tbody>
+</table>
+<div class="lesson-box"><h2>What a BA must check in this table</h2>
+<p>Three checks catch most migration defects. First, confirm which
+elements the receiving bank treats as mandatory, because the schema and
+the usage guideline disagree on several fields. Second, confirm the
+version of pacs.008 the receiver expects, because element names and
+cardinalities change between versions. Third, test the fields that have
+no direct equivalent, :53a: and free-text :72:, because those are the
+fields that silently lose data.</p></div>
+
+<h2>What gets lost in MT to MX translation</h2>
+<p>Translation from MT to MX is lossy. The table below lists the losses
+a BA must document, because each one can change what the beneficiary
+sees or what an intermediary bank can screen.</p>
+<table class="pf-table">
+<thead><tr><th>MT source</th><th>What it holds</th><th>What happens in MX</th><th>Operational impact</th></tr></thead>
+<tbody>
+<tr><td>Field 70, remittance information</td><td>Up to 140 characters in 4 lines of 35 characters</td><td>Maps to unstructured remittance in pacs.008, up to 140 characters per occurrence, with more than one occurrence permitted, or to structured remittance for invoice and reference data</td><td>A long remittance note that fitted in MT field 70 by splitting across lines must be re-split across unstructured occurrences in MX, or it will be cut. Structured remittance is richer but only works if the receiver reads the structured element, so confirm the receiver supports it before relying on it.</td></tr>
+<tr><td>Field 72, sender to receiver information</td><td>Coded instructions and free text to the next bank</td><td>Only recognised coded instructions map to Instruction for Creditor Agent. Free text is often dropped or moved to supplementary data</td><td>Instructions that only exist in field 72, such as a request to contact the beneficiary, may never reach the next bank. Move payment-critical instructions into a proper MX element or confirm the bilateral handling in writing.</td></tr>
+<tr><td>Field 50 and 59 address lines</td><td>Unstructured address lines, up to 4 lines of 35 characters in option K</td><td>Maps to the postal address element, which in CBPR+ is structured: town name and country are the minimum, with street name, building number, and postcode as separate elements</td><td>An address that was one block of text must be broken into structured fields. A town name or country that is missing will fail validation under the usage guidelines, even if the MT message was accepted. Address data quality becomes a migration workstream of its own.</td></tr>
+<tr><td>Field 53, sender's correspondent</td><td>The bank holding the sender's settlement account</td><td>No equivalent element in pacs.008, so the information is dropped</td><td>Settlement routing that depended on field 53 must be re-established through the settlement instruction or the cover payment. Test this path explicitly, because a dropped correspondent can send a payment down the wrong settlement route.</td></tr>
+<tr><td>Character limits generally</td><td>MT fields are short: 35 characters per line, 140 characters for remittance, 35 characters for a reference</td><td>MX elements are longer in some places, such as a 140 character name, but still capped, and some elements are shorter than the MT field they replace</td><td>Do not assume MX removes all limits. Check the maximum length of each target element. A name that fitted in MT may still exceed the MX element, and truncation at the MX stage is silent unless the sending system validates length before sending.</td></tr>
+</tbody>
+</table>
+<h2>Character sets: SWIFT X versus ISO 20022 UTF-8</h2>
+<p>MT messages use the SWIFT X character set. It contains the letters
+a to z in both cases, the digits 0 to 9, and the characters slash,
+hyphen, question mark, colon, open and close brackets, full stop,
+comma, apostrophe, plus sign, space, and carriage return with line
+feed. Nothing else is permitted in an MT message. ISO 20022 messages
+are XML in UTF-8, which can represent accented letters, non-Latin
+scripts, and symbols that the X set cannot.</p>
+<p>That difference is a real migration problem. A beneficiary name with
+an accented letter, such as a name containing an e with an acute
+accent, is valid in pacs.008 but cannot be written in an MT103. A name
+in a non-Latin script, such as Chinese or Arabic characters, is valid
+in UTF-8 but cannot be written in MT at all. When a payment moves from
+MX to MT, or when an MX message is generated from data that was stored
+for MT, the characters outside the X set must be handled, and the
+handling must be agreed in advance.</p>
+<p>Banks handle this in three ways. The first is transliteration:
+replacing an accented or non-Latin character with the nearest X set
+equivalent, for example writing an accented e as a plain e. The second
+is rejection: refusing the payment at the point of entry and asking the
+customer to resubmit with characters the channel supports. The third is
+a mapping table held by the bank, which converts specific characters
+consistently so the same customer name is always written the same way.
+What a bank must never do is silently drop the character or replace it
+with a blank, because the name on the payment then no longer matches
+the name on the account or on a sanctions list, and that mismatch can
+cause a screening hit or a failed beneficiary match at the receiving
+bank.</p>
+<p>A BA documenting this should record: which characters the source
+system can store, which characters the sending channel accepts, what
+the transliteration rule is, and what happens to a payment that
+contains a character with no agreed transliteration. That record is
+part of the migration specification, not a footnote.</p>
+<h2>XML namespaces and schema validation</h2>
+<p>Every ISO 20022 message carries a namespace that identifies the
+message and its version. The namespace is a URN, and it must match the
+schema the message is validated against. The three namespaces used
+most often in cross-border payments are:</p>
+<table class="pf-table">
+<thead><tr><th>Message</th><th>Namespace URN</th></tr></thead>
+<tbody>
+<tr><td>pacs.008.001.10</td><td>urn:iso:std:iso:20022:tech:xsd:pacs.008.001.10</td></tr>
+<tr><td>pacs.009.001.08</td><td>urn:iso:std:iso:20022:tech:xsd:pacs.009.001.08</td></tr>
+<tr><td>camt.053.001.08</td><td>urn:iso:std:iso:20022:tech:xsd:camt.053.001.08</td></tr>
+</tbody>
+</table>
+<p>Schema validation has four steps. First, check the namespace on the
+document element matches the expected URN for the message and version.
+Second, validate the XML against the published XSD for that version,
+using a validating parser. Third, validate against the usage
+guidelines, which add rules the schema cannot express, such as which
+optional elements are mandatory in practice and which code values are
+permitted. Fourth, validate the business rules, such as checking that
+the BIC is well formed and that the currency code is a valid ISO 4217
+code.</p>
+<p>The common validation failures are: a wrong namespace, usually
+because the message was built against one version and validated
+against another; a missing mandatory element, usually a debtor name or
+a charge bearer code that the usage guideline requires; elements in the
+wrong order, because ISO 20022 schemas require elements in sequence
+order and a message built from a flat file often gets the order wrong;
+an invalid BIC format, such as a BIC that is not 8 or 11 characters or
+that has invalid characters in the country or location positions; and
+an amount with too many fraction digits for the currency, such as three
+decimal places for a currency that allows two. A validation failure
+must be reported back to the sender with the element path and the rule
+that failed, so the sender can fix the source data rather than patching
+the message by hand.</p>
+<div class="lesson-box"><h2>Version discipline</h2>
+<p>Never hard-code a single message version into a specification without
+naming the usage guideline it comes from. CBPR+, SEPA, and a domestic
+high-value system can each use a different version of pacs.008, and a
+message built to one version will fail validation against another. The
+specification should name the message, the version, the usage guideline,
+and the date that guideline was published.</p></div>
+<div class="lesson-box"><h2>Related chapters</h2><ul><li><a href="../chapters/ch5-swift-mt-messages.html">SWIFT MT Messages</a></li><li><a href="../chapters/ch6-iso-20022-fundamentals.html">ISO 20022 Fundamentals</a></li><li><a href="../chapters/ch7-pacs-008-deep-dive.html">pacs.008 Deep Dive</a></li><li><a href="../chapters/ch8-mt-to-mx-migration-and-cbpr.html">MT to MX Migration and CBPR+</a></li><li><a href="../chapters/ch39-complete-iso-20022-catalogue.html">Complete ISO 20022 Catalogue</a></li></ul></div>
+<p><a class="studio-btn primary" href="../reference.html">Back to Reference</a></p>
+</section>
+
+</main>
+<footer><p>Payments Training Hub. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="../index.html">Home</a> &middot; <a href="../courses.html">Courses</a> &middot; <a href="../flows.html">Flows</a> &middot; <a href="../situations.html">Situations</a> &middot; <a href="../dashboard.html">Dashboard</a> &middot; <a href="../portfolio.html">Portfolio</a> &middot; <a href="../domains.html">Reference</a> &middot; <a href="../labs-simulators.html">Labs &amp; Simulators</a> &middot; <a href="../practice.html">Practice</a> &middot; <a href="../simulators.html">Simulators</a> &middot; <a href="../labs.html">Labs</a> &middot; <a href="../explorer.html">Explorer</a> &middot; <a href="../tests.html">Tests</a> &middot; <a href="../diagnostic.html">Diagnostic</a> &middot; <a href="../faq.html">Interview Ready Questions</a> &middot; <a href="../interview-prep.html">Interview Prep</a></p><p><a href="../about.html">About</a> &middot; <a href="../founder.html">Founder</a> &middot; <a href="../methodology.html">Methodology</a> &middot; <a href="../privacy.html">Privacy</a> &middot; <a href="../terms.html">Terms</a> &middot; <a href="../refund.html">Refunds</a> &middot; <a href="../contact.html">Contact</a> &middot; <a href="../editorial-standards.html">Editorial Standards</a> &middot; <a href="../sources.html">Sources</a> &middot; <a href="../references-policy.html">References Policy</a> &middot; <a href="../corrections.html">Corrections Policy</a></p><p><a href="../domains.html">Domains</a> &middot; <a href="../reference/mt103-to-pacs008.html">MT103 to pacs.008 Reference</a> &middot; <a href="../reference.html">Reference Library</a> &middot; <a href="../insights.html">Insights and Scenarios</a></p><p><a href="../course-map.html">Course Map</a> &middot; <a href="../pricing.html">Pricing</a> &middot; <a href="../teams.html">For Teams</a> &middot; <a href="../artifacts.html">BA Artifact Library</a> &middot; <a href="../reference/mt-iso-mapping.html">MT to ISO 20022 Mapping</a> &middot; <a href="../reference/clearing-systems.html">Clearing Systems</a> &middot; <a href="../reference/regulatory-compliance.html">Regulatory Compliance</a> &middot; <a href="../reference/exception-lifecycles.html">Exception Lifecycles</a> &middot; <a href="../tools/xml-sandbox.html">XML and MT Sandbox</a> &middot; <a href="../tools/routing-decisions.html">Routing Decision Tree</a></p><p><a href="../support.html">Help and Support</a> &middot; <a href="../changelog.html">Changelog</a> &middot; <a href="../licensing.html">Licensing</a></p></footer>
+<div id="hub-assistant" class="hub-assistant" data-prefix="../" data-expanded="false"><div class="hub-mascot" id="hub-mascot" role="button" tabindex="0" aria-label="Open the Hub Assistant chat"><svg class="hub-mascot-svg" viewBox="0 0 80 96" aria-hidden="true"><path d="M64 8 L66.5 15 L74 17.5 L66.5 20 L64 27 L61.5 20 L54 17.5 L61.5 15 Z" fill="#C9A227"/><path d="M40 12 C54 12 62 22 62 34 L62 64 C62 78 52 88 40 88 C28 88 18 78 18 64 L18 32" fill="none" stroke="#1D4ED8" stroke-width="7" stroke-linecap="round"/><path d="M40 28 C47 28 51 32 51 38 L51 60 C51 68 47 73 40 73 C33 73 29 68 29 60 L29 36" fill="none" stroke="#1D4ED8" stroke-width="7" stroke-linecap="round"/><path d="M18 32 L18 26" stroke="#C9A227" stroke-width="7" stroke-linecap="round"/><circle cx="34" cy="38" r="5" fill="#fff" stroke="#0B1F3D" stroke-width="1.5"/><circle cx="46" cy="38" r="5" fill="#fff" stroke="#0B1F3D" stroke-width="1.5"/><circle cx="35" cy="39" r="2.2" fill="#0B1F3D"/><circle cx="47" cy="39" r="2.2" fill="#0B1F3D"/><path d="M34 50 Q40 56 46 50" fill="none" stroke="#0B1F3D" stroke-width="2.5" stroke-linecap="round"/></svg><span class="hub-mascot-label">Hub Assistant</span><span class="hub-hide" id="hub-hide" role="button" tabindex="0" aria-label="Hide assistant">&times;</span></div><div class="hub-panel" id="hub-panel" hidden><div class="hub-panel-head"><svg class="hub-mini" viewBox="0 0 80 96" aria-hidden="true"><path d="M40 12 C54 12 62 22 62 34 L62 64 C62 78 52 88 40 88 C28 88 18 78 18 64 L18 32" fill="none" stroke="#1D4ED8" stroke-width="7" stroke-linecap="round"/><path d="M40 28 C47 28 51 32 51 38 L51 60 C51 68 47 73 40 73 C33 73 29 68 29 60 L29 36" fill="none" stroke="#1D4ED8" stroke-width="7" stroke-linecap="round"/><path d="M18 32 L18 26" stroke="#C9A227" stroke-width="7" stroke-linecap="round"/></svg><div class="hub-panel-title"><b>Hub Assistant</b><span>Payments Training Hub chat assistant</span></div><button type="button" class="hub-close" id="hub-close" aria-label="Close chat">&times;</button></div><div class="hub-messages" id="hub-messages" aria-live="polite"></div><div class="hub-starters" id="hub-starters"><button type="button" class="hub-chip" data-q="What is an MT103?">What is an MT103?</button><button type="button" class="hub-chip" data-q="How does a pacs.008 work?">How does a pacs.008 work?</button><button type="button" class="hub-chip" data-q="Explain nostro and vostro">Explain nostro and vostro</button></div><form class="hub-input-row" id="hub-form"><input id="hub-input" type="text" placeholder="Ask about payments..." autocomplete="off" aria-label="Ask the Hub Assistant"><button type="submit">Send</button></form></div><button type="button" class="hub-dot" id="hub-dot" aria-label="Show the Hub Assistant"></button></div>
+<script defer src="../assets/site.js"></script>
+<script defer src="../assets/bundles.js"></script>
+<script defer src="../assets/auth.js"></script>
+<script defer src="../assets/site-search.js"></script>
+<script defer src="../assets/hub-assistant.js"></script>
+<script defer src="../assets/codehl.js"></script>
+<script defer src="../assets/nav.js"></script>
+<script defer src="../assets/pf-enhance.js"></script>
+</body>
+</html>

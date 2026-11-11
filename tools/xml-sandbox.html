@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>XML and MT Sandbox | Payments Training Hub</title>
+<meta name="description" content="Interactive XML and MT parsing sandbox: paste a pacs.008 or MT103 payload and check it for missing mandatory fields and settlement-date failures.">
+<link rel="canonical" href="https://www.paymentstraininghub.com/tools/xml-sandbox.html">
+<meta property="og:url" content="https://www.paymentstraininghub.com/tools/xml-sandbox.html">
+<meta property="og:title" content="XML and MT Sandbox | Payments Training Hub">
+<meta property="og:description" content="Interactive XML and MT parsing sandbox: paste a pacs.008 or MT103 payload and check it for missing mandatory fields and settlement-date failures.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.com/assets/hero/hero-poster.jpg">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Organization", "name": "Payments Training Hub", "url": "https://www.paymentstraininghub.com"}, {"@type": "WebSite", "name": "Payments Training Hub", "url": "https://www.paymentstraininghub.com", "description": "Payments Training Hub: professional payments training, 746 narrated lessons across 100 chapters covering ISO 20022, SWIFT, SEPA, cross-border payments, cards and settlement.", "inLanguage": "en"}]}</script>
+<link rel="stylesheet" href="../assets/pf-theme.css">
+<link rel="stylesheet" href="../assets/hub-assistant.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="../index.html" class="brand">Payments <span>Training Hub</span></a><nav class="topnav"><a href="../index.html">Home</a> <a href="../dashboard.html">Dashboard</a> <a href="../courses.html">Courses</a> <a href="../flows.html">Flows</a> <a href="../practice.html" class="active">Practice</a> <a href="../reference.html">Reference</a> <a href="../situations.html">Situations</a> </nav><form class="pf-search" role="search" action="#" onsubmit="return false"><input id="pf-search" type="search" placeholder="Search lessons, guides, situations..." aria-label="Search the academy" autocomplete="off" data-prefix="../"><div class="pf-search-results" id="pf-search-results" hidden></div></form><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox" class="auth-note">Free lessons need no sign-in. Sign-in is optional.</span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<section class="section">
+<nav class="crumbs" aria-label="Breadcrumb"><a href="../index.html">Home</a> &rsaquo; <span>Parsing Sandbox</span></nav>
+<h1>Interactive Parsing Sandbox: pacs.008 and MT103</h1>
+<p>Paste a real (de-identified) payment message below and validate it the way a payment hub would. Everything runs in your browser. Nothing is sent to a server, nothing is stored, and no payment is made.</p>
+
+<div class="lesson-box"><h2>How to use</h2>
+<ol>
+<li>Paste a pacs.008 XML payload or an MT103 block into the box below. Remove customer names, account numbers and any live reference before you paste.</li>
+<li>Click Validate. Each finding names the field, explains what is wrong, and shows the rejection or return code that would come back.</li>
+<li>Try the two sample buttons first: one valid pacs.008 and one broken MT103, so you can see a clean pass and a failing message side by side.</li>
+<li>Fix one finding at a time and re-validate. A message is only ready to send when every finding is cleared.</li>
+</ol>
+<p><strong>Note on the calendar:</strong> the settlement-date check uses a simplified TARGET2 calendar for training: weekends, plus 1 January, Good Friday, Easter Monday, 1 May, 25 December and 26 December. Real TARGET2 calendars also close on other days and depend on the year, so always confirm a live value date against the official calendar before you release a payment.</p>
+</div>
+
+<div class="lesson-box"><h2>Your message</h2>
+<p>
+<button type="button" class="studio-btn primary" id="load-valid">Load a valid pacs.008 sample</button>
+<button type="button" class="studio-btn" id="load-broken">Load a broken MT103 sample</button>
+<button type="button" class="studio-btn" id="clear-input">Clear</button>
+</p>
+<label for="payload"><strong>Paste your pacs.008 XML or MT103 block here</strong></label><br>
+<textarea id="payload" rows="18" style="width: 100%; font-family: monospace;" placeholder="Paste a pacs.008 XML payload or an MT103 block here..."></textarea>
+<p>
+<button type="button" class="studio-btn primary" id="validate-btn">Validate</button>
+</p>
+<div id="results" aria-live="polite"></div>
+</div>
+
+<div class="lesson-box"><h2>What the validator checks</h2>
+<table class="pf-table">
+<thead><tr><th>Message</th><th>Check</th><th>Typical rejection code</th></tr></thead>
+<tbody>
+<tr><td>pacs.008</td><td>Missing mandatory elements: DbtrAgt, CdtrAgt, InstdAmt with currency, DbtrAcct, CdtrAcct, PmtId with InstrId and EndToEndId, IntrBkSttlmDt or SttlmDt</td><td>pacs.002 RJCT, RR04 or the specific code for the field</td></tr>
+<tr><td>pacs.008</td><td>BIC format: 8 or 11 characters, 4-letter bank code, 2-letter country code, 2-character location code, optional 3-character branch code</td><td>pacs.002 RJCT, RC01</td></tr>
+<tr><td>pacs.008</td><td>Amount format: digits with an optional decimal point, no commas, no currency symbol, currency as a 3-letter ISO code</td><td>pacs.002 RJCT, AM02</td></tr>
+<tr><td>pacs.008</td><td>Settlement date on a TARGET2 business day, and creation time before the 17:00 CET customer-payment cut-off</td><td>pacs.002 RJCT, DT01 for a bad date, TM01 for a cut-off breach</td></tr>
+<tr><td>MT103</td><td>Missing mandatory fields: :20:, :32A:, :50a:, :59: and :71A:</td><td>SWIFT NAK, or pacs.002 RJCT, RR04 after conversion</td></tr>
+<tr><td>MT103</td><td>:32A: format: date as YYMMDD, currency as 3 letters, amount with a comma decimal separator</td><td>SWIFT NAK, or pacs.002 RJCT, AM02 or DT01 after conversion</td></tr>
+<tr><td>MT103</td><td>BIC in :52A: or :57A: is 8 or 11 characters in the right positions</td><td>SWIFT NAK, or pacs.002 RJCT, RC01 after conversion</td></tr>
+</tbody>
+</table>
+<p><strong>Rejection codes used here:</strong> BE01 means the instruction is inconsistent with the end customer, AC01 means an incorrect account number, AC04 means a closed account number, AM05 means duplication, RC01 means the bank identifier is incorrect, RR04 means a regulatory reason, DT01 means an invalid date, TM01 means the cut-off time was missed, and AM02 means the amount is not allowed. A pacs.002 RJCT is the formal rejection of a pacs.008. A SWIFT NAK is the network acknowledgement that rejects a malformed MT message.</p>
+</div>
+
+<script>
+(function () {
+  var textarea = document.getElementById('payload');
+  var results = document.getElementById('results');
+
+  var VALID_PACS = [
+    '<?xml version="1.0" encoding="UTF-8"?>',
+    '<Document xmlns="urn:iso:std:iso:20022:tech:xsd:pacs.008.001.10">',
+    '  <FIToFICstmrCdtTrf>',
+    '    <GrpHdr>',
+    '      <MsgId>MSG20261112001</MsgId>',
+    '      <CreDtTm>2026-11-12T09:15:00Z</CreDtTm>',
+    '      <NbOfTxs>1</NbOfTxs>',
+    '      <IntrBkSttlmDt>2026-11-12</IntrBkSttlmDt>',
+    '      <SttlmInf><SttlmMtd>CLRG</SttlmMtd></SttlmInf>',
+    '    </GrpHdr>',
+    '    <CdtTrfTxInf>',
+    '      <PmtId>',
+    '        <InstrId>INSTR20261112001</InstrId>',
+    '        <EndToEndId>E2E20261112001</EndToEndId>',
+    '        <TxId>TX20261112001</TxId>',
+    '      </PmtId>',
+    '      <PmtTpInf><SvcLvl><Cd>G001</Cd></SvcLvl></PmtTpInf>',
+    '      <IntrBkSttlmAmt Ccy="EUR">12500.00</IntrBkSttlmAmt>',
+    '      <InstdAmt Ccy="EUR">12500.00</InstdAmt>',
+    '      <ChrgBr>SHAR</ChrgBr>',
+    '      <Dbtr><Nm>Acme Trading BV</Nm></Dbtr>',
+    '      <DbtrAcct><Id><IBAN>DE89370400440532013000</IBAN></Id></DbtrAcct>',
+    '      <DbtrAgt><FinInstnId><BICFI>DEUTDEFFXXX</BICFI></FinInstnId></DbtrAgt>',
+    '      <CdtrAgt><FinInstnId><BICFI>BNPAFRPPXXX</BICFI></FinInstnId></CdtrAgt>',
+    '      <Cdtr><Nm>Globex Imports SARL</Nm></Cdtr>',
+    '      <CdtrAcct><Id><IBAN>FR1420041010050500013M02606</IBAN></Id></CdtrAcct>',
+    '      <RmtInf><Ustrd>Invoice INV-8841, November shipment</Ustrd></RmtInf>',
+    '    </CdtTrfTxInf>',
+    '  </FIToFICstmrCdtTrf>',
+    '</Document>'
+  ].join('\n');
+
+  var BROKEN_MT103 = [
+    '{1:F01DEUTDEFFAXXX0000000000}',
+    '{2:I103BNPAFRPPXXXXN}',
+    '{4:',
+    ':20:REF20261112077',
+    ':23B:CRED',
+    ':32A:261115USD10000.00',
+    ':50K:/DE89370400440532013000',
+    'Acme Trading BV',
+    ':52A:DEUTDE',
+    ':70:Invoice INV-8841',
+    '-}'
+  ].join('\n');
+
+  function escHtml(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  function easterSunday(year) {
+    var a = year % 19, b = Math.floor(year / 100), c = year % 100;
+    var d = Math.floor(b / 4), e = b % 4, f = Math.floor((b + 8) / 25);
+    var g = Math.floor((b - f + 1) / 3), h = (19 * a + b - d - g + 15) % 30;
+    var i = Math.floor(c / 4), k = c % 4;
+    var l = (32 + 2 * e + 2 * i - h - k) % 7;
+    var m = Math.floor((a + 11 * h + 22 * l) / 451);
+    var month = Math.floor((h + l - 7 * m + 114) / 31);
+    var day = ((h + l - 7 * m + 114) % 31) + 1;
+    return new Date(year, month - 1, day);
+  }
+
+  function isTarget2BusinessDay(date) {
+    var dow = date.getDay();
+    if (dow === 0 || dow === 6) return { ok: false, reason: 'it falls on a weekend' };
+    var y = date.getFullYear(), m = date.getMonth() + 1, d = date.getDate();
+    var fixed = [[1, 1, '1 January (New Year)'], [5, 1, '1 May (Labour Day)'], [12, 25, '25 December (Christmas Day)'], [12, 26, '26 December (Boxing Day)']];
+    for (var i = 0; i < fixed.length; i++) {
+      if (fixed[i][0] === m && fixed[i][1] === d) return { ok: false, reason: 'it is ' + fixed[i][2] + ', a TARGET2 holiday' };
+    }
+    var easter = easterSunday(y);
+    var goodFriday = new Date(easter); goodFriday.setDate(easter.getDate() - 2);
+    var easterMonday = new Date(easter); easterMonday.setDate(easter.getDate() + 1);
+    function same(a, b) { return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate(); }
+    if (same(date, goodFriday)) return { ok: false, reason: 'it is Good Friday, a TARGET2 holiday' };
+    if (same(date, easterMonday)) return { ok: false, reason: 'it is Easter Monday, a TARGET2 holiday' };
+    return { ok: true, reason: '' };
+  }
+
+  function checkSettlementDate(dateStr, label) {
+    var out = [];
+    var d = new Date(dateStr + 'T12:00:00');
+    if (isNaN(d.getTime())) {
+      out.push({ field: label, issue: 'The settlement date "' + dateStr + '" cannot be parsed as a calendar date.', code: 'DT01' });
+      return out;
+    }
+    var check = isTarget2BusinessDay(d);
+    if (!check.ok) {
+      out.push({ field: label, issue: 'The settlement date ' + dateStr + ' is not a TARGET2 business day because ' + check.reason + '. Move the value date to the next TARGET2 business day.', code: 'DT01' });
+    }
+    return out;
+  }
+
+  function checkBic(value, field) {
+    var out = [];
+    if (!value) return out;
+    var v = value.trim().toUpperCase();
+    var re = /^[A-Z]{4}[A-Z]{2}[A-Z0-9]{2}([A-Z0-9]{3})?$/;
+    if (v.length !== 8 && v.length !== 11) {
+      out.push({ field: field, issue: 'BIC "' + v + '" is ' + v.length + ' characters long. A BIC must be 8 or 11 characters.', code: 'RC01' });
+    } else if (!re.test(v)) {
+      out.push({ field: field, issue: 'BIC "' + v + '" does not follow the BIC pattern: 4-letter bank code, 2-letter country code, 2-character location code, optional 3-character branch code.', code: 'RC01' });
+    }
+    return out;
+  }
+
+  function tagContent(xml, tag) {
+    var re = new RegExp('<' + tag + '(\\s[^>]*)?>([^<]*)</' + tag + '>', 'i');
+    var m = xml.match(re);
+    return m ? m[2].trim() : null;
+  }
+
+  function tagAttr(xml, tag, attr) {
+    var re = new RegExp('<' + tag + '\\s[^>]*' + attr + '="([^"]*)"', 'i');
+    var m = xml.match(re);
+    return m ? m[1] : null;
+  }
+
+  function hasTag(xml, tag) {
+    return new RegExp('<' + tag + '(\\s|>|/)', 'i').test(xml);
+  }
+
+  function validatePacs(text) {
+    var findings = [];
+    var mandatory = [
+      ['DbtrAgt', 'Debtor agent is missing. Every pacs.008 needs the sending bank agent.', 'RC01'],
+      ['CdtrAgt', 'Creditor agent is missing. Every pacs.008 needs the receiving bank agent.', 'RC01'],
+      ['DbtrAcct', 'Debtor account is missing. The account to debit must be present.', 'AC01'],
+      ['CdtrAcct', 'Creditor account is missing. The account to credit must be present.', 'AC01'],
+      ['InstrId', 'Instruction ID (InstrId in PmtId) is missing. It identifies this instruction for tracking and duplicates.', 'RR04'],
+      ['EndToEndId', 'End-to-end ID (EndToEndId in PmtId) is missing. It links the payment to the customer instruction end to end.', 'RR04']
+    ];
+    mandatory.forEach(function (row) {
+      if (!hasTag(text, row[0])) findings.push({ field: row[0], issue: row[1], code: row[2] });
+    });
+    if (!hasTag(text, 'InstdAmt')) {
+      findings.push({ field: 'InstdAmt', issue: 'Instructed amount (InstdAmt) is missing. The amount and its currency must be present.', code: 'AM02' });
+    } else {
+      var amt = tagContent(text, 'InstdAmt');
+      var ccy = tagAttr(text, 'InstdAmt', 'Ccy');
+      if (!ccy) {
+        findings.push({ field: 'InstdAmt', issue: 'InstdAmt has no Ccy attribute. The currency must be a 3-letter ISO 4217 code, for example EUR.', code: 'AM02' });
+      } else if (!/^[A-Z]{3}$/.test(ccy.toUpperCase())) {
+        findings.push({ field: 'InstdAmt', issue: 'Currency "' + ccy + '" is not a 3-letter ISO code.', code: 'AM02' });
+      }
+      if (amt === null || amt === '') {
+        findings.push({ field: 'InstdAmt', issue: 'InstdAmt is empty. Give the amount as digits with an optional decimal point, for example 12500.00.', code: 'AM02' });
+      } else if (!/^\d+(\.\d{1,2})?$/.test(amt.trim())) {
+        findings.push({ field: 'InstdAmt', issue: 'Amount "' + amt + '" is not in ISO format. Use digits with an optional decimal point and no commas or currency symbols, for example 12500.00.', code: 'AM02' });
+      } else if (parseFloat(amt) <= 0) {
+        findings.push({ field: 'InstdAmt', issue: 'Amount "' + amt + '" is zero or negative. A credit transfer amount must be greater than zero.', code: 'AM02' });
+      }
+    }
+    if (!hasTag(text, 'IntrBkSttlmDt') && !hasTag(text, 'SttlmDt')) {
+      findings.push({ field: 'IntrBkSttlmDt', issue: 'No settlement date is present. Give IntrBkSttlmDt in the group header, or SttlmDt, as YYYY-MM-DD.', code: 'DT01' });
+    } else {
+      var sdt = tagContent(text, 'IntrBkSttlmDt') || tagContent(text, 'SttlmDt');
+      if (sdt) findings = findings.concat(checkSettlementDate(sdt.trim(), 'IntrBkSttlmDt'));
+    }
+    var bicRe = /<(BICFI|BIC)>([^<]*)<\/(BICFI|BIC)>/gi, m;
+    var seenBic = false;
+    while ((m = bicRe.exec(text)) !== null) {
+      seenBic = true;
+      findings = findings.concat(checkBic(m[2], m[1]));
+    }
+    if (!seenBic) {
+      findings.push({ field: 'BICFI', issue: 'No BICFI element was found. At least the debtor and creditor agents need a BIC.', code: 'RC01' });
+    }
+    var cre = tagContent(text, 'CreDtTm');
+    if (cre) {
+      var tm = cre.match(/T(\d{2}):(\d{2})/);
+      if (tm) {
+        var mins = parseInt(tm[1], 10) * 60 + parseInt(tm[2], 10);
+        if (mins > 17 * 60) {
+          findings.push({ field: 'CreDtTm', issue: 'Creation time ' + tm[1] + ':' + tm[2] + ' is after the 17:00 CET customer-payment cut-off used for this check, so the payment would settle on the next TARGET2 business day.', code: 'TM01' });
+        }
+      }
+    }
+    return findings;
+  }
+
+  function mtField(text, tag) {
+    var re = new RegExp(':' + tag + ':', 'i');
+    var idx = text.search(re);
+    if (idx < 0) return null;
+    var rest = text.slice(idx + tag.length + 2);
+    var lines = rest.split('\n');
+    var value = lines[0] ? lines[0].trim() : '';
+    return value;
+  }
+
+  function validateMt(text) {
+    var findings = [];
+    var mandatory = [
+      ['20', 'Transaction reference number (:20:) is missing. Every MT103 needs a 16-character maximum reference.', 'RR04'],
+      ['32A', 'Value date, currency and amount (:32A:) are missing. This is the core settlement instruction.', 'RR04'],
+      ['50a', 'Ordering customer (:50a:, usually :50K: or :50F:) is missing. The sender of the payment must be identified.', 'BE01'],
+      ['59', 'Beneficiary customer (:59:) is missing. The payment has no named recipient.', 'BE01'],
+      ['71A', 'Details of charges (:71A:) are missing. It must be BEN, OUR or SHA.', 'RR04']
+    ];
+    mandatory.forEach(function (row) {
+      var val = null;
+      if (row[0] === '50a') {
+        val = mtField(text, '50K') || mtField(text, '50F') || mtField(text, '50A');
+      } else {
+        val = mtField(text, row[0]);
+      }
+      if (val === null || val === '') findings.push({ field: ':' + row[0] + ':', issue: row[1], code: row[2] });
+    });
+    var f32 = mtField(text, '32A');
+    if (f32) {
+      var m = f32.match(/^(\d{6})([A-Z]{3})([0-9,]+)$/);
+      if (!m) {
+        findings.push({ field: ':32A:', issue: 'Field :32A: "' + f32 + '" is not in the right format. Use YYMMDD, then a 3-letter currency code, then the amount with a comma decimal separator, for example 261112EUR12500,00.', code: 'AM02' });
+      } else {
+        var yy = parseInt(m[1].slice(0, 2), 10), mo = parseInt(m[1].slice(2, 4), 10), dd = parseInt(m[1].slice(4, 6), 10);
+        if (mo < 1 || mo > 12 || dd < 1 || dd > 31) {
+          findings.push({ field: ':32A:', issue: 'Date "' + m[1] + '" in :32A: is not a valid YYMMDD date. Month must be 01 to 12 and day 01 to 31.', code: 'DT01' });
+        } else {
+          var iso = '20' + m[1].slice(0, 2) + '-' + m[1].slice(2, 4) + '-' + m[1].slice(4, 6);
+          findings = findings.concat(checkSettlementDate(iso, ':32A: value date'));
+        }
+        if (!/^[A-Z]{3}$/.test(m[2])) {
+          findings.push({ field: ':32A:', issue: 'Currency "' + m[2] + '" in :32A: is not a 3-letter code.', code: 'AM02' });
+        }
+        if (m[3].indexOf('.') >= 0) {
+          findings.push({ field: ':32A:', issue: 'Amount "' + m[3] + '" in :32A: uses a full stop. MT amounts use a comma as the decimal separator, for example 12500,00.', code: 'AM02' });
+        }
+        if (!/,/.test(m[3])) {
+          findings.push({ field: ':32A:', issue: 'Amount "' + m[3] + '" in :32A: has no comma decimal separator. MT amounts must carry a comma, for example 12500,00.', code: 'AM02' });
+        }
+      }
+    }
+    var f71 = mtField(text, '71A');
+    if (f71 && ['BEN', 'OUR', 'SHA'].indexOf(f71.toUpperCase()) < 0) {
+      findings.push({ field: ':71A:', issue: 'Details of charges "' + f71 + '" is not valid. It must be BEN, OUR or SHA.', code: 'RR04' });
+    }
+    ['52A', '57A', '58A'].forEach(function (tag) {
+      var v = mtField(text, tag);
+      if (v) findings = findings.concat(checkBic(v, ':' + tag + ':'));
+    });
+    return findings;
+  }
+
+  function render(findings, kind) {
+    if (findings.length === 0) {
+      results.innerHTML = '<div class="lesson-box"><h2>Result: clean pass</h2><p>No findings. This ' + escHtml(kind) + ' passed every check in this sandbox: mandatory fields are present, BICs and amounts are well formed, and the settlement date is a TARGET2 business day. That does not guarantee the live network would accept it, because this sandbox does not check sanctions, account status, balances or duplicate references against a live system.</p></div>';
+      return;
+    }
+    var rows = findings.map(function (f) {
+      return '<tr><td>' + escHtml(f.field) + '</td><td>' + escHtml(f.issue) + '</td><td>' + escHtml(f.code) + '</td></tr>';
+    }).join('');
+    var reject = kind === 'MT103' ? 'SWIFT NAK, or pacs.002 RJCT after conversion' : 'pacs.002 RJCT';
+    results.innerHTML = '<div class="lesson-box"><h2>Result: ' + findings.length + ' finding(s)</h2>'
+      + '<p>The message would come back as <strong>' + escHtml(reject) + '</strong>. Fix each finding and re-validate.</p>'
+      + '<table class="pf-table"><thead><tr><th>Field</th><th>What is wrong</th><th>Rejection code</th></tr></thead><tbody>' + rows + '</tbody></table></div>';
+  }
+
+  document.getElementById('load-valid').addEventListener('click', function () { textarea.value = VALID_PACS; results.innerHTML = ''; });
+  document.getElementById('load-broken').addEventListener('click', function () { textarea.value = BROKEN_MT103; results.innerHTML = ''; });
+  document.getElementById('clear-input').addEventListener('click', function () { textarea.value = ''; results.innerHTML = ''; });
+  document.getElementById('validate-btn').addEventListener('click', function () {
+    var text = textarea.value;
+    if (!text.trim()) {
+      results.innerHTML = '<div class="lesson-box"><h2>Nothing to validate</h2><p>Paste a message first, or load one of the samples.</p></div>';
+      return;
+    }
+    var isMt = text.indexOf('{1:') >= 0 || text.indexOf(':20:') >= 0 || text.indexOf(':32A:') >= 0;
+    var isPacs = /pacs\.008|FIToFICstmrCdtTrf|<Document/i.test(text);
+    if (isMt && !isPacs) render(validateMt(text), 'MT103');
+    else if (isPacs) render(validatePacs(text), 'pacs.008');
+    else results.innerHTML = '<div class="lesson-box"><h2>Message type not recognised</h2><p>This sandbox recognises pacs.008 XML (look for FIToFICstmrCdtTrf or pacs.008) and MT103 blocks (look for {1: or :20:). Check that you pasted the full message.</p></div>';
+  });
+})();
+</script>
+</section>
+</main>
+<footer><p>Payments Training Hub. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="../index.html">Home</a> &middot; <a href="../courses.html">Courses</a> &middot; <a href="../flows.html">Flows</a> &middot; <a href="../situations.html">Situations</a> &middot; <a href="../dashboard.html">Dashboard</a> &middot; <a href="../portfolio.html">Portfolio</a> &middot; <a href="../domains.html">Reference</a> &middot; <a href="../labs-simulators.html">Labs &amp; Simulators</a> &middot; <a href="../practice.html">Practice</a> &middot; <a href="../simulators.html">Simulators</a> &middot; <a href="../labs.html">Labs</a> &middot; <a href="../explorer.html">Explorer</a> &middot; <a href="../tests.html">Tests</a> &middot; <a href="../diagnostic.html">Diagnostic</a> &middot; <a href="../faq.html">Interview Ready Questions</a> &middot; <a href="../interview-prep.html">Interview Prep</a></p><p><a href="../about.html">About</a> &middot; <a href="../founder.html">Founder</a> &middot; <a href="../methodology.html">Methodology</a> &middot; <a href="../privacy.html">Privacy</a> &middot; <a href="../terms.html">Terms</a> &middot; <a href="../refund.html">Refunds</a> &middot; <a href="../contact.html">Contact</a> &middot; <a href="../editorial-standards.html">Editorial Standards</a> &middot; <a href="../sources.html">Sources</a> &middot; <a href="../references-policy.html">References Policy</a> &middot; <a href="../corrections.html">Corrections Policy</a></p><p><a href="../domains.html">Domains</a> &middot; <a href="../reference/mt103-to-pacs008.html">MT103 to pacs.008 Reference</a> &middot; <a href="../reference.html">Reference Library</a> &middot; <a href="../insights.html">Insights and Scenarios</a></p><p><a href="../course-map.html">Course Map</a> &middot; <a href="../pricing.html">Pricing</a> &middot; <a href="../teams.html">For Teams</a> &middot; <a href="../artifacts.html">BA Artifact Library</a> &middot; <a href="../reference/mt-iso-mapping.html">MT to ISO 20022 Mapping</a> &middot; <a href="../reference/clearing-systems.html">Clearing Systems</a> &middot; <a href="../reference/regulatory-compliance.html">Regulatory Compliance</a> &middot; <a href="../reference/exception-lifecycles.html">Exception Lifecycles</a> &middot; <a href="../tools/xml-sandbox.html">XML and MT Sandbox</a> &middot; <a href="../tools/routing-decisions.html">Routing Decision Tree</a></p><p><a href="../support.html">Help and Support</a> &middot; <a href="../changelog.html">Changelog</a> &middot; <a href="../licensing.html">Licensing</a></p></footer>
+<div id="hub-assistant" class="hub-assistant" data-prefix="../" data-expanded="false"><div class="hub-mascot" id="hub-mascot" role="button" tabindex="0" aria-label="Open the Hub Assistant chat"><svg class="hub-mascot-svg" viewBox="0 0 80 96" aria-hidden="true"><path d="M64 8 L66.5 15 L74 17.5 L66.5 20 L64 27 L61.5 20 L54 17.5 L61.5 15 Z" fill="#C9A227"/><path d="M40 12 C54 12 62 22 62 34 L62 64 C62 78 52 88 40 88 C28 88 18 78 18 64 L18 32" fill="none" stroke="#1D4ED8" stroke-width="7" stroke-linecap="round"/><path d="M40 28 C47 28 51 32 51 38 L51 60 C51 68 47 73 40 73 C33 73 29 68 29 60 L29 36" fill="none" stroke="#1D4ED8" stroke-width="7" stroke-linecap="round"/><path d="M18 32 L18 26" stroke="#C9A227" stroke-width="7" stroke-linecap="round"/><circle cx="34" cy="38" r="5" fill="#fff" stroke="#0B1F3D" stroke-width="1.5"/><circle cx="46" cy="38" r="5" fill="#fff" stroke="#0B1F3D" stroke-width="1.5"/><circle cx="35" cy="39" r="2.2" fill="#0B1F3D"/><circle cx="47" cy="39" r="2.2" fill="#0B1F3D"/><path d="M34 50 Q40 56 46 50" fill="none" stroke="#0B1F3D" stroke-width="2.5" stroke-linecap="round"/></svg><span class="hub-mascot-label">Hub Assistant</span><span class="hub-hide" id="hub-hide" role="button" tabindex="0" aria-label="Hide assistant">&times;</span></div><div class="hub-panel" id="hub-panel" hidden><div class="hub-panel-head"><svg class="hub-mini" viewBox="0 0 80 96" aria-hidden="true"><path d="M40 12 C54 12 62 22 62 34 L62 64 C62 78 52 88 40 88 C28 88 18 78 18 64 L18 32" fill="none" stroke="#1D4ED8" stroke-width="7" stroke-linecap="round"/><path d="M40 28 C47 28 51 32 51 38 L51 60 C51 68 47 73 40 73 C33 73 29 68 29 60 L29 36" fill="none" stroke="#1D4ED8" stroke-width="7" stroke-linecap="round"/><path d="M18 32 L18 26" stroke="#C9A227" stroke-width="7" stroke-linecap="round"/></svg><div class="hub-panel-title"><b>Hub Assistant</b><span>Payments Training Hub chat assistant</span></div><button type="button" class="hub-close" id="hub-close" aria-label="Close chat">&times;</button></div><div class="hub-messages" id="hub-messages" aria-live="polite"></div><div class="hub-starters" id="hub-starters"><button type="button" class="hub-chip" data-q="What is an MT103?">What is an MT103?</button><button type="button" class="hub-chip" data-q="How does a pacs.008 work?">How does a pacs.008 work?</button><button type="button" class="hub-chip" data-q="Explain nostro and vostro">Explain nostro and vostro</button></div><form class="hub-input-row" id="hub-form"><input id="hub-input" type="text" placeholder="Ask about payments..." autocomplete="off" aria-label="Ask the Hub Assistant"><button type="submit">Send</button></form></div><button type="button" class="hub-dot" id="hub-dot" aria-label="Show the Hub Assistant"></button></div>
+<script defer src="../assets/site.js"></script>
+<script defer src="../assets/bundles.js"></script>
+<script defer src="../assets/auth.js"></script>
+<script defer src="../assets/site-search.js"></script>
+<script defer src="../assets/hub-assistant.js"></script>
+<script defer src="../assets/codehl.js"></script>
+<script defer src="../assets/nav.js"></script>
+<script defer src="../assets/pf-enhance.js"></script>
+</body>
+</html>

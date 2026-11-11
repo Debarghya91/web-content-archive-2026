@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>Exception and Investigation Lifecycles | Payments Training Hub</title>
+<meta name="description" content="Exception and investigation lifecycles: camt.056 cancellation requests and camt.029 resolution of investigation, step by step.">
+<link rel="canonical" href="https://www.paymentstraininghub.com/reference/exception-lifecycles.html">
+<meta property="og:url" content="https://www.paymentstraininghub.com/reference/exception-lifecycles.html">
+<meta property="og:title" content="Exception and Investigation Lifecycles | Payments Training Hub">
+<meta property="og:description" content="Exception and investigation lifecycles: camt.056 cancellation requests and camt.029 resolution of investigation, step by step.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.com/assets/hero/hero-poster.jpg">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Organization", "name": "Payments Training Hub", "url": "https://www.paymentstraininghub.com"}, {"@type": "WebSite", "name": "Payments Training Hub", "url": "https://www.paymentstraininghub.com", "description": "Payments Training Hub: professional payments training, 746 narrated lessons across 100 chapters covering ISO 20022, SWIFT, SEPA, cross-border payments, cards and settlement.", "inLanguage": "en"}]}</script>
+<link rel="stylesheet" href="../assets/pf-theme.css">
+<link rel="stylesheet" href="../assets/hub-assistant.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="../index.html" class="brand">Payments <span>Training Hub</span></a><nav class="topnav"><a href="../index.html">Home</a> <a href="../dashboard.html">Dashboard</a> <a href="../courses.html">Courses</a> <a href="../flows.html">Flows</a> <a href="../practice.html">Practice</a> <a href="../reference.html" class="active">Reference</a> <a href="../situations.html">Situations</a> </nav><form class="pf-search" role="search" action="#" onsubmit="return false"><input id="pf-search" type="search" placeholder="Search lessons, guides, situations..." aria-label="Search the academy" autocomplete="off" data-prefix="../"><div class="pf-search-results" id="pf-search-results" hidden></div></form><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox" class="auth-note">Free lessons need no sign-in. Sign-in is optional.</span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<section class="section">
+<nav class="crumbs"><a href="../index.html">Home</a> / <a href="../reference.html">Reference</a> / Exception and Investigation Lifecycles</nav>
+<h1>Exception and Investigation Lifecycles Reference</h1>
+<p>Most payments settle without a problem. The ones that do not follow
+an exception lifecycle, and the lifecycle is governed by ISO 20022
+messages, scheme rules, and time limits. This page describes the
+messages, then works through three complete lifecycles step by step: a
+payment sent to the wrong account and recalled, a payment that never
+arrived and is investigated, and a duplicate payment and its return.
+For each lifecycle it states who sends which message, in what order,
+the time limits that apply, the evidence each party needs, and the
+possible endings.</p>
+<div class="lesson-box"><h2>The first rule of exceptions</h2>
+<p>A payment that has settled cannot be undone by the sender alone. It
+can only be recovered with the cooperation of the beneficiary bank and,
+in many cases, the beneficiary. That is why exceptions are slow and
+why prevention matters more than cure: a payment checked before it is
+sent is cheaper than a payment recalled after it has settled.</p></div>
+<h2>The messages</h2>
+<table class="pf-table">
+<thead><tr><th>Message</th><th>Name</th><th>Who sends it</th><th>What it does</th></tr></thead>
+<tbody>
+<tr><td>camt.056</td><td>FI to FI Payment Cancellation Request</td><td>The bank that wants a payment cancelled, to the next bank in the chain</td><td>Asks for a payment to be cancelled and, where the payment has already settled, for the funds to be returned</td></tr>
+<tr><td>camt.029</td><td>Resolution of Investigation</td><td>The bank that received a cancellation request or an investigation request</td><td>States the outcome: the cancellation was accepted or rejected, or the investigation is resolved, with a reason code</td></tr>
+<tr><td>pacs.002</td><td>Payment Status Report</td><td>The bank that holds or has processed the payment</td><td>Reports the status of a payment: accepted, rejected, pending, or settled, with a status code and, where applicable, a reason code</td></tr>
+<tr><td>pacs.004</td><td>Payment Return</td><td>The bank returning the funds</td><td>Returns a payment that has already settled, with a return reason code such as a wrong account number or a duplicate payment</td></tr>
+<tr><td>pacs.028</td><td>FI to FI Payment Status Request</td><td>A bank that needs to know the status of a payment</td><td>Asks the next bank in the chain for the status of a payment that has not arrived or has not been confirmed</td></tr>
+<tr><td>pacs.029</td><td>FI to FI Payment Status Report</td><td>The bank that received a pacs.028</td><td>Answers a status request with the current status of the payment</td></tr>
+</tbody>
+</table>
+<p>The version of each message depends on the usage guideline in force
+for the scheme the payment travels on. The message names and purposes
+above are stable across versions, but element names and mandatory
+fields can change, so confirm the version before building to it.</p>
+<h2>Lifecycle A: payment sent to the wrong account and recalled</h2>
+<p>A customer instructs a payment and the sending bank discovers, after
+the payment has been sent, that the beneficiary account number is
+wrong. The funds have gone to the wrong account. The sending bank
+must try to recover them.</p>
+<ol>
+<li><strong>The customer or the sending bank spots the error.</strong> The sending bank checks its own records first: the instruction, the account number as entered, and whether the error was the customer's or the bank's. That matters, because who pays for the recovery depends on who made the error, and the scheme rules treat the two cases differently.</li>
+<li><strong>The sending bank sends a camt.056.</strong> The cancellation request goes to the next bank in the chain, which forwards it toward the beneficiary bank. The camt.056 carries the original payment reference, the UETR, the amount, and the reason for the cancellation. The reason code states that the payment was sent to the wrong account.</li>
+<li><strong>Each bank in the chain forwards the request.</strong> A cancellation request follows the payment path in reverse. Each bank checks whether it still holds the funds or has already passed them on, and forwards the request to the next bank.</li>
+<li><strong>The beneficiary bank receives the camt.056.</strong> It checks whether the funds are still in the wrong account and whether they have been withdrawn or moved on. If the funds are still there, it contacts the account holder, because it cannot debit the account without the account holder's consent or a legal basis, and the scheme rules decide which applies.</li>
+<li><strong>The beneficiary bank answers with a camt.029.</strong> The resolution states whether the cancellation was accepted or rejected, with a reason code. If the account holder consents, or the scheme rules allow the debit, the cancellation is accepted. If the funds have already been withdrawn, or the account holder does not consent and the scheme rules do not allow a forced debit, the cancellation is rejected.</li>
+<li><strong>If accepted, the funds come back by pacs.004.</strong> The beneficiary bank returns the payment with a payment return message, carrying the original reference so the sending bank can match the return to the original payment. The return reason code states that the account was wrong.</li>
+<li><strong>The sending bank credits its customer.</strong> Once the return arrives, the sending bank credits the customer and closes the case. If charges were deducted along the way, the sending bank must explain who bears them, because the customer will ask.</li>
+</ol>
+<p><strong>Time limits.</strong> There is no single global time limit
+for a recall: the limit is set by the scheme or the rulebook the
+payment travels under. Under the SEPA Credit Transfer rulebook, for
+example, a recall request must be sent within 10 banking business days
+after the execution date of the original payment, and the beneficiary
+bank must respond within a period set by the same rulebook. For a
+cross-border SWIFT payment, the time limit depends on the scheme and
+on the agreements between the banks in the chain, so a specification
+must name the scheme and its time limit rather than assuming one
+applies everywhere.</p>
+<p><strong>Evidence each party needs.</strong> The sending bank needs
+the original instruction, the payment reference and UETR, and the
+record of the error. The beneficiary bank needs the camt.056, the
+account records showing where the funds went, and the account holder's
+response. Both banks need the camt.029 that records the outcome.</p>
+<p><strong>Possible endings.</strong> Cancelled and returned in full;
+cancelled and returned in part, where some funds were already
+withdrawn; rejected, because the funds are gone or the account holder
+does not consent; or resolved without a return, where the wrong
+account turns out to belong to the intended beneficiary under a
+different name and the payment is left in place by agreement.</p>
+<h2>Lifecycle B: a payment that never arrived and is investigated</h2>
+<p>A customer sends a payment, the value date passes, and the
+beneficiary says the funds never arrived. Nobody knows where the
+payment is. The sending bank must find it.</p>
+<ol>
+<li><strong>The sending bank checks its own systems.</strong> Before contacting any other bank, the sending bank checks whether the payment was actually sent, whether it was rejected, and whether it is sitting in a queue or in a repair pile. Many investigations end here, because the payment never left the bank.</li>
+<li><strong>The sending bank sends a pacs.028.</strong> If the payment did leave the bank, the sending bank sends a payment status request to the next bank in the chain, asking for the status of the payment by its reference and UETR.</li>
+<li><strong>The receiving bank answers with a pacs.029.</strong> The status report states what happened to the payment: it was received and forwarded, it was received and is being held, it was rejected, or it was never received. The status code and reason code tell the sending bank what to do next.</li>
+<li><strong>The request moves down the chain.</strong> If the payment was forwarded, the investigation moves to the next bank, which is asked the same question. Each bank answers for its own leg, so the sending bank can find the exact point where the payment stopped.</li>
+<li><strong>The bank that holds the payment explains why.</strong> The payment may be held for screening, held because the beneficiary account details do not match, held because a field is missing, or held because of a system failure. The bank that holds it states the reason and what it needs to release it.</li>
+<li><strong>The problem is fixed and the payment moves on, or it is returned.</strong> If the hold can be cleared, for example by correcting an account number, the payment is released and continues to the beneficiary. If it cannot be cleared, the payment is returned by pacs.004 with a return reason code, and the sending bank credits its customer.</li>
+<li><strong>If the payment cannot be found at all, a camt.056 is sent.</strong> If no bank in the chain can find the payment, or the payment is found in a place it should not be, the sending bank sends a cancellation request to recover the funds, and the lifecycle joins lifecycle A from step 2.</li>
+</ol>
+<p><strong>Time limits.</strong> A status request can be sent as soon
+as the payment is overdue, and the scheme rules set how quickly each
+bank must answer. The investigation itself has no fixed end date: it
+ends when the payment is found, released, or returned. A BA should
+record the response time the scheme requires at each step, because a
+bank that answers late delays the whole chain.</p>
+<p><strong>Evidence each party needs.</strong> The sending bank needs
+the payment reference, the UETR, the value date, and the amount. Each
+bank in the chain needs the pacs.028 it received and the records of
+what it did with the payment. The beneficiary needs the payment
+details so it can check its own account.</p>
+<p><strong>Possible endings.</strong> Resolved, the payment is found
+and credited to the beneficiary; returned, the payment comes back by
+pacs.004; rejected, the payment was rejected by a bank in the chain
+and the rejection is reported by pacs.002; or still missing, in which
+case the case is escalated to the scheme or to the banks' operations
+management with the full message trail.</p>
+<h2>Lifecycle C: a duplicate payment and its return</h2>
+<p>A customer payment is sent twice. The duplication may come from a
+system retry, a manual re-entry, or a file sent twice. The beneficiary
+receives the funds twice and the sending bank must recover one
+payment.</p>
+<ol>
+<li><strong>The duplicate is detected.</strong> Detection comes from reconciliation: the sending bank sees two payments with the same reference, amount, and beneficiary, or the beneficiary reports receiving the same payment twice. A duplicate is often detected by the beneficiary bank, which sees two identical credits to the same account.</li>
+<li><strong>The sending bank confirms which payment is the duplicate.</strong> The two payments will have different UETRs if they were sent as two separate payments, which is the usual case, and the same instruction reference if they came from the same instruction. The sending bank must identify exactly which payment to recover, because recovering the wrong one leaves the customer short.</li>
+<li><strong>The sending bank sends a camt.056.</strong> The cancellation request states that the payment is a duplicate and identifies the original payment it duplicates. The request travels to the beneficiary bank.</li>
+<li><strong>The beneficiary bank checks the account.</strong> It confirms that the beneficiary received two credits and that the funds for the duplicate are still in the account. If the beneficiary has already spent the duplicate, the position is the same as in lifecycle A: the bank needs the account holder's consent or a legal basis to debit the account.</li>
+<li><strong>The beneficiary bank answers with a camt.029.</strong> The resolution states whether the cancellation was accepted or rejected, with a reason code.</li>
+<li><strong>If accepted, the duplicate comes back by pacs.004.</strong> The return reason code is DUPL, the standard ISO 20022 return reason code for a duplicate payment. The pacs.004 carries the reference of the duplicate payment so the sending bank can match it.</li>
+<li><strong>The sending bank reconciles and credits its customer.</strong> The return is matched to the duplicate payment, the customer's account is credited, and the case is closed. The sending bank also records the cause of the duplication, because a duplicate that is not fixed at source will happen again.</li>
+</ol>
+<p><strong>Time limits.</strong> As with a recall, the time limit for
+requesting the return of a duplicate is set by the scheme. A duplicate
+detected quickly is usually recovered quickly, because the funds are
+still in the account. A duplicate detected late is harder to recover,
+because the beneficiary may have spent the funds. Speed of detection
+matters more than any time limit in the rulebook.</p>
+<p><strong>Evidence each party needs.</strong> The sending bank needs
+both payment records, the instruction that generated them, and the
+proof that one is a duplicate. The beneficiary bank needs the camt.056
+and the account records showing two credits. Both banks need the
+camt.029 and the pacs.004.</p>
+<p><strong>Possible endings.</strong> Returned in full by pacs.004
+with reason code DUPL; returned in part, where some of the duplicate
+has been spent; rejected, because the funds are gone; or resolved
+without a return, where the beneficiary agrees the second payment was
+in fact a separate legitimate payment and not a duplicate.</p>
+<h2>Message sequence table</h2>
+<table class="pf-table">
+<thead><tr><th>Step</th><th>Lifecycle A: wrong account</th><th>Lifecycle B: never arrived</th><th>Lifecycle C: duplicate</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>Error spotted by customer or sending bank</td><td>Sending bank checks its own systems</td><td>Duplicate detected by reconciliation or by the beneficiary</td></tr>
+<tr><td>2</td><td>camt.056 cancellation request</td><td>pacs.028 status request</td><td>Duplicate confirmed and identified by UETR</td></tr>
+<tr><td>3</td><td>Request forwarded down the chain</td><td>pacs.029 status report</td><td>camt.056 cancellation request, reason duplicate</td></tr>
+<tr><td>4</td><td>Beneficiary bank checks the wrong account</td><td>Request moves down the chain</td><td>Beneficiary bank checks the account for two credits</td></tr>
+<tr><td>5</td><td>camt.029 resolution</td><td>Holding bank explains the hold</td><td>camt.029 resolution</td></tr>
+<tr><td>6</td><td>pacs.004 return if accepted</td><td>Payment released, or returned by pacs.004</td><td>pacs.004 return with reason code DUPL if accepted</td></tr>
+<tr><td>7</td><td>Customer credited, case closed</td><td>Customer credited or beneficiary credited, case closed</td><td>Customer credited, cause recorded, case closed</td></tr>
+</tbody>
+</table>
+<h2>Cancellation request, status request, status report, and return: what is different</h2>
+<p>These four messages are confused often, because they all appear in
+exception handling. The difference is what each one asks for and what
+it does.</p>
+<table class="pf-table">
+<thead><tr><th>Message</th><th>What it asks for</th><th>What it does</th><th>When to use it</th></tr></thead>
+<tbody>
+<tr><td>camt.056, cancellation request</td><td>Cancel a payment and return the funds</td><td>Starts a cancellation. It does not cancel anything by itself: the receiving bank must accept it</td><td>When a payment has been sent and must be stopped or recovered, for example a wrong account or a duplicate</td></tr>
+<tr><td>pacs.028, status request</td><td>Tell me the status of this payment</td><td>Asks a question. It changes nothing about the payment</td><td>When a payment has not arrived and nobody knows where it is</td></tr>
+<tr><td>pacs.029, status report</td><td>Nothing, it is an answer</td><td>Answers a pacs.028 with the current status of the payment</td><td>Only in reply to a pacs.028, or where the scheme requires a status report</td></tr>
+<tr><td>pacs.004, payment return</td><td>Nothing, it is an action</td><td>Returns funds that have already settled, with a return reason code</td><td>When a payment that settled must come back, for example a duplicate, a wrong account, or a closed account</td></tr>
+</tbody>
+</table>
+<p>A useful test: if you want the money back, you send a camt.056 and
+you receive a pacs.004. If you want to know where the money is, you
+send a pacs.028 and you receive a pacs.029. If you want to report that
+a payment was rejected, you send a pacs.002. Mixing these up is a
+common cause of failed exception handling, because the receiving bank
+will act on the message it received, not on the message the sender
+meant to send.</p>
+<h2>Return reason codes a BA should know</h2>
+<p>A pacs.004 carries a return reason code, and the code decides how the
+receiving system handles the return. The codes below are standard ISO
+20022 return reason codes. The exact set a scheme permits depends on
+its usage guidelines, so confirm the list before building to it.</p>
+<table class="pf-table">
+<thead><tr><th>Code</th><th>Meaning</th><th>Typical use</th></tr></thead>
+<tbody>
+<tr><td>AC01</td><td>Incorrect account number</td><td>Account number is wrong or does not exist</td></tr>
+<tr><td>AC04</td><td>Closed account number</td><td>Beneficiary account is closed</td></tr>
+<tr><td>AC06</td><td>Blocked account</td><td>Beneficiary account is blocked</td></tr>
+<tr><td>AM04</td><td>Insufficient funds</td><td>Account does not hold enough funds for the return or the debit</td></tr>
+<tr><td>DUPL</td><td>Duplicate payment</td><td>Payment was sent twice</td></tr>
+<tr><td>CUST</td><td>Requested by customer</td><td>Customer asked for the payment to be returned</td></tr>
+<tr><td>MS03</td><td>Reason not specified</td><td>Used only where the scheme permits a return without a specific reason</td></tr>
+</tbody>
+</table>
+<div class="lesson-box"><h2>What a BA must document for exceptions</h2>
+<p>For every exception type, record the messages in order, the time
+limit set by the scheme, the evidence each party needs, the reason
+codes used, and the possible endings. Then test the lifecycle end to
+end with the banks involved, because an exception flow that has never
+been tested will fail at the step where two banks disagree about who
+acts next.</p></div>
+<div class="lesson-box"><h2>Related chapters</h2><ul><li><a href="../chapters/ch16-cross-border-exceptions.html">Cross-Border Exceptions</a></li><li><a href="../chapters/ch41-payment-exceptions-and-investigations.html">Payment Exceptions and Investigations</a></li><li><a href="../chapters/ch58-reject-and-return-in-cbpr.html">Reject and Return in CBPR+</a></li><li><a href="../chapters/ch75-cross-border-investigations.html">Cross-border investigations</a></li></ul></div>
+<p><a class="studio-btn primary" href="../reference.html">Back to Reference</a></p>
+</section>
+
+</main>
+<footer><p>Payments Training Hub. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="../index.html">Home</a> &middot; <a href="../courses.html">Courses</a> &middot; <a href="../flows.html">Flows</a> &middot; <a href="../situations.html">Situations</a> &middot; <a href="../dashboard.html">Dashboard</a> &middot; <a href="../portfolio.html">Portfolio</a> &middot; <a href="../domains.html">Reference</a> &middot; <a href="../labs-simulators.html">Labs &amp; Simulators</a> &middot; <a href="../practice.html">Practice</a> &middot; <a href="../simulators.html">Simulators</a> &middot; <a href="../labs.html">Labs</a> &middot; <a href="../explorer.html">Explorer</a> &middot; <a href="../tests.html">Tests</a> &middot; <a href="../diagnostic.html">Diagnostic</a> &middot; <a href="../faq.html">Interview Ready Questions</a> &middot; <a href="../interview-prep.html">Interview Prep</a></p><p><a href="../about.html">About</a> &middot; <a href="../founder.html">Founder</a> &middot; <a href="../methodology.html">Methodology</a> &middot; <a href="../privacy.html">Privacy</a> &middot; <a href="../terms.html">Terms</a> &middot; <a href="../refund.html">Refunds</a> &middot; <a href="../contact.html">Contact</a> &middot; <a href="../editorial-standards.html">Editorial Standards</a> &middot; <a href="../sources.html">Sources</a> &middot; <a href="../references-policy.html">References Policy</a> &middot; <a href="../corrections.html">Corrections Policy</a></p><p><a href="../domains.html">Domains</a> &middot; <a href="../reference/mt103-to-pacs008.html">MT103 to pacs.008 Reference</a> &middot; <a href="../reference.html">Reference Library</a> &middot; <a href="../insights.html">Insights and Scenarios</a></p><p><a href="../course-map.html">Course Map</a> &middot; <a href="../pricing.html">Pricing</a> &middot; <a href="../teams.html">For Teams</a> &middot; <a href="../artifacts.html">BA Artifact Library</a> &middot; <a href="../reference/mt-iso-mapping.html">MT to ISO 20022 Mapping</a> &middot; <a href="../reference/clearing-systems.html">Clearing Systems</a> &middot; <a href="../reference/regulatory-compliance.html">Regulatory Compliance</a> &middot; <a href="../reference/exception-lifecycles.html">Exception Lifecycles</a> &middot; <a href="../tools/xml-sandbox.html">XML and MT Sandbox</a> &middot; <a href="../tools/routing-decisions.html">Routing Decision Tree</a></p><p><a href="../support.html">Help and Support</a> &middot; <a href="../changelog.html">Changelog</a> &middot; <a href="../licensing.html">Licensing</a></p></footer>
+<div id="hub-assistant" class="hub-assistant" data-prefix="../" data-expanded="false"><div class="hub-mascot" id="hub-mascot" role="button" tabindex="0" aria-label="Open the Hub Assistant chat"><svg class="hub-mascot-svg" viewBox="0 0 80 96" aria-hidden="true"><path d="M64 8 L66.5 15 L74 17.5 L66.5 20 L64 27 L61.5 20 L54 17.5 L61.5 15 Z" fill="#C9A227"/><path d="M40 12 C54 12 62 22 62 34 L62 64 C62 78 52 88 40 88 C28 88 18 78 18 64 L18 32" fill="none" stroke="#1D4ED8" stroke-width="7" stroke-linecap="round"/><path d="M40 28 C47 28 51 32 51 38 L51 60 C51 68 47 73 40 73 C33 73 29 68 29 60 L29 36" fill="none" stroke="#1D4ED8" stroke-width="7" stroke-linecap="round"/><path d="M18 32 L18 26" stroke="#C9A227" stroke-width="7" stroke-linecap="round"/><circle cx="34" cy="38" r="5" fill="#fff" stroke="#0B1F3D" stroke-width="1.5"/><circle cx="46" cy="38" r="5" fill="#fff" stroke="#0B1F3D" stroke-width="1.5"/><circle cx="35" cy="39" r="2.2" fill="#0B1F3D"/><circle cx="47" cy="39" r="2.2" fill="#0B1F3D"/><path d="M34 50 Q40 56 46 50" fill="none" stroke="#0B1F3D" stroke-width="2.5" stroke-linecap="round"/></svg><span class="hub-mascot-label">Hub Assistant</span><span class="hub-hide" id="hub-hide" role="button" tabindex="0" aria-label="Hide assistant">&times;</span></div><div class="hub-panel" id="hub-panel" hidden><div class="hub-panel-head"><svg class="hub-mini" viewBox="0 0 80 96" aria-hidden="true"><path d="M40 12 C54 12 62 22 62 34 L62 64 C62 78 52 88 40 88 C28 88 18 78 18 64 L18 32" fill="none" stroke="#1D4ED8" stroke-width="7" stroke-linecap="round"/><path d="M40 28 C47 28 51 32 51 38 L51 60 C51 68 47 73 40 73 C33 73 29 68 29 60 L29 36" fill="none" stroke="#1D4ED8" stroke-width="7" stroke-linecap="round"/><path d="M18 32 L18 26" stroke="#C9A227" stroke-width="7" stroke-linecap="round"/></svg><div class="hub-panel-title"><b>Hub Assistant</b><span>Payments Training Hub chat assistant</span></div><button type="button" class="hub-close" id="hub-close" aria-label="Close chat">&times;</button></div><div class="hub-messages" id="hub-messages" aria-live="polite"></div><div class="hub-starters" id="hub-starters"><button type="button" class="hub-chip" data-q="What is an MT103?">What is an MT103?</button><button type="button" class="hub-chip" data-q="How does a pacs.008 work?">How does a pacs.008 work?</button><button type="button" class="hub-chip" data-q="Explain nostro and vostro">Explain nostro and vostro</button></div><form class="hub-input-row" id="hub-form"><input id="hub-input" type="text" placeholder="Ask about payments..." autocomplete="off" aria-label="Ask the Hub Assistant"><button type="submit">Send</button></form></div><button type="button" class="hub-dot" id="hub-dot" aria-label="Show the Hub Assistant"></button></div>
+<script defer src="../assets/site.js"></script>
+<script defer src="../assets/bundles.js"></script>
+<script defer src="../assets/auth.js"></script>
+<script defer src="../assets/site-search.js"></script>
+<script defer src="../assets/hub-assistant.js"></script>
+<script defer src="../assets/codehl.js"></script>
+<script defer src="../assets/nav.js"></script>
+<script defer src="../assets/pf-enhance.js"></script>
+</body>
+</html>

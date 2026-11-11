@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>Payment Routing Decision Tree | Payments Training Hub</title>
+<meta name="description" content="Interactive decision tree for payment routing errors: pick a return reason code and find the root cause and the fix.">
+<link rel="canonical" href="https://www.paymentstraininghub.com/tools/routing-decisions.html">
+<meta property="og:url" content="https://www.paymentstraininghub.com/tools/routing-decisions.html">
+<meta property="og:title" content="Payment Routing Decision Tree | Payments Training Hub">
+<meta property="og:description" content="Interactive decision tree for payment routing errors: pick a return reason code and find the root cause and the fix.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.com/assets/hero/hero-poster.jpg">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Organization", "name": "Payments Training Hub", "url": "https://www.paymentstraininghub.com"}, {"@type": "WebSite", "name": "Payments Training Hub", "url": "https://www.paymentstraininghub.com", "description": "Payments Training Hub: professional payments training, 746 narrated lessons across 100 chapters covering ISO 20022, SWIFT, SEPA, cross-border payments, cards and settlement.", "inLanguage": "en"}]}</script>
+<link rel="stylesheet" href="../assets/pf-theme.css">
+<link rel="stylesheet" href="../assets/hub-assistant.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-row"><a href="../index.html" class="brand">Payments <span>Training Hub</span></a><nav class="topnav"><a href="../index.html">Home</a> <a href="../dashboard.html">Dashboard</a> <a href="../courses.html">Courses</a> <a href="../flows.html">Flows</a> <a href="../practice.html" class="active">Practice</a> <a href="../reference.html">Reference</a> <a href="../situations.html">Situations</a> </nav><form class="pf-search" role="search" action="#" onsubmit="return false"><input id="pf-search" type="search" placeholder="Search lessons, guides, situations..." aria-label="Search the academy" autocomplete="off" data-prefix="../"><div class="pf-search-results" id="pf-search-results" hidden></div></form><button class="sound" id="muteToggle" onclick="toggleMute()">Sound: On</button><span id="authBox" class="auth-note">Free lessons need no sign-in. Sign-in is optional.</span></div><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></header>
+<main>
+<section class="section">
+<nav class="crumbs" aria-label="Breadcrumb"><a href="../index.html">Home</a> &rsaquo; <span>Routing Decision Tree</span></nav>
+<h1>Routing Decision Tree: What Went Wrong, and What to Do Next</h1>
+<p>A payment came back rejected or returned. Pick the reason code on the notice and work the tree. Each code tells you what it means in plain language, the most likely root cause, the next check to run, the fix in order, what to check first, and who owns the fix.</p>
+
+<div class="lesson-box"><h2>How to use</h2>
+<ol>
+<li>Read the reason code on the pacs.002 rejection, the return notice, or the SWIFT NAK.</li>
+<li>Click that code below. Do not guess from the amount or the customer name alone.</li>
+<li>Run the "What to check first" step before you contact anyone. Most routing errors are fixed by one field check, not by re-sending the payment.</li>
+<li>Use the reset button to go back to the code list for the next case.</li>
+</ol>
+<p><strong>Golden rule:</strong> never re-send a rejected payment unchanged. A re-send with the same wrong field comes back with the same code, and a duplicate re-send can create a second, live payment.</p>
+</div>
+
+<div class="lesson-box"><h2>Pick the reason code</h2>
+<p id="code-buttons">
+<button type="button" class="studio-btn" data-code="AC01">AC01</button>
+<button type="button" class="studio-btn" data-code="AC04">AC04</button>
+<button type="button" class="studio-btn" data-code="AC06">AC06</button>
+<button type="button" class="studio-btn" data-code="AM05">AM05</button>
+<button type="button" class="studio-btn" data-code="BE01">BE01</button>
+<button type="button" class="studio-btn" data-code="DUPL">DUPL</button>
+<button type="button" class="studio-btn" data-code="RR04">RR04</button>
+<button type="button" class="studio-btn" data-code="RC01">RC01</button>
+<button type="button" class="studio-btn" data-code="TM01">TM01</button>
+<button type="button" class="studio-btn" data-code="AG01">AG01</button>
+</p>
+<p><button type="button" class="studio-btn primary" id="reset-tree">Reset: back to the code list</button></p>
+<div id="code-panel" aria-live="polite"><p>Click a code above to see its meaning, root cause, next check and fix.</p></div>
+</div>
+
+<div class="lesson-box"><h2>Quick reference: all ten codes</h2>
+<table class="pf-table">
+<thead><tr><th>Code</th><th>Meaning in one line</th><th>Who owns the fix</th></tr></thead>
+<tbody>
+<tr><td>AC01</td><td>Incorrect account number</td><td>Customer, with operations</td></tr>
+<tr><td>AC04</td><td>Closed account number</td><td>Customer, with operations</td></tr>
+<tr><td>AC06</td><td>Blocked account</td><td>Counterparty bank</td></tr>
+<tr><td>AM05</td><td>Duplication</td><td>Operations</td></tr>
+<tr><td>BE01</td><td>Inconsistent with end customer</td><td>Customer, with operations</td></tr>
+<tr><td>DUPL</td><td>Duplicate payment</td><td>Operations, with engineering</td></tr>
+<tr><td>RR04</td><td>Regulatory reason</td><td>Operations, with compliance</td></tr>
+<tr><td>RC01</td><td>Bank identifier incorrect</td><td>Operations</td></tr>
+<tr><td>TM01</td><td>Cut-off time missed</td><td>Operations</td></tr>
+<tr><td>AG01</td><td>Transaction forbidden</td><td>Operations, with compliance</td></tr>
+</tbody>
+</table>
+</div>
+
+<script>
+(function () {
+  var DATA = {
+    AC01: {
+      meaning: 'Incorrect account number. The beneficiary account number or IBAN in the instruction does not exist at the receiving bank, or it fails the IBAN check digits.',
+      rootCause: 'Most often a typing error when the instruction was captured, a truncated IBAN after an MT to ISO 20022 conversion, or an old account number that was never updated after an account migration.',
+      nextCheck: 'Check the IBAN in the core banking or payment hub record, field CdtrAcct in pacs.008 or :59: in MT103. Re-run the IBAN modulus check and compare the IBAN character by character against the customer instruction or invoice.',
+      steps: ['Stop. Do not re-send the payment.', 'Re-run the IBAN check-digit validation on the stored IBAN.', 'Compare the IBAN against the source document, invoice or customer instruction, character by character.', 'If the source is wrong, ask the customer for a corrected IBAN in writing.', 'Correct the standing instruction or beneficiary record, then release a fresh payment with a new instruction ID.'],
+      checkFirst: 'The IBAN in CdtrAcct (:59: in MT103) against the source invoice or instruction.',
+      owner: 'The customer, with operations. The customer supplies the correct account; operations corrects the record and re-releases.'
+    },
+    AC04: {
+      meaning: 'Closed account number. The account number is well formed, but the account has been closed at the receiving bank.',
+      rootCause: 'The beneficiary closed the account, moved banks, or the account was closed after dormancy. The payer is usually working from an old beneficiary record.',
+      nextCheck: 'Check the account status in the payment hub return notice and in the beneficiary master record. Confirm the closure date with the receiving bank through the operations team, not by guessing from the customer name.',
+      steps: ['Stop. Do not re-send to the same account.', 'Confirm the closure with the receiving bank or from the return notice.', 'Ask the customer for the replacement account details in writing.', 'Update the beneficiary master record and mark the old account closed so it cannot be selected again.', 'Release a fresh payment to the new account with a new instruction ID.'],
+      checkFirst: 'The account status on the return notice and the beneficiary master record.',
+      owner: 'The customer, with operations. The customer supplies the new account; operations updates the master record.'
+    },
+    AC06: {
+      meaning: 'Blocked account. The account exists but is blocked, so the receiving bank cannot credit it.',
+      rootCause: 'A block placed by the receiving bank, often for a legal order, a fraud hold, an estate matter, or a compliance restriction. The payer cannot see the reason for the block.',
+      nextCheck: 'Check the return notice for the blocking bank and any reference it gives. Operations contacts the receiving bank through the normal interbank channel to ask whether the block is temporary and what the beneficiary must do.',
+      steps: ['Stop. Do not re-send to the same account.', 'Log the return with the blocking bank reference.', 'Tell the customer the payment was returned because the receiving account is blocked, without speculating on the reason.', 'Ask the customer to resolve the block with their bank, or to give an alternative account.', 'Only re-release once the customer confirms the block is lifted or gives a different account.'],
+      checkFirst: 'The return notice: which bank blocked the account and whether it gives a reference.',
+      owner: 'The counterparty bank. Only the receiving bank can lift the block; the customer must act with their bank.'
+    },
+    AM05: {
+      meaning: 'Duplication. The receiving bank believes this instruction duplicates one it already processed, usually because the instruction ID, end-to-end ID or reference matches an earlier payment.',
+      rootCause: 'A retry after a timeout that actually succeeded, a re-send of the same file, or a standing instruction that fired twice. The payment hub duplicate check should have caught it before release.',
+      nextCheck: 'Check the payment hub duplicate log for the InstrId and EndToEndId, and check the ledger to see whether the first payment already settled. Compare amount, value date, debtor and creditor before you conclude anything.',
+      steps: ['Stop. Do not send a third copy.', 'Confirm in the ledger whether the original payment settled.', 'If it settled, tell the customer the payment went through once and give them the original reference.', 'If it did not settle, find why the duplicate check fired, correct the reference or the duplicate-check rule, then release once.', 'Log the incident so the retry logic is reviewed.'],
+      checkFirst: 'The payment hub duplicate log for the InstrId and EndToEndId, and the ledger for the original payment.',
+      owner: 'Operations, with engineering if the duplicate check or the retry logic failed.'
+    },
+    BE01: {
+      meaning: 'Inconsistent with end customer. The name, account or other end-customer details in the instruction do not match the records of the receiving bank.',
+      rootCause: 'A name mismatch is the usual cause: a trading name instead of the legal account name, a missing middle name, a spelling difference, or a name truncated in conversion from MT to ISO 20022.',
+      nextCheck: 'Check the creditor name in Cdtr (:59: in MT103) against the account name held by the receiving bank. Check whether the name was truncated at 70 characters in CdtrAcct or in the remittance fields during conversion.',
+      steps: ['Stop. Do not re-send with the same name.', 'Compare the creditor name character by character against the account name on the invoice or bank record.', 'Correct the name to the legal account name, or ask the customer to confirm it in writing.', 'Check for truncation in the name and address fields after conversion.', 'Release a fresh payment with the corrected name and a new instruction ID.'],
+      checkFirst: 'The creditor name in Cdtr (:59: in MT103) against the legal account name.',
+      owner: 'The customer, with operations. The customer confirms the legal name; operations corrects the instruction.'
+    },
+    DUPL: {
+      meaning: 'Duplicate payment. The payment has already been made, so this instruction is a second copy of a live payment. DUPL is the duplicate flag used in returns and investigations, close to AM05 but raised when the duplicate has already settled.',
+      rootCause: 'A file sent twice, a manual re-key of a payment that was already released, or an interface that replayed a batch after a failure without checking what had already settled.',
+      nextCheck: 'Check the ledger and the settlement account for the original payment: same amount, same value date, same debtor and creditor. Check the interface and batch logs to find where the second copy came from.',
+      steps: ['Stop. Do not send anything further for this payment.', 'Confirm the original payment settled and get its reference.', 'Tell the customer the payment was made once and give them the original reference.', 'If the duplicate also settled, start a recall of the second payment through operations.', 'Fix the source: the batch replay, the manual re-key step, or the interface retry that created the copy.'],
+      checkFirst: 'The ledger: did the original payment, same amount and value date, already settle?',
+      owner: 'Operations, with engineering if an interface replay or batch logic created the copy.'
+    },
+    RR04: {
+      meaning: 'Regulatory reason. The payment was rejected for a regulatory or compliance reason, such as missing regulatory reporting data, a sanctions screening concern, or a restriction on the corridor or purpose.',
+      rootCause: 'Most often a missing regulatory field, for example the purpose code or the regulatory reporting information, or a sanctions or embargo screening hit that needs compliance review.',
+      nextCheck: 'Check the compliance screening result and the regulatory fields in the instruction: purpose code, regulatory reporting block, and debtor and creditor country and name screening. Operations must not override a screening hit alone.',
+      steps: ['Stop. Do not re-send or change the payment to work around the rejection.', 'Read the compliance screening result and the exact field or rule cited.', 'If a field is missing, add the correct regulatory reporting data and re-release.', 'If it is a screening hit, hand the case to compliance with the full payment details.', 'Only re-release on compliance clearance, in writing.'],
+      checkFirst: 'The compliance screening result and the regulatory reporting fields in the instruction.',
+      owner: 'Operations, with compliance. Compliance decides on a screening hit; operations fixes missing regulatory data.'
+    },
+    RC01: {
+      meaning: 'Bank identifier incorrect. The BIC in the instruction is wrong, malformed, or does not identify a reachable bank for this payment.',
+      rootCause: 'A typing error in the BIC, an old BIC after a bank merger or rename, a BIC that is valid in format but not connected to the clearing system used, or a BIC truncated in conversion.',
+      nextCheck: 'Check the BIC in DbtrAgt and CdtrAgt in pacs.008, or :52A: and :57A: in MT103, against the SWIFT BIC directory. Confirm the BIC is 8 or 11 characters and that the bank is reachable on the intended clearing route.',
+      steps: ['Stop. Do not re-send with the same BIC.', 'Validate the BIC format: 4-letter bank code, 2-letter country code, 2-character location code, optional 3-character branch code.', 'Look the BIC up in the BIC directory and confirm the bank and branch.', 'If the bank merged or renamed, get the current BIC from the customer or the directory.', 'Correct the agent BIC and release a fresh payment with a new instruction ID.'],
+      checkFirst: 'The BIC in DbtrAgt and CdtrAgt (:52A: and :57A: in MT103) against the BIC directory.',
+      owner: 'Operations. Operations validates and corrects the BIC; the customer confirms it only if the bank itself changed.'
+    },
+    TM01: {
+      meaning: 'Cut-off time missed. The instruction arrived after the cut-off for the requested value date, so it cannot settle that day.',
+      rootCause: 'The payment was released late in the day, the file arrived after the hub cut-off, or the value date requested was the same day after the 17:00 CET customer-payment cut-off for TARGET2.',
+      nextCheck: 'Check the creation time (CreDtTm in pacs.008) and the requested settlement date against the cut-off table for the clearing system. Confirm whether the payment was queued for the next business day or rejected outright.',
+      steps: ['Do not re-send the same instruction for the same value date.', 'Confirm the next TARGET2 business day from the calendar.', 'Change the settlement date to the next business day and re-release, or let the hub queue it if that is the agreed behaviour.', 'Tell the customer the new value date.', 'If same-day settlement matters, agree an earlier release time for the next payment.'],
+      checkFirst: 'The creation time and the requested settlement date against the cut-off table.',
+      owner: 'Operations. Operations re-dates the payment to the next business day and tells the customer.'
+    },
+    AG01: {
+      meaning: 'Transaction forbidden. The transaction type itself is not allowed on this account, corridor or product, for example a payment type the account does not support or a transfer the product rules forbid.',
+      rootCause: 'The payment type does not match the account or product: a direct debit on an account that only allows credits, a cross-border payment on a domestic-only product, or a transaction type blocked by the bank product rules.',
+      nextCheck: 'Check the payment type and service level in PmtTpInf against the product rules for the debtor account. Check whether the corridor, currency or transaction type is permitted for that product.',
+      steps: ['Stop. Do not re-send the same transaction type.', 'Confirm which transaction types the debtor account and product allow.', 'If the payment is legitimate but the type is wrong, change the payment type or use the correct product channel.', 'If the transaction is genuinely forbidden, tell the customer why and what alternative is available.', 'Log the case so the product rules or the front-end validation can be corrected.'],
+      checkFirst: 'The payment type in PmtTpInf against the product rules for the debtor account.',
+      owner: 'Operations, with compliance if the restriction is a regulatory product rule.'
+    }
+  };
+
+  var panel = document.getElementById('code-panel');
+  var buttons = document.querySelectorAll('#code-buttons button');
+
+  function escHtml(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  function show(code) {
+    var d = DATA[code];
+    if (!d) return;
+    var steps = d.steps.map(function (s, i) { return '<li>' + escHtml(s) + '</li>'; }).join('');
+    panel.innerHTML = '<h2>' + escHtml(code) + '</h2>'
+      + '<p><strong>What it means:</strong> ' + escHtml(d.meaning) + '</p>'
+      + '<p><strong>Most likely root cause:</strong> ' + escHtml(d.rootCause) + '</p>'
+      + '<p><strong>Next check to run:</strong> ' + escHtml(d.nextCheck) + '</p>'
+      + '<p><strong>What to check first:</strong> ' + escHtml(d.checkFirst) + '</p>'
+      + '<p><strong>Who owns the fix:</strong> ' + escHtml(d.owner) + '</p>'
+      + '<p><strong>Remediation, in order:</strong></p><ol>' + steps + '</ol>';
+    panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  buttons.forEach(function (b) {
+    b.addEventListener('click', function () { show(b.getAttribute('data-code')); });
+  });
+  document.getElementById('reset-tree').addEventListener('click', function () {
+    panel.innerHTML = '<p>Click a code above to see its meaning, root cause, next check and fix.</p>';
+  });
+})();
+</script>
+</section>
+</main>
+<footer><p>Payments Training Hub. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="../index.html">Home</a> &middot; <a href="../courses.html">Courses</a> &middot; <a href="../flows.html">Flows</a> &middot; <a href="../situations.html">Situations</a> &middot; <a href="../dashboard.html">Dashboard</a> &middot; <a href="../portfolio.html">Portfolio</a> &middot; <a href="../domains.html">Reference</a> &middot; <a href="../labs-simulators.html">Labs &amp; Simulators</a> &middot; <a href="../practice.html">Practice</a> &middot; <a href="../simulators.html">Simulators</a> &middot; <a href="../labs.html">Labs</a> &middot; <a href="../explorer.html">Explorer</a> &middot; <a href="../tests.html">Tests</a> &middot; <a href="../diagnostic.html">Diagnostic</a> &middot; <a href="../faq.html">Interview Ready Questions</a> &middot; <a href="../interview-prep.html">Interview Prep</a></p><p><a href="../about.html">About</a> &middot; <a href="../founder.html">Founder</a> &middot; <a href="../methodology.html">Methodology</a> &middot; <a href="../privacy.html">Privacy</a> &middot; <a href="../terms.html">Terms</a> &middot; <a href="../refund.html">Refunds</a> &middot; <a href="../contact.html">Contact</a> &middot; <a href="../editorial-standards.html">Editorial Standards</a> &middot; <a href="../sources.html">Sources</a> &middot; <a href="../references-policy.html">References Policy</a> &middot; <a href="../corrections.html">Corrections Policy</a></p><p><a href="../domains.html">Domains</a> &middot; <a href="../reference/mt103-to-pacs008.html">MT103 to pacs.008 Reference</a> &middot; <a href="../reference.html">Reference Library</a> &middot; <a href="../insights.html">Insights and Scenarios</a></p><p><a href="../course-map.html">Course Map</a> &middot; <a href="../pricing.html">Pricing</a> &middot; <a href="../teams.html">For Teams</a> &middot; <a href="../artifacts.html">BA Artifact Library</a> &middot; <a href="../reference/mt-iso-mapping.html">MT to ISO 20022 Mapping</a> &middot; <a href="../reference/clearing-systems.html">Clearing Systems</a> &middot; <a href="../reference/regulatory-compliance.html">Regulatory Compliance</a> &middot; <a href="../reference/exception-lifecycles.html">Exception Lifecycles</a> &middot; <a href="../tools/xml-sandbox.html">XML and MT Sandbox</a> &middot; <a href="../tools/routing-decisions.html">Routing Decision Tree</a></p><p><a href="../support.html">Help and Support</a> &middot; <a href="../changelog.html">Changelog</a> &middot; <a href="../licensing.html">Licensing</a></p></footer>
+<div id="hub-assistant" class="hub-assistant" data-prefix="../" data-expanded="false"><div class="hub-mascot" id="hub-mascot" role="button" tabindex="0" aria-label="Open the Hub Assistant chat"><svg class="hub-mascot-svg" viewBox="0 0 80 96" aria-hidden="true"><path d="M64 8 L66.5 15 L74 17.5 L66.5 20 L64 27 L61.5 20 L54 17.5 L61.5 15 Z" fill="#C9A227"/><path d="M40 12 C54 12 62 22 62 34 L62 64 C62 78 52 88 40 88 C28 88 18 78 18 64 L18 32" fill="none" stroke="#1D4ED8" stroke-width="7" stroke-linecap="round"/><path d="M40 28 C47 28 51 32 51 38 L51 60 C51 68 47 73 40 73 C33 73 29 68 29 60 L29 36" fill="none" stroke="#1D4ED8" stroke-width="7" stroke-linecap="round"/><path d="M18 32 L18 26" stroke="#C9A227" stroke-width="7" stroke-linecap="round"/><circle cx="34" cy="38" r="5" fill="#fff" stroke="#0B1F3D" stroke-width="1.5"/><circle cx="46" cy="38" r="5" fill="#fff" stroke="#0B1F3D" stroke-width="1.5"/><circle cx="35" cy="39" r="2.2" fill="#0B1F3D"/><circle cx="47" cy="39" r="2.2" fill="#0B1F3D"/><path d="M34 50 Q40 56 46 50" fill="none" stroke="#0B1F3D" stroke-width="2.5" stroke-linecap="round"/></svg><span class="hub-mascot-label">Hub Assistant</span><span class="hub-hide" id="hub-hide" role="button" tabindex="0" aria-label="Hide assistant">&times;</span></div><div class="hub-panel" id="hub-panel" hidden><div class="hub-panel-head"><svg class="hub-mini" viewBox="0 0 80 96" aria-hidden="true"><path d="M40 12 C54 12 62 22 62 34 L62 64 C62 78 52 88 40 88 C28 88 18 78 18 64 L18 32" fill="none" stroke="#1D4ED8" stroke-width="7" stroke-linecap="round"/><path d="M40 28 C47 28 51 32 51 38 L51 60 C51 68 47 73 40 73 C33 73 29 68 29 60 L29 36" fill="none" stroke="#1D4ED8" stroke-width="7" stroke-linecap="round"/><path d="M18 32 L18 26" stroke="#C9A227" stroke-width="7" stroke-linecap="round"/></svg><div class="hub-panel-title"><b>Hub Assistant</b><span>Payments Training Hub chat assistant</span></div><button type="button" class="hub-close" id="hub-close" aria-label="Close chat">&times;</button></div><div class="hub-messages" id="hub-messages" aria-live="polite"></div><div class="hub-starters" id="hub-starters"><button type="button" class="hub-chip" data-q="What is an MT103?">What is an MT103?</button><button type="button" class="hub-chip" data-q="How does a pacs.008 work?">How does a pacs.008 work?</button><button type="button" class="hub-chip" data-q="Explain nostro and vostro">Explain nostro and vostro</button></div><form class="hub-input-row" id="hub-form"><input id="hub-input" type="text" placeholder="Ask about payments..." autocomplete="off" aria-label="Ask the Hub Assistant"><button type="submit">Send</button></form></div><button type="button" class="hub-dot" id="hub-dot" aria-label="Show the Hub Assistant"></button></div>
+<script defer src="../assets/site.js"></script>
+<script defer src="../assets/bundles.js"></script>
+<script defer src="../assets/auth.js"></script>
+<script defer src="../assets/site-search.js"></script>
+<script defer src="../assets/hub-assistant.js"></script>
+<script defer src="../assets/codehl.js"></script>
+<script defer src="../assets/nav.js"></script>
+<script defer src="../assets/pf-enhance.js"></script>
+</body>
+</html>
