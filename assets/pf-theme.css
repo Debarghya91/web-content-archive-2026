@@ -1062,3 +1062,75 @@ button,.btn{transition:transform .12s,box-shadow .12s}
 .pf-search-results li span{font-size:12px;color:#5B6B85;text-transform:capitalize}
 .pf-search-none{padding:12px 14px;font-size:14px;color:var(--pf-ink-2);margin:0}
 @media(max-width:900px){.pf-search{flex:1 1 100%;order:2}}
+
+/* Copy protection (11 Nov 2026): lesson content is not selectable and
+   cannot be copied by right-click or keyboard shortcut. Scoped to the
+   content containers only: lesson body, situations, guides, FAQ answers
+   and the search-results dropdown. Navigation, headers, footers, the
+   lesson side rail and the homepage are NOT covered. The JS guard in
+   pf-enhance.js blocks the context menu and Copy/Cut on the same
+   containers. This stops casual copying only: screenshots, OCR and
+   view-source still work, so it is friction, not a guarantee. */
+.lesson-main,
+.sit-case,
+.sit-catalogue,
+.guide-page,
+.faq-answer,
+.pf-search-results{
+  -webkit-user-select:none;
+  user-select:none;
+}
+/* Keep interactive elements usable inside protected content: form
+   fields still take text, buttons still click, and the in-lesson
+   prev/next navigation stays selectable. Plain links inside lesson
+   body text stay unselectable (they still click normally). */
+.lesson-main input, .lesson-main textarea, .lesson-main select,
+.lesson-main button, .lesson-main .lesson-nav, .lesson-main .note-editor,
+.sit-case input, .sit-case textarea, .sit-case select, .sit-case button,
+.sit-catalogue button,
+.guide-page input, .guide-page textarea, .guide-page select, .guide-page button,
+.faq-answer button{
+  -webkit-user-select:text;
+  user-select:text;
+}
+/* Faint diagonal watermark (11 Nov 2026): the div is injected by
+   pf-enhance.js on content pages only (lessons, situations, guides,
+   FAQ). Very low opacity so readability is not hurt; pointer-events
+   none so it never blocks taps, clicks or text input. */
+.pf-watermark{position:fixed;inset:0;z-index:5;pointer-events:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='340' height='200'><text x='170' y='100' font-family='Arial, sans-serif' font-size='16' fill='rgba(11,31,61,0.045)' text-anchor='middle' transform='rotate(-30 170 100)'>Payments Training Hub</text></svg>");background-repeat:repeat}
+
+/* Data tables for reference pages (11 Nov 2026, top-20 items 12-16):
+   MT to ISO mapping, clearing systems, regulatory, exceptions, and the
+   situation ledger tables. Same navy/blue/gold as the rest of the site. */
+.pf-table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px;line-height:1.5}
+.pf-table th{background:#0B1F3D;color:#fff;text-align:left;padding:10px 12px;font-weight:600}
+.pf-table td{padding:10px 12px;border-bottom:1px solid #E2E8F0;vertical-align:top}
+.pf-table tr:nth-child(even) td{background:#F5F7FA}
+.pf-table td code,.pf-table th code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px}
+
+/* Syntax highlighting (11 Nov 2026, top-20 item 19): tokens for XML,
+   JSON and SWIFT MT blocks. Colours stay readable on the light card
+   background and on the dark code background. */
+pre.codehl-pre{position:relative;background:#0B1F3D;color:#E2E8F0;border-radius:8px;padding:14px 16px;overflow-x:auto}
+pre.codehl-pre code{background:transparent;color:inherit;padding:0}
+code.codehl{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px}
+.hl-tag{color:#7DD3FC;font-weight:600}
+.hl-attr{color:#FBBF24}
+.hl-str{color:#86EFAC}
+.hl-num{color:#FCA5A5}
+.hl-kw{color:#C4B5FD}
+.hl-key{color:#7DD3FC}
+.hl-com{color:#94A3B8;font-style:italic}
+.hl-ns{color:#FBBF24}
+.hl-field{color:#FBBF24;font-weight:700}
+.hl-msg{color:#7DD3FC;font-weight:600}
+.hl-bic{color:#86EFAC}
+.hl-block{color:#C4B5FD;font-weight:600}
+.codehl-copy{position:absolute;top:8px;right:8px;background:#1D4ED8;color:#fff;border:1px solid #3B82F6;border-radius:6px;padding:4px 10px;font-size:12px;cursor:pointer;user-select:none}
+.codehl-copy:hover{background:#1E40AF}
+.codehl-copy:focus-visible{outline:2px solid #C9A227;outline-offset:2px}
+
+/* Courses page mode toggle (11 Nov 2026, top-20 item 20): Learn step
+   by step versus Quick reference. */
+.mode-toggle{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0 8px}
+.mode-toggle .studio-btn{margin:0}
