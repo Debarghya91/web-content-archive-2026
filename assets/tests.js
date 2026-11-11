@@ -73,7 +73,7 @@
     "cards": { bundle_id: "cards", bundle_name: "Cards and Domestic Payments" },
     "compliance": { bundle_id: "compliance-ops", bundle_name: "Compliance, Risk, Operations and Reconciliation" },
     "architecture-apis": { bundle_id: "architecture-apis", bundle_name: "Payment Architecture and APIs" },
-    "ba-practice": { bundle_id: "ba-practice", bundle_name: "BA and PO Professional Practice" }
+    "ba-practice": { bundle_id: "ba-practice", bundle_name: "AI Product Owner and Product Manager for Payments" }
   };
 
   /* ---------- competency feedback (10/10 plan, Priority 1) ----------
@@ -506,8 +506,8 @@
     }
     if (areaPct("ba-practice") < 50) {
       return { rule_id: "ba-practice-weak", bundle_id: "ba-practice",
-        bundle_name: "BA and PO Professional Practice", overall_percent: overall,
-        reason: "BA and PO practice is your weakest area. The BA and PO Professional Practice bundle covers requirements, stories, mappings, tests and the capstone." };
+        bundle_name: "AI Product Owner and Product Manager for Payments", overall_percent: overall,
+        reason: "AI product ownership is your weakest area. The AI Product Owner and Product Manager for Payments bundle covers AI for the payments BA and PO, AI-assisted work, product ownership, governance and the capstone." };
     }
     // Fallback: recommend the bundle for the lowest scoring area.
     var worst = null, worstPct = 101;
