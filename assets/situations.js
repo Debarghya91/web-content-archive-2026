@@ -796,22 +796,6 @@ function paSitRenderSamples(samples){
   }
   paSitProtectElement(box);
 }
-function paUnlockSituations(){
-  var st = document.getElementById('sit-unlock-status');
-  var input = document.getElementById('sit-claim-id');
-  var claimId = input ? (input.value || '').trim() : '';
-  if(!claimId){ if(st) st.textContent = 'Enter your claim id first.'; return; }
-  if(typeof paGrantSituationsAccess !== 'function'){
-    if(st) st.textContent = 'Unlock is not available on this page yet. Please refresh and try again.';
-    return;
-  }
-  if(paGrantSituationsAccess(claimId)){
-    if(st) st.textContent = 'Unlocked. Welcome to Payment Situations.';
-    paSitShowContent();
-  } else {
-    if(st) st.textContent = 'That claim id does not match a submitted payment for this product. Check the claim id from your payment submission, or contact the owner with your UTR.';
-  }
-}
 function paSitShowContent(){
   var wall = document.getElementById('sit-paywall');
   var owned = document.getElementById('sit-owned');
