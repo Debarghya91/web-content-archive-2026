@@ -1,12 +1,12 @@
 
-/* ===== Supabase Auth (DORMANT) ===== */
-/* By owner decision the site stays open for all. This code does nothing
-   until PA_AUTH_CONFIG.enabled is set to true AND the Supabase URL and
-   anon key below are filled in. No client loads, no network calls happen. */
+/* ===== Supabase Auth (dashboard sign-in only) ===== */
+/* Sign-in exists only for the learner dashboard: it saves progress to
+   the learner's account so it syncs across devices. Lessons and the
+   homepage stay open to everyone. No access enforcement, no paywall. */
 var PA_AUTH_CONFIG = {
-  enabled: false, /* TO BE FILLED when auth is activated */
-  supabaseUrl: '', /* TO BE FILLED: https://<project-ref>.supabase.co */
-  supabaseAnonKey: '' /* TO BE FILLED: Supabase anon public key */
+  enabled: true,
+  supabaseUrl: 'https://eofsotgclhwsdwvbbtib.supabase.co',
+  supabaseAnonKey: 'sb_publishable_4d5gOEpkTOMp7NadcV9ErA_Ujcc2ahU'
 };
 var paSupabase = null;
 function paAuthLoadClient(callback){
@@ -22,12 +22,28 @@ function paAuthLoadClient(callback){
   };
   document.head.appendChild(s);
 }
+function paAuthHasStoredSession(){
+  try {
+    var raw = localStorage.getItem('sb-eofsotgclhwsdwvbbtib-auth-token');
+    if(!raw) return false;
+    var data = JSON.parse(raw);
+    return !!(data && data.access_token);
+  } catch(e){ return false; }
+}
 function paAuthShowUI(){
   if(!PA_AUTH_CONFIG.enabled) return;
   var box = document.getElementById('authBox');
   if(box) box.style.display = 'inline-block';
-  var form = document.getElementById('authForm');
-  if(form) form.style.display = 'inline-block';
+}
+function paAuthShowSignedOut(){
+  var st = document.getElementById('authState');
+  var inLink = document.getElementById('authSignInLink');
+  var dash = document.getElementById('authDashLink');
+  var out = document.getElementById('authSignOutBtn');
+  if(st) st.textContent = 'Not signed in';
+  if(inLink) inLink.style.display = 'inline';
+  if(dash) dash.style.display = 'none';
+  if(out) out.style.display = 'none';
 }
 function paAuthRefreshState(){
   if(!PA_AUTH_CONFIG.enabled) return;
@@ -35,18 +51,18 @@ function paAuthRefreshState(){
     client.auth.getSession().then(function(res){
       var user = res.data && res.data.session && res.data.session.user;
       var st = document.getElementById('authState');
+      var inLink = document.getElementById('authSignInLink');
+      var dash = document.getElementById('authDashLink');
       var out = document.getElementById('authSignOutBtn');
-      var form = document.getElementById('authForm');
       if(user){
         if(st) st.textContent = 'Signed in: ' + (user.email || '');
+        if(inLink) inLink.style.display = 'none';
+        if(dash) dash.style.display = 'inline';
         if(out) out.style.display = 'inline-block';
-        if(form) form.style.display = 'none';
       } else {
-        if(st) st.textContent = 'Not signed in';
-        if(out) out.style.display = 'none';
-        if(form) form.style.display = 'inline-block';
+        paAuthShowSignedOut();
       }
-    });
+    }).catch(function(){ paAuthShowSignedOut(); });
   });
 }
 function paAuthSendOtp(){
@@ -73,25 +89,35 @@ function paAuthVerifyOtp(){
     client.auth.verifyOtp({ email: email, token: token, type: 'email' }).then(function(res){
       if(res.error){ alert('Code did not work: ' + res.error.message); return; }
       paAuthRefreshState();
+      if(/signin\.html$/.test(window.location.pathname || '')){
+        window.location.href = 'dashboard.html';
+      }
     });
   });
 }
 function paAuthGoogle(){
   if(!PA_AUTH_CONFIG.enabled) return;
   paAuthLoadClient(function(client){
-    client.auth.signInWithOAuth({ provider: 'google' });
+    client.auth.signInWithOAuth({
+      provider: 'google',
+      options: { redirectTo: window.location.origin + '/dashboard.html' }
+    });
   });
 }
 function paAuthSignOut(){
   if(!PA_AUTH_CONFIG.enabled) return;
   paAuthLoadClient(function(client){
-    client.auth.signOut().then(function(){ paAuthRefreshState(); });
+    client.auth.signOut().then(function(){
+      paAuthRefreshState();
+      if(/dashboard\.html$/.test(window.location.pathname || '')){
+        window.location.reload();
+      }
+    });
   });
 }
-/* Identity helpers for checkout (dormant-safe: resolve to null while
-   auth is off). The Razorpay create-order call needs the signed-in
-   learner's Supabase user id and access token so the order notes carry
-   {supabase_user_id, bundle_id} and the webhook can grant access. */
+/* Identity helpers for the dashboard sync (learner-sync.js uses the
+   shared client through paAuthLoadClient). They resolve to null while
+   signed out, so guests degrade to the browser-only dashboard. */
 function paAuthCurrentSession(){
   return new Promise(function(resolve){
     if(!PA_AUTH_CONFIG.enabled){ resolve(null); return; }
@@ -144,4 +170,13 @@ function paApplyDeterrents(){
     el.style.webkitUserSelect = 'none';
   });
 }
-if(PA_AUTH_CONFIG.enabled){ paAuthShowUI(); paAuthRefreshState(); }
+/* Load the Supabase client only when it is needed: on the sign-in and
+   dashboard pages, or when a session is already stored. Guests reading
+   lessons never load it, so lesson pages stay as fast as before. */
+(function(){
+  if(!PA_AUTH_CONFIG.enabled) return;
+  var path = window.location.pathname || '';
+  var needsAuth = /signin\.html$/.test(path) || /dashboard\.html$/.test(path);
+  if(needsAuth || paAuthHasStoredSession()){ paAuthShowUI(); paAuthRefreshState(); }
+  else { paAuthShowSignedOut(); }
+})();

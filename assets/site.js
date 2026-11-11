@@ -540,6 +540,7 @@ function showTrace(which){
 
 
 
+
 /* ===== Payments Academy interactive features ===== */
 function showMode(anchor, btn){
   document.querySelectorAll('.mode-tab').forEach(function(b){b.classList.remove('active')});
@@ -866,6 +867,12 @@ function paReset(){
 }
 function lessonDone(sid){
   var p = paLoad(); p.lessons[sid] = true; paSave(p);
+  /* Signed-in dashboard sync (12 Nov 2026): best effort only. The call
+     is a no-op when the learner is signed out, offline, or the sync
+     script is not loaded, so lesson completion can never break here. */
+  if(typeof PALearnerSync !== 'undefined' && PALearnerSync.recordLesson){
+    try { PALearnerSync.recordLesson(sid); } catch(e){}
+  }
   var b = document.getElementById('done-' + sid);
   if(b){ b.textContent = 'Completed'; b.classList.add('done'); }
   setPlayLabel(sid, false);

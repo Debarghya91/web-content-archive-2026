@@ -600,6 +600,12 @@
             area_scores: result.area_scores, recommendation: rec };
           store.setItem(DIAGNOSTIC_KEY, JSON.stringify(record));
           result.recommendation = rec;
+          /* Signed-in dashboard sync (12 Nov 2026): best effort only. */
+          if(typeof PALearnerSync !== 'undefined' && PALearnerSync.recordResult){
+            try { PALearnerSync.recordResult('diagnostic', 'diagnostic',
+              { score_percent: result.percent, correct_count: result.correct,
+                total_questions: result.total }); } catch(e){}
+          }
           return record;
         }
         var attempts = readJson(store, TESTS_KEY) || { attempts: [] };
@@ -610,6 +616,13 @@
           pass_mark_percent: passMark, auto_submitted: state.autoSubmitted };
         attempts.attempts.push(attempt);
         store.setItem(TESTS_KEY, JSON.stringify(attempts));
+        /* Signed-in dashboard sync (12 Nov 2026): best effort only.
+           No-op when signed out, offline, or the sync script is absent. */
+        if(typeof PALearnerSync !== 'undefined' && PALearnerSync.recordResult){
+          try { PALearnerSync.recordResult('test', state.testId,
+            { score_percent: result.percent, correct_count: result.correct,
+              total_questions: result.total }); } catch(e){}
+        }
         return attempt;
       } catch (e) { return null; }
     }
