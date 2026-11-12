@@ -1,8 +1,8 @@
 /* PaymentForge learner data: dashboard, portfolio and backup.
    Reads the progress this academy already stores in this browser.
    Nothing here signs you in, and nothing is sent to any server.
-   Storage keys read (never written by this file, except the learner
-   name and a restore you confirm):
+   Storage keys read (written by this file only for the learner name,
+   the weekly goal, the backup date stamp, and a restore you confirm):
      payments-academy-progress-v1  lessons, lesson quizzes, capstones
      payments-academy-tests-v1     test attempts
      payments-academy-diagnostic-v1 placement test result
@@ -439,7 +439,7 @@
       '<span>Weekly goal, week starting ' + esc(summary.weekStartLabel) + '</span>' + bar(summary.weekLessons, summary.weeklyGoal) +
       '<p>Goal: ' + [3, 5, 7, 10].map(function (n) {
         return '<button type="button" class="pa-goal-btn' + (n === summary.weeklyGoal ? ' active' : '') + '" onclick="PALearner.setWeeklyGoal(' + n + ')">' + n + '</button>';
-      }).join(' ') + ' lessons a week</p></div>' +
+      }).join(' ') + ' lessons a week <span id="pa-goal-saved" class="pa-note" role="status"></span></p></div>' +
       '<div class="hp-dash-card"><b>' + summary.streak + (summary.streak === 1 ? ' day' : ' days') + '</b>' +
       '<span>Learning streak: consecutive days with a lesson, a quiz or a test. A day counts when you finish a lesson, answer a quiz or take a test.</span></div>' +
       '<div class="hp-dash-card"><b>' + summary.chaptersDone + ' / ' + summary.chaptersTotal + '</b>' +
@@ -545,9 +545,14 @@
 
     h += '<section class="section"><h2>Capstone projects</h2><div class="hp-grid">';
     summary.capstoneRows.forEach(function (p) {
-      h += '<a class="hp-card" href="' + esc(p.url) + '"><b>' + esc(p.title) + '</b>' +
+      /* No nested links: the card used to be one <a> wrapped around a
+         second <a> for the brief, which browsers repair by closing
+         the outer link early, so taps on the card did not reliably
+         open the project page. The card is a <div> now, with two
+         separate working links inside it. */
+      h += '<div class="hp-card"><a href="' + esc(p.url) + '" style="text-decoration:none"><b>' + esc(p.title) + '</b></a>' +
         '<span>' + (p.done ? 'Brief read, marked complete.' : 'Not started yet.') + ' ' +
-        '<a href="' + esc(p.brief) + '">Download the brief</a></span></a>';
+        '<a href="' + esc(p.brief) + '">Download the brief</a></span></div>';
     });
     h += '</div><p class="pa-note">A capstone counts as complete when you open its brief from the ' +
       'projects page. The deliverables themselves are yours to keep; the academy does not ' +
@@ -846,8 +851,16 @@
   function setWeeklyGoal(n) {
     var goal = parseInt(n, 10);
     if (!(goal > 0 && goal <= 70)) return;
-    try { safeStore().setItem(GOAL_KEY, String(goal)); } catch (e) { return; }
+    try {
+      safeStore().setItem(GOAL_KEY, String(goal));
+    } catch (e) {
+      var fail = document.getElementById("pa-goal-saved");
+      if (fail) fail.textContent = "Your weekly goal could not be saved in this browser.";
+      return;
+    }
     if (lastData) renderDashboard("pa-dashboard", lastData);
+    var saved = document.getElementById("pa-goal-saved");
+    if (saved) saved.textContent = "Weekly goal saved: " + goal + " lessons a week.";
   }
   function renderPortfolio(containerId, data) {
     lastData = data;
@@ -860,10 +873,14 @@
   function exportBackup() {
     var backup = buildBackup(null);
     var today = new Date().toISOString().slice(0, 10);
-    downloadText("payments-training-hub-backup-" + today + ".json",
+    var ok = downloadText("payments-training-hub-backup-" + today + ".json",
       JSON.stringify(backup, null, 2));
-    try { safeStore().setItem(BACKUP_DATE_KEY, today); } catch (e) {}
     var r = document.getElementById("pa-backup-result");
+    if (!ok) {
+      if (r) r.textContent = "The backup could not be downloaded. Please try again.";
+      return;
+    }
+    try { safeStore().setItem(BACKUP_DATE_KEY, today); } catch (e) {}
     if (r) r.textContent = "Backup downloaded. Keep the file somewhere safe; it is the only copy of your progress outside this browser.";
   }
   function previewBackupFile(input) {
@@ -903,9 +920,17 @@
       if (result) result.textContent = "No valid backup is waiting. Choose a backup file first.";
       return;
     }
+    var total = Object.keys(pendingBackup.data || {}).length;
     var n = restoreBackup(null, pendingBackup);
     pendingBackup = null;
-    if (result) result.textContent = "Restored " + n + " saved item" + (n === 1 ? "" : "s") + ". The page will reload to show your restored progress.";
+    if (n <= 0) {
+      if (result) result.textContent = "Nothing could be restored. Your current progress was left unchanged. Please try again.";
+      return;
+    }
+    if (result) result.textContent = (n < total
+      ? "Restored " + n + " of " + total + " saved items. Some items could not be saved in this browser. "
+      : "Restored " + n + " saved item" + (n === 1 ? "" : "s") + ". ") +
+      "The page will reload to show your restored progress.";
     setTimeout(function () { try { location.reload(); } catch (e) {} }, 1200);
   }
   function saveLearnerName() {
@@ -913,10 +938,12 @@
     var saved = document.getElementById("pa-name-saved");
     if (!input) return;
     var name = String(input.value || "").trim().slice(0, 120);
+    var ok = true;
     try {
       safeStore().setItem(LEARNER_KEY, JSON.stringify({ name: name }));
-    } catch (e) {}
-    if (saved) saved.textContent = name ? "Saved." : "Cleared.";
+    } catch (e) { ok = false; }
+    if (saved) saved.textContent = ok ? (name ? "Saved." : "Cleared.") : "Could not be saved in this browser.";
+    if (!ok) return;
     var title = document.getElementById("pa-portfolio-name");
     if (title) title.textContent = name || "My Learning Portfolio";
   }

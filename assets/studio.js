@@ -14,6 +14,100 @@ var PA_STUDIOS = {};
    Only when both hosts fail does the error box appear. */
 var AUDIO_FALLBACK_HOST = 'https://paymentforge-audio-backup.pages.dev';
 var AUDIO_LOAD_TIMEOUT_MS = 8000;
+/* Detailed explanations render as separate paragraphs, never one wall
+   of text (website parity, item 6, 12 Nov 2026). These mirrors follow
+   the same rules as the Python helpers in studio_html: the source
+   paragraphs array when it is exactly the transcript, else blank lines,
+   else sentence boundaries grouped into paragraphs of three to five
+   sentences. Wording is never changed. No lookbehind regex: older
+   Safari would reject the whole script block on a syntax error. */
+var PARA_ABBREV = {mr:1, mrs:1, ms:1, dr:1, st:1, vs:1, etc:1, no:1, fig:1, approx:1, dept:1, est:1, jr:1, sr:1, prof:1, capt:1, lt:1, col:1, gen:1, sgt:1};
+function studioEscHtml(s){
+  return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+function studioNormWs(s){
+  return String(s == null ? '' : s).replace(/\s+/g, ' ').replace(/^\s+|\s+$/g, '');
+}
+function studioSplitSentences(text){
+  var norm = studioNormWs(text);
+  if(!norm) return [];
+  var parts = [];
+  var start = 0;
+  for(var i = 0; i < norm.length; i++){
+    var ch = norm.charAt(i);
+    if(ch !== '.' && ch !== '!' && ch !== '?') continue;
+    var j = i + 1;
+    if(j < norm.length && (norm.charAt(j) === '"' || norm.charAt(j) === "'" || norm.charAt(j) === ')' || norm.charAt(j) === ']')) j++;
+    if(j < norm.length && norm.charAt(j) === ' '){
+      parts.push(norm.substring(start, j).replace(/^\s+|\s+$/g, ''));
+      start = j + 1;
+      i = j;
+    }
+  }
+  var tail = norm.substring(start).replace(/^\s+|\s+$/g, '');
+  if(tail) parts.push(tail);
+  var out = [];
+  for(var k = 0; k < parts.length; k++){
+    var part = parts[k];
+    if(!part) continue;
+    if(out.length){
+      var prev = out[out.length - 1];
+      var m = prev.match(/([A-Za-z]+)\.["')\]]?$/);
+      if(m && (m[1].length === 1 || PARA_ABBREV[m[1].toLowerCase()])){
+        out[out.length - 1] = prev + ' ' + part;
+        continue;
+      }
+    }
+    out.push(part);
+  }
+  return out;
+}
+function studioGroupSentences(sentences){
+  var paras = [];
+  var cur = [];
+  var curLen = 0;
+  for(var i = 0; i < sentences.length; i++){
+    var s = sentences[i];
+    if(cur.length && (cur.length >= 5 || (cur.length >= 3 && curLen >= 500))){
+      paras.push(cur.join(' '));
+      cur = [];
+      curLen = 0;
+    }
+    cur.push(s);
+    curLen += s.length + 1;
+  }
+  if(cur.length) paras.push(cur.join(' '));
+  return paras;
+}
+function studioSplitTextParagraphs(text){
+  var raw = (text == null ? '' : String(text));
+  if(!studioNormWs(raw)) return [];
+  var chunks = raw.split(/\n\s*\n/);
+  var paras = [];
+  for(var i = 0; i < chunks.length; i++){
+    var sents = studioSplitSentences(chunks[i]);
+    if(sents.length) paras = paras.concat(studioGroupSentences(sents));
+  }
+  if(!paras.length) paras = [studioNormWs(raw)];
+  return paras;
+}
+function studioTranscriptParagraphs(transcript, paragraphs){
+  var items = [];
+  if(paragraphs){
+    for(var i = 0; i < paragraphs.length; i++){
+      var p = studioNormWs(paragraphs[i]);
+      if(p) items.push(p);
+    }
+  }
+  if(items.length && studioNormWs(transcript) === studioNormWs(items.join(' '))) return items;
+  return studioSplitTextParagraphs(transcript);
+}
+function studioParagraphsHtml(text){
+  var paras = studioSplitTextParagraphs(text);
+  var html = '';
+  for(var i = 0; i < paras.length; i++){ html += '<p>' + studioEscHtml(paras[i]) + '</p>'; }
+  return html;
+}
 function studioInit(sampleId){
   var data = PA_STUDIO_DATA[sampleId];
   var root = document.getElementById('studio-' + sampleId);
@@ -534,7 +628,12 @@ function studioLoadScene(sampleId, idx, autoplay){
     });
   }
   var tr = document.getElementById('studio-transcript-' + sampleId);
-  if(tr) tr.textContent = scene.transcript || '';
+  if(tr){
+    tr.innerHTML = '';
+    studioTranscriptParagraphs(scene.transcript || '', scene.paragraphs || []).forEach(function(p){
+      var pe = document.createElement('p'); pe.className = 'transcript'; pe.textContent = p; tr.appendChild(pe);
+    });
+  }
   var pr = document.getElementById('studio-paras-' + sampleId);
   if(pr){
     pr.innerHTML = '';
@@ -547,7 +646,9 @@ function studioLoadScene(sampleId, idx, autoplay){
     tp.innerHTML = '';
     st.data.scenes.forEach(function(s){
       var h = document.createElement('h4'); h.textContent = s.title; tp.appendChild(h);
-      var p = document.createElement('p'); p.textContent = s.transcript || ''; tp.appendChild(p);
+      studioTranscriptParagraphs(s.transcript || '', s.paragraphs || []).forEach(function(tp2){
+        var pe2 = document.createElement('p'); pe2.textContent = tp2; tp.appendChild(pe2);
+      });
       (s.paragraphs || []).forEach(function(pp){
         var pe = document.createElement('p'); pe.textContent = pp; tp.appendChild(pe);
       });
@@ -963,11 +1064,11 @@ function pfDive(sampleId, kind){
   if(!data) return;
   var html = '';
   if(kind === 'simple' && data.simple){
-    html = '<h3>In simple terms</h3><p>' + data.simple + '</p>';
+    html = '<h3>In simple terms</h3>' + studioParagraphsHtml(data.simple);
   } else if(kind === 'summary' && data.summary){
-    html = '<h3>Summary</h3><p>' + data.summary + '</p>';
+    html = '<h3>Summary</h3>' + studioParagraphsHtml(data.summary);
   } else if(kind === 'example' && data.example){
-    html = '<h3>Real-life example</h3><p>' + data.example + '</p>';
+    html = '<h3>Real-life example</h3>' + studioParagraphsHtml(data.example);
   }
   body.innerHTML = html;
   panel.classList.add('open');
@@ -1008,8 +1109,8 @@ function pfCheckAnswer(sampleId, btn){
       ? '<b>Correct.</b> '
       : '<b>Not quite.</b> ';
     var html = head;
-    if(expl) html += '<h4 class="quiz-fb-h">Why this is the answer</h4><p>' + expl + '</p>';
-    if(whyUseful) html += '<h4 class="quiz-fb-h">Why your choice was wrong</h4><p>' + why + '</p>';
+    if(expl) html += '<h4 class="quiz-fb-h">Why this is the answer</h4>' + studioParagraphsHtml(expl);
+    if(whyUseful) html += '<h4 class="quiz-fb-h">Why your choice was wrong</h4>' + studioParagraphsHtml(why);
     html += '<button type="button" class="studio-btn" onclick="pfDismissQuiz(this)">Got it, hide this</button>';
     fb.innerHTML = html;
     fb.classList.add('open');
@@ -1058,7 +1159,7 @@ function pfCheckQuizAnswer(sampleId, qidx, btn){
     var expl = '';
     try { expl = JSON.parse(document.getElementById('pf-quiz-data-' + sampleId + '-' + qidx).textContent).explanation || ''; } catch(e){}
     var head = (chosen === answer) ? '<b>Correct.</b> ' : '<b>Not quite.</b> ';
-    fb.innerHTML = head + (expl ? '<h4 class="quiz-fb-h">Why this is the answer</h4><p>' + expl + '</p>' : '');
+    fb.innerHTML = head + (expl ? '<h4 class="quiz-fb-h">Why this is the answer</h4>' + studioParagraphsHtml(expl) : '');
     fb.classList.add('open');
   }
   var card = document.getElementById('pf-quiz-' + sampleId);
@@ -1108,7 +1209,14 @@ function pfDownloadTranscript(sampleId){
   var t = document.getElementById('studio-transcript-' + sampleId);
   var paras = document.getElementById('studio-paras-' + sampleId);
   var text = '';
-  if(t) text += t.textContent + String.fromCharCode(10,10);
+  if(t){
+    var tps = t.querySelectorAll ? t.querySelectorAll('p') : [];
+    if(tps.length){
+      for(var ti = 0; ti < tps.length; ti++){ text += tps[ti].textContent + String.fromCharCode(10,10); }
+    } else {
+      text += t.textContent + String.fromCharCode(10,10);
+    }
+  }
   if(paras){
     var ps = paras.querySelectorAll('p');
     for(var i = 0; i < ps.length; i++){ text += ps[i].textContent + String.fromCharCode(10,10); }

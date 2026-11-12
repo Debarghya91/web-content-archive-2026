@@ -247,6 +247,373 @@
   .studio *{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}
 }
 
+/* ==========================================================================
+   Homepage section differentiation (12 Nov 2026, app feedback item 3,
+   website parity batch, worker 2). Every homepage section gets a distinct
+   visual identity: one band treatment, one header treatment, and, where
+   the section uses cards, one card top accent. Adjacent sections never
+   share the same band. Bands are rounded panels inside the page column,
+   mirroring the app Home sections.
+
+   SCOPE: homepage only. Every rule is keyed to a homepage section id
+   (.hp-section-* class variants included so the same rules keep working
+   if the coordinator ports the classes into the generators). No bare
+   .section or .hp-section rule is changed, body and main are untouched,
+   and the light lesson page background (#F5F7FA) is untouched.
+
+   LITERAL HEX VALUES, NO var(--pf-*) REFERENCES: deliberate. The
+   coordinator mirrors this block verbatim into STUDIO_CSS in
+   visual_engine.py, and the single page template has no --pf-*
+   variables, so var() references would compute to nothing there. Every
+   hex below is already in the token palette used by this file: navy,
+   royal, royal tint, gold, gold tint, page, surface, ink, muted, line.
+
+   CONTRAST: every band rule sets its own text colors for direct
+   headings, paragraphs, lists, links and bold text, so no band ever
+   inherits a color meant for another background. Dark bands use white
+   headings, #CBD5E1 body text and #BFDBFE links. Light bands use navy
+   headings, #1F2A44 body text and royal dark links. No rule in this
+   block uses positioning, so absolutely positioned children such as
+   .bundle-flag keep their existing anchor.
+   ========================================================================== */
+
+/* ---------- Eyebrow labels ---------- */
+/* The eyebrow span sits directly above the section title: small caps
+   label with a short gold bar. Sections that carry a span in the HTML
+   get no extra bar on the h2 itself. */
+.hp-eyebrow{display:flex;align-items:center;gap:10px;color:#1E40AF;font-weight:700;text-transform:uppercase;letter-spacing:.08em;font-size:12px;margin:0 0 8px}
+.hp-eyebrow::before{content:"";width:28px;height:3px;background:#C9A227;border-radius:2px;flex:0 0 auto}
+/* Eyebrow on a dark band: light gold, so it stays readable on navy. */
+#simulator-highlights .hp-eyebrow,.hp-section-simulators .hp-eyebrow,
+#homePage #trace .hp-eyebrow,.hp-section-trace .hp-eyebrow,
+#homePage #simulator .hp-eyebrow,.hp-section-simulator .hp-eyebrow,
+#homePage #quiz .hp-eyebrow,.hp-section-quiz .hp-eyebrow{color:#FBBF24}
+
+/* ---------- Band 1: white panel ---------- */
+#compare,.hp-section-compare,
+#start-here,.hp-section-start,
+#homePage #learning-path,.hp-section-learning-path,
+#homePage #explorer,.hp-section-explorer,
+#homePage #labs,.hp-section-labs,
+#homePage #radar,.hp-section-radar,
+#homePage #reference,.hp-section-reference,
+#homePage #mt-mapping,.hp-section-mapping,
+#homePage #sim-lifecycle,.hp-section-sim-lifecycle,
+#homePage #sim-hub,.hp-section-sim-hub,
+#homePage #isolab,.hp-section-isolab,
+#homePage #sim-accounting,.hp-section-sim-accounting,
+#homePage #sim-statemachine,.hp-section-sim-statemachine{background:#FFFFFF;border:1px solid #E2E8F0;border-radius:16px;padding:clamp(28px,4vw,44px) clamp(18px,3vw,28px);margin:24px 0;box-shadow:0 1px 2px rgba(11,31,61,.06),0 4px 16px rgba(11,31,61,.06)}
+
+/* ---------- Band 2: pale slate panel ---------- */
+section#dashboard,#homePage #dashboard,.hp-section-dashboard,
+#new-pages,.hp-section-new-pages,
+#first-15-minutes,.hp-section-first-15,
+#homePage #tracks,.hp-section-tracks,
+#homePage #careers,.hp-section-careers,
+#homePage #versions,.hp-section-versions,
+#homePage #faq500,.hp-section-faq,
+#homePage #sim-crossborder,.hp-section-sim-crossborder,
+#homePage #sim-xml,.hp-section-sim-xml,
+#homePage #sim-tips,.hp-section-sim-tips,
+#homePage #sim-exception,.hp-section-sim-exception{background:#F8FAFC;border:1px solid #E2E8F0;border-radius:16px;padding:clamp(28px,4vw,44px) clamp(18px,3vw,28px);margin:24px 0;box-shadow:0 1px 2px rgba(11,31,61,.06),0 4px 16px rgba(11,31,61,.06)}
+
+/* ---------- Band 3: royal tint panel ---------- */
+#homePage #who-its-for,.hp-section-personas,
+#homePage #courses,.hp-section-courses,
+#homePage #stages,.hp-section-stages,
+#homePage #playground,.hp-section-playground,
+#homePage #follow-money,.hp-section-trace-story{background:#E8EEFB;border:1px solid #CBD5E1;border-radius:16px;padding:clamp(28px,4vw,44px) clamp(18px,3vw,28px);margin:24px 0;box-shadow:0 1px 2px rgba(11,31,61,.06),0 4px 16px rgba(11,31,61,.06)}
+
+/* ---------- Band 4: gold tint panel ---------- */
+#situations-hero,.hp-section-situations,
+#capstone-spotlight,.hp-section-capstone,
+#homePage #payment,.hp-section-payment,
+#homePage #projects,.hp-section-projects,
+#homePage #refund-slow,.hp-section-explainer{background:#FBF6E3;border:1px solid #E2E8F0;border-radius:16px;padding:clamp(28px,4vw,44px) clamp(18px,3vw,28px);margin:24px 0;box-shadow:0 1px 2px rgba(11,31,61,.06),0 4px 16px rgba(11,31,61,.06)}
+
+/* ---------- Band 5: navy panel ---------- */
+#simulator-highlights,.hp-section-simulators,
+#homePage #trace,.hp-section-trace,
+#homePage #simulator,.hp-section-simulator,
+#homePage #quiz,.hp-section-quiz{background:#0B1F3D;border:1px solid #0B1F3D;border-top:4px solid #C9A227;border-radius:16px;padding:clamp(28px,4vw,44px) clamp(18px,3vw,28px);margin:24px 0;box-shadow:0 1px 2px rgba(11,31,61,.06),0 4px 16px rgba(11,31,61,.06)}
+
+/* ---------- Band 6: royal panel (guided path banner only) ---------- */
+/* Scoped with .guided-banner: courses.html reuses id guided-path with a
+   different class, and that page keeps its own styling. */
+#guided-path.guided-banner,.hp-section-guided{background:#1D4ED8;border:1px solid #1E40AF;border-top:4px solid #C9A227;border-radius:16px;padding:clamp(28px,4vw,44px) clamp(18px,3vw,28px);margin:24px 0;box-shadow:0 1px 2px rgba(11,31,61,.06),0 4px 16px rgba(11,31,61,.06)}
+
+/* ---------- Text on light bands ---------- */
+/* Direct headings, paragraphs, lists, bold text and links only, so card
+   and panel interiors keep their own colors. Dist-only light sections
+   (situations hero, new pages, first 15 minutes) need no rules here:
+   the base light theme colors are already correct on their bands. */
+#compare > :is(h2,h3),.hp-section-compare > :is(h2,h3),
+#start-here > :is(h2,h3),.hp-section-start > :is(h2,h3),
+#capstone-spotlight > :is(h2,h3),.hp-section-capstone > :is(h2,h3),
+section#dashboard > :is(h2,h3),#homePage #dashboard > :is(h2,h3),.hp-section-dashboard > :is(h2,h3),
+#homePage #who-its-for > :is(h2,h3),.hp-section-personas > :is(h2,h3),
+#homePage #courses > :is(h2,h3),.hp-section-courses > :is(h2,h3),
+#homePage #stages > :is(h2,h3),.hp-section-stages > :is(h2,h3),
+#homePage #playground > :is(h2,h3),.hp-section-playground > :is(h2,h3),
+#homePage #follow-money > :is(h2,h3),.hp-section-trace-story > :is(h2,h3),
+#homePage #payment > :is(h2,h3),.hp-section-payment > :is(h2,h3),
+#homePage #projects > :is(h2,h3),.hp-section-projects > :is(h2,h3),
+#homePage #refund-slow > :is(h2,h3),.hp-section-explainer > :is(h2,h3),
+#homePage #learning-path > :is(h2,h3),.hp-section-learning-path > :is(h2,h3),
+#homePage #explorer > :is(h2,h3),.hp-section-explorer > :is(h2,h3),
+#homePage #labs > :is(h2,h3),.hp-section-labs > :is(h2,h3),
+#homePage #radar > :is(h2,h3),.hp-section-radar > :is(h2,h3),
+#homePage #reference > :is(h2,h3),.hp-section-reference > :is(h2,h3),
+#homePage #mt-mapping > :is(h2,h3),.hp-section-mapping > :is(h2,h3),
+#homePage #tracks > :is(h2,h3),.hp-section-tracks > :is(h2,h3),
+#homePage #careers > :is(h2,h3),.hp-section-careers > :is(h2,h3),
+#homePage #versions > :is(h2,h3),.hp-section-versions > :is(h2,h3),
+#homePage #faq500 > :is(h2,h3),.hp-section-faq > :is(h2,h3),
+#homePage #sim-lifecycle > :is(h2,h3),.hp-section-sim-lifecycle > :is(h2,h3),
+#homePage #sim-hub > :is(h2,h3),.hp-section-sim-hub > :is(h2,h3),
+#homePage #isolab > :is(h2,h3),.hp-section-isolab > :is(h2,h3),
+#homePage #sim-accounting > :is(h2,h3),.hp-section-sim-accounting > :is(h2,h3),
+#homePage #sim-statemachine > :is(h2,h3),.hp-section-sim-statemachine > :is(h2,h3),
+#homePage #sim-crossborder > :is(h2,h3),.hp-section-sim-crossborder > :is(h2,h3),
+#homePage #sim-xml > :is(h2,h3),.hp-section-sim-xml > :is(h2,h3),
+#homePage #sim-tips > :is(h2,h3),.hp-section-sim-tips > :is(h2,h3),
+#homePage #sim-exception > :is(h2,h3),.hp-section-sim-exception > :is(h2,h3){color:#0B1F3D}
+#compare > :is(p,ol,ul),.hp-section-compare > :is(p,ol,ul),
+#start-here > :is(p,ol,ul),.hp-section-start > :is(p,ol,ul),
+#capstone-spotlight > :is(p,ol,ul),.hp-section-capstone > :is(p,ol,ul),
+section#dashboard > :is(p,ol,ul),#homePage #dashboard > :is(p,ol,ul),.hp-section-dashboard > :is(p,ol,ul),
+#homePage #who-its-for > :is(p,ol,ul),.hp-section-personas > :is(p,ol,ul),
+#homePage #courses > :is(p,ol,ul),.hp-section-courses > :is(p,ol,ul),
+#homePage #stages > :is(p,ol,ul),.hp-section-stages > :is(p,ol,ul),
+#homePage #playground > :is(p,ol,ul),.hp-section-playground > :is(p,ol,ul),
+#homePage #follow-money > :is(p,ol,ul),.hp-section-trace-story > :is(p,ol,ul),
+#homePage #payment > :is(p,ol,ul),.hp-section-payment > :is(p,ol,ul),
+#homePage #projects > :is(p,ol,ul),.hp-section-projects > :is(p,ol,ul),
+#homePage #refund-slow > :is(p,ol,ul),.hp-section-explainer > :is(p,ol,ul),
+#homePage #learning-path > :is(p,ol,ul),.hp-section-learning-path > :is(p,ol,ul),
+#homePage #explorer > :is(p,ol,ul),.hp-section-explorer > :is(p,ol,ul),
+#homePage #labs > :is(p,ol,ul),.hp-section-labs > :is(p,ol,ul),
+#homePage #radar > :is(p,ol,ul),.hp-section-radar > :is(p,ol,ul),
+#homePage #reference > :is(p,ol,ul),.hp-section-reference > :is(p,ol,ul),
+#homePage #mt-mapping > :is(p,ol,ul),.hp-section-mapping > :is(p,ol,ul),
+#homePage #tracks > :is(p,ol,ul),.hp-section-tracks > :is(p,ol,ul),
+#homePage #careers > :is(p,ol,ul),.hp-section-careers > :is(p,ol,ul),
+#homePage #versions > :is(p,ol,ul),.hp-section-versions > :is(p,ol,ul),
+#homePage #faq500 > :is(p,ol,ul),.hp-section-faq > :is(p,ol,ul),
+#homePage #sim-lifecycle > :is(p,ol,ul),.hp-section-sim-lifecycle > :is(p,ol,ul),
+#homePage #sim-hub > :is(p,ol,ul),.hp-section-sim-hub > :is(p,ol,ul),
+#homePage #isolab > :is(p,ol,ul),.hp-section-isolab > :is(p,ol,ul),
+#homePage #sim-accounting > :is(p,ol,ul),.hp-section-sim-accounting > :is(p,ol,ul),
+#homePage #sim-statemachine > :is(p,ol,ul),.hp-section-sim-statemachine > :is(p,ol,ul),
+#homePage #sim-crossborder > :is(p,ol,ul),.hp-section-sim-crossborder > :is(p,ol,ul),
+#homePage #sim-xml > :is(p,ol,ul),.hp-section-sim-xml > :is(p,ol,ul),
+#homePage #sim-tips > :is(p,ol,ul),.hp-section-sim-tips > :is(p,ol,ul),
+#homePage #sim-exception > :is(p,ol,ul),.hp-section-sim-exception > :is(p,ol,ul){color:#1F2A44}
+#compare > p :is(b,strong),.hp-section-compare > p :is(b,strong),
+#start-here > p :is(b,strong),.hp-section-start > p :is(b,strong),
+#capstone-spotlight > p :is(b,strong),.hp-section-capstone > p :is(b,strong),
+section#dashboard > p :is(b,strong),#homePage #dashboard > p :is(b,strong),.hp-section-dashboard > p :is(b,strong),
+#homePage #who-its-for > p :is(b,strong),.hp-section-personas > p :is(b,strong),
+#homePage #courses > p :is(b,strong),.hp-section-courses > p :is(b,strong),
+#homePage #stages > p :is(b,strong),.hp-section-stages > p :is(b,strong),
+#homePage #playground > p :is(b,strong),.hp-section-playground > p :is(b,strong),
+#homePage #follow-money > p :is(b,strong),.hp-section-trace-story > p :is(b,strong),
+#homePage #payment > p :is(b,strong),.hp-section-payment > p :is(b,strong),
+#homePage #projects > p :is(b,strong),.hp-section-projects > p :is(b,strong),
+#homePage #refund-slow > p :is(b,strong),.hp-section-explainer > p :is(b,strong),
+#homePage #learning-path > p :is(b,strong),.hp-section-learning-path > p :is(b,strong),
+#homePage #explorer > p :is(b,strong),.hp-section-explorer > p :is(b,strong),
+#homePage #labs > p :is(b,strong),.hp-section-labs > p :is(b,strong),
+#homePage #radar > p :is(b,strong),.hp-section-radar > p :is(b,strong),
+#homePage #reference > p :is(b,strong),.hp-section-reference > p :is(b,strong),
+#homePage #mt-mapping > p :is(b,strong),.hp-section-mapping > p :is(b,strong),
+#homePage #tracks > p :is(b,strong),.hp-section-tracks > p :is(b,strong),
+#homePage #careers > p :is(b,strong),.hp-section-careers > p :is(b,strong),
+#homePage #versions > p :is(b,strong),.hp-section-versions > p :is(b,strong),
+#homePage #faq500 > p :is(b,strong),.hp-section-faq > p :is(b,strong),
+#homePage #sim-lifecycle > p :is(b,strong),.hp-section-sim-lifecycle > p :is(b,strong),
+#homePage #sim-hub > p :is(b,strong),.hp-section-sim-hub > p :is(b,strong),
+#homePage #isolab > p :is(b,strong),.hp-section-isolab > p :is(b,strong),
+#homePage #sim-accounting > p :is(b,strong),.hp-section-sim-accounting > p :is(b,strong),
+#homePage #sim-statemachine > p :is(b,strong),.hp-section-sim-statemachine > p :is(b,strong),
+#homePage #sim-crossborder > p :is(b,strong),.hp-section-sim-crossborder > p :is(b,strong),
+#homePage #sim-xml > p :is(b,strong),.hp-section-sim-xml > p :is(b,strong),
+#homePage #sim-tips > p :is(b,strong),.hp-section-sim-tips > p :is(b,strong),
+#homePage #sim-exception > p :is(b,strong),.hp-section-sim-exception > p :is(b,strong){color:#0B1F3D}
+#compare > p a,.hp-section-compare > p a,
+#start-here > p a,.hp-section-start > p a,
+#capstone-spotlight > p a,.hp-section-capstone > p a,
+section#dashboard > p a,#homePage #dashboard > p a,.hp-section-dashboard > p a,
+#homePage #who-its-for > p a,.hp-section-personas > p a,
+#homePage #courses > p a,.hp-section-courses > p a,
+#homePage #stages > p a,.hp-section-stages > p a,
+#homePage #playground > p a,.hp-section-playground > p a,
+#homePage #follow-money > p a,.hp-section-trace-story > p a,
+#homePage #payment > p a,.hp-section-payment > p a,
+#homePage #projects > p a,.hp-section-projects > p a,
+#homePage #refund-slow > p a,.hp-section-explainer > p a,
+#homePage #learning-path > p a,.hp-section-learning-path > p a,
+#homePage #explorer > p a,.hp-section-explorer > p a,
+#homePage #labs > p a,.hp-section-labs > p a,
+#homePage #radar > p a,.hp-section-radar > p a,
+#homePage #reference > p a,.hp-section-reference > p a,
+#homePage #mt-mapping > p a,.hp-section-mapping > p a,
+#homePage #tracks > p a,.hp-section-tracks > p a,
+#homePage #careers > p a,.hp-section-careers > p a,
+#homePage #versions > p a,.hp-section-versions > p a,
+#homePage #faq500 > p a,.hp-section-faq > p a,
+#homePage #sim-lifecycle > p a,.hp-section-sim-lifecycle > p a,
+#homePage #sim-hub > p a,.hp-section-sim-hub > p a,
+#homePage #isolab > p a,.hp-section-isolab > p a,
+#homePage #sim-accounting > p a,.hp-section-sim-accounting > p a,
+#homePage #sim-statemachine > p a,.hp-section-sim-statemachine > p a,
+#homePage #sim-crossborder > p a,.hp-section-sim-crossborder > p a,
+#homePage #sim-xml > p a,.hp-section-sim-xml > p a,
+#homePage #sim-tips > p a,.hp-section-sim-tips > p a,
+#homePage #sim-exception > p a,.hp-section-sim-exception > p a{color:#1E40AF}
+
+/* ---------- Text on navy bands ---------- */
+#simulator-highlights > :is(h2,h3),.hp-section-simulators > :is(h2,h3),
+#homePage #trace > :is(h2,h3),.hp-section-trace > :is(h2,h3),
+#homePage #simulator > :is(h2,h3),.hp-section-simulator > :is(h2,h3),
+#homePage #quiz > :is(h2,h3),.hp-section-quiz > :is(h2,h3){color:#FFFFFF}
+#simulator-highlights > :is(p,ol,ul),.hp-section-simulators > :is(p,ol,ul),
+#homePage #trace > :is(p,ol,ul),.hp-section-trace > :is(p,ol,ul),
+#homePage #simulator > :is(p,ol,ul),.hp-section-simulator > :is(p,ol,ul),
+#homePage #quiz > :is(p,ol,ul),.hp-section-quiz > :is(p,ol,ul){color:#CBD5E1}
+#simulator-highlights > p :is(b,strong),.hp-section-simulators > p :is(b,strong),
+#homePage #trace > p :is(b,strong),.hp-section-trace > p :is(b,strong),
+#homePage #simulator > p :is(b,strong),.hp-section-simulator > p :is(b,strong),
+#homePage #quiz > p :is(b,strong),.hp-section-quiz > p :is(b,strong){color:#FFFFFF}
+#simulator-highlights > p a,.hp-section-simulators > p a,
+#homePage #trace > p a,.hp-section-trace > p a,
+#homePage #simulator > p a,.hp-section-simulator > p a,
+#homePage #quiz > p a,.hp-section-quiz > p a{color:#BFDBFE}
+
+/* ---------- Text on the royal band ---------- */
+#guided-path.guided-banner > :is(h2,h3),.hp-section-guided > :is(h2,h3){color:#FFFFFF}
+#guided-path.guided-banner > :is(p,ol,ul),.hp-section-guided > :is(p,ol,ul){color:#E2E8F0}
+
+/* ---------- Header treatment A: short gold bar above the title ---------- */
+/* Only for sections without an eyebrow span. Sections with a span get
+   their bar from the eyebrow itself. */
+#situations-hero > h2::before,.hp-section-situations > h2::before,
+#guided-path.guided-banner > h2::before,.hp-section-guided > h2::before,
+#who-for > h2::before,.hp-section-who-for > h2::before,
+section#dashboard > h2::before,#homePage #dashboard > h2::before,.hp-section-dashboard > h2::before,
+#homePage #payment > h2::before,.hp-section-payment > h2::before,
+#homePage #projects > h2::before,.hp-section-projects > h2::before,
+#homePage #trace > h2::before,.hp-section-trace > h2::before,
+#homePage #simulator > h2::before,.hp-section-simulator > h2::before,
+#homePage #quiz > h2::before,.hp-section-quiz > h2::before,
+#homePage #learning-path > h2::before,.hp-section-learning-path > h2::before,
+#homePage #playground > h2::before,.hp-section-playground > h2::before,
+#homePage #radar > h2::before,.hp-section-radar > h2::before{content:"";display:block;width:48px;height:4px;background:#C9A227;border-radius:2px;margin:0 0 12px}
+
+/* ---------- Header treatment B: short royal bar above the title ---------- */
+#new-pages > h2::before,.hp-section-new-pages > h2::before,
+#homePage #courses > h2::before,.hp-section-courses > h2::before,
+#homePage #tracks > h2::before,.hp-section-tracks > h2::before,
+#homePage #labs > h2::before,.hp-section-labs > h2::before,
+#homePage #versions > h2::before,.hp-section-versions > h2::before,
+#homePage #chapters > h2::before,.hp-section-chapters > h2::before{content:"";display:block;width:48px;height:4px;background:#1D4ED8;border-radius:2px;margin:0 0 12px}
+
+/* ---------- Header treatment C: royal bar at the left of the title ---------- */
+#compare > h2,.hp-section-compare > h2,
+#homePage #stages > h2,.hp-section-stages > h2,
+#homePage #explorer > h2,.hp-section-explorer > h2,
+#homePage #reference > h2,.hp-section-reference > h2,
+#homePage #follow-money > h2,.hp-section-trace-story > h2,
+#homePage #sim-lifecycle > h2,.hp-section-sim-lifecycle > h2,
+#homePage #sim-hub > h2,.hp-section-sim-hub > h2,
+#homePage #isolab > h2,.hp-section-isolab > h2,
+#homePage #sim-accounting > h2,.hp-section-sim-accounting > h2,
+#homePage #sim-statemachine > h2,.hp-section-sim-statemachine > h2{border-left:4px solid #1D4ED8;padding-left:14px}
+
+/* ---------- Header treatment D: gold bar at the left of the title ---------- */
+#first-15-minutes > h2,.hp-section-first-15 > h2,
+#homePage #mt-mapping > h2,.hp-section-mapping > h2,
+#homePage #careers > h2,.hp-section-careers > h2,
+#homePage #sim-crossborder > h2,.hp-section-sim-crossborder > h2,
+#homePage #sim-xml > h2,.hp-section-sim-xml > h2,
+#homePage #sim-tips > h2,.hp-section-sim-tips > h2,
+#homePage #sim-exception > h2,.hp-section-sim-exception > h2{border-left:4px solid #C9A227;padding-left:14px}
+
+/* ---------- Header treatment E: hairline rule under the title ---------- */
+#explore > h2,.hp-section-explore > h2,
+#homePage #faq500 > h2,.hp-section-faq > h2{border-bottom:2px solid #CBD5E1;padding-bottom:10px}
+
+/* ---------- Card top accents (kept on hover) ---------- */
+#who-for .hp-card,#who-for .hp-card:hover,.hp-section-who-for .hp-card,.hp-section-who-for .hp-card:hover{border-top:3px solid #C9A227}
+#start-here .hp-card,#start-here .hp-card:hover,.hp-section-start .hp-card,.hp-section-start .hp-card:hover{border-top:3px solid #1D4ED8}
+#simulator-highlights .hp-card,#simulator-highlights .hp-card:hover,.hp-section-simulators .hp-card,.hp-section-simulators .hp-card:hover{border-top:3px solid #C9A227}
+#capstone-spotlight .hp-card,#capstone-spotlight .hp-card:hover,.hp-section-capstone .hp-card,.hp-section-capstone .hp-card:hover{border-top:3px solid #0B1F3D}
+#explore .link-card,#explore .link-card:hover,.hp-section-explore .link-card,.hp-section-explore .link-card:hover{border-top:3px solid #1D4ED8}
+#homePage #chapters .chapter-card,#homePage #chapters .chapter-card:hover,.hp-section-chapters .chapter-card,.hp-section-chapters .chapter-card:hover{border-top:3px solid #1D4ED8}
+/* Domain headings inside the chapter list get a hairline, so each
+   domain block reads as its own group. No colors are set here: the
+   existing heading and link colors stay as they are. */
+#homePage #chapters .part-block > h2,.hp-section-chapters .part-block > h2{border-bottom:2px solid #CBD5E1;padding-bottom:8px}
+
+/* ---------- Buttons on bands ---------- */
+/* The outline button style was written for the dark hero (white text on
+   a transparent fill). On the gold tint band that text would be
+   invisible, so the situations hero gets navy text. On the royal band
+   the primary button would vanish into the background, so it turns
+   gold, and the outline button turns white. */
+#situations-hero .hero-cta .pa-cta-outline,.hp-section-situations .hero-cta .pa-cta-outline{background:transparent;border:2px solid #1D4ED8;color:#1E40AF}
+#situations-hero .hero-cta .pa-cta-outline:hover,.hp-section-situations .hero-cta .pa-cta-outline:hover{background:#1D4ED8;color:#FFFFFF;text-decoration:none}
+#guided-path.guided-banner .hero-cta .pa-cta,.hp-section-guided .hero-cta .pa-cta{background:#C9A227;color:#0B1F3D;border-color:#C9A227}
+#guided-path.guided-banner .hero-cta .pa-cta:hover,.hp-section-guided .hero-cta .pa-cta:hover{background:#B8912A;color:#0B1F3D}
+#guided-path.guided-banner .hero-cta .pa-cta-outline,.hp-section-guided .hero-cta .pa-cta-outline{background:transparent;border:2px solid #FFFFFF;color:#FFFFFF}
+#guided-path.guided-banner .hero-cta .pa-cta-outline:hover,.hp-section-guided .hero-cta .pa-cta-outline:hover{background:#FFFFFF;color:#1E40AF;border-color:#FFFFFF;text-decoration:none}
+
+/* ---------- Hero and stats strip ---------- */
+/* The video hero is used only on the homepage. Its inner content
+   already has rules on multipage pages; the single page template has
+   none, so the template hero text colors are set here explicitly. */
+section.hero-video{border-bottom:4px solid #C9A227}
+#homePage #hero .hero-eyebrow,.hp-section-hero .hero-eyebrow{color:#FBBF24;font-weight:700;text-transform:uppercase;letter-spacing:.08em;font-size:12px;margin:0 0 12px}
+#homePage #hero h1,.hp-section-hero h1{color:#FFFFFF}
+#homePage #hero .hero-sub,.hp-section-hero .hero-sub{color:#E2E8F0}
+#homePage #hero .hero-trust,.hp-section-hero .hero-trust{color:#94A3B8}
+#homePage #hero .hero-founder,.hp-section-hero .hero-founder{color:#CBD5E1}
+#homePage #hero .hero-founder a,.hp-section-hero .hero-founder a{color:#FBBF24}
+/* Multipage stats strip: gold rule above it, separating it from the hero. */
+.hero-stats-bar{border-top:3px solid #C9A227}
+/* Single page stats strip: it has no base rules anywhere, so the whole
+   strip is styled here. Navy panel, gold numbers, light labels. */
+#homePage #stats-bar,.hp-section-stats{background:#0B1F3D;border-top:3px solid #C9A227;border-bottom:1px solid #1E3A5F;border-radius:16px;padding:28px clamp(18px,3vw,28px);margin:24px 0}
+#homePage #stats-bar .stats-bar-inner,.hp-section-stats .stats-bar-inner{display:flex;flex-wrap:wrap;gap:24px 32px;justify-content:center}
+#homePage #stats-bar .stat-item,.hp-section-stats .stat-item{text-align:center}
+#homePage #stats-bar .stat-item b,.hp-section-stats .stat-item b{display:block;font-size:30px;line-height:1.2;color:#FBBF24}
+#homePage #stats-bar .stat-item span,.hp-section-stats .stat-item span{display:block;font-size:14px;color:#CBD5E1}
+
+/* ---------- Persona cards (single page template) ---------- */
+/* .persona-card has no base rules anywhere, so the cards are styled in
+   full here. White cards with a royal top accent on the royal tint
+   band, dark navy role, royal dark experience line, muted description,
+   dark outcome line, royal link. Scoped to the homepage section only. */
+#homePage #who-its-for .persona-grid,.hp-section-personas .persona-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin:20px 0}
+#homePage #who-its-for .persona-card,.hp-section-personas .persona-card{display:block;background:#FFFFFF;border:1px solid #E2E8F0;border-top:3px solid #1D4ED8;border-radius:12px;padding:20px 22px;text-decoration:none;box-shadow:0 1px 2px rgba(11,31,61,.06),0 4px 16px rgba(11,31,61,.06)}
+#homePage #who-its-for .persona-card:hover,.hp-section-personas .persona-card:hover{border-color:#1D4ED8;text-decoration:none;box-shadow:0 2px 4px rgba(11,31,61,.08),0 8px 24px rgba(11,31,61,.10)}
+#homePage #who-its-for .persona-role,.hp-section-personas .persona-role{display:block;font-size:17px;font-weight:700;color:#0B1F3D;margin-bottom:4px}
+#homePage #who-its-for .persona-exp,.hp-section-personas .persona-exp{display:block;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#1E40AF;margin-bottom:8px}
+#homePage #who-its-for .persona-line,.hp-section-personas .persona-line{display:block;font-size:15px;line-height:1.6;color:#5B6B85;margin-bottom:8px}
+#homePage #who-its-for .persona-outcome,.hp-section-personas .persona-outcome{display:block;font-size:15px;line-height:1.6;color:#1F2A44;margin-bottom:10px}
+#homePage #who-its-for .persona-link,.hp-section-personas .persona-link{display:block;font-size:15px;font-weight:600;color:#1D4ED8}
+
+/* ---------- First 15 minutes: numbered steps ---------- */
+#first-15-minutes ol li::marker,.hp-section-first-15 ol li::marker{color:#1E40AF;font-weight:700}
+
+/* ---------- Intro card: gold top rule ---------- */
+/* .intro-card is used only on the multipage homepage. It is already a
+   white card; the gold rule ties it into the section rhythm and sets
+   it apart from the sections above and below it. */
+section.intro-card{border-top:3px solid #C9A227}
+
+/* End of homepage section differentiation. */
+
 /* Diagram-overlap fix (5 Nov 2026): the ONLY svg sizing rule in the built CSS. Scoped to diagram containers; no bare global svg rule. */
 .studio-canvas svg, .diagram svg, .visual-sample2 svg{width:100%;height:auto;display:block}
 

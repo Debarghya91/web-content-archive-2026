@@ -52,20 +52,34 @@
   /* ---------- session (via the shared auth.js client) ---------- */
   function getSession() {
     return new Promise(function (resolve) {
+      var done = false;
+      var timer = null;
+      function finish(v) {
+        if (done) return;
+        done = true;
+        try { if (timer) clearTimeout(timer); } catch (e) {}
+        resolve(v);
+      }
+      /* Never hang the dashboard: if the auth client never answers
+         (CDN blocked, script failed), resolve as signed out after
+         10 seconds so the sign-in prompt renders instead of leaving
+         "Checking your sign-in status." on screen forever. */
+      try { timer = setTimeout(function () { finish(null); }, 10000); } catch (e) {}
       try {
         if (typeof root.paAuthLoadClient === "function") {
           root.paAuthLoadClient(function (client) {
+            if (!client) { finish(null); return; }
             try {
               client.auth.getSession().then(function (res) {
                 var s = res && res.data && res.data.session;
-                resolve(s || null);
-              }).catch(function () { resolve(null); });
-            } catch (e) { resolve(null); }
+                finish(s || null);
+              }).catch(function () { finish(null); });
+            } catch (e) { finish(null); }
           });
           return;
         }
       } catch (e) { /* fall through */ }
-      resolve(null);
+      finish(null);
     });
   }
   function getUser() {
@@ -385,6 +399,11 @@
       '</section>';
   }
 
+  function renderSyncError(container, message) {
+    container.innerHTML = '<section class="section pa-cloud"><h2>Your synced progress</h2>' +
+      '<p>' + esc(message) + ' Your browser progress below is still available.</p>' +
+      '<p><button type="button" class="studio-btn" onclick="PALearnerSync.syncNow()">Try again</button></p></section>';
+  }
   function initDashboard(containerId, data) {
     var container = document.getElementById(containerId);
     if (!container) return;
@@ -395,13 +414,20 @@
       try { migrateLocalOnce(user); } catch (e) {}
       fetchCloud(user).then(function (cloud) {
         if (!cloud) {
-          container.innerHTML = '<section class="section pa-cloud"><h2>Your synced progress</h2>' +
-            '<p>We could not reach the sync service right now. Your browser progress below is still available, and your synced progress will appear here when the connection returns.</p>' +
-            '<p><button type="button" class="studio-btn" onclick="PALearnerSync.syncNow()">Try again</button></p></section>';
+          renderSyncError(container, "We could not reach the sync service right now. Your synced progress will appear here when the connection returns.");
           return;
         }
-        var merged = mergeProgress(cloud, data);
-        renderCloud(container, merged, data, user.email);
+        /* A bad row or a malformed data set must never leave the
+           signed-in dashboard stuck on "Loading your synced
+           progress." Show the retry state instead. */
+        try {
+          var merged = mergeProgress(cloud, data);
+          renderCloud(container, merged, data, user.email);
+        } catch (e) {
+          renderSyncError(container, "Your synced progress could not be shown right now. Please try again.");
+        }
+      }).catch(function () {
+        renderSyncError(container, "We could not reach the sync service right now. Your synced progress will appear here when the connection returns.");
       });
     }).catch(function () { renderSignInPrompt(container); });
   }

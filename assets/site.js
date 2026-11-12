@@ -858,13 +858,22 @@ function paCapstone(pid){
   var p = paLoad(); p.capstone[pid] = true; paSave(p); updateDashboard();
 }
 function paReset(){
-  try { localStorage.removeItem(PA_KEY); } catch(e){}
+  /* Confirmation before and after (12 Nov 2026): this used to wipe
+     progress on one tap with no warning and no feedback. The confirm
+     states exactly what this clears, and the success message shows
+     only when the removal actually happened. What gets cleared is
+     unchanged: PA_KEY only, same button reset, same updateDashboard. */
+  if(!confirm('Reset your lesson progress in this browser? This clears completed lessons, quiz answers and capstone marks stored in this browser. It does not touch your synced progress, or your test, lab and practice records. This cannot be undone.')) return;
+  var ok = true;
+  try { localStorage.removeItem(PA_KEY); } catch(e){ ok = false; }
   /* Lesson buttons are id="done-<lesson>", class "studio-btn primary",
      text "Mark lesson complete" (lessonDone sets them to "Completed"
      with class "done"). Reset those, not the old .player-btn selector,
      which matches nothing on any page. */
   document.querySelectorAll('[id^="done-"]').forEach(function(b){ b.textContent = 'Mark lesson complete'; b.classList.remove('done'); });
   updateDashboard();
+  if(ok){ alert('Your lesson progress in this browser has been reset.'); }
+  else { alert('Your progress could not be reset in this browser. Please try again.'); }
 }
 function lessonDone(sid){
   var p = paLoad(); p.lessons[sid] = true; paSave(p);

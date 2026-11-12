@@ -255,9 +255,9 @@
      a block is left out when the item has no field for it, never
      filled with invented text. Situation is the title. What is
      happening is the explanation. Visual investigation is the visual.
-     Possible explanations, SME analysis and Resolution render only
-     when the item carries those optional fields. One thing to
-     remember is the takeaway. */
+     Possible explanations, SME analysis, Resolution and Real-world
+     examples render only when the item carries those optional
+     fields. One thing to remember is the takeaway. */
   function sourceLabel(item) {
     /* Learner-facing source labels show the evidence type only, never
        a person name. The shipped data already carries the evidence
@@ -350,6 +350,30 @@
     if (item.resolution_text) {
       html += '<h4 class="sit-case-label">Resolution</h4>';
       html += '<p class="sit-explain">' + esc(item.resolution_text) + '</p>';
+    }
+    /* Real-world examples (item 7, 12 Nov 2026): reading cards, never
+       a checklist. No item in the current data carries an example
+       field, so this block is inert today; it exists so example
+       content can never fall back to a selectable list. Each example
+       is one plain card, title before text, with no input, no click
+       handler and no checked state. */
+    var examples = null;
+    if (Array.isArray(item.examples)) examples = item.examples;
+    else if (typeof item.examples === 'string' && item.examples) examples = [item.examples];
+    else if (item.example) examples = [item.example];
+    if (examples && examples.length) {
+      html += '<h4 class="sit-case-label">' + (examples.length > 1 ? 'Real-world examples' : 'Real-world example') + '</h4>';
+      examples.forEach(function (ex) {
+        if (typeof ex === 'string') {
+          if (ex) html += '<div class="sit-example"><p class="sit-example-text">' + esc(ex) + '</p></div>';
+        } else if (ex) {
+          var exText = ex.text || ex.body || ex.description || '';
+          html += '<div class="sit-example">';
+          if (ex.title) html += '<p class="sit-example-title">' + esc(ex.title) + '</p>';
+          if (exText) html += '<p class="sit-example-text">' + esc(exText) + '</p>';
+          html += '</div>';
+        }
+      });
     }
     if (item.takeaway) html += '<p class="sit-takeaway"><strong>One thing to remember:</strong> ' + esc(item.takeaway) + '</p>';
     html += ledgerHtml(item);
