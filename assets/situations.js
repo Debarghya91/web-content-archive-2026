@@ -126,7 +126,7 @@ function paSitVisibleItems(){
       if(paSitMasteryOf(pr, it.id) === 'reviewed') return false;
     }
     if(PA_SIT_QUERY){
-      var hay = ((it.title || '') + ' ' + (it.explain || '') + ' ' + (it.takeaway || '') + ' ' + ((it.messages || []).join(' '))).toLowerCase();
+      var hay = ((it.id || '') + ' ' + (it.title || '') + ' ' + (it.explain || '') + ' ' + (it.takeaway || '') + ' ' + ((it.messages || []).join(' '))).toLowerCase();
       if(hay.indexOf(PA_SIT_QUERY) === -1) return false;
     }
     return true;
@@ -413,7 +413,7 @@ function paSitRenderCatalogue(list){
     var mast = paSitMasteryOf(p, it.id);
     var mastTag = (mast === 'understood' || mast === 'practised' || mast === 'reviewed') ? ' \u00b7 ' + PA_SIT_MASTERY_LABELS[mast] : '';
     html += '<button type="button" class="sit-catalogue-item' + (it === cur ? ' active' : '') + '" data-sit-cat="' + i + '" onclick="paSitJump(' + i + ')">'
-      + '<span class="sit-cat-stage">Stage ' + (it.stage || '') + ' &middot; ' + pos + ' of ' + PA_SIT_ITEMS.length + mark + done + mastTag + '</span>'
+      + '<span class="sit-cat-stage">Stage ' + (it.stage || '') + ' &middot; ' + escHtml(it.id || '') + ' &middot; ' + pos + ' of ' + PA_SIT_ITEMS.length + mark + done + mastTag + '</span>'
       + escHtml(it.title || it.id || '') + '</button>';
   });
   cat.innerHTML = html;

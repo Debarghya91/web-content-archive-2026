@@ -155,6 +155,7 @@
     var h = '<li><a href="' + prefix + e.url + '">' + iconTile(e.type) + '<span><b>' +
       highlightTitle(e.title || e.id, words) + '</b> ' +
       '<span class="pf-pill">' + esc(TYPE_LABEL[e.type] || e.type || '') + '</span>';
+    if(e.type === 'situation' && e.id) h += ' <span class="pf-pill">' + esc(e.id) + '</span>';
     if(level) h += ' <span class="pf-pill">' + esc(LEVEL_LABEL[level]) + '</span>';
     h += '<span>' + esc(preview(e.text)) + '</span></span><span aria-hidden="true">&rsaquo;</span></a></li>';
     return h;
@@ -331,7 +332,7 @@
       var hays = new Array(list.length), tls = new Array(list.length), txs = new Array(list.length), k;
       var counts = {};
       for(k = 0; k < list.length; k++){
-        hays[k] = ((list[k].title || '') + ' ' + (list[k].text || '')).toLowerCase();
+        hays[k] = ((list[k].id || '') + ' ' + (list[k].title || '') + ' ' + (list[k].text || '')).toLowerCase();
         tls[k] = (list[k].title || '').toLowerCase();
         txs[k] = (list[k].text || '').toLowerCase();
         counts[list[k].type] = (counts[list[k].type] || 0) + 1;

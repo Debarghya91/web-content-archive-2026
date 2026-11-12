@@ -57,11 +57,15 @@
     'Wait for the next processing window and check again.',
     'Raise a manual adjustment without investigating the cause.'
   ];
+  /* Hints guide METHOD only. They never name an answer, an
+     evidence item, an evidence kind, a message code, or the
+     requirement text. Rookie guidance elsewhere in this file
+     follows the same rule. */
   var HINT_TEMPLATES = {
-    'first-check': 'Start with the timeline, then check the message evidence.',
-    message: 'Open the message evidence and compare what was sent with what was expected.',
-    action: 'The evidence points to the next action; check what the last message actually said.',
-    resolution: 'The real requirement in the case text states the fix.'
+    'first-check': 'Fix the order of events before interpreting any single record.',
+    message: 'Compare what was sent with what was expected, record by record, before deciding what it means.',
+    action: 'Check the order of events and what each record actually shows before choosing the next step.',
+    resolution: 'Work back from the cause you have identified, and test each option against it before choosing.'
   };
   /* Catalogue purposes, first sentences from the message explorer
      content, plus pacs.028 and pacs.029 as the case texts describe
@@ -99,11 +103,65 @@
   function trim(value) {
     return str(value).replace(/^\s+|\s+$/g, '');
   }
+  /* Dots that are not sentence ends: message codes (pacs.008),
+     decimals, Rs., and e.g. / i.e. / U.S. / U.K. Protected before
+     any sentence splitting, restored after, so a code or amount
+     at the start of a sentence is never torn apart. */
+  function protectDots(s) {
+    return str(s).replace(/\b(pacs|pain|camt)\.(\d{3})\b/gi, '$1\u0001$2')
+      .replace(/(\d)\.(\d)/g, '$1\u0001$2')
+      .replace(/\bRs\./g, 'Rs\u0001')
+      .replace(/\b(e\.g|i\.e|U\.S|U\.K)\./gi, function (m) { return m.replace(/\./g, '\u0001'); });
+  }
+  function restoreDots(s) {
+    return str(s).replace(/\u0001/g, '.');
+  }
   function firstSentence(text) {
     var t = trim(text);
     if (!t) return '';
-    var m = t.match(/^.*?[.!?](\s|$)/);
-    return m ? trim(m[0]) : t;
+    var guarded = protectDots(t);
+    var m = guarded.match(/^.*?[.!?](\s|$)/);
+    return m ? restoreDots(trim(m[0])) : t;
+  }
+  /* Sentence splitting without lookbehind, so the derivation runs
+     in older browsers too. Dots inside message codes (pacs.008),
+     decimals, and e.g. / i.e. are protected before splitting, so
+     a code at the start of a sentence is never torn apart. A
+     trailing fragment with no terminator counts as one sentence. */
+  function splitSentences(text) {
+    var t = trim(text);
+    if (!t) return [];
+    var guarded = protectDots(t);
+    var found = guarded.match(/[^.!?]+[.!?]+["\u201D')\]]*/g);
+    if (!found) return [t];
+    var out = found.map(function (s) { return restoreDots(trim(s)); }).filter(function (s) { return !!s; });
+    var consumed = found.join('').length;
+    var rest = restoreDots(trim(guarded.slice(consumed)));
+    if (rest) out.push(rest);
+    return out.length ? out : [t];
+  }
+  function firstTwoSentences(text) {
+    return splitSentences(text).slice(0, 2).join(' ');
+  }
+  function ensurePeriod(text) {
+    var t = trim(text);
+    if (!t) return '';
+    var last = t.slice(-1);
+    if (last === '.' || last === '!' || last === '?') return t;
+    return t + '.';
+  }
+  function normalizedText(text) {
+    return trim(text).toLowerCase().replace(/[^a-z0-9]+/g, ' ').replace(/^\s+|\s+$/g, '');
+  }
+  function duplicatesText(a, b) {
+    var na = normalizedText(a);
+    var nb = normalizedText(b);
+    if (!na || !nb) return false;
+    if (na === nb) return true;
+    if (na.length >= 20 && nb.length >= 20) {
+      return na.indexOf(nb) !== -1 || nb.indexOf(na) !== -1;
+    }
+    return false;
   }
   function categoryKey(failureCategory) {
     var c = trim(failureCategory).toLowerCase();
@@ -388,23 +446,99 @@
     }
     return ASSUMPTION_TEMPLATES[catKey] || ASSUMPTION_TEMPLATES.default;
   }
-  function rootCauseText(parsed, takeaway, realText) {
-    if (parsed.rootCause.length) return parsed.rootCause.join(' ');
-    var combined = trim(trim(takeaway) + ' ' + trim(realText));
-    return combined || trim(takeaway) || 'The case does not state a root cause in the text provided.';
+  /* A diagnosis reads as cause plus mechanism: at least two
+     sentences. When the case text gives only one sentence for the
+     cause, the mechanism sentence comes from the case insight when
+     it is distinct, else from the flawed requirement the case
+     states. Nothing is invented. */
+  function rootCauseText(parsed, takeaway, realText, flawed, insight) {
+    var base = '';
+    if (parsed.rootCause.length) base = parsed.rootCause.join(' ');
+    else base = trim(trim(takeaway) + ' ' + trim(realText)) || trim(takeaway);
+    if (!base) {
+      return 'The case does not state a root cause in the text provided. No mechanism is stated in the case text.';
+    }
+    var sentences = splitSentences(base);
+    if (sentences.length >= 2) return ensurePeriod(base);
+    var mechanism = firstSentence(insight);
+    if (!mechanism || duplicatesText(mechanism, sentences[0])) {
+      var flawedClean = stripQuotes(flawed);
+      mechanism = flawedClean ?
+        ensurePeriod('The flawed requirement behind it was: ' + flawedClean) :
+        'No further mechanism is stated in the case text.';
+    }
+    return ensurePeriod(sentences[0]) + ' ' + ensurePeriod(mechanism);
   }
   function realRequirementText(parsed, takeaway) {
     if (parsed.realRequirement.length) return parsed.realRequirement.join(' ');
     return trim(takeaway);
   }
+  /* The corrective action must read as a verb-led ACTION, never
+     a quoted question. The case texts state the real requirement
+     as a question, almost always "What evidence proves X?". That
+     form becomes "Require evidence that proves X before marking
+     the payment complete". Any other question form becomes a
+     requirement to answer it with evidence before acting. A
+     statement keeps its own verb when it has one. The final guard
+     below holds for every shape: no question mark, no surrounding
+     quotes, verb-led. */
+  var ACTION_VERBS = /^(Require|Implement|Apply|Investigate|Fix|Add|Check|Verify|Keep|Record|Separate|Send|Request|Confirm|Update|Change|Stop|Ensure|Build|Introduce|Use|Hold|Block|Reconcile|Match|Validate|Monitor|Escalate|Correct|Reverse|Return|Notify|Make|Set|Create|Put|Start|Review|Trace|Raise|Split|Show|Track|Log|Work|Answer|Decide|Test|Prove|Document|Define|Agree|Warn|Tell|Catch|Prevent|Protect|Guarantee|Own|Choose|Handle)\b/;
+  function questionCore(text) {
+    var core = stripQuotes(trim(text));
+    core = core.replace(/^["\u201C]+|["\u201D]+$/g, '');
+    core = trim(core).replace(/\?+\s*$/, '');
+    return trim(core);
+  }
+  function lowerFirst(text) {
+    if (!text) return '';
+    return text.charAt(0).toLowerCase() + text.slice(1);
+  }
   function correctiveActionText(parsed, takeaway) {
     var paras = parsed.realRequirement;
+    var chosen = '';
     for (var i = paras.length - 1; i >= 0; i--) {
       var p = trim(paras[i]);
-      if (p.indexOf('It is') === 0 || p.indexOf("It's") === 0) return p;
+      if (p.indexOf('It is') === 0 || p.indexOf("It's") === 0) { chosen = p; break; }
     }
-    var full = realRequirementText(parsed, takeaway);
-    return full || trim(takeaway);
+    var action = '';
+    if (chosen) {
+      var core = questionCore(chosen.replace(/^It'?s\s+/i, '').replace(/^It is\s+/i, ''));
+      if (/^what evidence proves\s+/i.test(core)) {
+        var rest = trim(core.replace(/^what evidence proves\s+/i, ''));
+        action = 'Require evidence that proves ' + rest +
+          ' before marking the payment complete, and record the evidence used.';
+      } else if (/\?/.test(chosen)) {
+        action = 'Require an evidence-backed answer to the requirement before acting: ' +
+          lowerFirst(core) + ', verified against the evidence before the payment is marked complete.';
+      } else if (core) {
+        action = ACTION_VERBS.test(core) ? ensurePeriod(core) :
+          'Implement the stated fix: ' + lowerFirst(core) + ', verified against the evidence before the payment is marked complete.';
+      }
+    }
+    if (!action) {
+      var full = realRequirementText(parsed, takeaway);
+      var fullCore = questionCore(full);
+      if (fullCore && /\?/.test(full)) {
+        action = 'Require an evidence-backed answer to the requirement before acting: ' +
+          lowerFirst(fullCore) + ', verified against the evidence before the payment is marked complete.';
+      } else if (fullCore) {
+        action = ACTION_VERBS.test(fullCore) ? ensurePeriod(fullCore) :
+          'Implement the stated fix: ' + lowerFirst(fullCore) + ', verified against the evidence before the payment is marked complete.';
+      }
+    }
+    if (!action && trim(takeaway)) {
+      action = 'Apply the case lesson as a control: ' + lowerFirst(trim(takeaway)) +
+        ', verified against the evidence before the payment is marked complete.';
+    }
+    if (!action) {
+      action = 'Investigate the cause from the evidence before marking the payment complete, and record what was checked.';
+    }
+    action = trim(action).replace(/\?+/g, '').replace(/^["\u201C]+|["\u201D]+$/g, '');
+    action = ensurePeriod(action);
+    if (!ACTION_VERBS.test(action)) {
+      action = 'Require the stated fix: ' + lowerFirst(action);
+    }
+    return action;
   }
   function controlsList(parsed, takeaway) {
     if (parsed.controls.length) return parsed.controls.slice();
@@ -414,10 +548,65 @@
     return ['Keep each check separate and require evidence before marking a payment complete.'];
   }
 
-  /* Evidence builders. Rule 17 triggers, rule 18 vocabulary: only
-     message codes, domain, failure category, derived amount and
-     currency, generic parties, and the words SAMPLE and NOT STATED.
-     Sequence markers (T+0, Step 1), never clock times. */
+  /* Absent fields: omit the row, or state the absence once in
+     plain words in the panel body. The literal NOT STATED never
+     appears in evidence text. The payment header keeps NOT STATED
+     only as its data sentinel. */
+  function amountIsStated(header) {
+    return header.amountValue !== 'NOT STATED';
+  }
+  function referenceIsStated(header) {
+    return trim(header.referenceText) !== '' &&
+      header.referenceText !== 'Reference not stated in the case';
+  }
+  function amountPhrase(header) {
+    return amountIsStated(header) ? header.amountValue : 'not stated in the case';
+  }
+  /* One narrative sentence per timeline step, derived only from
+     case text: the visual step note first, then the purpose of a
+     message code named in the step, then a sentence from the case
+     narrative pool (opening, root cause, insight, BA body,
+     takeaway), skipping any sentence that merely repeats the step
+     itself. The synthetic title-fallback note is never used: it
+     says nothing about the step. Where no source gives a distinct
+     sentence, the absence is stated once, in plain words. */
+  function firstCodeIn(text) {
+    CODE_PATTERN.lastIndex = 0;
+    var m = CODE_PATTERN.exec(str(text));
+    return m ? normalizeCode(m[0]) : '';
+  }
+  function timelineNarrative(step, index, ctx) {
+    var title = step.title || '';
+    var note = ctx.flowSource === 'title' ? '' : firstSentence(step.note);
+    if (note && trim(note).length >= 20 && !duplicatesText(note, title)) return ensurePeriod(note);
+    var code = firstCodeIn(title + ' ' + str(step.note));
+    if (code && MESSAGE_PURPOSES[code]) return MESSAGE_PURPOSES[code];
+    var pool = ctx.narrativePool || [];
+    for (var offset = 0; offset < pool.length; offset++) {
+      var cand = pool[(index + offset) % pool.length];
+      if (cand && !duplicatesText(cand, title)) return ensurePeriod(cand);
+    }
+    return 'The case text gives no further detail for this step.';
+  }
+  function buildNarrativePool(parsed, takeaway, rootCause, insight) {
+    var pool = [];
+    var seen = {};
+    function addText(text) {
+      splitSentences(text).forEach(function (s) {
+        var key = normalizedText(s);
+        if (s && trim(s).length >= 20 && key && !seen[key]) {
+          seen[key] = true;
+          pool.push(trim(s));
+        }
+      });
+    }
+    (parsed.opening || []).forEach(addText);
+    addText(rootCause);
+    addText(insight);
+    (parsed.baBody || []).forEach(addText);
+    addText(takeaway);
+    return pool;
+  }
   function evidenceId(prefix, suffix) {
     return 'ev-' + prefix + '-' + str(suffix).replace(/[^A-Za-z0-9]+/g, '').toLowerCase();
   }
@@ -444,40 +633,59 @@
     var i, step;
     for (i = 0; i < ctx.flowSteps.length; i++) {
       step = ctx.flowSteps[i];
+      var narrative = timelineNarrative(step, i, ctx);
+      var stepCode = firstCodeIn(step.title + ' ' + str(step.note));
+      var timelineLines = [
+        'Amount: ' + amountPhrase(ctx.header),
+        'Parties: ' + ctx.header.partiesText
+      ];
+      if (stepCode) timelineLines.push('Message: ' + stepCode);
       push(makeEvidence(
-        evidenceId('timeline', i), 'timeline', step.title,
-        step.note || step.title,
-        ['Step ' + (i + 1), step.title].concat(step.note ? [step.note] : []),
+        evidenceId('timeline', i), 'timeline', 'T+' + i + ': ' + step.title,
+        narrative,
+        timelineLines,
         ctx.flowSource, 0));
     }
     for (i = 0; i < ctx.codes.length; i++) {
       var code = ctx.codes[i];
+      var messageLines = ['Message: ' + code];
+      if (amountIsStated(ctx.header)) {
+        messageLines.push('Amount: ' + ctx.header.amountValue);
+        messageLines.push('Currency: ' + ctx.header.currencyValue);
+      }
+      messageLines.push('From: the sending bank');
+      messageLines.push('To: the beneficiary bank');
+      if (referenceIsStated(ctx.header)) messageLines.push('Reference: ' + ctx.header.referenceText);
+      messageLines.push('Note: SAMPLE instance, derived only from the case text.');
       push(makeEvidence(
         evidenceId('message', code), 'message', code,
-        messagePurpose(code) + ' Case instance values below are derived only from the case text; anything the case does not state is marked NOT STATED.',
-        ['Message: ' + code,
-          'Amount: ' + ctx.header.amountValue,
-          'Currency: ' + ctx.header.currencyValue,
-          'From: the sending bank',
-          'To: the beneficiary bank',
-          'Reference: NOT STATED',
-          'Note: SAMPLE instance, derived only from the case text.'],
+        messagePurpose(code) + ' Case instance values below are derived only from the case text.' +
+          (amountIsStated(ctx.header) ? '' : ' The case does not state an amount.'),
+        messageLines,
         ctx.codesFromStageMap ? 'messages' : 'explain', 0));
     }
     if (ctx.hasLedger) {
+      var ledgerLines = [];
+      if (amountIsStated(ctx.header)) {
+        ledgerLines.push('Customer account: ' + ctx.header.amountValue);
+        ledgerLines.push('Settlement account: ' + ctx.header.amountValue);
+      }
+      ledgerLines.push('Balance check: both legs must agree; a difference is a break.');
       push(makeEvidence('ev-ledger', 'ledger', 'Ledger record',
-        'Double entry record for this payment. The customer leg and the settlement leg must balance; the case states the amount below, and anything else is NOT STATED.',
-        ['Customer account: ' + ctx.header.amountValue,
-          'Settlement account: ' + ctx.header.amountValue,
-          'Balance check: both legs must agree; a difference is a break. Detail: NOT STATED in the case text.'],
+        'Double entry record for this payment. The customer leg and the settlement leg must balance.' +
+          (amountIsStated(ctx.header) ? '' : ' The case does not state an amount.'),
+        ledgerLines,
         'domain', 0));
     }
     if (ctx.hasRecon) {
+      var reconLines = [];
+      if (amountIsStated(ctx.header)) reconLines.push('Bank record: amount ' + ctx.header.amountValue);
+      reconLines.push('Break: see the incident report.');
       push(makeEvidence('ev-recon', 'recon', 'Reconciliation record',
-        'A reconciliation break is a difference between two records that should agree. The case text states the break in the incident report; the record below carries only the derived amount and NOT STATED fields.',
-        ['Bank record: amount ' + ctx.header.amountValue,
-          'Counterparty record: NOT STATED',
-          'Break: see the incident report; amount ' + ctx.header.amountValue],
+        'A reconciliation break is a difference between two records that should agree. ' +
+          'The break itself is stated in the incident report.' +
+          (amountIsStated(ctx.header) ? ' The record below carries only the derived amount.' : ' The case does not state an amount.'),
+        reconLines,
         'failure_category', 0));
     }
     /* One log item per case. ABH-01 replaces the template with the
@@ -485,7 +693,7 @@
     var logLines;
     if (ctx.itemId === 'ABH-01') {
       logLines = [
-        'T+0 pacs.008 sent to the beneficiary bank. Amount: ' + ctx.header.amountValue + '. (SAMPLE)',
+        'T+0 pacs.008 sent to the beneficiary bank. Amount: ' + amountPhrase(ctx.header) + '. (SAMPLE)',
         'T+1 pacs.002 status report never checked. (SAMPLE)',
         'T+2 pacs.028 status request never sent. (SAMPLE)',
         'T+3 pacs.004 return never arrived. (SAMPLE)'
@@ -499,31 +707,33 @@
       var firstCode = ctx.codes[0] || '';
       var secondCode = ctx.codes[1] || '';
       logLines = [
-        'T+0 Instruction received from the customer. Amount: ' + ctx.header.amountValue + '. (SAMPLE)',
+        'T+0 Instruction received from the customer. Amount: ' + amountPhrase(ctx.header) + '. (SAMPLE)',
         'T+1 ' + (firstCode ? firstCode + ' sent to the beneficiary bank.' : 'Outbound message sent to the beneficiary bank; no message code is named in the case.') + ' (SAMPLE)',
         'T+2 ' + (secondCode ? secondCode + ' status: see the message evidence.' : 'Status check: no status message is named in the case.') + ' (SAMPLE)',
-        'T+3 Case opened for investigation. Reference: NOT STATED. (SAMPLE)'
+        'T+3 Case opened for investigation. (SAMPLE)'
       ];
       push(makeEvidence('ev-log', 'log', 'Processing log',
         'Illustrative sequence log (SAMPLE). Sequence numbers only; no clock times. Lines use only the message codes named in the case, the derived amount, and generic parties.',
         logLines, 'template', 0));
     }
     if (ctx.hasApi) {
+      var apiLines = [
+        'Request: payment instruction submitted through the API (SAMPLE)',
+        'Response: accepted for processing (SAMPLE)'
+      ];
+      if (amountIsStated(ctx.header)) apiLines.push('Amount: ' + ctx.header.amountValue);
+      if (referenceIsStated(ctx.header)) apiLines.push('Reference: ' + ctx.header.referenceText);
       push(makeEvidence('ev-api', 'api', 'API record',
         'Request and response for the API call named in the case. Acceptance proves the instruction was received; it does not prove the payment posted.',
-        ['Request: payment instruction submitted through the API (SAMPLE)',
-          'Response: accepted for processing (SAMPLE)',
-          'Amount: ' + ctx.header.amountValue,
-          'Reference: NOT STATED'],
+        apiLines,
         'explain', 0));
     }
     if (ctx.hasClearing) {
+      var clearingLines = [];
+      if (amountIsStated(ctx.header)) clearingLines.push('Amount: ' + ctx.header.amountValue);
       push(makeEvidence('ev-clearing', 'clearing', 'Clearing record',
-        'Clearing status for this payment. The case text does not state a clearing response; the record below carries only the derived amount and NOT STATED fields.',
-        ['Clearing status: NOT STATED in the case text',
-          'Amount: ' + ctx.header.amountValue,
-          'Settlement: NOT STATED in the case text',
-          'Reference: NOT STATED'],
+        'Clearing status for this payment. The case text does not state a clearing response.',
+        clearingLines,
         'explain', 0));
     }
     return items;
@@ -532,7 +742,7 @@
   function buildHypotheses(ctx, caseId) {
     var list = [
       { text: 'The team assumed: ' + ctx.flawed, isCorrect: false, source: 'flawed requirement' },
-      { text: 'The root cause is: ' + firstSentence(ctx.rootCause), isCorrect: true, source: 'root cause' },
+      { text: 'The root cause is: ' + firstTwoSentences(ctx.rootCause), isCorrect: true, source: 'root cause' },
       { text: CATEGORY_ALTERNATIVES[ctx.catKey] || CATEGORY_ALTERNATIVES.default, isCorrect: false, source: 'category alternative' }
     ];
     var shuffled = deterministicShuffle(list, str(caseId));
@@ -661,13 +871,17 @@
     return decisions;
   }
 
+  /* Difficulty changes guidance and completeness only. Evidence
+     inspection is always free choice: the learner decides what to
+     inspect, in any order. The Rookie order is a suggestion, never
+     a lock, and no decision is gated on another. */
   var DIFFICULTIES = {
     rookie: { id: 'rookie', displayName: 'Rookie',
-      guidance: 'Guided: evidence reveals in order, with hints before each decision.' },
+      guidance: 'Guided: a suggested inspection order and method hints before each decision.' },
     professional: { id: 'professional', displayName: 'Professional',
-      guidance: 'Independent: all evidence is available, hints only after a wrong pick.' },
+      guidance: 'Independent: inspect in any order, with method hints only after a wrong pick.' },
     expert: { id: 'expert', displayName: 'Expert',
-      guidance: 'One evidence item starts partial until you request its status, and the second decision unlocks only after the first.' }
+      guidance: 'One record starts partial until you request its status. Decisions stay independent.' }
   };
   function normalizeDifficulty(difficulty) {
     var d = trim(difficulty).toLowerCase();
@@ -724,9 +938,9 @@
       });
     }
     var realText = realRequirementText(parsed, takeaway);
-    var rootCause = rootCauseText(parsed, takeaway, realText);
     var flawed = flawedRequirementText(parsed, catKey);
     var insight = parsed.insight || takeaway;
+    var rootCause = rootCauseText(parsed, takeaway, realText, flawed, insight);
     var controls = controlsList(parsed, takeaway);
     var correctiveAction = correctiveActionText(parsed, takeaway);
     var opening = parsed.opening.length ? parsed.opening :
@@ -755,7 +969,8 @@
       hasLedger: hasLedger, hasRecon: hasRecon, hasApi: hasApi,
       hasClearing: hasClearing, flawed: flawed, rootCause: rootCause,
       catKey: catKey, correctiveAction: correctiveAction,
-      decisionSteps: decisionSteps, evidence: []
+      decisionSteps: decisionSteps, evidence: [],
+      narrativePool: buildNarrativePool(parsed, takeaway, rootCause, insight)
     };
     var evidence = buildEvidence(ctx);
     ctx.evidence = evidence;
@@ -769,9 +984,6 @@
     }
     var hypotheses = buildHypotheses(ctx, id);
     var decisions = buildDecisions(ctx, id);
-    if (diff === 'expert' && decisions.length > 1) {
-      decisions[1].gatedOn = decisions[0].id;
-    }
     var supporting = [];
     evidence.forEach(function (ev) {
       if (ev.kind === 'timeline' || ev.kind === 'message') supporting.push(ev.id);
@@ -795,7 +1007,7 @@
       evidence: evidence,
       hypotheses: hypotheses,
       decisions: decisions,
-      correctDiagnosis: correctHypothesis ? correctHypothesis.text : ('The root cause is: ' + firstSentence(rootCause)),
+      correctDiagnosis: correctHypothesis ? correctHypothesis.text : ('The root cause is: ' + firstTwoSentences(rootCause)),
       supportingEvidenceIDs: supporting,
       correctiveAction: correctiveAction,
       preventiveControls: controls,
@@ -1026,6 +1238,17 @@
       state.step = name;
       state.reached = Math.max(state.reached, stepIndex(name));
       render();
+      scrollToInvestigation();
+    }
+    /* Every step transition lands the learner on the new content:
+       the investigation container scrolls into view after each
+       transition, after Start, and on a fresh investigation. */
+    function scrollToInvestigation() {
+      try {
+        if (container && typeof container.scrollIntoView === 'function') {
+          container.scrollIntoView();
+        }
+      } catch (e) { /* scrolling is best effort */ }
     }
     function stepsNav() {
       var h = '<div class="inv-steps" role="navigation" aria-label="Investigation steps">';
@@ -1040,14 +1263,15 @@
     }
     function headerBand() {
       var inv = state.investigation;
-      return '<div class="inv-header"><p class="sit-eyebrow inv-header-eyebrow">Investigation</p>' +
+      return '<div class="inv-header"><p class="sit-eyebrow inv-header-eyebrow">Investigation &middot; Case ' + escapeHtml(inv.id) + '</p>' +
         '<h2 class="inv-header-title">' + escapeHtml(inv.title) + '</h2>' +
-        '<p class="inv-header-pills"><span class="pf-pill inv-severity ' + severityClass(inv.severity) +
+        '<p class="inv-header-pills"><span class="pf-pill">Case ' + escapeHtml(inv.id) + '</span> ' +
+        '<span class="pf-pill inv-severity ' + severityClass(inv.severity) +
         '">Severity: ' + escapeHtml(inv.severity) + '</span> ' +
         '<span class="pf-pill">' + escapeHtml(inv.incidentType) + '</span> ' +
         (inv.level ? '<span class="pf-pill accent-gold">' + escapeHtml(inv.level) + '</span> ' : '') +
         '<span class="pf-pill accent-navy">' + escapeHtml(DIFFICULTIES[state.difficulty].displayName) + '</span></p>' +
-        '<p class="inv-header-note">Severity is derived from the case level and failure category.</p></div>';
+        '<p class="inv-header-note">Case ' + escapeHtml(inv.id) + '. Severity is derived from the case level and failure category.</p></div>';
     }
     function actionsBar(inner) {
       return '<div class="inv-actions">' + inner +
@@ -1065,10 +1289,14 @@
       h += '<p class="sit-case-label">Customer impact</p><p>' + escapeHtml(inv.impactSentence) + '</p>';
       h += '<p class="sit-case-label">Payment header</p>';
       h += '<table class="inv-pay-table"><tbody>' +
-        '<tr><th>Amount</th><td>' + escapeHtml(inv.paymentHeader.amountText) + '</td></tr>' +
-        '<tr><th>Currency</th><td>' + escapeHtml(inv.paymentHeader.currencyText) + '</td></tr>' +
+        '<tr><th>Case</th><td>' + escapeHtml(inv.id) + '</td></tr>' +
+        (inv.paymentHeader.amountValue !== 'NOT STATED' ?
+          '<tr><th>Amount</th><td>' + escapeHtml(inv.paymentHeader.amountText) + '</td></tr>' +
+          '<tr><th>Currency</th><td>' + escapeHtml(inv.paymentHeader.currencyText) + '</td></tr>' :
+          '<tr><th>Amount</th><td>Not stated in the case</td></tr>') +
         '<tr><th>Parties</th><td>' + escapeHtml(inv.paymentHeader.partiesText) + '</td></tr>' +
-        '<tr><th>Reference</th><td>' + escapeHtml(inv.paymentHeader.referenceText) + '</td></tr>' +
+        (inv.paymentHeader.referenceText !== 'Reference not stated in the case' ?
+          '<tr><th>Reference</th><td>' + escapeHtml(inv.paymentHeader.referenceText) + '</td></tr>' : '') +
         '</tbody></table>';
       h += '<p class="sit-case-label">Investigation objectives</p><ol class="inv-objectives">';
       inv.objectives.forEach(function (o) { h += '<li>' + escapeHtml(o) + '</li>'; });
@@ -1085,27 +1313,27 @@
       h += actionsBar('<button type="button" class="pf-btn-primary" data-action="inv-start">Start the investigation</button>');
       return h;
     }
-    function evidenceAvailable(ev, index) {
-      if (state.difficulty !== 'rookie') return true;
-      if (index === 0) return true;
-      var prev = state.investigation.evidence[index - 1];
-      return !!(prev && state.opened[prev.id]);
-    }
+    /* Evidence inspection is free choice on every difficulty:
+       the learner decides what to inspect, in any order. The
+       Rookie order is a suggestion in the note below, never a
+       lock. Continue is always available; scoring still reflects
+       what was opened. */
     function renderEvidence() {
       var inv = state.investigation;
       var h = headerBand() + stepsNav();
       var openedCount = Object.keys(state.opened).length;
       h += '<div class="pf-card inv-evidence-card"><h3>Evidence workspace</h3>' +
         '<p class="inv-note">Evidence opened: ' + openedCount + ' of ' + inv.evidence.length +
-        '. Choose what to inspect' + (state.difficulty === 'rookie' ? ', in order' : ', in any order') + '.</p>';
+        '. Inspect in any order.' +
+        (state.difficulty === 'rookie' ? ' Suggested order: work through the records in the order listed.' : '') +
+        ' Your score reflects what you opened.</p>';
       h += '<div class="inv-workspace"><div class="inv-evidence-list" role="listbox" aria-label="Evidence">';
       inv.evidence.forEach(function (ev, i) {
-        var avail = evidenceAvailable(ev, i);
         var cls = 'inv-evidence-item' + (ev.id === state.selectedEvidenceId ? ' is-selected' : '') +
-          (state.opened[ev.id] ? ' is-opened' : '') + (!avail ? ' is-locked' : '') +
+          (state.opened[ev.id] ? ' is-opened' : '') +
           (ev.completeness.status === 'partial' ? ' is-partial' : '');
         h += '<button type="button" class="' + cls + '" data-action="inv-evidence" data-id="' +
-          escapeHtml(ev.id) + '"' + (avail ? '' : ' disabled') + '>' +
+          escapeHtml(ev.id) + '">' +
           '<span class="inv-evidence-kind">' + escapeHtml(ev.kind) + '</span>' +
           '<span class="inv-evidence-title">' + escapeHtml(ev.title) + '</span>' +
           (ev.completeness.status === 'partial' ? '<span class="inv-evidence-flag">Partial</span>' : '') +
@@ -1152,17 +1380,11 @@
       }
       return h;
     }
+    /* No confidence labels: a label that marks the correct
+       hypothesis "Most likely" gives the answer away. Rookie
+       guidance is method hints only, shown with the decisions. */
     function hypothesisLabel(hyp, index) {
-      if (state.difficulty !== 'rookie') return '';
-      var supportingOpened = state.investigation.supportingEvidenceIDs.some(function (id) {
-        return !!state.opened[id];
-      });
-      if (hyp.isCorrect) return supportingOpened ? 'Most likely' : 'Possible';
-      var incorrectBefore = 0;
-      for (var i = 0; i < index; i++) {
-        if (!state.investigation.hypotheses[i].isCorrect) incorrectBefore += 1;
-      }
-      return incorrectBefore === 0 ? 'Possible' : 'Unlikely';
+      return '';
     }
     function renderHypotheses() {
       var inv = state.investigation;
@@ -1190,9 +1412,6 @@
       h += '<div class="pf-card inv-decision-card"><h3>Decision ' + (state.decisionIndex + 1) +
         ' of ' + inv.decisions.length + '</h3>';
       h += '<p class="inv-decision-prompt">' + escapeHtml(dec.prompt) + '</p>';
-      if (dec.gatedOn) {
-        h += '<p class="inv-note">This decision unlocks after the first decision is answered.</p>';
-      }
       var answered = state.answers[dec.id] !== undefined;
       var pickedIndex = state.answers[dec.id];
       var showHint = false;
@@ -1233,7 +1452,7 @@
       var h = headerBand() + stepsNav();
       h += '<div class="pf-card"><h3>Diagnosis</h3>';
       h += '<p class="inv-note">Pick the root cause from the hypothesis set and cite at least one evidence item you opened as support.' +
-        (state.difficulty === 'rookie' ? ' Cite timeline or message evidence: the timeline fixes what happened, and the message evidence shows what was sent.' : '') + '</p>';
+        (state.difficulty === 'rookie' ? ' Cite the records you opened that best support the cause you picked.' : '') + '</p>';
       inv.hypotheses.forEach(function (hyp) {
         var sel = hyp.id === state.diagnosisId ? ' is-selected' : '';
         h += '<button type="button" class="inv-hypothesis' + sel + '" data-action="inv-diagnosis-pick" data-id="' +
@@ -1326,11 +1545,13 @@
       if (!state.diagnosisId) {
         state.diagnosisError = 'Pick the root cause before submitting the diagnosis.';
         render();
+        scrollToInvestigation();
         return;
       }
       if (!citedIds.length) {
         state.diagnosisError = 'Cite at least one evidence item you opened. A diagnosis without cited evidence is not scored as a guess.';
         render();
+        scrollToInvestigation();
         return;
       }
       var inv = state.investigation;
@@ -1439,6 +1660,7 @@
         if (state.decisionIndex < state.investigation.decisions.length - 1) {
           state.decisionIndex += 1;
           render();
+          scrollToInvestigation();
         } else {
           gotoStep('diagnosis');
         }
@@ -1473,6 +1695,7 @@
         state.selectedEvidenceId = state.investigation.evidence.length ?
           state.investigation.evidence[0].id : '';
         render();
+        scrollToInvestigation();
         return;
       }
     }
@@ -1492,6 +1715,7 @@
     container.addEventListener('click', onClick);
     container.addEventListener('change', onChange);
     render();
+    scrollToInvestigation();
     return true;
   }
   function bindLockedExit(container, callbacks) {

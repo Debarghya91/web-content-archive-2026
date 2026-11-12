@@ -362,6 +362,7 @@
     else visual = renderDiagram(item, id);
     var html = '<section class="sit-item pf-card" id="' + esc(id) + '" data-sit-item="' + esc(item.id || '') + '">';
     var eyebrow = [];
+    if (item.id) eyebrow.push('Case ' + esc(item.id));
     if (item.stage) eyebrow.push('Stage ' + esc(item.stage) + ': ' + esc(item.stage_name || ''));
     if (item.seq) eyebrow.push('Situation ' + esc(item.seq));
     if (item.domain) eyebrow.push(esc(item.domain));

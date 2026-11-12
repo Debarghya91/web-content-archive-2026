@@ -119,7 +119,7 @@ function pfWeekLabel(parts) {
     /* Used only when situations-visual.js did not load: the same
        case fields, paragraphed, with no invented content. */
     var h = '<section class="sit-item pf-card">';
-    h += '<p class="sit-eyebrow">Situation ' + esc(item.seq || '') + '</p>';
+    h += '<p class="sit-eyebrow">' + (item.id ? 'Case ' + esc(item.id) + ' &middot; ' : '') + 'Situation ' + esc(item.seq || '') + '</p>';
     h += '<p class="sit-case-label">Situation</p>';
     h += '<h3 class="sit-title">' + esc(item.title || 'Untitled situation') + '</h3>';
     String(item.explain || '').split(/\n\s*\n/).forEach(function (p) {
@@ -150,6 +150,7 @@ function pfWeekLabel(parts) {
     if (labelEl) labelEl.textContent = pfWeekLabel(parts);
     if (pillsEl) {
       var pills = '<span class="pf-pill">Case ' + (idx + 1) + ' of ' + items.length + '</span>';
+      if (item.id) pills += ' <span class="pf-pill">' + esc(item.id) + '</span>';
       if (item.level) {
         var lvl = String(item.level);
         pills += ' <span class="pf-pill accent-gold">' + esc(lvl.charAt(0).toUpperCase() + lvl.slice(1)) + '</span>';
