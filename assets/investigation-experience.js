@@ -610,6 +610,14 @@
   function evidenceId(prefix, suffix) {
     return 'ev-' + prefix + '-' + str(suffix).replace(/[^A-Za-z0-9]+/g, '').toLowerCase();
   }
+  /* One sequence label function shared by the timeline and the
+     processing log: the first event is T+0 in both, and the same
+     event always carries the same label in both. Both builders
+     index the same flow steps through this function, so the two
+     numberings cannot drift apart again. */
+  function sequenceLabel(index) {
+    return 'T+' + index;
+  }
   function makeEvidence(id, kind, title, body, structuredLines, sourceField, index) {
     return {
       id: id, kind: kind, title: title, body: body,
@@ -641,7 +649,7 @@
       ];
       if (stepCode) timelineLines.push('Message: ' + stepCode);
       push(makeEvidence(
-        evidenceId('timeline', i), 'timeline', 'T+' + i + ': ' + step.title,
+        evidenceId('timeline', i), 'timeline', sequenceLabel(i) + ': ' + step.title,
         narrative,
         timelineLines,
         ctx.flowSource, 0));
@@ -688,34 +696,25 @@
         reconLines,
         'failure_category', 0));
     }
-    /* One log item per case. ABH-01 replaces the template with the
-       single hand-written log item (see buildCase). */
-    var logLines;
-    if (ctx.itemId === 'ABH-01') {
-      logLines = [
-        'T+0 pacs.008 sent to the beneficiary bank. Amount: ' + amountPhrase(ctx.header) + '. (SAMPLE)',
-        'T+1 pacs.002 status report never checked. (SAMPLE)',
-        'T+2 pacs.028 status request never sent. (SAMPLE)',
-        'T+3 pacs.004 return never arrived. (SAMPLE)'
-      ];
-      var abhLog = makeEvidence('ev-log', 'log', 'Processing log',
-        'Hand-written for this case from the case text. Illustrative sequence log (SAMPLE). Sequence numbers only; no clock times.',
-        logLines, 'authored', 0);
-      abhLog.authored = true;
-      push(abhLog);
-    } else {
-      var firstCode = ctx.codes[0] || '';
-      var secondCode = ctx.codes[1] || '';
-      logLines = [
-        'T+0 Instruction received from the customer. Amount: ' + amountPhrase(ctx.header) + '. (SAMPLE)',
-        'T+1 ' + (firstCode ? firstCode + ' sent to the beneficiary bank.' : 'Outbound message sent to the beneficiary bank; no message code is named in the case.') + ' (SAMPLE)',
-        'T+2 ' + (secondCode ? secondCode + ' status: see the message evidence.' : 'Status check: no status message is named in the case.') + ' (SAMPLE)',
-        'T+3 Case opened for investigation. (SAMPLE)'
-      ];
-      push(makeEvidence('ev-log', 'log', 'Processing log',
-        'Illustrative sequence log (SAMPLE). Sequence numbers only; no clock times. Lines use only the message codes named in the case, the derived amount, and generic parties.',
-        logLines, 'template', 0));
-    }
+    /* One log item per case, with one line per flow step. Each
+       line carries the same sequence label as the matching
+       timeline event, because both builders index the same flow
+       steps through sequenceLabel. ABH-01 keeps its hand-written
+       marker and body text; its lines are the same step texts,
+       aligned, instead of a shorter list that omitted the first
+       step and shifted every label by one. */
+    var logLines = ctx.flowSteps.map(function (step, li) {
+      var line = sequenceLabel(li) + ' ' + ensurePeriod(trim(step.title));
+      if (li === 0) line += ' Amount: ' + amountPhrase(ctx.header) + '.';
+      return line + ' (SAMPLE)';
+    });
+    var logBody = ctx.itemId === 'ABH-01'
+      ? 'Hand-written for this case from the case text. Illustrative sequence log (SAMPLE). Sequence numbers only; no clock times.'
+      : 'Illustrative sequence log (SAMPLE). Sequence numbers only; no clock times. Each line carries the same sequence label as the matching timeline event.';
+    var logItem = makeEvidence('ev-log', 'log', 'Processing log',
+      logBody, logLines, ctx.itemId === 'ABH-01' ? 'authored' : 'template', 0);
+    if (ctx.itemId === 'ABH-01') logItem.authored = true;
+    push(logItem);
     if (ctx.hasApi) {
       var apiLines = [
         'Request: payment instruction submitted through the API (SAMPLE)',
@@ -739,11 +738,90 @@
     return items;
   }
 
+  /* Hypotheses are competing candidate explanations in plain
+     mechanism language. No hypothesis names a message code, quotes
+     the derived root cause, or shares an 8 word run with it: each
+     is one fixed mechanism sentence, and only the CHOICE of the
+     correct mechanism is derived from the case, from strong
+     signals in the failure category and the case text. All three
+     options sit at the same level of specificity, so the learner
+     must test them against the evidence instead of recognising
+     the quoted answer. The full root cause stays in the report. */
+  var MECHANISM_FRAMES = [
+    { key: 'confirmation', text: 'The first successful step was treated as proof the payment had completed, although the later record that would show arrival and settlement was never checked.' },
+    { key: 'data-mismatch', text: 'A detail in the instruction did not match what the receiving side expected, so the payment could not be applied as it was sent.' },
+    { key: 'downstream-reject', text: 'A check after the payment left the sending bank rejected or returned it before it reached the beneficiary.' },
+    { key: 'screening', text: 'A compliance or fraud check held the payment for review after it was sent, and nobody explained the hold to the customer.' },
+    { key: 'timing-recon', text: 'Two records were compared before both sides had finished updating, so a payment still in flight looked like a break.' },
+    { key: 'duplicate', text: 'A retry after a timeout or an unclear outcome created a second instruction for the same payment.' },
+    { key: 'routing', text: 'The payment was sent along a route that could not complete it, so it stopped before reaching the beneficiary bank.' },
+    { key: 'cutoff', text: 'The payment missed the processing cut-off, so it waited for the next window instead of completing when expected.' },
+    { key: 'funds', text: 'The funds or liquidity needed to settle the payment were not available when the payment was due to complete.' },
+    { key: 'system', text: 'A system or connectivity failure interrupted processing, so the payment stopped part-way through the chain.' },
+    { key: 'workflow', text: 'A later step in the approval and processing workflow stopped or re-routed the payment after an earlier step had approved it.' },
+    { key: 'requirement-gap', text: 'The requirement described only the first step, so the checks that would prove the outcome were never built or never run.' },
+    { key: 'charge', text: 'A charge taken along the route left the beneficiary with less than the amount the sender intended to pay.' },
+    { key: 'mandate', text: 'The authority to take or send the payment was missing or did not cover this payment, so the payment could not proceed.' },
+    { key: 'unclear-outcome', text: 'The outcome of the first attempt stayed unclear after a timeout, so the next step was taken without knowing whether the payment had succeeded.' }
+  ];
+  function frameByKey(key) {
+    for (var i = 0; i < MECHANISM_FRAMES.length; i++) {
+      if (MECHANISM_FRAMES[i].key === key) return MECHANISM_FRAMES[i];
+    }
+    return MECHANISM_FRAMES[11];
+  }
+  function selectMechanismFrame(ctx) {
+    var signals = trim(ctx.failureCategory) + ' ' + trim(ctx.rootCause) + ' ' +
+      trim(ctx.flawed) + ' ' + trim(ctx.insight);
+    var t = signals.toLowerCase();
+    var fc = trim(ctx.failureCategory).toLowerCase();
+    function has(re) { return re.test(t); }
+    /* Strong mechanism signals in the case text come first: the
+       failure category alone mislabels cases whose category is
+       the outcome rather than the mechanism. */
+    if (has(/duplicat/)) return frameByKey('duplicate');
+    if (has(/workflow|approval step|stops? the payment after approval|maker.{0,20}checker/)) return frameByKey('workflow');
+    if (has(/sanction|fraud check|fraud signal/)) return frameByKey('screening');
+    if (has(/unmatched/) || (has(/reconcil/) && has(/timing|lag|break|late/))) return frameByKey('timing-recon');
+    if (has(/does not match|did not match|mismatch|name.{0,30}match|invalid|deviat.{0,20}standard|field.{0,20}missing|missing.{0,20}field/)) return frameByKey('data-mismatch');
+    if (has(/never checked|just a guess|does not prove|does not show|no proof|assumed.{0,30}complet|treat.{0,40} as (a )?complet|treated.{0,40} as (proof|complet)/)) return frameByKey('confirmation');
+    if (has(/cut-off|cutoff|missed the (processing )?window/)) return frameByKey('cutoff');
+    if (has(/mandate/)) return frameByKey('mandate');
+    if (has(/deduction|charge.{0,20}taken|charges?.{0,20}deduct/)) return frameByKey('charge');
+    if (has(/wrong route|misrout|sent to the wrong/)) return frameByKey('routing');
+    if (has(/insufficient funds|liquidity shortfall|not enough funds/)) return frameByKey('funds');
+    if (has(/system (failure|outage|down)|connectivity failure|outage/)) return frameByKey('system');
+    if (has(/timeout/)) return frameByKey('unclear-outcome');
+    /* Failure category fallback, when the text gives no strong
+       signal. */
+    if (fc.indexOf('duplicat') !== -1) return frameByKey('duplicate');
+    if (fc.indexOf('timeout') !== -1) return frameByKey('unclear-outcome');
+    if (fc.indexOf('sanction') !== -1 || fc.indexOf('fraud') !== -1) return frameByKey('screening');
+    if (fc.indexOf('reconcil') !== -1) return frameByKey('timing-recon');
+    if (fc.indexOf('mismatch') !== -1 || fc.indexOf('invalid beneficiary') !== -1) return frameByKey('data-mismatch');
+    if (fc.indexOf('routing') !== -1) return frameByKey('routing');
+    if (fc.indexOf('cut-off') !== -1 || fc.indexOf('cutoff') !== -1) return frameByKey('cutoff');
+    if (fc.indexOf('insufficient') !== -1 || fc.indexOf('liquidity') !== -1) return frameByKey('funds');
+    if (fc.indexOf('system') !== -1 || fc.indexOf('connectivity') !== -1) return frameByKey('system');
+    if (fc.indexOf('charge') !== -1) return frameByKey('charge');
+    if (fc.indexOf('mandate') !== -1) return frameByKey('mandate');
+    if (fc.indexOf('reject') !== -1 || fc.indexOf('return') !== -1) return frameByKey('downstream-reject');
+    /* Weaker confirmation signals, then the requirement gap that
+       most of these cases turn on. */
+    if (has(/held for review|held.{0,20}check/)) return frameByKey('screening');
+    if (has(/\bstatus\b|arrived|settled|credited|confirmation/)) return frameByKey('confirmation');
+    return frameByKey('requirement-gap');
+  }
+
   function buildHypotheses(ctx, caseId) {
+    var correct = selectMechanismFrame(ctx);
+    var others = MECHANISM_FRAMES.filter(function (f) { return f.key !== correct.key; });
+    var start = fnv1a(str(caseId)) % others.length;
+    var rotated = others.slice(start).concat(others.slice(0, start));
     var list = [
-      { text: 'The team assumed: ' + ctx.flawed, isCorrect: false, source: 'flawed requirement' },
-      { text: 'The root cause is: ' + firstTwoSentences(ctx.rootCause), isCorrect: true, source: 'root cause' },
-      { text: CATEGORY_ALTERNATIVES[ctx.catKey] || CATEGORY_ALTERNATIVES.default, isCorrect: false, source: 'category alternative' }
+      { text: correct.text, isCorrect: true, source: 'mechanism: ' + correct.key },
+      { text: rotated[0].text, isCorrect: false, source: 'mechanism: ' + rotated[0].key },
+      { text: rotated[1].text, isCorrect: false, source: 'mechanism: ' + rotated[1].key }
     ];
     var shuffled = deterministicShuffle(list, str(caseId));
     return shuffled.map(function (h, i) {
@@ -968,7 +1046,8 @@
       codesFromStageMap: codesFromStageMap, header: header,
       hasLedger: hasLedger, hasRecon: hasRecon, hasApi: hasApi,
       hasClearing: hasClearing, flawed: flawed, rootCause: rootCause,
-      catKey: catKey, correctiveAction: correctiveAction,
+      catKey: catKey, failureCategory: failureCategory, insight: insight,
+      correctiveAction: correctiveAction,
       decisionSteps: decisionSteps, evidence: [],
       narrativePool: buildNarrativePool(parsed, takeaway, rootCause, insight)
     };
@@ -992,8 +1071,9 @@
     if (insight && lessons.indexOf(insight) === -1) lessons.push(insight);
     if (takeaway && lessons.indexOf(takeaway) === -1) lessons.push(takeaway);
     if (!lessons.length) lessons.push(correctiveAction);
-    var correctHypothesis = null;
-    hypotheses.forEach(function (h) { if (h.isCorrect) correctHypothesis = h; });
+    /* The report diagnosis is the full derived root cause. It is
+       deliberately NOT the correct hypothesis text: hypotheses
+       must not quote it. */
     return {
       id: id, situationID: id, title: title, severity: severity,
       incidentType: failureCategory || 'Payment exception',
@@ -1007,7 +1087,7 @@
       evidence: evidence,
       hypotheses: hypotheses,
       decisions: decisions,
-      correctDiagnosis: correctHypothesis ? correctHypothesis.text : ('The root cause is: ' + firstTwoSentences(rootCause)),
+      correctDiagnosis: 'The root cause is: ' + firstTwoSentences(rootCause),
       supportingEvidenceIDs: supporting,
       correctiveAction: correctiveAction,
       preventiveControls: controls,
@@ -1195,6 +1275,9 @@
     ['briefing', 'Briefing'], ['evidence', 'Evidence'], ['hypotheses', 'Hypotheses'],
     ['decisions', 'Decisions'], ['diagnosis', 'Diagnosis'], ['report', 'Report']
   ];
+  /* Citation gate wording, verbatim. Shown on a blocked diagnosis
+     submit and kept visible until a citation is chosen. */
+  var CITATION_GATE_TEXT = 'Choose one piece of evidence you opened to support this diagnosis, then submit again.';
 
   function renderInto(container, investigation, callbacks) {
     var d = doc();
@@ -1217,10 +1300,25 @@
       bindLockedExit(container, callbacks);
       return false;
     }
+    /* The first evidence item is displayed as soon as the
+       workspace opens, so it counts as opened from the start:
+       "Evidence opened" is 1, not 0, on starting the
+       investigation, and scoring counts it like any item the
+       learner opened. The partial guard matches the click
+       handler: a partial item counts only once its status is
+       requested. */
+    function initialOpened(inv) {
+      var opened = {};
+      if (inv.evidence.length) {
+        var first = inv.evidence[0];
+        if (first.completeness.status !== 'partial') opened[first.id] = true;
+      }
+      return opened;
+    }
     var state = {
       step: 'briefing', reached: 0, investigation: investigation,
       difficulty: investigation.difficulty || 'rookie',
-      opened: {}, selectedEvidenceId: '', statusRequested: false,
+      opened: initialOpened(investigation), selectedEvidenceId: '', statusRequested: false,
       leadingId: '', revisions: [], answers: {}, decisionIndex: 0,
       diagnosisId: '', cited: {}, diagnosisError: '',
       report: null, persisted: false, started: false
@@ -1247,6 +1345,31 @@
       try {
         if (container && typeof container.scrollIntoView === 'function') {
           container.scrollIntoView();
+        }
+      } catch (e) { /* scrolling is best effort */ }
+    }
+    /* A blocked citation gate must be seen, not just rendered:
+       scroll the gate message itself into view below the sticky
+       header (its scroll-margin-top is in the CSS). */
+    function scrollToCitationGate() {
+      try {
+        var gate = d.getElementById('investigationCitationGate');
+        if (gate && typeof gate.scrollIntoView === 'function') {
+          gate.scrollIntoView({ block: 'start' });
+          return;
+        }
+      } catch (e) { /* fall through to the container scroll */ }
+      scrollToInvestigation();
+    }
+    /* After opening an evidence item, the detail heading must be
+       fully visible below the sticky header: the pane carries
+       scroll-margin-top in the CSS and is scrolled into view
+       here, so the heading never sits just above the viewport. */
+    function scrollToEvidenceDetail() {
+      try {
+        var detail = container.querySelector ? container.querySelector('.inv-evidence-detail') : null;
+        if (detail && typeof detail.scrollIntoView === 'function') {
+          detail.scrollIntoView({ block: 'start' });
         }
       } catch (e) { /* scrolling is best effort */ }
     }
@@ -1471,7 +1594,12 @@
             checked + '> <span><strong>' + escapeHtml(ev.title) + '</strong> (' + escapeHtml(ev.kind) + ')</span></label>';
         });
       }
-      if (state.diagnosisError) h += '<p class="inv-error">' + escapeHtml(state.diagnosisError) + '</p>';
+      if (state.diagnosisError) {
+        var isGate = state.diagnosisError === CITATION_GATE_TEXT;
+        h += '<p class="inv-error' + (isGate ? ' investigationCitationGate' : '') + '"' +
+          (isGate ? ' id="investigationCitationGate"' : '') + '>' +
+          escapeHtml(state.diagnosisError) + '</p>';
+      }
       h += '</div>';
       h += actionsBar('<button type="button" class="pf-btn-primary" data-action="inv-submit-diagnosis">Submit diagnosis and see the report</button>');
       return h;
@@ -1549,9 +1677,9 @@
         return;
       }
       if (!citedIds.length) {
-        state.diagnosisError = 'Cite at least one evidence item you opened. A diagnosis without cited evidence is not scored as a guess.';
+        state.diagnosisError = CITATION_GATE_TEXT;
         render();
-        scrollToInvestigation();
+        scrollToCitationGate();
         return;
       }
       var inv = state.investigation;
@@ -1592,7 +1720,7 @@
         if (diff !== state.difficulty && !state.started) {
           state.difficulty = diff;
           state.investigation = buildCase(state.investigation.sourceItem, diff);
-          state.opened = {};
+          state.opened = initialOpened(state.investigation);
           state.statusRequested = false;
           state.selectedEvidenceId = state.investigation.evidence.length ?
             state.investigation.evidence[0].id : '';
@@ -1625,6 +1753,7 @@
           state.opened[evId] = true;
         }
         render();
+        scrollToEvidenceDetail();
         return;
       }
       if (action === 'inv-request-status') {
@@ -1668,7 +1797,9 @@
       }
       if (action === 'inv-diagnosis-pick') {
         state.diagnosisId = target.getAttribute('data-id') || '';
-        state.diagnosisError = '';
+        /* Picking a diagnosis does not clear the citation gate:
+           the gate stays visible until a citation is chosen. */
+        if (state.diagnosisError !== CITATION_GATE_TEXT) state.diagnosisError = '';
         render();
         return;
       }
@@ -1680,7 +1811,7 @@
         state.investigation = buildCase(state.investigation.sourceItem, state.difficulty);
         state.step = 'briefing';
         state.reached = 0;
-        state.opened = {};
+        state.opened = initialOpened(state.investigation);
         state.statusRequested = false;
         state.leadingId = '';
         state.revisions = [];
@@ -1705,7 +1836,14 @@
       var citeId = target.getAttribute('data-cite');
       if (citeId) {
         state.cited[citeId] = !!target.checked;
-        state.diagnosisError = '';
+        /* The citation gate clears only when a citation is
+           chosen. Remove the visible message at once, without
+           waiting for the next render. */
+        if (target.checked && state.diagnosisError === CITATION_GATE_TEXT) {
+          state.diagnosisError = '';
+          var gate = d.getElementById('investigationCitationGate');
+          if (gate && gate.parentNode) gate.parentNode.removeChild(gate);
+        }
       }
     }
     if (container._pfInvClick) container.removeEventListener('click', container._pfInvClick);
