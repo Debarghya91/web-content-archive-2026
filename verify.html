@@ -84,6 +84,7 @@ document.addEventListener("DOMContentLoaded", function(){
     catch(e){ return iso; }
   }
   function showVerified(c){
+    if(c.certificate_kind === 'path'){ showVerifiedPath(c); return; }
     var pct = (c.score_percent != null) ? c.score_percent : Math.round(100 * c.correct_count / c.total_questions);
     result.innerHTML =
       '<div class="verify-badge">' +
@@ -103,6 +104,33 @@ document.addEventListener("DOMContentLoaded", function(){
         '</dl>' +
       '</div>' +
       '<p class="verify-note">This certificate is not an accredited qualification. It certifies completion of the named Payments Training Hub course.</p>';
+  }
+  // Learning-path certificates (certificate_kind 'path') have no exam
+  // score, so show the same VERIFIED card without a score line, with an
+  // optional competency average when the row carries one.
+  function showVerifiedPath(c){
+    var compRow = '';
+    if(typeof c.competency_average === 'number' && isFinite(c.competency_average)){
+      compRow = '<dt>Competency average</dt><dd>' + esc(Math.round(c.competency_average)) + '%</dd>';
+    }
+    result.innerHTML =
+      '<div class="verify-badge">' +
+        '<div class="verify-seal"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>' +
+        '<h2>VERIFIED</h2>' +
+        '<p>This certificate is genuine and was issued by Payments Training Hub.</p>' +
+      '</div>' +
+      '<div class="verify-card">' +
+        '<h3>' + esc(c.course_name) + '</h3>' +
+        '<p class="verify-issuer">Certificate of Completion &middot; Issued by Payments Training Hub</p>' +
+        '<dl>' +
+          '<dt>Issued to</dt><dd>' + esc(c.learner_name) + '</dd>' +
+          '<dt>Learning path</dt><dd>' + esc(c.course_name) + '</dd>' +
+          '<dt>Issued on</dt><dd>' + esc(fmtDate(c.issued_at)) + '</dd>' +
+          compRow +
+          '<dt>Certificate ID</dt><dd class="verify-id">' + esc(c.id) + '</dd>' +
+        '</dl>' +
+      '</div>' +
+      '<p class="verify-note">This certificate is not an accredited qualification. It certifies completion of the named Payments Training Hub learning path.</p>';
   }
   function showNotFound(id){
     result.innerHTML =
