@@ -1121,7 +1121,10 @@
      from relevant evidence opened, efficiency from wrong picks with
      the Lab bonus mapping, technical accuracy from message and
      system decisions, root-cause identification from the diagnosis
-     pick plus citation, resolution quality from resolution picks.
+     pick alone (100 when the diagnosis pick is the correct
+     hypothesis or frame, 0 otherwise; a citation is still required
+     to submit, but which evidence was cited does not change this
+     dimension), resolution quality from resolution picks.
      Overall is the mean, rounded. */
   function score(run) {
     run = run || {};
@@ -1182,12 +1185,7 @@
       if (h.id === run.diagnosisHypothesisId) diagnosis = h;
     });
     var diagnosisCorrect = !!(diagnosis && diagnosis.isCorrect);
-    var citedSet = {};
-    cited.forEach(function (id) { citedSet[id] = true; });
-    var citedSupports = supporting.some(function (id) { return !!citedSet[id]; });
-    var rootCauseIdentification = 0;
-    if (diagnosisCorrect && citedSupports) rootCauseIdentification = 100;
-    else if (diagnosisCorrect) rootCauseIdentification = 50;
+    var rootCauseIdentification = diagnosisCorrect ? 100 : 0;
     var resolutionQuality;
     if (resolutionResults && resolutionResults.length) {
       var resCorrect = 0;
@@ -1361,13 +1359,22 @@
       } catch (e) { /* fall through to the container scroll */ }
       scrollToInvestigation();
     }
-    /* After opening an evidence item, the detail heading must be
-       fully visible below the sticky header: the pane carries
-       scroll-margin-top in the CSS and is scrolled into view
-       here, so the heading never sits just above the viewport. */
+    /* After opening an evidence item, the "Evidence workspace"
+       section heading must stay fully visible below the sticky
+       header. Scrolling the detail pane alone pushed the heading
+       under the header when a lower item was opened, so scroll
+       the evidence card itself into view: the card carries
+       scroll-margin-top in the CSS, and the heading is its first
+       child. Fall back to the detail pane if the card is absent. */
     function scrollToEvidenceDetail() {
       try {
-        var detail = container.querySelector ? container.querySelector('.inv-evidence-detail') : null;
+        if (!container.querySelector) return;
+        var card = container.querySelector('.inv-evidence-card');
+        if (card && typeof card.scrollIntoView === 'function') {
+          card.scrollIntoView({ block: 'start' });
+          return;
+        }
+        var detail = container.querySelector('.inv-evidence-detail');
         if (detail && typeof detail.scrollIntoView === 'function') {
           detail.scrollIntoView({ block: 'start' });
         }
