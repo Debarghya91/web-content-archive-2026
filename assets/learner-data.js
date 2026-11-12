@@ -105,10 +105,70 @@
   }
   function bar(done, total) {
     var p = pct(done, total);
-    return '<div class="dash-bar"><div style="width:' + p + '%"></div></div>';
+    return '<div class="pf-progress-bar dash-bar"><span style="width:' + p + '%"></span></div>';
   }
   function badge(text, muted) {
-    return '<span class="pa-badge' + (muted ? ' pa-badge-muted' : '') + '">' + esc(text) + '</span>';
+    return '<span class="pf-pill pa-badge' + (muted ? ' pa-badge-muted' : '') + '">' + esc(text) + '</span>';
+  }
+  /* App parity (12 Nov 2026): the iOS stat cards, progress ring and
+     weekly bar chart, drawn with the frozen tokens and the frozen
+     class vocabulary. The old classes stay alongside, so the page
+     keeps its current styling until the chrome worker's pf-* rules
+     land. Icons are tiny inline SVGs (the web equivalent of the
+     app's SF Symbols); no emoji is used anywhere on this site. */
+  var PF_ICON_PATHS = {
+    book: '<path d="M5 4h12a2 2 0 0 1 2 2v14H7a2 2 0 0 1-2-2V4z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M5 18a2 2 0 0 1 2-2h12" fill="none" stroke="currentColor" stroke-width="2"/>',
+    flame: '<path d="M12 3s5.5 4.6 5.5 9.2a5.5 5.5 0 0 1-11 0c0-2.1 1-3.7 1-3.7S8.6 10 9.8 10C9.8 7 12 3 12 3z" fill="currentColor"/>',
+    check: '<circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8.5 12.5l2.5 2.5 4.5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
+    star: '<path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8L3.5 9.7l5.9-.9z" fill="currentColor"/>',
+    clock: '<circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3.5 2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>'
+  };
+  function iconTile(name) {
+    var path = PF_ICON_PATHS[name] || PF_ICON_PATHS.book;
+    return '<span class="pf-icon-tile" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" focusable="false">' + path + '</svg></span>';
+  }
+  function statCard(value, label, iconName, caption) {
+    return '<div class="pf-stat-card">' + iconTile(iconName) +
+      '<span class="pf-stat-value">' + esc(value) + '</span>' +
+      '<span class="pf-stat-label">' + esc(label) + '</span>' +
+      (caption ? '<span class="pf-stat-label">' + esc(caption) + '</span>' : '') + '</div>';
+  }
+  /* Progress ring, in the chrome's pf-progress-ring structure: the
+     --pf-ring variable carries the percent and the inner span is the
+     centred label, matching the app's PFProgressRing (navy track,
+     royal arc, percent in the middle). */
+  function ring(percent) {
+    var p = Math.max(0, Math.min(100, percent));
+    return '<span class="pf-progress-ring" style="--pf-ring:' + p + '" role="img" aria-label="' + p + ' percent complete">' +
+      '<span>' + p + '%</span></span>';
+  }
+  /* Weekly bar chart, as in the app's PFWeeklyBarChart: Monday first,
+     today in full royal, other days in light royal, zero days show a
+     minimal bar, never a fabricated height. */
+  function weeklyChart(counts) {
+    var labels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+    var dayNames = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+    var todayIndex = (new Date().getDay() + 6) % 7;
+    var max = 1, total = 0, i;
+    for (i = 0; i < 7; i++) {
+      var v = counts[i] || 0;
+      if (v > max) max = v;
+      total += v;
+    }
+    var parts = [];
+    for (i = 0; i < 7; i++) parts.push(dayNames[i] + " " + (counts[i] || 0));
+    var h = '<div role="img" aria-label="Weekly activity, ' + total +
+      ' learning actions this week. ' + esc(parts.join(", ")) + '">';
+    for (i = 0; i < 7; i++) {
+      var val = counts[i] || 0;
+      var height = Math.max(6, (val / max) * 96);
+      h += '<div style="display:inline-block;vertical-align:bottom;text-align:center;margin-right:8px">' +
+        '<div>' + (val > 0 ? val : "&nbsp;") + '</div>' +
+        '<div style="width:28px;height:' + height.toFixed(0) + 'px;border-radius:4px;margin:4px auto;background:' +
+        (i === todayIndex ? "#173F8C" : "rgba(23,63,140,0.30)") + '"></div>' +
+        '<div' + (i === todayIndex ? ' style="font-weight:700;color:#173F8C"' : "") + '>' + labels[i] + '</div></div>';
+    }
+    return h + '</div>';
   }
 
   /* ---------- summary: one read of every stored key ---------- */
@@ -352,6 +412,35 @@
       if (storedGoal > 0 && storedGoal <= 70) weeklyGoal = storedGoal;
     } catch (e) {}
     var weekStartLabel = fmtDate(isoOf(monday));
+    /* Weekly bar chart (12 Nov 2026, app parity): recorded events per
+       day for this Monday to Sunday week. Lessons and quizzes from
+       the activity log, plus test attempts and the placement test,
+       which carry their own completion dates. Same sources as the
+       streak and the weekly goal count, never invented. */
+    var weekDayCounts = [0, 0, 0, 0, 0, 0, 0];
+    var weekDayIsos = [];
+    var wd;
+    for (wd = 0; wd < 7; wd++) {
+      var day = new Date(monday);
+      day.setDate(monday.getDate() + wd);
+      weekDayIsos.push(isoOf(day));
+    }
+    weekDayIsos.forEach(function (iso, idx) {
+      var entry = activityDays[iso];
+      if (entry) {
+        weekDayCounts[idx] += (entry.lessons || 0) + (entry.quizzes || 0);
+      }
+    });
+    attempts.forEach(function (a) {
+      if (a && a.completed_at) {
+        var ai = weekDayIsos.indexOf(String(a.completed_at).slice(0, 10));
+        if (ai !== -1) weekDayCounts[ai]++;
+      }
+    });
+    if (diagnostic && diagnostic.completed_at) {
+      var di = weekDayIsos.indexOf(String(diagnostic.completed_at).slice(0, 10));
+      if (di !== -1) weekDayCounts[di]++;
+    }
 
     return {
       lessonsDone: lessonsDoneCount, lessonsTotal: lessonsTotal,
@@ -375,22 +464,22 @@
       sitStageDone: sitStageDone, sitStageTotals: sitTotals, sitTotal: sitTotal,
       achievements: achievements.slice(0, 8), hasAnything: hasAnything,
       streak: streak, weekLessons: weekLessons, weeklyGoal: weeklyGoal,
-      weekStartLabel: weekStartLabel
+      weekStartLabel: weekStartLabel, weekDayCounts: weekDayCounts
     };
   }
 
   /* ---------- dashboard page ---------- */
   function dashboardHTML(summary, data) {
     var h = "";
-    h += '<section class="section"><h2>Continue where you left off</h2>';
+    h += '<section class="section"><h2 class="pf-section-header">Continue where you left off</h2>';
     if (!summary.hasAnything) {
-      h += '<p>You have not started yet, and that is fine. Three steps get you going, and each one takes only a few minutes.</p>' +
+      h += '<div class="pf-empty"><p>You have not started yet, and that is fine. Three steps get you going, and each one takes only a few minutes.</p>' +
         '<ol class="pa-onboard">' +
         '<li><b>Step 1: find your level.</b> <a href="diagnostic.html">Take the placement test</a> (15 minutes). It tells you exactly which course to start with.</li>' +
         '<li><b>Step 2: start Session 1.</b> <a href="courses.html#guided-path">Open the 8-session guided path</a> and work through Session 1, payment fundamentals. Each session maps to the chapters below it.</li>' +
         '<li><b>Step 3: set a weekly goal.</b> Pick a number of lessons per week below. Your dashboard tracks it, and your streak counts the days you learn.</li>' +
         '</ol>' +
-        '<p>Or skip the plan and start reading: <a href="lessons/ch1s1.html">Lesson 1: What is a Payment</a>. Your progress appears here as you learn, in this browser only.</p>';
+        '<p>Or skip the plan and start reading: <a href="lessons/ch1s1.html">Lesson 1: What is a Payment</a>. Your progress appears here as you learn, in this browser only.</p></div>';
     } else {
       // Backup reminder (10 Nov 2026, ChatGPT review 4 priority 8):
       // a learner with progress but no backup yet gets one nudge at the
@@ -404,11 +493,11 @@
       h += '<div class="hp-dash">';
       if (summary.nextLesson) {
         var nl = summary.nextLesson;
-        h += '<div class="hp-dash-card"><b>' + esc(nl.heading) + '</b><span>Next lesson: ' +
+        h += '<div class="pf-card hp-dash-card"><b>' + esc(nl.heading) + '</b><span>Next lesson: ' +
           esc(nl.chapterTitle) + ', lesson ' + nl.n + ' of ' + nl.chapterTotal + '</span>' +
           '<p><a href="' + esc(nl.url) + '">Open this lesson</a></p></div>';
       } else if (summary.allLessonsDone) {
-        h += '<div class="hp-dash-card"><b>All 746 lessons complete</b><span>You finished the whole curriculum. ' +
+        h += '<div class="pf-card hp-dash-card"><b>All 746 lessons complete</b><span>You finished the whole curriculum. ' +
           'Retake a test or work a capstone to keep it sharp.</span>' +
           '<p><a href="tests.html">Retake a test</a></p></div>';
       }
@@ -416,14 +505,14 @@
         var la = summary.latestAttempt;
         var test = null;
         (data.tests || []).forEach(function (t) { if (t.id === la.test_id) test = t; });
-        h += '<div class="hp-dash-card"><b>' + esc(la.title || la.test_id) + ': ' + (la.percent || 0) + '%</b>' +
+        h += '<div class="pf-card hp-dash-card"><b>' + esc(la.title || la.test_id) + ': ' + (la.percent || 0) + '%</b>' +
           '<span>Last test, ' + esc(fmtDate(la.completed_at)) + ' ' +
           (la.passed ? '(passed)' : '(not yet a pass)') + '</span>' +
           '<p><a href="' + esc(test ? test.url : "tests.html") + '">Retake this test</a> ' +
           '<a href="tests.html">All tests</a></p></div>';
       }
       if (summary.recommended) {
-        h += '<div class="hp-dash-card"><b>' + esc(summary.recommended.text) + '</b>' +
+        h += '<div class="pf-card hp-dash-card"><b>' + esc(summary.recommended.text) + '</b>' +
           '<span>' + esc(summary.recommended.detail || "") + '</span>' +
           '<p><a href="' + esc(summary.recommended.link) + '">Go there</a></p></div>';
       }
@@ -431,37 +520,66 @@
     }
     h += '</section>';
 
-    h += '<section class="section"><h2>Your progress</h2>' +
-      '<div class="hp-dash">' +
-      '<div class="hp-dash-card"><b>' + summary.lessonsDone + ' / ' + summary.lessonsTotal + '</b>' +
-      '<span>Lessons completed</span>' + bar(summary.lessonsDone, summary.lessonsTotal) + '</div>' +
-      '<div class="hp-dash-card"><b>' + summary.weekLessons + ' of ' + summary.weeklyGoal + ' lessons this week</b>' +
-      '<span>Weekly goal, week starting ' + esc(summary.weekStartLabel) + '</span>' + bar(summary.weekLessons, summary.weeklyGoal) +
-      '<p>Goal: ' + [3, 5, 7, 10].map(function (n) {
-        return '<button type="button" class="pa-goal-btn' + (n === summary.weeklyGoal ? ' active' : '') + '" onclick="PALearner.setWeeklyGoal(' + n + ')">' + n + '</button>';
-      }).join(' ') + ' lessons a week <span id="pa-goal-saved" class="pa-note" role="status"></span></p></div>' +
-      '<div class="hp-dash-card"><b>' + summary.streak + (summary.streak === 1 ? ' day' : ' days') + '</b>' +
-      '<span>Learning streak: consecutive days with a lesson, a quiz or a test. A day counts when you finish a lesson, answer a quiz or take a test.</span></div>' +
-      '<div class="hp-dash-card"><b>' + summary.chaptersDone + ' / ' + summary.chaptersTotal + '</b>' +
-      '<span>Chapters completed (a chapter counts when every lesson in it is done)</span>' +
-      bar(summary.chaptersDone, summary.chaptersTotal) + '</div>' +
-      '<div class="hp-dash-card"><b>' + summary.domainsComplete + ' / ' + summary.domainsTotal + '</b>' +
-      '<span>Domains fully completed</span>' + bar(summary.domainsComplete, summary.domainsTotal) + '</div>' +
-      '<div class="hp-dash-card"><b>' + summary.testAttempts + ' attempt' + (summary.testAttempts === 1 ? '' : 's') +
-      ' (' + summary.testPassedCount + ' passed)</b><span>Test series, pass mark 80%</span>' +
-      '<p><a href="tests.html">Open the test series</a></p></div>' +
-      '</div>';
+    /* App parity (12 Nov 2026): the app's At a glance stat cards,
+       Overall progress ring, Weekly activity chart and Weekly goal,
+       in the app's section order and wording. Learning time has no
+       recorded durations on the website, so it is not shown here:
+       the third stat card is Quizzes taken, as in the app's Profile. */
+    h += '<section class="section"><h2 class="pf-section-header">At a glance</h2><div class="hp-dash">' +
+      statCard(String(summary.lessonsDone), "Lessons completed", "book") +
+      statCard(summary.streak + (summary.streak === 1 ? " day" : " days"), "Day streak", "flame",
+        "Consecutive days with a lesson, a quiz or a test.") +
+      statCard(String(summary.quizAttempted), "Quizzes taken", "check",
+        summary.quizCorrect + " correct out of " + summary.quizAttempted + " answered.") +
+      '</div></section>';
+
+    h += '<section class="section"><h2 class="pf-section-header">Overall progress</h2>' +
+      '<div class="pf-card">' + ring(pct(summary.lessonsDone, summary.lessonsTotal)) +
+      '<p><b>' + summary.lessonsDone + ' of ' + summary.lessonsTotal + ' lessons completed</b></p>' +
+      '<p>' + pct(summary.lessonsDone, summary.lessonsTotal) + '% of the curriculum complete</p>' +
+      '<p>Chapters completed: ' + summary.chaptersDone + ' of ' + summary.chaptersTotal +
+      ' (a chapter counts when every lesson in it is done). Domains fully completed: ' +
+      summary.domainsComplete + ' of ' + summary.domainsTotal + '.</p>' +
+      bar(summary.lessonsDone, summary.lessonsTotal) +
+      (summary.lessonsDone === 0 ? '<p>Complete your first lesson to start your progress.</p>' : '') +
+      '</div></section>';
+
+    h += '<section class="section"><h2 class="pf-section-header">Weekly activity</h2>' +
+      '<div class="pf-card"><p><b>' + summary.weekLessons + ' of ' + summary.weeklyGoal + ' lessons this week</b></p>' +
+      weeklyChart(summary.weekDayCounts || [0, 0, 0, 0, 0, 0, 0]) +
+      '<p>Bars count recorded learning events per day. Days with no activity show no bar. ' +
+      'Week starting ' + esc(summary.weekStartLabel) + '.</p></div></section>';
+
+    var paceLeft = summary.weeklyGoal - summary.weekLessons;
+    var paceLine = paceLeft <= 0
+      ? "Weekly goal reached."
+      : paceLeft + " more lesson" + (paceLeft === 1 ? "" : "s") + " to reach your goal this week.";
+    h += '<section class="section"><h2 class="pf-section-header">Weekly goal</h2>' +
+      '<div class="pf-card"><p><b>' + summary.weekLessons + ' of ' + summary.weeklyGoal + ' lessons this week</b></p>' +
+      '<p>How many lessons do you want to finish each week?</p>' +
+      '<p>' + summary.weeklyGoal + ' lessons per week</p>' +
+      '<p>' + [3, 5, 7, 10].map(function (n) {
+        return '<button type="button" class="pf-chip" aria-pressed="' + (n === summary.weeklyGoal) + '" onclick="PALearner.setWeeklyGoal(' + n + ')">' + n + '</button>';
+      }).join(' ') + ' lessons a week <span id="pa-goal-saved" class="pa-note" role="status"></span></p>' +
+      '<p>' + paceLine + '</p></div></section>';
+
+    h += '<section class="section"><h2 class="pf-section-header">Quiz performance</h2>' +
+      '<p>Lesson quizzes answered: ' + summary.quizCorrect + ' correct out of ' +
+      summary.quizAttempted + ' answered. A lesson counts as complete when its narration finishes ' +
+      'playing, or when you tap Mark complete under a lesson.</p>' +
+      '<p>Test series: ' + summary.testAttempts + ' attempt' + (summary.testAttempts === 1 ? '' : 's') +
+      ' (' + summary.testPassedCount + ' passed), pass mark 80%. ' +
+      '<a href="tests.html">Open the test series</a></p></section>';
+
+    h += '<section class="section"><h2 class="pf-section-header">Your progress</h2>';
     h += '<h3>Progress by domain</h3><table class="pa-table"><tr><th>Domain</th><th>Lessons done</th><th></th></tr>';
     summary.domainRows.forEach(function (d) {
       h += '<tr><td>' + esc(d.name) + '</td><td>' + d.done + ' / ' + d.total + '</td>' +
         '<td style="min-width:140px">' + bar(d.done, d.total) + '</td></tr>';
     });
-    h += '</table>';
-    h += '<p class="pa-note">Lesson quizzes answered: ' + summary.quizCorrect + ' correct out of ' +
-      summary.quizAttempted + ' answered. A lesson counts as complete when its narration finishes ' +
-      'playing, or when you tap Mark complete under a lesson.</p></section>';
+    h += '</table></section>';
 
-    h += '<section class="section"><h2>Tests and placement</h2>';
+    h += '<section class="section"><h2 class="pf-section-header">Tests and placement</h2>';
     if (summary.diagnostic) {
       var dg = summary.diagnostic;
       h += '<p><strong>Placement test:</strong> ' + (dg.percent || 0) + '% on ' +
@@ -498,7 +616,7 @@
     });
     h += '</table></section>';
 
-    h += '<section class="section"><h2>Weakest competencies</h2>';
+    h += '<section class="section"><h2 class="pf-section-header">Weakest competencies</h2>';
     if (summary.weakest.length) {
       h += '<p>These are the areas where your scores are below the 80% pass mark, weakest first. ' +
         'Each one links to the course or test that fixes it.</p><ol>';
@@ -516,17 +634,17 @@
     }
     h += '</section>';
 
-    h += '<section class="section"><h2>Practice</h2>' +
+    h += '<section class="section"><h2 class="pf-section-header">Practice</h2>' +
       '<p>Five hands-on experiences. Best scores are saved in this browser only.</p><div class="hp-grid">';
     summary.practiceRows.forEach(function (f) {
-      h += '<a class="hp-card" href="' + esc(f.url) + '"><b>' + esc(f.title) + '</b>' +
+      h += '<a class="pf-card hp-card" href="' + esc(f.url) + '"><b>' + esc(f.title) + '</b>' +
         '<span>' + (f.best == null ? 'Not attempted yet' :
           'Best score: ' + f.best + ' of ' + f.bestTotal + ' (' + f.attempts + ' attempt' +
           (f.attempts === 1 ? '' : 's') + ')') + '</span></a>';
     });
     h += '</div></section>';
 
-    h += '<section class="section"><h2>Labs and ISO exercises</h2>';
+    h += '<section class="section"><h2 class="pf-section-header">Labs and ISO exercises</h2>';
     h += '<p>' + summary.labsComplete + ' of ' + summary.labsTotal + ' labs complete. ' +
       'A lab counts as complete when every step is ticked.</p>' +
       '<table class="pa-table"><tr><th>Lab</th><th>Steps done</th><th></th></tr>';
@@ -543,14 +661,14 @@
       '<p class="pa-note">Lab deliverables, the work products each lab asks for, are listed on ' +
       'your <a href="portfolio.html">portfolio page</a>, with a downloadable record per lab.</p></section>';
 
-    h += '<section class="section"><h2>Capstone projects</h2><div class="hp-grid">';
+    h += '<section class="section"><h2 class="pf-section-header">Capstone projects</h2><div class="hp-grid">';
     summary.capstoneRows.forEach(function (p) {
       /* No nested links: the card used to be one <a> wrapped around a
          second <a> for the brief, which browsers repair by closing
          the outer link early, so taps on the card did not reliably
          open the project page. The card is a <div> now, with two
          separate working links inside it. */
-      h += '<div class="hp-card"><a href="' + esc(p.url) + '" style="text-decoration:none"><b>' + esc(p.title) + '</b></a>' +
+      h += '<div class="pf-card hp-card"><a href="' + esc(p.url) + '" style="text-decoration:none"><b>' + esc(p.title) + '</b></a>' +
         '<span>' + (p.done ? 'Brief read, marked complete.' : 'Not started yet.') + ' ' +
         '<a href="' + esc(p.brief) + '">Download the brief</a></span></div>';
     });
@@ -558,7 +676,7 @@
       'projects page. The deliverables themselves are yours to keep; the academy does not ' +
       'collect them.</p></section>';
 
-    h += '<section class="section"><h2>Payment Situations</h2>';
+    h += '<section class="section"><h2 class="pf-section-header">Payment Situations</h2>';
     h += '<p>' + summary.sitCompleted + ' of ' + summary.sitTotal + ' situations completed &middot; ' +
       summary.sitBookmarked + ' bookmarked &middot; ' + summary.sitNotes + ' with personal notes &middot; ' +
       summary.sitReview + ' of 8 Stage 6 reflection prompts ticked.</p>';
@@ -584,16 +702,16 @@
       ' <a href="situations.html">Open Payment Situations</a></p></section>';
 
     var simsVisited = (summary.simRows || []).filter(function (s) { return s.when; });
-    h += '<section class="section"><h2>Simulators</h2>' +
+    h += '<section class="section"><h2 class="pf-section-header">Simulators</h2>' +
       '<p>' + simsVisited.length + ' of ' + (data.simulators || []).length +
       ' simulators run in this browser.</p><div class="link-card-grid">';
     (summary.simRows || []).forEach(function (s) {
-      h += '<a class="link-card" href="' + esc(s.url) + '"><b>' + esc(s.title) + '</b>' +
+      h += '<a class="pf-card link-card" href="' + esc(s.url) + '"><b>' + esc(s.title) + '</b>' +
         '<span>' + (s.when ? 'Run ' + fmtDate(s.when) : 'Run it') + '</span></a>';
     });
     h += '</div></section>';
 
-    h += '<section class="section"><h2>Recent achievements</h2>';
+    h += '<section class="section"><h2 class="pf-section-header">Recent achievements</h2>';
     if (summary.achievements.length) {
       h += '<ul>';
       summary.achievements.forEach(function (a) {
@@ -614,13 +732,13 @@
     if (milestones.length) h += '<p class="pa-note">Milestones (no date recorded): ' + esc(milestones.join('; ')) + '.</p>';
     h += '</section>';
 
-    h += '<section class="section" id="backup"><h2>Back up and restore your progress</h2>' +
+    h += '<section class="section" id="backup"><h2 class="pf-section-header">Back up and restore your progress</h2>' +
       '<p>Everything on this page lives in this browser only. Clearing browser data, or moving to ' +
       'another device, wipes it. Download a backup now and keep it somewhere safe. The backup ' +
       'covers lessons, tests, placement, labs, ISO exercises, Payment Situations progress, notes ' +
       'and bookmarks, practice scores and your portfolio name. It does not include any payment ' +
       'or account details, because there are no accounts.</p>' +
-      '<p><button type="button" class="studio-btn primary" onclick="PALearner.exportBackup()">Download a backup of all my progress</button></p>' +
+      '<p><button type="button" class="pf-btn-primary studio-btn primary" onclick="PALearner.exportBackup()">Download a backup of all my progress</button></p>' +
       '<h3>Restore from a backup file</h3>' +
       '<p><input type="file" id="pa-backup-file" accept=".json,application/json" onchange="PALearner.previewBackupFile(this)"></p>' +
       '<div id="pa-backup-preview"></div>' +
@@ -628,6 +746,12 @@
       '<p class="pa-note">Restoring replaces everything currently stored in this browser with the ' +
       'contents of the backup file. Check the preview before you confirm. A file made by a newer ' +
       'version of the academy, or a file that is not a Payments Training Hub backup, is refused.</p>' +
+      '<h3>Reset all progress</h3>' +
+      '<p>This clears completed lessons, quiz scores, your streak and your weekly progress in this browser. ' +
+      'Your weekly goal, notes, bookmarks and test results are not affected. It cannot be undone. ' +
+      'Download a backup first if you want to keep a copy.</p>' +
+      '<p><button type="button" class="pf-btn-secondary studio-btn" onclick="PALearner.resetAllProgress()">Reset all progress</button> ' +
+      '<span id="pa-reset-result" class="pa-note" role="status"></span></p>' +
       '</section>';
     return h;
   }
@@ -862,6 +986,180 @@
     var saved = document.getElementById("pa-goal-saved");
     if (saved) saved.textContent = "Weekly goal saved: " + goal + " lessons a week.";
   }
+  /* Reset all progress (12 Nov 2026, app parity): mirrors the app
+     dashboard's Reset all progress exactly. It clears completed
+     lessons, quiz scores, streak and weekly progress in this browser
+     only. The weekly goal, notes, bookmarks, capstone marks, test
+     results, placement, labs and situations are not affected, and
+     synced cloud progress is untouched. A confirm() dialog comes
+     first, and the success message is written only after the wipe
+     has completed and the dashboard has re-rendered, never before. */
+  function resetAllProgress() {
+    var ok = false;
+    try {
+      ok = root.confirm("Reset all progress? This clears completed lessons, quiz scores, your streak and your weekly progress in this browser. Your weekly goal, notes, bookmarks and test results are not affected. It cannot be undone.");
+    } catch (e) { return; }
+    if (!ok) return;
+    var store = safeStore();
+    try {
+      var progress = readJson(store, PROGRESS_KEY) || {};
+      progress.lessons = {};
+      progress.quiz = {};
+      store.setItem(PROGRESS_KEY, JSON.stringify(progress));
+      try { store.removeItem(ACTIVITY_KEY); } catch (e2) { store.setItem(ACTIVITY_KEY, JSON.stringify({ days: {}, recorded: {} })); }
+    } catch (e) {
+      var fail = document.getElementById("pa-reset-result");
+      if (fail) fail.textContent = "Your progress could not be reset in this browser. Nothing was cleared. Please try again.";
+      return;
+    }
+    if (lastData) renderDashboard("pa-dashboard", lastData);
+    var done = document.getElementById("pa-reset-result");
+    if (done) done.textContent = "Your completed lessons, quiz scores, streak and weekly progress have been cleared in this browser. Your weekly goal, notes, bookmarks and test results were not affected.";
+  }
+  /* ---------- profile block (app Profile tab, merged into the
+     dashboard page) ---------- */
+  function readProfile() {
+    try {
+      var stored = safeStore().getItem(LEARNER_KEY);
+      if (stored) {
+        var parsed = JSON.parse(stored);
+        if (parsed && typeof parsed === "object") return parsed;
+      }
+    } catch (e) {}
+    return {};
+  }
+  function profileInitials(name, email) {
+    var source = (name || "").trim() || (email || "").split("@")[0] || "Learner";
+    var parts = source.replace(/[^A-Za-z ]/g, " ").split(" ").filter(function (p) { return p; });
+    if (parts.length >= 2) return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+    return source.slice(0, 2).toUpperCase();
+  }
+  function profileHTML(summary, profile, session) {
+    var email = (session && session.user && session.user.email) || "";
+    var name = (profile.name || "").trim();
+    var displayName = name || (email ? email.split("@")[0] : "Learner");
+    var designation = (profile.designation || "").trim();
+    var organisation = (profile.organisation || "").trim();
+    var experience = profile.experience;
+    var experienceText = "";
+    if (typeof experience === "number" && experience > 0) {
+      experienceText = experience + (experience === 1 ? " year" : " years") + " of experience";
+    }
+    var info = [designation, organisation, experienceText].filter(function (p) { return p; }).join(", ");
+    var h = '<section class="section"><h2 class="pf-section-header">Profile</h2><div class="pf-card">';
+    if (!session) {
+      h += '<p><b>Guest</b></p>' +
+        '<p>You are learning as a guest. Your progress stays on this browser.</p>' +
+        '<p><a class="pf-btn-primary studio-btn primary" href="signin.html">Sign in</a></p>' +
+        '<p>Signing in syncs your progress across devices and keeps it safe if you change phones.</p>';
+    } else {
+      h += '<p><span class="pf-icon-tile" aria-hidden="true">' + esc(profileInitials(name, email)) + '</span> ' +
+        '<b id="pa-profile-display-name">' + esc(displayName) + '</b></p>' +
+        '<p>' + esc(email) + '</p>';
+      var user = session.user || {};
+      if (user.email_confirmed_at) {
+        h += '<p><span class="pf-pill pa-badge">Email verified</span></p>';
+      } else if ("email_confirmed_at" in user) {
+        h += '<p>Email not verified yet</p>';
+      }
+      if (info) h += '<p>' + esc(info) + '</p>';
+    }
+    if (summary) {
+      h += '<div class="hp-dash">' +
+        statCard(String(summary.lessonsDone), "Lessons completed", "book") +
+        statCard(summary.streak + (summary.streak === 1 ? " day" : " days"), "Day streak", "flame") +
+        statCard(String(summary.quizAttempted), "Quizzes taken", "check") +
+        '</div>';
+    }
+    h += '<h3>Personal Information</h3>' +
+      '<p>Leave experience blank if you would rather not say.' +
+      (session ? ' Your sign-in email is shown above and cannot be changed here.' : '') +
+      ' These details are only used to personalise your learning, and are stored in this browser only.</p>' +
+      '<p><label>Full name<br><input type="text" id="pa-profile-name" value="' + esc(name) +
+      '" placeholder="Your name" autocomplete="name" style="padding:8px 10px;min-width:260px"></label></p>' +
+      '<p><label>Designation<br><input type="text" id="pa-profile-designation" value="' + esc(designation) +
+      '" placeholder="Designation" style="padding:8px 10px;min-width:260px"></label></p>' +
+      '<p><label>Organisation<br><input type="text" id="pa-profile-organisation" value="' + esc(organisation) +
+      '" placeholder="Organisation" autocomplete="organization" style="padding:8px 10px;min-width:260px"></label></p>' +
+      '<p><label>Years of experience<br><input type="number" id="pa-profile-experience" min="0" max="60" step="1" value="' +
+      (typeof experience === "number" && experience > 0 ? experience : "") +
+      '" placeholder="Not set" style="padding:8px 10px;min-width:260px"></label></p>' +
+      '<p><button type="button" class="pf-btn-primary studio-btn primary" onclick="PALearner.saveProfile()">Save</button> ' +
+      '<span id="pa-profile-saved" class="pa-note" role="status"></span></p>';
+    if (session) {
+      h += '<p><button type="button" class="pf-btn-secondary studio-btn" onclick="paAuthSignOut()">Sign out</button></p>';
+    }
+    h += '</div></section>';
+    return h;
+  }
+  /* Render the profile block. The session lookup is guarded with a
+     timeout, so a blocked auth script can never leave the block on
+     its loading text: after 8 seconds it renders as a guest. */
+  function renderProfile(containerId, data) {
+    var box = null;
+    try { box = document.getElementById(containerId); } catch (e) {}
+    if (!box) return;
+    var profile = readProfile();
+    var summary = null;
+    try { if (data) summary = summarize(null, data); } catch (e) { summary = null; }
+    function finish(session) {
+      try { box.innerHTML = profileHTML(summary, profile, session || null); } catch (e) {}
+    }
+    try {
+      if (typeof root.paAuthCurrentSession === "function") {
+        var settled = false;
+        var timer = setTimeout(function () {
+          if (!settled) { settled = true; finish(null); }
+        }, 8000);
+        root.paAuthCurrentSession().then(function (s) {
+          if (settled) return;
+          settled = true;
+          try { clearTimeout(timer); } catch (e) {}
+          finish(s || null);
+        }).catch(function () {
+          if (settled) return;
+          settled = true;
+          try { clearTimeout(timer); } catch (e) {}
+          finish(null);
+        });
+        return;
+      }
+    } catch (e) { /* fall through to the guest render */ }
+    finish(null);
+  }
+  function saveProfile() {
+    var nameEl = document.getElementById("pa-profile-name");
+    var desEl = document.getElementById("pa-profile-designation");
+    var orgEl = document.getElementById("pa-profile-organisation");
+    var expEl = document.getElementById("pa-profile-experience");
+    var saved = document.getElementById("pa-profile-saved");
+    if (!nameEl || !desEl || !orgEl || !expEl) return;
+    var name = String(nameEl.value || "").trim().slice(0, 120);
+    var designation = String(desEl.value || "").trim().slice(0, 120);
+    var organisation = String(orgEl.value || "").trim().slice(0, 120);
+    var experience = null;
+    var rawExp = String(expEl.value || "").trim();
+    if (rawExp !== "") {
+      var parsed = parseInt(rawExp, 10);
+      if (!isNaN(parsed) && parsed > 0) experience = Math.min(60, parsed);
+    }
+    var ok = true;
+    try {
+      var existing = readProfile();
+      existing.name = name;
+      existing.designation = designation;
+      existing.organisation = organisation;
+      existing.experience = experience;
+      safeStore().setItem(LEARNER_KEY, JSON.stringify(existing));
+    } catch (e) { ok = false; }
+    if (!ok) {
+      if (saved) saved.textContent = "Your profile details could not be saved in this browser.";
+      return;
+    }
+    if (saved) saved.textContent = "Profile saved.";
+    var title = document.getElementById("pa-profile-display-name");
+    if (title) title.textContent = name || title.textContent;
+  }
   function renderPortfolio(containerId, data) {
     lastData = data;
     var box = document.getElementById(containerId);
@@ -906,7 +1204,7 @@
           check.preview.map(function (line) { return "<li>" + esc(line) + "</li>"; }).join("") + "</ul>" +
           '<p><strong>Restoring replaces everything currently stored in this browser.</strong> ' +
           'Your current progress will be overwritten, not merged.</p>' +
-          '<p><button type="button" class="studio-btn primary" onclick="PALearner.confirmRestore()">Yes, restore this backup</button></p></div>';
+          '<p><button type="button" class="pf-btn-primary studio-btn primary" onclick="PALearner.confirmRestore()">Yes, restore this backup</button></p></div>';
       }
     };
     reader.onerror = function () {
@@ -940,7 +1238,12 @@
     var name = String(input.value || "").trim().slice(0, 120);
     var ok = true;
     try {
-      safeStore().setItem(LEARNER_KEY, JSON.stringify({ name: name }));
+      /* Merge, do not replace: the same stored object also holds the
+         dashboard profile fields (designation, organisation,
+         experience). Writing {name} alone would wipe them. */
+      var existing = readProfile();
+      existing.name = name;
+      safeStore().setItem(LEARNER_KEY, JSON.stringify(existing));
     } catch (e) { ok = false; }
     if (saved) saved.textContent = ok ? (name ? "Saved." : "Cleared.") : "Could not be saved in this browser.";
     if (!ok) return;
@@ -1015,6 +1318,8 @@
     portfolioHTML: portfolioHTML, buildBackup: buildBackup,
     validateBackup: validateBackup, restoreBackup: restoreBackup,
     renderDashboard: renderDashboard, renderPortfolio: renderPortfolio,
+    renderProfile: renderProfile, saveProfile: saveProfile,
+    resetAllProgress: resetAllProgress,
     exportBackup: exportBackup, previewBackupFile: previewBackupFile,
     confirmRestore: confirmRestore, saveLearnerName: saveLearnerName,
     setWeeklyGoal: setWeeklyGoal,

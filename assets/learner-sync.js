@@ -329,19 +329,39 @@
 
   function bar(done, total) {
     var p = pct(done, total);
-    return '<div class="dash-bar"><div style="width:' + p + '%"></div></div>';
+    return '<div class="pf-progress-bar dash-bar"><span style="width:' + p + '%"></span></div>';
+  }
+  /* App parity (12 Nov 2026): stat cards and section headers use the
+     frozen class vocabulary, in the chrome's expected structure
+     (icon tile, pf-stat-value, pf-stat-label). No sync, merge or
+     fetch logic changes in this file. Icons are tiny inline SVGs,
+     the web equivalent of the app's SF Symbols. */
+  var PF_ICON_PATHS = {
+    book: '<path d="M5 4h12a2 2 0 0 1 2 2v14H7a2 2 0 0 1-2-2V4z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M5 18a2 2 0 0 1 2-2h12" fill="none" stroke="currentColor" stroke-width="2"/>',
+    check: '<circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8.5 12.5l2.5 2.5 4.5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
+    star: '<path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8L3.5 9.7l5.9-.9z" fill="currentColor"/>'
+  };
+  function iconTile(name) {
+    var path = PF_ICON_PATHS[name] || PF_ICON_PATHS.book;
+    return '<span class="pf-icon-tile" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" focusable="false">' + path + '</svg></span>';
+  }
+  function statCard(value, label, iconName, body) {
+    return '<div class="pf-stat-card">' + iconTile(iconName) +
+      '<span class="pf-stat-value">' + value + '</span>' +
+      '<span class="pf-stat-label">' + label + '</span>' + (body || '') + '</div>';
   }
   function renderCloud(container, merged, data, email) {
     var h = "";
-    h += '<section class="section pa-cloud"><h2>Your synced progress</h2>';
+    h += '<section class="section pa-cloud pf-card"><h2 class="pf-section-header">Your synced progress</h2>';
     h += '<p class="pa-note">Signed in as ' + esc(email) + '. This progress is saved to your account, so it follows you across devices. ' +
       'Anything you finish in this browser is also saved locally, and the two are combined here.</p>';
     h += '<div class="hp-dash">';
-    h += '<div class="hp-dash-card"><b>' + merged.lessonsDoneCount + ' / ' + merged.lessonsTotal + '</b><span>Lessons completed</span>' + bar(merged.lessonsDoneCount, merged.lessonsTotal) + '</div>';
-    h += '<div class="hp-dash-card"><b>' + merged.chapterDoneCount + ' / ' + merged.chapterTotal + '</b><span>Chapters completed</span>' + bar(merged.chapterDoneCount, merged.chapterTotal) + '</div>';
+    h += statCard(merged.lessonsDoneCount + ' / ' + merged.lessonsTotal, 'Lessons completed', 'book', bar(merged.lessonsDoneCount, merged.lessonsTotal));
+    h += statCard(merged.chapterDoneCount + ' / ' + merged.chapterTotal, 'Chapters completed', 'check', bar(merged.chapterDoneCount, merged.chapterTotal));
     var certCount = merged.certificates.length;
-    h += '<div class="hp-dash-card"><b>' + certCount + ' certificate' + (certCount === 1 ? '' : 's') + '</b><span>Certificates earned</span><p style="color:#5B6B85;font-size:14px;margin:6px 0 0">' +
-      (certCount ? 'Issued for the courses below.' : 'Pass a course Final Assessment to earn one.') + '</p></div>';
+    h += statCard(certCount + ' certificate' + (certCount === 1 ? '' : 's'), 'Certificates earned', 'star',
+      '<p style="color:#5B6B85;font-size:14px;margin:6px 0 0">' +
+      (certCount ? 'Issued for the courses below.' : 'Pass a course Final Assessment to earn one.') + '</p>');
     h += '</div>';
     if (merged.recommendations.length) {
       h += '<h3>Recommended next</h3><ul class="pa-next">';
@@ -383,26 +403,26 @@
       });
       h += '</tbody></table>';
     }
-    h += '<p><button type="button" class="studio-btn" onclick="PALearnerSync.syncNow()">Refresh synced progress</button> ' +
-      '<button type="button" class="studio-btn" onclick="paAuthSignOut()">Sign out</button></p>';
+    h += '<p><button type="button" class="pf-btn-secondary studio-btn" onclick="PALearnerSync.syncNow()">Refresh synced progress</button> ' +
+      '<button type="button" class="pf-btn-secondary studio-btn" onclick="paAuthSignOut()">Sign out</button></p>';
     h += '</section>';
     container.innerHTML = h;
   }
   function renderSignInPrompt(container) {
     container.innerHTML =
-      '<section class="section pa-cloud"><h2>Sign in to sync your progress</h2>' +
+      '<section class="section pa-cloud pf-card"><h2 class="pf-section-header">Sign in to sync your progress</h2>' +
       '<p>Your progress is currently stored only in this browser. Sign in and it is saved to your account, ' +
       'so it follows you to any device and survives clearing browser data. Lessons stay open to everyone, with or without sign-in.</p>' +
-      '<p><a class="studio-btn primary" href="signin.html">Sign in</a> ' +
-      '<button type="button" class="studio-btn" onclick="paAuthGoogle()">Continue with Google</button></p>' +
+      '<p><a class="pf-btn-primary studio-btn primary" href="signin.html">Sign in</a> ' +
+      '<button type="button" class="pf-btn-secondary studio-btn" onclick="paAuthGoogle()">Continue with Google</button></p>' +
       '<p class="pa-note">No payment is taken on this website. Courses are available for purchase in the Payments Training Hub iOS app.</p>' +
       '</section>';
   }
 
   function renderSyncError(container, message) {
-    container.innerHTML = '<section class="section pa-cloud"><h2>Your synced progress</h2>' +
+    container.innerHTML = '<section class="section pa-cloud pf-card pf-error"><h2 class="pf-section-header">Your synced progress</h2>' +
       '<p>' + esc(message) + ' Your browser progress below is still available.</p>' +
-      '<p><button type="button" class="studio-btn" onclick="PALearnerSync.syncNow()">Try again</button></p></section>';
+      '<p><button type="button" class="pf-btn-secondary studio-btn" onclick="PALearnerSync.syncNow()">Try again</button></p></section>';
   }
   function initDashboard(containerId, data) {
     var container = document.getElementById(containerId);

@@ -22,7 +22,7 @@
 .sit-total{color:var(--pf-navy,#0B1F3D);font-weight:700;font-size:14px;margin:10px 0 0}
 
 /* ---------- Item shell ---------- */
-.sit-item{background:var(--pf-surface,#FFFFFF);border:1px solid var(--pf-line,#E2E8F0);border-radius:var(--pf-radius,12px);padding:20px 22px;margin:18px 0;box-shadow:var(--pf-shadow,0 1px 2px rgba(11,31,61,.06),0 4px 16px rgba(11,31,61,.06));min-width:0}
+.sit-item{background:var(--pf-surface,#FFFFFF);border:1px solid var(--pf-line,#E8EDF5);border-radius:18px;padding:20px 22px;margin:18px 0;box-shadow:var(--pf-shadow,0 1px 2px rgba(11,31,61,.06),0 4px 16px rgba(11,31,61,.06));min-width:0}
 .sit-visual{min-width:0}
 .sit-eyebrow{color:var(--pf-royal-dark,#1E40AF);font-weight:700;text-transform:uppercase;letter-spacing:.08em;font-size:12px;margin:0 0 8px}
 .sit-title{font-size:20px;color:var(--pf-navy,#0B1F3D);margin:4px 0 6px;line-height:1.3}
@@ -33,7 +33,7 @@
 .sit-note{color:var(--pf-muted,#5B6B85);font-size:14px;font-style:italic}
 
 /* ---------- Buttons ---------- */
-.sit-btn{display:inline-flex;align-items:center;gap:6px;border-radius:8px;padding:10px 18px;font-size:15px;font-weight:600;cursor:pointer;line-height:1.3;border:1px solid transparent;min-height:44px;box-sizing:border-box}
+.sit-btn{display:inline-flex;align-items:center;gap:6px;border-radius:14px;padding:10px 18px;font-size:15px;font-weight:600;cursor:pointer;line-height:1.3;border:1px solid transparent;min-height:44px;box-sizing:border-box}
 .sit-btn-primary{background:var(--pf-royal,#1D4ED8);color:#fff;border-color:var(--pf-royal,#1D4ED8)}
 .sit-btn-primary:hover{background:var(--pf-royal-dark,#1E40AF)}
 .sit-btn-secondary{background:#fff;color:var(--pf-royal-dark,#1E40AF);border-color:var(--pf-royal,#1D4ED8)}
@@ -106,9 +106,11 @@
 .sit-legend-value{font-weight:700;color:var(--pf-royal-dark,#1E40AF)}
 .sit-legend-note{color:var(--pf-muted,#5B6B85);flex-basis:100%;padding-left:22px}
 
-/* Labelled diagram: gold centre, royal parts. */
-.sit-centre-shape{fill:#0B1F3D;stroke:#0B1F3D;stroke-width:2}
-.sit-centre-title{fill:#FFFFFF;font-size:17px;font-weight:700;text-anchor:middle}
+/* Labelled diagram: white centre with a gold border and a royal
+   title, as in the iOS diagram view (the centre reads as the main
+   point without a dark background). */
+.sit-centre-shape{fill:#FFFFFF;stroke:var(--pf-gold,#C9A326);stroke-width:2}
+.sit-centre-title{fill:var(--pf-royal,#173F8C);font-size:17px;font-weight:700;text-anchor:middle}
 .sit-part-shape{fill:#FFFFFF;stroke:#1D4ED8;stroke-width:2}
 .sit-part-label{fill:#0B1F3D;font-size:15px;font-weight:700;text-anchor:middle}
 .sit-part-note{fill:#5B6B85;font-size:13px;text-anchor:middle}
@@ -154,7 +156,7 @@
    and the data-cat/data-diff attributes are untouched in the markup.
    All colours are the existing pf-theme tokens, dark text on the
    white card, so no text can go invisible. */
-#faq .faq-item{background:var(--pf-surface,#FFFFFF);border:1px solid var(--pf-line,#E2E8F0);border-radius:var(--pf-radius,12px);padding:20px 22px;margin:18px 0;box-shadow:var(--pf-shadow,0 1px 2px rgba(11,31,61,.06),0 4px 16px rgba(11,31,61,.06));min-width:0}
+#faq .faq-item{background:var(--pf-surface,#FFFFFF);border:1px solid var(--pf-line,#E8EDF5);border-radius:18px;padding:20px 22px;margin:18px 0;box-shadow:var(--pf-shadow,0 1px 2px rgba(11,31,61,.06),0 4px 16px rgba(11,31,61,.06));min-width:0}
 #faq .faq-cat>h3{font-size:20px;line-height:1.3;margin:4px 0 6px;color:var(--pf-navy,#0B1F3D)}
 #faq .faq-item summary{padding:0;cursor:pointer;list-style:none;position:relative;padding-right:30px;color:var(--pf-navy,#0B1F3D)}
 #faq .faq-item summary::-webkit-details-marker{display:none}
@@ -174,3 +176,104 @@
 @media (max-width:760px){
   #faq .faq-item{padding:16px}
 }
+
+/* ---------- App parity (12 Nov 2026, website redesign) ----------
+   Frozen tokens: royal #173F8C, gold #C9A326, gold text #8C7014,
+   navy #0D1C38, background #F5F7FA, card #FFFFFF, border #E8EDF5,
+   secondary #47576E. Spacing 4/8/12/16/24/32; radii card 18, button
+   14, tile 12. Rules below use the pf-theme variables with the
+   frozen values as fallbacks, so they stay correct whether or not
+   the chrome token update has landed. The frozen .pf-* classes are
+   styled here only as fallbacks on the owned surfaces; the chrome
+   definitions in pf-theme.css are canonical elsewhere. */
+
+/* Detail pills and read time, wherever a situation renders (the
+   workspace detail, the sample pages, the weekly case). Pills use
+   the frozen .pf-pill vocabulary with the frozen gold accent for
+   the level pill. The read-time line has no frozen class, so it is
+   a plain paragraph with a data hook; see the worker report. */
+.pf-pill{display:inline-block;background:var(--pf-royal-tint,#E8EEFB);color:var(--pf-royal,#173F8C);border-radius:999px;padding:3px 10px;font-size:12px;font-weight:700;margin:0 6px 6px 0;white-space:nowrap}
+.pf-pill.accent-gold{background:var(--pf-gold-tint,#FBF6E3);color:var(--pf-gold-dark,#8C7014)}
+[data-readtime]{font-size:12px;font-weight:700;color:var(--pf-muted,#47576E);margin:0 0 12px}
+
+/* ---------- Interview detail, exactly as in the iOS app ----------
+   Number badge (the existing .faq-num class), 4pt gold accent bar,
+   gold question tile (.pf-icon-tile), navy title, category pill,
+   read-time line, navy answer text. The accent bar has no frozen
+   or existing class, so it is a plain span with a data hook. The
+   details/summary mechanism, filter classes and data attributes
+   are untouched, so filtering and grouping behave as before. */
+#faq .faq-summary > span{display:flex;align-items:flex-start;gap:12px}
+#faq .faq-summary > span > span:last-child{flex:1;min-width:0}
+#faq .faq-num{width:26px;height:26px;border-radius:8px;background:var(--pf-royal-tint,#E8EEFB);color:var(--pf-royal,#173F8C);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:none;margin:0}
+#faq [data-accent]{width:4px;align-self:stretch;min-height:44px;background:var(--pf-gold,#C9A326);border-radius:2px;flex:none}
+#faq .pf-icon-tile{width:44px;height:44px;border-radius:12px;background:var(--pf-gold-tint,#FBF6E3);color:var(--pf-gold-dark,#8C7014);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;flex:none}
+#faq .faq-summary .faq-meta{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+#faq .faq-summary .faq-meta .pf-pill{margin:0}
+#faq .faq-summary .faq-meta .faq-diff{margin-left:0}
+#faq .faq-answer [data-readtime]{margin:0 0 12px}
+#faq .faq-answer .sit-explain{color:var(--pf-navy,#0D1C38)}
+#faq .faq-filter-btn{padding:8px 14px;font-size:13px;font-weight:700;border-radius:20px}
+#faq .faq-filter-btn.active{background:var(--pf-royal,#173F8C);border-color:var(--pf-royal,#173F8C);color:#fff}
+#faqSearch{border-radius:14px;border-color:var(--pf-line,#E8EDF5)}
+@media (max-width:480px){
+  #faq .pf-icon-tile{width:40px;height:40px;font-size:18px}
+}
+
+/* ---------- Situations list (situations.html) ----------
+   The page shell is built by situations.py, which is frozen, so
+   this section restyles that shell only. Every rule is scoped to
+   an id, which beats the frozen inline SITUATIONS_CSS that loads
+   after this sheet. No id, class or handler is changed, so the
+   stage tabs, filters, catalogue, dashboard and gate behave
+   exactly as before. The hero relies on the frozen element order
+   (h1, product tag, intro paragraph, product meta): the four share
+   one navy surface so they read as the app hero card. */
+#situations > h1{background:#0D1C38;color:#fff;border-radius:18px 18px 0 0;padding:24px 24px 0;margin:0;font-size:28px;line-height:1.25}
+#situations > .sit-product-tag{background:#0D1C38;color:var(--pf-gold,#C9A326);padding:8px 24px 0;margin:0}
+#situations > h1 + .sit-product-tag + p{background:#0D1C38;color:rgba(255,255,255,.85);padding:8px 24px 0;margin:0}
+#situations > .sit-product-meta{background:#0D1C38;color:rgba(255,255,255,.85);border-radius:0 0 18px 18px;padding:12px 24px 24px;margin:0 0 24px;box-shadow:0 10px 20px rgba(13,28,56,.30)}
+#situations > h2{margin:32px 0 8px}
+#situations .sit-stages{list-style:none;margin:12px 0 24px;padding:0;display:grid;gap:12px}
+#situations .sit-stages li{background:var(--pf-surface,#FFFFFF);border:1px solid var(--pf-line,#E8EDF5);border-radius:18px;padding:16px;margin:0;box-shadow:var(--pf-shadow,0 1px 2px rgba(11,31,61,.06),0 4px 16px rgba(11,31,61,.06))}
+#situations .sit-sample-item{border-radius:18px;border-color:var(--pf-line,#E8EDF5)}
+#situations .sit-samples-list{gap:24px}
+#sit-browser .sit-stage-tab{border-radius:20px;padding:8px 14px;background:#fff;color:var(--pf-navy,#0D1C38);border:1px solid var(--pf-line,#E8EDF5);font-size:13px;font-weight:700}
+#sit-browser .sit-stage-tab.active{background:var(--pf-royal,#173F8C);border-color:var(--pf-royal,#173F8C);color:#fff}
+#sit-search{border-radius:14px;border-color:var(--pf-line,#E8EDF5);background:#fff;color:var(--pf-navy,#0D1C38);padding:12px 16px}
+#sit-browser .sit-field-inline select{border-radius:14px;border-color:var(--pf-line,#E8EDF5)}
+#sit-browser .sit-catalogue{border-radius:18px;border-color:var(--pf-line,#E8EDF5)}
+#sit-browser .sit-catalogue-item{border-left:4px solid transparent;padding:12px 16px;color:var(--pf-navy,#0D1C38)}
+#sit-browser .sit-catalogue-item.active{border-left-color:var(--pf-gold,#C9A326)}
+#sit-browser .sit-btn{border-radius:14px}
+#sit-browser .sit-btn-primary{background:var(--pf-royal,#173F8C);border-color:var(--pf-royal,#173F8C);color:#fff}
+#sit-browser .sit-dash-card{border-radius:18px;border-color:var(--pf-line,#E8EDF5)}
+#sit-access .sit-paywall{border-radius:18px}
+#sit-access .sit-owned{border-radius:18px}
+
+/* ---------- Free Case of the Week (weekly-case.html) ----------
+   Hero, week navigation, case pills, practice entry and empty
+   state. The case itself renders through PFSituations.render, so
+   it carries the same detail presentation as every situation.
+   Button and card fallbacks use the frozen vocabulary and tokens;
+   the chrome definitions are canonical once they land. */
+#weekly-case [hidden]{display:none !important}
+#weekly-case .pf-card{background:var(--pf-surface,#FFFFFF);border:1px solid var(--pf-line,#E8EDF5);border-radius:18px;padding:24px;margin:0 0 24px;box-shadow:var(--pf-shadow,0 1px 2px rgba(11,31,61,.06),0 4px 16px rgba(11,31,61,.06))}
+#weekly-case .pf-card h2{color:var(--pf-navy,#0D1C38);margin:0 0 8px}
+#weekly-case .pf-card p:last-child{margin-bottom:0}
+#weekly-case .accent-navy{background:#0D1C38;border-color:#0D1C38;color:#fff}
+#weekly-case .accent-navy h1{color:#fff;margin:0 0 8px;font-size:28px;line-height:1.25}
+#weekly-case .accent-navy .sit-eyebrow{color:var(--pf-gold,#C9A326)}
+#weekly-case .accent-navy p{color:rgba(255,255,255,.85)}
+#weekly-case [data-week-label]{font-weight:700;color:#fff}
+#weekly-case [data-opened-marker]{display:inline-block;background:rgba(255,255,255,.18);color:#fff;border-radius:999px;padding:6px 12px;font-size:12px;font-weight:700;margin:8px 0 0}
+#weekly-case .pf-btn-primary{display:inline-block;background:var(--pf-royal,#173F8C);color:#fff;border:1px solid var(--pf-royal,#173F8C);border-radius:14px;padding:14px 16px;font-size:15px;font-weight:600;font-family:inherit;text-decoration:none;cursor:pointer}
+#weekly-case .pf-btn-secondary{display:inline-block;background:#fff;color:var(--pf-royal,#173F8C);border:1px solid var(--pf-royal,#173F8C);border-radius:14px;padding:14px 16px;font-size:15px;font-weight:600;font-family:inherit;text-decoration:none;cursor:pointer}
+#weekly-case .pf-btn-gold{display:inline-block;background:var(--pf-gold,#C9A326);color:var(--pf-navy,#0D1C38);border:1px solid var(--pf-gold,#C9A326);border-radius:14px;padding:14px 16px;font-size:15px;font-weight:600;font-family:inherit;text-decoration:none;cursor:pointer}
+#weekly-case [data-week-nav]{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 24px}
+#weekly-case [data-week-nav] .pf-btn-primary,#weekly-case [data-week-nav] .pf-btn-secondary{padding:10px 16px}
+#weekly-case [data-weekly-pills]{margin:24px 0 0}
+#weekly-case [data-weekly-case] .sit-item{margin:12px 0 24px}
+#weekly-case .pf-empty{background:var(--pf-surface,#FFFFFF);border:1px solid var(--pf-line,#E8EDF5);border-radius:18px;padding:24px;margin:0 0 24px}
+#weekly-case .pf-empty h2{color:var(--pf-navy,#0D1C38);margin:0 0 8px}
+#weekly-case .pf-empty p{color:var(--pf-muted,#47576E)}

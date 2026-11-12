@@ -270,6 +270,56 @@
     if (s) return 'Public post';
     return '';
   }
+  /* ---------- App-parity helpers (12 Nov 2026, website redesign) ----------
+     Read time matches the iOS ReadTime rule exactly: words split on
+     whitespace, one minute per 200 words, minimum one minute, labelled
+     "About N min read". The scheme comes from the title only, with
+     the same candidates and match order as the iOS scheme(for:),
+     whole-word match, never invented. Explain paragraphs split on
+     blank lines only: one narrative paragraph per <p>, never split
+     into checklist items. */
+  function wordCount(text) {
+    return String(text || '').split(/\s+/).filter(function (w) { return w; }).length;
+  }
+  function readTimeLabel(text) {
+    var words = wordCount(text);
+    if (!words) return '';
+    var mins = Math.max(1, Math.ceil(words / 200));
+    return 'About ' + mins + ' min read';
+  }
+  var SCHEME_CANDIDATES = [
+    ['UPI', 'upi'], ['SEPA', 'sepa'], ['SWIFT', 'swift'], ['Cards', 'cards?'],
+    ['Direct Debit', 'direct debit'], ['ACH', 'ach'],
+    ['Faster Payments', 'faster payments'], ['CHAPS', 'chaps'],
+    ['TARGET2', 'target2'], ['Fedwire', 'fedwire'], ['CHIPS', 'chips'],
+    ['RuPay', 'rupay'], ['Visa', 'visa'], ['Mastercard', 'mastercard'],
+    ['NEFT', 'neft'], ['RTGS', 'rtgs'], ['IMPS', 'imps'], ['BACS', 'bacs'],
+    ['FedNow', 'fednow']
+  ];
+  function schemeFor(title) {
+    var t = String(title || '');
+    for (var i = 0; i < SCHEME_CANDIDATES.length; i++) {
+      var re = new RegExp('\\b' + SCHEME_CANDIDATES[i][1] + '\\b', 'i');
+      if (re.test(t)) return SCHEME_CANDIDATES[i][0];
+    }
+    return '';
+  }
+  function explainParas(text) {
+    return String(text || '').split(/\n\s*\n/).map(function (p) {
+      return p.trim();
+    }).filter(function (p) { return p; });
+  }
+  function paraHtml(text, cls) {
+    var paras = explainParas(text);
+    if (!paras.length) paras = [String(text || '')];
+    return paras.map(function (p) {
+      return '<p class="' + cls + '">' + esc(p) + '</p>';
+    }).join('');
+  }
+  function capFirst(s) {
+    s = String(s || '');
+    return s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
+  }
   /* ---------- Ledger impact (11 Nov 2026, top-20 item 16) ----------
      Double-entry ledger impact for every situation, so a learner sees
      what moves where, not just what message was sent. The settlement
@@ -310,7 +360,7 @@
     if (type === 'flow') visual = renderFlow(item, id);
     else if (type === 'stacked') visual = renderStacked(item, id);
     else visual = renderDiagram(item, id);
-    var html = '<section class="sit-item" id="' + esc(id) + '" data-sit-item="' + esc(item.id || '') + '">';
+    var html = '<section class="sit-item pf-card" id="' + esc(id) + '" data-sit-item="' + esc(item.id || '') + '">';
     var eyebrow = [];
     if (item.stage) eyebrow.push('Stage ' + esc(item.stage) + ': ' + esc(item.stage_name || ''));
     if (item.seq) eyebrow.push('Situation ' + esc(item.seq));
@@ -321,6 +371,18 @@
     html += '<h3 class="sit-title">' + esc(item.title || 'Untitled situation') + '</h3>';
     var label = sourceLabel(item);
     if (label) html += '<p class="sit-source">Source: ' + esc(label) + '</p>';
+    /* App detail pills: stage, level (gold) and scheme, as in the iOS
+       SituationDetailView header. Only fields the item carries are
+       shown; nothing is invented. */
+    var pills = [];
+    if (item.stage_name) pills.push('<span class="pf-pill">' + esc(item.stage_name) + '</span>');
+    else if (item.stage) pills.push('<span class="pf-pill">Stage ' + esc(item.stage) + '</span>');
+    if (item.level) pills.push('<span class="pf-pill accent-gold">' + esc(capFirst(item.level)) + '</span>');
+    var scheme = schemeFor(item.title);
+    if (scheme) pills.push('<span class="pf-pill">' + esc(scheme) + '</span>');
+    if (pills.length) html += '<p class="sit-meta">' + pills.join(' ') + '</p>';
+    var readLabel = readTimeLabel((item.explain || '') + ' ' + (item.takeaway || ''));
+    if (readLabel) html += '<p data-readtime>' + esc(readLabel) + '</p>';
     var chips = [];
     (item.messages || []).forEach(function (m) { chips.push(m); });
     if (item.failure_category) chips.push(item.failure_category);
@@ -332,7 +394,7 @@
     }
     if (item.explain) {
       html += '<h4 class="sit-case-label">What is happening</h4>';
-      html += '<p class="sit-explain">' + esc(item.explain) + '</p>';
+      html += paraHtml(item.explain, 'sit-explain');
     }
     html += '<h4 class="sit-case-label">Visual investigation</h4>';
     html += '<div class="sit-visual" data-sit-type="' + esc(type) + '">' + visual + '</div>';
@@ -345,11 +407,11 @@
     }
     if (item.sme_analysis) {
       html += '<h4 class="sit-case-label">SME analysis</h4>';
-      html += '<p class="sit-explain">' + esc(item.sme_analysis) + '</p>';
+      html += paraHtml(item.sme_analysis, 'sit-explain');
     }
     if (item.resolution_text) {
       html += '<h4 class="sit-case-label">Resolution</h4>';
-      html += '<p class="sit-explain">' + esc(item.resolution_text) + '</p>';
+      html += paraHtml(item.resolution_text, 'sit-explain');
     }
     /* Real-world examples (item 7, 12 Nov 2026): reading cards, never
        a checklist. No item in the current data carries an example
