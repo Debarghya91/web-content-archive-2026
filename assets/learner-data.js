@@ -1062,6 +1062,23 @@
       } else if ("email_confirmed_at" in user) {
         h += '<p>Email not verified yet</p>';
       }
+      /* Case ID (13 Nov 2026, OTP removal): the account identifier
+         generated at signup, stored in the account metadata
+         (signup_case_id), shown directly under the email lines. It
+         is shown only when it matches the catalog format, "PF-"
+         plus 6 characters, so a malformed stored value never
+         renders. No phone number is collected or shown. */
+      var caseId = "";
+      try {
+        var meta = user.user_metadata || {};
+        if (typeof meta.signup_case_id === "string" &&
+            /^PF-[ABCDEFGHJKMNPQRSTUVWXYZ23456789]{6}$/.test(meta.signup_case_id)) {
+          caseId = meta.signup_case_id;
+        }
+      } catch (e) { caseId = ""; }
+      if (caseId) {
+        h += '<p>Case ID: <b>' + esc(caseId) + '</b></p>';
+      }
       if (info) h += '<p>' + esc(info) + '</p>';
     }
     if (summary) {
@@ -1070,6 +1087,10 @@
         statCard(summary.streak + (summary.streak === 1 ? " day" : " days"), "Day streak", "flame") +
         statCard(String(summary.quizAttempted), "Quizzes taken", "check") +
         '</div>';
+    }
+    if (session) {
+      h += '<h3>Refer a friend</h3>' +
+        '<div id="pa-referral-block"><p>Loading your referral code.</p></div>';
     }
     h += '<h3>Personal Information</h3>' +
       '<p>Leave experience blank if you would rather not say.' +
@@ -1087,7 +1108,8 @@
       '<p><button type="button" class="pf-btn-primary studio-btn primary" onclick="PALearner.saveProfile()">Save</button> ' +
       '<span id="pa-profile-saved" class="pa-note" role="status"></span></p>';
     if (session) {
-      h += '<p><button type="button" class="pf-btn-secondary studio-btn" onclick="paAuthSignOut()">Sign out</button></p>';
+      h += '<p><button type="button" class="pf-btn-secondary studio-btn" onclick="paAuthSignOut()">Sign out</button></p>' +
+        '<p><a class="pa-delete-link" href="delete-account.html">Delete account</a></p>';
     }
     h += '</div></section>';
     return h;
@@ -1104,6 +1126,7 @@
     try { if (data) summary = summarize(null, data); } catch (e) { summary = null; }
     function finish(session) {
       try { box.innerHTML = profileHTML(summary, profile, session || null); } catch (e) {}
+      try { loadReferralBlock(session || null); } catch (e) {}
     }
     try {
       if (typeof root.paAuthCurrentSession === "function") {
@@ -1126,6 +1149,105 @@
       }
     } catch (e) { /* fall through to the guest render */ }
     finish(null);
+  }
+  /* Referral code and credit on the signed-in profile block.
+     Reads the learner's own referral_codes row and referral_credits
+     rows directly (own rows only, under RLS). Every failure shows
+     a plain fallback line: the referral tables may not exist yet,
+     and a missing code or balance must never break the profile.
+     Codes are issued by the sign-up flow; this block only
+     displays what exists. No verification gate applies to a code. */
+  var referralCodeValue = "";
+  function loadReferralBlock(session) {
+    var box = null;
+    try { box = document.getElementById("pa-referral-block"); } catch (e) {}
+    if (!box) return;
+    if (!session || !session.user || !session.user.id || !session.access_token) {
+      box.innerHTML = "<p>Referral codes are not available right now. Please try again later.</p>";
+      return;
+    }
+    var uid = session.user.id;
+    var token = session.access_token;
+    var cfg = null;
+    try { cfg = root.PA_AUTH_CONFIG || null; } catch (e) { cfg = null; }
+    if (!cfg || !cfg.supabaseUrl || !cfg.supabaseAnonKey) {
+      box.innerHTML = "<p>Referral codes are not available right now. Please try again later.</p>";
+      return;
+    }
+    var base = String(cfg.supabaseUrl).replace(/\/+$/, "") + "/rest/v1/";
+    var headers = { apikey: cfg.supabaseAnonKey, Authorization: "Bearer " + token, Accept: "application/json" };
+    function getJson(url) {
+      return fetch(url, { headers: headers }).then(function (r) {
+        return r.ok ? r.json() : null;
+      });
+    }
+    Promise.all([
+      getJson(base + "referral_codes?select=code&owner_id=eq." + encodeURIComponent(uid)),
+      getJson(base + "referral_credits?select=amount_minor,currency,status,hold_expires_at&user_id=eq." + encodeURIComponent(uid))
+    ]).then(function (results) {
+      var codeRows = results[0];
+      var creditRows = results[1];
+      if (!codeRows || !creditRows) {
+        box.innerHTML = "<p>Referral codes are not available right now. Please try again later.</p>";
+        return;
+      }
+      var h = "";
+      var codeRow = codeRows.length ? codeRows[0] : null;
+      if (codeRow && codeRow.code) {
+        referralCodeValue = String(codeRow.code);
+        h += "<p>Your referral code: <b>" + esc(referralCodeValue) + "</b> " +
+          '<button type="button" class="pf-btn-secondary studio-btn" onclick="PALearner.copyReferralCode()">Copy code</button> ' +
+          '<span id="pa-referral-copied" class="pa-note" role="status"></span></p>';
+        h += "<p>Friends can use your code at website checkout.</p>";
+      } else {
+        h += "<p>You do not have a referral code yet.</p>";
+      }
+      var now = Date.now(), inr = 0, usd = 0;
+      creditRows.forEach(function (row) {
+        if (!row) return;
+        var spendable = row.status === "available" ||
+          (row.status === "held" && row.hold_expires_at && Date.parse(row.hold_expires_at) <= now);
+        if (!spendable) return;
+        if (row.currency === "INR") inr += Number(row.amount_minor) || 0;
+        if (row.currency === "USD") usd += Number(row.amount_minor) || 0;
+      });
+      var parts = [];
+      if (inr > 0) parts.push("Rs " + (inr / 100).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+      if (usd > 0) parts.push("$" + (usd / 100).toFixed(2));
+      h += "<p>Referral credit balance: <b>" + (parts.length ? esc(parts.join(" and ")) : "None yet") + "</b></p>";
+      h += "<p>Friends get Rs 200 off on PayU or $2.50 off on PayPal with your code, once per account. " +
+        "When their purchase completes, you get the same amount as credit toward your next course.</p>";
+      box.innerHTML = h;
+    }).catch(function () {
+      box.innerHTML = "<p>Referral codes are not available right now. Please try again later.</p>";
+    });
+  }
+  function copyReferralCode() {
+    var done = document.getElementById("pa-referral-copied");
+    function mark(text) { if (done) done.textContent = text; }
+    if (!referralCodeValue) { mark("No code to copy."); return; }
+    function fallbackCopy() {
+      try {
+        var ta = document.createElement("textarea");
+        ta.value = referralCodeValue;
+        ta.style.position = "fixed";
+        ta.style.opacity = "0";
+        document.body.appendChild(ta);
+        ta.select();
+        var ok = document.execCommand("copy");
+        document.body.removeChild(ta);
+        mark(ok ? "Copied." : "Copy failed. Select the code and copy it.");
+      } catch (e) { mark("Copy failed. Select the code and copy it."); }
+    }
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(referralCodeValue).then(function () {
+          mark("Copied.");
+        }).catch(function () { fallbackCopy(); });
+      } else {
+        fallbackCopy();
+      }
+    } catch (e) { fallbackCopy(); }
   }
   function saveProfile() {
     var nameEl = document.getElementById("pa-profile-name");
@@ -1319,6 +1441,7 @@
     validateBackup: validateBackup, restoreBackup: restoreBackup,
     renderDashboard: renderDashboard, renderPortfolio: renderPortfolio,
     renderProfile: renderProfile, saveProfile: saveProfile,
+    copyReferralCode: copyReferralCode,
     resetAllProgress: resetAllProgress,
     exportBackup: exportBackup, previewBackupFile: previewBackupFile,
     confirmRestore: confirmRestore, saveLearnerName: saveLearnerName,

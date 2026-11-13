@@ -130,10 +130,9 @@ function paResetCoverage(){
   if(bt) bt.value = '';
   paFilterCoverage();
 }
-/* No web checkout (owner decision 11 Nov 2026): purchases are made in
-   the iOS app. enrolBundle only takes the learner to the "How to buy"
-   section. The multipage build overrides this with navigation to
-   payment.html. */
+/* Website checkout lives on payment.html. enrolBundle takes the
+   learner there with the bundle id. The multipage build overrides
+   this with navigation to payment.html?bundle=<id>. */
 function enrolBundle(bid){
   PA_SELECTED_BUNDLE = bid;
   var el = document.getElementById('payment');
@@ -253,6 +252,384 @@ function paStartRazorpayCheckout(bid){
     });
   });
 }
+/* ===== Website checkout: PayU and PayPal (test setup, 13 Nov 2026) ===== */
+/* Website checkout is being set up with PayU (Indian buyers, INR) and
+   PayPal (international buyers, USD). No live buying until the payment
+   keys arrive: with empty or missing config every button stays disabled
+   and the page says so in plain words. Payment requires sign-in: the
+   server needs the Supabase JWT. Prices are never trusted from the
+   client: the server reads them from bundles.json. There is no manual
+   UPI flow here: UPI is offered only inside PayU hosted checkout (UPI
+   apps, cards, netbanking). No purchase is ever marked in
+   localStorage and no access is granted from this page: access is
+   granted only after the server verifies the payment. */
+var PA_CHECKOUT_CONFIG = (function(){
+  try {
+    var el = document.getElementById('payment-config');
+    if(el) return JSON.parse(el.textContent);
+  } catch(e){}
+  return {payu_create_payment_url: '', paypal_client_id: '',
+          paypal_create_order_url: '', paypal_capture_order_url: ''};
+})();
+function paCheckoutBundleData(){
+  try {
+    var el = document.getElementById('pa-bundle-data');
+    if(el) return JSON.parse(el.textContent);
+  } catch(e){}
+  return [];
+}
+function paCheckoutBundle(bid){
+  var data = paCheckoutBundleData();
+  for(var i = 0; i < data.length; i++){ if(data[i].id === bid) return data[i]; }
+  return null;
+}
+function paCheckoutBundleId(){
+  var m = /[?&]bundle=([^&#]*)/.exec(window.location.search || '');
+  var bid = '';
+  try { bid = m ? decodeURIComponent(m[1].replace(/\+/g, ' ')) : ''; } catch(e){ bid = m ? m[1] : ''; }
+  return paCheckoutBundle(bid) ? bid : '';
+}
+function paPayuReady(){
+  var c = PA_CHECKOUT_CONFIG;
+  return !!(c && c.payu_create_payment_url);
+}
+function paPaypalReady(){
+  var c = PA_CHECKOUT_CONFIG;
+  return !!(c && c.paypal_client_id && c.paypal_create_order_url && c.paypal_capture_order_url);
+}
+function paCheckoutFail(msg){
+  var st = document.getElementById('pay-status');
+  var er = document.getElementById('pa-checkout-error');
+  if(st) st.textContent = '';
+  if(er){ er.style.display = 'block'; er.textContent = msg; }
+}
+function paCheckoutStatus(msg){
+  var st = document.getElementById('pay-status');
+  var er = document.getElementById('pa-checkout-error');
+  if(er){ er.style.display = 'none'; er.textContent = ''; }
+  if(st) st.textContent = msg;
+}
+/* ===== Referral codes and credit (13 Nov 2026) ===== */
+/* The referral code and the use-credit choice are sent to the
+   server with the checkout request; the server validates the
+   code, applies Rs 200 (PayU) or $2.50 (PayPal) off, and spends
+   credit. Nothing is computed in the browser: the discount shown
+   always comes from the server response. Error codes come from
+   the server catalog (REFERRAL_INVALID, REFERRAL_SELF,
+   REFERRAL_ALREADY_USED); each maps to one
+   plain message below. A referral_status of "unavailable" means
+   the referral tables are not set up yet: checkout continues at
+   full price and the page says so, instead of blocking. */
+function paReferralCode(){
+  try {
+    var el = document.getElementById('pa-referral-code');
+    return el ? String(el.value || '').trim().toUpperCase() : '';
+  } catch(e){ return ''; }
+}
+function paUseCredit(){
+  try {
+    var el = document.getElementById('pa-use-credit');
+    return !!(el && el.checked);
+  } catch(e){ return false; }
+}
+function paReferralErrorMessage(code){
+  if(code === 'REFERRAL_INVALID') return 'That referral code is not valid. Check the code and try again, or continue without a code.';
+  if(code === 'REFERRAL_SELF') return 'You cannot use your own referral code.';
+  if(code === 'REFERRAL_ALREADY_USED') return 'Your account has already used a referral discount. Only one referral discount is allowed per account.';
+  if(code === 'REFERRAL_CHECK_FAILED') return 'The referral code could not be checked. Please try again.';
+  if(code === 'amount_zero') return 'The discount covers the full price of this course. Please choose another course or contact support.';
+  return '';
+}
+function paReferralStatus(msg){
+  var el = document.getElementById('pa-referral-status');
+  if(el) el.textContent = msg || '';
+}
+function paLoadCheckoutCredit(uid){
+  /* Show the signed-in buyer's referral credit balance, read
+     directly from referral_credits (own rows only, under RLS).
+     Any failure hides the line: the tables may not exist yet,
+     and a missing balance must never block checkout. */
+  var line = document.getElementById('pa-credit-balance');
+  if(!line || !uid) return;
+  if(typeof paAuthAccessToken !== 'function') return;
+  if(typeof PA_AUTH_CONFIG === 'undefined' || !PA_AUTH_CONFIG.supabaseUrl || !PA_AUTH_CONFIG.supabaseAnonKey) return;
+  paAuthAccessToken().then(function(token){
+    if(!token) return;
+    var url = String(PA_AUTH_CONFIG.supabaseUrl).replace(/\/+$/, '') +
+      '/rest/v1/referral_credits?select=amount_minor,currency,status,hold_expires_at&user_id=eq.' + encodeURIComponent(uid);
+    fetch(url, {headers: {'apikey': PA_AUTH_CONFIG.supabaseAnonKey, 'Authorization': 'Bearer ' + token, 'Accept': 'application/json'}})
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(rows){
+        if(!rows || !rows.length) return;
+        var now = Date.now(), inr = 0, usd = 0;
+        rows.forEach(function(row){
+          if(!row) return;
+          var spendable = row.status === 'available' ||
+            (row.status === 'held' && row.hold_expires_at && Date.parse(row.hold_expires_at) <= now);
+          if(!spendable) return;
+          if(row.currency === 'INR') inr += Number(row.amount_minor) || 0;
+          if(row.currency === 'USD') usd += Number(row.amount_minor) || 0;
+        });
+        var parts = [];
+        if(inr > 0) parts.push('Rs ' + (inr / 100).toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+        if(usd > 0) parts.push('$' + (usd / 100).toFixed(2));
+        if(parts.length){
+          line.style.display = 'block';
+          line.textContent = 'Your referral credit: ' + parts.join(' and ') + '. Tick the box to use it on this purchase.';
+        }
+      }).catch(function(){});
+  }).catch(function(){});
+}
+function paRenderCheckoutSummary(){
+  var box = document.getElementById('pa-order-summary');
+  if(!box) return '';
+  var bid = paCheckoutBundleId();
+  var picker = document.getElementById('pa-bundle-picker');
+  PA_SELECTED_BUNDLE = bid || null;
+  box.innerHTML = '';
+  var h = document.createElement('h3');
+  h.textContent = 'Order summary';
+  box.appendChild(h);
+  if(!bid){
+    var p0 = document.createElement('p');
+    p0.textContent = 'No course selected. Pick a course below to see its price and pay.';
+    box.appendChild(p0);
+    if(picker) picker.style.display = 'block';
+    return '';
+  }
+  var b = paCheckoutBundle(bid);
+  if(!b) return '';
+  if(picker) picker.style.display = 'none';
+  var p1 = document.createElement('p');
+  p1.textContent = b.name + ' (' + (b.meta || '') + ')';
+  box.appendChild(p1);
+  var p2 = document.createElement('p');
+  p2.appendChild(document.createTextNode('Price: '));
+  var strong = document.createElement('b');
+  strong.textContent = b.price_placeholder ? 'Pricing to be announced'
+    : 'Rs. ' + Number(b.price_inr).toLocaleString('en-IN');
+  p2.appendChild(strong);
+  box.appendChild(p2);
+  var p3 = document.createElement('p');
+  var a = document.createElement('a');
+  a.href = 'payment.html';
+  a.textContent = 'Choose a different course';
+  p3.appendChild(a);
+  box.appendChild(p3);
+  return bid;
+}
+function paStartPayuCheckout(bid){
+  bid = bid || paCheckoutBundleId();
+  if(!bid){ paCheckoutFail('Pick a course first.'); return; }
+  if(!paPayuReady()){
+    paCheckoutFail('PayU checkout is not set up yet. Website checkout is in test setup.');
+    return;
+  }
+  if(typeof paAuthAccessToken !== 'function'){
+    paCheckoutFail('Sign-in is not available. Please try again later.');
+    return;
+  }
+  var btn = document.getElementById('pa-payu-pay');
+  if(btn) btn.disabled = true;
+  paCheckoutStatus('Starting PayU checkout. You will be taken to the PayU payment page.');
+  paAuthAccessToken().then(function(token){
+    if(!token){
+      paCheckoutFail('Sign in first so the payment is linked to your account.');
+      if(btn) btn.disabled = false;
+      return;
+    }
+    fetch(PA_CHECKOUT_CONFIG.payu_create_payment_url, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token},
+      body: JSON.stringify({bundle_id: bid, referral_code: paReferralCode(), use_credit: paUseCredit()})
+    }).then(function(r){
+      return r.json().then(function(data){ return {ok: r.ok, data: data}; });
+    }).then(function(res){
+      var data = res.data || {};
+      if(!res.ok || !data.action_url || !data.fields || typeof data.fields !== 'object'){
+        var msg = paReferralErrorMessage(data.code);
+        paCheckoutFail(msg || 'Could not start the PayU payment. Please try again.');
+        if(btn) btn.disabled = false;
+        return;
+      }
+      /* The discount shown comes from the server response only.
+         It is set before the form submits so the buyer sees it
+         while the PayU page loads. */
+      if(data.referral_applied){
+        paCheckoutStatus('Referral discount applied: Rs ' + Number(data.referral_discount_inr || 0).toFixed(2) +
+          ' off. Total Rs ' + String(data.charged_amount || '') + '. Taking you to the PayU payment page.');
+        paReferralStatus('Referral code ' + String(data.referral_code || '') + ' applied.');
+      } else if(data.referral_status === 'unavailable' && paReferralCode()){
+        paReferralStatus('Referral codes are not available right now. Continuing at full price.');
+      }
+      /* PayU hosted checkout: build the hidden form from the server
+         fields and auto-submit it to the server action URL. */
+      var form = document.createElement('form');
+      form.method = 'POST';
+      form.action = data.action_url;
+      Object.keys(data.fields).forEach(function(k){
+        var input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = k;
+        input.value = String(data.fields[k]);
+        form.appendChild(input);
+      });
+      document.body.appendChild(form);
+      form.submit();
+    }).catch(function(){
+      paCheckoutFail('Could not start the PayU payment. Check your connection and try again.');
+      if(btn) btn.disabled = false;
+    });
+  });
+}
+var paPaypalSdkLoading = false;
+function paLoadPaypalSdk(callback){
+  if(window.paypal && window.paypal.Buttons){ callback(); return; }
+  if(paPaypalSdkLoading) return;
+  paPaypalSdkLoading = true;
+  var s = document.createElement('script');
+  s.src = 'https://www.paypal.com/sdk/js?client-id='
+    + encodeURIComponent(PA_CHECKOUT_CONFIG.paypal_client_id)
+    + '&currency=USD&intent=capture';
+  s.onload = function(){ paPaypalSdkLoading = false; callback(); };
+  s.onerror = function(){
+    paPaypalSdkLoading = false;
+    paCheckoutFail('Could not load the PayPal buttons. Check your connection and try again.');
+  };
+  document.head.appendChild(s);
+}
+function paRenderPaypalButtons(bid){
+  var host = document.getElementById('pa-paypal-buttons');
+  if(!host || !window.paypal || !window.paypal.Buttons) return;
+  host.innerHTML = '';
+  window.paypal.Buttons({
+    createOrder: function(){
+      return paAuthAccessToken().then(function(token){
+        if(!token){
+          paCheckoutFail('Sign in first so the payment is linked to your account.');
+          throw new Error('not signed in');
+        }
+        return fetch(PA_CHECKOUT_CONFIG.paypal_create_order_url, {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token},
+          body: JSON.stringify({bundle_id: bid, referral_code: paReferralCode(), use_credit: paUseCredit()})
+        });
+      }).then(function(r){
+        return r.json().then(function(data){ return {ok: r.ok, data: data}; });
+      }).then(function(res){
+        var data = res.data || {};
+        if(!res.ok || !data.order_id){
+          var msg = paReferralErrorMessage(data.code);
+          paCheckoutFail(msg || 'Could not start the PayPal payment. Please try again.');
+          throw new Error('order failed');
+        }
+        /* The amount shown is the server-returned amount only. No USD
+           amount is hardcoded anywhere on this page. The discount
+           breakdown comes from the server response. */
+        var amt = document.getElementById('pa-paypal-amount');
+        if(amt && data.amount != null){
+          var line = 'Total: ' + String(data.amount) + ' ' + (data.currency || 'USD');
+          if(data.referral_applied){
+            line += ' (list ' + String(data.list_amount || '') + ', $' +
+              Number(data.referral_discount || 0).toFixed(2) + ' referral discount applied';
+            if(Number(data.credit_applied || 0) > 0){
+              line += ', $' + Number(data.credit_applied || 0).toFixed(2) + ' credit applied';
+            }
+            line += ')';
+            paReferralStatus('Referral code ' + String(data.referral_code || '') + ' applied.');
+          } else if(Number(data.credit_applied || 0) > 0){
+            line += ' (list ' + String(data.list_amount || '') + ', $' +
+              Number(data.credit_applied || 0).toFixed(2) + ' credit applied)';
+          } else if(data.referral_status === 'unavailable' && paReferralCode()){
+            paReferralStatus('Referral codes are not available right now. Continuing at full price.');
+          }
+          amt.textContent = line;
+        }
+        return data.order_id;
+      });
+    },
+    onApprove: function(data){
+      return paAuthAccessToken().then(function(token){
+        return fetch(PA_CHECKOUT_CONFIG.paypal_capture_order_url, {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token},
+          body: JSON.stringify({order_id: data.orderID, bundle_id: bid})
+        });
+      }).then(function(r){
+        return r.json().then(function(d){ return {ok: r.ok, data: d}; });
+      }).then(function(res){
+        if(!res.ok){
+          paCheckoutFail('The PayPal payment could not be confirmed. Please contact support with the PayPal order id.');
+          return;
+        }
+        var txn = (res.data && (res.data.capture_id || res.data.id)) || data.orderID;
+        window.location.href = 'payment-result.html?status=success&txnid=' + encodeURIComponent(txn);
+      }).catch(function(){
+        paCheckoutFail('The PayPal payment could not be confirmed. Please contact support with the PayPal order id.');
+      });
+    },
+    onCancel: function(){ paCheckoutStatus('PayPal checkout cancelled. Nothing was charged.'); },
+    onError: function(){ paCheckoutFail('The PayPal payment failed. Please try again.'); }
+  }).render(host);
+}
+function paInitCheckout(){
+  /* P0 fix 13 Nov 2026: the gate must name the id payment_html
+     actually puts on the checkout section (id="payment"). It
+     used to check for id="pa-checkout", which exists nowhere,
+     so this function returned early on every page and checkout
+     never initialised. id="payment" stays: enrolBundle scrolls
+     to it and the homepage stylesheet styles it. */
+  if(!document.getElementById('payment')) return;
+  var bid = paRenderCheckoutSummary();
+  var payuBtn = document.getElementById('pa-payu-pay');
+  var payuNote = document.getElementById('pa-payu-note');
+  var paypalNote = document.getElementById('pa-paypal-note');
+  if(!bid){
+    if(payuBtn) payuBtn.disabled = true;
+    if(payuNote) payuNote.textContent = 'Pick a course first.';
+    if(paypalNote) paypalNote.textContent = 'Pick a course first.';
+    return;
+  }
+  var b = paCheckoutBundle(bid);
+  if(b && b.price_placeholder){
+    if(payuBtn) payuBtn.disabled = true;
+    if(payuNote) payuNote.textContent = 'This course is not on sale yet, so there is no payment step.';
+    if(paypalNote) paypalNote.textContent = 'This course is not on sale yet, so there is no payment step.';
+    return;
+  }
+  if(typeof paAuthCurrentUserId !== 'function'){
+    if(payuBtn) payuBtn.disabled = true;
+    if(payuNote) payuNote.textContent = 'Sign-in is not available. Please try again later.';
+    if(paypalNote) paypalNote.textContent = 'Sign-in is not available. Please try again later.';
+    return;
+  }
+  paAuthCurrentUserId().then(function(uid){
+    var signin = document.getElementById('pa-checkout-signin');
+    if(!uid){
+      if(signin) signin.style.display = 'block';
+      if(payuBtn) payuBtn.disabled = true;
+      if(payuNote) payuNote.textContent = 'Sign in to pay. The payment is linked to your account.';
+      if(paypalNote) paypalNote.textContent = 'Sign in to pay with PayPal.';
+      return;
+    }
+    if(signin) signin.style.display = 'none';
+    paLoadCheckoutCredit(uid);
+    if(paPayuReady()){
+      if(payuBtn) payuBtn.disabled = false;
+      if(payuNote) payuNote.textContent = 'You will be taken to the PayU payment page to complete the payment.';
+    } else {
+      if(payuBtn) payuBtn.disabled = true;
+      if(payuNote) payuNote.textContent = 'PayU checkout is not set up yet. Website checkout is in test setup.';
+    }
+    if(paPaypalReady()){
+      if(paypalNote) paypalNote.textContent = '';
+      paLoadPaypalSdk(function(){ paRenderPaypalButtons(bid); });
+    } else {
+      if(paypalNote) paypalNote.textContent = 'PayPal checkout is not set up yet. Website checkout is in test setup.';
+    }
+  });
+}
+document.addEventListener('DOMContentLoaded', paInitCheckout);
 /* Guard chapter opening: locked chapters open their bundle instead. */
 if(typeof openChapter === 'function'){
   var __paOpenChapterOrig = openChapter;

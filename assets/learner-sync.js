@@ -415,7 +415,7 @@
       'so it follows you to any device and survives clearing browser data. Lessons stay open to everyone, with or without sign-in.</p>' +
       '<p><a class="pf-btn-primary studio-btn primary" href="signin.html">Sign in</a> ' +
       '<button type="button" class="pf-btn-secondary studio-btn" onclick="paAuthGoogle()">Continue with Google</button></p>' +
-      '<p class="pa-note">No payment is taken on this website. Courses are available for purchase in the Payments Training Hub iOS app.</p>' +
+      '<p class="pa-note">Website checkout is being set up with PayU and PayPal and is in test setup. Courses are also available for purchase in the Payments Training Hub iOS app.</p>' +
       '</section>';
   }
 
