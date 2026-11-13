@@ -102,7 +102,7 @@ function activeKeys(){
   if(file === 'investigation-lab.html' || path.indexOf('/investigation-lab.html') !== -1) return {drawer:'exceptionLab', tab:''};
   if(file === 'ba-studio.html') return {drawer:'baStudio', tab:''};
   if(file === 'signin.html') return {drawer:'profile', tab:''};
-  if(file === 'pricing.html' || file === 'payment.html') return {drawer:'myPurchases', tab:''};
+  if(file === 'pricing.html' || file === 'payment.html' || file === 'my-purchases.html') return {drawer:'myPurchases', tab:''};
   if(file === 'support.html' || file === 'contact.html') return {drawer:'helpAndSupport', tab:''};
   if(file === 'about.html') return {drawer:'about', tab:''};
   return {drawer:'', tab:''};
@@ -126,6 +126,26 @@ function markActive(){
       try{ el.classList.toggle('is-active', el.getAttribute('data-tab') === keys.tab); }catch(e){ /* ignore */ }
     });
   }
+}
+
+/* ---------- My Purchases row: point at the purchases page from any depth ----------
+   The drawer markup is baked into every page at build time, so older
+   deployed pages still link this row at pricing.html. Repoint it at run
+   time so the row lands on my-purchases.html from every depth until the
+   next full rebuild reaches all pages. Idempotent: pages whose markup
+   already carries the right relative link get the same value back. */
+function repointPurchasesRow(){
+  var row = null;
+  try{ row = document.querySelector('a[data-drawer="myPurchases"]'); }catch(e){ row = null; }
+  if(!row) return;
+  var path = '';
+  try{ path = window.location.pathname || ''; }catch(e){ path = ''; }
+  var parts = path.split('/').filter(function(p){ return p !== ''; });
+  if(parts.length && parts[parts.length - 1].indexOf('.') !== -1) parts.pop();
+  var href = '';
+  for(var i = 0; i < parts.length; i++) href += '../';
+  href += 'my-purchases.html';
+  try{ row.setAttribute('href', href); }catch(e){ /* ignore */ }
 }
 
 /* ---------- Chat Assistant: open the Hub Assistant panel through its own controls ---------- */
@@ -374,6 +394,7 @@ function init(){
   drawer = $('#pfDrawer');
   scrim = $('#pfDrawerScrim');
   markActive();
+  repointPurchasesRow();
   initAppearance();
   if(!drawer) return;
   $all('[data-pf-drawer-open]').forEach(function(btn){

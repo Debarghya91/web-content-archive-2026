@@ -66,26 +66,23 @@ function paAuthShowSignedOut(){
   if(dash) dash.style.display = 'none';
   if(out) out.style.display = 'none';
 }
+function paAuthShowSignedIn(user){
+  var st = document.getElementById('authState');
+  var inLink = document.getElementById('authSignInLink');
+  var dash = document.getElementById('authDashLink');
+  var out = document.getElementById('authSignOutBtn');
+  if(st) st.textContent = 'Signed in: ' + (user.email || '');
+  if(inLink) inLink.style.display = 'none';
+  if(dash) dash.style.display = 'inline';
+  if(out) out.style.display = 'inline-block';
+}
 function paAuthRefreshState(){
   if(!PA_AUTH_CONFIG.enabled) return;
-  paAuthLoadClient(function(client){
-    if(!client){ paAuthShowSignedOut(); return; }
-    client.auth.getSession().then(function(res){
-      var user = res.data && res.data.session && res.data.session.user;
-      var st = document.getElementById('authState');
-      var inLink = document.getElementById('authSignInLink');
-      var dash = document.getElementById('authDashLink');
-      var out = document.getElementById('authSignOutBtn');
-      if(user){
-        if(st) st.textContent = 'Signed in: ' + (user.email || '');
-        if(inLink) inLink.style.display = 'none';
-        if(dash) dash.style.display = 'inline';
-        if(out) out.style.display = 'inline-block';
-      } else {
-        paAuthShowSignedOut();
-      }
-    }).catch(function(){ paAuthShowSignedOut(); });
-  });
+  paAuthValidatedSession().then(function(session){
+    var user = session && session.user;
+    if(user){ paAuthShowSignedIn(user); }
+    else { paAuthShowSignedOut(); }
+  }).catch(function(){ paAuthShowSignedOut(); });
 }
 /* One OTP request at a time: a double tap used to send two codes, and
    only the newest code worked, so the first code the learner typed
@@ -122,7 +119,7 @@ function paAuthVerifyOtp(){
   var email = ((document.getElementById('authEmail') || {}).value || '').trim();
   var token = ((document.getElementById('authCode') || {}).value || '').trim();
   if(!email || email.indexOf('@') === -1){ alert('Enter the email address the code was sent to.'); return; }
-  if(!token){ alert('Enter the 6-digit code first.'); return; }
+  if(!token){ alert('Enter the 8-digit code first.'); return; }
   paAuthOtpBusy = true;
   paAuthLoadClient(function(client){
     if(!client){ paAuthOtpBusy = false; alert('The sign-in service could not be reached. Check your connection and try again.'); return; }
@@ -144,6 +141,44 @@ function paAuthVerifyOtp(){
     });
   });
 }
+/* Email and password sign-in (13 Nov 2026, live-test defect): the
+   sign-in page offered only an emailed code, so a password set at
+   signup or through a reset could never be used. This is the
+   password path, alongside the code path. Wrong credentials show
+   the generic catalog message, which never says whether the email
+   address has an account. */
+function paAuthSignInPassword(){
+  if(!PA_AUTH_CONFIG.enabled || paSignupState.busy) return;
+  paSignupClearError('passwordError');
+  var email = ((document.getElementById('passwordEmail') || {}).value || '').trim();
+  var pw = (document.getElementById('passwordPassword') || {}).value || '';
+  if(!email || email.indexOf('@') === -1){ paSignupShowError('passwordError', 'EMAIL_INVALID'); return; }
+  if(!pw){ paSignupShowError('passwordError', 'CREDENTIALS_INVALID'); return; }
+  paSignupState.busy = true;
+  paAuthLoadClient(function(client){
+    if(!client){
+      paSignupState.busy = false;
+      paSignupShowError('passwordError', 'UNKNOWN_ERROR');
+      return;
+    }
+    client.auth.signInWithPassword({ email: email, password: pw }).then(function(res){
+      paSignupState.busy = false;
+      if(res.error){
+        paSignupShowError('passwordError', paSignupMapSupabaseError(res.error.message));
+        return;
+      }
+      if(!res.data || !res.data.session){
+        paSignupShowError('passwordError', 'CREDENTIALS_INVALID');
+        return;
+      }
+      paAuthRefreshState();
+      window.location.href = 'dashboard.html';
+    }).catch(function(err){
+      paSignupState.busy = false;
+      paSignupShowError('passwordError', paSignupMapSupabaseError(err && err.message));
+    });
+  });
+}
 function paAuthGoogle(){
   if(!PA_AUTH_CONFIG.enabled) return;
   paAuthLoadClient(function(client){
@@ -155,22 +190,42 @@ function paAuthGoogle(){
     if(p && p.catch){ p.catch(function(err){ alert('Google sign-in could not start: ' + (err && err.message ? err.message : 'please try again.')); }); }
   });
 }
+/* Sign-out (13 Nov 2026, live-test defect): the old version gated
+   on confirm() and reported with alert(). Both dialogs auto-dismiss
+   in automated browsers and on some mobile web views, so the button
+   looked dead while the session survived reloads. There are no
+   dialogs now: sign-out always clears the local session, even if
+   the sign-in service cannot be reached, and the dashboard and
+   sign-in pages reload onto their signed-out views. The learner's
+   progress in this browser stays here, and synced progress stays
+   in the account; signing out changes neither. */
+function paAuthClearLocalSession(){
+  try {
+    var keys = [];
+    for(var i = 0; i < localStorage.length; i++){ keys.push(localStorage.key(i)); }
+    for(var j = 0; j < keys.length; j++){
+      if(keys[j] && keys[j].indexOf('sb-eofsotgclhwsdwvbbtib-') === 0){ localStorage.removeItem(keys[j]); }
+    }
+  } catch(e){}
+  paSupabase = null;
+}
 function paAuthSignOut(){
   if(!PA_AUTH_CONFIG.enabled) return;
-  if(!confirm('Sign out of Payments Training Hub? Your progress in this browser stays here, and your synced progress stays in your account.')) return;
+  function finish(){
+    paAuthClearLocalSession();
+    paAuthShowSignedOut();
+    var path = window.location.pathname || '';
+    if(/dashboard\.html$/.test(path) || /signin\.html$/.test(path)){
+      window.location.reload();
+    }
+  }
   paAuthLoadClient(function(client){
-    if(!client){ alert('Sign out did not complete. The sign-in service could not be reached. Please try again.'); return; }
-    client.auth.signOut().then(function(res){
-      if(res && res.error){ alert('Sign out did not complete: ' + res.error.message); paAuthRefreshState(); return; }
-      paAuthRefreshState();
-      alert('You have signed out of Payments Training Hub.');
-      if(/dashboard\.html$/.test(window.location.pathname || '')){
-        window.location.reload();
-      }
-    }).catch(function(err){
-      alert('Sign out did not complete: ' + (err && err.message ? err.message : 'please try again.'));
-      paAuthRefreshState();
-    });
+    if(!client){ finish(); return; }
+    try {
+      var p = client.auth.signOut();
+      if(p && p.then){ p.then(function(){ finish(); }).catch(function(){ finish(); }); }
+      else { finish(); }
+    } catch(e){ finish(); }
   });
 }
 /* Identity helpers for the dashboard sync (learner-sync.js uses the
@@ -184,6 +239,32 @@ function paAuthCurrentSession(){
       client.auth.getSession().then(function(res){
         resolve(res.data && res.data.session ? res.data.session : null);
       }).catch(function(){ resolve(null); });
+    });
+  });
+}
+/* A session the server still accepts (13 Nov 2026, live-test
+   defect): getSession alone trusts the stored token, so a token
+   left over after the account was deleted server-side still
+   looked signed in. This resolves to the session only when
+   getUser confirms it with the server; a token the server
+   rejects is dropped and the result is null. A network failure
+   resolves to the stored session, so a lost connection does not
+   sign the learner out of the UI. */
+function paAuthValidatedSession(){
+  return paAuthCurrentSession().then(function(session){
+    if(!session) return null;
+    return new Promise(function(resolve){
+      paAuthLoadClient(function(client){
+        if(!client){ resolve(session); return; }
+        client.auth.getUser().then(function(res){
+          if(res.error){
+            paAuthClearLocalSession();
+            resolve(null);
+            return;
+          }
+          resolve(session);
+        }).catch(function(){ resolve(session); });
+      });
     });
   });
 }
@@ -622,7 +703,18 @@ function paResetMapError(message){
   if(/expired/i.test(text) || /invalid/i.test(text)) return 'RESET_LINK_INVALID';
   return 'UNKNOWN_ERROR';
 }
+/* Strict recovery gating (13 Nov 2026, live-test defect): the form
+   shows ONLY when this page was opened through a password-reset
+   link and a session was established for it. The old check trusted
+   any stored session, so on an expired or already used link the
+   form still opened (a session left over from an earlier sign-in)
+   and a password change was claimed as a success. Now a recovery
+   signal in the URL is required, a URL error always shows the
+   invalid state, and the submit handler refuses to run without
+   the flag set here. */
+var paResetRecoveryValid = false;
 function paResetPasswordInit(){
+  paResetRecoveryValid = false;
   var checking = document.getElementById('resetChecking');
   var form = document.getElementById('resetForm');
   var invalid = document.getElementById('resetInvalid');
@@ -634,12 +726,27 @@ function paResetPasswordInit(){
     if(invalid) invalid.style.display = 'block';
   }
   function showForm(){
+    paResetRecoveryValid = true;
     if(checking) checking.style.display = 'none';
     if(invalid) invalid.style.display = 'none';
     if(form) form.style.display = 'block';
     var pw = document.getElementById('resetPassword');
     if(pw) pw.focus();
   }
+  /* Read the recovery signal before touching the client: an error
+     in the URL means Supabase already rejected the link, and a
+     visit with no recovery signal at all (no type=recovery hash,
+     no PKCE code) is not a reset, even for a signed-in learner. */
+  var hashParams = null;
+  var queryParams = null;
+  try { hashParams = new URLSearchParams((window.location.hash || '').replace(/^#/, '')); } catch(e){ hashParams = null; }
+  try { queryParams = new URLSearchParams(window.location.search || ''); } catch(e){ queryParams = null; }
+  var urlError = (hashParams && (hashParams.get('error') || hashParams.get('error_code'))) ||
+                 (queryParams && (queryParams.get('error') || queryParams.get('error_code')));
+  if(urlError){ showInvalid('RESET_LINK_INVALID'); return; }
+  var code = queryParams ? queryParams.get('code') : null;
+  var isRecovery = (hashParams && hashParams.get('type') === 'recovery') || !!code;
+  if(!isRecovery){ showInvalid('RESET_LINK_INVALID'); return; }
   paAuthLoadClient(function(client){
     if(!client){ showInvalid('UNKNOWN_ERROR'); return; }
     function checkSession(){
@@ -649,8 +756,6 @@ function paResetPasswordInit(){
         else { showInvalid('RESET_LINK_INVALID'); }
       }).catch(function(){ showInvalid('RESET_LINK_INVALID'); });
     }
-    var code = null;
-    try { code = new URLSearchParams(window.location.search).get('code'); } catch(e){ code = null; }
     if(code){
       client.auth.exchangeCodeForSession(code).then(function(res){
         if(res.error){ showInvalid('RESET_LINK_INVALID'); return; }
@@ -663,6 +768,12 @@ function paResetPasswordInit(){
 }
 function paResetPasswordSubmit(){
   if(paSignupState.busy) return;
+  /* The gate: without a validated recovery session the submit is
+     refused outright, so an invalid link can never claim success. */
+  if(!paResetRecoveryValid){
+    paSignupShowError('resetError', 'RESET_LINK_INVALID');
+    return;
+  }
   paSignupClearError('resetError');
   var pw1 = (document.getElementById('resetPassword') || {}).value || '';
   var pw2 = (document.getElementById('resetPassword2') || {}).value || '';
@@ -675,7 +786,18 @@ function paResetPasswordSubmit(){
       paSignupShowError('resetError', 'UNKNOWN_ERROR');
       return;
     }
-    client.auth.updateUser({ password: pw1 }).then(function(res){
+    /* Re-check the session at submit time: the flag alone is not
+       trusted if the session went away since the form opened. */
+    client.auth.getSession().then(function(sessRes){
+      var session = sessRes.data && sessRes.data.session;
+      if(!session){
+        paSignupState.busy = false;
+        paSignupShowError('resetError', 'RESET_LINK_INVALID');
+        return null;
+      }
+      return client.auth.updateUser({ password: pw1 });
+    }).then(function(res){
+      if(!res) return;
       paSignupState.busy = false;
       if(res.error){
         paSignupShowError('resetError', paResetMapError(res.error.message));
@@ -685,11 +807,112 @@ function paResetPasswordSubmit(){
       var done = document.getElementById('resetDone');
       if(form) form.style.display = 'none';
       if(done) done.style.display = 'block';
+      paResetRecoveryValid = false;
       paAuthRefreshState();
     }).catch(function(err){
       paSignupState.busy = false;
       paSignupShowError('resetError', paResetMapError(err && err.message));
     });
+  });
+}
+/* ===== My Purchases (13 Nov 2026, live-test defect) ===== */
+/* The drawer "My Purchases" row used to link to pricing.html, the
+   sales page, so a completed purchase never surfaced in the
+   account UI. This page reads the signed-in learner's own
+   user_purchases rows (product, store, purchase date, status) and
+   renders them, with an empty state and a signed-out prompt. The
+   product names match content/bundles.json; an unknown product id
+   is shown as stored, never dropped. */
+var PA_PURCHASE_PRODUCT_NAMES = {
+  'com.paymentforge.app.full': 'The Integrated Course',
+  'com.paymentforge.app.foundations': 'Payment Foundations',
+  'com.paymentforge.app.messaging': 'ISO 20022 and SWIFT Messaging',
+  'com.paymentforge.app.rails': 'Global Payment Rails',
+  'com.paymentforge.app.crossborder': 'Cross-Border and Correspondent Banking',
+  'com.paymentforge.app.clearing': 'Clearing, Settlement and Liquidity',
+  'com.paymentforge.app.cards': 'Cards and Domestic Payments',
+  'com.paymentforge.app.compliance-ops': 'Compliance, Risk, Operations and Reconciliation',
+  'com.paymentforge.app.architecture-apis': 'Payment Architecture and APIs',
+  'com.paymentforge.app.ba-practice': 'AI Product Owner and Product Manager for Payments',
+  'com.paymentforge.app.emerging': 'Emerging Technologies and the Future',
+  'com.paymentforge.app.situations': 'Payment Situations'
+};
+var PA_PURCHASE_STORE_NAMES = {
+  'payu': 'PayU',
+  'paypal': 'PayPal',
+  'apple': 'Apple',
+  'upi': 'UPI'
+};
+function paPurchasesProductName(productId){
+  var id = String(productId || '');
+  if(PA_PURCHASE_PRODUCT_NAMES[id]) return PA_PURCHASE_PRODUCT_NAMES[id];
+  if(PA_PURCHASE_PRODUCT_NAMES['com.paymentforge.app.' + id]) return PA_PURCHASE_PRODUCT_NAMES['com.paymentforge.app.' + id];
+  return id || 'Course bundle';
+}
+function paPurchasesEscape(text){
+  return String(text == null ? '' : text)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+function paPurchasesDate(iso){
+  try {
+    var d = new Date(iso);
+    if(isNaN(d.getTime())) return String(iso || '');
+    return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+  } catch(e){ return String(iso || ''); }
+}
+function paPurchasesInit(){
+  var checking = document.getElementById('paPurchasesChecking');
+  var signedOut = document.getElementById('paPurchasesSignedOut');
+  var content = document.getElementById('paPurchasesContent');
+  var empty = document.getElementById('paPurchasesEmpty');
+  var table = document.getElementById('paPurchasesTable');
+  var rows = document.getElementById('paPurchasesRows');
+  function showSignedOut(){
+    if(checking) checking.style.display = 'none';
+    if(content) content.style.display = 'none';
+    if(signedOut) signedOut.style.display = 'block';
+  }
+  function showError(){
+    if(checking) checking.style.display = 'none';
+    if(signedOut) signedOut.style.display = 'none';
+    if(content) content.style.display = 'block';
+    paSignupShowError('paPurchasesError', 'UNKNOWN_ERROR');
+  }
+  paAuthLoadClient(function(client){
+    if(!client){ showError(); return; }
+    client.auth.getSession().then(function(res){
+      var user = res.data && res.data.session && res.data.session.user;
+      if(!user){ showSignedOut(); return null; }
+      return client.from('user_purchases')
+        .select('product_id, store, purchased_at, status')
+        .eq('user_id', user.id)
+        .order('purchased_at', { ascending: false });
+    }).then(function(resp){
+      if(!resp) return;
+      if(resp.error){ showError(); return; }
+      var list = resp.data || [];
+      if(checking) checking.style.display = 'none';
+      if(content) content.style.display = 'block';
+      if(!list.length){
+        if(table) table.style.display = 'none';
+        if(empty) empty.style.display = 'block';
+        return;
+      }
+      if(empty) empty.style.display = 'none';
+      var h = '';
+      for(var i = 0; i < list.length; i++){
+        var row = list[i] || {};
+        var status = String(row.status || '');
+        var badge = status === 'active' ? 'pa-badge' : 'pa-badge pa-badge-muted';
+        h += '<tr><td>' + paPurchasesEscape(paPurchasesProductName(row.product_id)) + '</td>'
+          + '<td>' + paPurchasesEscape(PA_PURCHASE_STORE_NAMES[String(row.store || '').toLowerCase()] || row.store || '') + '</td>'
+          + '<td>' + paPurchasesEscape(paPurchasesDate(row.purchased_at)) + '</td>'
+          + '<td><span class="' + badge + '">' + paPurchasesEscape(status) + '</span></td></tr>';
+      }
+      if(rows) rows.innerHTML = h;
+      if(table) table.style.display = 'table';
+    }).catch(function(){ showError(); });
   });
 }
 /* ===== Welcome popup (owner addition, 13 Nov 2026) ===== */
@@ -761,6 +984,93 @@ function paWelcomeMaybeShow(){
   }
   var timer = setTimeout(dismiss, 3000);
   overlay.addEventListener('click', dismiss);
+}
+/* ===== Email confirmation dialog (13 Nov 2026, owner request) ===== */
+/* After the learner clicks the email confirmation link, the landing
+   must say so clearly. When dashboard.html loads with a fresh
+   session from a confirmation link (the URL hash carries
+   type=signup or type=invite with an access token), a one-time
+   dialog shows a checkmark, "Your email is confirmed", one line
+   saying the account is active, and a Continue button. The dialog
+   carries no access: it only reports the landing, and the Supabase
+   client still validates the token itself.
+   Show-once: the hash is cleared with history.replaceState and a
+   session flag is set, but ONLY after the client confirms a
+   session was established. Clearing the hash first would stop the
+   Supabase client reading it, so the session would never be
+   established. The flag is the second guard, for a return through
+   the back button with the hash intact. A reload never shows the
+   dialog again: the hash is gone and the flag is set.
+   Sequencing with the welcome popup: the dialog goes first and
+   the welcome popup shows only after the dialog is dismissed, so
+   the two never overlap. This function always calls afterDismiss
+   exactly once: on dialog dismissal, or at once when no dialog
+   will show. If the dialog is left open, the welcome popup stays
+   pending for the next dashboard load, because its pending flag
+   is cleared only when it actually shows. */
+var PA_CONFIRM_DIALOG_FLAG_KEY = 'pth.confirmDialog.shown.v1';
+function paConfirmDialogMaybeShow(afterDismiss){
+  function done(){
+    if(afterDismiss){ try { afterDismiss(); } catch(e){} }
+  }
+  try {
+    if(sessionStorage.getItem(PA_CONFIRM_DIALOG_FLAG_KEY)){ done(); return; }
+  } catch(e){}
+  var hashParams = null;
+  try { hashParams = new URLSearchParams((window.location.hash || '').replace(/^#/, '')); } catch(e){ hashParams = null; }
+  var type = hashParams ? hashParams.get('type') : null;
+  var hasToken = !!(hashParams && hashParams.get('access_token'));
+  if(!hasToken || (type !== 'signup' && type !== 'invite')){ done(); return; }
+  if(document.getElementById('paConfirmOverlay')){ done(); return; }
+  paAuthLoadClient(function(client){
+    if(!client){ done(); return; }
+    client.auth.getSession().then(function(res){
+      var session = res.data && res.data.session;
+      if(!session){ done(); return; }
+      try { history.replaceState(null, '', window.location.pathname + window.location.search); } catch(e){}
+      try { sessionStorage.setItem(PA_CONFIRM_DIALOG_FLAG_KEY, '1'); } catch(e){}
+      var overlay = document.createElement('div');
+      overlay.id = 'paConfirmOverlay';
+      overlay.className = 'pa-confirm-overlay';
+      overlay.setAttribute('role', 'dialog');
+      overlay.setAttribute('aria-label', 'Email confirmed');
+      var card = document.createElement('div');
+      card.className = 'pa-confirm-card';
+      var check = document.createElement('div');
+      check.className = 'pa-confirm-check';
+      check.setAttribute('aria-hidden', 'true');
+      check.textContent = '✓';
+      var heading = document.createElement('div');
+      heading.className = 'pa-confirm-heading';
+      heading.textContent = 'Your email is confirmed';
+      var line = document.createElement('div');
+      line.className = 'pa-confirm-line';
+      line.textContent = 'Your account is now active and ready to use.';
+      var actions = document.createElement('div');
+      actions.className = 'pa-confirm-actions';
+      var cont = document.createElement('button');
+      cont.type = 'button';
+      cont.className = 'pa-confirm-btn';
+      cont.textContent = 'Continue';
+      actions.appendChild(cont);
+      card.appendChild(check);
+      card.appendChild(heading);
+      card.appendChild(line);
+      card.appendChild(actions);
+      overlay.appendChild(card);
+      document.body.appendChild(overlay);
+      var dismissed = false;
+      function dismiss(){
+        if(dismissed) return;
+        dismissed = true;
+        if(overlay.parentNode) overlay.parentNode.removeChild(overlay);
+        done();
+      }
+      cont.addEventListener('click', dismiss);
+      overlay.addEventListener('click', function(e){ if(e.target === overlay) dismiss(); });
+      try { cont.focus(); } catch(e){}
+    }).catch(function(){ done(); });
+  });
 }
 /* Load the Supabase client only when it is needed: on the sign-in and
    dashboard pages, or when a session is already stored. Guests reading
