@@ -232,6 +232,7 @@ function clearHighlight(){
   if(tourTimer){ try{ clearTimeout(tourTimer); }catch(e){} tourTimer = null; }
   if(tourHighlightEl){
     try{ tourHighlightEl.classList.remove('pf-tour-highlight'); }catch(e){ /* ignore */ }
+    try{ tourHighlightEl.classList.remove('pf-tour-raised'); }catch(e){ /* ignore */ }
     tourHighlightEl = null;
   }
 }
@@ -244,6 +245,20 @@ function highlightTarget(selectors){
   if(!el) return;
   tourHighlightEl = el;
   try{ el.classList.add('pf-tour-highlight'); }catch(e){ /* ignore */ }
+  var inDrawer = false;
+  try{ inDrawer = (typeof drawer !== 'undefined' && drawer) && (el === drawer || drawer.contains(el)); }catch(e){ inDrawer = false; }
+  if(!inDrawer){
+    /* Non-drawer targets need their own raise above the tour scrim; the
+       drawer itself is raised by body.pf-tour-active in pf-theme.css. */
+    try{ el.classList.add('pf-tour-raised'); }catch(e){ /* ignore */ }
+  }
+  if(typeof drawer !== 'undefined' && drawer && el === drawer){
+    /* Step 1 targets the whole panel: reset the row list to the top so
+       the first row is never left half-clipped by an earlier scroll. */
+    var list = $('.pf-drawer-list', drawer);
+    if(list){ try{ list.scrollTop = 0; }catch(e){ /* ignore */ } }
+    return;
+  }
   var pos = '';
   try{ pos = window.getComputedStyle(el).position; }catch(e){ pos = ''; }
   if(pos === 'fixed') return;
@@ -270,6 +285,8 @@ function renderTourStep(){
     if(isDesktop()) openDrawer(null);
     else closeDrawer(false);
   }
+  var drawerStep = step.drawer === 'open' || (step.drawer === 'auto' && isDesktop());
+  try{ tourCard.classList.toggle('pf-tour-card-drawer', !!drawerStep); }catch(e){ /* ignore */ }
   var title = $('.pf-tour-title', tourCard);
   var count = $('.pf-tour-count', tourCard);
   var fill = $('.pf-tour-progress-fill', tourCard);
@@ -289,6 +306,7 @@ function renderTourStep(){
 }
 function endTour(){
   tourActive = false;
+  try{ document.body.classList.remove('pf-tour-active'); }catch(e){ /* ignore */ }
   clearHighlight();
   if(tourScrim){ try{ tourScrim.remove(); }catch(e){} tourScrim = null; }
   if(tourCard){ try{ tourCard.remove(); }catch(e){} tourCard = null; }
@@ -302,6 +320,7 @@ function startTour(){
   if(!document.body) return;
   tourActive = true;
   tourIndex = 0;
+  try{ document.body.classList.add('pf-tour-active'); }catch(e){ /* ignore */ }
   tourScrim = el('button', 'pf-tour-scrim', '');
   try{ tourScrim.type = 'button'; }catch(e){}
   try{ tourScrim.setAttribute('aria-label', 'Skip tour'); }catch(e){}
@@ -340,7 +359,7 @@ function startTour(){
   try{
     document.body.appendChild(tourScrim);
     document.body.appendChild(tourCard);
-  }catch(e){ tourActive = false; return; }
+  }catch(e){ tourActive = false; try{ document.body.classList.remove('pf-tour-active'); }catch(e2){} return; }
   renderTourStep();
 }
 

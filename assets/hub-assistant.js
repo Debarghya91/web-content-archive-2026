@@ -6,7 +6,7 @@
    tappable link to the full lesson, guide or situation. Greetings and
    small talk are answered by keyword/pattern matching only.
    Position and hidden/open state persist in localStorage
-   (key pth-hub-assistant-v1) so the assistant stays as the learner
+   (key pth-hub-assistant-v2) so the assistant stays as the learner
    left it across pages. */
 (function(){
 'use strict';
@@ -26,11 +26,22 @@ var input = document.getElementById('hub-input');
 var startersEl = document.getElementById('hub-starters');
 if(!mascot || !panel || !messagesEl || !form || !input) return;
 
-var LS_KEY = 'pth-hub-assistant-v1';
+var LS_KEY = 'pth-hub-assistant-v2';
+var LS_KEY_V1 = 'pth-hub-assistant-v1';
 var state = {hidden: false, x: null, y: null, open: null};
+var migrated = false;
 try{
   var saved = JSON.parse(localStorage.getItem(LS_KEY) || 'null');
-  if(saved && typeof saved === 'object'){
+  if(!saved){
+    /* v1 stored a bottom-left dragged position; migrate hidden/open only
+       so the new bottom-right default applies to every learner. */
+    var legacy = JSON.parse(localStorage.getItem(LS_KEY_V1) || 'null');
+    if(legacy && typeof legacy === 'object'){
+      if(legacy.hidden === true) state.hidden = true;
+      if(legacy.open === true || legacy.open === false) state.open = legacy.open;
+      migrated = true;
+    }
+  }else if(typeof saved === 'object'){
     if(saved.hidden === true) state.hidden = true;
     if(typeof saved.x === 'number') state.x = saved.x;
     if(typeof saved.y === 'number') state.y = saved.y;
@@ -40,6 +51,7 @@ try{
 function saveState(){
   try{ localStorage.setItem(LS_KEY, JSON.stringify(state)); }catch(e){ /* ignore */ }
 }
+if(migrated) saveState();
 
 /* ---------- positioning ---------- */
 function clampPos(x, y){
@@ -50,7 +62,7 @@ function clampPos(x, y){
 }
 function applyPosition(){
   if(state.x === null || state.y === null){
-    root.style.left = ''; root.style.top = ''; root.style.bottom = '';
+    root.style.left = ''; root.style.top = ''; root.style.bottom = ''; root.style.right = '';
     return;
   }
   var p = clampPos(state.x, state.y);
