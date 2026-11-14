@@ -497,7 +497,7 @@
           esc(nl.chapterTitle) + ', lesson ' + nl.n + ' of ' + nl.chapterTotal + '</span>' +
           '<p><a href="' + esc(nl.url) + '">Open this lesson</a></p></div>';
       } else if (summary.allLessonsDone) {
-        h += '<div class="pf-card hp-dash-card"><b>All 746 lessons complete</b><span>You finished the whole curriculum. ' +
+        h += '<div class="pf-card hp-dash-card"><b>All 767 lessons complete</b><span>You finished the whole curriculum. ' +
           'Retake a test or work a capstone to keep it sharp.</span>' +
           '<p><a href="tests.html">Retake a test</a></p></div>';
       }
