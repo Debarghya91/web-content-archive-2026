@@ -686,7 +686,7 @@ function paSitExportData(){
     format: 'payment-situations-user-data',
     version: 2,
     exported_at: new Date().toISOString(),
-    product: 'situations-500',
+    product: 'practice',
     data: {
       completed: p.completed || {},
       bookmarked: p.bookmarked || {},

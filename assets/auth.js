@@ -838,28 +838,49 @@ function paResetPasswordSubmit(){
 /* The drawer "My Purchases" row used to link to pricing.html, the
    sales page, so a completed purchase never surfaced in the
    account UI. This page reads the signed-in learner's own
-   user_purchases rows (product, store, purchase date, status) and
+   user_purchases rows (product, store, purchase date, access-until date, status) and
    renders them, with an empty state and a signed-out prompt. The
    product names match content/bundles.json; an unknown product id
    is shown as stored, never dropped. */
 var PA_PURCHASE_PRODUCT_NAMES = {
-  'com.paymentforge.app.full': 'The Integrated Course',
-  'com.paymentforge.app.foundations': 'Payment Foundations',
-  'com.paymentforge.app.messaging': 'ISO 20022 and SWIFT Messaging',
-  'com.paymentforge.app.rails': 'Global Payment Rails',
-  'com.paymentforge.app.crossborder': 'Cross-Border and Correspondent Banking',
-  'com.paymentforge.app.clearing': 'Clearing, Settlement and Liquidity',
-  'com.paymentforge.app.cards': 'Cards and Domestic Payments',
-  'com.paymentforge.app.compliance-ops': 'Compliance, Risk, Operations and Reconciliation',
-  'com.paymentforge.app.architecture-apis': 'Payment Architecture and APIs',
-  'com.paymentforge.app.ba-practice': 'AI Product Owner and Product Manager for Payments',
-  'com.paymentforge.app.emerging': 'Emerging Technologies and the Future',
-  'com.paymentforge.app.situations': 'Payment Situations'
+  'com.paymentforge.app.part-1': 'Part 1: Foundations of Money and Payments',
+  'com.paymentforge.app.part-2': 'Part 2: How Payments Move',
+  'com.paymentforge.app.part-3': 'Part 3: Messages: SWIFT MT, ISO 20022 and Standards',
+  'com.paymentforge.app.part-4': 'Part 4: Cross-Border Payments and Correspondent Banking',
+  'com.paymentforge.app.part-5': 'Part 5: Clearing, Settlement, Liquidity and Reconciliation',
+  'com.paymentforge.app.part-6': 'Part 6: Exceptions, Investigations, Returns and Claims',
+  'com.paymentforge.app.part-7': 'Part 7: Cards and Customer Payments',
+  'com.paymentforge.app.part-8': 'Part 8: Architecture, APIs, Hubs and Engineering',
+  'com.paymentforge.app.part-9': 'Part 9: The Business Analyst at Work',
+  'com.paymentforge.app.part-10': 'Part 10: Emerging Payments and the Future',
+  'com.paymentforge.app.studio': 'BA/PO Studio',
+  'com.paymentforge.app.simulator': 'Payment Simulator',
+  'com.paymentforge.app.investigation-lab': 'Investigation Lab',
+  'com.paymentforge.app.practice': 'Practice Experiences',
+  'com.paymentforge.app.interview': 'Interview Ready',
+  'com.paymentforge.app.integrated': 'The Integrated Course',
+  'com.paymentforge.app.part-1.renewal': 'Part 1: Foundations of Money and Payments (renewal)',
+  'com.paymentforge.app.part-2.renewal': 'Part 2: How Payments Move (renewal)',
+  'com.paymentforge.app.part-3.renewal': 'Part 3: Messages: SWIFT MT, ISO 20022 and Standards (renewal)',
+  'com.paymentforge.app.part-4.renewal': 'Part 4: Cross-Border Payments and Correspondent Banking (renewal)',
+  'com.paymentforge.app.part-5.renewal': 'Part 5: Clearing, Settlement, Liquidity and Reconciliation (renewal)',
+  'com.paymentforge.app.part-6.renewal': 'Part 6: Exceptions, Investigations, Returns and Claims (renewal)',
+  'com.paymentforge.app.part-7.renewal': 'Part 7: Cards and Customer Payments (renewal)',
+  'com.paymentforge.app.part-8.renewal': 'Part 8: Architecture, APIs, Hubs and Engineering (renewal)',
+  'com.paymentforge.app.part-9.renewal': 'Part 9: The Business Analyst at Work (renewal)',
+  'com.paymentforge.app.part-10.renewal': 'Part 10: Emerging Payments and the Future (renewal)',
+  'com.paymentforge.app.studio.renewal': 'BA/PO Studio (renewal)',
+  'com.paymentforge.app.simulator.renewal': 'Payment Simulator (renewal)',
+  'com.paymentforge.app.investigation-lab.renewal': 'Investigation Lab (renewal)',
+  'com.paymentforge.app.practice.renewal': 'Practice Experiences (renewal)',
+  'com.paymentforge.app.interview.renewal': 'Interview Ready (renewal)',
+  'com.paymentforge.app.integrated.renewal': 'The Integrated Course (renewal)'
 };
 var PA_PURCHASE_STORE_NAMES = {
   'payu': 'PayU',
   'paypal': 'PayPal',
   'apple': 'Apple',
+  'play': 'Google Play',
   'upi': 'UPI'
 };
 function paPurchasesProductName(productId){
@@ -904,7 +925,7 @@ function paPurchasesInit(){
       var user = res.data && res.data.session && res.data.session.user;
       if(!user){ showSignedOut(); return null; }
       return client.from('user_purchases')
-        .select('product_id, store, purchased_at, status')
+        .select('product_id, store, purchased_at, expires_at, status')
         .eq('user_id', user.id)
         .order('purchased_at', { ascending: false });
     }).then(function(resp){
@@ -927,6 +948,7 @@ function paPurchasesInit(){
         h += '<tr><td>' + paPurchasesEscape(paPurchasesProductName(row.product_id)) + '</td>'
           + '<td>' + paPurchasesEscape(PA_PURCHASE_STORE_NAMES[String(row.store || '').toLowerCase()] || row.store || '') + '</td>'
           + '<td>' + paPurchasesEscape(paPurchasesDate(row.purchased_at)) + '</td>'
+          + '<td>' + paPurchasesEscape(row.expires_at ? paPurchasesDate(row.expires_at) : '') + '</td>'
           + '<td><span class="' + badge + '">' + paPurchasesEscape(status) + '</span></td></tr>';
       }
       if(rows) rows.innerHTML = h;

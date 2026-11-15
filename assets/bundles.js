@@ -24,29 +24,30 @@ function paHasAccess(chid){
   if(!PA_ENFORCE_ACCESS) return true;
   if(paOwnerPreview()) return true;
   var owned = paOwned();
-  if(owned.indexOf('full') !== -1) return true;
+  if(owned.indexOf('integrated') !== -1) return true;
   var b = PA_BUNDLE_MAP[chid];
   return b && owned.indexOf(b) !== -1;
 }
 /* ===== Payment Situations gate (9 Nov 2026) ===== */
-/* This product is the ONLY gated product. It is gated independently of
-   PA_ENFORCE_ACCESS, which stays false so the flagship course and all
-   lessons stay open for all. A buyer owns this product when the
-   'situations-500' bundle (or the flagship 'full', which includes
-   everything) is in the owned list, or when owner preview is on.
-   Purchases are made in the iOS app (owner decision 11 Nov 2026); the
-   manual UPI payment flow and its claim-id unlock were removed with it.
+/* Practice Experiences holds the Payment Situations. It is gated
+   independently of PA_ENFORCE_ACCESS, which stays false so the
+   flagship course and all lessons stay open for all. A buyer owns
+   this product when the 'practice' bundle (or the flagship
+   'integrated', which includes everything) is in the owned list,
+   or when owner preview is on. Purchases are made in the iOS app
+   (owner decision 11 Nov 2026); the manual UPI payment flow and
+   its claim-id unlock were removed with it.
    Honest limit: this is a browser-side gate. It stops casual access and
    casual download; it does not stop a determined user who inspects
    network requests or takes screenshots. Real server-side enforcement
    needs the Supabase backend, which is a later step. */
-var PA_SITUATIONS_BUNDLE = 'situations-500';
+var PA_SITUATIONS_BUNDLE = 'practice';
 var PA_SITUATIONS_GATED = false; /* TEMPORARY owner unlock 9 Nov 2026: user testing the situations product; re-lock to true when he says so. */
 function paHasSituationsAccess(){
   if(!PA_SITUATIONS_GATED) return true;
   if(paOwnerPreview()) return true;
   var owned = paOwned();
-  return owned.indexOf('full') !== -1 || owned.indexOf(PA_SITUATIONS_BUNDLE) !== -1;
+  return owned.indexOf('integrated') !== -1 || owned.indexOf(PA_SITUATIONS_BUNDLE) !== -1;
 }
 function paApplyLocks(){
   var owned = paOwned();
@@ -98,7 +99,7 @@ function showBundle(bid){
   PA_SELECTED_BUNDLE = bid;
 }
 function showBundleForChapter(chid){
-  var b = PA_BUNDLE_MAP[chid] || 'full';
+  var b = PA_BUNDLE_MAP[chid] || 'integrated';
   showBundle(b);
 }
 /* ===== Chapter-coverage matrix filters (P2#7) ===== */
@@ -312,17 +313,21 @@ function paCheckoutStatus(msg){
   if(er){ er.style.display = 'none'; er.textContent = ''; }
   if(st) st.textContent = msg;
 }
-/* ===== Referral codes and credit (13 Nov 2026) ===== */
+/* ===== Referral codes and credit (15 Nov 2026, decided rules) ===== */
 /* The referral code and the use-credit choice are sent to the
-   server with the checkout request; the server validates the
-   code, applies Rs 200 (PayU) or $2.50 (PayPal) off, and spends
-   credit. Nothing is computed in the browser: the discount shown
-   always comes from the server response. Error codes come from
-   the server catalog (REFERRAL_INVALID, REFERRAL_SELF,
-   REFERRAL_ALREADY_USED); each maps to one
-   plain message below. A referral_status of "unavailable" means
-   the referral tables are not set up yet: checkout continues at
-   full price and the page says so, instead of blocking. */
+   server with the checkout request. A referral code gives the
+   buyer NO discount: when the purchase completes, the referrer
+   earns Rs 100 credit (PayU path). Referral credit applies only
+   to Practice Experiences, Interview Ready, and the Integrated
+   Course. Credit the buyer already earned can be spent on any
+   purchase by ticking the box. Nothing is computed in the
+   browser: every amount shown comes from the server response.
+   Error codes come from the server catalog (REFERRAL_INVALID,
+   REFERRAL_SELF, REFERRAL_ALREADY_USED, REFERRAL_NOT_ELIGIBLE);
+   each maps to one plain message below. A referral_status of
+   "unavailable" means the referral tables are not set up yet:
+   checkout continues at full price and the page says so,
+   instead of blocking. */
 function paReferralCode(){
   try {
     var el = document.getElementById('pa-referral-code');
@@ -338,7 +343,8 @@ function paUseCredit(){
 function paReferralErrorMessage(code){
   if(code === 'REFERRAL_INVALID') return 'That referral code is not valid. Check the code and try again, or continue without a code.';
   if(code === 'REFERRAL_SELF') return 'You cannot use your own referral code.';
-  if(code === 'REFERRAL_ALREADY_USED') return 'Your account has already used a referral discount. Only one referral discount is allowed per account.';
+  if(code === 'REFERRAL_ALREADY_USED') return 'Your account has already used a referral code. Only one referral code is allowed per account.';
+  if(code === 'REFERRAL_NOT_ELIGIBLE') return 'Referral codes apply only to Practice Experiences, Interview Ready, and the Integrated Course. This product does not earn referral credit.';
   if(code === 'REFERRAL_CHECK_FAILED') return 'The referral code could not be checked. Please try again.';
   if(code === 'amount_zero') return 'The discount covers the full price of this course. Please choose another course or contact support.';
   return '';
@@ -408,11 +414,31 @@ function paRenderCheckoutSummary(){
   box.appendChild(p1);
   var p2 = document.createElement('p');
   p2.appendChild(document.createTextNode('Price: '));
-  var strong = document.createElement('b');
-  strong.textContent = b.price_placeholder ? 'Pricing to be announced'
-    : 'Rs. ' + Number(b.price_inr).toLocaleString('en-IN');
-  p2.appendChild(strong);
+  if(b.price_placeholder){
+    var na = document.createElement('b');
+    na.textContent = 'Pricing to be announced';
+    p2.appendChild(na);
+  } else {
+    if(b.list_price_inr && Number(b.list_price_inr) > Number(b.price_inr)){
+      var struck = document.createElement('s');
+      struck.textContent = 'Rs. ' + Number(b.list_price_inr).toLocaleString('en-IN');
+      p2.appendChild(struck);
+      p2.appendChild(document.createTextNode(' '));
+    }
+    var strong = document.createElement('b');
+    strong.textContent = 'Rs. ' + Number(b.price_inr).toLocaleString('en-IN');
+    p2.appendChild(strong);
+  }
   box.appendChild(p2);
+  if(!b.price_placeholder){
+    var p2b = document.createElement('p');
+    var terms = (b.validity_label || '1 year of access') + '. Launch offer.';
+    if(b.renewal_price_inr){
+      terms += ' Renewal: Rs. ' + Number(b.renewal_price_inr).toLocaleString('en-IN') + ' for a further year.';
+    }
+    p2b.textContent = terms;
+    box.appendChild(p2b);
+  }
   var p3 = document.createElement('p');
   var a = document.createElement('a');
   a.href = 'payment.html';
@@ -455,12 +481,11 @@ function paStartPayuCheckout(bid){
         if(btn) btn.disabled = false;
         return;
       }
-      /* The discount shown comes from the server response only.
-         It is set before the form submits so the buyer sees it
-         while the PayU page loads. */
+      /* The referral code gives the buyer no discount: the
+         referrer earns credit when the purchase completes. The
+         amounts shown come from the server response only. */
       if(data.referral_applied){
-        paCheckoutStatus('Referral discount applied: Rs ' + Number(data.referral_discount_inr || 0).toFixed(2) +
-          ' off. Total Rs ' + String(data.charged_amount || '') + '. Taking you to the PayU payment page.');
+        paCheckoutStatus('Referral code applied. The referrer earns Rs 100 credit when your purchase completes. Total Rs ' + String(data.charged_amount || '') + '. Taking you to the PayU payment page.');
         paReferralStatus('Referral code ' + String(data.referral_code || '') + ' applied.');
       } else if(data.referral_status === 'unavailable' && paReferralCode()){
         paReferralStatus('Referral codes are not available right now. Continuing at full price.');
