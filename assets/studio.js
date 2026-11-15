@@ -120,7 +120,8 @@ function studioInit(sampleId){
             audioProgressAt: 0, audioLoadKicked: false, pendingSeek: null,
             seekFrom: 0, seekVerifyTimer: null, seekGateTimer: null,
             seekGateActive: false, seekGateMuted: false,
-            seekGateSavedMuted: false, seekGateWantPaused: false};
+            seekGateSavedMuted: false, seekGateWantPaused: false,
+            blobSeq: 0, blobUrl: null, blobFile: null, blobFetching: null};
   var t = 0;
   data.scenes.forEach(function(s){ st.starts.push(t); t += s.duration_sec; });
   st.total = t;
@@ -437,6 +438,11 @@ function studioShowPlayOverlay(sampleId, show){
 function studioAudioFileName(sampleId){
   var st = PA_STUDIOS[sampleId];
   var src = (st && st.audio) ? (st.audio.currentSrc || st.audio.src || '') : '';
+  /* Fix round 5: after the blob swap the element source is a blob: URL
+     whose last path segment is an opaque id, not the lesson file. The
+     cached blob file name is the real file, so failover builds the
+     mirror URL from it instead of a bogus id. */
+  if(src.indexOf('blob:') === 0 && st && st.blobFile) return st.blobFile;
   var parts = src.split('/');
   return parts[parts.length - 1] || '';
 }
@@ -497,6 +503,163 @@ function studioDisarmAudioLoadTimer(sampleId){
   var st = PA_STUDIOS[sampleId];
   if(st && st.audioLoadTimer){ clearTimeout(st.audioLoadTimer); st.audioLoadTimer = null; }
 }
+/* ---- Background fetch + blob swap (15 Nov 2026, fix round 5) ---- */
+/* Both audio hosts ignore Range requests (verified: a Range request
+   returns the whole file with 200 OK and no Content-Range), so the
+   browser media pipeline cannot fetch the middle of a file and seeks
+   past the downloaded frontier fail no matter what the seek code
+   does: a paused seek resets to 0:00, a playing seek does nothing,
+   while a fully downloaded lesson seeks fine. The fix removes the
+   pipeline's dependence on Range entirely. In parallel with normal
+   progressive playback, the whole MP3 is fetched in the background
+   (the hosts send Access-Control-Allow-Origin *, so the bytes are
+   readable cross-origin); when the fetch completes, the element
+   source swaps to a blob: URL built from those bytes. A blob: URL
+   seeks locally with no network request, so every seek works on
+   every lesson length. The swap is not a scene load: it never goes
+   through studioLoadScene/setSrc, never zeroes the position, never
+   clears a pending seek, never re-arms the load timer and never
+   re-triggers the autoplay attempt. A failed background fetch
+   degrades silently to today's progressive behaviour. The seek
+   verify and the gated seek stay untouched as backstops: after the
+   swap every target reads as buffered, so the gate never waits. */
+/* Cache key for a fetched file: the file name only. The mirror host
+   serves the same file under the same name, so a blob fetched from
+   the primary is the same narration after a failover, and file names
+   are unique per lesson, so the key cannot mistake one lesson for
+   another. Query strings (signed URLs) are stripped. */
+function studioBlobFileKey(url){
+  try {
+    var p = String(url || '').split('?')[0].split('#')[0];
+    return p.split('/').pop() || '';
+  } catch(e){ return ''; }
+}
+/* Start (or reuse) the background full-file fetch for a source URL.
+   Called from setSrc on every scene load, from the failover branch
+   with the mirror URL, and from Retry with the primary URL; every
+   caller assigns the progressive source first. Idempotent: a cached
+   blob swaps in at once, an in-flight fetch owns the swap, and a
+   newer call supersedes an older fetch through the blobSeq token. */
+function studioStartBlobFetch(sampleId, url){
+  var st = PA_STUDIOS[sampleId];
+  if(!st || !st.audio || !url) return;
+  if(typeof fetch !== 'function') return;
+  if(typeof URL === 'undefined' || !URL.createObjectURL) return;
+  var file = studioBlobFileKey(url);
+  if(!file) return;
+  if(st.blobFile === file && st.blobUrl){
+    studioSwapToBlob(sampleId, st.blobUrl);
+    return;
+  }
+  if(st.blobFetching === file) return;
+  /* A different file: drop the old cached blob. Every caller assigns
+     the new progressive source before calling here, so the element
+     no longer uses the old blob. */
+  if(st.blobUrl){
+    try { URL.revokeObjectURL(st.blobUrl); } catch(e){}
+    st.blobUrl = null;
+    st.blobFile = null;
+  }
+  st.blobSeq = (st.blobSeq || 0) + 1;
+  var mySeq = st.blobSeq;
+  st.blobFetching = file;
+  var settled = false;
+  var finish = function(blob){
+    if(settled) return;
+    settled = true;
+    if(st.blobFetching === file) st.blobFetching = null;
+    if(!blob) return;
+    if(mySeq !== st.blobSeq) return;
+    var blobUrl = null;
+    try { blobUrl = URL.createObjectURL(blob); } catch(e){}
+    if(!blobUrl) return;
+    st.blobUrl = blobUrl;
+    st.blobFile = file;
+    studioSwapToBlob(sampleId, blobUrl);
+  };
+  function fetchOne(u, thenMirror){
+    var p = null;
+    try { p = fetch(u); } catch(e){ p = null; }
+    if(!p || !p.then){
+      if(thenMirror) fetchMirror();
+      else finish(null);
+      return;
+    }
+    p.then(function(res){
+      if(!res || !res.ok) throw new Error('audio fetch failed');
+      return res.blob();
+    }).then(function(blob){
+      if(!blob || !blob.size) throw new Error('audio fetch empty');
+      finish(blob);
+    }).catch(function(){
+      if(thenMirror) fetchMirror();
+      else finish(null);
+    });
+  }
+  function fetchMirror(){
+    /* One retry on the mirror host, then give up silently:
+       progressive playback continues exactly as today. */
+    if(mySeq !== st.blobSeq){ finish(null); return; }
+    fetchOne(AUDIO_FALLBACK_HOST + '/audio/' + file, false);
+  }
+  var isMirror = String(url).indexOf(AUDIO_FALLBACK_HOST) === 0;
+  fetchOne(url, !isMirror);
+}
+/* Swap the element source to a fetched blob, preserving the exact
+   position and paused/playing state. The element itself never
+   changes, so the Listen card displays, the wire script, the
+   timeupdate refresh and every listener keep working from the same
+   clock. The restore runs on whichever of loadedmetadata/canplay
+   fires first, and a newer scene load or a superseding fetch aborts
+   it through the loadSeq/blobUrl guards. */
+function studioSwapToBlob(sampleId, blobUrl){
+  var st = PA_STUDIOS[sampleId];
+  if(!st || !st.audio || !blobUrl) return;
+  /* Never swap over a shown failure: the error box and Retry own a
+     genuinely failed load. Retry clears the failure and restarts the
+     fetch, so a cached blob still helps on the retry. */
+  if(st.audioFailed) return;
+  var a = st.audio;
+  try { if(a.src === blobUrl) return; } catch(e){}
+  var myLoadSeq = st.loadSeq;
+  var pos = 0;
+  var wasPlaying = false;
+  var wasMuted = false;
+  var rate = 1;
+  try { pos = a.currentTime || 0; } catch(e){}
+  try { wasPlaying = !a.paused; } catch(e){}
+  try { wasMuted = !!a.muted; } catch(e){}
+  try { rate = a.playbackRate || 1; } catch(e){}
+  var restored = false;
+  var restore = function(){
+    if(restored) return;
+    restored = true;
+    var s2 = PA_STUDIOS[sampleId];
+    if(!s2 || !s2.audio) return;
+    if(s2.loadSeq !== myLoadSeq || s2.blobUrl !== blobUrl) return;
+    var a2 = s2.audio;
+    /* A pending seek owns the position: it is the newest user intent,
+       and the seek path settles it from here. Otherwise restore the
+       exact captured position, so the swap is inaudible and the
+       displays, captions and beats do not jump. */
+    var target = pos;
+    if(s2.pendingSeek !== null && isFinite(s2.pendingSeek)) target = s2.pendingSeek;
+    try { a2.muted = wasMuted; } catch(e){}
+    try { a2.playbackRate = rate; } catch(e){}
+    try { a2.currentTime = target; } catch(e){}
+    if(wasPlaying){
+      try {
+        var p = a2.play();
+        if(p && p.catch){ p.catch(function(){}); }
+      } catch(e){}
+    }
+    studioRefresh(sampleId);
+  };
+  a.addEventListener('loadedmetadata', restore, {once: true});
+  a.addEventListener('canplay', restore, {once: true});
+  try { a.src = blobUrl; } catch(e){ return; }
+  try { a.load(); } catch(e){}
+}
 function studioAudioLoaded(sampleId){
   /* First playable data from either host: the load worked, so stop the
      failover timer, clear any earlier failure state, and hide the error
@@ -530,6 +693,10 @@ function studioAudioFailed(sampleId){
     st.pendingSeek = null;
     studioClearSeekGate(sampleId);
     st.audio.src = mirror;
+    /* Fix round 5: the background fetch follows the failover to the
+       mirror host; a blob cached from the primary (same file) swaps
+       in at once. */
+    studioStartBlobFetch(sampleId, mirror);
     if(pos > 1){
       /* Restore the position through the verified seek helper, on
          whichever of loadedmetadata/canplay fires first, and only
@@ -605,6 +772,9 @@ function studioRetryAudio(sampleId){
   try { st.audio.load(); } catch(e){}
   studioArmAudioLoadTimer(sampleId);
   studioShowLoading(sampleId, true);
+  /* Fix round 5: restart the background fetch before playing, so a
+     cached blob swaps in before playback starts. */
+  studioStartBlobFetch(sampleId, primary);
   studioPlayAudio(sampleId, true);
 }
 function studioOpenTranscript(sampleId){
@@ -709,6 +879,10 @@ function studioLoadScene(sampleId, idx, autoplay){
     }
     audio.currentTime = 0;
     studioArmAudioLoadTimer(sampleId);
+    /* Fix round 5: start the background full-file fetch now, before the
+       autoplay attempt, so a cached blob swaps in before playback
+       starts and a fresh fetch gets the longest possible head start. */
+    studioStartBlobFetch(sampleId, url);
     /* The open-page autoplay attempt: studioInit sets wantAutoplay, and
        this runs once the source is set, whether paAudioUrl answered
        synchronously or not. A refusal here is expected on iOS Safari
