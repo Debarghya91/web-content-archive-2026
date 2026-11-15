@@ -331,8 +331,13 @@
       partiesText: 'The customer and the beneficiary, through the sending bank and the beneficiary bank.',
       referenceText: 'Reference not stated in the case'
     };
-    var currencyPattern = new RegExp('\\b(' + CURRENCIES.join('|') + ')\\s?([0-9][0-9,]*(?:\\.[0-9]+)?)');
-    var rsPattern = /(Rs\.?|₹)\s?([0-9][0-9,]*(?:\.[0-9]+)?)/;
+    // 15 Nov 2026 (fix batch 2, fix 5): the amount pattern stopped at the
+    // number, so "EUR 40 million" in a title extracted as "EUR 40" and
+    // the header disagreed with the title (WC-45). Capture an optional
+    // scale word so the header carries the full amount as stated.
+    var scaleWord = '(?:\\s+(?:[Mm]illions?|[Bb]illions?|[Tt]housands?|[Cc]rore|[Ll]akh))?';
+    var currencyPattern = new RegExp('\\b(' + CURRENCIES.join('|') + ')\\s?([0-9][0-9,]*(?:\\.[0-9]+)?)' + scaleWord);
+    var rsPattern = /(Rs\.?|₹)\s?([0-9][0-9,]*(?:\.[0-9]+)?)(?:\s+(?:[Mm]illions?|[Bb]illions?|[Tt]housands?|[Cc]rore|[Ll]akh))?/;
     var sources = [str(title), str(explain)];
     var match = null;
     var currency = '';

@@ -145,7 +145,13 @@ function studioInit(sampleId){
      within AUDIO_LOAD_TIMEOUT_MS, switches the source to the mirror host
      automatically. 'loadeddata'/'canplay' from either host clears the
      timer, so a working clip never trips the failover. */
-  audio.addEventListener('error', function(){ studioAudioFailed(sampleId); });
+  audio.addEventListener('error', function(){
+    /* Fix batch 2, fix 3: only a live error counts. A stale error
+       signal from a superseded load must not fail over (or show the
+       error box) while the current source is still loading: changing
+       src resets audio.error, so a stale event sees no error here. */
+    if(audio.error) studioAudioFailed(sampleId);
+  });
   audio.addEventListener('loadeddata', function(){ studioAudioLoaded(sampleId); });
   audio.addEventListener('canplay', function(){ studioAudioLoaded(sampleId); });
   /* After any seek completes, re-sync the display from the real audio
@@ -385,15 +391,19 @@ function studioArmAudioLoadTimer(sampleId){
   st.audioLoadTimer = setTimeout(function(){
     var s2 = PA_STUDIOS[sampleId];
     if(!s2 || !s2.audio) return;
-    /* Still nothing playable after 8 seconds. If the browser has not
-       received even the audio metadata yet (readyState 0), nothing is
-       arriving at all, so fail over. If metadata arrived (readyState 1
-       or more) the download is progressing, just slowly, so give it up
-       to three more 8-second windows before failing over. A hung
-       connection never reaches readyState 1, so it still fails over
-       on the first timeout instead of waiting forever. */
+    /* Still nothing playable after 8 seconds. If metadata arrived
+       (readyState 1 or more), or the fetch is still in flight with no
+       error (networkState LOADING), the download is progressing, just
+       slowly, so give it up to three more 8-second windows before
+       failing over. A real failure sets audio.error, and a stalled
+       load with nothing in flight reaches neither condition, so both
+       still fail over on the first timeout instead of waiting
+       forever. (Fix batch 2, fix 3: the old code failed over at once
+       on readyState 0 even while the fetch was in flight.) */
     if(s2.audio.readyState < 2 && !s2.audioFailed){
-      if(s2.audio.readyState >= 1){
+      var inFlight = !s2.audio.error &&
+        (s2.audio.readyState >= 1 || s2.audio.networkState === 2);
+      if(inFlight){
         s2.audioLoadWaits = (s2.audioLoadWaits || 0) + 1;
         if(s2.audioLoadWaits <= 3){
           studioArmAudioLoadTimer(sampleId);
@@ -553,12 +563,28 @@ function studioLoadScene(sampleId, idx, autoplay){
     /* Remember the primary URL for Retry, clear any earlier failure
        state, and start the load timer: if nothing is playable within
        8 seconds the player fails over to the mirror host on its own. */
+    var wasFailed = st.audioFailed || !!audio.error;
     st.primaryAudioUrl = url;
     st.audioFailedOver = false;
     st.audioFailed = false;
     st.audioLoadWaits = 0;
     studioHideError(sampleId);
-    audio.src = url;
+    /* Fix batch 2, fix 3: reassigning the URL the element is already
+       loading restarts the load and discards in-flight progress, which
+       can turn a slow load into a failure. When the resolved target
+       matches the current source, the load is in flight or has data,
+       and the previous load did not fail, keep the in-flight load and
+       only reset the position; a different URL, or a failed load,
+       still reassigns. */
+    var sameUrl = false;
+    try {
+      sameUrl = (audio.currentSrc || audio.src || '') ===
+        new URL(url, document.baseURI).href;
+    } catch(e){}
+    var loadLive = audio.readyState > 0 || audio.networkState === 2;
+    if(!(sameUrl && loadLive && !wasFailed)){
+      audio.src = url;
+    }
     audio.currentTime = 0;
     studioArmAudioLoadTimer(sampleId);
     /* The open-page autoplay attempt: studioInit sets wantAutoplay, and
@@ -655,10 +681,13 @@ function studioRefresh(sampleId, tOverride){
   /* Listen card sync (15 Nov 2026, fix 2): the Listen card on a lesson
      page reads the same audio clock as the player, so both displays
      agree after any seek or step. */
-  var suffix = sampleId.replace(/^studio-/, '');
-  var lt = document.getElementById('pf-audio-time-' + suffix);
+  /* Fix batch 2, fix 3: the Listen card ids carry the full sample id
+     (pf-audio-time-studio-ch5s2). Stripping the studio- prefix looked
+     up ids that do not exist, so the top display never updated while
+     the lesson timeline advanced. */
+  var lt = document.getElementById('pf-audio-time-' + sampleId);
   if(lt && typeof fmtTime === 'function') lt.textContent = fmtTime(V) + ' / ' + fmtTime(st.total);
-  var ls = document.getElementById('pf-audio-slider-' + suffix);
+  var ls = document.getElementById('pf-audio-slider-' + sampleId);
   if(ls && document.activeElement !== ls) ls.value = V;
   studioSyncStepButtons(sampleId);
 }

@@ -62,7 +62,7 @@
 <h2>How it works in a bank</h2>
 <p>A customer gives a payment instruction through a channel: online banking, a branch, a file upload, or an API. The payment hub validates the instruction, checks sanctions lists, and checks the account balance. If the payment is cross-border and the beneficiary bank is reached through SWIFT, the hub builds an MT103.</p>
 <p>The MT103 travels from the sender bank to the next bank in the chain. That bank may be the beneficiary bank itself, or an intermediary bank, or a correspondent bank. Each bank in the chain reads the fields, checks the payment against its own sanctions and compliance rules, and forwards it. The last bank in the chain credits the beneficiary account.</p>
-<p>Two methods exist for moving the funds behind the instruction: the <b>serial method</b> and the <b>cover method</b>. In the serial method, the MT103 itself travels bank by bank and the funds move with it. In the cover method, the MT103 goes directly to the beneficiary bank while a separate <b>[MT202 COV](mt202-cov-explained.html)</b> moves the funds through the correspondent chain. The cover method is faster, but it requires the MT202 COV to carry the full customer details so every bank in the chain can screen the payment.</p>
+<p>Two methods exist for moving the funds behind the instruction: the <b>serial method</b> and the <b>cover method</b>. In the serial method, the MT103 itself travels bank by bank and the funds move with it. In the cover method, the MT103 goes directly to the beneficiary bank while a separate <b><a href="mt202-cov-explained.html">MT202 COV</a></b> moves the funds through the correspondent chain. The cover method is faster, but it requires the MT202 COV to carry the full customer details so every bank in the chain can screen the payment.</p>
 <h2>Worked example</h2>
 <p>A manufacturer in Germany pays a supplier in Japan. The manufacturer, Muller GmbH, owes JPY 5,000,000 for invoice INV-2026-1187. Muller instructs its bank, Deutsche Bank Frankfurt, to pay the supplier, Tanaka Trading Co, which banks with MUFG Tokyo.</p>
 <p>The payment instruction contains:</p>
@@ -90,10 +90,10 @@
 <li><b>Field 57a, Account With Institution.</b> The bank where the beneficiary holds an account, if it is different from the receiver.</li>
 <li><b>Field 59a, Beneficiary Customer.</b> The person or company who should receive the money. Field 59 carries the name, address, and account number. This field is mandatory. A payment cannot settle without a valid beneficiary.</li>
 <li><b>Field 70, Remittance Information.</b> The reason for the payment, such as an invoice number. Limited to four lines of 35 characters.</li>
-<li><b>Field 71A, Details of Charges.</b> Who pays the charges. OUR means the sender pays all charges. SHA means sender and beneficiary share charges. BEN means the beneficiary pays all charges. See the [OUR, SHA and BEN explained](our-sha-ben-explained.html) guide for a worked example of what the beneficiary receives under each option.</li>
+<li><b>Field 71A, Details of Charges.</b> Who pays the charges. OUR means the sender pays all charges. SHA means sender and beneficiary share charges. BEN means the beneficiary pays all charges. See the <a href="our-sha-ben-explained.html">OUR, SHA and BEN explained</a> guide for a worked example of what the beneficiary receives under each option.</li>
 <li><b>Field 72, Sender to Receiver Information.</b> Extra instructions for the receiving bank, such as a code for the type of payment.</li>
 </ul>
-<p>The [pacs.008](pacs-008-explained.html) equivalent maps these fields directly. Field 20 maps to the instruction identification. Field 32A maps to the interbank settlement amount and date. Field 50a maps to the debtor. Field 59a maps to the creditor. Field 70 maps to the remittance information. Field 71A maps to the charge bearer.</p>
+<p>The <a href="pacs-008-explained.html">pacs.008</a> equivalent maps these fields directly. Field 20 maps to the instruction identification. Field 32A maps to the interbank settlement amount and date. Field 50a maps to the debtor. Field 59a maps to the creditor. Field 70 maps to the remittance information. Field 71A maps to the charge bearer.</p>
 <h2>Common mistakes</h2>
 <ul>
 <li><b>Leaving field 59 blank or incomplete.</b> A payment with no beneficiary account number will stop at the first bank. Always validate the beneficiary account before sending.</li>
@@ -104,12 +104,12 @@
 </ul>
 <h2>Related lessons and guides</h2>
 <ul>
-<li>[MT103, the customer payment](../lessons/ch5s2.html)</li>
-<li>[How to read a real MT103, worked example](../lessons/ch5s7.html)</li>
-<li>[OUR, SHA and BEN: who pays the charges](../lessons/ch15s1.html)</li>
-<li>[Serial versus cover payments](serial-vs-cover-payments.html)</li>
-<li>[Correspondent banking explained](correspondent-banking-explained.html)</li>
-<li>[The pacs.008 message in ISO 20022](pacs-008-explained.html)</li>
+<li><a href="../lessons/ch5s2.html">MT103, the customer payment</a></li>
+<li><a href="../lessons/ch5s7.html">How to read a real MT103, worked example</a></li>
+<li><a href="../lessons/ch15s1.html">OUR, SHA and BEN: who pays the charges</a></li>
+<li><a href="serial-vs-cover-payments.html">Serial versus cover payments</a></li>
+<li><a href="correspondent-banking-explained.html">Correspondent banking explained</a></li>
+<li><a href="pacs-008-explained.html">The pacs.008 message in ISO 20022</a></li>
 </ul>
 <h2>Chapters that cover this topic</h2><p>The full course teaches this topic in depth. Start with these chapters.</p><ul><li><a href="../chapters/ch5-swift-mt-messages.html">SWIFT MT Messages</a></li><li><a href="../chapters/ch53-mt103-optional-fields-deep-dive.html">MT103 Optional Fields Deep Dive</a></li><li><a href="../chapters/ch15-charges-fx-and-gpi-tracking.html">Charges, FX and gpi Tracking</a></li></ul>
 <h2>Practise this</h2><p>Hands-on labs and process flows that work this topic through, the way a BA or PO would do it in a bank.</p><ul><li><a href="../labs/lab-03.html">Map MT103 to pacs.008 for a Migration</a></li><li><a href="../labs/flow-01.html">Deliver a Cross-Border Correspondent Payment in US Dollars</a></li></ul>
