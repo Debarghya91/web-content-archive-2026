@@ -1896,8 +1896,6 @@
     var item = findItem(kind, id);
     if (!item) return;
     var savedHtml = root.innerHTML;
-    var savedScroll = null;
-    try { savedScroll = global.scrollY || 0; } catch (e) { savedScroll = null; }
     function onExit() {
       if (kind === 'situations' && typeof global.paSitRender === 'function') {
         try { global.paSitRender(); } catch (e) { root.innerHTML = savedHtml; }
@@ -1907,8 +1905,10 @@
           try { global.PFSituations.renderAll(root); } catch (e) { /* restore already done */ }
         }
       }
-      if (savedScroll !== null && typeof global.scrollTo === 'function') {
-        try { global.scrollTo(0, savedScroll); } catch (e) { /* scroll restore is best effort */ }
+      /* Scroll rule (15 Nov 2026): exiting a view lands at the top, never
+         at a restored scroll position. */
+      if (typeof global.scrollTo === 'function') {
+        try { global.scrollTo(0, 0); } catch (e) { /* top scroll is best effort */ }
       }
       scanContainer(root, kind);
     }

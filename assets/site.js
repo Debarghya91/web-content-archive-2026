@@ -1,4 +1,14 @@
 
+/* Scroll rule (15 Nov 2026): every page opens at the very top on every
+   entry, including Back and forward restores. No scroll restoration.
+   A URL fragment (#...) is a deliberate destination and is left alone. */
+(function () {
+  try { if ('scrollRestoration' in history) { history.scrollRestoration = 'manual'; } } catch (e) {}
+  function paScrollTop() { if (!window.location.hash) { window.scrollTo(0, 0); } }
+  paScrollTop();
+  window.addEventListener('pageshow', paScrollTop);
+  window.addEventListener('load', paScrollTop);
+})();
 /* ================= NAVIGATION ================= */
 function showHome(){
   pauseAllAudio();
