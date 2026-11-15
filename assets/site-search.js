@@ -59,6 +59,11 @@
      rule runs here. Title and text are never conflated: the hint
      is read from the body text only, as in the app. */
   function levelForEntry(e, lowerText){
+    /* Lean-index entries carry a precomputed level (the same rule, run
+       over the full text at build time), so trimming the stored text
+       cannot change the difficulty pill. Full-index entries carry no
+       level field and fall through to the text rule below. */
+    if(e && 'level' in e) return e.level;
     var t = lowerText || '';
     if(e.type === 'situation'){
       if(t.indexOf('foundation') !== -1) return 'foundation';
@@ -126,7 +131,7 @@
       html += '<li><a href="' + prefix + r.e.url + '"><b>' + esc(r.e.title || r.e.id) + '</b><span>' + esc(r.e.type || '') + '</span></a></li>';
     });
     html += '</ul>';
-    box.innerHTML = html;
+    if(box.innerHTML !== html) box.innerHTML = html;
     box.hidden = false;
   }
   /* ---------- search page ---------- */
@@ -243,6 +248,7 @@
       '<p><button type="button" class="pf-btn-secondary" data-action="retry">Try again</button></p></div>';
     box.hidden = false;
   }
+  var lastResultKey = null, lastResultHtml = null, lastResultCount = '';
   function renderResults(q){
     browse.hidden = true;
     if(loadFailed){ renderSearchError(); return; }
@@ -250,6 +256,16 @@
       box.innerHTML = '<p>Loading the course catalogue...</p>';
       box.hidden = false;
       ensureIndex(function(){ renderResults(input.value.trim()); });
+      return;
+    }
+    /* Repeat queries render instantly from cache; the key includes the
+       index version, so the background full-index upgrade re-scans
+       exactly once. */
+    var rkey = q + '|' + (selectedLevel || '') + '|' + visibleCount + '|v' + indexVersion;
+    if(rkey === lastResultKey && lastResultHtml !== null){
+      if(countEl) countEl.textContent = lastResultCount;
+      if(box.innerHTML !== lastResultHtml) box.innerHTML = lastResultHtml;
+      box.hidden = false;
       return;
     }
     var words = wordsOf(q);
@@ -262,6 +278,7 @@
       if(selectedLevel) h += '<p><button type="button" class="pf-btn-secondary" data-action="clear-filter">Clear filter</button></p>';
       h += '<p>Try a popular search</p><p>' + ['MT103', 'SEPA', 'chargeback'].map(chipHtml).join(' ') + '</p>';
       h += '<p><button type="button" class="pf-btn-secondary" data-action="browse-by-type">Browse by type</button></p></div>';
+      lastResultKey = rkey; lastResultHtml = h; lastResultCount = '';
       box.innerHTML = h;
       box.hidden = false;
       if(countEl) countEl.textContent = '';
@@ -271,7 +288,8 @@
     if(countEl) countEl.textContent = countText(res.total, shown, q);
     var html = groupsHtml(res, words);
     if(res.total > visibleCount) html += '<p><button type="button" class="pf-btn-secondary" data-action="load-more">Load more results</button></p>';
-    box.innerHTML = html;
+    lastResultKey = rkey; lastResultHtml = html; lastResultCount = countEl ? countEl.textContent : '';
+    if(box.innerHTML !== html) box.innerHTML = html;
     box.hidden = false;
   }
   function renderTypeList(){
@@ -322,35 +340,75 @@
     browseType = null;
     render();
   }
+  var indexVersion = 0, fullLoaded = false;
+  function installIndex(list, isFull){
+    var hays = new Array(list.length), tls = new Array(list.length), txs = new Array(list.length), k;
+    var counts = {};
+    for(k = 0; k < list.length; k++){
+      hays[k] = ((list[k].id || '') + ' ' + (list[k].title || '') + ' ' + (list[k].text || '')).toLowerCase();
+      tls[k] = (list[k].title || '').toLowerCase();
+      txs[k] = (list[k].text || '').toLowerCase();
+      counts[list[k].type] = (counts[list[k].type] || 0) + 1;
+    }
+    entries = list; haystacks = hays; titles = tls; texts = txs; typeCounts = counts;
+    indexVersion++;
+    if(isFull) fullLoaded = true;
+    loadFailed = false;
+  }
+  function fetchFullIndex(){
+    if(fullLoaded) return;
+    fetch(prefix + 'assets/search-index.json').then(function(r){ return r.json(); }).then(function(data){
+      installIndex(data.entries || [], true);
+      /* The full text can only add matches, so re-render the active
+         query once from the complete index; the result cache is keyed
+         on the index version, so this re-scan runs exactly once. */
+      if(pageMode){ render(); }
+      else if(!box.hidden && input.value.trim().length >= 2){ run(input.value.trim()); }
+    }).catch(function(){ /* keep the lean results; the full index is an upgrade, not a requirement */ });
+  }
   function ensureIndex(cb){
     if(entries){ cb(); return; }
     waiters.push(cb);
     if(loading) return;
     loading = true;
-    fetch(prefix + 'assets/search-index.json').then(function(r){ return r.json(); }).then(function(data){
-      var list = data.entries || [];
-      var hays = new Array(list.length), tls = new Array(list.length), txs = new Array(list.length), k;
-      var counts = {};
-      for(k = 0; k < list.length; k++){
-        hays[k] = ((list[k].id || '') + ' ' + (list[k].title || '') + ' ' + (list[k].text || '')).toLowerCase();
-        tls[k] = (list[k].title || '').toLowerCase();
-        txs[k] = (list[k].text || '').toLowerCase();
-        counts[list[k].type] = (counts[list[k].type] || 0) + 1;
-      }
-      entries = list; haystacks = hays; titles = tls; texts = txs; typeCounts = counts;
-      loadFailed = false;
+    fetch(prefix + 'assets/search-index-lite.json').then(function(r){ return r.json(); }).then(function(data){
+      installIndex(data.entries || [], false);
       loading = false;
       var pending = waiters; waiters = [];
       var last = pending[pending.length - 1];
       if(last) last();
       if(pageMode && browse && !browse.hidden) renderBrowse();
-    }).catch(function(){ loading = false; waiters = []; loadFailed = true; hide(); if(pageMode) renderSearchError(); });
+      fetchFullIndex();
+    }).catch(function(){
+      /* Lean index missing: fall back to the full index directly. */
+      fetch(prefix + 'assets/search-index.json').then(function(r){ return r.json(); }).then(function(data){
+        installIndex(data.entries || [], true);
+        loading = false;
+        var pending = waiters; waiters = [];
+        var last = pending[pending.length - 1];
+        if(last) last();
+        if(pageMode && browse && !browse.hidden) renderBrowse();
+      }).catch(function(){ loading = false; waiters = []; loadFailed = true; hide(); if(pageMode) renderSearchError(); });
+    });
   }
   input.addEventListener('focus', function(){
     if(preloaded) return;
     preloaded = true;
     ensureIndex(function(){});
   });
+  /* Earlier preload (15 Nov 2026, fix 6l): fetch the lean index on
+     page idle, not only on focus, so the first keystroke usually
+     searches an index that is already loaded. */
+  function preloadIndex(){
+    if(preloaded) return;
+    preloaded = true;
+    ensureIndex(function(){});
+  }
+  if(typeof window !== 'undefined' && window.requestIdleCallback){
+    window.requestIdleCallback(preloadIndex, {timeout: 2000});
+  } else {
+    setTimeout(preloadIndex, 1);
+  }
   input.addEventListener('input', function(){
     var q = input.value.trim();
     if(q.length < 2){

@@ -538,6 +538,23 @@ function paSignupShowError(elId, code, serverMessage){
   el.textContent = paSignupErrorMessage(code, serverMessage);
   el.style.display = 'block';
 }
+/* Show every failing check at once (15 Nov 2026, fix 13): the form
+   used to stop at the first failure, so a learner fixed one problem
+   only to be told about the next. Each message comes from
+   PA_ERROR_MESSAGES, rendered as a list. */
+function paSignupShowErrors(elId, codes){
+  var el = document.getElementById(elId);
+  if(!el) return;
+  el.innerHTML = '';
+  var ul = document.createElement('ul');
+  codes.forEach(function(code){
+    var li = document.createElement('li');
+    li.textContent = paSignupErrorMessage(code);
+    ul.appendChild(li);
+  });
+  el.appendChild(ul);
+  el.style.display = 'block';
+}
 function paSignupClearError(elId){
   var el = document.getElementById(elId);
   if(el){ el.textContent = ''; el.style.display = 'none'; }
@@ -582,10 +599,12 @@ function paSignupCreateAccount(){
   var pw1 = (document.getElementById('signupPassword') || {}).value || '';
   var pw2 = (document.getElementById('signupPassword2') || {}).value || '';
   var terms = document.getElementById('signupTerms');
-  if(!email || email.indexOf('@') === -1){ paSignupShowError('signupError', 'EMAIL_INVALID'); return; }
-  if(pw1.length < 8){ paSignupShowError('signupError', 'PASSWORD_TOO_SHORT'); return; }
-  if(pw1 !== pw2){ paSignupShowError('signupError', 'PASSWORD_MISMATCH'); return; }
-  if(!terms || !terms.checked){ paSignupShowError('signupError', 'TERMS_NOT_ACCEPTED'); return; }
+  var problems = [];
+  if(!email || email.indexOf('@') === -1) problems.push('EMAIL_INVALID');
+  if(pw1.length < 8) problems.push('PASSWORD_TOO_SHORT');
+  if(pw1 !== pw2) problems.push('PASSWORD_MISMATCH');
+  if(!terms || !terms.checked) problems.push('TERMS_NOT_ACCEPTED');
+  if(problems.length){ paSignupShowErrors('signupError', problems); return; }
   paSignupState.busy = true;
   paSignupState.caseId = paSignupGenerateCaseId();
   paAuthLoadClient(function(client){

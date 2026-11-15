@@ -295,7 +295,10 @@ function paPayuReady(){
 }
 function paPaypalReady(){
   var c = PA_CHECKOUT_CONFIG;
-  return !!(c && c.paypal_client_id && c.paypal_create_order_url && c.paypal_capture_order_url);
+  /* PayPal hidden (15 Nov 2026, fix 10): the flag defaults to off when
+     the config block is absent, so the buttons can never render
+     without an explicit re-enable. */
+  return !!(c && c.paypal_enabled && c.paypal_client_id && c.paypal_create_order_url && c.paypal_capture_order_url);
 }
 function paCheckoutFail(msg){
   var st = document.getElementById('pay-status');

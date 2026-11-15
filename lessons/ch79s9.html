@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>try{var _d=localStorage.getItem('pf.appearance.darkMode');if(_d===null&&window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches){_d='true';}if(_d==='true'){document.documentElement.classList.add('pf-dark');}}catch(e){}</script>
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>Search internals: inverted indexes, posting lists and sharding | Payments Training Hub</title>
+<meta name="description" content="Finding a payment among millions, by reference, amount, date, or party, in under a second, needs an index. Scanning every record for every query would...">
+<link rel="canonical" href="https://www.paymentstraininghub.com/lessons/ch79s9.html">
+<meta property="og:url" content="https://www.paymentstraininghub.com/lessons/ch79s9.html">
+<meta property="og:title" content="Search internals: inverted indexes, posting lists and sharding | Payments Training Hub">
+<meta property="og:description" content="Finding a payment among millions, by reference, amount, date, or party, in under a second, needs an index. Scanning every record for every query would...">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.com/assets/hero/hero-poster.jpg">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Organization", "name": "Payments Training Hub", "url": "https://www.paymentstraininghub.com"}, {"@type": "WebSite", "name": "Payments Training Hub", "url": "https://www.paymentstraininghub.com", "description": "Payments Training Hub: professional payments training, 782 narrated lessons across 100 chapters covering ISO 20022, SWIFT, SEPA, cross-border payments, cards and settlement.", "inLanguage": "en"}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.paymentstraininghub.com/"}, {"@type": "ListItem", "position": 2, "name": "Payment engine internals and observability", "item": "https://www.paymentstraininghub.com/chapters/ch79-payment-engine-internals-and-observability.html"}, {"@type": "ListItem", "position": 3, "name": "Search internals: inverted indexes, posting lists and sharding", "item": "https://www.paymentstraininghub.com/lessons/ch79s9.html"}]}, {"@type": "LearningResource", "name": "Search internals: inverted indexes, posting lists and sharding", "description": "Finding a payment among millions, by reference, amount, date, or party, in under a second, needs an index. Scanning every record for every query would...", "url": "https://www.paymentstraininghub.com/lessons/ch79s9.html", "inLanguage": "en", "isAccessibleForFree": true, "timeRequired": "PT4M1S", "educationalLevel": "Professional", "learningResourceType": "Lesson", "provider": {"@type": "Organization", "name": "Payments Training Hub", "url": "https://www.paymentstraininghub.com"}, "about": ["Payments", "ISO 20022", "SWIFT"]}]}</script>
+<link rel="stylesheet" href="../assets/studio.css">
+<link rel="stylesheet" href="../assets/pf-theme.css">
+<link rel="stylesheet" href="../assets/insight-components.css">
+<style>
+
+/* Lesson facts bar: narration duration, reading time, completion. */
+.lesson-facts{display:flex;flex-wrap:wrap;gap:6px 24px;background:#0B1B30;border:1px solid #1E3A5F;border-radius:12px;padding:12px 16px;margin:16px 0;color:#E2E8F0;font-size:15px}
+.lesson-facts b{color:#5EEAD4;font-weight:600}
+.lesson-status.done{color:#4ADE80}
+/* Lesson enrichment boxes (10 Nov 2026): key takeaways, sources and the
+   "Do this at work" checklist. Same dark card as the facts bar, with
+   explicit light text, so the text stays readable on every page. */
+.lesson-box{background:#0B1B30;border:1px solid #1E3A5F;border-radius:12px;padding:16px 20px;margin:16px 0;color:#E2E8F0}
+.lesson-box h2{color:#5EEAD4;margin:0 0 8px;font-size:19px}
+.lesson-box ul{margin:6px 0 4px;padding-left:20px}
+.lesson-box li{color:#E2E8F0;margin-bottom:6px;line-height:1.55}
+.lesson-box a{color:#5EEAD4}
+.lesson-box p{color:#E2E8F0}
+.lesson-readtime{color:#94A3B8 !important;font-size:14px;margin:8px 0 0}
+.lesson-byline{color:#5B6B85;font-size:14px;margin:4px 0 12px}
+.lesson-byline a{color:#0B1B30;font-weight:600}
+.work-checklist{list-style:none;padding-left:0 !important}
+.work-checklist li label{cursor:pointer}
+.work-checklist input{margin-right:8px}
+.lesson-sources ul{margin:6px 0 0}
+
+</style>
+</head>
+<body class="pf-has-drawer">
+<div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div><nav class="pf-drawer" id="pfDrawer" aria-label="Main menu" tabindex="-1"><div class="pf-drawer-brand"><span class="pf-drawer-tile">PF</span><div class="pf-drawer-brand-text"><div class="pf-drawer-brand-title">Payments Training Hub</div><div class="pf-drawer-brand-sub">Master the world of payments</div></div></div><span id="authBox" class="pf-drawer-profile"><span class="pf-drawer-profile-icon"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="8" r="4"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/></svg></span><span class="pf-drawer-profile-text"><span id="authState">Not signed in</span></span> <a id="authSignInLink" class="pf-drawer-profile-btn" href="../signin.html">Sign in</a> <a id="authDashLink" class="pf-drawer-profile-btn" href="../dashboard.html" style="display:none">Dashboard</a> <button class="pf-drawer-profile-btn" id="authSignOutBtn" onclick="paAuthSignOut()" style="display:none">Sign out</button></span><div class="pf-drawer-list"><a class="pf-drawer-row" data-drawer="home" href="../index.html"><span class="pf-drawer-icon"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 11.5 12 3l9 8.5"/><path d="M5.5 10.5V20h13v-9.5"/><path d="M9.5 20v-5.5h5V20"/></svg></span><span class="pf-drawer-row-text"><span class="pf-drawer-title">Home</span><span class="pf-drawer-sub">Your personalised home for continuing to learn</span></span><span class="pf-drawer-chev"><svg class="pf-ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 5 7 7-7 7"/></svg></span></a><div class="pf-drawer-sep" role="presentation"></div><a class="pf-drawer-row pf-drawer-active" data-drawer="learn" href="../courses.html" aria-current="page"><span class="pf-drawer-icon"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 6.5C10 4.8 7.2 4.5 4 5v14c3.2-.5 6-.2 8 1.5 2-1.7 4.8-2 8-1.5V5c-3.2-.5-6-.2-8 1.5z"/><path d="M12 6.5v14"/></svg></span><span class="pf-drawer-row-text"><span class="pf-drawer-title">Learn</span><span class="pf-drawer-sub">Learning paths, courses and all chapters</span></span><span class="pf-drawer-chev"><svg class="pf-ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 5 7 7-7 7"/></svg></span></a><div class="pf-drawer-sep" role="presentation"></div><a class="pf-drawer-row" data-drawer="search" href="../search.html"><span class="pf-drawer-icon"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="7"/><path d="m20.5 20.5-4.8-4.8"/></svg></span><span class="pf-drawer-row-text"><span class="pf-drawer-title">Search</span><span class="pf-drawer-sub">Search lessons, guides, cases and questions</span></span><span class="pf-drawer-chev"><svg class="pf-ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 5 7 7-7 7"/></svg></span></a><div class="pf-drawer-sep" role="presentation"></div><a class="pf-drawer-row" data-drawer="paymentCases" href="../situations.html"><span class="pf-drawer-icon"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="7.5" width="18" height="12" rx="2"/><path d="M9 7.5V6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v1.5"/><path d="M3 12.5h18"/></svg></span><span class="pf-drawer-row-text"><span class="pf-drawer-title">Payment Cases</span><span class="pf-drawer-sub">Real-world payment situations to practise</span></span><span class="pf-drawer-chev"><svg class="pf-ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 5 7 7-7 7"/></svg></span></a><div class="pf-drawer-sep" role="presentation"></div><a class="pf-drawer-row" data-drawer="practice" href="../practice.html"><span class="pf-drawer-icon"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M10 3h4"/><path d="M10 3v5.2L4.8 17.5A2 2 0 0 0 6.6 20.5h10.8a2 2 0 0 0 1.8-3L14 8.2V3"/><path d="M7.5 14h9"/></svg></span><span class="pf-drawer-row-text"><span class="pf-drawer-title">Practice</span><span class="pf-drawer-sub">Test yourself on real payment scenarios</span></span><span class="pf-drawer-chev"><svg class="pf-ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 5 7 7-7 7"/></svg></span></a><div class="pf-drawer-sep" role="presentation"></div><a class="pf-drawer-row" data-drawer="weeklyFreeCase" href="../weekly-case.html"><span class="pf-drawer-icon"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3.5" y="5" width="17" height="16" rx="2"/><path d="M3.5 10h17"/><path d="M8 3v4M16 3v4"/><circle cx="12" cy="15" r="2.2"/><path d="M12 13.8V15l1 1"/></svg></span><span class="pf-drawer-row-text"><span class="pf-drawer-title">Free Case of the Week</span><span class="pf-drawer-sub">One real payment case, free every week</span></span><span class="pf-drawer-chev"><svg class="pf-ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 5 7 7-7 7"/></svg></span></a><div class="pf-drawer-sep" role="presentation"></div><a class="pf-drawer-row" data-drawer="communityChallenge" href="../practice.html#weekly-challenge"><span class="pf-drawer-icon"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M8 4h8v5a4 4 0 0 1-8 0V4z"/><path d="M8 5H5a3 3 0 0 0 3 4M16 5h3a3 3 0 0 1-3 4"/><path d="M12 13v4"/><path d="M8 20h8"/><path d="M9.5 17h5"/></svg></span><span class="pf-drawer-row-text"><span class="pf-drawer-title">Weekly Challenge</span><span class="pf-drawer-sub">One case a week, scored on investigation quality</span></span><span class="pf-drawer-chev"><svg class="pf-ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 5 7 7-7 7"/></svg></span></a><div class="pf-drawer-sep" role="presentation"></div><a class="pf-drawer-row" data-drawer="myProgress" href="../dashboard.html"><span class="pf-drawer-icon"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 20V4"/><path d="M4 20h16"/><path d="M8 16v-5M12 16V8M16 16v-3"/></svg></span><span class="pf-drawer-row-text"><span class="pf-drawer-title">My Progress</span><span class="pf-drawer-sub">Your learning analytics, streak and quiz scores</span></span><span class="pf-drawer-chev"><svg class="pf-ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 5 7 7-7 7"/></svg></span></a><div class="pf-drawer-sep" role="presentation"></div><a class="pf-drawer-row" data-drawer="simulator" href="../simulators.html"><span class="pf-drawer-icon"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20 12a8 8 0 1 1-2.3-5.6"/><path d="M20 3.5V8h-4.5"/></svg></span><span class="pf-drawer-row-text"><span class="pf-drawer-title">Payment Simulator</span><span class="pf-drawer-sub">Follow a payment through its lifecycle</span></span><span class="pf-drawer-chev"><svg class="pf-ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 5 7 7-7 7"/></svg></span></a><div class="pf-drawer-sep" role="presentation"></div><a class="pf-drawer-row" data-drawer="isoExplorer" href="../explorer.html"><span class="pf-drawer-icon"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/><circle cx="10.5" cy="13" r="2.5"/><path d="m12.5 15 2 2"/></svg></span><span class="pf-drawer-row-text"><span class="pf-drawer-title">ISO 20022 Explorer</span><span class="pf-drawer-sub">Look up ISO 20022 messages and fields</span></span><span class="pf-drawer-chev"><svg class="pf-ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 5 7 7-7 7"/></svg></span></a><div class="pf-drawer-sep" role="presentation"></div><a class="pf-drawer-row" data-drawer="exceptionLab" href="../investigation-lab.html"><span class="pf-drawer-icon"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 3.5 22 20H2z"/><path d="M12 10v4"/><path d="M12 17h.01"/></svg></span><span class="pf-drawer-row-text"><span class="pf-drawer-title">Exception Lab</span><span class="pf-drawer-sub">Investigate payment exceptions</span></span><span class="pf-drawer-chev"><svg class="pf-ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 5 7 7-7 7"/></svg></span></a><div class="pf-drawer-sep" role="presentation"></div><a class="pf-drawer-row" data-drawer="baStudio" href="../ba-studio.html"><span class="pf-drawer-icon"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 20h4.5L20 8.5a2.1 2.1 0 0 0-3-3L5.5 17z"/><path d="M14.5 7.5l3 3"/></svg></span><span class="pf-drawer-row-text"><span class="pf-drawer-title">BA/PO Studio</span><span class="pf-drawer-sub">Draft BA and PO deliverables</span></span><span class="pf-drawer-chev"><svg class="pf-ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 5 7 7-7 7"/></svg></span></a><div class="pf-drawer-sep" role="presentation"></div><div class="pf-drawer-group">Account and settings</div><a class="pf-drawer-row" data-drawer="profile" href="../dashboard.html#profile"><span class="pf-drawer-icon"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="8" r="4"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/></svg></span><span class="pf-drawer-row-text"><span class="pf-drawer-title">Profile</span><span class="pf-drawer-sub">Your name, privacy and account settings</span></span><span class="pf-drawer-chev"><svg class="pf-ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 5 7 7-7 7"/></svg></span></a><div class="pf-drawer-sep" role="presentation"></div><a class="pf-drawer-row" data-drawer="myPurchases" href="../my-purchases.html"><span class="pf-drawer-icon"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 8h14l-1 12H6z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/></svg></span><span class="pf-drawer-row-text"><span class="pf-drawer-title">My Purchases</span><span class="pf-drawer-sub">Your bundles and Payment Situations, payment and access status</span></span><span class="pf-drawer-chev"><svg class="pf-ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 5 7 7-7 7"/></svg></span></a><div class="pf-drawer-sep" role="presentation"></div><button type="button" class="pf-drawer-row" data-drawer="appearance" data-pf-appearance-toggle="1" aria-expanded="false" aria-controls="pfAppearance"><span class="pf-drawer-icon"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5a8.5 8.5 0 0 1 0 17z" fill="currentColor" stroke="none"/></svg></span><span class="pf-drawer-row-text"><span class="pf-drawer-title">Appearance</span><span class="pf-drawer-sub">Dark mode and display options</span></span><span class="pf-drawer-chev"><svg class="pf-ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 5 7 7-7 7"/></svg></span></button><div class="pf-appearance" id="pfAppearance"><label class="pf-appearance-row"><span>Dark mode</span><input type="checkbox" id="pfDarkMode"></label><label class="pf-appearance-row"><span>Larger text</span><input type="checkbox" id="pfLargerText"></label><div class="pf-appearance-row"><span>Sound</span><button type="button" class="pf-appearance-sound" id="muteToggle" onclick="toggleMute()">Sound: On</button></div></div><div class="pf-drawer-sep" role="presentation"></div><a class="pf-drawer-row" data-drawer="helpAndSupport" href="../support.html"><span class="pf-drawer-icon"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="8.5"/><path d="M9.6 9.4a2.5 2.5 0 1 1 3.5 2.3c-.8.35-1.1.9-1.1 1.8"/><path d="M12 16.8h.01"/></svg></span><span class="pf-drawer-row-text"><span class="pf-drawer-title">Help and Support</span><span class="pf-drawer-sub">Customer support, your queries and FAQs</span></span><span class="pf-drawer-chev"><svg class="pf-ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 5 7 7-7 7"/></svg></span></a><div class="pf-drawer-sep" role="presentation"></div><a class="pf-drawer-row" data-drawer="about" href="../about.html"><span class="pf-drawer-icon"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="8.5"/><path d="M12 11v5"/><path d="M12 8h.01"/></svg></span><span class="pf-drawer-row-text"><span class="pf-drawer-title">About</span><span class="pf-drawer-sub">About Payments Training Hub, the operator and the curriculum</span></span><span class="pf-drawer-chev"><svg class="pf-ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 5 7 7-7 7"/></svg></span></a><div class="pf-drawer-sep" role="presentation"></div><button type="button" class="pf-drawer-row" data-drawer="startTour" data-pf-tour-start="1"><span class="pf-drawer-icon"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M7 4.5 19 12 7 19.5z" fill="currentColor" stroke="none"/></svg></span><span class="pf-drawer-row-text"><span class="pf-drawer-title">Start Tour</span><span class="pf-drawer-sub">A quick guided tour of the key areas of the app</span></span><span class="pf-drawer-chev"><svg class="pf-ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 5 7 7-7 7"/></svg></span></button></div><div class="pf-drawer-keep"><span class="pf-drawer-keep-icon"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 3.5 13.8 9l5.7 1.8-5.7 1.8L12 18l-1.8-5.4L4.5 10.8 10.2 9z"/><path d="M18.5 15.5l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8z"/></svg></span><span class="pf-drawer-keep-text"><span class="pf-drawer-keep-title">Keep learning</span><span class="pf-drawer-keep-sub">Continue with your courses and keep your streak going.</span></span><a class="pf-drawer-keep-btn" href="../courses.html">Continue</a></div><div class="pf-drawer-foot"><div class="pf-drawer-foot-title">Payments Training Hub</div><div class="pf-drawer-foot-sub">Payments, taught the way banks actually process them.</div></div></nav><button type="button" class="pf-drawer-scrim" id="pfDrawerScrim" aria-label="Close menu"></button><header class="pf-topbar-app"><button type="button" class="pf-topbar-btn" data-pf-drawer-open="1" aria-label="Open menu" aria-expanded="false" aria-controls="pfDrawer"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button><a class="pf-topbar-word" href="../index.html">Payments Training Hub</a><button type="button" class="pf-topbar-avatar" data-pf-drawer-open="1" aria-label="Open menu" aria-expanded="false" aria-controls="pfDrawer"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="8" r="4"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/></svg></button></header><nav class="pf-tabbar" aria-label="Main sections"><a class="pf-tabbar-item" data-tab="home" href="../index.html"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 11.5 12 3l9 8.5"/><path d="M5.5 10.5V20h13v-9.5"/><path d="M9.5 20v-5.5h5V20"/></svg><span>Home</span></a><a class="pf-tabbar-item is-active" data-tab="learn" href="../courses.html"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 6.5C10 4.8 7.2 4.5 4 5v14c3.2-.5 6-.2 8 1.5 2-1.7 4.8-2 8-1.5V5c-3.2-.5-6-.2-8 1.5z"/><path d="M12 6.5v14"/></svg><span>Learn</span></a><a class="pf-tabbar-item" data-tab="search" href="../search.html"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="7"/><path d="m20.5 20.5-4.8-4.8"/></svg><span>Search</span></a><a class="pf-tabbar-item" data-tab="cases" href="../situations.html"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="7.5" width="18" height="12" rx="2"/><path d="M9 7.5V6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v1.5"/><path d="M3 12.5h18"/></svg><span>Payment Cases</span></a><a class="pf-tabbar-item" data-tab="progress" href="../dashboard.html"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 20V4"/><path d="M4 20h16"/><path d="M8 16v-5M12 16V8M16 16v-3"/></svg><span>My Progress</span></a></nav>
+<main>
+<div class="lesson-page">
+<div class="lesson-shell">
+<aside class="course-rail pf-card">
+<div class="rail-head">
+<h2 class="pf-section-header">In this chapter</h2>
+<a class="rail-close" href="../chapters/ch79-payment-engine-internals-and-observability.html" aria-label="Close and go to chapter" title="Back to chapter">&times;</a>
+</div>
+<p>Payment engine internals and observability</p>
+<div class="goal-card">
+<div class="goal-head"><b>Today's goal &middot; <span id="side-progress-text">0 of 9 items</span></b><span class="goal-flag"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 21V4m0 1h11l-2.5 3.5L17 12H6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="goal-chev">&#94;</span></div>
+<p class="goal-body" id="side-goal-body">Complete 3 items today to stay at a good pace!</p>
+<div class="pf-progress-bar" id="side-progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="9" aria-valuenow="0"><span style="width:0%"></span></div>
+</div>
+<ul class="lesson-list"><li class="" data-lesson="ch79s1"><a href="ch79s1.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Payment engine modules: the anatomy of an engine</span><span class="m">Video &middot; 6 min</span></span></a></li>
+<li class="" data-lesson="ch79s2"><a href="ch79s2.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Booking entries per message: how a payment posts to the ledger</span><span class="m">Video &middot; 6 min</span></span></a></li>
+<li class="" data-lesson="ch79s3"><a href="ch79s3.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Worklists and audit trails: what operators see and what auditors need</span><span class="m">Video &middot; 6 min</span></span></a></li>
+<li class="" data-lesson="ch79s4"><a href="ch79s4.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Orchestration failure handling: timeouts, retries, compensation and sagas</span><span class="m">Video &middot; 6 min</span></span></a></li>
+<li class="" data-lesson="ch79s5"><a href="ch79s5.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Observability: metrics, logs, traces and alerting for payments</span><span class="m">Video &middot; 6 min</span></span></a></li>
+<li class="" data-lesson="ch79s6"><a href="ch79s6.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Microservices for payments: service boundaries and data ownership</span><span class="m">Video &middot; 7 min</span></span></a></li>
+<li class="" data-lesson="ch79s7"><a href="ch79s7.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Engine performance and capacity: throughput, latency budgets and load testing</span><span class="m">Video &middot; 6 min</span></span></a></li>
+<li class="" data-lesson="ch79s8"><a href="ch79s8.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Cache stampede, TTL jitter and single-flight</span><span class="m">Video &middot; 4 min</span></span></a></li>
+<li class="current" data-lesson="ch79s9"><a href="ch79s9.html"><span class="pf-check"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="li-text"><span class="t">Search internals: inverted indexes, posting lists and sharding</span><span class="m">Video &middot; 4 min</span></span></a></li></ul>
+</aside>
+<div class="lesson-main">
+<div class="pf-topbar-card"><a class="pf-topbar-btn" href="../chapters/ch79-payment-engine-internals-and-observability.html" aria-label="Back to chapter">&lsaquo;</a><p class="pf-topbar-word">Lesson</p><button type="button" class="pf-btn-secondary" onclick="pfToggleNote('studio-ch79s9')" title="Add a note">Notes</button></div>
+<p><a href="../chapters/ch79-payment-engine-internals-and-observability.html">Book chapter 86: Payment engine internals and observability</a></p>
+<h1>Search internals: inverted indexes, posting lists and sharding</h1>
+<p><span class="pf-pill accent-navy">Advanced</span> <span>About 4:01</span> <span><b>Narration:</b> 4:01</span> <span><b>Reading time:</b> about 3 min (626 words)</span> <span id="lesson-status-ch79s9" data-lesson="ch79s9"><b>Status:</b> Not completed yet</span></p>
+<p class="pf-book-position">Book chapter 86 of 99, Part 8: Architecture, APIs, Hubs and Engineering. Lesson 9 of 9 in this chapter. Position 769 of 874 in the book. <a href="../contents.html">See the full contents</a>.</p>
+<p class="lesson-byline">By <a href="../founder.html">Debarghya Mondal</a>, Senior Business Analyst, Capco, deployed to NatWest UK &middot; Last reviewed 11 November 2026</p>
+<h2 class="pf-section-header">In this lesson</h2>
+<div class="pf-card"><p>For a business analyst, search requirements cover what is indexed, how fresh the index is, and how fast queries must return.</p></div>
+<h2 class="pf-section-header">How it flows</h2>
+<div class="pf-card"><ol class="pf-beats" id="pf-beats-studio-ch79s9" data-pf-flow="true" data-pf-duration="241.008"><li class="pf-beat" data-t0="0.0" data-t1="46.0" data-pf-seek="0.0" role="button" tabindex="0" aria-label="Jump the audio to Finding a payment among millions"><span><span class="pf-beat-title">Finding a payment among millions</span><br><span>Finding a payment among millions, by reference, amount, date, or party, in under a second, needs an index.</span><span hidden data-pf-now-playing><br>Now playing</span><span hidden data-pf-selected><br>Selected point</span></span></li><li class="pf-beat" data-t0="46.0" data-t1="92.6" data-pf-seek="46.0" role="button" tabindex="0" aria-label="Jump the audio to Inverted index maps each term"><span><span class="pf-beat-title">Inverted index maps each term</span><br><span>The inverted index maps each term to the records containing it: this reference appears in these payments, this name appears in those payments.</span><span hidden data-pf-now-playing><br>Now playing</span><span hidden data-pf-selected><br>Selected point</span></span></li><li class="pf-beat" data-t0="92.6" data-t1="138.8" data-pf-seek="92.6" role="button" tabindex="0" aria-label="Jump the audio to Query processing"><span><span class="pf-beat-title">Query processing</span><br><span>Query processing combines posting lists: an AND query intersects the lists, keeping only the identifiers in all of them; an OR query unions them.</span><span hidden data-pf-now-playing><br>Now playing</span><span hidden data-pf-selected><br>Selected point</span></span></li><li class="pf-beat" data-t0="138.8" data-t1="183.3" data-pf-seek="138.8" role="button" tabindex="0" aria-label="Jump the audio to Sharding scales capacity"><span><span class="pf-beat-title">Sharding scales capacity</span><br><span>Sharding scales capacity, because each shard holds a fraction of the index, and throughput, because shards answer in parallel.</span><span hidden data-pf-now-playing><br>Now playing</span><span hidden data-pf-selected><br>Selected point</span></span></li><li class="pf-beat" data-t0="183.3" data-t1="224.1" data-pf-seek="183.3" role="button" tabindex="0" aria-label="Jump the audio to Serve both"><span><span class="pf-beat-title">Serve both</span><br><span>The design must serve both: the structured query that must return the exact payment, and the text query that must return the most relevant payments.</span><span hidden data-pf-now-playing><br>Now playing</span><span hidden data-pf-selected><br>Selected point</span></span></li><li class="pf-beat" data-t0="224.1" data-t1="241.0" data-pf-seek="224.1" role="button" tabindex="0" aria-label="Jump the audio to Query time at a defined load"><span><span class="pf-beat-title">Query time at a defined load</span><br><span>And the latency target, the query time at a defined load, must be tested.</span><span hidden data-pf-now-playing><br>Now playing</span><span hidden data-pf-selected><br>Selected point</span></span></li></ol></div>
+<div class="pf-card pf-player-card"><button type="button" class="pf-btn-primary" id="pf-play-studio-ch79s9" onclick="studioTogglePlay('studio-ch79s9')" aria-label="Play">&#9654;</button><p><b>Listen to this lesson</b></p><p>Tap play to start the narration, then read along below.</p><p>Listening length: 4:01</p><p><span id="pf-audio-status-studio-ch79s9">Not started yet</span></p><p><input type="range" id="pf-audio-slider-studio-ch79s9" min="0" max="241.008" step="0.1" value="0" aria-label="Audio position"></p><p><span id="pf-audio-time-studio-ch79s9">0:00 / 4:01</span></p></div>
+<div><button type="button" class="pf-btn-primary" onclick="goLesson('ch79s8')" aria-label="Previous lesson: Cache stampede, TTL jitter and single-flight">&lsaquo; Previous<br>Cache stampede, TTL jitter and single-flight</button> <button type="button" class="pf-btn-primary" onclick="goLesson('ch28s1')" aria-label="Next lesson: Requirements Gathering for Payments Projects">Next &rsaquo;<br>Requirements Gathering for Payments Projects</button></div>
+<div class="pf-tab-card"><a class="pf-chip" href="#pf-content-ch79s9">Content</a> <a class="pf-chip" href="#studio-transcript-details-studio-ch79s9" onclick="studioOpenTranscript('studio-ch79s9');return false;">Transcript</a> <a class="pf-chip" href="#pf-sources-ch79s9">Resources</a></div>
+<h2 class="pf-section-header">Key takeaways</h2>
+<div class="pf-card" id="pf-content-ch79s9"><p><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="#C9A326"/><path d="M8 12.5l2.5 2.5L16 9.5" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg> For a business analyst, search requirements cover what is indexed, how fresh the index is, and how fast queries must return.</p><p><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="#C9A326"/><path d="M8 12.5l2.5 2.5L16 9.5" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg> By the end of this lesson, you will be able to explain search internals: inverted indexes, posting lists and sharding. Finding a payment among millions, by reference, amount, date, or party, in under a second, needs an index.</p><p><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="#C9A326"/><path d="M8 12.5l2.5 2.5L16 9.5" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Finding a payment among millions, by reference, amount, date, or party, in under a second, needs an index.</p><p>Reading time: about 3 min</p></div>
+<div class="studio" id="studio-studio-ch79s9" style="--pf-mobile-h:741px">
+<div class="player">
+<div class="studio-canvas" id="studio-canvas-studio-ch79s9">
+<div class="ch-sec studio-scene-vis active" id="studio-vis-studio-ch79s9-0"><div class="beat-frames">
+<div class="beat-frame active" data-frame="0">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Finding</tspan> <tspan fill="#FFFFFF">a</tspan> <tspan fill="#FFFFFF">payment</tspan> <tspan fill="#FFFFFF">among</tspan> <tspan fill="#FFFFFF">millions</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">STARTED</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Finding a payment among millions</tspan><tspan fill="#CBD5E1"> - reference, amount, date, or party, in</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="0.55">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="13" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Inverted index maps each term</tspan><tspan fill="#CBD5E1"> - records containing it: this reference</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="0.55">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Query processing</tspan><tspan fill="#CBD5E1"> - combines posting lists: an AND query</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Sharding scales capacity</tspan><tspan fill="#CBD5E1"> - because each shard holds a fraction of the index</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Serve both</tspan><tspan fill="#CBD5E1"> - design must serve both: the structured query</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Query time at a defined load</tspan><tspan fill="#CBD5E1"> - latency target, the query time at a defined</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="128" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Finding a payment among millions, by reference, amount, date, or party, in under a second,</text>
+<text x="450" y="476" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">needs an index.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 1 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 741" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="741" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Finding</tspan> <tspan fill="#FFFFFF">a</tspan> <tspan fill="#FFFFFF">payment</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">among</tspan> <tspan fill="#FFFFFF">millions</tspan></text>
+<rect x="24" y="86" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="104" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">STARTED</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="120" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="139" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Finding a payment</text>
+<text x="180" y="157" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">among millions</text>
+<text x="180" y="175" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">reference, amount, date, or party, in under</text>
+<text x="180" y="193" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="0.55">
+<rect x="24" y="212" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="231" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Inverted index maps</text>
+<text x="180" y="249" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">each term</text>
+<text x="180" y="267" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">records containing it: this reference</text>
+<text x="180" y="285" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="0.55">
+<rect x="24" y="304" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="323" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Query processing</text>
+<text x="180" y="341" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">combines posting lists: an AND query</text>
+<text x="180" y="359" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="24" y="376" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="395" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Sharding scales</text>
+<text x="180" y="413" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">capacity</text>
+<text x="180" y="431" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">because each shard holds a fraction of the</text>
+<text x="180" y="449" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="24" y="468" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="487" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Serve both</text>
+<text x="180" y="505" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">design must serve both: the structured query</text>
+<text x="180" y="523" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="540" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="559" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Query time at a</text>
+<text x="180" y="577" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">defined load</text>
+<text x="180" y="595" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">latency target, the query time at a defined</text>
+<text x="180" y="613" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="640" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Finding a payment among millions, by</text>
+<text x="180" y="659" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">reference, amount, date, or party, in</text>
+<text x="180" y="678" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">under a second, needs an index.</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="1">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Inverted</tspan> <tspan fill="#FFFFFF">index</tspan> <tspan fill="#FFFFFF">maps</tspan> <tspan fill="#FFFFFF">each</tspan> <tspan fill="#FFFFFF">term</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Finding a payment among millions</tspan><tspan fill="#CBD5E1"> - reference, amount, date, or party, in</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="13" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Inverted index maps each term</tspan><tspan fill="#CBD5E1"> - records containing it: this reference</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="0.55">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Query processing</tspan><tspan fill="#CBD5E1"> - combines posting lists: an AND query</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Sharding scales capacity</tspan><tspan fill="#CBD5E1"> - because each shard holds a fraction of the index</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Serve both</tspan><tspan fill="#CBD5E1"> - design must serve both: the structured query</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Query time at a defined load</tspan><tspan fill="#CBD5E1"> - latency target, the query time at a defined</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="257" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The inverted index maps each term to the records containing it: this reference appears in these</text>
+<text x="450" y="476" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">payments, this name appears in those payments.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 2 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 760" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="760" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Inverted</tspan> <tspan fill="#FFFFFF">index</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">maps</tspan> <tspan fill="#FFFFFF">each</tspan> <tspan fill="#FFFFFF">term</tspan></text>
+<rect x="24" y="86" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="104" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="120" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="139" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Finding a payment</text>
+<text x="180" y="157" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">among millions</text>
+<text x="180" y="175" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">reference, amount, date, or party, in under</text>
+<text x="180" y="193" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="212" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="231" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Inverted index maps</text>
+<text x="180" y="249" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">each term</text>
+<text x="180" y="267" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">records containing it: this reference</text>
+<text x="180" y="285" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="0.55">
+<rect x="24" y="304" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="323" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Query processing</text>
+<text x="180" y="341" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">combines posting lists: an AND query</text>
+<text x="180" y="359" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="24" y="376" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="395" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Sharding scales</text>
+<text x="180" y="413" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">capacity</text>
+<text x="180" y="431" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">because each shard holds a fraction of the</text>
+<text x="180" y="449" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="24" y="468" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="487" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Serve both</text>
+<text x="180" y="505" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">design must serve both: the structured query</text>
+<text x="180" y="523" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="540" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="559" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Query time at a</text>
+<text x="180" y="577" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">defined load</text>
+<text x="180" y="595" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">latency target, the query time at a defined</text>
+<text x="180" y="613" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="640" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The inverted index maps each term to the</text>
+<text x="180" y="659" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">records containing it: this reference</text>
+<text x="180" y="678" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">appears in these payments, this name</text>
+<text x="180" y="697" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">appears in those payments.</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="2">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Query</tspan> <tspan fill="#FFFFFF">processing</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Finding a payment among millions</tspan><tspan fill="#CBD5E1"> - reference, amount, date, or party, in</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="13" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Inverted index maps each term</tspan><tspan fill="#CBD5E1"> - records containing it: this reference</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Query processing</tspan><tspan fill="#CBD5E1"> - combines posting lists: an AND query</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Sharding scales capacity</tspan><tspan fill="#CBD5E1"> - because each shard holds a fraction of the index</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Serve both</tspan><tspan fill="#CBD5E1"> - design must serve both: the structured query</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Query time at a defined load</tspan><tspan fill="#CBD5E1"> - latency target, the query time at a defined</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="386" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Query processing combines posting lists: an AND query intersects the lists, keeping only the</text>
+<text x="450" y="476" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">identifiers in all of them; an OR query unions them.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 3 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 732" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="732" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Query</tspan> <tspan fill="#FFFFFF">processing</tspan></text>
+<rect x="24" y="58" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="76" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="92" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="111" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Finding a payment</text>
+<text x="180" y="129" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">among millions</text>
+<text x="180" y="147" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">reference, amount, date, or party, in under</text>
+<text x="180" y="165" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="184" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="203" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Inverted index maps</text>
+<text x="180" y="221" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">each term</text>
+<text x="180" y="239" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">records containing it: this reference</text>
+<text x="180" y="257" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="1">
+<rect x="24" y="276" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="295" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Query processing</text>
+<text x="180" y="313" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">combines posting lists: an AND query</text>
+<text x="180" y="331" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="0.55">
+<rect x="24" y="348" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="367" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Sharding scales</text>
+<text x="180" y="385" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">capacity</text>
+<text x="180" y="403" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">because each shard holds a fraction of the</text>
+<text x="180" y="421" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="24" y="440" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="459" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Serve both</text>
+<text x="180" y="477" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">design must serve both: the structured query</text>
+<text x="180" y="495" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="512" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="531" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Query time at a</text>
+<text x="180" y="549" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">defined load</text>
+<text x="180" y="567" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">latency target, the query time at a defined</text>
+<text x="180" y="585" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="612" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Query processing combines posting lists:</text>
+<text x="180" y="631" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">an AND query intersects the lists, keeping</text>
+<text x="180" y="650" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">only the identifiers in all of them; an OR</text>
+<text x="180" y="669" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">query unions them.</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="3">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Sharding</tspan> <tspan fill="#FFFFFF">scales</tspan> <tspan fill="#FFFFFF">capacity</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Finding a payment among millions</tspan><tspan fill="#CBD5E1"> - reference, amount, date, or party, in</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="13" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Inverted index maps each term</tspan><tspan fill="#CBD5E1"> - records containing it: this reference</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Query processing</tspan><tspan fill="#CBD5E1"> - combines posting lists: an AND query</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Sharding scales capacity</tspan><tspan fill="#CBD5E1"> - because each shard holds a fraction of the index</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Serve both</tspan><tspan fill="#CBD5E1"> - design must serve both: the structured query</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Query time at a defined load</tspan><tspan fill="#CBD5E1"> - latency target, the query time at a defined</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="514" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Sharding scales capacity, because each shard holds a fraction of the index, and throughput,</text>
+<text x="450" y="476" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">because shards answer in parallel.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 4 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 760" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="760" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Sharding</tspan> <tspan fill="#FFFFFF">scales</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">capacity</tspan></text>
+<rect x="24" y="86" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="104" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="120" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="139" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Finding a payment</text>
+<text x="180" y="157" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">among millions</text>
+<text x="180" y="175" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">reference, amount, date, or party, in under</text>
+<text x="180" y="193" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="212" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="231" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Inverted index maps</text>
+<text x="180" y="249" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">each term</text>
+<text x="180" y="267" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">records containing it: this reference</text>
+<text x="180" y="285" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="1">
+<rect x="24" y="304" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="323" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Query processing</text>
+<text x="180" y="341" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">combines posting lists: an AND query</text>
+<text x="180" y="359" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="1">
+<rect x="24" y="376" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="395" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Sharding scales</text>
+<text x="180" y="413" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">capacity</text>
+<text x="180" y="431" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">because each shard holds a fraction of the</text>
+<text x="180" y="449" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="0.55">
+<rect x="24" y="468" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="487" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Serve both</text>
+<text x="180" y="505" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">design must serve both: the structured query</text>
+<text x="180" y="523" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="540" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="559" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Query time at a</text>
+<text x="180" y="577" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">defined load</text>
+<text x="180" y="595" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">latency target, the query time at a defined</text>
+<text x="180" y="613" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="640" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">Sharding scales capacity, because each</text>
+<text x="180" y="659" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">shard holds a fraction of the index, and</text>
+<text x="180" y="678" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">throughput, because shards answer in</text>
+<text x="180" y="697" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">parallel.</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="4">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Serve</tspan> <tspan fill="#FFFFFF">both</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Finding a payment among millions</tspan><tspan fill="#CBD5E1"> - reference, amount, date, or party, in</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="13" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Inverted index maps each term</tspan><tspan fill="#CBD5E1"> - records containing it: this reference</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Query processing</tspan><tspan fill="#CBD5E1"> - combines posting lists: an AND query</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Sharding scales capacity</tspan><tspan fill="#CBD5E1"> - because each shard holds a fraction of the index</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n4" data-beat="4">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Serve both</tspan><tspan fill="#CBD5E1"> - design must serve both: the structured query</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Query time at a defined load</tspan><tspan fill="#CBD5E1"> - latency target, the query time at a defined</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="643" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The design must serve both: the structured query that must return the exact payment, and the</text>
+<text x="450" y="476" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">text query that must return the most relevant payments.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 5 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#45A4FF"/>
+<circle cx="852" cy="480" r="4" fill="#334155"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 732" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="732" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Serve</tspan> <tspan fill="#FFFFFF">both</tspan></text>
+<rect x="24" y="58" width="312" height="26" rx="8" fill="#0C1626" stroke="#FBBF24" stroke-width="1.5"/>
+<text x="180" y="76" text-anchor="middle" font-size="12" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">IN PROGRESS</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="92" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="111" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Finding a payment</text>
+<text x="180" y="129" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">among millions</text>
+<text x="180" y="147" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">reference, amount, date, or party, in under</text>
+<text x="180" y="165" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="184" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="203" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Inverted index maps</text>
+<text x="180" y="221" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">each term</text>
+<text x="180" y="239" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">records containing it: this reference</text>
+<text x="180" y="257" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="1">
+<rect x="24" y="276" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="295" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Query processing</text>
+<text x="180" y="313" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">combines posting lists: an AND query</text>
+<text x="180" y="331" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="1">
+<rect x="24" y="348" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="367" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Sharding scales</text>
+<text x="180" y="385" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">capacity</text>
+<text x="180" y="403" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">because each shard holds a fraction of the</text>
+<text x="180" y="421" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="1">
+<rect x="24" y="440" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="459" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Serve both</text>
+<text x="180" y="477" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">design must serve both: the structured query</text>
+<text x="180" y="495" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="0.55">
+<rect x="24" y="512" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="531" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Query time at a</text>
+<text x="180" y="549" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">defined load</text>
+<text x="180" y="567" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">latency target, the query time at a defined</text>
+<text x="180" y="585" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">QUEUED</text>
+</g>
+<text x="180" y="612" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">The design must serve both: the structured</text>
+<text x="180" y="631" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">query that must return the exact payment,</text>
+<text x="180" y="650" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">and the text query that must return the</text>
+<text x="180" y="669" text-anchor="middle" font-size="13" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">most relevant payments.</text>
+</svg>
+</div>
+<div class="beat-frame" data-frame="5">
+<svg class="flow-desktop" viewBox="0 0 900 506" role="img" aria-label="Lesson visual">
+<rect x="0" y="0" width="900" height="506" fill="#0B1F3D"/>
+<text x="48" y="84" font-size="34" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Query</tspan> <tspan fill="#FFFFFF">time</tspan> <tspan fill="#FFFFFF">at</tspan> <tspan fill="#FFFFFF">a</tspan> <tspan fill="#FFFFFF">defined</tspan> <tspan fill="#FFFFFF">load</tspan></text>
+<rect x="48" y="140" width="804" height="298" rx="14" fill="#0C1626" stroke="#2A5C8C" stroke-width="2"/>
+<rect x="60" y="152" width="780" height="40" rx="10" fill="#12233A"/>
+<text x="76" y="178" font-size="14" font-weight="700" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif">PAYMENT OPERATIONS</text>
+<text x="768" y="176" text-anchor="end" font-size="12" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">COMPLETE</text>
+<circle cx="790" cy="172" r="5" fill="#2DD4BF"/>
+<text x="802" y="176" font-size="11" fill="#2DD4BF" font-family="ui-monospace,Menlo,Consolas,monospace">LIVE</text>
+<g data-node="n0" data-beat="0">
+<rect x="64" y="204" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="225" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">01</text>
+<text x="112" y="226" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Finding a payment among millions</tspan><tspan fill="#CBD5E1"> - reference, amount, date, or party, in</tspan></text>
+<text x="820" y="225" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1">
+<rect x="64" y="238" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="259" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">02</text>
+<text x="112" y="260" font-size="13" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Inverted index maps each term</tspan><tspan fill="#CBD5E1"> - records containing it: this reference</tspan></text>
+<text x="820" y="259" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2">
+<rect x="64" y="272" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="293" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">03</text>
+<text x="112" y="294" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Query processing</tspan><tspan fill="#CBD5E1"> - combines posting lists: an AND query</tspan></text>
+<text x="820" y="293" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3">
+<rect x="64" y="306" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="327" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">04</text>
+<text x="112" y="328" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Sharding scales capacity</tspan><tspan fill="#CBD5E1"> - because each shard holds a fraction of the index</tspan></text>
+<text x="820" y="327" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n4" data-beat="4">
+<rect x="64" y="340" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="361" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">05</text>
+<text x="112" y="362" font-size="14" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Serve both</tspan><tspan fill="#CBD5E1"> - design must serve both: the structured query</tspan></text>
+<text x="820" y="361" text-anchor="end" font-size="11" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n5" data-beat="5">
+<rect x="64" y="374" width="772" height="26" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="80" y="395" font-size="11" fill="#94A3B8" font-family="ui-monospace,Menlo,Consolas,monospace">06</text>
+<text x="112" y="396" font-size="12" font-family="Arial, Helvetica, sans-serif"><tspan font-weight="700" fill="#E2E8F0">Query time at a defined load</tspan><tspan fill="#CBD5E1"> - latency target, the query time at a defined</tspan></text>
+<text x="820" y="395" text-anchor="end" font-size="11" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#1E3A5F"/>
+<rect x="64" y="420" width="772" height="8" rx="4" fill="#45A4FF"/>
+<text x="450" y="458" text-anchor="middle" font-size="15" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">And the latency target, the query time at a defined load, must be tested.</text>
+<text x="48" y="484" font-size="13" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif">Step 6 of 6</text>
+<circle cx="772" cy="480" r="4" fill="#334155"/>
+<circle cx="788" cy="480" r="4" fill="#334155"/>
+<circle cx="804" cy="480" r="4" fill="#334155"/>
+<circle cx="820" cy="480" r="4" fill="#334155"/>
+<circle cx="836" cy="480" r="4" fill="#334155"/>
+<circle cx="852" cy="480" r="4" fill="#45A4FF"/>
+</svg>
+<svg class="flow-mobile" viewBox="0 0 360 722" role="img" aria-label="Lesson visual, vertical layout">
+<rect x="0" y="0" width="360" height="722" fill="#0B1F3D"/>
+<text x="24" y="40" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#60A5FA">Query</tspan> <tspan fill="#FFFFFF">time</tspan> <tspan fill="#FFFFFF">at</tspan> <tspan fill="#FFFFFF">a</tspan></text>
+<text x="24" y="68" font-size="26" font-weight="700" font-family="Arial, Helvetica, sans-serif"><tspan fill="#FFFFFF">defined</tspan> <tspan fill="#FFFFFF">load</tspan></text>
+<rect x="24" y="86" width="312" height="26" rx="8" fill="#0C1626" stroke="#2DD4BF" stroke-width="1.5"/>
+<text x="180" y="104" text-anchor="middle" font-size="12" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">COMPLETE</text>
+<g data-node="n0" data-beat="0" opacity="1">
+<rect x="24" y="120" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="139" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Finding a payment</text>
+<text x="180" y="157" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">among millions</text>
+<text x="180" y="175" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">reference, amount, date, or party, in under</text>
+<text x="180" y="193" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n1" data-beat="1" opacity="1">
+<rect x="24" y="212" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="231" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Inverted index maps</text>
+<text x="180" y="249" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">each term</text>
+<text x="180" y="267" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">records containing it: this reference</text>
+<text x="180" y="285" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n2" data-beat="2" opacity="1">
+<rect x="24" y="304" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="323" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Query processing</text>
+<text x="180" y="341" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">combines posting lists: an AND query</text>
+<text x="180" y="359" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n3" data-beat="3" opacity="1">
+<rect x="24" y="376" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="395" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Sharding scales</text>
+<text x="180" y="413" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">capacity</text>
+<text x="180" y="431" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">because each shard holds a fraction of the</text>
+<text x="180" y="449" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n4" data-beat="4" opacity="1">
+<rect x="24" y="468" width="312" height="64" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="487" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Serve both</text>
+<text x="180" y="505" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">design must serve both: the structured query</text>
+<text x="180" y="523" text-anchor="middle" font-size="10" font-weight="700" fill="#2DD4BF" font-family="Arial, Helvetica, sans-serif">DONE</text>
+</g>
+<g data-node="n5" data-beat="5" opacity="1">
+<rect x="24" y="540" width="312" height="84" rx="8" fill="#12233A" stroke="#2A4A68" stroke-width="1"/>
+<text x="180" y="559" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">Query time at a</text>
+<text x="180" y="577" text-anchor="middle" font-size="15" font-weight="700" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif">defined load</text>
+<text x="180" y="595" text-anchor="middle" font-size="12" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">latency target, the query time at a defined</text>
+<text x="180" y="613" text-anchor="middle" font-size="10" font-weight="700" fill="#FBBF24" font-family="Arial, Helvetica, sans-serif">ACTIVE</text>
+</g>
+<text x="180" y="640" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">And the latency target, the query time</text>
+<text x="180" y="659" text-anchor="middle" font-size="14" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif">at a defined load, must be tested.</text>
+</svg>
+</div>
+</div>
+<p class="xml-caption">Flow of the explanation in this lesson.</p></div>
+<button type="button" class="studio-play-overlay" id="studio-overlay-studio-ch79s9" onclick="studioTogglePlay('studio-ch79s9')" aria-label="Play narration"><span class="studio-play-circle"><svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span><span class="studio-play-label">Play narration</span></button>
+<div class="playerbar">
+<div class="studio-progress"><div class="studio-markers" id="studio-markers-studio-ch79s9"></div><input type="range" id="studio-slider-studio-ch79s9" min="0" max="1000" value="0" aria-label="Lesson timeline"></div>
+<div class="ctrl-row">
+<button class="ctrl-btn" id="studio-play-studio-ch79s9" onclick="studioTogglePlay('studio-ch79s9')" aria-label="Play lesson" title="Play lesson"><span class="ctrl-ic-play"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></span><span class="ctrl-ic-pause" style="display:none"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><rect x="6" y="5" width="4" height="14" fill="currentColor"/><rect x="14" y="5" width="4" height="14" fill="currentColor"/></svg></span></button>
+<button class="ctrl-btn studio-mute-btn" id="studio-mute-studio-ch79s9" onclick="studioToggleMute('studio-ch79s9')" aria-label="Mute narration" title="Mute / unmute narration"><svg class="studio-mute-icon" viewBox="0 0 24 24" width="28" height="28" fill="currentColor" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3z"/><path class="studio-mute-waves" d="M16 8.5a5 5 0 0 1 0 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><path class="studio-mute-waves" d="M18.5 6a9 9 0 0 1 0 12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><path class="studio-mute-x" d="M16 9.5l5 5M21 9.5l-5 5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" style="display:none"/></svg></button>
+<button class="ctrl-btn" onclick="studioSkip('studio-ch79s9', -10)" aria-label="Back 10 seconds" title="Back 10 seconds"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 5a7 7 0 1 1-6.32 4.06" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M5.5 3.5v5h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><text x="12" y="16.5" font-size="8" fill="currentColor" text-anchor="middle" font-weight="700">10</text></svg></button>
+<span class="studio-time ctrl-time" id="studio-time-studio-ch79s9">0:00 / 4:01</span>
+<button class="ctrl-btn" onclick="studioSkip('studio-ch79s9', 10)" aria-label="Forward 10 seconds" title="Forward 10 seconds"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 5a7 7 0 1 0 6.32 4.06" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M18.5 3.5v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><text x="12" y="16.5" font-size="8" fill="currentColor" text-anchor="middle" font-weight="700">10</text></svg></button>
+<span class="playerbar-spacer"></span>
+<span class="player-stage" id="studio-tag-studio-ch79s9">Step 1 of 6</span>
+<button class="ctrl-btn ctrl-step" id="studio-prevscene-studio-ch79s9" onclick="studioPrevScene('studio-ch79s9')" title="Previous step" aria-label="Previous step">&lsaquo;</button>
+<button class="ctrl-btn ctrl-step" id="studio-nextscene-studio-ch79s9" onclick="studioNextScene('studio-ch79s9')" title="Next step" aria-label="Next step">&rsaquo;</button>
+<button class="ctrl-btn ctrl-speed" id="studio-speedbtn-studio-ch79s9" onclick="studioCycleSpeed('studio-ch79s9')" title="Playback speed" aria-label="Playback speed">1x</button>
+<span class="ctrl-settings-wrap"><button class="ctrl-btn" onclick="studioToggleSettings('studio-ch79s9', event)" aria-label="Player settings" title="Settings"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5 5l2.1 2.1M16.9 16.9L19 19M19 5l-2.1 2.1M7.1 16.9L5 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button><span class="ctrl-popover" id="studio-settings-studio-ch79s9" style="display:none" onclick="event.stopPropagation()"><label class="ctrl-pop-row">Volume <input type="range" min="0" max="1" step="0.1" value="1" oninput="studioSetVolume('studio-ch79s9', this.value)" style="width:110px;accent-color:#3587FC"></label><button class="studio-btn" id="studio-captions-studio-ch79s9" onclick="studioToggleCaptions('studio-ch79s9')">Captions: On</button><button class="studio-btn" onclick="studioReplayScene('studio-ch79s9')">Replay scene</button></span></span>
+<button class="ctrl-btn" onclick="studioFullscreen('studio-ch79s9')" aria-label="Fullscreen" title="Fullscreen"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+</div>
+</div>
+</div>
+<p class="studio-caption" id="studio-caption-studio-ch79s9"><b>Finding a payment among millions: </b>Finding a payment among millions, by reference, amount, date, or party, in under a second, needs an index.</p>
+<p class="studio-loading" id="studio-loading-studio-ch79s9" style="display:none">Loading narration...</p>
+<p class="studio-error" id="studio-error-studio-ch79s9" role="alert" style="display:none"></p>
+<audio id="studio-audio-studio-ch79s9" preload="auto" src="../audio/ch79s9.mp3"></audio>
+<p class="studio-audio-actions"><a href="#studio-transcript-details-studio-ch79s9" onclick="studioOpenTranscript('studio-ch79s9');return false;">Read the transcript</a></p>
+<noscript><p class="studio-noscript">Audio playback needs JavaScript, so the player cannot start here. You can read the full transcript, key points and exercises below. Nothing on this page needs JavaScript to read.</p></noscript>
+</div>
+<div class="lesson-title-row">
+<h2>Search internals: inverted indexes, posting lists and sharding</h2>
+<button class="save-note" type="button" onclick="pfToggleNote('studio-ch79s9')" title="Save a note on this lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L8 19l-4 1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg> Save note</button>
+</div>
+<p class="lesson-meta-line">Book chapter 86: Payment engine internals and observability, Lesson 9 of 9, Narration 4:01, D09 Payment architecture and technology</p>
+<p class="lesson-note-saved" id="studio-note-saved-studio-ch79s9" style="display:none">Note saved.</p>
+<div class="note-editor" id="studio-note-editor-studio-ch79s9" style="display:none"><textarea id="studio-note-text-studio-ch79s9" rows="3" placeholder="Write a note on this lesson..." aria-label="Lesson note"></textarea><div class="note-editor-row"><button class="studio-btn primary" onclick="pfSaveNote('studio-ch79s9')">Save note</button> <button class="studio-btn" onclick="pfToggleNote('studio-ch79s9')">Cancel</button></div></div>
+<div class="dive-deeper">
+<div class="dive-head"><button type="button" class="dive-toggle" onclick="pfToggleDive(this)" aria-expanded="true"><span class="dive-spark"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 2l2.2 6.8L21 11l-6.8 2.2L12 20l-2.2-6.8L3 11l6.8-2.2z" fill="currentColor"/></svg></span><span class="dive-title">Dive deeper on this topic</span><span class="dive-chev"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 14l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button></div>
+<div class="dive-btns"><button type="button" class="dive-btn" data-kind="practice" onclick="pfDive('studio-ch79s9', 'practice')">Give me practice questions</button><button type="button" class="dive-btn" data-kind="simple" onclick="pfDive('studio-ch79s9', 'simple')">Explain this topic in simple terms</button><button type="button" class="dive-btn" data-kind="summary" onclick="pfDive('studio-ch79s9', 'summary')">Give me a summary</button><button type="button" class="dive-btn" data-kind="example" onclick="pfDive('studio-ch79s9', 'example')">Give me real-life examples</button></div>
+<div class="dive-panel" id="dive-panel-studio-ch79s9"><div class="dive-panel-body"></div></div>
+<script type="application/json" id="pf-dive-data-studio-ch79s9">{"simple": "In plain words: finding a payment among millions, by reference, amount, date, or party, in under a second, needs an index. That is the whole idea in one sentence, and the rest of the lesson shows how it works in a real bank.", "summary": "Finding a payment among millions, by reference, amount, date, or party, in under a second, needs an index. Key points: Finding a payment among millions; Inverted index maps each term; Query processing; Sharding scales capacity; Serve both; Query time at a defined load.", "example": "This lesson is conceptual. The worked examples that use it are in the lessons that follow in this chapter."}</script>
+</div>
+<div class="lesson-feedback">
+<div class="fb-icons"><button type="button" class="fb-btn" data-kind="like" onclick="pfFeedback(this,'like')" aria-label="Like this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M7 21H4a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1h3v11zm0 0h9.6a2 2 0 0 0 1.9-1.4l1.6-5A2 2 0 0 0 18.2 12H15V6.5A2.5 2.5 0 0 0 12.5 4L11 7.5 8.6 10H7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button><button type="button" class="fb-btn" data-kind="dislike" onclick="pfFeedback(this,'dislike')" aria-label="Dislike this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M17 3h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1h-3V3zm0 0H7.4a2 2 0 0 0-1.9 1.4l-1.6 5A2 2 0 0 0 5.8 12H9v5.5A2.5 2.5 0 0 0 11.5 20L13 16.5l2.4-2.5H17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button><button type="button" class="fb-btn" data-kind="flag" onclick="pfFeedback(this,'flag')" aria-label="Flag this lesson" aria-pressed="false"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M6 21V4m0 1h11l-2.5 3.5L17 12H6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+<button type="button" class="go-next" onclick="goLesson('ch28s1')" title="Next: Requirements Gathering for Payments Projects">Go to next item &rarr;</button>
+</div>
+<div class="chips"><span class="chip">Remittance information</span><span class="chip">Exception</span><span class="chip">Return</span></div>
+<div class="card learn-card pf-card">
+<h2>What you will learn</h2>
+<p class="transcript"><b>Your objective.</b> By the end of this lesson, you will be able to explain search internals: inverted indexes, posting lists and sharding. Finding a payment among millions, by reference, amount, date, or party, in under a second, needs an index.</p>
+<p class="transcript"><b>Why it matters.</b> For a business analyst, search requirements cover what is indexed, how fresh the index is, and how fast queries must return.</p>
+<p class="transcript">Chapter objective: Learner explains the modules inside a payment engine, the booking entries each message creates, and how worklists and audit trails support operators and auditors. Learner describes orchestration failure handling with timeouts, retries, compensation and sagas, explains observability through metrics, logs, traces and alerting, and states how microservice boundaries and capacity are designed.</p>
+<h3>Key learning points</h3>
+<ul id="studio-points-studio-ch79s9">
+<li>Finding a payment among millions</li>
+<li>Inverted index maps each term</li>
+<li>Query processing</li>
+<li>Sharding scales capacity</li>
+<li>Serve both</li>
+<li>Query time at a defined load</li>
+</ul>
+<h3>Key terms</h3>
+<div id="studio-terms-studio-ch79s9">
+<p class="keyterm"><b>Remittance information:</b> Information that explains what a payment is for, such as invoice numbers, contract references or salary month.</p>
+<p class="keyterm"><b>Exception:</b> A payment that cannot be processed normally and needs manual handling, investigation or repair. Exceptions arise from missing data, failed screening, account errors or system faults.</p>
+<p class="keyterm"><b>Return:</b> A payment that is sent back to the sender after settlement because it cannot be credited to the beneficiary.</p>
+</div>
+<p class="studio-note">Payment flow diagram showing Search internals: inverted indexes, posting lists and sharding.</p>
+</div>
+<div class="fw-card pf-card" id="pf-exercise-studio-ch79s9">
+<p class="fw-label">Practise this lesson</p>
+<h2>Exercise</h2>
+<p><b>Work out what the beneficiary receives for a $10,000 payment under OUR, SHA and BEN.</b></p>
+<p>Use the charge arrangement rules in this lesson and the correspondent and beneficiary bank fees named in the lesson.</p>
+<ol class="fw-steps">
+<li><b>What to do.</b> Calculate the amount credited under each of the three arrangements and state who pays each fee.</li>
+</ol>
+<p><button class="studio-btn" id="pf-ex-btn-studio-ch79s9" onclick="pfRevealExercise('studio-ch79s9')">Show the answer</button></p>
+<div class="fw-exercise-answer" id="pf-ex-answer-studio-ch79s9">
+<p><b>Correct result.</b> Under OUR the sender pays all charges and the beneficiary receives the full amount. Under SHA the sender pays the sending charges and the beneficiary pays the receiving charges. Under BEN the beneficiary pays all charges and receives the amount less all fees.</p>
+<p><b>Why.</b> The charge arrangement decides who pays and how much arrives. A customer who was promised the full amount and receives less will complain, and the complaint lands on the analyst.</p>
+</div>
+</div>
+<div class="fw-card pf-card" id="pf-quiz-studio-ch79s9" data-total="3">
+<p class="fw-label">Check your understanding</p>
+<h2>Check your understanding</h2>
+<p class="studio-note" id="pf-quiz-score-studio-ch79s9">Answer all 3 questions to see your score. Your result is saved in this browser and shown on your dashboard.</p>
+<div class="pf-quiz-q" id="pf-quiz-q-studio-ch79s9-0" data-answer="2">
+<p><b>Q1. Which of the following best describes search internals: inverted indexes, posting lists and sharding?</b></p>
+<button type="button" class="quiz-opt" data-idx="0" onclick="pfCheckQuizAnswer('studio-ch79s9', 0, this)">The engine is not the hub itself: the hub is the platform that hosts the engines, applies common controls once, and routes each payment to the right engine</button>
+<button type="button" class="quiz-opt" data-idx="1" onclick="pfCheckQuizAnswer('studio-ch79s9', 0, this)">A payment engine is the specialist component inside a payment hub that executes one type of payment from intake to settlement instruction</button>
+<button type="button" class="quiz-opt" data-idx="2" onclick="pfCheckQuizAnswer('studio-ch79s9', 0, this)">Finding a payment among millions, by reference, amount, date, or party, in under a second, needs an index</button>
+<button type="button" class="quiz-opt" data-idx="3" onclick="pfCheckQuizAnswer('studio-ch79s9', 0, this)">Every engine starts with an intake module</button>
+<div class="quiz-feedback" id="pf-quiz-fb-studio-ch79s9-0"></div>
+<script type="application/json" id="pf-quiz-data-studio-ch79s9-0">{"explanation": "Finding a payment among millions, by reference, amount, date, or party, in under a second, needs an index. This is the core idea of the lesson."}</script>
+</div>
+<div class="pf-quiz-q" id="pf-quiz-q-studio-ch79s9-1" data-answer="3">
+<p><b>Q2. Work out what the beneficiary receives for a $10,000 payment under OUR, SHA and BEN.</b></p>
+<button type="button" class="quiz-opt" data-idx="0" onclick="pfCheckQuizAnswer('studio-ch79s9', 1, this)">For a business analyst, search requirements cover what is indexed, how fresh the index is, and how fast queries must return.</button>
+<button type="button" class="quiz-opt" data-idx="1" onclick="pfCheckQuizAnswer('studio-ch79s9', 1, this)">Remittance information: Information that explains what a payment is for, such as invoice numbers, contract references or salary month.</button>
+<button type="button" class="quiz-opt" data-idx="2" onclick="pfCheckQuizAnswer('studio-ch79s9', 1, this)">Search is the operations console: a slow search means slow exception handling, slow investigations, and slow customer answers.</button>
+<button type="button" class="quiz-opt" data-idx="3" onclick="pfCheckQuizAnswer('studio-ch79s9', 1, this)">Under OUR the sender pays all charges and the beneficiary receives the full amount. Under SHA the sender pays the sending charges and the beneficiary pays the receiving charges. Under BEN the beneficiary pays all charges and receives the amount less all fees.</button>
+<div class="quiz-feedback" id="pf-quiz-fb-studio-ch79s9-1"></div>
+<script type="application/json" id="pf-quiz-data-studio-ch79s9-1">{"explanation": "The charge arrangement decides who pays and how much arrives. A customer who was promised the full amount and receives less will complain, and the complaint lands on the analyst."}</script>
+</div>
+<div class="pf-quiz-q" id="pf-quiz-q-studio-ch79s9-2" data-answer="3">
+<p><b>Q3. Which statement is the lesson's stated takeaway?</b></p>
+<button type="button" class="quiz-opt" data-idx="0" onclick="pfCheckQuizAnswer('studio-ch79s9', 2, this)">By the end of this lesson, you will be able to explain search internals: inverted indexes, posting lists and sharding. Finding a payment among millions, by reference, amount, date, or party, in under a second, needs an index.</button>
+<button type="button" class="quiz-opt" data-idx="1" onclick="pfCheckQuizAnswer('studio-ch79s9', 2, this)">This lesson is conceptual. The worked examples that use it are in the lessons that follow in this chapter.</button>
+<button type="button" class="quiz-opt" data-idx="2" onclick="pfCheckQuizAnswer('studio-ch79s9', 2, this)">In plain words: finding a payment among millions, by reference, amount, date, or party, in under a second, needs an index. That is the whole idea in one sentence, and the rest of the lesson shows how it works in a real bank.</button>
+<button type="button" class="quiz-opt" data-idx="3" onclick="pfCheckQuizAnswer('studio-ch79s9', 2, this)">For a business analyst, search requirements cover what is indexed, how fresh the index is, and how fast queries must return.</button>
+<div class="quiz-feedback" id="pf-quiz-fb-studio-ch79s9-2"></div>
+<script type="application/json" id="pf-quiz-data-studio-ch79s9-2">{"explanation": "For a business analyst, search requirements cover what is indexed, how fresh the index is, and how fast queries must return."}</script>
+</div>
+</div>
+<script type="application/json" id="pf-quiz-meta-studio-ch79s9">{"lesson": "ch79s9", "total": 3}</script>
+<div class="fw-card pf-card">
+<p class="fw-label">Takeaway and next step</p>
+<h2>What to remember</h2>
+<p>For a business analyst, search requirements cover what is indexed, how fresh the index is, and how fast queries must return.</p>
+<p>Follow a payment through every stage, from instruction to beneficiary credit, and note where it can stop.</p>
+<p><a class="fw-tool-link" href="../simulators/lifecycle.html">Open the Payment Lifecycle Simulator &rarr;</a></p>
+<p class="studio-note">Builds on "Cache stampede, TTL jitter and single-flight".</p>
+</div>
+<div class="fw-card pf-card" id="pf-depth-studio-ch79s9">
+<p class="fw-label">Advanced depth</p>
+<h2>Worked at message level</h2>
+<p><b>Worked example.</b> Remittance information: Information that explains what a payment is for, such as invoice numbers, contract references or salary month.</p>
+<p><b>When it goes wrong.</b> Search is the operations console: a slow search means slow exception handling, slow investigations, and slow customer answers.</p>
+</div>
+<section class="upnext" id="studio-upnext-studio-ch79s9" style="display:none" aria-label="Up next">
+<span class="tag">Up next</span>
+<h2>Up next: Requirements Gathering for Payments Projects</h2>
+<p>Lesson 1 of 8, Book chapter 87, BA Practical Workshop, Narration 3:32</p>
+<div class="row">
+<button class="studio-btn primary" onclick="goLessonAuto('ch28s1')">Next lesson &rarr;</button>
+<button class="studio-btn" onclick="goLesson('ch79s8')">&larr; Previous lesson</button>
+<button class="studio-btn" onclick="studioReplayLesson('studio-ch79s9')">Replay this lesson</button>
+</div>
+</section>
+<div class="lesson-nav">
+<button class="studio-btn" onclick="goLesson('ch79s8')" title="Previous lesson: Cache stampede, TTL jitter and single-flight">&larr; Previous</button>
+<button class="studio-btn" onclick="goChapterContents('ch79')">Chapter contents</button>
+<button class="studio-btn primary" onclick="goLesson('ch28s1')" title="Next lesson: Requirements Gathering for Payments Projects">Next &rarr;</button>
+</div>
+<div class="card transcript-card pf-card">
+<h2>Transcript and full text</h2>
+<details class="studio-transcript" id="studio-transcript-details-studio-ch79s9"><summary>Show transcript</summary>
+<div id="studio-transcript-studio-ch79s9"><p class="transcript">Finding a payment among millions, by reference, amount, date, or party, in under a second, needs an index. Scanning every record for every query would take minutes. The data structure that makes search fast is the inverted index, and its building blocks are posting lists. Scaling the index across machines needs sharding. These three ideas, inverted indexes, posting lists, and sharding, are the internals of every search system, from the payment engine operations console to the web search engine, and understanding them helps an analyst specify, test, and troubleshoot search.</p><p class="transcript">An inverted index reverses the natural order. The natural order maps each record to its terms: this payment has these references, these names, these amounts. The inverted index maps each term to the records containing it: this reference appears in these payments, this name appears in those payments. A search for a term looks up the index and gets the record identifiers directly, without scanning. The index is built once, when records are added or updated, and queried many times. The build cost is paid upfront, and the query cost is small. That trade, expensive build, cheap query, is what makes search fast.</p><p class="transcript">The lists in the index are posting lists. For each term, the posting list is the sorted list of record identifiers, the postings, that contain the term. A posting may carry extra data: the position of the term in the record, or how often it appears, which supports phrase search and ranking. Query processing combines posting lists: an AND query intersects the lists, keeping only the identifiers in all of them; an OR query unions them. Skip lists let the intersection jump ahead instead of stepping through every entry, and compression keeps the lists small on disk and in memory. The efficiency of search is the efficiency of posting list operations.</p><p class="transcript">Sharding splits the index across machines. In document based sharding, each shard holds the index for a subset of records: shard one holds January payments, shard two holds February, or the split is by hash of the record identifier. A query fans out to all shards, each shard returns its matching results, and a coordinator merges them, sorts them, and returns the top results. Sharding scales capacity, because each shard holds a fraction of the index, and throughput, because shards answer in parallel. Replication, holding a copy of each shard on another machine, provides availability: if a shard machine fails, its replica answers.</p><p class="transcript">Payment search is mostly structured, and that shapes the design. Operations search by reference, amount, date range, status, and party: exact matches and range queries, where the index must support the field, the range, and the combination. Free text search over remittance information and narrative needs ranking: which results match best, using measures like term frequency and inverse document frequency, and filters and facets to narrow the results. The design must serve both: the structured query that must return the exact payment, and the text query that must return the most relevant payments. A search that returns the wrong payment, or no payment, when the payment exists, is an operations failure.</p><p class="transcript">For a business analyst, search requirements cover what is indexed, how fresh the index is, and how fast queries must return. The indexed fields must match the queries operations actually run: a field that is searched but not indexed is a slow query. Freshness, the delay between a payment arriving and appearing in search, must be specified: real time for operations, near real time for reporting. And the latency target, the query time at a defined load, must be tested. Search is the operations console: a slow search means slow exception handling, slow investigations, and slow customer answers. Index design is a requirements decision, not an implementation detail.</p></div>
+</details>
+<details class="studio-transcript"><summary>Full lesson text (all scenes)</summary><div id="studio-transcript-full-studio-ch79s9"><h4>Search internals: inverted indexes, posting lists and sharding</h4><p>Finding a payment among millions, by reference, amount, date, or party, in under a second, needs an index. Scanning every record for every query would take minutes. The data structure that makes search fast is the inverted index, and its building blocks are posting lists. Scaling the index across machines needs sharding. These three ideas, inverted indexes, posting lists, and sharding, are the internals of every search system, from the payment engine operations console to the web search engine, and understanding them helps an analyst specify, test, and troubleshoot search.</p><p>An inverted index reverses the natural order. The natural order maps each record to its terms: this payment has these references, these names, these amounts. The inverted index maps each term to the records containing it: this reference appears in these payments, this name appears in those payments. A search for a term looks up the index and gets the record identifiers directly, without scanning. The index is built once, when records are added or updated, and queried many times. The build cost is paid upfront, and the query cost is small. That trade, expensive build, cheap query, is what makes search fast.</p><p>The lists in the index are posting lists. For each term, the posting list is the sorted list of record identifiers, the postings, that contain the term. A posting may carry extra data: the position of the term in the record, or how often it appears, which supports phrase search and ranking. Query processing combines posting lists: an AND query intersects the lists, keeping only the identifiers in all of them; an OR query unions them. Skip lists let the intersection jump ahead instead of stepping through every entry, and compression keeps the lists small on disk and in memory. The efficiency of search is the efficiency of posting list operations.</p><p>Sharding splits the index across machines. In document based sharding, each shard holds the index for a subset of records: shard one holds January payments, shard two holds February, or the split is by hash of the record identifier. A query fans out to all shards, each shard returns its matching results, and a coordinator merges them, sorts them, and returns the top results. Sharding scales capacity, because each shard holds a fraction of the index, and throughput, because shards answer in parallel. Replication, holding a copy of each shard on another machine, provides availability: if a shard machine fails, its replica answers.</p><p>Payment search is mostly structured, and that shapes the design. Operations search by reference, amount, date range, status, and party: exact matches and range queries, where the index must support the field, the range, and the combination. Free text search over remittance information and narrative needs ranking: which results match best, using measures like term frequency and inverse document frequency, and filters and facets to narrow the results. The design must serve both: the structured query that must return the exact payment, and the text query that must return the most relevant payments. A search that returns the wrong payment, or no payment, when the payment exists, is an operations failure.</p><p>For a business analyst, search requirements cover what is indexed, how fresh the index is, and how fast queries must return. The indexed fields must match the queries operations actually run: a field that is searched but not indexed is a slow query. Freshness, the delay between a payment arriving and appearing in search, must be specified: real time for operations, near real time for reporting. And the latency target, the query time at a defined load, must be tested. Search is the operations console: a slow search means slow exception handling, slow investigations, and slow customer answers. Index design is a requirements decision, not an implementation detail.</p></div></details>
+<p><button class="studio-btn primary" id="done-ch79s9" onclick="studioMarkSceneDone('studio-ch79s9')">Mark lesson complete</button> <span class="studio-note">Completing a lesson updates your progress dashboard on the homepage.</span></p>
+</div>
+<p class="studio-note">Scene timestamps are estimated by allocating the narration text proportionally across the real audio length. The audio playback position is the source of truth: pause freezes the visual, seeking restores the correct scene, replay restarts the scene animation.</p>
+</div>
+<script>window.__PA_STUDIO_QUEUE = window.__PA_STUDIO_QUEUE || []; window.__PA_STUDIO_QUEUE.push(["studio-ch79s9", {"sample_id": "studio-ch79s9", "chapter_id": "ch79", "title": "Search internals: inverted indexes, posting lists and sharding", "domain": "D09 Payment architecture and technology", "objective": "Learner explains the modules inside a payment engine, the booking entries each message creates, and how worklists and audit trails support operators and auditors. Learner describes orchestration failure handling with timeouts, retries, compensation and sagas, explains observability through metrics, logs, traces and alerting, and states how microservice boundaries and capacity are designed.", "scenes": [{"id": "ch79s9", "section_id": "ch79s9", "title": "Search internals: inverted indexes, posting lists and sharding", "audio": "../audio/ch79s9.mp3", "duration_sec": 241.008, "points": ["Finding a payment among millions, by reference, amount, date, or party, in under a second, needs an index.", "An inverted index reverses the natural order.", "The lists in the index are posting lists.", "Sharding splits the index across machines.", "Payment search is mostly structured, and that shapes the design."], "terms": [{"term": "Remittance information", "def": "Information that explains what a payment is for, such as invoice numbers, contract references or salary month."}, {"term": "Exception", "def": "A payment that cannot be processed normally and needs manual handling, investigation or repair. Exceptions arise from missing data, failed screening, account errors or system faults."}, {"term": "Return", "def": "A payment that is sent back to the sender after settlement because it cannot be credited to the beneficiary."}], "transcript": "Finding a payment among millions, by reference, amount, date, or party, in under a second, needs an index. Scanning every record for every query would take minutes. The data structure that makes search fast is the inverted index, and its building blocks are posting lists. Scaling the index across machines needs sharding. These three ideas, inverted indexes, posting lists, and sharding, are the internals of every search system, from the payment engine operations console to the web search engine, and understanding them helps an analyst specify, test, and troubleshoot search. An inverted index reverses the natural order. The natural order maps each record to its terms: this payment has these references, these names, these amounts. The inverted index maps each term to the records containing it: this reference appears in these payments, this name appears in those payments. A search for a term looks up the index and gets the record identifiers directly, without scanning. The index is built once, when records are added or updated, and queried many times. The build cost is paid upfront, and the query cost is small. That trade, expensive build, cheap query, is what makes search fast. The lists in the index are posting lists. For each term, the posting list is the sorted list of record identifiers, the postings, that contain the term. A posting may carry extra data: the position of the term in the record, or how often it appears, which supports phrase search and ranking. Query processing combines posting lists: an AND query intersects the lists, keeping only the identifiers in all of them; an OR query unions them. Skip lists let the intersection jump ahead instead of stepping through every entry, and compression keeps the lists small on disk and in memory. The efficiency of search is the efficiency of posting list operations. Sharding splits the index across machines. In document based sharding, each shard holds the index for a subset of records: shard one holds January payments, shard two holds February, or the split is by hash of the record identifier. A query fans out to all shards, each shard returns its matching results, and a coordinator merges them, sorts them, and returns the top results. Sharding scales capacity, because each shard holds a fraction of the index, and throughput, because shards answer in parallel. Replication, holding a copy of each shard on another machine, provides availability: if a shard machine fails, its replica answers. Payment search is mostly structured, and that shapes the design. Operations search by reference, amount, date range, status, and party: exact matches and range queries, where the index must support the field, the range, and the combination. Free text search over remittance information and narrative needs ranking: which results match best, using measures like term frequency and inverse document frequency, and filters and facets to narrow the results. The design must serve both: the structured query that must return the exact payment, and the text query that must return the most relevant payments. A search that returns the wrong payment, or no payment, when the payment exists, is an operations failure. For a business analyst, search requirements cover what is indexed, how fresh the index is, and how fast queries must return. The indexed fields must match the queries operations actually run: a field that is searched but not indexed is a slow query. Freshness, the delay between a payment arriving and appearing in search, must be specified: real time for operations, near real time for reporting. And the latency target, the query time at a defined load, must be tested. Search is the operations console: a slow search means slow exception handling, slow investigations, and slow customer answers. Index design is a requirements decision, not an implementation detail.", "paragraphs": ["Finding a payment among millions, by reference, amount, date, or party, in under a second, needs an index. Scanning every record for every query would take minutes. The data structure that makes search fast is the inverted index, and its building blocks are posting lists. Scaling the index across machines needs sharding. These three ideas, inverted indexes, posting lists, and sharding, are the internals of every search system, from the payment engine operations console to the web search engine, and understanding them helps an analyst specify, test, and troubleshoot search.", "An inverted index reverses the natural order. The natural order maps each record to its terms: this payment has these references, these names, these amounts. The inverted index maps each term to the records containing it: this reference appears in these payments, this name appears in those payments. A search for a term looks up the index and gets the record identifiers directly, without scanning. The index is built once, when records are added or updated, and queried many times. The build cost is paid upfront, and the query cost is small. That trade, expensive build, cheap query, is what makes search fast.", "The lists in the index are posting lists. For each term, the posting list is the sorted list of record identifiers, the postings, that contain the term. A posting may carry extra data: the position of the term in the record, or how often it appears, which supports phrase search and ranking. Query processing combines posting lists: an AND query intersects the lists, keeping only the identifiers in all of them; an OR query unions them. Skip lists let the intersection jump ahead instead of stepping through every entry, and compression keeps the lists small on disk and in memory. The efficiency of search is the efficiency of posting list operations.", "Sharding splits the index across machines. In document based sharding, each shard holds the index for a subset of records: shard one holds January payments, shard two holds February, or the split is by hash of the record identifier. A query fans out to all shards, each shard returns its matching results, and a coordinator merges them, sorts them, and returns the top results. Sharding scales capacity, because each shard holds a fraction of the index, and throughput, because shards answer in parallel. Replication, holding a copy of each shard on another machine, provides availability: if a shard machine fails, its replica answers.", "Payment search is mostly structured, and that shapes the design. Operations search by reference, amount, date range, status, and party: exact matches and range queries, where the index must support the field, the range, and the combination. Free text search over remittance information and narrative needs ranking: which results match best, using measures like term frequency and inverse document frequency, and filters and facets to narrow the results. The design must serve both: the structured query that must return the exact payment, and the text query that must return the most relevant payments. A search that returns the wrong payment, or no payment, when the payment exists, is an operations failure.", "For a business analyst, search requirements cover what is indexed, how fresh the index is, and how fast queries must return. The indexed fields must match the queries operations actually run: a field that is searched but not indexed is a slow query. Freshness, the delay between a payment arriving and appearing in search, must be specified: real time for operations, near real time for reporting. And the latency target, the query time at a defined load, must be tested. Search is the operations console: a slow search means slow exception handling, slow investigations, and slow customer answers. Index design is a requirements decision, not an implementation detail."], "accessibility": "Payment flow diagram showing Search internals: inverted indexes, posting lists and sharding.", "visual_type": "payment_flow", "visual_choice_reason": "default payment journey", "beats": [{"t0": 0.0, "t1": 46.0, "title": "Finding a payment among millions", "note": "Finding a payment among millions, by reference, amount, date, or party, in under a second, needs an index.", "highlight_nodes": ["n0"], "highlight_conns": [], "highlight_fields": []}, {"t0": 46.0, "t1": 92.6, "title": "Inverted index maps each term", "note": "The inverted index maps each term to the records containing it: this reference appears in these payments, this name appears in those payments.", "highlight_nodes": ["n1"], "highlight_conns": ["c0"], "highlight_fields": []}, {"t0": 92.6, "t1": 138.8, "title": "Query processing", "note": "Query processing combines posting lists: an AND query intersects the lists, keeping only the identifiers in all of them; an OR query unions them.", "highlight_nodes": ["n2"], "highlight_conns": ["c1"], "highlight_fields": []}, {"t0": 138.8, "t1": 183.3, "title": "Sharding scales capacity", "note": "Sharding scales capacity, because each shard holds a fraction of the index, and throughput, because shards answer in parallel.", "highlight_nodes": ["n3"], "highlight_conns": ["c2"], "highlight_fields": []}, {"t0": 183.3, "t1": 224.1, "title": "Serve both", "note": "The design must serve both: the structured query that must return the exact payment, and the text query that must return the most relevant payments.", "highlight_nodes": ["n4"], "highlight_conns": ["c3"], "highlight_fields": []}, {"t0": 224.1, "t1": 241.0, "title": "Query time at a defined load", "note": "And the latency target, the query time at a defined load, must be tested.", "highlight_nodes": ["n5"], "highlight_conns": ["c4"], "highlight_fields": []}], "framework": {"objective": "By the end of this lesson, you will be able to explain search internals: inverted indexes, posting lists and sharding. Finding a payment among millions, by reference, amount, date, or party, in under a second, needs an index.", "why_matters": "For a business analyst, search requirements cover what is indexed, how fresh the index is, and how fast queries must return.", "technical_example": "Remittance information: Information that explains what a payment is for, such as invoice numbers, contract references or salary month.", "failure_recovery": "Search is the operations console: a slow search means slow exception handling, slow investigations, and slow customer answers.", "exercise": {"task": "Work out what the beneficiary receives for a $10,000 payment under OUR, SHA and BEN.", "info": "Use the charge arrangement rules in this lesson and the correspondent and beneficiary bank fees named in the lesson.", "action": "Calculate the amount credited under each of the three arrangements and state who pays each fee.", "correct": "Under OUR the sender pays all charges and the beneficiary receives the full amount. Under SHA the sender pays the sending charges and the beneficiary pays the receiving charges. Under BEN the beneficiary pays all charges and receives the amount less all fees.", "why": "The charge arrangement decides who pays and how much arrives. A customer who was promised the full amount and receives less will complain, and the complaint lands on the analyst."}, "assessment": {"question": "Which of the following best describes search internals: inverted indexes, posting lists and sharding?", "options": ["The engine is not the hub itself: the hub is the platform that hosts the engines, applies common controls once, and routes each payment to the right engine", "A payment engine is the specialist component inside a payment hub that executes one type of payment from intake to settlement instruction", "Finding a payment among millions, by reference, amount, date, or party, in under a second, needs an index", "Every engine starts with an intake module"], "answer": 2, "explanation": "Finding a payment among millions, by reference, amount, date, or party, in under a second, needs an index. This is the core idea of the lesson.", "why_wrong": ["This describes a different concept from this chapter, not search internals: inverted indexes, posting lists and sharding.", "This describes a different concept from this chapter, not search internals: inverted indexes, posting lists and sharding.", "", "This describes a different concept from this chapter, not search internals: inverted indexes, posting lists and sharding."], "source": "generated:ch79s9"}, "takeaway": "For a business analyst, search requirements cover what is indexed, how fresh the index is, and how fast queries must return.", "prereq": "ch79s8", "next": "ch80s1", "connection_note": "Builds on \"Cache stampede, TTL jitter and single-flight\".", "tool": {"slug": "lifecycle", "label": "Payment Lifecycle Simulator", "url": "../simulators/lifecycle.html", "scenario": "Follow a payment through every stage, from instruction to beneficiary credit, and note where it can stop."}, "simple": "In plain words: finding a payment among millions, by reference, amount, date, or party, in under a second, needs an index. That is the whole idea in one sentence, and the rest of the lesson shows how it works in a real bank.", "summary": "Finding a payment among millions, by reference, amount, date, or party, in under a second, needs an index. Key points: Finding a payment among millions; Inverted index maps each term; Query processing; Sharding scales capacity; Serve both; Query time at a defined load.", "example": "This lesson is conceptual. The worked examples that use it are in the lessons that follow in this chapter."}}], "chapter_title": "Payment engine internals and observability", "meta_line": "Book chapter 86: Payment engine internals and observability, Lesson 9 of 9, Narration 4:01, D09 Payment architecture and technology", "quiz": [{"question": "Which of the following best describes search internals: inverted indexes, posting lists and sharding?", "options": ["The engine is not the hub itself: the hub is the platform that hosts the engines, applies common controls once, and routes each payment to the right engine", "A payment engine is the specialist component inside a payment hub that executes one type of payment from intake to settlement instruction", "Finding a payment among millions, by reference, amount, date, or party, in under a second, needs an index", "Every engine starts with an intake module"], "answer": 2, "answer_index": 2, "correct_answer": "Finding a payment among millions, by reference, amount, date, or party, in under a second, needs an index", "explanation": "Finding a payment among millions, by reference, amount, date, or party, in under a second, needs an index. This is the core idea of the lesson.", "source": "assessment"}, {"question": "Work out what the beneficiary receives for a $10,000 payment under OUR, SHA and BEN.", "options": ["For a business analyst, search requirements cover what is indexed, how fresh the index is, and how fast queries must return.", "Remittance information: Information that explains what a payment is for, such as invoice numbers, contract references or salary month.", "Search is the operations console: a slow search means slow exception handling, slow investigations, and slow customer answers.", "Under OUR the sender pays all charges and the beneficiary receives the full amount. Under SHA the sender pays the sending charges and the beneficiary pays the receiving charges. Under BEN the beneficiary pays all charges and receives the amount less all fees."], "answer": 3, "answer_index": 3, "correct_answer": "Under OUR the sender pays all charges and the beneficiary receives the full amount. Under SHA the sender pays the sending charges and the beneficiary pays the receiving charges. Under BEN the beneficiary pays all charges and receives the amount less all fees.", "explanation": "The charge arrangement decides who pays and how much arrives. A customer who was promised the full amount and receives less will complain, and the complaint lands on the analyst.", "source": "exercise"}, {"question": "Which statement is the lesson's stated takeaway?", "options": ["By the end of this lesson, you will be able to explain search internals: inverted indexes, posting lists and sharding. Finding a payment among millions, by reference, amount, date, or party, in under a second, needs an index.", "This lesson is conceptual. The worked examples that use it are in the lessons that follow in this chapter.", "In plain words: finding a payment among millions, by reference, amount, date, or party, in under a second, needs an index. That is the whole idea in one sentence, and the rest of the lesson shows how it works in a real bank.", "For a business analyst, search requirements cover what is indexed, how fresh the index is, and how fast queries must return."], "answer": 3, "answer_index": 3, "correct_answer": "For a business analyst, search requirements cover what is indexed, how fresh the index is, and how fast queries must return.", "explanation": "For a business analyst, search requirements cover what is indexed, how fresh the index is, and how fast queries must return.", "source": "takeaway"}], "next_id": "ch28s1", "next_title": "Requirements Gathering for Payments Projects"}]);</script>
+<h2 class="pf-section-header">Real-World Example</h2>
+<div class="pf-card"><p>This lesson is conceptual. The worked examples that use it are in the lessons that follow in this chapter.</p></div>
+<h2 class="pf-section-header">Sources</h2>
+<div class="pf-card" id="pf-sources-ch79s9"><p>The official rules and standards this lesson is based on. Check them to verify the detail.</p><ul><li><a href="https://www.bis.org/committees/cpmi/" target="_blank" rel="noopener">BIS Committee on Payments and Market Infrastructures</a></li><li><a href="https://www.iso20022.org/" target="_blank" rel="noopener">ISO 20022</a></li></ul></div>
+<h2 class="pf-section-header">More in this chapter</h2>
+<div class="pf-card"><p><a href="ch79s1.html">Payment engine modules: the anatomy of an engine &rsaquo;</a></p><p><a href="ch79s2.html">Booking entries per message: how a payment posts to the ledger &rsaquo;</a></p><p><a href="ch79s3.html">Worklists and audit trails: what operators see and what auditors need &rsaquo;</a></p><p><a href="ch79s4.html">Orchestration failure handling: timeouts, retries, compensation and sagas &rsaquo;</a></p><p><a href="ch79s5.html">Observability: metrics, logs, traces and alerting for payments &rsaquo;</a></p><p><a href="ch79s6.html">Microservices for payments: service boundaries and data ownership &rsaquo;</a></p><p><a href="ch79s7.html">Engine performance and capacity: throughput, latency budgets and load testing &rsaquo;</a></p><p><a href="ch79s8.html">Cache stampede, TTL jitter and single-flight &rsaquo;</a></p></div>
+<div class="pf-card"><aside class="lesson-related"><h3>Related</h3>
+<p><b>More:</b> <a href="../situations.html?domain=D09%20Payment%20architecture%20and%20technology">Payment Situations in D09 Payment architecture and technology</a> &middot; <a href="../reference.html">Reference Library</a> &middot; <a href="../practice.html">Practice: labs, simulators and tests</a></p>
+</aside></div>
+<h2 class="pf-section-header">Next lesson</h2>
+<div class="pf-card"><a href="ch28s1.html"><span><b>Requirements Gathering for Payments Projects</b></span><br><span>Continue to the next lesson &rsaquo;</span></a></div>
+<script>(function(){var el=document.getElementById("lesson-status-ch79s9");if(!el)return;var wasDone=false;function noteDone(){setTimeout(function(){if(typeof paRecordActivity==="function"){try{paRecordActivity("lessons","ch79s9");}catch(e){}}},800);}function refresh(){var done=false;try{var p=JSON.parse(localStorage.getItem("payments-academy-progress-v1"));if(p&&p.lessons&&p.lessons["ch79s9"])done=true;}catch(e){}el.innerHTML=done?"<b>Status:</b> Completed ✓":"<b>Status:</b> Not completed yet";if(done){el.classList.add("done");}else{el.classList.remove("done");}if(done&&!wasDone){wasDone=true;noteDone();}return done;}if(!refresh()){var t=setInterval(function(){if(refresh())clearInterval(t);},2000);}})();</script>
+<script>(function(){var audio=document.getElementById("studio-audio-studio-ch79s9");var beatsEl=document.getElementById("pf-beats-studio-ch79s9");var playBtn=document.getElementById("pf-play-studio-ch79s9");var statusEl=document.getElementById("pf-audio-status-studio-ch79s9");var timeEl=document.getElementById("pf-audio-time-studio-ch79s9");var slider=document.getElementById("pf-audio-slider-studio-ch79s9");var railBar=document.getElementById("side-progress-bar");var fallbackDur=241.008;var hasStarted=false;function fmt(s){if(!isFinite(s)||s<0)s=0;s=Math.floor(s);return Math.floor(s/60)+":"+("0"+(s%60)).slice(-2);}function total(){return (audio&&audio.duration>0)?audio.duration:fallbackDur;}function beats(){return beatsEl?beatsEl.querySelectorAll(".pf-beat"):[];}function currentIndex(t){var list=beats();var idx=-1;for(var i=0;i<list.length;i++){var t0=parseFloat(list[i].getAttribute("data-t0"));var t1=parseFloat(list[i].getAttribute("data-t1"));if(t>=t0&&t<t1){idx=i;break;}}if(idx<0&&list.length&&t>=(parseFloat(list[list.length-1].getAttribute("data-t1"))||0)){idx=list.length-1;}return idx;}function badgeVisible(){return hasStarted&&total()>0&&audio&&audio.currentTime<total()-0.5;}function refreshBeats(){var list=beats();if(!list.length||!audio)return;var cur=currentIndex(audio.currentTime);var show=badgeVisible();for(var i=0;i<list.length;i++){var li=list[i];var isCur=(i===cur);li.classList.toggle("is-current",isCur);li.classList.toggle("is-playing",isCur&&show);var np=li.querySelector("[data-pf-now-playing]");if(np)np.hidden=!(isCur&&show);}}function refreshTime(){if(!audio)return;if(timeEl)timeEl.textContent=fmt(audio.currentTime)+" / "+fmt(total());if(slider&&document.activeElement!==slider){slider.value=audio.currentTime;}}function refreshStatus(){if(!statusEl||!audio)return;var playing=!audio.paused&&!audio.ended;if(playing){statusEl.textContent="Playing";}else if(hasStarted){statusEl.textContent="Paused";}else{statusEl.textContent="Not started yet";}if(playBtn){playBtn.textContent=playing?"⏸":"▶";playBtn.setAttribute("aria-label",playing?"Pause":"Play");}}function seekTo(t){if(!audio)return;if(audio.readyState>=1){audio.currentTime=t;}else{var once=function(){audio.currentTime=t;audio.removeEventListener("loadedmetadata",once);refreshTime();refreshBeats();};audio.addEventListener("loadedmetadata",once);}}if(audio){audio.addEventListener("play",function(){hasStarted=true;refreshStatus();refreshBeats();});audio.addEventListener("pause",function(){refreshStatus();refreshBeats();});audio.addEventListener("ended",function(){refreshStatus();refreshBeats();refreshTime();});audio.addEventListener("timeupdate",function(){refreshTime();refreshBeats();});audio.addEventListener("loadedmetadata",function(){refreshTime();refreshBeats();});}if(slider&&audio){slider.addEventListener("change",function(){seekTo(parseFloat(slider.value)||0);refreshTime();refreshBeats();});}if(beatsEl&&audio){beatsEl.addEventListener("click",function(ev){var btn=ev.target.closest?ev.target.closest("[data-pf-seek]"):null;if(!btn)return;var t=parseFloat(btn.getAttribute("data-pf-seek"))||0;seekTo(t);var row=btn.closest(".pf-beat");beats().forEach(function(li){var s=li.querySelector("[data-pf-selected]");if(s)s.hidden=(li!==row);});refreshTime();refreshBeats();});}if(beatsEl&&audio){beatsEl.addEventListener("keydown",function(ev){if(ev.key!=="Enter"&&ev.key!==" "){return;}var kbtn=ev.target.closest?ev.target.closest("[data-pf-seek]"):null;if(!kbtn)return;ev.preventDefault();var kt=parseFloat(kbtn.getAttribute("data-pf-seek"))||0;seekTo(kt);var krow=kbtn.closest(".pf-beat");beats().forEach(function(li){var s=li.querySelector("[data-pf-selected]");if(s)s.hidden=(li!==krow);});refreshTime();refreshBeats();});}refreshStatus();refreshTime();refreshBeats();if(railBar){try{var p=JSON.parse(localStorage.getItem("payments-academy-progress-v1"));var done=(p&&p.lessons)||{};var n=0;var total=0;document.querySelectorAll(".course-rail .lesson-list li[data-lesson]").forEach(function(li){total++;if(done[li.getAttribute("data-lesson")])n++;});var fill=railBar.querySelector("span");if(fill)fill.style.width=(total?Math.round(100*n/total):0)+"%";railBar.setAttribute("aria-valuenow",n);}catch(e){}}})();</script>
+</div>
+<nav class="tool-rail" aria-label="Lesson tools">
+<button type="button" class="rail-tool" onclick="pfOpenTranscript('studio-ch79s9')" title="Open transcript"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M7 3h7l4 4v14H7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M14 3v4h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 12h5M10 15.5h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span>Transcript</span></button>
+<button type="button" class="rail-tool" onclick="pfToggleNote('studio-ch79s9')" title="Write a note on this lesson"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L8 19l-4 1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>Notes</span></button>
+</nav>
+</div>
+</div>
+</main>
+<footer class="pf-footer"><p>Payments Training Hub. The art and architecture of payments. Understand. Design. Build. Deliver. Content is for education; check current scheme rules before relying on it.</p><p><a href="../index.html">Home</a> &middot; <a href="../courses.html">Courses</a> &middot; <a href="../flows.html">Flows</a> &middot; <a href="../situations.html">Situations</a> &middot; <a href="../dashboard.html">Dashboard</a> &middot; <a href="../portfolio.html">Portfolio</a> &middot; <a href="../domains.html">Reference</a> &middot; <a href="../labs-simulators.html">Labs &amp; Simulators</a> &middot; <a href="../practice.html">Practice</a> &middot; <a href="../simulators.html">Simulators</a> &middot; <a href="../labs.html">Labs</a> &middot; <a href="../explorer.html">Explorer</a> &middot; <a href="../tests.html">Tests</a> &middot; <a href="../diagnostic.html">Diagnostic</a> &middot; <a href="../faq.html">Interview Ready Questions</a> &middot; <a href="../interview-prep.html">Interview Prep</a></p><p><a href="../about.html">About</a> &middot; <a href="../founder.html">Founder</a> &middot; <a href="../methodology.html">Methodology</a> &middot; <a href="../privacy.html">Privacy</a> &middot; <a href="../terms.html">Terms</a> &middot; <a href="../refund.html">Refunds</a> &middot; <a href="../contact.html">Contact</a> &middot; <a href="../editorial-standards.html">Editorial Standards</a> &middot; <a href="../sources.html">Sources</a> &middot; <a href="../references-policy.html">References Policy</a> &middot; <a href="../corrections.html">Corrections Policy</a></p><p><a href="../domains.html">Domains</a> &middot; <a href="../reference/mt103-to-pacs008.html">MT103 to pacs.008 Reference</a> &middot; <a href="../reference.html">Reference Library</a> &middot; <a href="../insights.html">Insights and Scenarios</a></p><p><a href="../course-map.html">Course Map</a> &middot; <a href="../pricing.html">Pricing</a> &middot; <a href="../teams.html">For Teams</a> &middot; <a href="../artifacts.html">BA Artifact Library</a> &middot; <a href="../reference/mt-iso-mapping.html">MT to ISO 20022 Mapping</a> &middot; <a href="../reference/clearing-systems.html">Clearing Systems</a> &middot; <a href="../reference/regulatory-compliance.html">Regulatory Compliance</a> &middot; <a href="../reference/exception-lifecycles.html">Exception Lifecycles</a> &middot; <a href="../reference/upi-operational.html">UPI Operational Pathway</a> &middot; <a href="../reference/sepa-guide.html">SEPA Scheme Guide</a> &middot; <a href="../tools/xml-sandbox.html">XML and MT Sandbox</a> &middot; <a href="../tools/routing-decisions.html">Routing Decision Tree</a> &middot; <a href="../tools/reconciliation-lab.html">Reconciliation Laboratory</a> &middot; <a href="../tools/investigation-lab.html">Payment Investigation Lab</a></p><p><a href="../support.html">Help and Support</a> &middot; <a href="../changelog.html">Changelog</a> &middot; <a href="../licensing.html">Licensing</a></p></footer>
+<script defer src="../assets/site.js"></script>
+<script defer src="../assets/bundles.js"></script>
+<script defer src="../assets/auth.js"></script>
+<script defer src="../assets/learner-sync.js"></script>
+<script defer src="../assets/site-search.js"></script>
+<script defer src="../assets/pf-drawer.js"></script>
+<script defer src="../assets/studio.js"></script>
+<script defer src="../assets/insight-components.js"></script>
+<script defer src="../assets/codehl.js"></script>
+<script defer src="../assets/nav.js"></script>
+<script defer src="../assets/pf-enhance.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+if(window.PFInsight){PFInsight.init();}
+});
+</script>
+</body>
+</html>

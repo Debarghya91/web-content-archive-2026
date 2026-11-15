@@ -8,6 +8,7 @@
    enforcement needs the Supabase backend. */
 var PA_SIT_ITEMS = [];
 var PA_SIT_INDEX = 0;
+var PA_SIT_DEEPLINK_ID = '';
 var PA_SIT_STAGE = '';
 var PA_SIT_DOMAIN = '';
 var PA_SIT_MESSAGE = '';
@@ -511,6 +512,21 @@ function paSitRender(){
     paSitRenderMastery(null);
     return;
   }
+  if(PA_SIT_DEEPLINK_ID){
+    var _dl = PA_SIT_DEEPLINK_ID;
+    PA_SIT_DEEPLINK_ID = '';
+    var _found = -1;
+    for(var _i = 0; _i < PA_SIT_ITEMS.length; _i++){ if(PA_SIT_ITEMS[_i].id === _dl){ _found = _i; break; } }
+    if(_found !== -1){
+      PA_SIT_STAGE = ''; PA_SIT_DOMAIN = ''; PA_SIT_MESSAGE = ''; PA_SIT_FAILURE = '';
+      PA_SIT_LEVEL = ''; PA_SIT_RESOLUTION = ''; PA_SIT_QUERY = ''; PA_SIT_BOOKMARKED_ONLY = false;
+      PA_SIT_DASH_FILTER = '';
+      paSitSyncFilterControls();
+      list = paSitVisibleItems();
+      PA_SIT_INDEX = list.indexOf(PA_SIT_ITEMS[_found]);
+      setTimeout(function(){ var _box = document.getElementById('sit-content'); if(_box) _box.scrollIntoView({behavior: 'smooth', block: 'start'}); }, 50);
+    }
+  }
   if(PA_SIT_INDEX >= list.length) PA_SIT_INDEX = list.length - 1;
   if(PA_SIT_INDEX < 0) PA_SIT_INDEX = 0;
   var item = list[PA_SIT_INDEX];
@@ -839,6 +855,11 @@ function paSitReadUrlParams(){
   if(q) PA_SIT_QUERY = q.trim().toLowerCase();
   var domain = params.get('domain');
   if(domain) PA_SIT_DOMAIN = domain;
+  /* Deep link (15 Nov 2026, fix 4): a search result links to
+     situations.html?id=<ID>. The id is resolved in paSitRender once
+     the data has loaded, so a gated visitor still sees the wall. */
+  var dl = params.get('id');
+  if(dl) PA_SIT_DEEPLINK_ID = dl;
   paSitSyncFilterControls();
 }
 document.addEventListener('DOMContentLoaded', function(){

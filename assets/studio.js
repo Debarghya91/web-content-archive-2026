@@ -202,13 +202,21 @@ function studioInit(sampleId){
     if(hideTimer){ clearTimeout(hideTimer); hideTimer = null; }
     if(!coarsePointer && audio && !audio.paused){
       hideTimer = setTimeout(function(){
-        if(player) player.classList.remove('show-controls');
+        /* Never hide the bar while a settings popover is open: the
+           popover lives inside the bar, so hiding it would make the
+           settings unclickable mid-adjustment (15 Nov 2026, fix 3). */
+        var popOpen = false;
+        if(player) player.querySelectorAll('.ctrl-popover').forEach(function(p){
+          if(p.style.display === 'block') popOpen = true;
+        });
+        if(player && !popOpen) player.classList.remove('show-controls');
       }, 3000);
     }
   }
   if(player){
     player.addEventListener('mousemove', showControls);
     player.addEventListener('mouseenter', showControls);
+    player.addEventListener('click', showControls);
     player.addEventListener('mouseleave', function(){
       if(hideTimer){ clearTimeout(hideTimer); hideTimer = null; }
       if(!coarsePointer && audio && !audio.paused) player.classList.remove('show-controls');
@@ -370,22 +378,6 @@ function studioAudioFileName(sampleId){
 function studioFallbackAudioUrl(sampleId){
   return AUDIO_FALLBACK_HOST + '/audio/' + studioAudioFileName(sampleId);
 }
-function studioUpdateDownloadLinks(sampleId, url){
-  var st = PA_STUDIOS[sampleId];
-  var lid = '';
-  if(st && st.data && st.data.scenes && st.data.scenes[0]) lid = st.data.scenes[0].id || '';
-  if(!lid){
-    var m = /^studio-(.+)$/.exec(sampleId || '');
-    if(m) lid = m[1];
-  }
-  if(!lid || !url) return;
-  /* Every download link for this lesson (the one under the player and
-     the one in the Files panel) follows the host that is actually
-     serving the audio, so a learner on the mirror downloads from it. */
-  document.querySelectorAll('a.pf-audio-download[data-lesson="' + lid + '"]').forEach(function(a){
-    a.setAttribute('href', url);
-  });
-}
 function studioArmAudioLoadTimer(sampleId){
   var st = PA_STUDIOS[sampleId];
   if(!st) return;
@@ -443,7 +435,6 @@ function studioAudioFailed(sampleId){
         try { st.audio.currentTime = pos; } catch(e){}
       }, {once: true});
     }
-    studioUpdateDownloadLinks(sampleId, mirror);
     try { st.audio.load(); } catch(e){}
     studioArmAudioLoadTimer(sampleId);
     studioShowLoading(sampleId, true);
@@ -459,13 +450,12 @@ function studioShowAudioError(sampleId){
   var e = document.getElementById('studio-error-' + sampleId);
   if(!e) return;
   var st = PA_STUDIOS[sampleId];
-  var dl = (st && st.audio) ? (st.audio.currentSrc || st.audio.src || '') : '';
   e.innerHTML = '';
   var t = document.createElement('span');
   t.className = 'studio-error-title';
   t.textContent = 'Audio could not be loaded';
   e.appendChild(t);
-  e.appendChild(document.createTextNode('The narration did not load from either audio host. You can still read the full lesson below, or download the audio and play it in another app.'));
+  e.appendChild(document.createTextNode('The narration did not load from either audio host. You can still read the full lesson below.'));
   var row = document.createElement('span');
   row.className = 'studio-error-actions';
   var retry = document.createElement('button');
@@ -479,13 +469,6 @@ function studioShowAudioError(sampleId){
   tr.textContent = 'Read the transcript';
   tr.setAttribute('onclick', "studioOpenTranscript('" + sampleId + "');return false;");
   row.appendChild(tr);
-  if(dl){
-    var d = document.createElement('a');
-    d.href = dl;
-    d.textContent = 'Download audio (MP3)';
-    d.setAttribute('download', '');
-    row.appendChild(d);
-  }
   e.appendChild(row);
   e.style.display = 'block';
   studioShowPlayOverlay(sampleId, false);
@@ -501,7 +484,6 @@ function studioRetryAudio(sampleId){
   var primary = st.primaryAudioUrl || ((st.data.scenes[0] || {}).audio || '');
   if(!primary) return;
   st.audio.src = primary;
-  studioUpdateDownloadLinks(sampleId, primary);
   try { st.audio.load(); } catch(e){}
   studioArmAudioLoadTimer(sampleId);
   studioShowLoading(sampleId, true);
@@ -553,6 +535,10 @@ function studioRenderMarkers(sampleId){
 function studioLoadScene(sampleId, idx, autoplay){
   var st = PA_STUDIOS[sampleId];
   if(!st || idx < 0 || idx >= st.data.scenes.length) return;
+  /* Load-sequence token (15 Nov 2026, fix 1): a stale async setSrc from
+     an earlier scene load can never reset a newer scene or position. */
+  st.loadSeq = (st.loadSeq || 0) + 1;
+  var mySeq = st.loadSeq;
   studioStopVisual(sampleId);
   var scene = st.data.scenes[idx];
   st.scene = idx; st.beat = -1; st.seenStages = {};
@@ -561,16 +547,17 @@ function studioLoadScene(sampleId, idx, autoplay){
   var audio = st.audio;
   var wasPlaying = !audio.paused;
   var setSrc = function(url){
+    /* Stale-load guard: if a newer scene load has started, this
+       callback belongs to the old one and must not touch the audio. */
+    if(mySeq !== st.loadSeq) return;
     /* Remember the primary URL for Retry, clear any earlier failure
-       state, point the download links at this host, and start the load
-       timer: if nothing is playable within 8 seconds the player fails
-       over to the mirror host on its own. */
+       state, and start the load timer: if nothing is playable within
+       8 seconds the player fails over to the mirror host on its own. */
     st.primaryAudioUrl = url;
     st.audioFailedOver = false;
     st.audioFailed = false;
     st.audioLoadWaits = 0;
     studioHideError(sampleId);
-    studioUpdateDownloadLinks(sampleId, url);
     audio.src = url;
     audio.currentTime = 0;
     studioArmAudioLoadTimer(sampleId);
@@ -634,13 +621,6 @@ function studioLoadScene(sampleId, idx, autoplay){
       var pe = document.createElement('p'); pe.className = 'transcript'; pe.textContent = p; tr.appendChild(pe);
     });
   }
-  var pr = document.getElementById('studio-paras-' + sampleId);
-  if(pr){
-    pr.innerHTML = '';
-    (scene.paragraphs || []).forEach(function(p){
-      var pe = document.createElement('p'); pe.className = 'transcript'; pe.textContent = p; pr.appendChild(pe);
-    });
-  }
   var tp = document.getElementById('studio-transcript-full-' + sampleId);
   if(tp){
     tp.innerHTML = '';
@@ -648,9 +628,6 @@ function studioLoadScene(sampleId, idx, autoplay){
       var h = document.createElement('h4'); h.textContent = s.title; tp.appendChild(h);
       studioTranscriptParagraphs(s.transcript || '', s.paragraphs || []).forEach(function(tp2){
         var pe2 = document.createElement('p'); pe2.textContent = tp2; tp.appendChild(pe2);
-      });
-      (s.paragraphs || []).forEach(function(pp){
-        var pe = document.createElement('p'); pe.textContent = pp; tp.appendChild(pe);
       });
     });
   }
@@ -675,6 +652,15 @@ function studioRefresh(sampleId, tOverride){
   if(slider && !st.sliderScrubbing) slider.value = Math.round(V / st.total * 1000);
   var tm = document.getElementById('studio-time-' + sampleId);
   if(tm && typeof fmtTime === 'function') tm.textContent = fmtTime(V) + ' / ' + fmtTime(st.total);
+  /* Listen card sync (15 Nov 2026, fix 2): the Listen card on a lesson
+     page reads the same audio clock as the player, so both displays
+     agree after any seek or step. */
+  var suffix = sampleId.replace(/^studio-/, '');
+  var lt = document.getElementById('pf-audio-time-' + suffix);
+  if(lt && typeof fmtTime === 'function') lt.textContent = fmtTime(V) + ' / ' + fmtTime(st.total);
+  var ls = document.getElementById('pf-audio-slider-' + suffix);
+  if(ls && document.activeElement !== ls) ls.value = V;
+  studioSyncStepButtons(sampleId);
 }
 function studioApplyBeat(sampleId, beatIdx){
   var st = PA_STUDIOS[sampleId];
@@ -893,14 +879,18 @@ function studioStepBeat(sampleId, dir){
   if(!scene) return;
   var beats = scene.beats || [];
   if(!beats.length) return;
-  var cur = st.beat < 0 ? 0 : st.beat;
+  /* Derive the current step from the audio position, not from the
+     cached beat index, so a step taken right after a seek lands on
+     the step the narration is actually in (15 Nov 2026, fix 2). */
+  var pos = st.audio.currentTime || 0;
+  var cur = 0;
+  beats.forEach(function(b, i){ if(pos >= (b.t0 || 0)) cur = i; });
   var target = cur + dir;
   if(target < 0 || target >= beats.length) return;
   var t = beats[target].t0 || 0;
   studioClearEndTimer(sampleId);
   studioHideUpNext(sampleId);
-  st.audio.currentTime = t + 0.01;
-  studioRefresh(sampleId, st.audio.currentTime);
+  studioSeekAudio(sampleId, t + 0.01);
 }
 function studioSyncStepButtons(sampleId){
   var st = PA_STUDIOS[sampleId];
@@ -914,7 +904,9 @@ function studioSyncStepButtons(sampleId){
     if(next) next.disabled = st.scene === st.data.scenes.length - 1;
   } else {
     var n = (scene && scene.beats ? scene.beats.length : 0);
-    var b = st.beat < 0 ? 0 : st.beat;
+    var pos = (st.audio && st.audio.currentTime) || 0;
+    var b = 0;
+    ((scene && scene.beats) || []).forEach(function(bt, i){ if(pos >= (bt.t0 || 0)) b = i; });
     if(prev) prev.disabled = b === 0;
     if(next) next.disabled = b >= n - 1;
   }
@@ -954,6 +946,26 @@ function studioCycleSpeed(sampleId){
   var nxt = PA_SPEEDS[(i + 1) % PA_SPEEDS.length];
   studioSetSpeed(sampleId, nxt);
 }
+/* Seek helper (15 Nov 2026, fix 1): setting currentTime before metadata
+   has loaded is silently ignored by browsers, which reads as a seek
+   that jumps back to the start. Defer the seek to loadedmetadata when
+   the audio is not ready yet, then refresh from the real position. */
+function studioSeekAudio(sampleId, t){
+  var st = PA_STUDIOS[sampleId];
+  if(!st || !st.audio) return;
+  var a = st.audio;
+  if(a.readyState >= 1){
+    try { a.currentTime = t; } catch(e){}
+    studioRefresh(sampleId, t);
+    return;
+  }
+  var once = function(){
+    try { a.removeEventListener('loadedmetadata', once); } catch(e){}
+    try { a.currentTime = t; } catch(e){}
+    studioRefresh(sampleId, t);
+  };
+  a.addEventListener('loadedmetadata', once);
+}
 /* Skip forward or back by a number of seconds; the frame, highlight and
    caption follow because the audio position is the source of truth. */
 function studioSkip(sampleId, secs){
@@ -971,11 +983,12 @@ function studioSkip(sampleId, secs){
   if(!isFinite(cur) || cur < 0) cur = 0;
   var t = cur + secs;
   if(t < 0) t = 0;
-  if(cap && t > cap) t = cap;
+  /* Stop a fraction short of the end: seeking to exactly the duration
+     fires 'ended' and auto-advances, which reads as a reset. */
+  if(cap && t > cap - 0.05) t = Math.max(0, cap - 0.05);
   studioClearEndTimer(sampleId);
   studioHideUpNext(sampleId);
-  try { a.currentTime = t; } catch(e){}
-  studioRefresh(sampleId, t);
+  studioSeekAudio(sampleId, t);
 }
 /* Fullscreen the whole player (canvas plus control bar). */
 function studioFullscreen(sampleId){
@@ -1002,7 +1015,14 @@ function studioCloseAllSettings(){
   var pops = document.querySelectorAll('.ctrl-popover');
   for(var i = 0; i < pops.length; i++){ pops[i].style.display = 'none'; }
 }
-document.addEventListener('click', function(){ studioCloseAllSettings(); });
+document.addEventListener('click', function(ev){
+  /* Clicks inside the popover (or its settings button wrapper) must not
+     close it; the popover itself also stops propagation, so this is a
+     second guard for any popover without the inline handler. */
+  var t = ev && ev.target;
+  if(t && t.closest && (t.closest('.ctrl-popover') || t.closest('.ctrl-settings-wrap'))) return;
+  studioCloseAllSettings();
+});
 /* Open the (collapsed) transcript from the right tool rail. */
 function pfOpenTranscript(sampleId){
   var d = document.getElementById('studio-transcript-details-' + sampleId);
@@ -1197,38 +1217,6 @@ function pfRevealExercise(sampleId){
   ans.classList.toggle('open');
   var btn = document.getElementById('pf-ex-btn-' + sampleId);
   if(btn) btn.textContent = ans.classList.contains('open') ? 'Hide the answer' : 'Show the answer';
-}
-/* Files panel (tool rail): toggle the lesson-files panel. */
-function pfToggleFiles(sampleId){
-  var p = document.getElementById('pf-files-' + sampleId);
-  if(!p) return;
-  p.style.display = (p.style.display === 'none' || p.style.display === '') ? 'block' : 'none';
-}
-/* Download the lesson transcript as a .txt file (built from the page text). */
-function pfDownloadTranscript(sampleId){
-  var t = document.getElementById('studio-transcript-' + sampleId);
-  var paras = document.getElementById('studio-paras-' + sampleId);
-  var text = '';
-  if(t){
-    var tps = t.querySelectorAll ? t.querySelectorAll('p') : [];
-    if(tps.length){
-      for(var ti = 0; ti < tps.length; ti++){ text += tps[ti].textContent + String.fromCharCode(10,10); }
-    } else {
-      text += t.textContent + String.fromCharCode(10,10);
-    }
-  }
-  if(paras){
-    var ps = paras.querySelectorAll('p');
-    for(var i = 0; i < ps.length; i++){ text += ps[i].textContent + String.fromCharCode(10,10); }
-  }
-  if(!text) return;
-  var blob = new Blob([text], {type: 'text/plain'});
-  var a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = sampleId.replace('studio-', '') + '-transcript.txt';
-  document.body.appendChild(a);
-  a.click();
-  setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 500);
 }
 /* Save note: a small editor under the title, stored in localStorage per
    lesson. No server, no account needed. */

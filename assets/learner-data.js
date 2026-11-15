@@ -237,9 +237,10 @@
       if (!knownDone[l.id]) {
         var ch = chapterById[l.ch] || {};
         var inChapter = (data.lessonOrder || []).filter(function (x) { return x.ch === l.ch; });
-        nextLesson = { id: l.id, ch: l.ch, n: l.n, heading: l.heading,
+        nextLesson = { id: l.id, ch: l.ch, n: (l.dn || l.n), heading: l.heading,
           url: l.url, chapterTitle: ch.title || l.ch,
-          chapterTotal: inChapter.length };
+          chapterTotal: inChapter.length,
+          book: (l.book != null ? l.book : (ch.book != null ? ch.book : null)) };
         return true;
       }
       return false;
@@ -493,11 +494,12 @@
       h += '<div class="hp-dash">';
       if (summary.nextLesson) {
         var nl = summary.nextLesson;
+        var _blabel = (nl.book == null) ? 'Outside the main reading path' : 'Book chapter ' + nl.book;
         h += '<div class="pf-card hp-dash-card"><b>' + esc(nl.heading) + '</b><span>Next lesson: ' +
-          esc(nl.chapterTitle) + ', lesson ' + nl.n + ' of ' + nl.chapterTotal + '</span>' +
+          _blabel + ': ' + esc(nl.chapterTitle) + ', lesson ' + nl.n + ' of ' + nl.chapterTotal + '</span>' +
           '<p><a href="' + esc(nl.url) + '">Open this lesson</a></p></div>';
       } else if (summary.allLessonsDone) {
-        h += '<div class="pf-card hp-dash-card"><b>All 767 lessons complete</b><span>You finished the whole curriculum. ' +
+        h += '<div class="pf-card hp-dash-card"><b>All ' + summary.lessonsTotal + ' lessons complete</b><span>You finished the whole curriculum. ' +
           'Retake a test or work a capstone to keep it sharp.</span>' +
           '<p><a href="tests.html">Retake a test</a></p></div>';
       }

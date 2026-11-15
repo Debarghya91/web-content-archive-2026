@@ -1,9 +1,8 @@
 /* ===== PaymentForge side panel, tab bar, and guided tour (app parity, 12 Nov 2026, worker 1) =====
    Mirrors the iOS app drawer: slide in panel, dim background, tap dim or
    swipe left to close, swipe right from the left edge to open. Also marks
-   the active drawer row and tab from the current path, opens the Hub
-   Assistant chat panel from the Chat Assistant row, runs the Appearance
-   popover (larger text plus the sound toggle), and runs the 5 step guided
+   the active drawer row and tab from the current path, runs the Appearance
+   popover (dark mode, larger text plus the sound toggle), and runs the 5 step guided
    tour started from the Start Tour row. No dependencies. Every lookup is
    guarded: on a page missing an element, the matching feature quietly
    does nothing instead of throwing. No auto start: the tour runs only
@@ -148,39 +147,42 @@ function repointPurchasesRow(){
   try{ row.setAttribute('href', href); }catch(e){ /* ignore */ }
 }
 
-/* ---------- Chat Assistant: open the Hub Assistant panel through its own controls ---------- */
-function openChatAssistant(){
-  var root = $('#hub-assistant');
-  if(!root) return false;
-  var panel = $('#hub-panel');
-  var mascot = $('#hub-mascot');
-  var dot = $('#hub-dot');
-  var input = $('#hub-input');
-  if(root.classList.contains('hub-hidden')){
-    if(dot){ try{ dot.click(); }catch(e){ try{ root.classList.remove('hub-hidden'); }catch(e2){} } }
-    else { try{ root.classList.remove('hub-hidden'); }catch(e){} }
-  }
-  if(panel && panel.hidden){
-    if(mascot){ try{ mascot.click(); }catch(e){ try{ panel.hidden = false; }catch(e2){} } }
-    else { try{ panel.hidden = false; }catch(e){} }
-  }
-  if(panel && panel.hidden){
-    try{ panel.hidden = false; }catch(e){ /* ignore */ }
-  }
-  if(input){
-    setTimeout(function(){ try{ input.focus(); }catch(e){ /* ignore */ } }, 120);
-  }
-  return true;
-}
-
-/* ---------- Appearance popover: larger text plus the sound toggle ---------- */
+/* ---------- Appearance popover: dark mode, larger text, sound toggle ---------- */
+var DARK_MODE_KEY = 'pf.appearance.darkMode';
 var LARGER_TEXT_KEY = 'pf.appearance.largerText';
+function applyDarkMode(on){
+  try{
+    if(document.documentElement) document.documentElement.classList.toggle('pf-dark', !!on);
+  }catch(e){ /* ignore */ }
+}
+function darkModeDefault(){
+  try{
+    if(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) return true;
+  }catch(e){ /* ignore */ }
+  return false;
+}
 function applyLargerText(on){
   try{
     if(document.documentElement) document.documentElement.classList.toggle('pf-large-text', !!on);
   }catch(e){ /* ignore */ }
 }
 function initAppearance(){
+  /* Dark mode (15 Nov 2026, fix 8): same storage key and default rule
+     as the early script in the page head, so the checkbox always
+     agrees with the class already on the page. */
+  var darkBox = $('#pfDarkMode');
+  var storedDark = lsGet(DARK_MODE_KEY);
+  var darkOn = storedDark === null ? darkModeDefault() : storedDark === 'true';
+  applyDarkMode(darkOn);
+  if(darkBox){
+    try{ darkBox.checked = darkOn; }catch(e){ /* ignore */ }
+    darkBox.addEventListener('change', function(){
+      var v = false;
+      try{ v = !!darkBox.checked; }catch(e){ v = false; }
+      applyDarkMode(v);
+      lsSet(DARK_MODE_KEY, v ? 'true' : 'false');
+    });
+  }
   var box = $('#pfLargerText');
   var on = lsGet(LARGER_TEXT_KEY) === 'true';
   applyLargerText(on);
@@ -420,12 +422,6 @@ function init(){
     btn.addEventListener('click', function(){ toggleDrawer(btn); });
   });
   if(scrim) scrim.addEventListener('click', function(){ closeDrawer(true); });
-  $all('[data-pf-chat]').forEach(function(btn){
-    btn.addEventListener('click', function(){
-      closeDrawer(false);
-      setTimeout(function(){ openChatAssistant(); }, 150);
-    });
-  });
   $all('[data-pf-tour-start]').forEach(function(btn){
     btn.addEventListener('click', function(){
       closeDrawer(false);
@@ -457,8 +453,7 @@ window.PFDrawer = {
   open: openDrawer,
   close: closeDrawer,
   toggle: toggleDrawer,
-  startTour: startTour,
-  openChat: openChatAssistant
+  startTour: startTour
 };
 
 })();
