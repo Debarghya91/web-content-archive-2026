@@ -51,7 +51,7 @@ function enrolBundle(bid){ if(typeof pauseAllAudio === "function") pauseAllAudio
     if(done[li.getAttribute("data-lesson")]){ li.classList.add("done"); n++; }
   });
   var txt = document.getElementById("side-progress-text");
-  if(txt) txt.textContent = n + " of " + items.length + " items";
+  if(txt) txt.textContent = n > 0 ? (n + " of " + items.length + " items") : "Your progress in this chapter will show here.";
   var body = document.getElementById("side-goal-body");
   if(body){
     var left = items.length - n;

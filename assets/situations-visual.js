@@ -370,6 +370,14 @@
     html += '<p class="sit-eyebrow">' + (eyebrow.length ? eyebrow.join(' &middot; ') : 'Payment Situations') + '</p>';
     html += '<p class="sit-case-label">Situation</p>';
     html += '<h3 class="sit-title">' + esc(item.title || 'Untitled situation') + '</h3>';
+    /* Agenda (15 Nov 2026 review wave): why take this case, with its
+       thumbnail. The fields arrive in the shipped payload from
+       agendas.json; an item without them shows nothing extra. */
+    if (item.agenda || item.thumbnail) {
+      html += '<div class="pf-agenda">';
+      if (item.thumbnail) html += '<img class="pf-thumb pf-thumb-lg" src="' + esc(item.thumbnail) + '" alt="" loading="lazy">';
+      html += '<div class="pf-agenda-text"><span class="pf-agenda-label">Why take this case</span><p>' + esc(item.agenda || '') + '</p></div></div>';
+    }
     var label = sourceLabel(item);
     if (label) html += '<p class="sit-source">Source: ' + esc(label) + '</p>';
     /* App detail pills: stage, level (gold) and scheme, as in the iOS

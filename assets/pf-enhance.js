@@ -23,9 +23,14 @@ function paRecordActivity(kind, lessonId){
 }
 
 /* Payments Training Hub enhancements: additive, no behaviour replaced */
+/* Scroll rule (15 Nov 2026): every scrollable view opens at the top
+   on every entry, and Back navigation lands at the top too. The old
+   sidebar auto-scroll to the current lesson is removed, and scroll
+   restoration is off, so the browser never re-enters a page
+   mid-scroll. Explicit #fragment links still work: this only stops
+   automatic restoration. */
 (function(){
-  try{var cur=document.querySelector('.side .lesson-list li.current');
-    if(cur&&cur.scrollIntoView){var l=cur.parentNode;l.scrollTop=cur.offsetTop-l.offsetTop-60;}}catch(e){}
+  try{ if('scrollRestoration' in history) history.scrollRestoration = 'manual'; }catch(e){}
   document.addEventListener('keydown',function(e){
     if(/INPUT|TEXTAREA|SELECT/.test((e.target||{}).tagName||''))return;
     if(e.key==='Escape'){pfCloseDetail();return;}

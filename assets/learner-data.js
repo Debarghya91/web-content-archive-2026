@@ -494,7 +494,7 @@
       h += '<div class="hp-dash">';
       if (summary.nextLesson) {
         var nl = summary.nextLesson;
-        var _blabel = (nl.book == null) ? 'Outside the main reading path' : 'Book chapter ' + nl.book;
+        var _blabel = (nl.book == null) ? 'Outside the main reading path' : 'Chapter ' + nl.book;
         h += '<div class="pf-card hp-dash-card"><b>' + esc(nl.heading) + '</b><span>Next lesson: ' +
           _blabel + ': ' + esc(nl.chapterTitle) + ', lesson ' + nl.n + ' of ' + nl.chapterTotal + '</span>' +
           '<p><a href="' + esc(nl.url) + '">Open this lesson</a></p></div>';
@@ -532,22 +532,26 @@
       statCard(summary.streak + (summary.streak === 1 ? " day" : " days"), "Day streak", "flame",
         "Consecutive days with a lesson, a quiz or a test.") +
       statCard(String(summary.quizAttempted), "Quizzes taken", "check",
-        summary.quizCorrect + " correct out of " + summary.quizAttempted + " answered.") +
+        summary.quizAttempted > 0 ? (summary.quizCorrect + " correct out of " + summary.quizAttempted + " answered.") : "No quizzes answered yet.") +
       '</div></section>';
 
+    /* Progress rule (15 Nov 2026 review wave): progress UI shows
+       only after meaningful progress, defined as one finished
+       chapter. Before that, a starter state, never a 0-of-N count. */
     h += '<section class="section"><h2 class="pf-section-header">Overall progress</h2>' +
-      '<div class="pf-card">' + ring(pct(summary.lessonsDone, summary.lessonsTotal)) +
-      '<p><b>' + summary.lessonsDone + ' of ' + summary.lessonsTotal + ' lessons completed</b></p>' +
-      '<p>' + pct(summary.lessonsDone, summary.lessonsTotal) + '% of the curriculum complete</p>' +
-      '<p>Chapters completed: ' + summary.chaptersDone + ' of ' + summary.chaptersTotal +
-      ' (a chapter counts when every lesson in it is done). Domains fully completed: ' +
-      summary.domainsComplete + ' of ' + summary.domainsTotal + '.</p>' +
-      bar(summary.lessonsDone, summary.lessonsTotal) +
-      (summary.lessonsDone === 0 ? '<p>Complete your first lesson to start your progress.</p>' : '') +
+      '<div class="pf-card">' + (summary.chaptersDone === 0
+        ? '<p><b>Not started yet.</b></p><p>Finish your first chapter to see your progress here. Complete your first lesson to start your progress.</p>'
+        : ring(pct(summary.lessonsDone, summary.lessonsTotal)) +
+          '<p><b>' + summary.lessonsDone + ' of ' + summary.lessonsTotal + ' lessons completed</b></p>' +
+          '<p>' + pct(summary.lessonsDone, summary.lessonsTotal) + '% of the curriculum complete</p>' +
+          '<p>Chapters completed: ' + summary.chaptersDone + ' of ' + summary.chaptersTotal +
+          ' (a chapter counts when every lesson in it is done). Domains fully completed: ' +
+          summary.domainsComplete + ' of ' + summary.domainsTotal + '.</p>' +
+          bar(summary.lessonsDone, summary.lessonsTotal)) +
       '</div></section>';
 
     h += '<section class="section"><h2 class="pf-section-header">Weekly activity</h2>' +
-      '<div class="pf-card"><p><b>' + summary.weekLessons + ' of ' + summary.weeklyGoal + ' lessons this week</b></p>' +
+      '<div class="pf-card">' + (summary.weekLessons > 0 ? '<p><b>' + summary.weekLessons + ' of ' + summary.weeklyGoal + ' lessons this week</b></p>' : '<p><b>Weekly goal: ' + summary.weeklyGoal + ' lessons</b></p>') +
       weeklyChart(summary.weekDayCounts || [0, 0, 0, 0, 0, 0, 0]) +
       '<p>Bars count recorded learning events per day. Days with no activity show no bar. ' +
       'Week starting ' + esc(summary.weekStartLabel) + '.</p></div></section>';
@@ -557,7 +561,7 @@
       ? "Weekly goal reached."
       : paceLeft + " more lesson" + (paceLeft === 1 ? "" : "s") + " to reach your goal this week.";
     h += '<section class="section"><h2 class="pf-section-header">Weekly goal</h2>' +
-      '<div class="pf-card"><p><b>' + summary.weekLessons + ' of ' + summary.weeklyGoal + ' lessons this week</b></p>' +
+      '<div class="pf-card">' + (summary.weekLessons > 0 ? '<p><b>' + summary.weekLessons + ' of ' + summary.weeklyGoal + ' lessons this week</b></p>' : '<p><b>Weekly goal: ' + summary.weeklyGoal + ' lessons</b></p>') +
       '<p>How many lessons do you want to finish each week?</p>' +
       '<p>' + summary.weeklyGoal + ' lessons per week</p>' +
       '<p>' + [3, 5, 7, 10].map(function (n) {
@@ -566,9 +570,12 @@
       '<p>' + paceLine + '</p></div></section>';
 
     h += '<section class="section"><h2 class="pf-section-header">Quiz performance</h2>' +
-      '<p>Lesson quizzes answered: ' + summary.quizCorrect + ' correct out of ' +
-      summary.quizAttempted + ' answered. A lesson counts as complete when its narration finishes ' +
-      'playing, or when you tap Mark complete under a lesson.</p>' +
+      (summary.quizAttempted > 0
+        ? '<p>Lesson quizzes answered: ' + summary.quizCorrect + ' correct out of ' +
+          summary.quizAttempted + ' answered. A lesson counts as complete when its narration finishes ' +
+          'playing, or when you tap Mark complete under a lesson.</p>'
+        : '<p>No lesson quizzes answered yet. A lesson counts as complete when its narration finishes ' +
+          'playing, or when you tap Mark complete under a lesson.</p>') +
       '<p>Test series: ' + summary.testAttempts + ' attempt' + (summary.testAttempts === 1 ? '' : 's') +
       ' (' + summary.testPassedCount + ' passed), pass mark 80%. ' +
       '<a href="tests.html">Open the test series</a></p></section>';
@@ -647,19 +654,21 @@
     h += '</div></section>';
 
     h += '<section class="section"><h2 class="pf-section-header">Labs and ISO exercises</h2>';
-    h += '<p>' + summary.labsComplete + ' of ' + summary.labsTotal + ' labs complete. ' +
-      'A lab counts as complete when every step is ticked.</p>' +
+    h += (summary.labsComplete > 0
+      ? '<p>' + summary.labsComplete + ' of ' + summary.labsTotal + ' labs complete. A lab counts as complete when every step is ticked.</p>'
+      : '<p>No labs complete yet. A lab counts as complete when every step is ticked.</p>') +
       '<table class="pa-table"><tr><th>Lab</th><th>Steps done</th><th></th></tr>';
     summary.labRows.forEach(function (l) {
       h += '<tr><td><a href="' + esc(l.url) + '">' + esc(l.title) + '</a><br>' +
         '<span class="pa-note">' + esc(l.id) + (l.difficulty ? ' &middot; ' + esc(l.difficulty) : '') +
         (l.hours ? ' &middot; about ' + esc(String(l.hours)) + ' hours' : '') + '</span></td>' +
-        '<td>' + l.done + ' / ' + l.total + '</td><td>' +
-        (l.complete ? badge("Complete") : badge("In progress", true)) + '</td></tr>';
+        '<td>' + (l.done > 0 ? (l.done + ' / ' + l.total) : 'Not started') + '</td><td>' +
+        (l.complete ? badge("Complete") : badge(l.done > 0 ? "In progress" : "Not started", true)) + '</td></tr>';
     });
     h += '</table>';
-    h += '<p>ISO 20022 lab: ' + summary.isoDone + ' of ' + summary.isoTotal +
-      ' exercises marked done. <a href="iso-lab.html">Open the ISO lab</a></p>' +
+    h += (summary.isoDone > 0
+      ? '<p>ISO 20022 lab: ' + summary.isoDone + ' of ' + summary.isoTotal + ' exercises marked done. <a href="iso-lab.html">Open the ISO lab</a></p>'
+      : '<p>ISO 20022 lab: no exercises marked done yet. <a href="iso-lab.html">Open the ISO lab</a></p>') +
       '<p class="pa-note">Lab deliverables, the work products each lab asks for, are listed on ' +
       'your <a href="portfolio.html">portfolio page</a>, with a downloadable record per lab.</p></section>';
 
@@ -679,18 +688,20 @@
       'collect them.</p></section>';
 
     h += '<section class="section"><h2 class="pf-section-header">Payment Situations</h2>';
-    h += '<p>' + summary.sitCompleted + ' of ' + summary.sitTotal + ' situations completed &middot; ' +
-      summary.sitBookmarked + ' bookmarked &middot; ' + summary.sitNotes + ' with personal notes &middot; ' +
-      summary.sitReview + ' of 8 Stage 6 reflection prompts ticked.</p>';
+    h += ((summary.sitCompleted > 0 || summary.sitBookmarked > 0 || summary.sitNotes > 0 || summary.sitReview > 0)
+      ? '<p>' + summary.sitCompleted + ' of ' + summary.sitTotal + ' situations completed &middot; ' +
+        summary.sitBookmarked + ' bookmarked &middot; ' + summary.sitNotes + ' with personal notes &middot; ' +
+        summary.sitReview + ' of 8 Stage 6 reflection prompts ticked.</p>'
+      : '<p>No situations completed yet. Open a situation to start.</p>');
     h += '<table class="pa-table"><tr><th>Stage</th><th>Completed</th><th></th></tr>';
     var stageNames = { 1: "Stage 1: Payment mechanics", 2: "Stage 2: Processing decisions",
       3: "Stage 3: Operational exceptions", 4: "Stage 4: Cross-system consequences",
       5: "Stage 5: Complex banking scenarios", 6: "Stage 6: Senior SME judgement" };
     [1, 2, 3, 4, 5, 6].forEach(function (st) {
       var tot = summary.sitStageTotals[String(st)] || 0;
-      h += '<tr><td>' + stageNames[st] + '</td><td>' + (summary.sitStageDone[st] || 0) +
-        ' / ' + tot + '</td><td style="min-width:140px">' +
-        bar(summary.sitStageDone[st] || 0, tot) + '</td></tr>';
+      var _sd = summary.sitStageDone[st] || 0;
+      h += '<tr><td>' + stageNames[st] + '</td><td>' + (_sd > 0 ? (_sd + ' / ' + tot) : 'Not started') + '</td><td style="min-width:140px">' +
+        (_sd > 0 ? bar(_sd, tot) : '') + '</td></tr>';
     });
     h += '</table>';
     if (summary.sitLast) {
@@ -778,32 +789,43 @@
       '<button type="button" class="studio-btn primary" onclick="PALearner.saveLearnerName()">Save name</button> ' +
       '<span id="pa-name-saved"></span></p></section>';
 
+    var _pfFresh = summary.lessonsDone === 0 && summary.testPassedCount === 0 && summary.labsComplete === 0 && summary.capstonesDone === 0;
     h += '<section class="section"><h2 id="pa-portfolio-name">' + (name ? esc(name) : 'My Learning Portfolio') + '</h2>' +
-      '<p>Payments Training Hub &middot; ' + summary.lessonsDone + ' of ' + summary.lessonsTotal +
-      ' lessons completed &middot; ' + summary.testPassedCount + ' test' +
-      (summary.testPassedCount === 1 ? '' : 's') + ' passed &middot; ' +
-      summary.labsComplete + ' of ' + summary.labsTotal + ' labs complete &middot; ' +
-      summary.capstonesDone + ' of ' + summary.capstonesTotal + ' capstones complete.</p></section>';
+      (_pfFresh
+        ? '<p>Payments Training Hub &middot; Not started yet. Your portfolio fills in as you complete lessons, tests, labs and capstones.</p>'
+        : '<p>Payments Training Hub &middot; ' + summary.lessonsDone + ' of ' + summary.lessonsTotal +
+          ' lessons completed &middot; ' + summary.testPassedCount + ' test' +
+          (summary.testPassedCount === 1 ? '' : 's') + ' passed &middot; ' +
+          summary.labsComplete + ' of ' + summary.labsTotal + ' labs complete &middot; ' +
+          summary.capstonesDone + ' of ' + summary.capstonesTotal + ' capstones complete.</p>') + '</section>';
 
     h += '<section class="section"><h2>Content viewed</h2>' +
-      '<p>' + summary.lessonsDone + ' of ' + summary.lessonsTotal + ' narrated lessons completed, across ' +
-      summary.chaptersDone + ' of ' + summary.chaptersTotal + ' chapters and ' +
-      summary.domainsComplete + ' of ' + summary.domainsTotal + ' domains fully completed.</p>' +
-      '<p>Lesson quizzes answered: ' + summary.quizCorrect + ' correct out of ' +
-      summary.quizAttempted + ' answered.</p></section>';
+      (summary.lessonsDone > 0
+        ? '<p>' + summary.lessonsDone + ' of ' + summary.lessonsTotal + ' narrated lessons completed, across ' +
+          summary.chaptersDone + ' of ' + summary.chaptersTotal + ' chapters and ' +
+          summary.domainsComplete + ' of ' + summary.domainsTotal + ' domains fully completed.</p>'
+        : '<p>No lessons completed yet.</p>') +
+      (summary.quizAttempted > 0
+        ? '<p>Lesson quizzes answered: ' + summary.quizCorrect + ' correct out of ' + summary.quizAttempted + ' answered.</p>'
+        : '<p>No lesson quizzes answered yet.</p>') + '</section>';
 
+    var _pfAttempted = summary.practiceRows.filter(function (f) { return f.best != null; }).length;
     h += '<section class="section"><h2>Activities completed</h2><ul>' +
-      '<li>' + summary.labsComplete + ' of ' + summary.labsTotal + ' hands-on labs complete, with ' +
-      summary.isoDone + ' of ' + summary.isoTotal + ' ISO 20022 exercises marked done.</li>' +
-      '<li>Practice experiences attempted: ' +
-      summary.practiceRows.filter(function (f) { return f.best != null; }).length + ' of ' +
-      summary.practiceRows.length + '. Best scores: ' +
-      (summary.practiceRows.filter(function (f) { return f.best != null; }).map(function (f) {
-        return f.title + ' ' + f.best + '/' + f.bestTotal;
-      }).join('; ') || 'none yet') + '.</li>' +
-      '<li>Payment Situations: ' + summary.sitCompleted + ' of ' + summary.sitTotal +
-      ' completed, ' + summary.sitBookmarked + ' bookmarked, ' + summary.sitNotes +
-      ' with personal notes, ' + summary.sitReview + ' of 8 Stage 6 reflection prompts ticked.</li>' +
+      ((summary.labsComplete > 0 || summary.isoDone > 0)
+        ? '<li>' + summary.labsComplete + ' of ' + summary.labsTotal + ' hands-on labs complete, with ' +
+          summary.isoDone + ' of ' + summary.isoTotal + ' ISO 20022 exercises marked done.</li>'
+        : '<li>No hands-on labs complete yet.</li>') +
+      (_pfAttempted > 0
+        ? '<li>Practice experiences attempted: ' + _pfAttempted + ' of ' + summary.practiceRows.length + '. Best scores: ' +
+          (summary.practiceRows.filter(function (f) { return f.best != null; }).map(function (f) {
+            return f.title + ' ' + f.best + '/' + f.bestTotal;
+          }).join('; ') || 'none yet') + '.</li>'
+        : '<li>Practice experiences attempted: none yet.</li>') +
+      ((summary.sitCompleted > 0 || summary.sitBookmarked > 0 || summary.sitNotes > 0 || summary.sitReview > 0)
+        ? '<li>Payment Situations: ' + summary.sitCompleted + ' of ' + summary.sitTotal +
+          ' completed, ' + summary.sitBookmarked + ' bookmarked, ' + summary.sitNotes +
+          ' with personal notes, ' + summary.sitReview + ' of 8 Stage 6 reflection prompts ticked.</li>'
+        : '<li>Payment Situations: not started yet.</li>') +
       '</ul></section>';
 
     h += '<section class="section"><h2>Assessments passed</h2>';

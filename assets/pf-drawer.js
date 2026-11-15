@@ -208,6 +208,7 @@ function initAppearance(){
 
 /* ---------- Guided tour: 5 steps, navy card, gold progress, never blocks ---------- */
 var TOUR_KEY = 'pf.tour.done';
+var TOUR_STEP_KEY = 'pf.tour.step';
 var tourIndex = 0;
 var tourActive = false;
 var tourScrim = null;
@@ -215,13 +216,46 @@ var tourCard = null;
 var tourHighlightEl = null;
 var tourTimer = null;
 
+/* Every step carries the page it belongs to (15 Nov 2026 review
+   wave): stepping through the tour NAVIGATES to each target page,
+   instead of only highlighting the side panel. The menu step has no
+   route: it opens the panel on whatever page the tour started. */
 var TOUR_STEPS = [
-  {title:'Your menu', body:'Open the side panel any time to reach every part of the hub: courses, cases, practice tools, and your account.', drawer:'open', targets:['#pfDrawer']},
-  {title:'Home', body:'Home shows where to continue, what is recommended for you, and your route through the course.', drawer:'close', targets:['.hero-video', '#hero', '.pf-hero', 'main h1', '.pf-tabbar-item[data-tab="home"]']},
-  {title:'Search', body:'Search finds lessons, guides, cases, and questions across the whole catalogue.', drawer:'open', targets:['[data-drawer="search"]']},
-  {title:'Payment Cases', body:'Payment Cases are real world payment situations to practise, with the working explained.', drawer:'open', targets:['[data-drawer="paymentCases"]']},
-  {title:'My Progress', body:'My Progress shows your learning analytics, streak, and quiz scores.', drawer:'auto', targets:[]}
+  {title:'Your menu', body:'Open the side panel any time to reach every area of the hub: courses, cases, practice tools, and your account.', drawer:'open', route:null, targets:['#pfDrawer']},
+  {title:'Home', body:'Home shows where to continue, what is recommended for you, and your route through the course.', drawer:'close', route:'index.html', targets:['.hero-video', '#hero', '.pf-hero', 'main h1', '.pf-tabbar-item[data-tab="home"]']},
+  {title:'Search', body:'Search finds lessons, guides, cases, and questions across the whole catalogue.', drawer:'open', route:'search.html', targets:['[data-drawer="search"]']},
+  {title:'Payment Cases', body:'Payment Cases are real world payment situations to practise, with the working explained.', drawer:'open', route:'situations.html', targets:['[data-drawer="paymentCases"]']},
+  {title:'My Progress', body:'My Progress shows your learning analytics, streak, and quiz scores.', drawer:'auto', route:'dashboard.html', targets:[]}
 ];
+function tourCurrentFile(){
+  var path = '';
+  try{ path = window.location.pathname || ''; }catch(e){ path = ''; }
+  var file = path.split('/').pop() || '';
+  return file === '' ? 'index.html' : file;
+}
+function tourPrefix(){
+  /* Same depth computation as repointPurchasesRow: one ../ per
+     directory below the site root, so a tour step navigates from a
+     lesson or chapter page as well as from the root. */
+  var path = '';
+  try{ path = window.location.pathname || ''; }catch(e){ path = ''; }
+  var parts = path.split('/').filter(function(p){ return p !== ''; });
+  if(parts.length && parts[parts.length - 1].indexOf('.') !== -1) parts.pop();
+  var href = '';
+  for(var i = 0; i < parts.length; i++) href += '../';
+  return href;
+}
+function tourGoTo(index){
+  if(index < 0 || index >= TOUR_STEPS.length) return;
+  var step = TOUR_STEPS[index];
+  if(step.route && step.route !== tourCurrentFile()){
+    try{ window.sessionStorage.setItem(TOUR_STEP_KEY, String(index)); }catch(e){}
+    window.location.href = tourPrefix() + step.route;
+    return;
+  }
+  tourIndex = index;
+  renderTourStep();
+}
 
 function tourTargets(step){
   if(step.drawer === 'auto'){
@@ -313,15 +347,19 @@ function endTour(){
   if(tourScrim){ try{ tourScrim.remove(); }catch(e){} tourScrim = null; }
   if(tourCard){ try{ tourCard.remove(); }catch(e){} tourCard = null; }
   lsSet(TOUR_KEY, 'true');
+  try{ window.sessionStorage.removeItem(TOUR_STEP_KEY); }catch(e){}
   if(!isDesktop()) closeDrawer(false);
   var startBtn = $('[data-pf-tour-start]');
   if(startBtn){ try{ startBtn.focus({preventScroll:true}); }catch(e){ try{ startBtn.focus(); }catch(e2){} } }
 }
 function startTour(){
+  startTourAt(0);
+}
+function startTourAt(index){
   if(tourActive) return;
   if(!document.body) return;
   tourActive = true;
-  tourIndex = 0;
+  tourIndex = index;
   try{ document.body.classList.add('pf-tour-active'); }catch(e){ /* ignore */ }
   tourScrim = el('button', 'pf-tour-scrim', '');
   try{ tourScrim.type = 'button'; }catch(e){}
@@ -340,12 +378,12 @@ function startTour(){
   var back = el('button', 'pf-tour-back', 'Back');
   try{ back.type = 'button'; }catch(e){}
   back.addEventListener('click', function(){
-    if(tourIndex > 0){ tourIndex--; renderTourStep(); }
+    if(tourIndex > 0){ tourGoTo(tourIndex - 1); }
   });
   var next = el('button', 'pf-tour-next', 'Next');
   try{ next.type = 'button'; }catch(e){}
   next.addEventListener('click', function(){
-    if(tourIndex < TOUR_STEPS.length - 1){ tourIndex++; renderTourStep(); }
+    if(tourIndex < TOUR_STEPS.length - 1){ tourGoTo(tourIndex + 1); }
     else { endTour(); }
   });
   actions.appendChild(back);
@@ -441,6 +479,19 @@ function init(){
   window.addEventListener('resize', function(){ syncInert(); });
   initSwipe();
   syncInert();
+  /* Tour resume (15 Nov 2026 review wave): a tour step that
+     navigated here stored its index in session storage. Consume it
+     (so an ordinary later visit never resurrects the tour) and
+     reopen the tour at that step. */
+  var resumeStep = null;
+  try{ resumeStep = window.sessionStorage.getItem(TOUR_STEP_KEY); }catch(e){ resumeStep = null; }
+  if(resumeStep !== null && resumeStep !== ''){
+    try{ window.sessionStorage.removeItem(TOUR_STEP_KEY); }catch(e){}
+    var resumeIndex = parseInt(resumeStep, 10);
+    if(!isNaN(resumeIndex) && resumeIndex >= 0 && resumeIndex < TOUR_STEPS.length){
+      setTimeout(function(){ startTourAt(resumeIndex); }, 150);
+    }
+  }
 }
 
 if(document.readyState === 'loading'){

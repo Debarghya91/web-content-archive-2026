@@ -750,10 +750,11 @@ function paLabUpdate(labId){
     if(on) n += 1;
   });
   var fill = document.getElementById('lab-fill-' + labId);
-  if(fill && boxes.length) fill.style.width = Math.round(n / boxes.length * 100) + '%';
+  if(fill && boxes.length){ fill.style.width = Math.round(n / boxes.length * 100) + '%'; if(fill.parentElement) fill.parentElement.style.display = n > 0 ? '' : 'none'; }
   var txt = document.getElementById('lab-text-' + labId);
-  if(txt) txt.textContent = n + ' of ' + boxes.length + ' steps done.' +
-    (n === boxes.length && boxes.length ? ' Lab complete, well done.' : ' Tick each step as you finish it, your progress is saved in this browser.');
+  if(txt) txt.textContent = n === 0 ? 'No steps done yet. Tick each step as you finish it, your progress is saved in this browser.' :
+    (n + ' of ' + boxes.length + ' steps done.' +
+    (n === boxes.length && boxes.length ? ' Lab complete, well done.' : ' Tick each step as you finish it, your progress is saved in this browser.'));
 }
 function paLabToggle(box){
   var labId = box.getAttribute('data-lab');
@@ -835,7 +836,7 @@ function paIsoRestore(){
     if(on) n += 1;
   });
   var txt = document.getElementById('isoProgressText');
-  if(txt && boxes.length) txt.textContent = n + ' of ' + boxes.length + ' exercises marked done.';
+  if(txt && boxes.length) txt.textContent = n === 0 ? 'No exercises marked done yet.' : (n + ' of ' + boxes.length + ' exercises marked done.');
 }
 var quizAnswered = {};
 var quizScoreCorrect = 0;

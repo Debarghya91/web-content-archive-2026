@@ -9,6 +9,7 @@
 var PA_SIT_ITEMS = [];
 var PA_SIT_INDEX = 0;
 var PA_SIT_DEEPLINK_ID = '';
+var PA_SIT_DEEPLINK_MISSING = '';
 var PA_SIT_STAGE = '';
 var PA_SIT_DOMAIN = '';
 var PA_SIT_MESSAGE = '';
@@ -106,6 +107,11 @@ function paSitStageMasteryLabel(totals, m){
   return 'Not started';
 }
 function paSitVisibleItems(){
+  /* Progress is parsed once per render, not once per item: the old
+     code called paSitProgress() inside the filter, re-parsing
+     localStorage up to 3 times per item on every render. */
+  var prog = null;
+  function progOnce(){ if(!prog) prog = paSitProgress(); return prog; }
   return PA_SIT_ITEMS.filter(function(it){
     if(PA_SIT_STAGE && String(it.stage || '') !== String(PA_SIT_STAGE)) return false;
     if(PA_SIT_DOMAIN && (it.domain || '') !== PA_SIT_DOMAIN) return false;
@@ -114,15 +120,13 @@ function paSitVisibleItems(){
     if(PA_SIT_LEVEL && (it.level || '') !== PA_SIT_LEVEL) return false;
     if(PA_SIT_RESOLUTION && (it.resolution || '') !== PA_SIT_RESOLUTION) return false;
     if(PA_SIT_BOOKMARKED_ONLY){
-      var p = paSitProgress();
-      if(!p.bookmarked[it.id]) return false;
+      if(!progOnce().bookmarked[it.id]) return false;
     }
     if(PA_SIT_DASH_FILTER === 'incomplete'){
-      var pd = paSitProgress();
-      if(pd.completed[it.id]) return false;
+      if(progOnce().completed[it.id]) return false;
     }
     if(PA_SIT_DASH_FILTER === 'review'){
-      var pr = paSitProgress();
+      var pr = progOnce();
       if(!pr.completed[it.id]) return false;
       if(paSitMasteryOf(pr, it.id) === 'reviewed') return false;
     }
@@ -183,7 +187,7 @@ function paSitUpdateReviewCount(){
   if(!el) return;
   var p = paSitProgress();
   var n = Object.keys(p.review || {}).length;
-  el.textContent = 'You have reflected on ' + n + ' of ' + PA_SIT_REVIEW_PROMPTS.length + ' prompts.';
+  el.textContent = n > 0 ? ('You have reflected on ' + n + ' of ' + PA_SIT_REVIEW_PROMPTS.length + ' prompts.') : 'No prompts reflected on yet. Tick a prompt when you can do it from your own work.';
 }
 /* Stage-completion report (ChatGPT review P2#10, 9 Nov 2026; mastery
    indicator added by review P1#7): per-stage completed counts, a
@@ -196,6 +200,9 @@ function paSitRenderReport(){
   var st = paSitStageStats();
   var stageNames = {1: 'Payment mechanics', 2: 'Processing decisions', 3: 'Operational exceptions', 4: 'Cross-system consequences', 5: 'Complex banking scenarios', 6: 'Senior SME judgement'};
   var html = '<h3>Your stage completion report</h3>';
+  if(!st.totalDone){
+    html += '<p class="sit-note">Not started yet. Complete a situation to see your stage report here.</p>';
+  } else {
   [1, 2, 3, 4, 5, 6].forEach(function(s){
     var t = st.stageTotals[s] || 0;
     var dn = st.stageDone[s] || 0;
@@ -207,6 +214,7 @@ function paSitRenderReport(){
       + '<span>' + dn + ' of ' + t + '</span></div>'
       + '<p class="sit-report-mastery">Mastery: ' + escHtml(label) + ' (' + (m.read || 0) + ' read, ' + (m.understood || 0) + ' understood, ' + (m.practised || 0) + ' practised, ' + (m.reviewed || 0) + ' reviewed).</p>';
   });
+  }
   html += '<div class="sit-report-areas">';
   if(!st.totalDone){
     html += '<p>Complete a few situations and your strongest and weakest areas will appear here.</p>';
@@ -268,12 +276,12 @@ function paSitRenderDashboard(){
   }
   html += '</div>';
   var bm = PA_SIT_ITEMS.filter(function(it){ return p.bookmarked[it.id]; });
-  html += '<div class="sit-dash-card"><h4>Bookmarked (' + bm.length + ')</h4>';
+  html += '<div class="sit-dash-card"><h4>Bookmarked' + (bm.length ? ' (' + bm.length + ')' : '') + '</h4>';
   if(bm.length) html += paSitDashListItems(bm, 8);
   else html += '<p>Nothing bookmarked yet. Use Bookmark on any situation to keep it here.</p>';
   html += '</div>';
   var inc = PA_SIT_ITEMS.filter(function(it){ return !p.completed[it.id]; });
-  html += '<div class="sit-dash-card"><h4>Not yet complete (' + inc.length + ')</h4>';
+  html += '<div class="sit-dash-card"><h4>Not yet complete' + (inc.length ? ' (' + inc.length + ')' : '') + '</h4>';
   if(inc.length){
     html += paSitDashListItems(inc, 8);
     html += '<p><button type="button" class="sit-btn sit-btn-secondary" onclick="paSitDashFilter(\'incomplete\')">Show incomplete in the catalogue</button></p>';
@@ -284,7 +292,7 @@ function paSitRenderDashboard(){
   var queue = PA_SIT_ITEMS.filter(function(it){
     return p.completed[it.id] && paSitMasteryOf(p, it.id) !== 'reviewed';
   });
-  html += '<div class="sit-dash-card"><h4>Review queue (' + queue.length + ')</h4>';
+  html += '<div class="sit-dash-card"><h4>Review queue' + (queue.length ? ' (' + queue.length + ')' : '') + '</h4>';
   if(queue.length){
     html += '<p>Complete, but not yet Reviewed. Revisit one and mark it Reviewed when you have worked through it again.</p>';
     html += paSitDashListItems(queue, 8);
@@ -399,23 +407,29 @@ function paSitUpdateProgressLine(){
     var li = PA_SIT_ITEMS.filter(function(it){ return it.id === p.last; })[0];
     if(li) last = ' Continue where you left off: ' + li.title + '.';
   }
+  if(!done && !marks && !notes && !rev && !p.last){
+    line.textContent = 'Open a situation to start. Your progress, bookmarks and notes will show here as you work through the situations.';
+    return;
+  }
   line.textContent = 'You have completed ' + done + ' of ' + PA_SIT_ITEMS.length + ' situations. ' + marks + ' bookmarked. ' + notes + ' with notes. ' + rev + ' reviewed.' + last;
 }
 function paSitRenderCatalogue(list){
   var cat = document.getElementById('sit-catalogue');
   if(!cat) return;
   var cur = list[PA_SIT_INDEX];
+  var p = paSitProgress();
   var html = '<p class="sit-catalogue-count">' + list.length + ' of ' + PA_SIT_ITEMS.length + ' situations</p>';
   list.forEach(function(it, i){
     var pos = PA_SIT_ITEMS.indexOf(it) + 1;
-    var p = paSitProgress();
     var mark = p.bookmarked[it.id] ? ' \u2605 ' : '';
     var done = p.completed[it.id] ? ' \u2713 ' : '';
     var mast = paSitMasteryOf(p, it.id);
     var mastTag = (mast === 'understood' || mast === 'practised' || mast === 'reviewed') ? ' \u00b7 ' + PA_SIT_MASTERY_LABELS[mast] : '';
+    var thumb = it.thumbnail ? '<img class="pf-thumb pf-thumb-sm" src="' + escHtml(it.thumbnail) + '" alt="" loading="lazy"> ' : '';
+    var agenda = it.agenda ? '<span class="pf-row-agenda">' + escHtml(it.agenda) + '</span>' : '';
     html += '<button type="button" class="sit-catalogue-item' + (it === cur ? ' active' : '') + '" data-sit-cat="' + i + '" onclick="paSitJump(' + i + ')">'
       + '<span class="sit-cat-stage">Stage ' + (it.stage || '') + ' &middot; ' + escHtml(it.id || '') + ' &middot; ' + pos + ' of ' + PA_SIT_ITEMS.length + mark + done + mastTag + '</span>'
-      + escHtml(it.title || it.id || '') + '</button>';
+      + thumb + escHtml(it.title || it.id || '') + agenda + '</button>';
   });
   cat.innerHTML = html;
 }
@@ -525,6 +539,8 @@ function paSitRender(){
       list = paSitVisibleItems();
       PA_SIT_INDEX = list.indexOf(PA_SIT_ITEMS[_found]);
       setTimeout(function(){ var _box = document.getElementById('sit-content'); if(_box) _box.scrollIntoView({behavior: 'smooth', block: 'start'}); }, 50);
+    } else {
+      PA_SIT_DEEPLINK_MISSING = _dl;
     }
   }
   if(PA_SIT_INDEX >= list.length) PA_SIT_INDEX = list.length - 1;
@@ -539,6 +555,13 @@ function paSitRender(){
   if(next) next.disabled = PA_SIT_INDEX >= list.length - 1;
   box.innerHTML = window.PFSituations ? window.PFSituations.render(item) : '';
   if(window.PFSituations) window.PFSituations.renderAll(box);
+  if(PA_SIT_DEEPLINK_MISSING){
+    var _note = document.createElement('p');
+    _note.className = 'sit-note';
+    _note.textContent = 'No situation with code ' + PA_SIT_DEEPLINK_MISSING + ' was found. Showing the first situation instead.';
+    box.insertBefore(_note, box.firstChild);
+    PA_SIT_DEEPLINK_MISSING = '';
+  }
   paSitRenderCatalogue(list);
   paSitRenderRelated(item);
   paSitRenderNote(item);
@@ -594,6 +617,7 @@ function paSitSyncFilterControls(){
     t.classList.toggle('active', on);
     t.setAttribute('aria-selected', on ? 'true' : 'false');
   });
+  paSitSyncDrawer();
 }
 function paSitPrev(){
   if(PA_SIT_INDEX > 0){ PA_SIT_INDEX -= 1; paSitRender(); }
@@ -611,12 +635,44 @@ function paSitStageTab(stage, btn){
   paSitSyncFilterControls();
   paSitRender();
 }
+/* Category drawer (15 Nov 2026 review wave): one tap picks a whole
+   category. Picking a stage clears the bookmarked-only filter and
+   vice versa, so the drawer always shows exactly one active
+   category. */
+function paSitCategory(stage, bookmarked){
+  PA_SIT_STAGE = stage || '';
+  PA_SIT_BOOKMARKED_ONLY = !!bookmarked;
+  PA_SIT_INDEX = 0;
+  paSitSyncFilterControls();
+  paSitRender();
+}
+function paSitToggleDrawer(){
+  var d = document.getElementById('sit-cases-drawer');
+  if(!d) return;
+  var open = d.classList.toggle('is-open');
+  var t = document.querySelector('.pf-cases-drawer-toggle');
+  if(t) t.setAttribute('aria-expanded', open ? 'true' : 'false');
+}
+function paSitSyncDrawer(){
+  var cat = PA_SIT_BOOKMARKED_ONLY ? 'bookmarked' : (PA_SIT_STAGE ? 'stage-' + PA_SIT_STAGE : 'all');
+  var p = null;
+  document.querySelectorAll('.pf-cases-drawer-item').forEach(function(b){
+    var key = b.getAttribute('data-sit-category');
+    b.classList.toggle('is-active', key === cat);
+    if(key === 'bookmarked'){
+      if(!p) p = paSitProgress();
+      var n = Object.keys(p.bookmarked || {}).length;
+      var c = b.querySelector('.pf-cases-drawer-count');
+      if(c) c.textContent = n > 0 ? String(n) : '';
+    }
+  });
+}
 function paSitFilterDomain(v){ PA_SIT_DOMAIN = v || ''; PA_SIT_INDEX = 0; paSitRender(); }
 function paSitFilterMessage(v){ PA_SIT_MESSAGE = v || ''; PA_SIT_INDEX = 0; paSitRender(); }
 function paSitFilterFailure(v){ PA_SIT_FAILURE = v || ''; PA_SIT_INDEX = 0; paSitRender(); }
 function paSitFilterLevel(v){ PA_SIT_LEVEL = v || ''; PA_SIT_INDEX = 0; paSitRender(); }
 function paSitFilterResolution(v){ PA_SIT_RESOLUTION = v || ''; PA_SIT_INDEX = 0; paSitRender(); }
-function paSitFilterBookmarked(on){ PA_SIT_BOOKMARKED_ONLY = !!on; PA_SIT_INDEX = 0; paSitRender(); }
+function paSitFilterBookmarked(on){ PA_SIT_BOOKMARKED_ONLY = !!on; PA_SIT_INDEX = 0; paSitSyncDrawer(); paSitRender(); }
 function paSitSearch(q){
   PA_SIT_QUERY = (q || '').trim().toLowerCase();
   PA_SIT_INDEX = 0;
@@ -855,6 +911,12 @@ function paSitReadUrlParams(){
   if(q) PA_SIT_QUERY = q.trim().toLowerCase();
   var domain = params.get('domain');
   if(domain) PA_SIT_DOMAIN = domain;
+  var failure = params.get('failure');
+  if(failure) PA_SIT_FAILURE = failure;
+  var level = params.get('level');
+  if(level && ['foundation', 'core', 'advanced'].indexOf(level) !== -1) PA_SIT_LEVEL = level;
+  var resolution = params.get('resolution');
+  if(resolution) PA_SIT_RESOLUTION = resolution;
   /* Deep link (15 Nov 2026, fix 4): a search result links to
      situations.html?id=<ID>. The id is resolved in paSitRender once
      the data has loaded, so a gated visitor still sees the wall. */

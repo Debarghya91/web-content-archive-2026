@@ -124,6 +124,10 @@ function pfWeekLabel(parts) {
     /* Used only when situations-visual.js did not load: the same
        case fields, paragraphed, with no invented content. */
     var h = '<section class="sit-item pf-card">';
+    if(item.thumbnail || item.agenda){
+      h += '<div class="pf-agenda">' + (item.thumbnail ? '<img class="pf-thumb pf-thumb-lg" src="' + esc(item.thumbnail) + '" alt="" loading="lazy">' : '')
+        + '<div class="pf-agenda-text"><span class="pf-agenda-label">Why take this case</span><p>' + esc(item.agenda || '') + '</p></div></div>';
+    }
     h += '<p class="sit-eyebrow">' + (item.id ? 'Case ' + esc(item.id) + ' &middot; ' : '') + 'Situation ' + esc(item.seq || '') + '</p>';
     h += '<p class="sit-case-label">Situation</p>';
     h += '<h3 class="sit-title">' + esc(item.title || 'Untitled situation') + '</h3>';

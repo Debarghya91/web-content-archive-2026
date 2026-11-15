@@ -258,13 +258,16 @@
       var total = totalInsights + totalScenarios;
       var done = doneI + doneS;
       if (summaryEl) {
-        summaryEl.textContent = 'Your progress: ' + doneI + ' of ' + totalInsights +
-          ' insights done, ' + doneS + ' of ' + totalScenarios + ' scenarios done.';
+        summaryEl.textContent = done === 0
+          ? 'Your progress will show here once you mark an insight or scenario done.'
+          : ('Your progress: ' + doneI + ' of ' + totalInsights +
+          ' insights done, ' + doneS + ' of ' + totalScenarios + ' scenarios done.');
       }
       if (barEl) {
         barEl.style.width = (total > 0 ? Math.round(done * 100 / total) : 0) + '%';
         barEl.setAttribute('aria-valuenow', String(done));
         barEl.setAttribute('aria-valuemax', String(total));
+        if (barEl.parentElement) barEl.parentElement.style.display = done > 0 ? '' : 'none';
       }
     }
 

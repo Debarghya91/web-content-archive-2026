@@ -17,6 +17,7 @@
   var prefix = input.getAttribute('data-prefix') || '';
   var browse = document.getElementById('pf-search-browse');
   var levelsEl = document.getElementById('pf-search-levels');
+  var typesEl = document.getElementById('pf-search-types');
   var countEl = document.getElementById('pf-search-count');
   var clearBtn = document.getElementById('pf-search-clear');
   var pageMode = !!browse;
@@ -39,7 +40,17 @@
   };
   var POPULAR = ['MT103', 'pacs.008', 'ISO 20022', 'SEPA', 'OUR SHA BEN', 'chargeback', 'nostro', 'UPI', 'beneficiary not credited', 'RRN'];
   var LEVEL_LABEL = {foundation: 'Foundation', core: 'Core', advanced: 'Advanced'};
-  var selectedLevel = null, visibleCount = PAGE_SIZE, browseType = null, loadFailed = false, typeCounts = null;
+  var selectedTypes = {}, selectedLevels = {}, visibleCount = PAGE_SIZE, browseType = null, loadFailed = false, typeCounts = null;
+  /* Multi-select filters (15 Nov 2026 review wave): within one group
+     the options combine with OR, across groups with AND. Selecting
+     every option in a group is the same as no filter in that group,
+     so the all-filters case returns the same results as no filters.
+     Entries with no known level pass any level filter, so a level
+     filter never hides unlabelled entries. */
+  function hasFilters(){ return Object.keys(selectedTypes).length > 0 || Object.keys(selectedLevels).length > 0; }
+  function allSelected(sel, all){ var k, n = 0; for(k in sel){ if(sel[k]) n++; } return n >= all.length; }
+  function levelPasses(level){ if(!Object.keys(selectedLevels).length) return true; if(allSelected(selectedLevels, ['foundation', 'core', 'advanced'])) return true; if(!level) return true; return !!selectedLevels[level]; }
+  function typePasses(type){ if(!Object.keys(selectedTypes).length) return true; if(allSelected(selectedTypes, TYPE_ORDER)) return true; return !!selectedTypes[type]; }
   function esc(s){
     return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
@@ -74,21 +85,20 @@
     if(t.indexOf('advanced') !== -1) return 'advanced';
     return null;
   }
-  /* The matcher, unchanged from the parity-batch version: every
-     query word must appear in the precomputed lowercase haystack,
-     title matches score 2 per word, and only the top `cap` results
-     are kept via insertTop, so typing never blocks on a full
-     rescan. With level null and cap 8 this is exactly the old
-     dropdown matcher; the page view calls it with a larger cap
-     and an optional level filter, which can only extend or narrow
-     the same ranked list, never reorder it. An empty word list
-     matches every entry (the filter-only view), in index order. */
-  function scan(words, cap, level){
+  /* The matcher: every query word must appear in the precomputed
+     lowercase haystack, title matches score 2 per word, and only the
+     top `cap` results are kept via insertTop, so typing never blocks
+     on a full rescan. The multi-select filters (typePasses and
+     levelPasses) can only narrow the same ranked list, never reorder
+     it. An empty word list matches every entry that passes the
+     filters (the filter-only view), in index order. */
+  function scan(words, cap){
     var top = [], totals = {}, total = 0;
     var i, j, hay, title, ok, score, e;
     for(i = 0; i < entries.length; i++){
       e = entries[i];
-      if(level && levelForEntry(e, texts[i]) !== level) continue;
+      if(!typePasses(e.type)) continue;
+      if(!levelPasses(levelForEntry(e, texts[i]))) continue;
       hay = haystacks[i];
       ok = true;
       for(j = 0; j < words.length; j++){
@@ -120,7 +130,7 @@
     if(!entries) return;
     var words = wordsOf(q);
     if(words.length === 0){ hide(); return; }
-    var top = scan(words, MAX_RESULTS, null).top;
+    var top = scan(words, MAX_RESULTS).top;
     if(!top.length){
       box.innerHTML = '<p class="pf-search-none">No results for &quot;' + esc(q) + '&quot;. Try fewer words, or browse the <a href="' + prefix + 'courses.html">Courses</a> page.</p>';
       box.hidden = false;
@@ -224,13 +234,22 @@
     h += '</ul>';
     return h;
   }
-  function syncPills(){
-    if(!levelsEl || !levelsEl.querySelectorAll) return;
-    var btns = levelsEl.querySelectorAll('[data-level]');
-    var k;
-    for(k = 0; k < btns.length; k++){
-      var lv = btns[k].getAttribute('data-level') || null;
-      btns[k].setAttribute('aria-pressed', String(lv === selectedLevel));
+  function syncFilters(){
+    var groups = [[levelsEl, selectedLevels, 'data-level'], [typesEl, selectedTypes, 'data-type']];
+    var g, k, el, sel, attr, btns, btn, val, any;
+    for(g = 0; g < groups.length; g++){
+      el = groups[g][0];
+      if(!el || !el.querySelectorAll) continue;
+      sel = groups[g][1];
+      attr = groups[g][2];
+      btns = el.querySelectorAll('[' + attr + ']');
+      any = Object.keys(sel).length > 0;
+      for(k = 0; k < btns.length; k++){
+        btn = btns[k];
+        val = btn.getAttribute(attr) || '';
+        if(!val){ btn.setAttribute('aria-pressed', String(!any)); }
+        else { btn.setAttribute('aria-pressed', String(!!sel[val])); }
+      }
     }
   }
   function renderBrowse(){
@@ -238,7 +257,7 @@
     if(countEl) countEl.textContent = '';
     browse.hidden = false;
     browse.innerHTML = browseHtml();
-    syncPills();
+    syncFilters();
   }
   function renderSearchError(){
     browse.hidden = true;
@@ -261,7 +280,7 @@
     /* Repeat queries render instantly from cache; the key includes the
        index version, so the background full-index upgrade re-scans
        exactly once. */
-    var rkey = q + '|' + (selectedLevel || '') + '|' + visibleCount + '|v' + indexVersion;
+    var rkey = q + '|' + Object.keys(selectedTypes).sort().join(',') + '|' + Object.keys(selectedLevels).sort().join(',') + '|' + visibleCount + '|v' + indexVersion;
     if(rkey === lastResultKey && lastResultHtml !== null){
       if(countEl) countEl.textContent = lastResultCount;
       if(box.innerHTML !== lastResultHtml) box.innerHTML = lastResultHtml;
@@ -269,13 +288,13 @@
       return;
     }
     var words = wordsOf(q);
-    var res = scan(words, visibleCount, selectedLevel);
+    var res = scan(words, visibleCount);
     if(!res.total){
       var title = words.length ? 'No results for "' + q + '"' : 'No results match this filter';
       var hint = 'Try a different word, for example MT103, SEPA or chargeback' +
-        (selectedLevel ? ', or clear the difficulty filter.' : '.');
+        (hasFilters() ? ', or clear the filters.' : '.');
       var h = '<div class="pf-empty"><p class="pf-empty-title">' + esc(title) + '</p><p>' + esc(hint) + '</p>';
-      if(selectedLevel) h += '<p><button type="button" class="pf-btn-secondary" data-action="clear-filter">Clear filter</button></p>';
+      if(hasFilters()) h += '<p><button type="button" class="pf-btn-secondary" data-action="clear-filter">Clear filters</button></p>';
       h += '<p>Try a popular search</p><p>' + ['MT103', 'SEPA', 'chargeback'].map(chipHtml).join(' ') + '</p>';
       h += '<p><button type="button" class="pf-btn-secondary" data-action="browse-by-type">Browse by type</button></p></div>';
       lastResultKey = rkey; lastResultHtml = h; lastResultCount = '';
@@ -327,10 +346,10 @@
     box.hidden = false;
   }
   function render(){
-    syncPills();
+    syncFilters();
     if(browseType){ renderTypeList(); return; }
     var q = input.value.trim();
-    if(!q && !selectedLevel){ renderBrowse(); return; }
+    if(!q && !hasFilters()){ renderBrowse(); return; }
     renderResults(q);
   }
   function runSearch(q){
@@ -457,11 +476,22 @@
     });
   }
   if(pageMode){
-    if(levelsEl){
-      levelsEl.addEventListener('click', function(ev){
-        var btn = ev.target && ev.target.closest ? ev.target.closest('[data-level]') : null;
+    var filtersEl = document.getElementById('pf-search-filters');
+    if(filtersEl){
+      filtersEl.addEventListener('click', function(ev){
+        var btn = ev.target && ev.target.closest ? ev.target.closest('[data-level],[data-type]') : null;
         if(!btn) return;
-        selectedLevel = btn.getAttribute('data-level') || null;
+        var lv = btn.getAttribute('data-level');
+        var tp = btn.getAttribute('data-type');
+        if(lv !== null){
+          if(!lv){ selectedLevels = {}; }
+          else if(selectedLevels[lv]){ delete selectedLevels[lv]; }
+          else { selectedLevels[lv] = true; }
+        } else if(tp !== null){
+          if(!tp){ selectedTypes = {}; }
+          else if(selectedTypes[tp]){ delete selectedTypes[tp]; }
+          else { selectedTypes[tp] = true; }
+        }
         visibleCount = PAGE_SIZE;
         browseType = null;
         render();
@@ -494,13 +524,13 @@
         if(browseType) renderTypeList(); else renderResults(input.value.trim());
       }
       else if(action === 'clear-filter'){
-        selectedLevel = null;
+        selectedTypes = {}; selectedLevels = {};
         visibleCount = PAGE_SIZE;
         render();
       }
       else if(action === 'browse-by-type'){
         input.value = '';
-        selectedLevel = null;
+        selectedTypes = {}; selectedLevels = {};
         browseType = null;
         visibleCount = PAGE_SIZE;
         renderBrowse();

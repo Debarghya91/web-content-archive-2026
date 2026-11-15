@@ -516,7 +516,7 @@
     if (fb.revision.length) {
       h += '<h2>What to revise</h2><p>Each chapter below is one you missed questions from. Read the lesson, then try the related practice.</p><ol>';
       fb.revision.forEach(function (rev) {
-        var _blabel = (rev.book_number == null) ? 'Outside the main reading path' : 'Book chapter ' + rev.book_number;
+        var _blabel = (rev.book_number == null) ? 'Outside the main reading path' : 'Chapter ' + rev.book_number;
         h += '<li><strong>' + _blabel + ': ' + esc(rev.chapter_title) + '</strong> - you missed ' +
           rev.wrong + ' of ' + rev.total + ' question(s) from this chapter.<br>' +
           'Start here: <a href="' + esc(rev.lesson_url) + '">' + esc(rev.lesson_title) + '</a> ' +
