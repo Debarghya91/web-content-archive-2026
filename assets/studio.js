@@ -132,6 +132,18 @@ function studioInit(sampleId){
     if(savedMute !== null && typeof soundMuted !== 'undefined') soundMuted = (savedMute === '1');
   } catch(e){}
   audio.addEventListener('timeupdate', function(){ studioRefresh(sampleId); });
+  audio.addEventListener('timeupdate', function(){
+    /* Fix round 3: advancing playback is proof of life. The error box
+       can be shown by a stale failure signal after loadeddata and
+       canplay already fired, so those hide paths never run again and
+       the box stays up while the narration plays. Only a moving
+       playhead proves the error stale. A genuinely dead source never
+       advances currentTime, so this cannot hide a real failure. */
+    if(st.audioFailed && !audio.paused && audio.readyState >= 2 && audio.currentTime > 0){
+      st.audioFailed = false;
+      studioHideError(sampleId);
+    }
+  });
   audio.addEventListener('ended', function(){ studioSceneEnded(sampleId); });
   audio.addEventListener('play', function(){ studioSetPlayLabel(sampleId); studioDisarmAutoplayRetry(sampleId); });
   audio.addEventListener('pause', function(){ studioSetPlayLabel(sampleId); studioStopVisual(sampleId); });
@@ -151,8 +163,21 @@ function studioInit(sampleId){
     /* Fix batch 2, fix 3: only a live error counts. A stale error
        signal from a superseded load must not fail over (or show the
        error box) while the current source is still loading: changing
-       src resets audio.error, so a stale event sees no error here. */
-    if(audio.error) studioAudioFailed(sampleId);
+       src resets audio.error, so a stale event sees no error here.
+       Fix round 3: only a FATAL error fails over. While the browser
+       reports seeking, the error belongs to the seek's re-download
+       and the seek verify owns the position; failing over would
+       discard the buffer and reset playback to 0:00. With playable
+       data present (readyState 2 or more) a mid-stream download
+       error must not discard a working buffer either: the buffered
+       narration keeps playing and the fetch resumes on continued
+       playback, while failing over resets the position for a
+       transient snag. Only an error with no playable data is a
+       genuine load failure. */
+    if(!audio.error) return;
+    if(audio.seeking) return;
+    if(audio.readyState >= 2) return;
+    studioAudioFailed(sampleId);
   });
   audio.addEventListener('loadeddata', function(){ studioAudioLoaded(sampleId); });
   audio.addEventListener('canplay', function(){ studioAudioLoaded(sampleId); });
@@ -161,7 +186,13 @@ function studioInit(sampleId){
      from a stalled one. networkState alone cannot: it reads IDLE while
      a request waits for its first byte and while a paused element's
      fetch is suspended. */
-  audio.addEventListener('progress', function(){ st.audioProgressAt = Date.now(); });
+  audio.addEventListener('progress', function(){
+    st.audioProgressAt = Date.now();
+    /* Fix round 3: bytes arriving after a failure prove the current
+       source alive, so a shown error box is stale. A genuinely dead
+       source delivers no bytes, so this cannot hide a real failure. */
+    if(st.audioFailed){ st.audioFailed = false; studioHideError(sampleId); }
+  });
   /* After any seek completes, re-sync the display from the real audio
      position, so a seek the browser applied late (or not at all) cannot
      leave the timeline showing a stale time. */
@@ -268,10 +299,15 @@ function studioPlayAudio(sampleId, fromUser){
   if(p && p.catch){
     p.catch(function(){
       studioShowLoading(sampleId, false);
-      /* A failed load (no audio source) goes through failover, not the
-         autoplay path: retrying play on a dead source never helps, and
-         the mirror host may answer where the primary did not. */
-      if(st.audio && (st.audio.networkState === 3 || (st.audio.readyState === 0 && st.audio.error))){
+      /* A failed load goes through failover, not the autoplay path:
+         retrying play on a dead source never helps, and the mirror
+         host may answer where the primary did not. Only a live media
+         error with no playable data counts: networkState alone can
+         read NO_SOURCE transiently right after load(), before resource
+         selection runs, and failing over on it discards a healthy
+         load (15 Nov 2026, fix round 3). A genuine source failure
+         always sets audio.error, so nothing real is missed. */
+      if(st.audio && st.audio.error && st.audio.readyState < 2){
         studioAudioFailed(sampleId);
         return;
       }
@@ -408,19 +444,17 @@ function studioArmAudioLoadTimer(sampleId){
        although Play started the narration at once). From here only a
        genuine error event fails over. */
     if(s2.audio.readyState >= 1) return;
-    /* Bytes arrived recently, or the fetch is in flight with no error:
-       the download is progressing, just slowly, so give it up to three
-       more 8-second windows before failing over. */
+    /* Bytes arrived within this window: the download is alive, however
+       slow, so re-arm for another full window. A progressing download
+       is never a failure, no matter how many windows it needs: the old
+       capped re-arm budget failed over a slow-but-alive cold-cache
+       fetch and showed the error box for audio that plays fine
+       (15 Nov 2026, fix round 3). Only a full silent window counts. */
     var progressed = s2.audioProgressAt &&
       (Date.now() - s2.audioProgressAt < AUDIO_LOAD_TIMEOUT_MS);
-    var inFlight = !s2.audio.error &&
-      (s2.audio.networkState === 2 || progressed);
-    if(inFlight){
-      s2.audioLoadWaits = (s2.audioLoadWaits || 0) + 1;
-      if(s2.audioLoadWaits <= 3){
-        studioArmAudioLoadTimer(sampleId);
-        return;
-      }
+    if(progressed){
+      studioArmAudioLoadTimer(sampleId);
+      return;
     }
     /* Nothing arrived and no metadata: the browser may never have
        started the fetch (deferred preload of a paused element). Kick
@@ -475,6 +509,10 @@ function studioAudioFailed(sampleId){
     var pos = st.audio.currentTime || 0;
     st.audioLoadKicked = false;
     st.audioProgressAt = 0;
+    /* A seek verify pending from the old source must not re-assert its
+       target onto the fresh load: drop it (15 Nov 2026, fix round 3). */
+    if(st.seekVerifyTimer){ clearTimeout(st.seekVerifyTimer); st.seekVerifyTimer = null; }
+    st.pendingSeek = null;
     st.audio.src = mirror;
     if(pos > 1){
       /* Restore the position through the verified seek helper, on
@@ -622,6 +660,7 @@ function studioLoadScene(sampleId, idx, autoplay){
     st.audioLoadKicked = false;
     st.audioProgressAt = 0;
     st.pendingSeek = null;
+    if(st.seekVerifyTimer){ clearTimeout(st.seekVerifyTimer); st.seekVerifyTimer = null; }
     studioHideError(sampleId);
     /* Fix batch 2, fix 3: reassigning the URL the element is already
        loading restarts the load and discards in-flight progress, which
@@ -1071,27 +1110,38 @@ function studioSeekAudio(sampleId, t){
     if(st.seekVerifyTimer) clearTimeout(st.seekVerifyTimer);
     /* Verify the seek landed, twice: a seek to unbuffered audio on a
        host without Range support restarts the download, so the
-       position can sit at the target while seeking, snap back toward
-       the start, or take seconds to settle. Re-assert only while the
-       position is BEHIND the target (a lost seek) or, when paused,
-       off the target in either direction: a playing lesson that has
-       advanced past the target must never be yanked back. A newer
-       seek supersedes this one through the pendingSeek token. */
-    var verify = function(left){
+       position can take seconds to settle. While the browser reports
+       seeking, the seek is still in flight: re-asserting currentTime
+       now ABORTS it and restarts the download, which reads as a reset
+       to 0:00, so wait for it to settle instead (up to five extra
+       checks). Only a SETTLED position behind the target (a lost
+       seek) or, when paused, off the target in either direction is
+       re-asserted: a playing lesson that has advanced past the target
+       must never be yanked back. A newer seek supersedes this one
+       through the pendingSeek token (15 Nov 2026, fix round 3). */
+    var verify = function(left, waits){
       st.seekVerifyTimer = null;
       if(st.pendingSeek !== t) return;
+      if(a.seeking){
+        if(waits > 0){
+          st.seekVerifyTimer = setTimeout(function(){ verify(left, waits - 1); }, 1200);
+        } else {
+          st.pendingSeek = null;
+        }
+        return;
+      }
       var cur = a.currentTime;
       var behind = isFinite(cur) && (cur < t - 1.5);
       var offWhilePaused = isFinite(cur) && a.paused && (Math.abs(cur - t) > 1.5);
       if((behind || offWhilePaused) && left > 0){
         try { a.currentTime = t; } catch(e){}
         studioRefresh(sampleId, t);
-        st.seekVerifyTimer = setTimeout(function(){ verify(left - 1); }, 1800);
+        st.seekVerifyTimer = setTimeout(function(){ verify(left - 1, waits); }, 1800);
       } else {
         st.pendingSeek = null;
       }
     };
-    st.seekVerifyTimer = setTimeout(function(){ verify(2); }, 1200);
+    st.seekVerifyTimer = setTimeout(function(){ verify(2, 5); }, 1200);
   };
   if(a.readyState >= 1){ apply(); return; }
   var onceMeta = function(){
