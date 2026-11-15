@@ -118,7 +118,9 @@ function studioInit(sampleId){
             total: 0, starts: [], doneScenes: {}, seenStages: {}, endTimer: null,
             wantAutoplay: true, visualTimer: null, visualT: 0, visualMode: false,
             audioProgressAt: 0, audioLoadKicked: false, pendingSeek: null,
-            seekFrom: 0, seekVerifyTimer: null};
+            seekFrom: 0, seekVerifyTimer: null, seekGateTimer: null,
+            seekGateActive: false, seekGateMuted: false,
+            seekGateSavedMuted: false, seekGateWantPaused: false};
   var t = 0;
   data.scenes.forEach(function(s){ st.starts.push(t); t += s.duration_sec; });
   st.total = t;
@@ -336,7 +338,20 @@ function studioArmAutoplayRetry(sampleId){
   var st = PA_STUDIOS[sampleId];
   if(!st || st.autoplayRetryArmed) return;
   st.autoplayRetryArmed = true;
-  var retry = function(){
+  var retry = function(ev){
+    /* Fix round 4: an interaction that began on a control must not
+       start playback here. pointerdown fires before click in the same
+       gesture, so a tap on a Play button used to play here and then
+       immediately pause in the button's click toggle, and the first
+       tap appeared to do nothing. Taps on controls own their click
+       handlers, so the retry skips them and stays armed for the next
+       interaction elsewhere. The canvas is a toggle surface too (its
+       click handler toggles play), so it is skipped as well. Taps on
+       plain content, scroll touches and key presses with no control
+       focused still start the narration, as before. A call with no
+       event (the visibility handler) is unaffected. */
+    if(ev && ev.target && ev.target.closest &&
+       ev.target.closest('button, input, select, textarea, a, .studio-canvas')) return;
     var s2 = PA_STUDIOS[sampleId];
     if(!s2 || !s2.audio || !s2.audio.paused){
       studioDisarmAutoplayRetry(sampleId);
@@ -513,6 +528,7 @@ function studioAudioFailed(sampleId){
        target onto the fresh load: drop it (15 Nov 2026, fix round 3). */
     if(st.seekVerifyTimer){ clearTimeout(st.seekVerifyTimer); st.seekVerifyTimer = null; }
     st.pendingSeek = null;
+    studioClearSeekGate(sampleId);
     st.audio.src = mirror;
     if(pos > 1){
       /* Restore the position through the verified seek helper, on
@@ -579,6 +595,9 @@ function studioRetryAudio(sampleId){
   st.audioFailedOver = false;
   st.audioLoadKicked = false;
   st.audioProgressAt = 0;
+  st.pendingSeek = null;
+  if(st.seekVerifyTimer){ clearTimeout(st.seekVerifyTimer); st.seekVerifyTimer = null; }
+  studioClearSeekGate(sampleId);
   studioHideError(sampleId);
   var primary = st.primaryAudioUrl || ((st.data.scenes[0] || {}).audio || '');
   if(!primary) return;
@@ -661,6 +680,7 @@ function studioLoadScene(sampleId, idx, autoplay){
     st.audioProgressAt = 0;
     st.pendingSeek = null;
     if(st.seekVerifyTimer){ clearTimeout(st.seekVerifyTimer); st.seekVerifyTimer = null; }
+    studioClearSeekGate(sampleId);
     studioHideError(sampleId);
     /* Fix batch 2, fix 3: reassigning the URL the element is already
        loading restarts the load and discards in-flight progress, which
@@ -1084,18 +1104,144 @@ function studioCycleSpeed(sampleId){
   var nxt = PA_SPEEDS[(i + 1) % PA_SPEEDS.length];
   studioSetSpeed(sampleId, nxt);
 }
-/* Seek helper: setting currentTime before metadata has loaded is
-   silently ignored by browsers, which reads as a seek that jumps back
-   to the start. Defer the seek to loadedmetadata/canplay when the
-   audio is not ready yet, clamp only to the duration, and verify the
-   seek landed (15 Nov 2026, fix round 2). The polish round also
-   clamped to the seekable range, but both audio hosts ignore Range
-   requests, so the seekable end is the download frontier, not a seek
-   limit: clamping to it dragged Forward-10s and Next step back toward
-   the start on lessons whose buffer had not reached the target, which
-   read as a reset to 0:00 on two of three sampled lessons. The browser
-   serves a beyond-buffer seek by re-downloading from the start,
-   slowly but correctly, so there must be no seekable clamp. */
+/* Seek helper (15 Nov 2026, fix round 4): a seek target past the
+   downloaded frontier must never be set directly. Both audio hosts
+   ignore Range requests, so setting currentTime beyond the buffered
+   range restarts the download from the start and the position reads
+   as a reset to 0:00; when paused, the fetch can also stall and
+   freeze the frontier. So a target inside the buffered range seeks
+   immediately with a settled-position verify as backstop, while a
+   target past the frontier waits (gated) until the download reaches
+   it, driving the fetch with muted playback when paused, and only
+   then applies. The polish round clamped to the seekable range,
+   which dragged seeks back toward the start; there is still no
+   seekable clamp, the gate waits for the buffer instead of
+   clamping to it. Setting currentTime before metadata has loaded
+   is silently ignored, so an unready element defers to
+   loadedmetadata/canplay first, then gates. */
+/* Is the target inside (or within half a second of) a downloaded
+   range? The tolerance covers rounding at range ends. */
+function studioSeekBuffered(a, t){
+  try {
+    var b = a.buffered;
+    for(var i = 0; i < b.length; i++){
+      if(b.start(i) <= t + 0.5 && b.end(i) >= t - 0.5) return true;
+    }
+  } catch(e){}
+  return false;
+}
+/* Tear down a gated-seek wait: stop the poll timer, restore the muted
+   state the gate changed, hide the buffering indicator, and stop the
+   muted fetch-driver playback when the gate started it for a user who
+   was paused. Safe to call when no gate is active. Called when a newer
+   seek supersedes the wait, and when failover, retry or a scene load
+   drops the pending seek, so no stale gate can touch a fresh load. */
+function studioClearSeekGate(sampleId){
+  var st = PA_STUDIOS[sampleId];
+  if(!st) return;
+  if(st.seekGateTimer){ clearTimeout(st.seekGateTimer); st.seekGateTimer = null; }
+  if(!st.seekGateActive) return;
+  st.seekGateActive = false;
+  if(st.seekGateMuted && st.audio){
+    try { st.audio.muted = (typeof soundMuted !== 'undefined') ? soundMuted : st.seekGateSavedMuted; } catch(e){}
+  }
+  st.seekGateMuted = false;
+  if(st.seekGateWantPaused && st.audio && !st.audio.paused){
+    try { st.audio.pause(); } catch(e){}
+  }
+  studioShowLoading(sampleId, false);
+}
+/* Arm the settled-position verify after a seek is applied: a seek can
+   take a moment to settle, so re-assert only a SETTLED position behind
+   the target (a lost seek) or, when paused, off the target in either
+   direction. A playing lesson that has advanced past the target must
+   never be yanked back. While the browser reports seeking, the seek is
+   still in flight: re-asserting currentTime then aborts it and
+   restarts the download, so wait instead (up to five extra checks). A
+   newer seek supersedes this one through the pendingSeek token. */
+function studioSeekArmVerify(sampleId, t){
+  var st = PA_STUDIOS[sampleId];
+  if(!st || !st.audio) return;
+  var a = st.audio;
+  if(st.seekVerifyTimer) clearTimeout(st.seekVerifyTimer);
+  var verify = function(left, waits){
+    st.seekVerifyTimer = null;
+    if(st.pendingSeek !== t) return;
+    if(a.seeking){
+      if(waits > 0){
+        st.seekVerifyTimer = setTimeout(function(){ verify(left, waits - 1); }, 1200);
+      } else {
+        st.pendingSeek = null;
+      }
+      return;
+    }
+    var cur = a.currentTime;
+    var behind = isFinite(cur) && (cur < t - 1.5);
+    var offWhilePaused = isFinite(cur) && a.paused && (Math.abs(cur - t) > 1.5);
+    if((behind || offWhilePaused) && left > 0){
+      try { a.currentTime = t; } catch(e){}
+      studioRefresh(sampleId, t);
+      st.seekVerifyTimer = setTimeout(function(){ verify(left - 1, waits); }, 1800);
+    } else {
+      st.pendingSeek = null;
+    }
+  };
+  st.seekVerifyTimer = setTimeout(function(){ verify(2, 5); }, 1200);
+}
+/* Apply a seek whose target is buffered: set the position, refresh the
+   displays, and arm the settled-position verify. */
+function studioSeekApply(sampleId, t){
+  var st = PA_STUDIOS[sampleId];
+  if(!st || !st.audio) return;
+  try { st.audio.currentTime = t; } catch(e){}
+  studioRefresh(sampleId, t);
+  studioSeekArmVerify(sampleId, t);
+}
+/* Gated seek: the target is past the downloaded frontier. Wait for the
+   frontier to pass the target, driving the fetch with muted playback
+   when paused (a paused element's download can stall), then apply the
+   seek and restore the state the user expects: a paused seek ends
+   paused at the target, a playing seek keeps playing from it. After
+   about 20 seconds the seek applies anyway as a last resort, so a
+   stalled download degrades to the old behaviour instead of hanging.
+   A newer seek supersedes the wait through the pendingSeek token. */
+function studioSeekGate(sampleId, t){
+  var st = PA_STUDIOS[sampleId];
+  if(!st || !st.audio) return;
+  var a = st.audio;
+  st.seekGateActive = true;
+  st.seekGateWantPaused = a.paused;
+  st.seekGateSavedMuted = a.muted;
+  /* Mute while the fetch catches up: the narration must not play aloud
+     from the old position while the user waits for the target. */
+  if(!a.muted){
+    try { a.muted = true; } catch(e){}
+    st.seekGateMuted = true;
+  }
+  studioShowLoading(sampleId, true);
+  if(a.paused){
+    try {
+      var p = a.play();
+      if(p && p.catch){ p.catch(function(){}); }
+    } catch(e){}
+  }
+  var deadline = Date.now() + 20000;
+  var tick = function(){
+    if(st.pendingSeek !== t || !st.seekGateActive) return;
+    var reached = false;
+    try { reached = studioSeekBuffered(a, t); } catch(e){}
+    if(!reached && Date.now() < deadline){
+      st.seekGateTimer = setTimeout(tick, 400);
+      return;
+    }
+    /* Frontier reached, or last resort after the timeout: tear the
+       gate down (restoring mute and the paused state) and apply. */
+    studioClearSeekGate(sampleId);
+    if(st.pendingSeek !== t) return;
+    studioSeekApply(sampleId, t);
+  };
+  st.seekGateTimer = setTimeout(tick, 400);
+}
 function studioSeekAudio(sampleId, t){
   var st = PA_STUDIOS[sampleId];
   if(!st || !st.audio) return;
@@ -1103,56 +1249,26 @@ function studioSeekAudio(sampleId, t){
   if(!isFinite(t) || t < 0) t = 0;
   var dur = a.duration;
   if(isFinite(dur) && dur > 0 && t > dur) t = Math.max(0, dur - 0.05);
+  /* One pending seek at a time: a newer seek supersedes any gated wait
+     or verify from an earlier one. */
+  studioClearSeekGate(sampleId);
+  if(st.seekVerifyTimer){ clearTimeout(st.seekVerifyTimer); st.seekVerifyTimer = null; }
   st.pendingSeek = t;
-  var apply = function(){
-    try { a.currentTime = t; } catch(e){}
-    studioRefresh(sampleId, t);
-    if(st.seekVerifyTimer) clearTimeout(st.seekVerifyTimer);
-    /* Verify the seek landed, twice: a seek to unbuffered audio on a
-       host without Range support restarts the download, so the
-       position can take seconds to settle. While the browser reports
-       seeking, the seek is still in flight: re-asserting currentTime
-       now ABORTS it and restarts the download, which reads as a reset
-       to 0:00, so wait for it to settle instead (up to five extra
-       checks). Only a SETTLED position behind the target (a lost
-       seek) or, when paused, off the target in either direction is
-       re-asserted: a playing lesson that has advanced past the target
-       must never be yanked back. A newer seek supersedes this one
-       through the pendingSeek token (15 Nov 2026, fix round 3). */
-    var verify = function(left, waits){
-      st.seekVerifyTimer = null;
-      if(st.pendingSeek !== t) return;
-      if(a.seeking){
-        if(waits > 0){
-          st.seekVerifyTimer = setTimeout(function(){ verify(left, waits - 1); }, 1200);
-        } else {
-          st.pendingSeek = null;
-        }
-        return;
-      }
-      var cur = a.currentTime;
-      var behind = isFinite(cur) && (cur < t - 1.5);
-      var offWhilePaused = isFinite(cur) && a.paused && (Math.abs(cur - t) > 1.5);
-      if((behind || offWhilePaused) && left > 0){
-        try { a.currentTime = t; } catch(e){}
-        studioRefresh(sampleId, t);
-        st.seekVerifyTimer = setTimeout(function(){ verify(left - 1, waits); }, 1800);
-      } else {
-        st.pendingSeek = null;
-      }
-    };
-    st.seekVerifyTimer = setTimeout(function(){ verify(2, 5); }, 1200);
+  var start = function(){
+    if(st.pendingSeek !== t) return;
+    if(studioSeekBuffered(a, t)){ studioSeekApply(sampleId, t); return; }
+    studioSeekGate(sampleId, t);
   };
-  if(a.readyState >= 1){ apply(); return; }
+  if(a.readyState >= 1){ start(); return; }
   var onceMeta = function(){
     try { a.removeEventListener('loadedmetadata', onceMeta); } catch(e){}
     try { a.removeEventListener('canplay', oncePlay); } catch(e){}
-    apply();
+    start();
   };
   var oncePlay = function(){
     try { a.removeEventListener('canplay', oncePlay); } catch(e){}
     try { a.removeEventListener('loadedmetadata', onceMeta); } catch(e){}
-    apply();
+    start();
   };
   a.addEventListener('loadedmetadata', onceMeta);
   a.addEventListener('canplay', oncePlay);
