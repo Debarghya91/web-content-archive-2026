@@ -431,6 +431,16 @@ function studioArmAudioLoadTimer(sampleId){
       studioArmAudioLoadTimer(sampleId);
       return;
     }
+    /* Paused with no error: the browser may have suspended the fetch
+       or never started it (autoplay blocked on a reload, deferred
+       preload). Failing over here discards a healthy load and, on the
+       mirror, shows the error box for audio that plays fine on tap
+       (15 Nov 2026, fix round 2: the reload error on two sampled
+       lessons). Stand down instead: tapping Play kicks the load, and
+       a genuine failure surfaces through the error event, which fails
+       over on its own. Only a lesson actually trying to play with
+       nothing arriving fails over from this timer. */
+    if(s2.audio.paused && !s2.audio.error) return;
     studioAudioFailed(sampleId);
   }, AUDIO_LOAD_TIMEOUT_MS);
 }
@@ -488,7 +498,10 @@ function studioAudioFailed(sampleId){
     return;
   }
   /* Both hosts failed: show the fallback box with Retry and a link to
-     the transcript. Nothing else to try automatically. */
+     the transcript. Nothing else to try automatically. Never show it
+     while sound is actually playing: a stale failure signal must not
+     cover a working lesson (15 Nov 2026, fix round 2). */
+  if(!st.audio.paused && st.audio.readyState >= 2) return;
   st.audioFailed = true;
   studioShowAudioError(sampleId);
 }
@@ -728,12 +741,20 @@ function studioRefresh(sampleId, tOverride){
   if(slider && !st.sliderScrubbing) slider.value = Math.round(V / st.total * 1000);
   var tm = document.getElementById('studio-time-' + sampleId);
   if(tm && typeof fmtTime === 'function') tm.textContent = fmtTime(V) + ' / ' + fmtTime(st.total);
-  /* The Listen card display is owned solely by the lesson-page wire
-     script, which reads the same audio clock on timeupdate/seeked. Two
-     writers (this refresh plus the wire script) fought over the same
-     elements with different totals and guards, so the two position
-     displays disagreed on first playback (15 Nov 2026, polish round).
-     Nothing here writes pf-audio-* any more. */
+  /* Listen card display (15 Nov 2026, fix round 2): this refresh writes
+     it as well as the lesson-page wire script. The polish round made
+     the wire script the sole writer, and the live retest then showed
+     the Listen display stuck at 0:00 on all three sampled lessons
+     while this timeline advanced, although the wire script is valid
+     and listens to the same element. Both writers read the same audio
+     clock and, on a single-scene lesson, the same position, so they
+     agree; the redundancy means the display moves even if one writer
+     is ever silenced. The slider write keeps the focus guard: the
+     wire script owns the slider while it is being dragged. */
+  var lt = document.getElementById('pf-audio-time-' + sampleId);
+  if(lt && typeof fmtTime === 'function') lt.textContent = fmtTime(V) + ' / ' + fmtTime(st.total);
+  var ls = document.getElementById('pf-audio-slider-' + sampleId);
+  if(ls && document.activeElement !== ls) ls.value = V;
   studioSyncStepButtons(sampleId);
 }
 function studioApplyBeat(sampleId, beatIdx){
@@ -894,7 +915,12 @@ function studioSetPlayLabel(sampleId, playing){
   var reallyPlaying = !!(playing && st && st.audio && st.audio.readyState >= 2);
   studioShowPlayOverlay(sampleId, !reallyPlaying);
   if(reallyPlaying){
-    if(!st.audioFailed) studioHideError(sampleId);
+    /* Real sound proves any shown error stale: the failover timer can
+       show the box after the load events already fired, and nothing
+       else clears it, so it stayed up while the narration played
+       (15 Nov 2026, fix round 2). Clear the failure state outright. */
+    if(st) st.audioFailed = false;
+    studioHideError(sampleId);
     studioHideUpNext(sampleId);
     /* Refresh the caption from the current beat, so a stale caption
        from a blocked autoplay never survives into playback. */
@@ -1021,12 +1047,16 @@ function studioCycleSpeed(sampleId){
 }
 /* Seek helper: setting currentTime before metadata has loaded is
    silently ignored by browsers, which reads as a seek that jumps back
-   to the start, and a seek to a region the host cannot serve yet can
-   be silently ignored too. Defer the seek to loadedmetadata/canplay
-   when the audio is not ready yet, clamp to the seekable range, and
-   verify the seek landed: if the position has not moved near the
-   target shortly after, re-assert it once (15 Nov 2026, polish round:
-   Forward-10s and Next step reset playback to 0:00 in the retest). */
+   to the start. Defer the seek to loadedmetadata/canplay when the
+   audio is not ready yet, clamp only to the duration, and verify the
+   seek landed (15 Nov 2026, fix round 2). The polish round also
+   clamped to the seekable range, but both audio hosts ignore Range
+   requests, so the seekable end is the download frontier, not a seek
+   limit: clamping to it dragged Forward-10s and Next step back toward
+   the start on lessons whose buffer had not reached the target, which
+   read as a reset to 0:00 on two of three sampled lessons. The browser
+   serves a beyond-buffer seek by re-downloading from the start,
+   slowly but correctly, so there must be no seekable clamp. */
 function studioSeekAudio(sampleId, t){
   var st = PA_STUDIOS[sampleId];
   if(!st || !st.audio) return;
@@ -1034,32 +1064,34 @@ function studioSeekAudio(sampleId, t){
   if(!isFinite(t) || t < 0) t = 0;
   var dur = a.duration;
   if(isFinite(dur) && dur > 0 && t > dur) t = Math.max(0, dur - 0.05);
-  try {
-    if(a.seekable && a.seekable.length){
-      var end = a.seekable.end(a.seekable.length - 1);
-      if(isFinite(end) && t > end) t = Math.max(0, end - 0.05);
-    }
-  } catch(e){}
   st.pendingSeek = t;
-  st.seekFrom = a.currentTime;
   var apply = function(){
     try { a.currentTime = t; } catch(e){}
     studioRefresh(sampleId, t);
     if(st.seekVerifyTimer) clearTimeout(st.seekVerifyTimer);
-    st.seekVerifyTimer = setTimeout(function(){
+    /* Verify the seek landed, twice: a seek to unbuffered audio on a
+       host without Range support restarts the download, so the
+       position can sit at the target while seeking, snap back toward
+       the start, or take seconds to settle. Re-assert only while the
+       position is BEHIND the target (a lost seek) or, when paused,
+       off the target in either direction: a playing lesson that has
+       advanced past the target must never be yanked back. A newer
+       seek supersedes this one through the pendingSeek token. */
+    var verify = function(left){
       st.seekVerifyTimer = null;
       if(st.pendingSeek !== t) return;
-      st.pendingSeek = null;
       var cur = a.currentTime;
-      /* Re-assert only when the position never left the seek origin:
-         a playing lesson advances past the target on its own, and
-         must never be yanked back. */
-      if(isFinite(cur) && Math.abs(cur - t) > 1.5 &&
-         Math.abs(cur - st.seekFrom) < 1.5){
+      var behind = isFinite(cur) && (cur < t - 1.5);
+      var offWhilePaused = isFinite(cur) && a.paused && (Math.abs(cur - t) > 1.5);
+      if((behind || offWhilePaused) && left > 0){
         try { a.currentTime = t; } catch(e){}
         studioRefresh(sampleId, t);
+        st.seekVerifyTimer = setTimeout(function(){ verify(left - 1); }, 1800);
+      } else {
+        st.pendingSeek = null;
       }
-    }, 1200);
+    };
+    st.seekVerifyTimer = setTimeout(function(){ verify(2); }, 1200);
   };
   if(a.readyState >= 1){ apply(); return; }
   var onceMeta = function(){
