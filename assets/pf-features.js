@@ -1,4 +1,4 @@
-/* PaymentForge practical-learning features: shared helpers.
+/* Payments Training Hub practical-learning features: shared helpers.
    Loaded on every feature page after site.js / nav.js. No dependencies.
    Progress is stored in this browser only (localStorage). No sign-in,
    no server, no real banking systems. All data is synthetic. */

@@ -1,4 +1,4 @@
-/* PaymentForge test engine. Plain JavaScript, no dependencies.
+/* Payments Training Hub test engine. Plain JavaScript, no dependencies.
    Used by every test page and by the diagnostic (placement) test page.
    Each page supplies a TEST_DATA block and calls paStartTest.
    No em dashes are used in any user-facing string in this file.

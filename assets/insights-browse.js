@@ -1,5 +1,5 @@
 /* ==========================================================================
-   PaymentForge Insights and Scenarios browse page
+   Payments Training Hub Insights and Scenarios browse page
    (Excel integration, 7 Nov 2026)
    --------------------------------------------------------------------------
    Client-side search, filters and progress for the Insights and Scenarios

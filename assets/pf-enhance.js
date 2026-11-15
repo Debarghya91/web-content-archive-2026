@@ -22,7 +22,7 @@ function paRecordActivity(kind, lessonId){
   }catch(e){}
 }
 
-/* PaymentForge enhancements: additive, no behaviour replaced */
+/* Payments Training Hub enhancements: additive, no behaviour replaced */
 (function(){
   try{var cur=document.querySelector('.side .lesson-list li.current');
     if(cur&&cur.scrollIntoView){var l=cur.parentNode;l.scrollTop=cur.offsetTop-l.offsetTop-60;}}catch(e){}

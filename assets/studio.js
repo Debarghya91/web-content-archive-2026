@@ -116,7 +116,9 @@ function studioInit(sampleId){
   if(!audio){ studioShowError(sampleId, 'This lesson player could not start: the narration audio is missing. Try reloading the page.'); return; }
   var st = {data: data, audio: audio, scene: 0, beat: -1, captions: true,
             total: 0, starts: [], doneScenes: {}, seenStages: {}, endTimer: null,
-            wantAutoplay: true, visualTimer: null, visualT: 0, visualMode: false};
+            wantAutoplay: true, visualTimer: null, visualT: 0, visualMode: false,
+            audioProgressAt: 0, audioLoadKicked: false, pendingSeek: null,
+            seekFrom: 0, seekVerifyTimer: null};
   var t = 0;
   data.scenes.forEach(function(s){ st.starts.push(t); t += s.duration_sec; });
   st.total = t;
@@ -154,6 +156,12 @@ function studioInit(sampleId){
   });
   audio.addEventListener('loadeddata', function(){ studioAudioLoaded(sampleId); });
   audio.addEventListener('canplay', function(){ studioAudioLoaded(sampleId); });
+  /* Load liveness (15 Nov 2026, polish round): progress events prove
+     bytes are arriving, which the load timer uses to tell a slow fetch
+     from a stalled one. networkState alone cannot: it reads IDLE while
+     a request waits for its first byte and while a paused element's
+     fetch is suspended. */
+  audio.addEventListener('progress', function(){ st.audioProgressAt = Date.now(); });
   /* After any seek completes, re-sync the display from the real audio
      position, so a seek the browser applied late (or not at all) cannot
      leave the timeline showing a stale time. */
@@ -390,28 +398,40 @@ function studioArmAudioLoadTimer(sampleId){
   studioDisarmAudioLoadTimer(sampleId);
   st.audioLoadTimer = setTimeout(function(){
     var s2 = PA_STUDIOS[sampleId];
-    if(!s2 || !s2.audio) return;
-    /* Still nothing playable after 8 seconds. If metadata arrived
-       (readyState 1 or more), or the fetch is still in flight with no
-       error (networkState LOADING), the download is progressing, just
-       slowly, so give it up to three more 8-second windows before
-       failing over. A real failure sets audio.error, and a stalled
-       load with nothing in flight reaches neither condition, so both
-       still fail over on the first timeout instead of waiting
-       forever. (Fix batch 2, fix 3: the old code failed over at once
-       on readyState 0 even while the fetch was in flight.) */
-    if(s2.audio.readyState < 2 && !s2.audioFailed){
-      var inFlight = !s2.audio.error &&
-        (s2.audio.readyState >= 1 || s2.audio.networkState === 2);
-      if(inFlight){
-        s2.audioLoadWaits = (s2.audioLoadWaits || 0) + 1;
-        if(s2.audioLoadWaits <= 3){
-          studioArmAudioLoadTimer(sampleId);
-          return;
-        }
+    if(!s2 || !s2.audio || s2.audioFailed) return;
+    /* Metadata arrived: the host answered and the file is real, so the
+       timer stands down. A paused, never-played element can sit at
+       readyState 1 with its fetch suspended indefinitely; failing over
+       would discard a healthy load and show the error box for audio
+       that plays fine on tap (15 Nov 2026, polish round: the retest
+       showed the error on first load on all three sampled lessons
+       although Play started the narration at once). From here only a
+       genuine error event fails over. */
+    if(s2.audio.readyState >= 1) return;
+    /* Bytes arrived recently, or the fetch is in flight with no error:
+       the download is progressing, just slowly, so give it up to three
+       more 8-second windows before failing over. */
+    var progressed = s2.audioProgressAt &&
+      (Date.now() - s2.audioProgressAt < AUDIO_LOAD_TIMEOUT_MS);
+    var inFlight = !s2.audio.error &&
+      (s2.audio.networkState === 2 || progressed);
+    if(inFlight){
+      s2.audioLoadWaits = (s2.audioLoadWaits || 0) + 1;
+      if(s2.audioLoadWaits <= 3){
+        studioArmAudioLoadTimer(sampleId);
+        return;
       }
-      studioAudioFailed(sampleId);
     }
+    /* Nothing arrived and no metadata: the browser may never have
+       started the fetch (deferred preload of a paused element). Kick
+       it once with load() before giving up on this host. */
+    if(!s2.audioLoadKicked){
+      s2.audioLoadKicked = true;
+      try { s2.audio.load(); } catch(e){}
+      studioArmAudioLoadTimer(sampleId);
+      return;
+    }
+    studioAudioFailed(sampleId);
   }, AUDIO_LOAD_TIMEOUT_MS);
 }
 function studioDisarmAudioLoadTimer(sampleId){
@@ -420,10 +440,14 @@ function studioDisarmAudioLoadTimer(sampleId){
 }
 function studioAudioLoaded(sampleId){
   /* First playable data from either host: the load worked, so stop the
-     failover timer and clear any earlier failure state. */
+     failover timer, clear any earlier failure state, and hide the error
+     box if a spurious failover showed it. Data arriving proves the
+     error display stale; without this the box stays up until Play,
+     even though the audio is ready (15 Nov 2026, polish round). */
   studioDisarmAudioLoadTimer(sampleId);
   var st = PA_STUDIOS[sampleId];
   if(st) st.audioFailed = false;
+  studioHideError(sampleId);
 }
 function studioAudioFailed(sampleId){
   var st = PA_STUDIOS[sampleId];
@@ -439,11 +463,23 @@ function studioAudioFailed(sampleId){
     var wasPlaying = !st.audio.paused;
     var wantPlay = st.wantAutoplay || wasPlaying || !!st.audioPlayWanted;
     var pos = st.audio.currentTime || 0;
+    st.audioLoadKicked = false;
+    st.audioProgressAt = 0;
     st.audio.src = mirror;
     if(pos > 1){
-      st.audio.addEventListener('loadedmetadata', function(){
-        try { st.audio.currentTime = pos; } catch(e){}
-      }, {once: true});
+      /* Restore the position through the verified seek helper, on
+         whichever of loadedmetadata/canplay fires first, and only
+         while the element is still near the start: a bare
+         currentTime assignment here can be silently ignored, which
+         reads as a reset to 0:00 (15 Nov 2026, polish round). */
+      var restored = false;
+      var restore = function(){
+        if(restored) return;
+        restored = true;
+        if(st.audio && st.audio.currentTime < 1) studioSeekAudio(sampleId, pos);
+      };
+      st.audio.addEventListener('loadedmetadata', restore, {once: true});
+      st.audio.addEventListener('canplay', restore, {once: true});
     }
     try { st.audio.load(); } catch(e){}
     studioArmAudioLoadTimer(sampleId);
@@ -490,6 +526,8 @@ function studioRetryAudio(sampleId){
      (primary, then mirror) if the problem is still there. */
   st.audioFailed = false;
   st.audioFailedOver = false;
+  st.audioLoadKicked = false;
+  st.audioProgressAt = 0;
   studioHideError(sampleId);
   var primary = st.primaryAudioUrl || ((st.data.scenes[0] || {}).audio || '');
   if(!primary) return;
@@ -568,6 +606,9 @@ function studioLoadScene(sampleId, idx, autoplay){
     st.audioFailedOver = false;
     st.audioFailed = false;
     st.audioLoadWaits = 0;
+    st.audioLoadKicked = false;
+    st.audioProgressAt = 0;
+    st.pendingSeek = null;
     studioHideError(sampleId);
     /* Fix batch 2, fix 3: reassigning the URL the element is already
        loading restarts the load and discards in-flight progress, which
@@ -575,11 +616,20 @@ function studioLoadScene(sampleId, idx, autoplay){
        matches the current source, the load is in flight or has data,
        and the previous load did not fail, keep the in-flight load and
        only reset the position; a different URL, or a failed load,
-       still reassigns. */
+       still reassigns. The lesson URL redirects to the audio host, so
+       currentSrc (the post-redirect URL) never equals the resolved
+       scene URL and the old comparison always restarted the load.
+       Compare the file name too: the same file already loading or
+       loaded on either host is the same narration. File names are
+       unique per lesson, so this cannot mistake one lesson for
+       another (15 Nov 2026, polish round). */
     var sameUrl = false;
     try {
-      sameUrl = (audio.currentSrc || audio.src || '') ===
-        new URL(url, document.baseURI).href;
+      var curSrc = audio.currentSrc || audio.src || '';
+      var targetHref = new URL(url, document.baseURI).href;
+      sameUrl = (curSrc === targetHref) ||
+        (curSrc !== '' && curSrc.split('/').pop().split('?')[0] ===
+          targetHref.split('/').pop().split('?')[0]);
     } catch(e){}
     var loadLive = audio.readyState > 0 || audio.networkState === 2;
     if(!(sameUrl && loadLive && !wasFailed)){
@@ -678,17 +728,12 @@ function studioRefresh(sampleId, tOverride){
   if(slider && !st.sliderScrubbing) slider.value = Math.round(V / st.total * 1000);
   var tm = document.getElementById('studio-time-' + sampleId);
   if(tm && typeof fmtTime === 'function') tm.textContent = fmtTime(V) + ' / ' + fmtTime(st.total);
-  /* Listen card sync (15 Nov 2026, fix 2): the Listen card on a lesson
-     page reads the same audio clock as the player, so both displays
-     agree after any seek or step. */
-  /* Fix batch 2, fix 3: the Listen card ids carry the full sample id
-     (pf-audio-time-studio-ch5s2). Stripping the studio- prefix looked
-     up ids that do not exist, so the top display never updated while
-     the lesson timeline advanced. */
-  var lt = document.getElementById('pf-audio-time-' + sampleId);
-  if(lt && typeof fmtTime === 'function') lt.textContent = fmtTime(V) + ' / ' + fmtTime(st.total);
-  var ls = document.getElementById('pf-audio-slider-' + sampleId);
-  if(ls && document.activeElement !== ls) ls.value = V;
+  /* The Listen card display is owned solely by the lesson-page wire
+     script, which reads the same audio clock on timeupdate/seeked. Two
+     writers (this refresh plus the wire script) fought over the same
+     elements with different totals and guards, so the two position
+     displays disagreed on first playback (15 Nov 2026, polish round).
+     Nothing here writes pf-audio-* any more. */
   studioSyncStepButtons(sampleId);
 }
 function studioApplyBeat(sampleId, beatIdx){
@@ -811,8 +856,7 @@ function studioSeekVirtual(sampleId, permille){
   var offset = V - st.starts[idx];
   var audio = st.audio;
   var apply = function(){
-    try { audio.currentTime = offset; } catch(e){}
-    studioRefresh(sampleId, offset);
+    studioSeekAudio(sampleId, offset);
   };
   if(idx !== st.scene){
     var wasPlaying = !audio.paused;
@@ -975,25 +1019,61 @@ function studioCycleSpeed(sampleId){
   var nxt = PA_SPEEDS[(i + 1) % PA_SPEEDS.length];
   studioSetSpeed(sampleId, nxt);
 }
-/* Seek helper (15 Nov 2026, fix 1): setting currentTime before metadata
-   has loaded is silently ignored by browsers, which reads as a seek
-   that jumps back to the start. Defer the seek to loadedmetadata when
-   the audio is not ready yet, then refresh from the real position. */
+/* Seek helper: setting currentTime before metadata has loaded is
+   silently ignored by browsers, which reads as a seek that jumps back
+   to the start, and a seek to a region the host cannot serve yet can
+   be silently ignored too. Defer the seek to loadedmetadata/canplay
+   when the audio is not ready yet, clamp to the seekable range, and
+   verify the seek landed: if the position has not moved near the
+   target shortly after, re-assert it once (15 Nov 2026, polish round:
+   Forward-10s and Next step reset playback to 0:00 in the retest). */
 function studioSeekAudio(sampleId, t){
   var st = PA_STUDIOS[sampleId];
   if(!st || !st.audio) return;
   var a = st.audio;
-  if(a.readyState >= 1){
+  if(!isFinite(t) || t < 0) t = 0;
+  var dur = a.duration;
+  if(isFinite(dur) && dur > 0 && t > dur) t = Math.max(0, dur - 0.05);
+  try {
+    if(a.seekable && a.seekable.length){
+      var end = a.seekable.end(a.seekable.length - 1);
+      if(isFinite(end) && t > end) t = Math.max(0, end - 0.05);
+    }
+  } catch(e){}
+  st.pendingSeek = t;
+  st.seekFrom = a.currentTime;
+  var apply = function(){
     try { a.currentTime = t; } catch(e){}
     studioRefresh(sampleId, t);
-    return;
-  }
-  var once = function(){
-    try { a.removeEventListener('loadedmetadata', once); } catch(e){}
-    try { a.currentTime = t; } catch(e){}
-    studioRefresh(sampleId, t);
+    if(st.seekVerifyTimer) clearTimeout(st.seekVerifyTimer);
+    st.seekVerifyTimer = setTimeout(function(){
+      st.seekVerifyTimer = null;
+      if(st.pendingSeek !== t) return;
+      st.pendingSeek = null;
+      var cur = a.currentTime;
+      /* Re-assert only when the position never left the seek origin:
+         a playing lesson advances past the target on its own, and
+         must never be yanked back. */
+      if(isFinite(cur) && Math.abs(cur - t) > 1.5 &&
+         Math.abs(cur - st.seekFrom) < 1.5){
+        try { a.currentTime = t; } catch(e){}
+        studioRefresh(sampleId, t);
+      }
+    }, 1200);
   };
-  a.addEventListener('loadedmetadata', once);
+  if(a.readyState >= 1){ apply(); return; }
+  var onceMeta = function(){
+    try { a.removeEventListener('loadedmetadata', onceMeta); } catch(e){}
+    try { a.removeEventListener('canplay', oncePlay); } catch(e){}
+    apply();
+  };
+  var oncePlay = function(){
+    try { a.removeEventListener('canplay', oncePlay); } catch(e){}
+    try { a.removeEventListener('loadedmetadata', onceMeta); } catch(e){}
+    apply();
+  };
+  a.addEventListener('loadedmetadata', onceMeta);
+  a.addEventListener('canplay', oncePlay);
 }
 /* Skip forward or back by a number of seconds; the frame, highlight and
    caption follow because the audio position is the source of truth. */

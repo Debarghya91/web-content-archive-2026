@@ -1,4 +1,4 @@
-/* ===== PaymentForge side panel, tab bar, and guided tour (app parity, 12 Nov 2026, worker 1) =====
+/* ===== Payments Training Hub side panel, tab bar, and guided tour (app parity, 12 Nov 2026, worker 1) =====
    Mirrors the iOS app drawer: slide in panel, dim background, tap dim or
    swipe left to close, swipe right from the left edge to open. Also marks
    the active drawer row and tab from the current path, runs the Appearance

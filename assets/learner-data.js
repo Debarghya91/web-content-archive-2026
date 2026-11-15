@@ -1,4 +1,4 @@
-/* PaymentForge learner data: dashboard, portfolio and backup.
+/* Payments Training Hub learner data: dashboard, portfolio and backup.
    Reads the progress this academy already stores in this browser.
    Nothing here signs you in, and nothing is sent to any server.
    Storage keys read (written by this file only for the learner name,

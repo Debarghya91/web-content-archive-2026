@@ -1,4 +1,4 @@
-/* PaymentForge situations visual component.
+/* Payments Training Hub situations visual component.
  *
  * One reusable library for the Payment Situations product. Every
  * situation renders through these components; no bespoke implementation

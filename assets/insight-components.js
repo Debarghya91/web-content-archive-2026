@@ -1,4 +1,4 @@
-/* PaymentForge insight components.
+/* Payments Training Hub insight components.
  *
  * One reusable library for the integrated profile insights and payment
  * scenarios. Every insight and scenario renders through these components;
