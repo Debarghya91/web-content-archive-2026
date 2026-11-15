@@ -301,11 +301,25 @@
       }
     }
 
+    /* In-panel error for a case whose JSON file could not be loaded.
+       The panel stays open showing the message; the case is left
+       unrendered and unfetched, so the next open retries the fetch. */
+    function showCaseError(body, toggle) {
+      if (body) {
+        body.removeAttribute('data-ic-loading');
+        body.innerHTML = '<p class="ib-case-error">This case could not be loaded. Please check your connection, then close and reopen it to try again.</p>';
+      }
+      if (toggle) toggle.textContent = 'Hide full case';
+    }
+
     /* "Show full case" toggles on Level 3 insight cards. The case body
-       carries a JSON blob but no data-ic-type until first opened, so
-       PFInsight.init() at page load leaves it alone; opening it renders
-       the case once through PFInsight.renderAll, then later toggles
-       just show and hide the rendered case. */
+       carries no data-ic-type until first opened, so PFInsight.init()
+       at page load leaves it alone. The case JSON lives in a per-case
+       file (data-ic-case-src) instead of inline in the page: opening
+       fetches it once, injects it as the JSON blob PFInsight.renderAll
+       reads, and renders the case; later toggles just show and hide
+       the rendered case. A failed fetch shows an in-panel error and
+       leaves the case unfetched, so closing and reopening retries. */
     grid.addEventListener('click', function (ev) {
       var toggle = ev.target;
       while (toggle && toggle !== grid && !(toggle.classList && toggle.classList.contains('ib-case-btn'))) {
@@ -315,9 +329,41 @@
         var detailId = toggle.getAttribute('aria-controls');
         var detail = detailId ? document.getElementById(detailId) : null;
         if (detail) {
+          var body = detail.querySelector('[data-ic-case]');
+          if (body && body.getAttribute('data-ic-loading') === '1') return;
           var open = detail.hasAttribute('hidden');
           if (open) {
-            var body = detail.querySelector('[data-ic-case]');
+            var src = body ? body.getAttribute('data-ic-case-src') : null;
+            var hasBlob = !!(body && body.querySelector('script[type="application/json"]'));
+            if (body && src && !hasBlob && !body.hasAttribute('data-ic-type')) {
+              body.setAttribute('data-ic-loading', '1');
+              detail.removeAttribute('hidden');
+              toggle.setAttribute('aria-expanded', 'true');
+              toggle.textContent = 'Loading full case...';
+              if (typeof fetch !== 'function') {
+                showCaseError(body, toggle);
+                return;
+              }
+              fetch(src).then(function (r) {
+                if (!r.ok) throw new Error('Case failed to load');
+                return r.text();
+              }).then(function (text) {
+                JSON.parse(text);
+                var script = document.createElement('script');
+                script.type = 'application/json';
+                script.textContent = text;
+                body.appendChild(script);
+                body.removeAttribute('data-ic-loading');
+                if (window.PFInsight && window.PFInsight.renderAll) {
+                  body.setAttribute('data-ic-type', 'level');
+                  window.PFInsight.renderAll(detail);
+                }
+                toggle.textContent = 'Hide full case';
+              }).catch(function () {
+                showCaseError(body, toggle);
+              });
+              return;
+            }
             if (body && !body.hasAttribute('data-ic-type') && window.PFInsight && window.PFInsight.renderAll) {
               body.setAttribute('data-ic-type', 'level');
               window.PFInsight.renderAll(detail);

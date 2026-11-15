@@ -99,7 +99,6 @@
 <script defer src="assets/site-search.js"></script>
 <script defer src="assets/pf-drawer.js"></script>
 <script defer src="assets/tests.js"></script>
-<script defer src="assets/weekly-cases-data.js"></script>
 <script defer src="assets/codehl.js"></script>
 <script defer src="assets/nav.js"></script>
 <script defer src="assets/pf-enhance.js"></script>
@@ -252,31 +251,40 @@ document.addEventListener("DOMContentLoaded", function(){
   }
   /* Free Case of the Week: this week's case from the shipped asset,
      picked by the same ISO-week rule as the weekly-case page. The
-     static card stays when the asset did not load. */
+     asset loads lazily after the page renders (15 Nov 2026
+     lighter-app trim); the static card stays when it did not load. */
   (function(){
-    var items = window.PA_WEEKLY_CASES;
     var titleEl = el('pf-weekly-title');
-    if(!items || !items.length || !titleEl) return;
-    function isoParts(date){
-      var th = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
-      th.setUTCDate(th.getUTCDate() + 4 - (th.getUTCDay() || 7));
-      var y = th.getUTCFullYear();
-      var w = Math.ceil(((th.getTime() - Date.UTC(y, 0, 1)) / 86400000 + 1) / 7);
-      var mon = new Date(th.getTime() - 3 * 86400000);
-      return {year: y, week: w, monday: new Date(mon.getUTCFullYear(), mon.getUTCMonth(), mon.getUTCDate())};
+    if(!titleEl) return;
+    function fillWeekly(items){
+      if(!items || !items.length) return;
+      function isoParts(date){
+        var th = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+        th.setUTCDate(th.getUTCDate() + 4 - (th.getUTCDay() || 7));
+        var y = th.getUTCFullYear();
+        var w = Math.ceil(((th.getTime() - Date.UTC(y, 0, 1)) / 86400000 + 1) / 7);
+        var mon = new Date(th.getTime() - 3 * 86400000);
+        return {year: y, week: w, monday: new Date(mon.getUTCFullYear(), mon.getUTCMonth(), mon.getUTCDate())};
+      }
+      var parts = isoParts(new Date());
+      var idx = (parts.year * 53 + parts.week) % items.length;
+      var item = items[idx];
+      if(!item) return;
+      var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      var m = parts.monday;
+      var meta = 'Week of ' + m.getDate() + ' ' + months[m.getMonth()] + ' ' + m.getFullYear() + ' · Case ' + (idx + 1) + ' of ' + items.length;
+      if(item.id) meta += ' · ' + item.id;
+      if(item.level) meta += ' · ' + String(item.level).charAt(0).toUpperCase() + String(item.level).slice(1);
+      if(item.title) titleEl.textContent = item.title;
+      setText(el('pf-weekly-meta'), meta);
+      if(item.takeaway) setText(el('pf-weekly-takeaway'), 'One thing to remember: ' + item.takeaway);
     }
-    var parts = isoParts(new Date());
-    var idx = (parts.year * 53 + parts.week) % items.length;
-    var item = items[idx];
-    if(!item) return;
-    var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    var m = parts.monday;
-    var meta = 'Week of ' + m.getDate() + ' ' + months[m.getMonth()] + ' ' + m.getFullYear() + ' · Case ' + (idx + 1) + ' of ' + items.length;
-    if(item.id) meta += ' · ' + item.id;
-    if(item.level) meta += ' · ' + String(item.level).charAt(0).toUpperCase() + String(item.level).slice(1);
-    if(item.title) titleEl.textContent = item.title;
-    setText(el('pf-weekly-meta'), meta);
-    if(item.takeaway) setText(el('pf-weekly-takeaway'), 'One thing to remember: ' + item.takeaway);
+    if(window.PA_WEEKLY_CASES && window.PA_WEEKLY_CASES.length){ fillWeekly(window.PA_WEEKLY_CASES); return; }
+    var s = document.createElement('script');
+    s.src = 'assets/weekly-cases-data.js';
+    s.onload = function(){ if(window.PA_WEEKLY_CASES) fillWeekly(window.PA_WEEKLY_CASES); };
+    s.onerror = function(){ /* static card stays */ };
+    document.head.appendChild(s);
   })();
   /* Streak and weekly goal: the dashboard definitions, from the
      same keys (payments-academy-activity-v1 and
