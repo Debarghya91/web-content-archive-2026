@@ -19,6 +19,10 @@ var PA_SIT_RESOLUTION = '';
 var PA_SIT_QUERY = '';
 var PA_SIT_BOOKMARKED_ONLY = false;
 var PA_SIT_DASH_FILTER = '';
+/* Numbered catalogue pagination: 20 situations per page. PA_SIT_PAGE
+   resets to 1 whenever any filter or the query changes. */
+var PA_SIT_PAGE_SIZE = 20;
+var PA_SIT_PAGE = 1;
 var PA_SIT_PROGRESS_KEY = 'pa-situations-progress-v1';
 /* Mastery states (ChatGPT review P1#7, 9 Nov 2026). Opening a
    situation marks it Read only; the learner marks the deeper states
@@ -315,6 +319,7 @@ function paSitRenderDashboard(){
 function paSitDashFilter(f){
   PA_SIT_DASH_FILTER = f || '';
   PA_SIT_INDEX = 0;
+  PA_SIT_PAGE = 1;
   paSitRender();
 }
 /* Mastery controls for the open situation. Opening marks it Read;
@@ -413,13 +418,29 @@ function paSitUpdateProgressLine(){
   }
   line.textContent = 'You have completed ' + done + ' of ' + PA_SIT_ITEMS.length + ' situations. ' + marks + ' bookmarked. ' + notes + ' with notes. ' + rev + ' reviewed.' + last;
 }
+/* Numbered pagination (16 Nov 2026): the catalogue shows one page of
+   20 situations, with a Previous, numbered pages and Next bar below
+   the list. The range line above the list reports the honest slice
+   of the filtered list. data-sit-cat stays the index into the full
+   filtered list, so paSitJump keeps working. */
 function paSitRenderCatalogue(list){
   var cat = document.getElementById('sit-catalogue');
   if(!cat) return;
   var cur = list[PA_SIT_INDEX];
   var p = paSitProgress();
-  var html = '<p class="sit-catalogue-count">' + list.length + ' of ' + PA_SIT_ITEMS.length + ' situations</p>';
-  list.forEach(function(it, i){
+  var totalPages = Math.max(1, Math.ceil(list.length / PA_SIT_PAGE_SIZE));
+  if(PA_SIT_PAGE > totalPages) PA_SIT_PAGE = totalPages;
+  if(PA_SIT_PAGE < 1) PA_SIT_PAGE = 1;
+  var start = (PA_SIT_PAGE - 1) * PA_SIT_PAGE_SIZE;
+  var end = Math.min(list.length, start + PA_SIT_PAGE_SIZE);
+  var html;
+  if(!list.length){
+    html = '<p class="sit-catalogue-count">0 situations</p>';
+  } else {
+    html = '<p class="sit-catalogue-count">Showing ' + (start + 1) + '-' + end + ' of ' + list.length + ' situations</p>';
+  }
+  for(var i = start; i < end; i++){
+    var it = list[i];
     var pos = PA_SIT_ITEMS.indexOf(it) + 1;
     var mark = p.bookmarked[it.id] ? ' \u2605 ' : '';
     var done = p.completed[it.id] ? ' \u2713 ' : '';
@@ -430,9 +451,63 @@ function paSitRenderCatalogue(list){
     html += '<button type="button" class="sit-catalogue-item' + (it === cur ? ' active' : '') + '" data-sit-cat="' + i + '" onclick="paSitJump(' + i + ')">'
       + '<span class="sit-cat-stage">Stage ' + (it.stage || '') + ' &middot; ' + escHtml(it.id || '') + ' &middot; ' + pos + ' of ' + PA_SIT_ITEMS.length + mark + done + mastTag + '</span>'
       + thumb + escHtml(it.title || it.id || '') + agenda + '</button>';
-  });
+  }
+  html += paSitPaginationBar(totalPages);
   cat.innerHTML = html;
 }
+/* Page numbers with ellipsis gaps: the first page, the last page,
+   the current page with two neighbours each side, and one ellipsis
+   per gap. Short ranges show every page. */
+function paSitPageNumbers(current, total){
+  var nums = [], i;
+  if(total <= 7){
+    for(i = 1; i <= total; i++) nums.push(i);
+    return nums;
+  }
+  var keep = [1, total];
+  for(i = current - 2; i <= current + 2; i++){
+    if(i > 1 && i < total) keep.push(i);
+  }
+  keep.sort(function(a, b){ return a - b; });
+  var prev = 0;
+  keep.forEach(function(pg){
+    if(pg - prev > 1) nums.push('...');
+    nums.push(pg);
+    prev = pg;
+  });
+  return nums;
+}
+function paSitPaginationBar(totalPages){
+  if(totalPages <= 1) return '';
+  var html = '<nav class="sit-pagination" aria-label="Catalogue pages">';
+  html += '<button type="button" class="sit-page-btn" onclick="paSitPagePrev()"' + (PA_SIT_PAGE <= 1 ? ' disabled' : '') + '>Previous</button>';
+  paSitPageNumbers(PA_SIT_PAGE, totalPages).forEach(function(pg){
+    if(pg === '...'){
+      html += '<span class="sit-page-gap" aria-hidden="true">&hellip;</span>';
+    } else if(pg === PA_SIT_PAGE){
+      html += '<button type="button" class="sit-page-btn is-current" aria-current="page">' + pg + '</button>';
+    } else {
+      html += '<button type="button" class="sit-page-btn" onclick="paSitPageGo(' + pg + ')">' + pg + '</button>';
+    }
+  });
+  html += '<button type="button" class="sit-page-btn" onclick="paSitPageNext()"' + (PA_SIT_PAGE >= totalPages ? ' disabled' : '') + '>Next</button>';
+  html += '</nav>';
+  return html;
+}
+function paSitPageGo(page){
+  var totalPages = Math.max(1, Math.ceil(paSitVisibleItems().length / PA_SIT_PAGE_SIZE));
+  if(page < 1) page = 1;
+  if(page > totalPages) page = totalPages;
+  if(page === PA_SIT_PAGE) return;
+  PA_SIT_PAGE = page;
+  paSitRender();
+  /* The catalogue is a scrollable box: a page change returns the
+     list to its top. */
+  var cat = document.getElementById('sit-catalogue');
+  if(cat) cat.scrollTop = 0;
+}
+function paSitPagePrev(){ paSitPageGo(PA_SIT_PAGE - 1); }
+function paSitPageNext(){ paSitPageGo(PA_SIT_PAGE + 1); }
 function escHtml(s){
   return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
@@ -535,6 +610,7 @@ function paSitRender(){
       PA_SIT_STAGE = ''; PA_SIT_DOMAIN = ''; PA_SIT_MESSAGE = ''; PA_SIT_FAILURE = '';
       PA_SIT_LEVEL = ''; PA_SIT_RESOLUTION = ''; PA_SIT_QUERY = ''; PA_SIT_BOOKMARKED_ONLY = false;
       PA_SIT_DASH_FILTER = '';
+      PA_SIT_PAGE = 1;
       paSitSyncFilterControls();
       list = paSitVisibleItems();
       PA_SIT_INDEX = list.indexOf(PA_SIT_ITEMS[_found]);
@@ -593,6 +669,7 @@ function paSitOpenByIndex(i){
     PA_SIT_STAGE = ''; PA_SIT_DOMAIN = ''; PA_SIT_MESSAGE = ''; PA_SIT_FAILURE = '';
     PA_SIT_LEVEL = ''; PA_SIT_RESOLUTION = ''; PA_SIT_QUERY = ''; PA_SIT_BOOKMARKED_ONLY = false;
     PA_SIT_DASH_FILTER = '';
+    PA_SIT_PAGE = 1;
     paSitSyncFilterControls();
     PA_SIT_INDEX = idx;
   } else {
@@ -632,6 +709,7 @@ function paSitJump(v){
 function paSitStageTab(stage, btn){
   PA_SIT_STAGE = stage || '';
   PA_SIT_INDEX = 0;
+  PA_SIT_PAGE = 1;
   paSitSyncFilterControls();
   paSitRender();
 }
@@ -643,6 +721,7 @@ function paSitCategory(stage, bookmarked){
   PA_SIT_STAGE = stage || '';
   PA_SIT_BOOKMARKED_ONLY = !!bookmarked;
   PA_SIT_INDEX = 0;
+  PA_SIT_PAGE = 1;
   paSitSyncFilterControls();
   paSitRender();
 }
@@ -667,15 +746,16 @@ function paSitSyncDrawer(){
     }
   });
 }
-function paSitFilterDomain(v){ PA_SIT_DOMAIN = v || ''; PA_SIT_INDEX = 0; paSitRender(); }
-function paSitFilterMessage(v){ PA_SIT_MESSAGE = v || ''; PA_SIT_INDEX = 0; paSitRender(); }
-function paSitFilterFailure(v){ PA_SIT_FAILURE = v || ''; PA_SIT_INDEX = 0; paSitRender(); }
-function paSitFilterLevel(v){ PA_SIT_LEVEL = v || ''; PA_SIT_INDEX = 0; paSitRender(); }
-function paSitFilterResolution(v){ PA_SIT_RESOLUTION = v || ''; PA_SIT_INDEX = 0; paSitRender(); }
-function paSitFilterBookmarked(on){ PA_SIT_BOOKMARKED_ONLY = !!on; PA_SIT_INDEX = 0; paSitSyncDrawer(); paSitRender(); }
+function paSitFilterDomain(v){ PA_SIT_DOMAIN = v || ''; PA_SIT_INDEX = 0; PA_SIT_PAGE = 1; paSitRender(); }
+function paSitFilterMessage(v){ PA_SIT_MESSAGE = v || ''; PA_SIT_INDEX = 0; PA_SIT_PAGE = 1; paSitRender(); }
+function paSitFilterFailure(v){ PA_SIT_FAILURE = v || ''; PA_SIT_INDEX = 0; PA_SIT_PAGE = 1; paSitRender(); }
+function paSitFilterLevel(v){ PA_SIT_LEVEL = v || ''; PA_SIT_INDEX = 0; PA_SIT_PAGE = 1; paSitRender(); }
+function paSitFilterResolution(v){ PA_SIT_RESOLUTION = v || ''; PA_SIT_INDEX = 0; PA_SIT_PAGE = 1; paSitRender(); }
+function paSitFilterBookmarked(on){ PA_SIT_BOOKMARKED_ONLY = !!on; PA_SIT_INDEX = 0; PA_SIT_PAGE = 1; paSitSyncDrawer(); paSitRender(); }
 function paSitSearch(q){
   PA_SIT_QUERY = (q || '').trim().toLowerCase();
   PA_SIT_INDEX = 0;
+  PA_SIT_PAGE = 1;
   paSitRender();
 }
 function paSitToggleBookmark(){
