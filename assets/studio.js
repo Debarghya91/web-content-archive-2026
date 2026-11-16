@@ -1700,7 +1700,7 @@ function pfRevealExercise(sampleId){
   if(btn) btn.textContent = ans.classList.contains('open') ? 'Hide the answer' : 'Show the answer';
 }
 /* Save note: a small editor under the title, stored in localStorage per
-   lesson. No server, no account needed. */
+   lesson. No server. */
 function pfToggleNote(sampleId){
   var ed = document.getElementById('studio-note-editor-' + sampleId);
   if(!ed) return;

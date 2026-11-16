@@ -2,7 +2,7 @@
    Free workbench: pick any source and target message, map fields with a
    transformation, validate, and generate the target XML.
    Guided exercise: map a pain.001 (EUR 25,000) into a pacs.008.
-   All data is synthetic and for education only. No sign-in, no server,
+   All data is synthetic and for education only. No server,
    no real banking systems. Deterministic: same mappings always give the
    same validation results, the same XML and the same score. */
 (function(){

@@ -1,7 +1,6 @@
 /* Payments Training Hub practical-learning features: shared helpers.
    Loaded on every feature page after site.js / nav.js. No dependencies.
-   Progress is stored in this browser only (localStorage). No sign-in,
-   no server, no real banking systems. All data is synthetic. */
+   Progress is stored in this browser only (localStorage). No server, no real banking systems. All data is synthetic. */
 (function(){
   "use strict";
   var KEY = "pf-features-progress-v1";

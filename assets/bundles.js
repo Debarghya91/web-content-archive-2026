@@ -1,7 +1,7 @@
 
 /* ===== Courses, bundles and access (browser demo only) ===== */
 /* ACCESS ENFORCEMENT IS OFF by owner decision (5 Nov 2026). Everything is
-   open for all: no sign-in, no locks, no payment needed. The lock code
+   open to signed-in learners: no locks, no payment needed. The lock code
    below stays parked behind PA_ENFORCE_ACCESS. Flip that one flag to true
    later to lock chapters behind their bundles. Real payment enforcement
    needs the Razorpay account plus a backend or licence check. */

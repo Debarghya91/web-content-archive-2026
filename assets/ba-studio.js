@@ -7,7 +7,7 @@
    dependencies. Scoring: 100 points per scenario, weighted across the
    six criteria (see WEIGHTS). Scores are stored with the shared
    PFFeatures progress key only. All data is synthetic and educational.
-   No sign-in, no real banking systems, no real money. */
+   No real banking systems, no real money. */
 (function(){
   "use strict";
   var P = window.PFFeatures;

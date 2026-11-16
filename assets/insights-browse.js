@@ -3,7 +3,7 @@
    (Excel integration, 7 Nov 2026)
    --------------------------------------------------------------------------
    Client-side search, filters and progress for the Insights and Scenarios
-   browse page (insights.html). No server, no sign-in. All filtering runs
+   browse page (insights.html). No server. All filtering runs
    in the browser over the data embedded by the build.
 
    DATA: window.PA_INSIGHTS_DATA, written by the build from the canonical
