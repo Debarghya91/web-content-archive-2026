@@ -843,38 +843,38 @@ function paResetPasswordSubmit(){
    product names match content/bundles.json; an unknown product id
    is shown as stored, never dropped. */
 var PA_PURCHASE_PRODUCT_NAMES = {
-  'com.paymentforge.app.part-1': 'Part 1: Foundations of Money and Payments',
-  'com.paymentforge.app.part-2': 'Part 2: How Payments Move',
-  'com.paymentforge.app.part-3': 'Part 3: Messages: SWIFT MT, ISO 20022 and Standards',
-  'com.paymentforge.app.part-4': 'Part 4: Cross-Border Payments and Correspondent Banking',
-  'com.paymentforge.app.part-5': 'Part 5: Clearing, Settlement, Liquidity and Reconciliation',
-  'com.paymentforge.app.part-6': 'Part 6: Exceptions, Investigations, Returns and Claims',
-  'com.paymentforge.app.part-7': 'Part 7: Cards and Customer Payments',
-  'com.paymentforge.app.part-8': 'Part 8: Architecture, APIs, Hubs and Engineering',
-  'com.paymentforge.app.part-9': 'Part 9: The Business Analyst at Work',
-  'com.paymentforge.app.part-10': 'Part 10: Emerging Payments and the Future',
-  'com.paymentforge.app.studio': 'BA/PO Studio',
-  'com.paymentforge.app.simulator': 'Payment Simulator',
-  'com.paymentforge.app.investigation-lab': 'Investigation Lab',
-  'com.paymentforge.app.practice': 'Practice Experiences',
-  'com.paymentforge.app.interview': 'Interview Ready',
-  'com.paymentforge.app.integrated': 'The Integrated Course',
-  'com.paymentforge.app.part-1.renewal': 'Part 1: Foundations of Money and Payments (renewal)',
-  'com.paymentforge.app.part-2.renewal': 'Part 2: How Payments Move (renewal)',
-  'com.paymentforge.app.part-3.renewal': 'Part 3: Messages: SWIFT MT, ISO 20022 and Standards (renewal)',
-  'com.paymentforge.app.part-4.renewal': 'Part 4: Cross-Border Payments and Correspondent Banking (renewal)',
-  'com.paymentforge.app.part-5.renewal': 'Part 5: Clearing, Settlement, Liquidity and Reconciliation (renewal)',
-  'com.paymentforge.app.part-6.renewal': 'Part 6: Exceptions, Investigations, Returns and Claims (renewal)',
-  'com.paymentforge.app.part-7.renewal': 'Part 7: Cards and Customer Payments (renewal)',
-  'com.paymentforge.app.part-8.renewal': 'Part 8: Architecture, APIs, Hubs and Engineering (renewal)',
-  'com.paymentforge.app.part-9.renewal': 'Part 9: The Business Analyst at Work (renewal)',
-  'com.paymentforge.app.part-10.renewal': 'Part 10: Emerging Payments and the Future (renewal)',
-  'com.paymentforge.app.studio.renewal': 'BA/PO Studio (renewal)',
-  'com.paymentforge.app.simulator.renewal': 'Payment Simulator (renewal)',
-  'com.paymentforge.app.investigation-lab.renewal': 'Investigation Lab (renewal)',
-  'com.paymentforge.app.practice.renewal': 'Practice Experiences (renewal)',
-  'com.paymentforge.app.interview.renewal': 'Interview Ready (renewal)',
-  'com.paymentforge.app.integrated.renewal': 'The Integrated Course (renewal)'
+  'com.paymentstraininghub.app.part-1': 'Part 1: Foundations of Money and Payments',
+  'com.paymentstraininghub.app.part-2': 'Part 2: How Payments Move',
+  'com.paymentstraininghub.app.part-3': 'Part 3: Messages: SWIFT MT, ISO 20022 and Standards',
+  'com.paymentstraininghub.app.part-4': 'Part 4: Cross-Border Payments and Correspondent Banking',
+  'com.paymentstraininghub.app.part-5': 'Part 5: Clearing, Settlement, Liquidity and Reconciliation',
+  'com.paymentstraininghub.app.part-6': 'Part 6: Exceptions, Investigations, Returns and Claims',
+  'com.paymentstraininghub.app.part-7': 'Part 7: Cards and Customer Payments',
+  'com.paymentstraininghub.app.part-8': 'Part 8: Architecture, APIs, Hubs and Engineering',
+  'com.paymentstraininghub.app.part-9': 'Part 9: The Business Analyst at Work',
+  'com.paymentstraininghub.app.part-10': 'Part 10: Emerging Payments and the Future',
+  'com.paymentstraininghub.app.studio': 'BA/PO Studio',
+  'com.paymentstraininghub.app.simulator': 'Payment Simulator',
+  'com.paymentstraininghub.app.investigation-lab': 'Investigation Lab',
+  'com.paymentstraininghub.app.practice': 'Practice Experiences',
+  'com.paymentstraininghub.app.interview': 'Interview Ready',
+  'com.paymentstraininghub.app.integrated': 'The Integrated Course',
+  'com.paymentstraininghub.app.part-1.renewal': 'Part 1: Foundations of Money and Payments (renewal)',
+  'com.paymentstraininghub.app.part-2.renewal': 'Part 2: How Payments Move (renewal)',
+  'com.paymentstraininghub.app.part-3.renewal': 'Part 3: Messages: SWIFT MT, ISO 20022 and Standards (renewal)',
+  'com.paymentstraininghub.app.part-4.renewal': 'Part 4: Cross-Border Payments and Correspondent Banking (renewal)',
+  'com.paymentstraininghub.app.part-5.renewal': 'Part 5: Clearing, Settlement, Liquidity and Reconciliation (renewal)',
+  'com.paymentstraininghub.app.part-6.renewal': 'Part 6: Exceptions, Investigations, Returns and Claims (renewal)',
+  'com.paymentstraininghub.app.part-7.renewal': 'Part 7: Cards and Customer Payments (renewal)',
+  'com.paymentstraininghub.app.part-8.renewal': 'Part 8: Architecture, APIs, Hubs and Engineering (renewal)',
+  'com.paymentstraininghub.app.part-9.renewal': 'Part 9: The Business Analyst at Work (renewal)',
+  'com.paymentstraininghub.app.part-10.renewal': 'Part 10: Emerging Payments and the Future (renewal)',
+  'com.paymentstraininghub.app.studio.renewal': 'BA/PO Studio (renewal)',
+  'com.paymentstraininghub.app.simulator.renewal': 'Payment Simulator (renewal)',
+  'com.paymentstraininghub.app.investigation-lab.renewal': 'Investigation Lab (renewal)',
+  'com.paymentstraininghub.app.practice.renewal': 'Practice Experiences (renewal)',
+  'com.paymentstraininghub.app.interview.renewal': 'Interview Ready (renewal)',
+  'com.paymentstraininghub.app.integrated.renewal': 'The Integrated Course (renewal)'
 };
 var PA_PURCHASE_STORE_NAMES = {
   'payu': 'PayU',
@@ -886,7 +886,7 @@ var PA_PURCHASE_STORE_NAMES = {
 function paPurchasesProductName(productId){
   var id = String(productId || '');
   if(PA_PURCHASE_PRODUCT_NAMES[id]) return PA_PURCHASE_PRODUCT_NAMES[id];
-  if(PA_PURCHASE_PRODUCT_NAMES['com.paymentforge.app.' + id]) return PA_PURCHASE_PRODUCT_NAMES['com.paymentforge.app.' + id];
+  if(PA_PURCHASE_PRODUCT_NAMES['com.paymentstraininghub.app.' + id]) return PA_PURCHASE_PRODUCT_NAMES['com.paymentstraininghub.app.' + id];
   return id || 'Course bundle';
 }
 function paPurchasesEscape(text){

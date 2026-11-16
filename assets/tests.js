@@ -1047,7 +1047,7 @@
         var blob = new Blob([JSON.stringify(receipt, null, 2)], { type: "application/json" });
         var a = document.createElement("a");
         a.href = URL.createObjectURL(blob);
-        a.download = "paymentforge-" + runner.state.testId + "-result.json";
+        a.download = "paymentstraininghub-" + runner.state.testId + "-result.json";
         document.body.appendChild(a);
         a.click();
         setTimeout(function () { document.body.removeChild(a); URL.revokeObjectURL(a.href); }, 500);
@@ -1128,6 +1128,6 @@
     renderFeedbackHtml: renderFeedbackHtml, paBasePrefix: paBasePrefix,
     CHAPTER_INFO: CHAPTER_INFO, BOOK_NUMBER: BOOK_NUMBER, DOMAIN_INFO: DOMAIN_INFO, DOMAIN_PRACTICE: DOMAIN_PRACTICE
   };
-  root.PaymentForgeTests = api;
+  root.TrainingHubTests = api;
   if (typeof module !== "undefined" && module.exports) module.exports = api;
 })(typeof window !== "undefined" ? window : globalThis);

@@ -119,7 +119,7 @@ document.addEventListener("DOMContentLoaded", function(){
   /* Test summary, shared by the review section, the streak and the
      new-learner check. Read-only; absent when tests.js did not load. */
   var summary = null;
-  try{ if(typeof PaymentForgeTests !== 'undefined') summary = PaymentForgeTests.dashboardSummary(localStorage); }catch(e){}
+  try{ if(typeof TrainingHubTests !== 'undefined') summary = TrainingHubTests.dashboardSummary(localStorage); }catch(e){}
   /* The app shows the welcome and browse lines to new learners only. */
   var hasHistory = doneCount > 0 || (summary && (summary.total_attempts > 0 || (summary.diagnostic && summary.diagnostic.recommendation)));
   if(hasHistory){
@@ -318,8 +318,8 @@ document.addEventListener("DOMContentLoaded", function(){
   if (l) l.textContent = meaningfulHP ? (done + ' / 881') : 'Not started yet';
   var lb = document.getElementById('hp-lessons-bar');
   if (lb) { lb.style.width = Math.round(done / 881 * 100) + '%'; if (lb.parentElement) lb.parentElement.style.display = meaningfulHP ? '' : 'none'; }
-  if (typeof PaymentForgeTests !== 'undefined') {
-    var sum = PaymentForgeTests.dashboardSummary(localStorage);
+  if (typeof TrainingHubTests !== 'undefined') {
+    var sum = TrainingHubTests.dashboardSummary(localStorage);
     var t = document.getElementById('hp-tests');
     if (t) t.textContent = sum.total_attempts + (sum.total_attempts === 1 ? ' attempt' : ' attempts') +
       ' (' + sum.passed_count + ' passed)';
@@ -344,7 +344,7 @@ document.addEventListener("DOMContentLoaded", function(){
       if (d) d.textContent = 'Taken: ' + sum.diagnostic.percent + '%';
       if (dd) dd.textContent = 'Recommended starting course: ' + sum.diagnostic.recommendation.bundle_name + '.';
     }
-    PaymentForgeTests.renderDiagnosticPrompt(document.getElementById('pa-diagnostic-prompt'), localStorage);
+    TrainingHubTests.renderDiagnosticPrompt(document.getElementById('pa-diagnostic-prompt'), localStorage);
   }
 })();
 
