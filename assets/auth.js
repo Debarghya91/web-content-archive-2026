@@ -122,7 +122,12 @@ function paAuthSendOtp(){
   paAuthOtpBusy = true;
   paAuthLoadClient(function(client){
     if(!client){ paAuthOtpBusy = false; alert('The sign-in service could not be reached. Check your connection and try again.'); return; }
-    client.auth.signInWithOtp({ email: email }).then(function(res){
+    /* The emailed link must land on a page that loads the Supabase
+       client, or the session in the link is never stored: the landing
+       page never loads the client for a guest, so a link landing
+       there signs nobody in. Dashboard is the proven target (the
+       signup and resume flows already use it). */
+    client.auth.signInWithOtp({ email: email, options: { emailRedirectTo: window.location.origin + '/dashboard.html', shouldCreateUser: true } }).then(function(res){
       paAuthOtpBusy = false;
       paResendRecord('emailcode', email);
       if(res.error){ alert('Could not send the code: ' + res.error.message); return; }
@@ -130,7 +135,7 @@ function paAuthSendOtp(){
       var vb = document.getElementById('authVerifyBtn');
       if(code) code.style.display = 'inline-block';
       if(vb) vb.style.display = 'inline-block';
-      alert('Code sent to ' + email + '. Enter it here.');
+      alert('Code sent to ' + email + '. Enter the code here, or tap the sign-in link in the email.');
     }).catch(function(err){
       paAuthOtpBusy = false;
       paResendRecord('emailcode', email);
@@ -141,29 +146,50 @@ function paAuthSendOtp(){
 function paAuthVerifyOtp(){
   if(!PA_AUTH_CONFIG.enabled || paAuthOtpBusy) return;
   var email = ((document.getElementById('authEmail') || {}).value || '').trim();
-  var token = ((document.getElementById('authCode') || {}).value || '').trim();
+  /* Pasted codes often carry spaces or dashes; strip them before
+     checking, or a correct code fails. The project issues 8-digit
+     codes (Email OTP length 8, 3600 second expiry); 6 to 8 digits
+     are accepted as a tolerance. */
+  var token = ((document.getElementById('authCode') || {}).value || '').replace(/[\s-]+/g, '');
   if(!email || email.indexOf('@') === -1){ alert('Enter the email address the code was sent to.'); return; }
   if(!token){ alert('Enter the 8-digit code first.'); return; }
+  if(!/^\d{6,8}$/.test(token)){ alert('Enter the 8-digit code from your email.'); return; }
   paAuthOtpBusy = true;
   paAuthLoadClient(function(client){
     if(!client){ paAuthOtpBusy = false; alert('The sign-in service could not be reached. Check your connection and try again.'); return; }
+    /* A code mailed for a new address comes from the confirm-signup
+       template and is a signup token; a code mailed for an existing
+       confirmed address is an email token. The code alone does not
+       say which, so try email first, then signup. */
     client.auth.verifyOtp({ email: email, token: token, type: 'email' }).then(function(res){
-      paAuthOtpBusy = false;
-      if(res.error){ alert('Code did not work: ' + res.error.message); return; }
-      /* Redirect only once a session really exists. Redirecting on a
-         success response with no session would land the learner on a
-         dashboard showing the sign-in prompt, looking like the
-         post-login breakage the app hit. */
-      if(!res.data || !res.data.session){ alert('The code was accepted but no sign-in session was created. Please try again.'); return; }
-      paAuthRefreshState();
-      if(/signin(\.html)?$/.test(window.location.pathname || '')){
-        window.location.href = paAuthNextTarget();
-      }
+      if(!res.error && res.data && res.data.session){ paAuthVerifyOtpDone(); return; }
+      client.auth.verifyOtp({ email: email, token: token, type: 'signup' }).then(function(res2){
+        paAuthOtpBusy = false;
+        if(res2.error){ alert('Code did not work: ' + res2.error.message); return; }
+        /* Redirect only once a session really exists. Redirecting on a
+           success response with no session would land the learner on a
+           dashboard showing the sign-in prompt, looking like the
+           post-login breakage the app hit. */
+        if(!res2.data || !res2.data.session){ alert('The code was accepted but no sign-in session was created. Please try again.'); return; }
+        paAuthVerifyOtpDone();
+      }).catch(function(err){
+        paAuthOtpBusy = false;
+        alert('The code could not be checked: ' + (err && err.message ? err.message : 'check your connection and try again.'));
+      });
     }).catch(function(err){
+      /* A network failure on the first attempt is not a wrong code;
+         do not spend the fallback attempt on it. */
       paAuthOtpBusy = false;
       alert('The code could not be checked: ' + (err && err.message ? err.message : 'check your connection and try again.'));
     });
   });
+}
+function paAuthVerifyOtpDone(){
+  paAuthOtpBusy = false;
+  paAuthRefreshState();
+  if(/signin(\.html)?$/.test(window.location.pathname || '')){
+    window.location.href = paAuthNextTarget();
+  }
 }
 /* Email and password sign-in (13 Nov 2026, live-test defect): the
    sign-in page offered only an emailed code, so a password set at
@@ -514,13 +540,13 @@ if(document.readyState === 'loading'){
    untouched, and paAuthGoogle() stays dormant and uncalled. */
 var PA_ERROR_MESSAGES = {
   EMAIL_ALREADY_REGISTERED: 'This email already has an account. Sign in instead.',
-  EMAIL_NOT_VERIFIED: 'Verify your email address first.',
+  EMAIL_NOT_VERIFIED: 'Verify your email address first. Check your inbox for the confirmation link, or use Resume signup to send it again.',
   EMAIL_INVALID: 'Enter a valid email address.',
   REFERRAL_INVALID: 'That referral code is not valid.',
   REFERRAL_SELF: 'You cannot use your own referral code.',
   REFERRAL_ALREADY_USED: 'A referral discount was already used on this account.',
   TERMS_NOT_ACCEPTED: 'Accept the terms and conditions to continue.',
-  CREDENTIALS_INVALID: 'Email or password does not match our records.',
+  CREDENTIALS_INVALID: 'Email or password does not match our records. The same message appears when your email is not confirmed yet: use Resume signup to resend the confirmation, sign in with an emailed code, or reset your password.',
   SESSION_EXPIRED: 'Your session expired. Sign in again.',
   UNKNOWN_ERROR: 'Something went wrong. Try again, and contact support if it keeps happening.',
   REQUEST_INVALID: 'That request does not look right. Check the details and try again.',
@@ -533,7 +559,8 @@ var PA_ERROR_MESSAGES = {
   PASSWORD_MISMATCH: 'The two passwords do not match. Type the same password twice.',
   EMAIL_CONFIRMATION_RESENT: 'If that email address has an unfinished signup, a confirmation link is on its way. Check your inbox.',
   PASSWORD_RESET_SENT: 'If an account exists for that email address, a password reset link is on its way. Check your inbox.',
-  RESET_LINK_INVALID: 'This password reset link has expired or was already used. Request a new one.'
+  RESET_LINK_INVALID: 'This password reset link has expired or was already used. Request a new one.',
+  LINK_INVALID: 'That sign-in link has expired or was already used. Request a new emailed code.'
 };
 var PA_SIGNUP_WELCOME_PENDING_KEY = 'pth.welcome.pending.v1';
 var PA_SIGNUP_WELCOME_SHOWN_KEY = 'pth.welcome.shown.v1';
@@ -657,8 +684,28 @@ function paSignupCreateAccount(){
         paSignupShowError('signupError', paSignupMapSupabaseError(res.error.message));
         return;
       }
-      paWelcomeArm(paSignupState.caseId);
-      paResendRecord('confirmation', email);
+      var newUser = res.data && res.data.user;
+      /* GoTrue returns a bare user with no session when Confirm email
+         is ON: that is a successful signup, and the done step below
+         is the right state. If a session came back (confirmation
+         off), the learner is already signed in, so go straight to
+         the target instead of showing check-your-email. */
+      if(res.data && res.data.session){
+        paAuthRefreshState();
+        if(/signin(\.html)?$/.test(window.location.pathname || '')){
+          window.location.href = paAuthNextTarget();
+        }
+        return;
+      }
+      /* An existing email gets a fake success with an empty identities
+         list, to avoid leaking account existence. Show the same done
+         step (no existence leak), but do not arm the welcome popup or
+         record a confirmation send that never happened. */
+      var alreadyHadAccount = !!(newUser && newUser.identities && newUser.identities.length === 0);
+      if(!alreadyHadAccount){
+        paWelcomeArm(paSignupState.caseId);
+        paResendRecord('confirmation', email);
+      }
       paSignupShowCaseId('signupDoneCaseBox', 'signupDoneCaseIdText');
       paSignupShowStep('signupDone');
       paAuthRefreshState();
@@ -1078,6 +1125,99 @@ function paWelcomeMaybeShow(){
    pending for the next dashboard load, because its pending flag
    is cleared only when it actually shows. */
 var PA_CONFIRM_DIALOG_FLAG_KEY = 'pth.confirmDialog.shown.v1';
+/* Sign-in page callback recovery (16 Nov 2026): an emailed sign-in
+   link can arrive at the sign-in page with its callback buried inside
+   the ?next= target (the gate redirects a gated landing carrying
+   ?code= or a hash into ?next=), where the Supabase client never
+   looks. Recover it here: complete the callback on this page, then
+   go to the target without the callback params. Direct hash and
+   ?code= callbacks on this page are handled by the client itself and
+   the signed-in check; only error callbacks and buried callbacks
+   need this handler. Returns true when a callback was found and
+   handled (the caller must skip its normal signed-in check). */
+function paAuthCallbackTarget(raw){
+  /* Same validation as paAuthNextTarget, applied to a decoded inner
+     target: same-site path only, auth pages never targets. */
+  try {
+    if(!raw || raw.length > 500) return null;
+    if(raw.charAt(0) !== '/' || raw.charAt(1) === '/' || raw.indexOf('\\') !== -1) return null;
+    if(/^(https?:)?\/\//i.test(raw)) return null;
+    var pathOnly = raw.split('#')[0].split('?')[0];
+    if(/(^|\/)signin(\.html)?$/.test(pathOnly) || /(^|\/)reset-password(\.html)?$/.test(pathOnly) || /(^|\/)verify(\.html)?$/.test(pathOnly)) return null;
+    return raw;
+  } catch(e){ return null; }
+}
+function paAuthHandleSigninCallback(){
+  var handled = false;
+  var showLinkError = false;
+  try {
+    var hashParams = new URLSearchParams((window.location.hash || '').replace(/^#/, ''));
+    if(hashParams.get('error')) showLinkError = true;
+    var query = new URLSearchParams(window.location.search || '');
+    if(query.get('error')) showLinkError = true;
+    var nextRaw = query.get('next');
+    var inner = null;
+    var innerCode = null;
+    var innerTokens = null;
+    if(nextRaw){
+      /* URLSearchParams already percent-decoded the value once, which
+         undoes the gate's single encoding; do not decode again. */
+      var decoded = nextRaw;
+      var fragAt = decoded.indexOf('#');
+      if(fragAt !== -1){
+        var fragParams = new URLSearchParams(decoded.slice(fragAt + 1));
+        if(fragParams.get('access_token')){
+          innerTokens = { access_token: fragParams.get('access_token'), refresh_token: fragParams.get('refresh_token') || '' };
+          inner = decoded.slice(0, fragAt) || '/';
+        } else if(fragParams.get('error')){
+          showLinkError = true;
+          inner = decoded.slice(0, fragAt) || '/';
+        }
+      }
+      if(!innerTokens && !inner){
+        var qAt = decoded.indexOf('?');
+        if(qAt !== -1){
+          var innerQuery = new URLSearchParams(decoded.slice(qAt + 1));
+          if(innerQuery.get('code')){
+            innerCode = innerQuery.get('code');
+            innerQuery.delete('code');
+            var rest = innerQuery.toString();
+            inner = decoded.slice(0, qAt) + (rest ? '?' + rest : '');
+          } else if(innerQuery.get('error')){
+            showLinkError = true;
+            inner = decoded.slice(0, qAt) || '/';
+          }
+        }
+      }
+    }
+    if(innerTokens || innerCode){
+      handled = true;
+      var target = paAuthCallbackTarget(inner) || '/dashboard.html';
+      paAuthLoadClient(function(client){
+        if(!client){ paSignupShowError('passwordError', 'LINK_INVALID'); return; }
+        function finish(res){
+          if(res && !res.error && res.data && res.data.session){
+            paAuthRefreshState();
+            window.location.href = target;
+          } else {
+            paSignupShowError('passwordError', 'LINK_INVALID');
+          }
+        }
+        if(innerTokens){
+          client.auth.setSession(innerTokens).then(finish).catch(function(){ paSignupShowError('passwordError', 'LINK_INVALID'); });
+        } else {
+          client.auth.exchangeCodeForSession(innerCode).then(finish).catch(function(){ paSignupShowError('passwordError', 'LINK_INVALID'); });
+        }
+      });
+      return true;
+    }
+    if(showLinkError){
+      paSignupShowError('passwordError', 'LINK_INVALID');
+      handled = true;
+    }
+  } catch(e){}
+  return handled;
+}
 function paConfirmDialogMaybeShow(afterDismiss){
   function done(){
     if(afterDismiss){ try { afterDismiss(); } catch(e){} }
@@ -1089,7 +1229,14 @@ function paConfirmDialogMaybeShow(afterDismiss){
   try { hashParams = new URLSearchParams((window.location.hash || '').replace(/^#/, '')); } catch(e){ hashParams = null; }
   var type = hashParams ? hashParams.get('type') : null;
   var hasToken = !!(hashParams && hashParams.get('access_token'));
-  if(!hasToken || (type !== 'signup' && type !== 'invite')){ done(); return; }
+  /* Signup and invite links show the confirmation dialog. Magiclink
+     and email links (emailed-code sign-in) sign the learner in with
+     no dialog, but the hash must still be cleared once the session
+     is confirmed, or a refresh replays the link. Other hash types
+     are left alone. */
+  var isConfirm = (type === 'signup' || type === 'invite');
+  var isSigninLink = (type === 'magiclink' || type === 'email');
+  if(!hasToken || (!isConfirm && !isSigninLink)){ done(); return; }
   if(document.getElementById('paConfirmOverlay')){ done(); return; }
   paAuthLoadClient(function(client){
     if(!client){ done(); return; }
@@ -1098,6 +1245,7 @@ function paConfirmDialogMaybeShow(afterDismiss){
       if(!session){ done(); return; }
       try { history.replaceState(null, '', window.location.pathname + window.location.search); } catch(e){}
       try { sessionStorage.setItem(PA_CONFIRM_DIALOG_FLAG_KEY, '1'); } catch(e){}
+      if(!isConfirm){ done(); return; }
       var overlay = document.createElement('div');
       overlay.id = 'paConfirmOverlay';
       overlay.className = 'pa-confirm-overlay';
