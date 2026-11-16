@@ -1,8 +1,11 @@
 
-/* ===== Supabase Auth (dashboard sign-in only) ===== */
-/* Sign-in exists only for the learner dashboard: it saves progress to
-   the learner's account so it syncs across devices. Lessons and the
-   homepage stay open to everyone. No access enforcement, no paywall. */
+/* ===== Supabase Auth (sign-in is the first step) ===== */
+/* Sign-in is mandatory before any content page: each content page
+   carries a gate script in its head that sends a visit with no
+   stored session to the sign-in page first, then returns it to the
+   requested page. Signing in also saves progress to the learner's
+   account so it syncs across devices. No paywall: purchases are not
+   currently available. */
 var PA_AUTH_CONFIG = {
   enabled: true,
   supabaseUrl: 'https://eofsotgclhwsdwvbbtib.supabase.co',
@@ -50,6 +53,27 @@ function paAuthHasStoredSession(){
     var data = JSON.parse(raw);
     return !!(data && data.access_token);
   } catch(e){ return false; }
+}
+/* Where a fresh sign-in lands: the page the gate recorded in ?next=,
+   or the dashboard. Only same-site paths are accepted, so a crafted
+   link cannot bounce a fresh sign-in to another site. Auth pages are
+   never a target: landing back on sign-in after signing in would
+   strand the learner. */
+function paAuthNextTarget(){
+  var fallback = '/dashboard.html';
+  try{
+    var m = /[?&]next=([^&]*)/.exec(window.location.search || '');
+    if(!m) return fallback;
+    var target = decodeURIComponent(m[1].replace(/\+/g, ' '));
+    if(!target || target.length > 500) return fallback;
+    if(target.charAt(0) !== '/' || target.charAt(1) === '/') return fallback;
+    if(target.indexOf('\\') !== -1) return fallback;
+    if(/[\s\x00-\x1f\x7f]/.test(target)) return fallback;
+    var path = target.split(/[?#]/)[0];
+    if(path === '/signin.html' || path === '/signin' ||
+       path === '/reset-password.html' || path === '/reset-password') return fallback;
+    return target;
+  }catch(e){ return fallback; }
 }
 function paAuthShowUI(){
   if(!PA_AUTH_CONFIG.enabled) return;
@@ -132,8 +156,8 @@ function paAuthVerifyOtp(){
          post-login breakage the app hit. */
       if(!res.data || !res.data.session){ alert('The code was accepted but no sign-in session was created. Please try again.'); return; }
       paAuthRefreshState();
-      if(/signin\.html$/.test(window.location.pathname || '')){
-        window.location.href = 'dashboard.html';
+      if(/signin(\.html)?$/.test(window.location.pathname || '')){
+        window.location.href = paAuthNextTarget();
       }
     }).catch(function(err){
       paAuthOtpBusy = false;
@@ -172,7 +196,7 @@ function paAuthSignInPassword(){
         return;
       }
       paAuthRefreshState();
-      window.location.href = 'dashboard.html';
+      window.location.href = paAuthNextTarget();
     }).catch(function(err){
       paSignupState.busy = false;
       paSignupShowError('passwordError', paSignupMapSupabaseError(err && err.message));
@@ -215,7 +239,11 @@ function paAuthSignOut(){
     paAuthClearLocalSession();
     paAuthShowSignedOut();
     var path = window.location.pathname || '';
-    if(/dashboard\.html$/.test(path) || /signin\.html$/.test(path)){
+    if(window.__pthGate){
+      /* A gated page needs a session, so a signed-out visit belongs
+         on the sign-in page rather than staying on content. */
+      window.location.href = '/signin.html';
+    } else if(/dashboard(\.html)?$/.test(path) || /signin(\.html)?$/.test(path)){
       window.location.reload();
     }
   }
@@ -230,7 +258,7 @@ function paAuthSignOut(){
 }
 /* Identity helpers for the dashboard sync (learner-sync.js uses the
    shared client through paAuthLoadClient). They resolve to null while
-   signed out, so guests degrade to the browser-only dashboard. */
+   signed out, so callers fall back to browser-only data. */
 function paAuthCurrentSession(){
   return new Promise(function(resolve){
     if(!PA_AUTH_CONFIG.enabled){ resolve(null); return; }
@@ -1114,8 +1142,9 @@ function paConfirmDialogMaybeShow(afterDismiss){
   });
 }
 /* Load the Supabase client only when it is needed: on the sign-in and
-   dashboard pages, or when a session is already stored. Guests reading
-   lessons never load it, so lesson pages stay as fast as before. */
+   dashboard pages, or when a session is already stored. Visitors on
+   public pages without a session never load it, so those pages stay
+   as fast as before. */
 (function(){
   if(!PA_AUTH_CONFIG.enabled) return;
   var path = window.location.pathname || '';
