@@ -88,9 +88,10 @@ function activeKeys(){
      || path.indexOf('/lessons/') !== -1 || path.indexOf('/chapters/') !== -1
      || path.indexOf('/courses/') !== -1) return {drawer:'learn', tab:'learn'};
   if(file === 'situations.html' || path.indexOf('/situations/') !== -1) return {drawer:'paymentCases', tab:'cases'};
+  if(file === 'tests.html' || path.indexOf('/tests/') !== -1) return {drawer:'testSeries', tab:''};
   if(file === 'practice.html' || file === 'mission-control.html' || file === 'reconciliation-war-room.html'
-     || file === 'labs-simulators.html' || file === 'tests.html' || file === 'diagnostic.html'
-     || path.indexOf('/practice/') !== -1 || path.indexOf('/tests/') !== -1) return {drawer:'practice', tab:''};
+     || file === 'labs-simulators.html'  || file === 'diagnostic.html'
+     || path.indexOf('/practice/') !== -1 ) return {drawer:'practice', tab:''};
   if(file === 'weekly-case.html') return {drawer:'weeklyFreeCase', tab:''};
   if(file === 'dashboard.html' || file === 'portfolio.html') return {drawer:'myProgress', tab:'progress'};
   if(file === 'simulators.html' || file === 'labs.html'
