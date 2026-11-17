@@ -1295,10 +1295,24 @@
     if (!isFree && !hasAccess()) {
       var wall = d.getElementById('sit-paywall');
       if (wall) wall.style.display = 'block';
+      /* Paywall view (17 Nov 2026): the case identity and what to
+         expect, plus the pay button for the owning bundle. No case
+         text: no incident report, evidence, hypotheses or diagnosis.
+         The title, failure type, domain and level name the item; the
+         objectives and step names are generic to every case. */
+      var expectBits = [];
+      if (investigation.incidentType) expectBits.push(escapeHtml(investigation.incidentType));
+      if (investigation.domain) expectBits.push(escapeHtml(investigation.domain));
+      if (investigation.level) expectBits.push(escapeHtml(investigation.level));
+      var stepNames = STEP_LABELS.map(function (s) { return s[1]; }).join(', ');
+      var objectives = OBJECTIVES.map(function (o) { return escapeHtml(o); }).join(' ');
       container.innerHTML =
         '<div class="pf-card inv-locked"><h2 class="inv-locked-title">This case is locked</h2>' +
+        '<p>Case ' + escapeHtml(investigation.id) + ': ' + escapeHtml(investigation.title) + '</p>' +
+        (expectBits.length ? '<p>' + expectBits.join(' &middot; ') + '</p>' : '') +
+        '<p>What to expect: work through ' + stepNames + '. ' + objectives + '</p>' +
         '<p>Payment Situations is a paid product. Cases open in full once you have access.</p>' +
-        '<p><a class="pf-btn-primary" href="payment.html">How to buy</a> ' +
+        '<p><a class="pf-btn-primary" href="/payment.html?bundle=practice">How to buy</a> ' +
         '<button type="button" class="pf-btn-secondary" data-action="inv-exit">Back to case</button></p></div>';
       bindLockedExit(container, callbacks);
       return false;

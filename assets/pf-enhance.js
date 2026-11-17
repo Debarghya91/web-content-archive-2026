@@ -174,3 +174,281 @@ function pfRevealDetail(el){
     if(sel && sel.rangeCount && !sel.isCollapsed && inProtected(sel.anchorNode)) e.preventDefault();
   });
 })();
+
+/* ===== Collapsible side panels and sticky narration bar (17 Nov 2026) ===== */
+/* Task A: the "In this chapter" rail and, on desktop, the left drawer
+   collapse fully and the rest of the page reflows into the freed
+   width. The collapsed state persists in localStorage across page
+   navigation. Task B: a sticky bar at the top of every page with
+   narration shows the real playback state and lets the reader stop
+   or start the voice from any scroll position. The bar and the
+   floating button both read the same audio element, so they can
+   never disagree. Locked lessons show no bar: the gating code hides
+   the player, and the bar stays hidden with it. All styles are
+   injected here, following the paGateStyles precedent, because the
+   three-home CSS parity files live outside this tree. */
+(function(){
+'use strict';
+function paUi$(s, r){ try { return (r || document).querySelector(s); } catch(e){ return null; } }
+function paUiAll(s, r){ try { return Array.prototype.slice.call((r || document).querySelectorAll(s)); } catch(e){ return []; } }
+function paUiLsGet(k){ try { return window.localStorage.getItem(k); } catch(e){ return null; } }
+function paUiLsSet(k, v){ try { window.localStorage.setItem(k, v); } catch(e){} }
+function paUiStyles(){
+  if(document.getElementById('pa-ui-styles')) return;
+  var css = [
+    'body.pa-ui-rail-hidden .course-rail{display:none;}',
+    'body.pa-ui-rail-hidden .lesson-shell{grid-template-columns:minmax(0,1fr) auto;}',
+    '.pa-ui-rail-restore{display:none;position:fixed;left:0;top:160px;z-index:140;background:#FFFFFF;border:1px solid #E8EDF5;border-left:0;border-radius:0 10px 10px 0;box-shadow:4px 2px 12px rgba(13,28,56,.18);padding:10px 12px;font-size:14px;color:#0D1C38;cursor:pointer;white-space:nowrap;}',
+    'body.pa-ui-rail-hidden .pa-ui-rail-restore{display:inline-block;}',
+    '.pa-ui-rail-collapse{background:none;border:0;color:#0056D2;cursor:pointer;font-size:14px;padding:4px 6px;white-space:nowrap;}',
+    '.pa-ui-rail-collapse:hover{text-decoration:underline;}',
+    '@media (min-width:1024px){',
+    'body.pa-ui-drawer-hidden #pfDrawer.pf-drawer{display:none;}',
+    'body.pf-has-drawer.pa-ui-drawer-hidden{padding-left:0;}',
+    'body.pa-ui-drawer-hidden .pa-ui-drawer-restore{display:inline-flex;}',
+    '.pa-ui-rail-restore{left:360px;}',
+    'body.pa-ui-drawer-hidden .pa-ui-rail-restore{left:0;}',
+    '}',
+    '.pa-ui-drawer-restore{display:none;position:fixed;left:0;top:96px;z-index:140;align-items:center;background:#0D1C38;color:#fff;border:0;border-radius:0 10px 10px 0;padding:10px 12px;font-size:14px;cursor:pointer;box-shadow:4px 2px 12px rgba(13,28,56,.25);}',
+    '.pa-ui-drawer-collapse{margin-left:auto;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.30);color:#fff;border-radius:8px;padding:4px 8px;font-size:12px;cursor:pointer;white-space:nowrap;}',
+    '.pa-ui-now-playing{position:sticky;top:0;z-index:140;display:flex;align-items:center;gap:10px;height:44px;box-sizing:border-box;padding:0 12px;background:#0D1C38;color:#FFFFFF;font-size:14px;}',
+    '.pa-ui-now-playing[hidden]{display:none;}',
+    'body.pa-ui-gated-audio .pf-float-audio{display:none;}',
+    '.pa-ui-now-playing .pa-ui-np-toggle{flex:0 0 auto;width:30px;height:30px;border-radius:50%;border:1px solid rgba(255,255,255,.45);background:rgba(255,255,255,.12);color:#fff;font-size:13px;line-height:1;cursor:pointer;padding:0;}',
+    '.pa-ui-now-playing .pa-ui-np-state{flex:0 0 auto;font-weight:700;white-space:nowrap;}',
+    '.pa-ui-now-playing .pa-ui-np-title{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#D8E2F5;}',
+    'body.pa-ui-np-on .pf-topbar-app{top:44px;}',
+    'html.pf-dark .pa-ui-now-playing{background:#111827;color:#E5E7EB;border-bottom:1px solid #374151;}',
+    'html.pf-dark .pa-ui-now-playing .pa-ui-np-title{color:#9CA3AF;}',
+    'html.pf-dark .pa-ui-rail-collapse{color:#93C5FD;}',
+    'html.pf-dark .pa-ui-rail-restore{background:#111827;border-color:#374151;color:#E5E7EB;}'
+  ].join('\n');
+  var st = document.createElement('style');
+  st.id = 'pa-ui-styles';
+  st.type = 'text/css';
+  st.appendChild(document.createTextNode(css));
+  document.head.appendChild(st);
+}
+var RAIL_KEY = 'pa-ui-rail-hidden';
+var DRAWER_KEY = 'pa-ui-drawer-hidden';
+function paUiApplyPanels(){
+  document.body.classList.toggle('pa-ui-rail-hidden', paUiLsGet(RAIL_KEY) === '1');
+  document.body.classList.toggle('pa-ui-drawer-hidden', paUiLsGet(DRAWER_KEY) === '1');
+}
+function paUiInitPanels(){
+  paUiApplyPanels();
+  var railHead = paUi$('.course-rail .rail-head');
+  if(railHead && !paUi$('.pa-ui-rail-collapse', railHead)){
+    var hide = document.createElement('button');
+    hide.type = 'button';
+    hide.className = 'pa-ui-rail-collapse';
+    hide.textContent = 'Hide';
+    hide.setAttribute('aria-label', 'Hide the chapter panel');
+    hide.addEventListener('click', function(){
+      paUiLsSet(RAIL_KEY, '1');
+      document.body.classList.add('pa-ui-rail-hidden');
+    });
+    railHead.appendChild(hide);
+  }
+  /* Restore is a fixed edge tab, not an in-flow button: the lesson
+     title row is hidden on locked lessons and gating hides children
+     of .lesson-main, so no in-flow host is reliably visible. The tab
+     sits below the drawer restore tab and is reachable from any
+     scroll position. */
+  if(paUi$('.course-rail') && !paUi$('.pa-ui-rail-restore')){
+    var show = document.createElement('button');
+    show.type = 'button';
+    show.className = 'pa-ui-rail-restore';
+    show.textContent = 'Show chapter panel';
+    show.setAttribute('aria-label', 'Show the chapter panel');
+    show.addEventListener('click', function(){
+      paUiLsSet(RAIL_KEY, '0');
+      document.body.classList.remove('pa-ui-rail-hidden');
+    });
+    document.body.appendChild(show);
+  }
+  var drawer = document.getElementById('pfDrawer');
+  if(drawer){
+    var brand = paUi$('.pf-drawer-brand', drawer);
+    if(brand && !paUi$('.pa-ui-drawer-collapse', brand)){
+      var dh = document.createElement('button');
+      dh.type = 'button';
+      dh.className = 'pa-ui-drawer-collapse';
+      dh.textContent = 'Hide';
+      dh.setAttribute('aria-label', 'Hide the menu panel');
+      dh.addEventListener('click', function(){
+        paUiLsSet(DRAWER_KEY, '1');
+        document.body.classList.add('pa-ui-drawer-hidden');
+      });
+      brand.appendChild(dh);
+    }
+    if(!paUi$('.pa-ui-drawer-restore')){
+      var dr = document.createElement('button');
+      dr.type = 'button';
+      dr.className = 'pa-ui-drawer-restore';
+      dr.textContent = 'Menu';
+      dr.setAttribute('aria-label', 'Show the menu panel');
+      dr.addEventListener('click', function(){
+        paUiLsSet(DRAWER_KEY, '0');
+        document.body.classList.remove('pa-ui-drawer-hidden');
+      });
+      document.body.appendChild(dr);
+    }
+  }
+}
+var paUiNpBar = null, paUiNpBtn = null, paUiNpState = null, paUiNpTitle = null;
+var paUiNpCurrent = null;
+function paUiNpAudios(){ return paUiAll('audio'); }
+function paUiNpVisible(a){
+  /* The audio element itself computes display:none (no controls
+     attribute), so judge its ancestors, not itself. Gating hides a
+     container, never the bare audio tag, and marks it. */
+  if(a.getAttribute && a.getAttribute('data-pa-gate-hidden')) return false;
+  var el = a.parentNode;
+  while(el && el.nodeType === 1){
+    if(el.getAttribute && el.getAttribute('data-pa-gate-hidden')) return false;
+    try { if(window.getComputedStyle(el).display === 'none') return false; } catch(e){}
+    if(el === document.body) break;
+    el = el.parentNode;
+  }
+  return true;
+}
+function paUiNpPick(){
+  var list = paUiNpAudios();
+  var first = null;
+  for(var i = 0; i < list.length; i++){
+    if(paUiNpVisible(list[i])){ first = list[i]; break; }
+  }
+  if(paUiNpCurrent && paUiNpVisible(paUiNpCurrent)) return paUiNpCurrent;
+  return first;
+}
+function paUiNpTitleText(){
+  var h1 = paUi$('h1');
+  var t = h1 ? (h1.textContent || '').replace(/\s+/g, ' ').trim() : '';
+  if(!t) t = (document.title || '').replace(/\s+/g, ' ').trim();
+  if(t.length > 60) t = t.slice(0, 57) + '...';
+  return t || 'Narration';
+}
+function paUiNpSync(){
+  if(!paUiNpBar) return;
+  paUiNpCurrent = paUiNpPick();
+  /* Gating enforcement (17 Nov 2026): on a locked lesson the gating
+     code hides the player, but the per-page floating button script
+     reads the hidden player card as "out of view" and shows the
+     button, which plays the locked audio. A gating marker on any
+     audio hides the floating button and stops gated playback. The
+     marker, not display state, is the signal, so a transient hide
+     during a scene change never pauses a free lesson. */
+  var gated = false;
+  paUiNpAudios().forEach(function(a){
+    var el = a;
+    var marked = false;
+    while(el && el.nodeType === 1){
+      if(el.getAttribute && el.getAttribute('data-pa-gate-hidden')){ marked = true; break; }
+      if(el === document.body) break;
+      el = el.parentNode;
+    }
+    if(marked){
+      gated = true;
+      if(!a.paused){ try { a.pause(); } catch(e){} }
+    }
+  });
+  document.body.classList.toggle('pa-ui-gated-audio', gated);
+  var a = paUiNpCurrent;
+  if(!a){
+    paUiNpBar.hidden = true;
+    document.body.classList.remove('pa-ui-np-on');
+    return;
+  }
+  paUiNpBar.hidden = false;
+  document.body.classList.add('pa-ui-np-on');
+  var playing = !a.paused && !a.ended;
+  paUiNpBtn.textContent = playing ? '\u23F8' : '\u25B6';
+  paUiNpBtn.setAttribute('aria-label', playing ? 'Pause the narration' : 'Play the narration');
+  paUiNpState.textContent = a.ended ? 'Finished' : (playing ? 'Playing' : 'Paused');
+  paUiNpTitle.textContent = paUiNpTitleText();
+}
+function paUiNpSampleId(a){
+  var id = a.id || '';
+  if(id.indexOf('studio-audio-') === 0) return id.slice('studio-audio-'.length);
+  return '';
+}
+function paUiNpToggle(){
+  var a = paUiNpCurrent;
+  if(!a){ paUiNpSync(); a = paUiNpCurrent; }
+  if(!a) return;
+  var sid = paUiNpSampleId(a);
+  if(sid && typeof window.studioTogglePlay === 'function' && window.PA_STUDIOS && window.PA_STUDIOS[sid]){
+    window.studioTogglePlay(sid);
+  } else if(a.paused){
+    try { var p = a.play(); if(p && p.catch) p.catch(function(){}); } catch(e){}
+  } else {
+    try { a.pause(); } catch(e){}
+  }
+  paUiNpSync();
+}
+function paUiNpBind(a){
+  if(!a || a.__paUiNpBound) return;
+  a.__paUiNpBound = true;
+  a.addEventListener('play', function(){ paUiNpCurrent = a; paUiNpSync(); });
+  a.addEventListener('pause', paUiNpSync);
+  a.addEventListener('ended', paUiNpSync);
+  a.addEventListener('loadedmetadata', paUiNpSync);
+}
+function paUiNpInit(){
+  if(paUiNpBar || document.getElementById('paUiNowPlaying')) return;
+  var bar = document.createElement('div');
+  bar.className = 'pa-ui-now-playing';
+  bar.id = 'paUiNowPlaying';
+  bar.hidden = true;
+  bar.setAttribute('role', 'region');
+  bar.setAttribute('aria-label', 'Narration playback');
+  var btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'pa-ui-np-toggle';
+  btn.setAttribute('aria-label', 'Play the narration');
+  btn.textContent = '\u25B6';
+  btn.addEventListener('click', paUiNpToggle);
+  var state = document.createElement('span');
+  state.className = 'pa-ui-np-state';
+  state.textContent = 'Paused';
+  var title = document.createElement('span');
+  title.className = 'pa-ui-np-title';
+  bar.appendChild(btn);
+  bar.appendChild(state);
+  bar.appendChild(title);
+  document.body.insertBefore(bar, document.body.firstChild);
+  paUiNpBar = bar;
+  paUiNpBtn = btn;
+  paUiNpState = state;
+  paUiNpTitle = title;
+  paUiNpAudios().forEach(paUiNpBind);
+  paUiNpSync();
+  /* Gating hides the player asynchronously after the sign-in check,
+     and players can arrive late: re-sync on DOM changes and once
+     more after gating has had time to settle. */
+  var pending = false;
+  function schedule(){
+    if(pending) return;
+    pending = true;
+    setTimeout(function(){
+      pending = false;
+      paUiNpAudios().forEach(paUiNpBind);
+      paUiNpSync();
+    }, 120);
+  }
+  if('MutationObserver' in window){
+    try {
+      var mo = new MutationObserver(schedule);
+      mo.observe(document.body, {subtree: true, childList: true, attributes: true, attributeFilter: ['style', 'class', 'data-pa-gate-hidden']});
+    } catch(e){}
+  }
+  setTimeout(paUiNpSync, 2000);
+}
+paUiStyles();
+paUiInitPanels();
+paUiNpInit();
+if(document.readyState === 'loading'){
+  document.addEventListener('DOMContentLoaded', function(){ paUiApplyPanels(); paUiNpSync(); });
+}
+})();

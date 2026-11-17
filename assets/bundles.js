@@ -256,13 +256,16 @@ function paStartRazorpayCheckout(bid){
     });
   });
 }
-/* ===== Website checkout: PayU and PayPal (test setup, 13 Nov 2026) ===== */
-/* Website checkout is being set up with PayU (Indian buyers, INR) and
-   PayPal (international buyers, USD). No live buying until the payment
-   keys arrive: with empty or missing config every button stays disabled
-   and the page says so in plain words. Payment requires sign-in: the
-   server needs the Supabase JWT. Prices are never trusted from the
-   client: the server reads them from bundles.json. Direct UPI payment
+/* ===== Website checkout: PayU and PayPal (PayPal live 17 Nov 2026; PayU still in test setup) ===== */
+/* Website checkout with PayU (Indian buyers, INR, still in test
+   setup) and PayPal (international buyers, USD, live since 17 Nov
+   2026: the live functions paypal-create-order and
+   paypal-capture-order are deployed and the live secrets are set).
+   The PayPal buttons render only when the page config carries
+   paypal_enabled plus a client id: with an empty client id the
+   section says PayPal is not available. Payment requires sign-in:
+   the server needs the Supabase JWT. Prices are never trusted from
+   the client: the server reads them from its own price table. Direct UPI payment
    lives in its own section below (17 Nov 2026): the buyer pays the
    owner's UPI ID and submits the UPI reference, and the claim is
    verified by hand. UPI is also offered inside PayU hosted checkout
@@ -305,6 +308,28 @@ function paPaypalReady(){
      the config block is absent, so the buttons can never render
      without an explicit re-enable. */
   return !!(c && c.paypal_enabled && c.paypal_client_id && c.paypal_create_order_url && c.paypal_capture_order_url);
+}
+/* USD display prices (17 Nov 2026, owner-decided, $25 cap). DISPLAY
+   ONLY: the line in the PayPal section shows the USD price next to
+   the INR sale price so Indian buyers can compare. The amount
+   actually charged always comes from the server response in
+   paRenderPaypalButtons. Never change these without the owner's
+   approval, and keep them in step with the server price table. */
+var PA_USD_PRICES = {'part-1': '4.99', 'part-2': '4.99', 'part-3': '4.99',
+  'part-4': '4.99', 'part-5': '4.99', 'part-6': '4.99', 'part-7': '4.99',
+  'part-8': '4.99', 'part-9': '4.99', 'part-10': '4.99',
+  'simulator': '5.99', 'investigation-lab': '5.99', 'studio': '9.99',
+  'practice': '11.99', 'interview': '18.99', 'integrated': '24.99'};
+function paRenderPaypalAmount(bid){
+  var amt = document.getElementById('pa-paypal-amount');
+  if(!amt) return;
+  var b = bid ? paCheckoutBundle(bid) : null;
+  if(!b || b.price_placeholder || !PA_USD_PRICES[bid]){
+    amt.textContent = '';
+    return;
+  }
+  amt.textContent = '$' + PA_USD_PRICES[bid] + ' (Rs ' +
+    Number(b.price_inr).toLocaleString('en-IN') + ' via UPI)';
 }
 function paCheckoutFail(msg){
   var st = document.getElementById('pay-status');
@@ -626,6 +651,23 @@ function paUpiUri(bid, amount){
   return 'upi://pay?pa=' + PA_UPI_ID + '&pn=Payments%20Training%20Hub' +
     '&am=' + String(amount) + '&cu=INR&tn=' + encodeURIComponent(bid);
 }
+/* App-targeted UPI links (17 Nov 2026): on Android the PhonePe and
+   GPay buttons use intent:// URLs pinned to the app package, with a
+   browser fallback to the plain upi:// link so a tap never
+   dead-ends when the app is not installed. On iOS and desktop the
+   same buttons use the plain upi:// link. The payload is the exact
+   string paUpiUri builds for the QR code and the generic link: a
+   deep link returns no confirmation to the page, so the UTR step
+   remains the only proof. */
+function paUpiIsAndroid(){
+  try { return /android/i.test(navigator.userAgent || ''); } catch(e){ return false; }
+}
+function paUpiAppUri(uri, pkg){
+  if(!paUpiIsAndroid()) return uri;
+  var query = String(uri).replace(/^upi:\/\//, '');
+  return 'intent://' + query + '#Intent;scheme=upi;package=' + pkg +
+    ';S.browser_fallback_url=' + encodeURIComponent(uri) + ';end';
+}
 function paUpiProductId(bid){ return PA_UPI_PRODUCT_PREFIX + bid; }
 function paUpiShortProduct(pid){
   return String(pid || '').replace(PA_UPI_PRODUCT_PREFIX, '');
@@ -661,8 +703,13 @@ function paUpiRender(bid, uid){
   }
   var qr = document.getElementById('pa-upi-qr');
   if(qr) qr.src = 'assets/upi-qr/' + bid + '.png';
+  var uri = paUpiUri(bid, b.price_inr);
   var intent = document.getElementById('pa-upi-intent');
-  if(intent) intent.href = paUpiUri(bid, b.price_inr);
+  if(intent) intent.href = uri;
+  var phonepe = document.getElementById('pa-upi-phonepe');
+  if(phonepe) phonepe.href = paUpiAppUri(uri, 'com.phonepe.app');
+  var gpay = document.getElementById('pa-upi-gpay');
+  if(gpay) gpay.href = paUpiAppUri(uri, 'com.google.android.apps.nbu.paisa.user');
   var amt = document.getElementById('pa-upi-amount-note');
   if(amt) amt.textContent = 'Pay exactly Rs ' + Number(b.price_inr).toLocaleString('en-IN') + ' to ' + PA_UPI_ID + '. Scan the code or tap the button above; the amount and course are already filled in.';
   if(note) note.textContent = '';
@@ -783,6 +830,7 @@ function paInitCheckout(){
   var upiCopy = document.getElementById('pa-upi-copy');
   if(upiCopy && !upiCopy.dataset.paBound){ upiCopy.dataset.paBound = '1'; upiCopy.addEventListener('click', paUpiCopyId); }
   var bid = paRenderCheckoutSummary();
+  paRenderPaypalAmount(bid);
   var payuBtn = document.getElementById('pa-payu-pay');
   var payuNote = document.getElementById('pa-payu-note');
   var paypalNote = document.getElementById('pa-paypal-note');
@@ -832,7 +880,7 @@ function paInitCheckout(){
       if(paypalNote) paypalNote.textContent = '';
       paLoadPaypalSdk(function(){ paRenderPaypalButtons(bid); });
     } else {
-      if(paypalNote) paypalNote.textContent = 'PayPal checkout is not set up yet. Website checkout is in test setup.';
+      if(paypalNote) paypalNote.textContent = 'PayPal checkout is not available right now. Please try again later.';
     }
   });
 }
@@ -999,15 +1047,22 @@ function paBuyPromptOnClick(ev){
 }
 document.addEventListener('click', paBuyPromptOnClick);
 
-/* ===== Lesson gating: first lesson free, the rest preview + buy (17 Nov 2026) ===== */
+/* ===== Lesson gating: first lesson free, the rest paywall view + buy (17 Nov 2026) ===== */
 /* The first lesson of every chapter is free to read in full. Every other
-   lesson shows a free preview (the opening words plus the lesson outline
+   lesson shows only what to expect from the lesson (the lesson outline
    and objectives) and then a lock panel with the owning course price and
-   a Buy button. Signed-in owners of the owning course, owners of the
-   Integrated Course, and admins see the full lesson.
+   a Buy button. No transcript words, no player, no audio. Signed-in
+   owners of the owning course, owners of the Integrated Course, and
+   admins see the full lesson.
+   Lock-first: the lock decision that needs no sign-in state is made at
+   bundles.js execution time (this file runs before studio.js), so a
+   lesson that starts locked is hidden and its player never initialises
+   before the async entitlement check resolves. There is no flash of
+   content and no audio path before the check. See PA_GATE_EARLY below
+   and studioInit in studio.js.
    This is PRESENTATIONAL gating only: the full lesson stays in the
    served HTML, so search engines keep indexing it, and no page
-   redirects to sign-in. It stops casual reading past the preview; it
+   redirects to sign-in. It stops casual reading past what to expect; it
    does not stop a determined visitor who reads page source or fetches
    the audio file directly. Real server-side enforcement is a later
    step. This system is separate from PA_ENFORCE_ACCESS above, which
@@ -1022,8 +1077,58 @@ document.addEventListener('click', paBuyPromptOnClick);
    chapter ch37 has no course and no entry here, so its lessons stay
    fully open: no purchase could unlock them. */
 var PA_LESSON_GATE = {"first":{"ch1":"ch1s1","ch2":"ch2s1","ch3":"ch3s1","ch4":"ch4s1","ch64":"ch64s1","ch69":"ch69s1","ch70":"ch70s1","ch9":"ch9s1","ch10":"ch10s1","ch11":"ch11s1","ch12":"ch12s1","ch33":"ch33s1","ch56":"ch56s1","ch57":"ch57s1","ch59":"ch59s1","ch61":"ch61s1","ch62":"ch62s1","ch74":"ch74s1","ch91":"ch91s1","ch92":"ch92s1","ch93":"ch93s1","ch5":"ch5s1","ch6":"ch6s1","ch7":"ch7s1","ch8":"ch8s1","ch38":"ch38s1","ch54":"ch54s1","ch39":"ch39s1","ch50":"ch50s1","ch51":"ch51s1","ch52":"ch52s1","ch53":"ch53s1","ch58":"ch58s1","ch60":"ch60s1","ch67":"ch67s1","ch13":"ch13s1","ch14":"ch14s1","ch15":"ch15s1","ch16":"ch16s1","ch94":"ch94s1","ch49":"ch49s1","ch66":"ch66s1","ch75":"ch75s1","ch17":"ch17s1","ch18":"ch18s1","ch21":"ch21s1","ch71":"ch71s1","ch90":"ch90s1","ch19":"ch19s1","ch20":"ch20s1","ch40":"ch40s1","ch44":"ch44s1","ch76":"ch76s1","ch77":"ch77s1","ch88":"ch88s1","ch89":"ch89s1","ch72":"ch72s1","ch23":"ch23s1","ch24":"ch24s1","ch41":"ch41s1","ch86":"ch86s1","ch87":"ch87s1","ch95":"ch95s1","ch73":"ch73s1","ch78":"ch78s1","ch81":"ch81s1","ch99":"ch99s1","ch22":"ch22s1","ch31":"ch31s1","ch32":"ch32s1","ch34":"ch34s1","ch63":"ch63s1","ch25":"ch25s1","ch26":"ch26s1","ch30":"ch30s1","ch35":"ch35s1","ch36":"ch36s1","ch42":"ch42s1","ch43":"ch43s1","ch46":"ch46s1","ch47":"ch47s1","ch48":"ch48s1","ch65":"ch65s1","ch80":"ch80s1","ch68":"ch68s1","ch79":"ch79s1","ch28":"ch28s1","ch45":"ch45s1","ch82":"ch82s1","ch83":"ch83s1","ch84":"ch84s1","ch29":"ch29s1","ch96":"ch96s1","ch97":"ch97s1","ch98":"ch98s1","ch100":"ch100s1","ch55":"ch55s1","ch27":"ch27s1","ch85":"ch85s1"},"part":{"ch1":"part-1","ch2":"part-1","ch3":"part-1","ch4":"part-1","ch64":"part-1","ch69":"part-1","ch70":"part-1","ch9":"part-2","ch10":"part-2","ch11":"part-2","ch12":"part-2","ch33":"part-2","ch56":"part-2","ch57":"part-2","ch59":"part-2","ch61":"part-2","ch62":"part-2","ch74":"part-2","ch91":"part-2","ch92":"part-2","ch93":"part-2","ch5":"part-3","ch6":"part-3","ch7":"part-3","ch8":"part-3","ch38":"part-3","ch54":"part-3","ch39":"part-3","ch50":"part-3","ch51":"part-3","ch52":"part-3","ch53":"part-3","ch58":"part-3","ch60":"part-3","ch67":"part-3","ch13":"part-4","ch14":"part-4","ch15":"part-4","ch16":"part-4","ch94":"part-4","ch49":"part-4","ch66":"part-4","ch75":"part-4","ch17":"part-5","ch18":"part-5","ch21":"part-5","ch71":"part-5","ch90":"part-5","ch19":"part-5","ch20":"part-5","ch40":"part-5","ch44":"part-5","ch76":"part-5","ch77":"part-5","ch88":"part-5","ch89":"part-5","ch72":"part-6","ch23":"part-6","ch24":"part-6","ch41":"part-6","ch86":"part-6","ch87":"part-6","ch95":"part-6","ch73":"part-6","ch78":"part-6","ch81":"part-6","ch99":"part-6","ch22":"part-7","ch31":"part-7","ch32":"part-7","ch34":"part-7","ch63":"part-7","ch25":"part-8","ch26":"part-8","ch30":"part-8","ch35":"part-8","ch36":"part-8","ch42":"part-8","ch43":"part-8","ch46":"part-8","ch47":"part-8","ch48":"part-8","ch65":"part-8","ch80":"part-8","ch68":"part-8","ch79":"part-8","ch28":"part-9","ch45":"part-9","ch82":"part-9","ch83":"part-9","ch84":"part-9","ch29":"part-9","ch96":"part-9","ch97":"part-9","ch98":"part-9","ch100":"part-9","ch55":"part-10","ch27":"part-10","ch85":"part-10"},"parts":{"part-1":{"name":"Course 1: Foundations of Money and Payments","sale":399,"list":599,"chapters":7,"lessons":49},"part-2":{"name":"Course 2: How Payments Move","sale":399,"list":599,"chapters":14,"lessons":137},"part-3":{"name":"Course 3: Messages: SWIFT MT, ISO 20022 and Standards","sale":399,"list":599,"chapters":14,"lessons":149},"part-4":{"name":"Course 4: Cross-Border Payments and Correspondent Banking","sale":399,"list":599,"chapters":8,"lessons":71},"part-5":{"name":"Course 5: Clearing, Settlement, Liquidity and Reconciliation","sale":399,"list":599,"chapters":13,"lessons":110},"part-6":{"name":"Course 6: Exceptions, Investigations, Returns and Claims","sale":399,"list":599,"chapters":11,"lessons":98},"part-7":{"name":"Course 7: Cards and Customer Payments","sale":399,"list":599,"chapters":5,"lessons":37},"part-8":{"name":"Course 8: Architecture, APIs, Hubs and Engineering","sale":399,"list":599,"chapters":14,"lessons":118},"part-9":{"name":"Course 9: The Business Analyst at Work","sale":399,"list":599,"chapters":10,"lessons":79},"part-10":{"name":"Course 10: Emerging Payments and the Future","sale":399,"list":599,"chapters":3,"lessons":26}},"integrated":{"name":"The Integrated Course","sale":2999,"list":4499,"chapters":99,"lessons":874}};
-var PA_GATE_PREVIEW_WORDS = 150;
 var PA_GATE_STATE_PROMISE = null;
+/* Lock-first (17 Nov 2026): this block runs synchronously at bundles.js
+   execution time, before studio.js runs. From PA_LESSON_GATE alone it
+   decides whether the page's lesson starts locked: any lesson that is
+   not its chapter's first and belongs to a course. A locked lesson
+   gets its sample marked in PA_GATE_EARLY_LOCKED (studioInit refuses
+   to run for it: no state, no listeners, no autoplay, no background
+   fetch, no audio source) and an injected style hiding the studio
+   block, player card, tab card, tool rail, floating audio button and
+   now-playing bar before anything can paint or play. The async
+   entitlement check in paGateInit then either unlocks (flag cleared,
+   style removed, pending studio started) or keeps the page locked.
+   First lessons and held-out ch37 never lock. */
+window.PA_GATE_EARLY_LOCKED = {};
+var PA_GATE_EARLY = (function(){
+  var lessonId = null;
+  try {
+    var m = /\/lessons\/(ch\d+s\d+)/.exec(window.location.pathname || '');
+    if(m) lessonId = m[1];
+  } catch(e){}
+  if(!lessonId) return null;
+  var ch = paGateChapterOf(lessonId);
+  if(!ch) return null;
+  if(PA_LESSON_GATE.first[ch] === lessonId) return null;
+  if(!PA_LESSON_GATE.part[ch]) return null;
+  return lessonId;
+})();
+if(PA_GATE_EARLY){
+  window.PA_GATE_EARLY_LOCKED['studio-' + PA_GATE_EARLY] = true;
+  (function(){
+    var css = '#studio-studio-' + PA_GATE_EARLY + ',.studio,.pf-player-card,.pf-tab-card,nav.tool-rail,.tool-rail,.pf-float-audio,.pa-ui-now-playing{display:none !important;}';
+    var st = document.createElement('style');
+    st.id = 'pa-gate-early-styles';
+    st.type = 'text/css';
+    if(st.styleSheet){ st.styleSheet.cssText = css; } else { st.appendChild(document.createTextNode(css)); }
+    document.head.appendChild(st);
+  })();
+}
+function paGateEarlyUnlock(){
+  if(!PA_GATE_EARLY) return;
+  try { delete window.PA_GATE_EARLY_LOCKED['studio-' + PA_GATE_EARLY]; } catch(e){}
+  var st = document.getElementById('pa-gate-early-styles');
+  if(st && st.parentNode) st.parentNode.removeChild(st);
+  try { if(typeof studioStartPending === 'function') studioStartPending(); } catch(e){}
+}
+function paGateEarlyDiscard(){
+  /* Locked outcome: the gate's own hides and markers take over, so the
+     early style is removed to leave one source of truth. Called only
+     after paGateHide has marked the studio block. */
+  var st = document.getElementById('pa-gate-early-styles');
+  if(st && st.parentNode) st.parentNode.removeChild(st);
+}
 function paGateChapterOf(lessonId){
   var m = /^(ch\d+)s\d+$/.exec(String(lessonId || ''));
   return m ? m[1] : null;
@@ -1082,7 +1187,8 @@ function paGateState(){
 function paGateStyles(){
   if(document.getElementById('pa-gate-styles')) return;
   var css = [
-    '.pa-gate-badge{display:inline-block;font-size:12px;font-weight:700;line-height:1.4;padding:2px 8px;border-radius:999px;margin-left:8px;vertical-align:middle;white-space:nowrap;}',
+    '.pa-gate-badge{display:inline-block;flex:0 0 auto;font-size:12px;font-weight:700;line-height:1.4;padding:2px 8px;border-radius:999px;margin-left:8px;vertical-align:middle;white-space:nowrap;}',
+    '.li-text .pa-gate-badge{margin:6px 0 0 0;}',
     '.pa-gate-free{background:#DCFCE7;color:#166534;border:1px solid #86EFAC;}',
     '.pa-gate-locked{background:#FEF3C7;color:#92400E;border:1px solid #FCD34D;}',
     '.pa-gate-panel{background:#0B1B30;color:#E2E8F0;border:1px solid #1E3A5F;border-radius:12px;padding:20px 24px;margin:20px 0;}',
@@ -1105,40 +1211,6 @@ function paGateHide(el){
   try { el.style.display = 'none'; } catch(e){}
   try { el.setAttribute('data-pa-gate-hidden', '1'); } catch(e){}
 }
-function paGateWords(el){
-  var t = el.textContent || '';
-  var skips = el.querySelectorAll ? el.querySelectorAll('script, style, noscript, template') : [];
-  for(var i = 0; i < skips.length; i++){ t = t.replace(skips[i].textContent || '', ' '); }
-  t = t.replace(/\s+/g, ' ').trim();
-  return t ? t.split(' ').length : 0;
-}
-function paGateHasVisibleKid(el){
-  for(var i = 0; i < el.children.length; i++){
-    var c = el.children[i];
-    if(c.tagName === 'SCRIPT' || c.tagName === 'STYLE' || c.tagName === 'TEMPLATE' || c.tagName === 'NOSCRIPT') continue;
-    if(!c.getAttribute('data-pa-gate-hidden')) return true;
-  }
-  return false;
-}
-function paGateCutKids(container, budget){
-  var kids = [];
-  for(var i = 0; i < container.children.length; i++) kids.push(container.children[i]);
-  for(var k = 0; k < kids.length; k++){
-    var el = kids[k];
-    var tag = el.tagName;
-    if(tag === 'SCRIPT' || tag === 'STYLE' || tag === 'TEMPLATE' || tag === 'NOSCRIPT') continue;
-    if(budget.left <= 0){ paGateHide(el); continue; }
-    var w = paGateWords(el);
-    if(w <= budget.left){ budget.left -= w; continue; }
-    if(tag === 'P' || tag === 'LI' || tag === 'H2' || tag === 'H3' || tag === 'H4' || tag === 'H5' || tag === 'H6' || tag === 'BLOCKQUOTE' || tag === 'FIGCAPTION' || tag === 'TD' || tag === 'TH' || tag === 'A' || tag === 'SPAN' || tag === 'B' || tag === 'I' || tag === 'EM' || tag === 'STRONG'){
-      budget.left = 0;
-      continue;
-    }
-    paGateCutKids(el, budget);
-    budget.left = 0;
-    if(!paGateHasVisibleKid(el)) paGateHide(el);
-  }
-}
 function paGateInsertPanelAfterVisible(container, panel){
   var anchor = null;
   for(var j = container.children.length - 1; j >= 0; j--){
@@ -1149,43 +1221,12 @@ function paGateInsertPanelAfterVisible(container, panel){
   if(anchor && anchor.nextSibling) container.insertBefore(panel, anchor.nextSibling);
   else container.appendChild(panel);
 }
-/* The lesson text lives in the transcript inside the studio block, not
-   in the takeaways card. For a locked lesson, keep only the transcript
-   preview: hide every sibling along the path from the transcript
-   container up to the studio block (player, scenes, exercises, quiz,
-   notes, the second details block), open the enclosing details
-   element so the preview reads, and cut the transcript to the word
-   budget. Returns the transcript container, or null when the page
-   has none (the caller then hides the whole studio block). */
-function paGatePreviewTranscript(main, lessonId, studioEl){
-  var sampleId = 'studio-' + lessonId;
-  var container = document.getElementById('studio-transcript-' + sampleId);
-  if(!container && studioEl) container = studioEl.querySelector('[id^="studio-transcript-"]');
-  if(!container) return null;
-  var keep = [];
-  var n = container;
-  while(n && n !== main){ keep.push(n); n = n.parentNode; }
-  if(!n) return null;
-  for(var i = 0; i < keep.length; i++){
-    var node = keep[i];
-    var parent = node.parentNode;
-    if(!parent || parent === main) continue;
-    for(var j = 0; j < parent.children.length; j++){
-      var sib = parent.children[j];
-      if(sib === node) continue;
-      if(sib.tagName === 'SCRIPT' || sib.tagName === 'STYLE' || sib.tagName === 'TEMPLATE' || sib.tagName === 'NOSCRIPT' || sib.tagName === 'SUMMARY') continue;
-      paGateHide(sib);
-    }
-  }
-  var det = null;
-  var m = container.parentNode;
-  while(m && m !== main){ if(m.tagName === 'DETAILS'){ det = m; break; } m = m.parentNode; }
-  if(det){ try { det.setAttribute('open', ''); det.open = true; } catch(e){} }
-  paGateCutKids(container, {left: PA_GATE_PREVIEW_WORDS});
-  return container;
-}
 function paGateSilence(sampleId){
   try { if(typeof pauseAllAudio === 'function') pauseAllAudio(); } catch(e){}
+  /* studioCancelAutoplay clears wantAutoplay and audioPlayWanted as
+     well as disarming the retry: pausing alone lets the async setSrc
+     callback and the failover path restart playback. */
+  try { if(typeof studioCancelAutoplay === 'function') studioCancelAutoplay(sampleId); } catch(e){}
   try { if(typeof studioDisarmAutoplayRetry === 'function') studioDisarmAutoplayRetry(sampleId); } catch(e){}
   try {
     var a = document.getElementById('studio-audio-' + sampleId);
@@ -1328,11 +1369,27 @@ function paGateApplyToLessonPage(lessonId, state){
      transcript button, so hide it explicitly for locked lessons. */
   var rails = document.querySelectorAll('nav.tool-rail, .tool-rail');
   for(var r = 0; r < rails.length; r++) paGateHide(rails[r]);
-  var tContainer = null;
-  if(studioEl) tContainer = paGatePreviewTranscript(main, lessonId, studioEl);
-  if(!tContainer && studioEl) paGateHide(studioEl);
+  /* No transcript preview: the whole studio block (transcript, player,
+     scenes, exercises, quiz, notes) stays hidden. Only the takeaways
+     card and the beats outline above remain visible. */
+  if(studioEl) paGateHide(studioEl);
+  /* The beats outline stays as what to expect, but its items must not
+     act as audio jump controls: strip the seek affordance the inline
+     page script binds to, so a click or keypress on a beat does
+     nothing. The outline text stays visible. */
+  if(beatsCard){
+    var seekables = beatsCard.querySelectorAll('[data-pf-seek]');
+    for(var s = 0; s < seekables.length; s++){
+      var b = seekables[s];
+      b.removeAttribute('data-pf-seek');
+      b.removeAttribute('role');
+      b.removeAttribute('tabindex');
+      b.removeAttribute('aria-label');
+    }
+  }
+  paGateEarlyDiscard();
   var panel = paGateLockPanel(lessonId, chapterId, partId, state, main);
-  if(tContainer) paGateInsertPanelAfterVisible(tContainer, panel);
+  if(studioEl && studioEl.parentNode) studioEl.parentNode.insertBefore(panel, studioEl);
   else if(contentEl) paGateInsertPanelAfterVisible(contentEl, panel);
   else main.appendChild(panel);
 }
@@ -1367,7 +1424,18 @@ function paGateBadgeLessonLinks(state){
     var s = document.createElement('span');
     s.className = 'pa-gate-badge ' + cls;
     s.textContent = badge;
-    a.appendChild(s);
+    /* Badge placement (17 Nov 2026, badge layout fix): the badge must
+       never be a flex item competing with the lesson title. In the
+       side panel and sidebar rows the link is display:flex and the
+       title block shrinks to min-width 0 with overflow-wrap anywhere,
+       so a nowrap badge appended to the link starved the title to one
+       letter per line. The badge goes inside the title block instead
+       (.li-text in the side panel, .t in the sidebar), where it flows
+       under or after the title without taking row width. Links with
+       no title block (chapter rows, search results, More in this
+       chapter) are not flex rows, so the link itself stays the host. */
+    var host = a.querySelector('.li-text') || a.querySelector('.t') || a;
+    host.appendChild(s);
   }
 }
 function paGateInit(){
@@ -1379,6 +1447,7 @@ function paGateInit(){
   function apply(state){
     paGateStyles();
     if(lessonId && !paGateCanRead(lessonId, state)) paGateApplyToLessonPage(lessonId, state);
+    else if(lessonId) paGateEarlyUnlock();
     paGateBadgeLessonLinks(state);
     setTimeout(function(){ try { paGateBadgeLessonLinks(state); } catch(e){} }, 1500);
   }

@@ -6,6 +6,11 @@
 /* text against the real audio duration). Never claimed as precise. */
 var PA_STUDIO_DATA = {};
 var PA_STUDIOS = {};
+/* Lock-first gating (17 Nov 2026): samples whose init the lesson gate
+   held back because the page's lesson starts locked. studioInit
+   records them here instead of initialising; studioStartPending runs
+   them once the entitlement check resolves to access. */
+var PA_STUDIO_PENDING = {};
 /* Audio failover (10 Nov 2026): the mirror audio host. ONE constant, in
    this one place, so the fallback URL changes in a single spot if the
    mirror host moves. The player tries the primary audio URL first; on a
@@ -109,6 +114,17 @@ function studioParagraphsHtml(text){
   return html;
 }
 function studioInit(sampleId){
+  /* Lock-first gating (17 Nov 2026): bundles.js runs before this file
+     and marks the sample of a lesson that starts locked in
+     PA_GATE_EARLY_LOCKED. Do not initialise at all: no state, no
+     listeners, no scene load, no autoplay flag, no background fetch,
+     no audio source. The gate calls studioStartPending() when the
+     entitlement check resolves to access. */
+  if(typeof window.PA_GATE_EARLY_LOCKED === 'object' && window.PA_GATE_EARLY_LOCKED &&
+     window.PA_GATE_EARLY_LOCKED[sampleId]){
+    PA_STUDIO_PENDING[sampleId] = true;
+    return;
+  }
   var data = PA_STUDIO_DATA[sampleId];
   var root = document.getElementById('studio-' + sampleId);
   if(!root || !data){ studioShowError(sampleId, 'This lesson player could not start: the lesson data is missing. Try reloading the page.'); return; }
@@ -286,6 +302,24 @@ function studioInit(sampleId){
   studioSyncMuteButton(sampleId);
   studioRestoreBookmark(sampleId);
 }
+/* Start any studio inits the lock-first gate held back. Called by the
+   lesson gate after the entitlement check resolves to access. Safe to
+   call repeatedly: initialised samples are skipped, and a sample that
+   is still locked stays pending. */
+function studioStartPending(){
+  var ids = Object.keys(PA_STUDIO_PENDING);
+  for(var i = 0; i < ids.length; i++){
+    var id = ids[i];
+    delete PA_STUDIO_PENDING[id];
+    if(PA_STUDIOS[id]) continue;
+    if(window.PA_GATE_EARLY_LOCKED && window.PA_GATE_EARLY_LOCKED[id]){
+      PA_STUDIO_PENDING[id] = true;
+      continue;
+    }
+    try { studioInit(id); }
+    catch(e){ if(window.console) console.error('studio init failed', id, e); }
+  }
+}
 /* Central playback attempt. fromUser=true shows a visible error when the
    browser refuses playback (for example iOS Safari blocking autoplay);
    fromUser=false (the open-page autoplay attempt) shows no error; the
@@ -338,6 +372,9 @@ function studioPlayAudio(sampleId, fromUser){
 function studioArmAutoplayRetry(sampleId){
   var st = PA_STUDIOS[sampleId];
   if(!st || st.autoplayRetryArmed) return;
+  /* Lock-first defence in depth (17 Nov 2026): never arm the retry
+     for a sample the lesson gate has marked locked. */
+  if(window.PA_GATE_EARLY_LOCKED && window.PA_GATE_EARLY_LOCKED[sampleId]) return;
   st.autoplayRetryArmed = true;
   var retry = function(ev){
     /* Fix round 4: an interaction that began on a control must not
@@ -385,6 +422,19 @@ function studioDisarmAutoplayRetry(sampleId){
     st.autoplayRetryVisHandler = null;
   }
   st.autoplayRetryArmed = false;
+}
+/* Hard stop for a locked lesson (17 Nov 2026): clear every flag that
+   can restart playback after a pause, disarm the retry, and pause.
+   paGateSilence calls this; pausing alone is not enough, because the
+   async setSrc callback and the failover path re-read these flags. */
+function studioCancelAutoplay(sampleId){
+  var st = PA_STUDIOS[sampleId];
+  if(st){ st.wantAutoplay = false; st.audioPlayWanted = false; }
+  studioDisarmAutoplayRetry(sampleId);
+  try {
+    var a = document.getElementById('studio-audio-' + sampleId);
+    if(a && a.pause) a.pause();
+  } catch(e){}
 }
 function studioStopVisual(sampleId){
   var st = PA_STUDIOS[sampleId];

@@ -10,6 +10,15 @@ var PA_SIT_ITEMS = [];
 var PA_SIT_INDEX = 0;
 var PA_SIT_DEEPLINK_ID = '';
 var PA_SIT_DEEPLINK_MISSING = '';
+/* Deep-link landing (17 Nov 2026, Task G): when the URL carries a
+   filter or an item id, the first render scrolls the browser into
+   view, so a shared or bookmarked filtered URL lands on the filtered
+   list instead of the identical intro at the top. Cleared after the
+   first scroll. A bare situations.html load still opens at the top. */
+var PA_SIT_SCROLL_ON_LOAD = false;
+/* Set once the load/pageshow landing sequence has settled, so a late
+   data render still scrolls once and then stops. */
+var PA_SIT_LANDING_DONE = false;
 var PA_SIT_STAGE = '';
 var PA_SIT_DOMAIN = '';
 var PA_SIT_MESSAGE = '';
@@ -658,6 +667,16 @@ function paSitRender(){
   paSitUpdateProgressLine();
   paSitRenderDashboard();
   paSitRenderReport();
+  /* Deep-link landing: scroll to the filtered list once, on the first
+     render that has data. The site-wide scroll rule (site.js) resets
+     the page to the top on window load AND on pageshow, both after an
+     early render, so the flag is only cleared once the landing
+     sequence has settled (see the load/pageshow handlers in the
+     init): until then every render re-applies the scroll. */
+  if(PA_SIT_SCROLL_ON_LOAD && PA_SIT_ITEMS.length){
+    paSitScrollToBrowser();
+    if(PA_SIT_LANDING_DONE) PA_SIT_SCROLL_ON_LOAD = false;
+  }
 }
 function paSitOpenByIndex(i){
   var idx = parseInt(i, 10);
@@ -712,6 +731,57 @@ function paSitStageTab(stage, btn){
   PA_SIT_PAGE = 1;
   paSitSyncFilterControls();
   paSitRender();
+  paSitSyncUrl();
+}
+/* Keep the stage in the URL without navigating, so a filtered view
+   stays filtered on refresh and can be shared. Other params are
+   preserved. replaceState, never a reload. */
+function paSitSyncUrl(){
+  try {
+    var params = new URLSearchParams(window.location.search);
+    if(PA_SIT_STAGE) params.set('stage', PA_SIT_STAGE);
+    else params.delete('stage');
+    var qs = params.toString();
+    var url = window.location.pathname + (qs ? '?' + qs : '') + (window.location.hash || '');
+    history.replaceState(null, '', url);
+  } catch(e){}
+}
+/* Land on the filtered list: the browser (or the paywall, when the
+   visitor is gated) sits far below the intro, so a stage selection
+   must scroll to it or the tap looks like a pointless reload. */
+function paSitWallShowing(){
+  var wall = document.getElementById('sit-paywall');
+  if(!wall) return false;
+  try { return getComputedStyle(wall).display !== 'none'; } catch(e){ return false; }
+}
+function paSitScrollToBrowser(){
+  var browser = document.getElementById('sit-browser');
+  var wall = document.getElementById('sit-paywall');
+  var target = (browser && browser.style.display !== 'none') ? browser : wall;
+  if(!target) return;
+  try {
+    var top = target.getBoundingClientRect().top + window.scrollY - 8;
+    if(top < 0) top = 0;
+    window.scrollTo(0, top);
+  } catch(e){}
+}
+/* Stage links (17 Nov 2026, Task G): the "six learning stages" list
+   links to situations.html?stage=N. A plain click filters in place
+   like the tabs and lands on the filtered list, with no reload. The
+   hrefs stay real URLs, so modified clicks, middle-clicks and
+   bookmarks keep working as deep links. */
+function paSitBindStageLinks(){
+  var links = document.querySelectorAll('.sit-stages a[href*="stage="]');
+  for(var i = 0; i < links.length; i++){
+    links[i].addEventListener('click', function(ev){
+      if(ev.defaultPrevented || ev.button !== 0 || ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.altKey) return;
+      var m = /[?&]stage=([1-6])\b/.exec(this.getAttribute('href') || '');
+      if(!m) return;
+      ev.preventDefault();
+      paSitStageTab(m[1]);
+      paSitScrollToBrowser();
+    });
+  }
 }
 /* Category drawer (15 Nov 2026 review wave): one tap picks a whole
    category. Picking a stage clears the bookmarked-only filter and
@@ -724,6 +794,7 @@ function paSitCategory(stage, bookmarked){
   PA_SIT_PAGE = 1;
   paSitSyncFilterControls();
   paSitRender();
+  paSitSyncUrl();
 }
 function paSitToggleDrawer(){
   var d = document.getElementById('sit-cases-drawer');
@@ -984,24 +1055,24 @@ function paSitReadUrlParams(){
   var params = {};
   try { params = new URLSearchParams(window.location.search); } catch(e){ return; }
   var stage = params.get('stage');
-  if(stage && ['1','2','3','4','5','6'].indexOf(stage) !== -1) PA_SIT_STAGE = stage;
+  if(stage && ['1','2','3','4','5','6'].indexOf(stage) !== -1){ PA_SIT_STAGE = stage; PA_SIT_SCROLL_ON_LOAD = true; }
   var msg = params.get('message');
-  if(msg) PA_SIT_MESSAGE = msg;
+  if(msg){ PA_SIT_MESSAGE = msg; PA_SIT_SCROLL_ON_LOAD = true; }
   var q = params.get('q');
-  if(q) PA_SIT_QUERY = q.trim().toLowerCase();
+  if(q){ PA_SIT_QUERY = q.trim().toLowerCase(); PA_SIT_SCROLL_ON_LOAD = true; }
   var domain = params.get('domain');
-  if(domain) PA_SIT_DOMAIN = domain;
+  if(domain){ PA_SIT_DOMAIN = domain; PA_SIT_SCROLL_ON_LOAD = true; }
   var failure = params.get('failure');
-  if(failure) PA_SIT_FAILURE = failure;
+  if(failure){ PA_SIT_FAILURE = failure; PA_SIT_SCROLL_ON_LOAD = true; }
   var level = params.get('level');
-  if(level && ['foundation', 'core', 'advanced'].indexOf(level) !== -1) PA_SIT_LEVEL = level;
+  if(level && ['foundation', 'core', 'advanced'].indexOf(level) !== -1){ PA_SIT_LEVEL = level; PA_SIT_SCROLL_ON_LOAD = true; }
   var resolution = params.get('resolution');
-  if(resolution) PA_SIT_RESOLUTION = resolution;
+  if(resolution){ PA_SIT_RESOLUTION = resolution; PA_SIT_SCROLL_ON_LOAD = true; }
   /* Deep link (15 Nov 2026, fix 4): a search result links to
      situations.html?id=<ID>. The id is resolved in paSitRender once
      the data has loaded, so a gated visitor still sees the wall. */
   var dl = params.get('id');
-  if(dl) PA_SIT_DEEPLINK_ID = dl;
+  if(dl){ PA_SIT_DEEPLINK_ID = dl; PA_SIT_SCROLL_ON_LOAD = true; }
   paSitSyncFilterControls();
 }
 document.addEventListener('DOMContentLoaded', function(){
@@ -1010,6 +1081,20 @@ document.addEventListener('DOMContentLoaded', function(){
   if(!wall || !browser) return;
   paSitReadUrlParams();
   paSitLoadSamples();
+  paSitBindStageLinks();
+  /* Re-apply the deep-link landing after the site-wide scroll-to-top
+     (site.js) has run: these listeners register later, so they run
+     after the resets. pageshow fires after load on a fresh entry and
+     also on Back restores; a restored page (persisted) stays at the
+     top per the scroll rule, so only a fresh entry scrolls. */
+  window.addEventListener('load', function(){
+    if(PA_SIT_SCROLL_ON_LOAD && (PA_SIT_ITEMS.length || paSitWallShowing())) paSitScrollToBrowser();
+  });
+  window.addEventListener('pageshow', function(ev){
+    if(PA_SIT_SCROLL_ON_LOAD && !(ev && ev.persisted) && (PA_SIT_ITEMS.length || paSitWallShowing())) paSitScrollToBrowser();
+    PA_SIT_LANDING_DONE = true;
+    PA_SIT_SCROLL_ON_LOAD = false;
+  });
   var hasAccess = (typeof paHasSituationsAccess === 'function') ? paHasSituationsAccess() : false;
   if(hasAccess){
     paSitShowContent();
