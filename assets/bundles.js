@@ -329,8 +329,8 @@ function paPaypalReady(){
   return !!(c && c.paypal_enabled && c.paypal_client_id && c.paypal_create_order_url && c.paypal_capture_order_url);
 }
 /* USD display prices (17 Nov 2026, owner-decided, $25 cap). DISPLAY
-   ONLY: the line in the PayPal section shows the USD price next to
-   the INR sale price so Indian buyers can compare. The amount
+   ONLY: the line in the PayPal section shows the USD price. No INR
+   mention belongs in the PayPal section (owner order, 17 Nov 2026). The amount
    actually charged always comes from the server response in
    paRenderPaypalButtons. Never change these without the owner's
    approval, and keep them in step with the server price table. */
@@ -347,8 +347,7 @@ function paRenderPaypalAmount(bid){
     amt.textContent = '';
     return;
   }
-  amt.textContent = '$' + PA_USD_PRICES[bid] + ' (Rs ' +
-    Number(b.price_inr).toLocaleString('en-IN') + ' via UPI)';
+  amt.textContent = '$' + PA_USD_PRICES[bid];
 }
 function paCheckoutFail(msg){
   var st = document.getElementById('pay-status');
