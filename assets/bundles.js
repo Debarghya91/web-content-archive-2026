@@ -499,7 +499,7 @@ function paStartPayuCheckout(bid){
     }
     fetch(PA_CHECKOUT_CONFIG.payu_create_payment_url, {
       method: 'POST',
-      headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token},
+      headers: {'Content-Type': 'application/json', 'apikey': PA_AUTH_CONFIG.supabaseAnonKey, 'Authorization': 'Bearer ' + token},
       body: JSON.stringify({bundle_id: bid, referral_code: paReferralCode(), use_credit: paUseCredit()})
     }).then(function(r){
       return r.json().then(function(data){ return {ok: r.ok, data: data}; });
@@ -569,7 +569,7 @@ function paRenderPaypalButtons(bid){
         }
         return fetch(PA_CHECKOUT_CONFIG.paypal_create_order_url, {
           method: 'POST',
-          headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token},
+          headers: {'Content-Type': 'application/json', 'apikey': PA_AUTH_CONFIG.supabaseAnonKey, 'Authorization': 'Bearer ' + token},
           body: JSON.stringify({bundle_id: bid, referral_code: paReferralCode(), use_credit: paUseCredit()})
         });
       }).then(function(r){
@@ -610,7 +610,7 @@ function paRenderPaypalButtons(bid){
       return paAuthAccessToken().then(function(token){
         return fetch(PA_CHECKOUT_CONFIG.paypal_capture_order_url, {
           method: 'POST',
-          headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token},
+          headers: {'Content-Type': 'application/json', 'apikey': PA_AUTH_CONFIG.supabaseAnonKey, 'Authorization': 'Bearer ' + token},
           body: JSON.stringify({order_id: data.orderID, bundle_id: bid})
         });
       }).then(function(r){
