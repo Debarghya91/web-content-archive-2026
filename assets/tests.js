@@ -978,7 +978,7 @@
       panel.appendChild(browse);
     }
     var p2 = document.createElement('p');
-    p2.appendChild(document.createTextNode('Want the whole library? The Integrated Course unlocks all 99 chapters and 874 lessons, and every test. '));
+    p2.appendChild(document.createTextNode('Want the whole library? The Integrated Course unlocks all 100 chapters and 881 lessons, and every test. '));
     var integLink = document.createElement('a');
     integLink.href = '/payment?bundle=integrated';
     integLink.textContent = 'See the Integrated Course';
