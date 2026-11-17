@@ -341,6 +341,125 @@ function paUiInitPlaybackHide(){
   document.addEventListener('pause', paUiPlaybackHideOnStop, true);
   document.addEventListener('ended', paUiPlaybackHideOnStop, true);
 }
+/* Sidebar close on learning click (17 Nov 2026, owner rule): the
+   side panels close themselves once the user clicks a learning
+   link, and not before. There is no close on load, hover, scroll
+   or outside click: only a real navigation click closes a panel.
+   A link inside the menu drawer closes the drawer; a link inside
+   the chapter panel closes the chapter panel; a link to a learning
+   destination anywhere on the page closes both, so the content
+   opens full width. The closed state persists, exactly like the
+   manual Hide buttons, and the Menu / Show chapter panel tabs
+   reopen the panels. Modifier-key, middle-button, new-tab,
+   download and in-page anchor clicks never close a panel: the
+   page stays, so the panels stay. */
+function paUiCloseDrawerPanel(){
+  paUiLsSet(DRAWER_KEY, '1');
+  document.body.classList.add('pa-ui-drawer-hidden');
+}
+function paUiCloseRailPanel(){
+  paUiLsSet(RAIL_KEY, '1');
+  document.body.classList.add('pa-ui-rail-hidden');
+  document.body.classList.remove('pa-ui-rail-playback-hidden');
+}
+function paUiClickLink(el){
+  while(el && el.nodeType === 1){
+    if(el.tagName === 'A') return el;
+    el = el.parentNode;
+  }
+  return null;
+}
+function paUiIsPlainNavClick(ev){
+  if(!ev) return false;
+  if(typeof ev.button === 'number' && ev.button !== 0) return false;
+  if(ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.altKey) return false;
+  return true;
+}
+function paUiLinkPath(a){
+  var href = '';
+  try{ href = a.getAttribute('href') || ''; }catch(e){ return ''; }
+  if(!href || href.charAt(0) === '#' || href.indexOf('javascript:') === 0
+     || href.indexOf('mailto:') === 0 || href.indexOf('tel:') === 0) return '';
+  try{
+    var u = new URL(href, window.location.href);
+    if(u.origin !== window.location.origin) return '';
+    return u.pathname || '';
+  }catch(e){ return ''; }
+}
+function paUiIsLearningPath(path){
+  if(!path) return false;
+  if(path.indexOf('/lessons/') !== -1 || path.indexOf('/chapters/') !== -1
+     || path.indexOf('/courses/') !== -1 || path.indexOf('/situations/') !== -1
+     || path.indexOf('/practice/') !== -1 || path.indexOf('/tests/') !== -1
+     || path.indexOf('/simulators/') !== -1 || path.indexOf('/labs/') !== -1) return true;
+  var file = path.split('/').pop() || '';
+  return file === 'courses.html' || file === 'curriculum-index.html'
+    || file === 'course-map.html' || file === 'situations.html'
+    || file === 'situation.html' || file === 'practice.html'
+    || file === 'tests.html' || file === 'diagnostic.html'
+    || file === 'mission-control.html' || file === 'reconciliation-war-room.html'
+    || file === 'labs-simulators.html' || file === 'weekly-case.html'
+    || file === 'simulators.html' || file === 'labs.html'
+    || file === 'explorer.html' || file === 'iso-lab.html'
+    || file === 'mapping-workbench.html' || file === 'investigation-lab.html'
+    || file === 'ba-studio.html';
+}
+var paUiSidebarCloseWired = false;
+function paUiInitSidebarClose(){
+  if(paUiSidebarCloseWired) return;
+  paUiSidebarCloseWired = true;
+  document.addEventListener('click', function(ev){
+    if(!paUiIsPlainNavClick(ev)) return;
+    var t = null;
+    try{ t = ev.target || null; }catch(e){ return; }
+    var a = paUiClickLink(t);
+    if(!a) return;
+    try{
+      if(a.getAttribute('target') === '_blank' || a.hasAttribute('download')) return;
+    }catch(e){}
+    var path = paUiLinkPath(a);
+    if(!path) return;
+    var inDrawer = false, inRail = false;
+    var el = a;
+    while(el && el.nodeType === 1){
+      if(el.id === 'pfDrawer') inDrawer = true;
+      if(el.classList && el.classList.contains('course-rail')) inRail = true;
+      el = el.parentNode;
+    }
+    var learning = paUiIsLearningPath(path);
+    if(inDrawer || learning) paUiCloseDrawerPanel();
+    if(inRail || learning) paUiCloseRailPanel();
+  });
+}
+/* One voice at a time, and voices stop on tab switch (17 Nov 2026,
+   owner rule): the flow video voice and the lesson narration must
+   never play together. When any audio or video starts, every other
+   playing media element on the page is paused first, so at most one
+   voice is ever audible. When the user switches tab, the page is
+   hidden and every voice stops; nothing resumes on its own when the
+   tab returns. Media events do not bubble, so the play listener
+   uses the capture phase, like the playback-hide wiring above. */
+var paUiSingleVoiceWired = false;
+function paUiStopOtherVoices(keep){
+  var m = paUiAll('audio, video');
+  for(var i = 0; i < m.length; i++){
+    if(m[i] !== keep && !m[i].paused){
+      try{ m[i].pause(); }catch(e){}
+    }
+  }
+}
+function paUiInitSingleVoice(){
+  if(paUiSingleVoiceWired) return;
+  paUiSingleVoiceWired = true;
+  document.addEventListener('play', function(ev){
+    paUiStopOtherVoices(ev.target || null);
+  }, true);
+  document.addEventListener('visibilitychange', function(){
+    try{
+      if(document.hidden) paUiStopOtherVoices(null);
+    }catch(e){}
+  });
+}
 function paUiNpAudios(){ return paUiAll('audio'); }
 function paUiNpVisible(a){
   /* The audio element itself computes display:none (no controls
@@ -491,6 +610,8 @@ function paUiNpInit(){
 paUiStyles();
 paUiInitPanels();
 paUiInitPlaybackHide();
+paUiInitSidebarClose();
+paUiInitSingleVoice();
 paUiNpInit();
 if(document.readyState === 'loading'){
   document.addEventListener('DOMContentLoaded', function(){ paUiApplyPanels(); paUiNpSync(); });
