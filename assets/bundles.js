@@ -859,3 +859,139 @@ document.addEventListener('DOMContentLoaded', function(){
   }
 });
 paApplyLocks();
+
+/* ===== Buy-only sign-in prompt (17 Nov 2026) ===== */
+/* No page redirects to sign-in and no content is hidden. Only a tap
+   on a Buy or purchase link while signed out shows this prompt: a
+   blurred overlay asking the visitor to sign in or create an
+   account, returning to the tapped purchase after sign-in through
+   the existing ?next= flow (paAuthNextTarget validates the target
+   on the sign-in page). Signed-in visitors, including the admin
+   account, go straight to checkout as before, so no admin check is
+   needed here: the prompt only fires when there is no stored
+   session at all. Links inside payment.html itself are left alone:
+   they switch bundles, and the checkout wiring above already
+   disables the pay controls while signed out. */
+var PA_BUY_PROMPT_LAST_FOCUS = null;
+function paBuyPromptHasSession(){
+  try{
+    if(typeof paAuthHasStoredSession === 'function') return paAuthHasStoredSession();
+    var raw = localStorage.getItem('sb-eofsotgclhwsdwvbbtib-auth-token');
+    if(!raw) return false;
+    var data = JSON.parse(raw);
+    return !!(data && data.access_token);
+  }catch(e){ return false; }
+}
+function paBuyPromptResolve(href){
+  try{
+    var url = new URL(href, window.location.href);
+    if(url.origin !== window.location.origin) return null;
+    var path = url.pathname + url.search;
+    if(path.charAt(0) !== '/' || path.length > 500) return null;
+    return path;
+  }catch(e){ return null; }
+}
+function paBuyPromptStyles(){
+  if(document.getElementById('pa-buy-prompt-styles')) return;
+  var css = [
+    '.pa-buy-prompt-overlay{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(5,16,36,0.55);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);}',
+    '.pa-buy-prompt-card{background:#ffffff;color:#0b1b30;border-radius:14px;padding:24px;max-width:420px;width:100%;box-shadow:0 18px 48px rgba(0,0,0,0.35);text-align:center;}',
+    '.pa-buy-prompt-card h2{margin:0 0 10px;font-size:22px;line-height:1.3;color:#0b1b30;}',
+    '.pa-buy-prompt-card p{margin:0 0 18px;font-size:15px;line-height:1.55;color:#334155;}',
+    '.pa-buy-prompt-btn{display:block;width:100%;box-sizing:border-box;margin:0 0 10px;padding:12px 16px;border-radius:10px;font-size:16px;font-weight:700;text-decoration:none;text-align:center;cursor:pointer;}',
+    '.pa-buy-prompt-btn-primary{background:#0b1b30;color:#ffffff;border:2px solid #0b1b30;}',
+    '.pa-buy-prompt-btn-secondary{background:#ffffff;color:#0b1b30;border:2px solid #0b1b30;}',
+    '.pa-buy-prompt-dismiss{margin:6px 0 0;padding:8px 12px;border:0;background:transparent;color:#475569;font-size:14px;cursor:pointer;text-decoration:underline;}'
+  ].join('\n');
+  var st = document.createElement('style');
+  st.id = 'pa-buy-prompt-styles';
+  st.type = 'text/css';
+  if(st.styleSheet){ st.styleSheet.cssText = css; } else { st.appendChild(document.createTextNode(css)); }
+  document.head.appendChild(st);
+}
+function paBuyPromptHide(){
+  var ov = document.getElementById('pa-buy-prompt-overlay');
+  if(ov && ov.parentNode) ov.parentNode.removeChild(ov);
+  try{ document.body.style.overflow = ''; }catch(e){}
+  if(PA_BUY_PROMPT_LAST_FOCUS && PA_BUY_PROMPT_LAST_FOCUS.focus){
+    try{ PA_BUY_PROMPT_LAST_FOCUS.focus(); }catch(e){}
+  }
+  PA_BUY_PROMPT_LAST_FOCUS = null;
+  document.removeEventListener('keydown', paBuyPromptOnKey);
+}
+function paBuyPromptOnKey(ev){
+  if(ev && (ev.key === 'Escape' || ev.keyCode === 27)) paBuyPromptHide();
+}
+function paBuyPromptShow(href){
+  var returnPath = paBuyPromptResolve(href) || '/payment.html';
+  try{
+    paBuyPromptStyles();
+    paBuyPromptHide();
+    PA_BUY_PROMPT_LAST_FOCUS = document.activeElement;
+    var signinBase = '/signin.html?next=' + encodeURIComponent(returnPath);
+    var ov = document.createElement('div');
+    ov.id = 'pa-buy-prompt-overlay';
+    ov.className = 'pa-buy-prompt-overlay';
+    ov.setAttribute('role', 'dialog');
+    ov.setAttribute('aria-modal', 'true');
+    ov.setAttribute('aria-labelledby', 'pa-buy-prompt-title');
+    var card = document.createElement('div');
+    card.className = 'pa-buy-prompt-card';
+    var h = document.createElement('h2');
+    h.id = 'pa-buy-prompt-title';
+    h.textContent = 'Sign in to buy';
+    card.appendChild(h);
+    var p = document.createElement('p');
+    p.textContent = 'Create a free account or sign in to buy this course. Your purchase is linked to your account, and you return straight to checkout.';
+    card.appendChild(p);
+    var signin = document.createElement('a');
+    signin.className = 'pa-buy-prompt-btn pa-buy-prompt-btn-primary';
+    signin.href = signinBase;
+    signin.textContent = 'Sign in';
+    card.appendChild(signin);
+    var signup = document.createElement('a');
+    signup.className = 'pa-buy-prompt-btn pa-buy-prompt-btn-secondary';
+    signup.href = signinBase + '#signupCard';
+    signup.textContent = 'Create an account';
+    card.appendChild(signup);
+    var dismiss = document.createElement('button');
+    dismiss.type = 'button';
+    dismiss.className = 'pa-buy-prompt-dismiss';
+    dismiss.textContent = 'Keep browsing';
+    dismiss.addEventListener('click', paBuyPromptHide);
+    card.appendChild(dismiss);
+    ov.appendChild(card);
+    ov.addEventListener('click', function(ev){ if(ev.target === ov) paBuyPromptHide(); });
+    document.body.appendChild(ov);
+    try{ document.body.style.overflow = 'hidden'; }catch(e){}
+    document.addEventListener('keydown', paBuyPromptOnKey);
+    try{ signin.focus(); }catch(e){}
+    return true;
+  }catch(e){ return false; }
+}
+function paBuyPromptGuard(href){
+  if(paBuyPromptHasSession()) return true;
+  return !paBuyPromptShow(href);
+}
+function paBuyPromptOnClick(ev){
+  if(!ev || ev.defaultPrevented) return;
+  if(typeof ev.button === 'number' && ev.button !== 0) return;
+  if(ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.altKey) return;
+  var t = ev.target;
+  var a = null;
+  while(t && t !== document){
+    if(t.tagName === 'A'){ a = t; break; }
+    t = t.parentNode;
+  }
+  if(!a) return;
+  var href = a.getAttribute ? a.getAttribute('href') : null;
+  if(!href || (a.hasAttribute && a.hasAttribute('download'))) return;
+  if(a.getAttribute && String(a.getAttribute('target') || '').toLowerCase() === '_blank') return;
+  var url;
+  try{ url = new URL(href, window.location.href); }catch(e){ return; }
+  if(url.origin !== window.location.origin) return;
+  if(!/(^|\/)payment\.html$/.test(url.pathname)) return;
+  if(/(^|\/)payment\.html$/.test(window.location.pathname)) return;
+  if(!paBuyPromptGuard(href)) ev.preventDefault();
+}
+document.addEventListener('click', paBuyPromptOnClick);

@@ -32,7 +32,13 @@ function showCourses(){ if(typeof pauseAllAudio === "function") pauseAllAudio();
 function showBundle(bid){ if(typeof pauseAllAudio === "function") pauseAllAudio();
   var u = PA_BUNDLE_URL[bid]; if(u) window.location.href = paRoot() + u; }
 function enrolBundle(bid){ if(typeof pauseAllAudio === "function") pauseAllAudio();
-  window.location.href = paRoot() + "payment.html?bundle=" + encodeURIComponent(bid); }
+  var dest = paRoot() + "payment.html?bundle=" + encodeURIComponent(bid);
+  /* Buy-only sign-in prompt: a signed-out tap shows the prompt and
+     returns here after sign-in instead of navigating straight to
+     checkout. If the prompt module is absent, navigate as before;
+     the checkout page gates its pay controls while signed out. */
+  if(typeof paBuyPromptGuard === "function" && !paBuyPromptGuard(dest)) return;
+  window.location.href = dest; }
 /* Course rail progress (Nov 2026, Coursera-style sidebar): on a
    lesson page, read the completed lessons from localStorage, mark
    the done lessons in this chapter's list with a green check, and
