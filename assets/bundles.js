@@ -1386,6 +1386,26 @@ function paGateApplyToLessonPage(lessonId, state){
       b.removeAttribute('tabindex');
       b.removeAttribute('aria-label');
     }
+    /* Titles only: each beat description is the opening sentence of
+       the narration, so remove it on locked lessons. The beat title
+       stays as the outline. Hidden marker spans are left alone. */
+    var beatItems = beatsCard.querySelectorAll('.pf-beat');
+    for(var bi = 0; bi < beatItems.length; bi++){
+      var titleEl = beatItems[bi].querySelector('.pf-beat-title');
+      if(!titleEl || !titleEl.parentNode) continue;
+      var beatParent = titleEl.parentNode;
+      var beatKids = [];
+      for(var ci = 0; ci < beatParent.childNodes.length; ci++) beatKids.push(beatParent.childNodes[ci]);
+      var pastTitle = false;
+      for(var cj = 0; cj < beatKids.length; cj++){
+        var n = beatKids[cj];
+        if(n === titleEl){ pastTitle = true; continue; }
+        if(!pastTitle) continue;
+        if(n.nodeType === 1 && n.tagName === 'BR'){ beatParent.removeChild(n); continue; }
+        if(n.nodeType === 1 && n.tagName === 'SPAN' && !n.hasAttribute('hidden')){ beatParent.removeChild(n); }
+        break;
+      }
+    }
   }
   paGateEarlyDiscard();
   var panel = paGateLockPanel(lessonId, chapterId, partId, state, main);
