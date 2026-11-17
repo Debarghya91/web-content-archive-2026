@@ -31,26 +31,45 @@ function paHasAccess(chid){
   var b = PA_BUNDLE_MAP[chid];
   return b && owned.indexOf(b) !== -1;
 }
-/* ===== Payment Situations gate (9 Nov 2026) ===== */
+/* ===== Payment Situations gate (9 Nov 2026; Supabase-backed 17 Nov 2026) ===== */
 /* Practice Experiences holds the Payment Situations. It is gated
    independently of PA_ENFORCE_ACCESS, which stays false so the
-   flagship course lessons stay governed by the lesson gate below. A buyer owns
-   this product when the 'practice' bundle (or the flagship
-   'integrated', which includes everything) is in the owned list,
-   or when owner preview is on. Purchases are made in the iOS app
-   (owner decision 11 Nov 2026); the manual UPI payment flow and
-   its claim-id unlock were removed with it.
-   Honest limit: this is a browser-side gate. It stops casual access and
-   casual download; it does not stop a determined user who inspects
-   network requests or takes screenshots. Real server-side enforcement
-   needs the Supabase backend, which is a later step. */
+   flagship course lessons stay governed by the lesson gate below.
+   Ownership is read from the same Supabase entitlement state as the
+   lesson gate (paGateState): an admin (app_metadata.is_admin), or an
+   active unexpired user_purchases row for 'practice' or 'integrated'.
+   The 9 Nov 2026 temporary unlock (PA_SITUATIONS_GATED = false) and
+   the localStorage demo list are gone: the temporary flag is what
+   left every situation open to every signed-in visitor, and the demo
+   list cannot express per-course Supabase ownership.
+   These checks are synchronous over the resolved state, because the
+   situations renderer and the investigation experience call them
+   during render. Until paGateState() resolves, every check fails
+   closed (false); callers re-render when the promise resolves.
+   Honest limit: this is a browser-side gate. It stops casual access;
+   it does not stop a determined user who inspects network requests
+   or takes screenshots. Real server-side enforcement is a later
+   step. */
 var PA_SITUATIONS_BUNDLE = 'practice';
-var PA_SITUATIONS_GATED = false; /* TEMPORARY owner unlock 9 Nov 2026: user testing the situations product; re-lock to true when he says so. */
+var PA_GATE_RESOLVED_STATE = null;
 function paHasSituationsAccess(){
-  if(!PA_SITUATIONS_GATED) return true;
-  if(paOwnerPreview()) return true;
-  var owned = paOwned();
-  return owned.indexOf('integrated') !== -1 || owned.indexOf(PA_SITUATIONS_BUNDLE) !== -1;
+  var st = PA_GATE_RESOLVED_STATE;
+  if(st) return st.isAdmin || !!(st.owned && (st.owned[PA_SITUATIONS_BUNDLE] || st.owned.integrated));
+  if(typeof paGateState === 'function'){ try { paGateState(); } catch(e){} }
+  return false;
+}
+/* ===== Investigation Lab gate (17 Nov 2026) ===== */
+/* The 7-case lab on investigation-lab.html unlocks with the
+   Investigation Lab product, with Practice Experiences (whose own
+   website copy says it includes labs, matching the apps'
+   EntryAccessRules lab mapping), or with the Integrated Course.
+   Admins see everything. Same fail-closed-until-resolved rule as
+   the situations gate above. */
+function paHasInvestigationLabAccess(){
+  var st = PA_GATE_RESOLVED_STATE;
+  if(st) return st.isAdmin || !!(st.owned && (st.owned['investigation-lab'] || st.owned[PA_SITUATIONS_BUNDLE] || st.owned.integrated));
+  if(typeof paGateState === 'function'){ try { paGateState(); } catch(e){} }
+  return false;
 }
 function paApplyLocks(){
   var owned = paOwned();
@@ -1164,7 +1183,9 @@ function paGateState(){
   PA_GATE_STATE_PROMISE = new Promise(function(resolve){
     var sawUser = false;
     function done(isAdmin, owned, signedIn){
-      resolve({isAdmin: !!isAdmin, owned: owned || {}, signedIn: !!signedIn});
+      var st = {isAdmin: !!isAdmin, owned: owned || {}, signedIn: !!signedIn};
+      PA_GATE_RESOLVED_STATE = st;
+      resolve(st);
     }
     if(typeof paAuthLoadClient !== 'function'){ done(false, {}, false); return; }
     try {

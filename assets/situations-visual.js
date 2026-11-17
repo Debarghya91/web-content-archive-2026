@@ -23,6 +23,9 @@
  *      <div data-sit-visual> container, then call
  *      PFSituations.renderAll(document) to render every container.
  *   2. Direct: PFSituations.render(item) returns the HTML string.
+ *      PFSituations.renderLocked(item) returns the paywall view for
+ *      a case the learner has not unlocked: teaser header plus the
+ *      unlock card, no case text.
  *   The library initialises itself on load, so flow controls work
  *   wherever it is included. PFSituations.init() is idempotent and
  *   can also be called directly. Interactions are wired by event
@@ -505,6 +508,51 @@
     return html;
   }
 
+  /* Locked case (17 Nov 2026): the paywall view for a situation the
+     learner has not unlocked. Mirrors the apps' hard gate (iOS
+     SituationDetailView, Android SituationDetailScreen): the teaser
+     header only (case id, stage, title, thumbnail and agenda, pills
+     plus a Locked pill), then the unlock card. No explain, takeaway,
+     visual, chips, read time, examples, ledger or go-deeper links:
+     the agenda says what the case is about, never how it resolves.
+     The gate card copy and prices match the situations page:
+     Practice Experiences, Rs. 999 sale against a Rs. 1,499 list,
+     1 year of access. The 564 count matches the page copy. */
+  function renderLocked(item) {
+    item = item || {};
+    var id = item.id ? 'sit-' + String(item.id).replace(/[^A-Za-z0-9_-]/g, '') : nextId('sit');
+    var html = '<section class="sit-item pf-card" id="' + esc(id) + '" data-sit-item="' + esc(item.id || '') + '">';
+    var eyebrow = [];
+    if (item.id) eyebrow.push('Case ' + esc(item.id));
+    if (item.stage) eyebrow.push('Stage ' + esc(item.stage) + ': ' + esc(item.stage_name || ''));
+    if (item.seq) eyebrow.push('Situation ' + esc(item.seq));
+    if (item.domain) eyebrow.push(esc(item.domain));
+    if (item.level) eyebrow.push(esc(item.level));
+    html += '<p class="sit-eyebrow">' + (eyebrow.length ? eyebrow.join(' &middot; ') : 'Payment Situations') + '</p>';
+    html += '<p class="sit-case-label">Situation</p>';
+    html += '<h3 class="sit-title">' + esc(item.title || 'Untitled situation') + '</h3>';
+    if (item.agenda || item.thumbnail) {
+      html += '<div class="pf-agenda">';
+      if (item.thumbnail) html += '<img class="pf-thumb pf-thumb-lg" src="' + esc(item.thumbnail) + '" alt="" loading="lazy">';
+      html += '<div class="pf-agenda-text"><span class="pf-agenda-label">Why take this case</span><p>' + esc(item.agenda || '') + '</p></div></div>';
+    }
+    var pills = [];
+    if (item.stage_name) pills.push('<span class="pf-pill">' + esc(item.stage_name) + '</span>');
+    else if (item.stage) pills.push('<span class="pf-pill">Stage ' + esc(item.stage) + '</span>');
+    if (item.level) pills.push('<span class="pf-pill accent-gold">' + esc(capFirst(item.level)) + '</span>');
+    var scheme = schemeFor(item.title);
+    if (scheme) pills.push('<span class="pf-pill">' + esc(scheme) + '</span>');
+    pills.push('<span class="pf-pill accent-gold">Locked</span>');
+    html += '<p class="sit-meta">' + pills.join(' ') + '</p>';
+    html += '<div class="sit-paywall" role="region" aria-label="Unlock this case">';
+    html += '<h3>Unlock this case</h3>';
+    html += '<p>This situation is part of Practice Experiences. Unlock all 564 situations for <s>Rs. 1,499</s> <b>Rs. 999</b>, with 1 year of access. The 2 free samples stay free. The Integrated Course includes Practice Experiences too.</p>';
+    html += '<p><a class="studio-btn primary" href="payment.html?bundle=practice">Go to checkout</a> <a class="studio-btn" href="payment.html?bundle=integrated">See the Integrated Course</a></p>';
+    html += '</div>';
+    html += '</section>';
+    return html;
+  }
+
   function renderAll(root) {
     root = root || document;
     var nodes = root.querySelectorAll('[data-sit-visual]');
@@ -662,6 +710,7 @@
 
   global.PFSituations = {
     render: render,
+    renderLocked: renderLocked,
     renderAll: renderAll,
     init: init,
     flowReveal: flowReveal,

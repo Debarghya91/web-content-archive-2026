@@ -441,6 +441,71 @@
 
   var state = null;
 
+  /* Lab gate (17 Nov 2026; mirrors the apps' EntryAccessRules):
+     the first 2 cases in catalogue order are free samples. The
+     rest open only with the Investigation Lab product, Practice
+     Experiences, or the Integrated Course, or for admins. Until
+     the entitlement check resolves, cases past the first 2 stay
+     locked (fail closed). A locked case shows its teaser plus
+     the unlock card, never its scenario, evidence or decisions. */
+  var LAB_FREE_COUNT = 2;
+  var labHasAccess = false;
+  var labOpenLocked = null;
+  function labCaseLocked(index){
+    if(index < LAB_FREE_COUNT) return false;
+    return !labHasAccess;
+  }
+  function labSyncAccess(){
+    try {
+      if(typeof paHasInvestigationLabAccess === "function") labHasAccess = !!paHasInvestigationLabAccess();
+    } catch(e){ labHasAccess = false; }
+  }
+  /* Locked lab card: the case code, title, difficulty and the
+     card teaser (symptom and amount, already visible on the case
+     card), plus the unlock card. No scenario, transaction record,
+     timeline, logs, evidence, decisions or reference solution. */
+  function renderLockedLab(c){
+    state = null;
+    labOpenLocked = c;
+    var panel = $("casePanel");
+    panel.classList.add("is-locked");
+    $("caseList").style.display = "";
+    panel.style.display = "block";
+    var box = $("caseLocked");
+    box.innerHTML =
+      '<article class="pf-card"><span class="pf-tag">' + esc(c.difficulty) + '</span> <span class="pf-tag">Locked</span>' +
+      '<h3>' + esc(c.code) + ": " + esc(c.title) + '</h3>' +
+      '<p>' + esc(c.symptom) + '</p>' +
+      '<p><b>' + esc(c.amount) + '</b></p>' +
+      '<p>This investigation case is part of the Investigation Lab: all 7 investigation cases for <s>Rs. 749</s> <b>Rs. 499</b>, with 1 year of access. The Integrated Course includes the Investigation Lab too.</p>' +
+      '<div class="pf-btnrow"><a class="pf-btn" href="payment.html?bundle=investigation-lab">Go to checkout</a> <a class="pf-btn secondary" href="payment.html?bundle=integrated">See the Integrated Course</a></div></article>';
+    panel.scrollIntoView({behavior: "smooth", block: "start"});
+  }
+  /* Locked markers on the case cards, shown only once the
+     entitlement check has resolved, so buyers never see a false
+     Locked tag. Clicks fail closed from the start regardless. */
+  function labSyncCardMarkers(){
+    document.querySelectorAll("[data-case-open]").forEach(function(btn){
+      var c = caseById(btn.getAttribute("data-case-open"));
+      if(!c) return;
+      var article = btn.closest("article");
+      if(!article) return;
+      var marker = article.querySelector("[data-lab-locked]");
+      var locked = labCaseLocked(CASES.indexOf(c));
+      if(locked && !marker){
+        var tag = document.createElement("span");
+        tag.className = "pf-tag";
+        tag.setAttribute("data-lab-locked", "1");
+        tag.textContent = "Locked";
+        var first = article.querySelector(".pf-tag");
+        if(first && first.nextSibling) article.insertBefore(tag, first.nextSibling);
+        else article.insertBefore(tag, article.firstChild);
+      } else if(!locked && marker){
+        marker.parentNode.removeChild(marker);
+      }
+    });
+  }
+
   function caseById(id){
     for(var i = 0; i < CASES.length; i++){ if(CASES[i].id === id) return CASES[i]; }
     return null;
@@ -474,8 +539,13 @@
 
   function renderCase(c){
     state = freshState(c);
+    labOpenLocked = null;
+    var panel = $("casePanel");
+    panel.classList.remove("is-locked");
+    var lockedBox = $("caseLocked");
+    if(lockedBox) lockedBox.innerHTML = "";
     $("caseList").style.display = "";
-    $("casePanel").style.display = "block";
+    panel.style.display = "block";
     $("cTitle").textContent = c.code + ": " + c.title;
     $("cScenario").textContent = c.scenario;
     var rows = "";
@@ -579,11 +649,27 @@
 
   document.addEventListener("DOMContentLoaded", function(){
     refreshBestScores();
+    /* Entitlement resolves async: refresh the card markers and
+       unlock an open locked case once the true state lands. Until
+       then, cases past the first 2 open locked. */
+    if(typeof paGateState === "function"){
+      paGateState().then(function(){
+        labSyncAccess();
+        labSyncCardMarkers();
+        if(labOpenLocked && !labCaseLocked(CASES.indexOf(labOpenLocked))){
+          var c = labOpenLocked;
+          renderCase(c);
+        }
+      });
+    }
     var cards = document.querySelectorAll("[data-case-open]");
     cards.forEach(function(card){
       card.addEventListener("click", function(){
         var c = caseById(card.getAttribute("data-case-open"));
-        if(c) renderCase(c);
+        if(!c) return;
+        labSyncAccess();
+        if(labCaseLocked(CASES.indexOf(c))) renderLockedLab(c);
+        else renderCase(c);
       });
     });
     var panel = $("casePanel");
@@ -596,6 +682,8 @@
         else if(t.id === "resetBtn") resetCase();
         else if(t.id === "backBtn"){
           $("casePanel").style.display = "none";
+          $("casePanel").classList.remove("is-locked");
+          labOpenLocked = null;
           $("caseList").scrollIntoView({behavior: "smooth", block: "start"});
         }
       });

@@ -1,11 +1,17 @@
 
 /* ===== Payment Situations page ===== */
-/* Gate first, data second: the item data file is requested only after
-   paHasSituationsAccess() passes, so a plain view-source of this page
-   shows no item content. Honest limit: the data file is a static
-   asset, so a determined user who inspects network requests can fetch
-   it, and screenshots cannot be prevented. Real server-side
-   enforcement needs the Supabase backend. */
+/* Render-time gating (17 Nov 2026): the item data file loads for
+   every visitor and the gate runs when each case renders, the same
+   model as the lesson gate. A case shows in full only when it is a
+   free sample (ABH-01, JEB-C01) or the learner owns Practice
+   Experiences or the Integrated Course, or is an admin; every other
+   case shows its teaser header plus the unlock card, and no case
+   text. Until the Supabase entitlement check resolves, every
+   non-sample case renders locked (fail closed), then the page
+   re-renders with the true state. Honest limit: the data file is a
+   static asset, so a determined user who inspects network requests
+   can fetch it, and screenshots cannot be prevented. Real
+   server-side enforcement needs the Supabase backend. */
 var PA_SIT_ITEMS = [];
 var PA_SIT_INDEX = 0;
 var PA_SIT_DEEPLINK_ID = '';
@@ -38,6 +44,45 @@ var PA_SIT_PROGRESS_KEY = 'pa-situations-progress-v1';
    themselves. Nothing else sets a state: opening is never proof of
    mastery. */
 var PA_SIT_MASTERY_ORDER = ['read', 'understood', 'practised', 'reviewed'];
+/* Free samples (settled access model, mirrors the apps): ABH-01 and
+   JEB-C01 only. The 10 static samples in the page intro are
+   marketing copy and are untouched by this gate. */
+var PA_SIT_FREE_SAMPLES = ['ABH-01', 'JEB-C01'];
+/* Reading focus (17 Nov 2026): when a case is open, the Categories
+   drawer and the catalogue column hide so the case takes the full
+   width. Back to list restores them. The flag starts on: the first
+   render opens focused. Case-opening actions (jump, previous, next,
+   open by index, stage tab, category, deep link) turn focus on;
+   filter, search, pagination and progress actions leave the mode
+   alone. */
+var PA_SIT_FOCUS = true;
+function paSitHasAccess(){
+  try {
+    if(typeof paHasSituationsAccess === 'function') return !!paHasSituationsAccess();
+  } catch(e){}
+  return false;
+}
+function paSitIsFreeSample(item){
+  if(!item) return false;
+  if(item.isFreeSample === true) return true;
+  return PA_SIT_FREE_SAMPLES.indexOf(item.id) !== -1;
+}
+function paSitIsLocked(item){
+  if(paSitIsFreeSample(item)) return false;
+  return !paSitHasAccess();
+}
+function paSitApplyFocus(){
+  var browser = document.getElementById('sit-browser');
+  if(browser) browser.classList.toggle('sit-focus', !!PA_SIT_FOCUS);
+}
+function paSitSetFocus(on){
+  PA_SIT_FOCUS = !!on;
+  paSitApplyFocus();
+}
+function paSitExitFocus(){
+  paSitSetFocus(false);
+  paSitScrollToBrowser();
+}
 var PA_SIT_MASTERY_LABELS = {read: 'Read', understood: 'Understood', practised: 'Practised', reviewed: 'Reviewed'};
 function paSitProgress(){
   try {
@@ -352,6 +397,7 @@ function paSitSetMastery(state){
   var list = paSitVisibleItems();
   var item = list[PA_SIT_INDEX];
   if(!item) return;
+  if(paSitIsLocked(item)) return;
   if(PA_SIT_MASTERY_ORDER.indexOf(state) === -1) return;
   var p = paSitProgress();
   if(!p.mastery) p.mastery = {};
@@ -455,10 +501,11 @@ function paSitRenderCatalogue(list){
     var done = p.completed[it.id] ? ' \u2713 ' : '';
     var mast = paSitMasteryOf(p, it.id);
     var mastTag = (mast === 'understood' || mast === 'practised' || mast === 'reviewed') ? ' \u00b7 ' + PA_SIT_MASTERY_LABELS[mast] : '';
+    var lockTag = paSitIsLocked(it) ? ' \u00b7 Locked' : '';
     var thumb = it.thumbnail ? '<img class="pf-thumb pf-thumb-sm" src="' + escHtml(it.thumbnail) + '" alt="" loading="lazy"> ' : '';
     var agenda = it.agenda ? '<span class="pf-row-agenda">' + escHtml(it.agenda) + '</span>' : '';
     html += '<button type="button" class="sit-catalogue-item' + (it === cur ? ' active' : '') + '" data-sit-cat="' + i + '" onclick="paSitJump(' + i + ')">'
-      + '<span class="sit-cat-stage">Stage ' + (it.stage || '') + ' &middot; ' + escHtml(it.id || '') + ' &middot; ' + pos + ' of ' + PA_SIT_ITEMS.length + mark + done + mastTag + '</span>'
+      + '<span class="sit-cat-stage">Stage ' + (it.stage || '') + ' &middot; ' + escHtml(it.id || '') + ' &middot; ' + pos + ' of ' + PA_SIT_ITEMS.length + mark + done + mastTag + lockTag + '</span>'
       + thumb + escHtml(it.title || it.id || '') + agenda + '</button>';
   }
   html += paSitPaginationBar(totalPages);
@@ -550,7 +597,7 @@ function paSitRenderRelated(item){
   });
   box.innerHTML = html;
 }
-function paSitSyncActionButtons(item){
+function paSitSyncActionButtons(item, locked){
   var p = paSitProgress();
   var bm = document.getElementById('sit-bookmark');
   if(bm){
@@ -559,8 +606,11 @@ function paSitSyncActionButtons(item){
   }
   var dn = document.getElementById('sit-done');
   if(dn){
-    dn.setAttribute('aria-pressed', item && p.completed[item.id] ? 'true' : 'false');
-    dn.textContent = (item && p.completed[item.id]) ? 'Completed \u2713' : 'Mark complete';
+    /* A locked case can be bookmarked (a discovery marker) but never
+       marked complete: the learner has not seen its content. */
+    dn.disabled = !!locked;
+    dn.setAttribute('aria-pressed', item && !locked && p.completed[item.id] ? 'true' : 'false');
+    dn.textContent = (item && !locked && p.completed[item.id]) ? 'Completed \u2713' : 'Mark complete';
   }
 }
 function paSitRenderNote(item){
@@ -600,10 +650,14 @@ function paSitRender(){
   paSitRenderDashboard();
   if(!PA_SIT_ITEMS.length){
     box.innerHTML = '<p class="sit-note">The situations are being prepared.</p>';
+    var _b0 = document.getElementById('sit-browser');
+    if(_b0) _b0.classList.remove('sit-focus');
     return;
   }
   if(!list.length){
     box.innerHTML = '<p class="sit-note">No situations match this filter. Clear a filter to see more.</p>';
+    var _b1 = document.getElementById('sit-browser');
+    if(_b1) _b1.classList.remove('sit-focus');
     paSitRenderCatalogue(list);
     paSitRenderRelated(null);
     paSitRenderNote(null);
@@ -620,6 +674,8 @@ function paSitRender(){
       PA_SIT_LEVEL = ''; PA_SIT_RESOLUTION = ''; PA_SIT_QUERY = ''; PA_SIT_BOOKMARKED_ONLY = false;
       PA_SIT_DASH_FILTER = '';
       PA_SIT_PAGE = 1;
+      /* A deep link opens a case, so it lands in reading focus. */
+      PA_SIT_FOCUS = true;
       paSitSyncFilterControls();
       list = paSitVisibleItems();
       PA_SIT_INDEX = list.indexOf(PA_SIT_ITEMS[_found]);
@@ -631,6 +687,8 @@ function paSitRender(){
   if(PA_SIT_INDEX >= list.length) PA_SIT_INDEX = list.length - 1;
   if(PA_SIT_INDEX < 0) PA_SIT_INDEX = 0;
   var item = list[PA_SIT_INDEX];
+  var locked = paSitIsLocked(item);
+  paSitApplyFocus();
   var pos = PA_SIT_ITEMS.indexOf(item) + 1;
   var prog = document.getElementById('sit-progress');
   if(prog) prog.textContent = 'Situation ' + pos + ' of ' + PA_SIT_ITEMS.length + (list.length !== PA_SIT_ITEMS.length ? ' (filtered)' : '');
@@ -638,8 +696,12 @@ function paSitRender(){
   var next = document.getElementById('sit-next');
   if(prev) prev.disabled = PA_SIT_INDEX <= 0;
   if(next) next.disabled = PA_SIT_INDEX >= list.length - 1;
-  box.innerHTML = window.PFSituations ? window.PFSituations.render(item) : '';
-  if(window.PFSituations) window.PFSituations.renderAll(box);
+  if(locked){
+    box.innerHTML = (window.PFSituations && window.PFSituations.renderLocked) ? window.PFSituations.renderLocked(item) : '';
+  } else {
+    box.innerHTML = window.PFSituations ? window.PFSituations.render(item) : '';
+    if(window.PFSituations) window.PFSituations.renderAll(box);
+  }
   if(PA_SIT_DEEPLINK_MISSING){
     var _note = document.createElement('p');
     _note.className = 'sit-note';
@@ -648,25 +710,37 @@ function paSitRender(){
     PA_SIT_DEEPLINK_MISSING = '';
   }
   paSitRenderCatalogue(list);
-  paSitRenderRelated(item);
-  paSitRenderNote(item);
-  paSitRenderMastery(item);
-  paSitSyncActionButtons(item);
+  if(locked){
+    /* A locked case shows no related cases, no note box and no
+       mastery box: nothing beyond the paywall view. */
+    paSitRenderRelated(null);
+    paSitRenderNote(null);
+    paSitRenderMastery(null);
+  } else {
+    paSitRenderRelated(item);
+    paSitRenderNote(item);
+    paSitRenderMastery(item);
+  }
+  paSitSyncActionButtons(item, locked);
   paSitApplyDeterrents();
-  var p = paSitProgress();
-  p.last = item.id;
-  p.last_at = new Date().toISOString();
-  if(!p.mastery) p.mastery = {};
-  /* Opening a situation marks it Read only. Deeper states are set by
-     the learner through the mastery controls, never here. */
-  if(!p.mastery[item.id]) p.mastery[item.id] = 'read';
-  paSitSaveProgress(p);
-  /* Refresh the progress line, dashboard and report with the newly
-     recorded visit and Read state; they rendered above before this
-     item was recorded. */
-  paSitUpdateProgressLine();
-  paSitRenderDashboard();
-  paSitRenderReport();
+  /* A locked case records nothing: no last visit, no Read state.
+     The learner has not seen the content. */
+  if(!locked){
+    var p = paSitProgress();
+    p.last = item.id;
+    p.last_at = new Date().toISOString();
+    if(!p.mastery) p.mastery = {};
+    /* Opening a situation marks it Read only. Deeper states are set by
+       the learner through the mastery controls, never here. */
+    if(!p.mastery[item.id]) p.mastery[item.id] = 'read';
+    paSitSaveProgress(p);
+    /* Refresh the progress line, dashboard and report with the newly
+       recorded visit and Read state; they rendered above before this
+       item was recorded. */
+    paSitUpdateProgressLine();
+    paSitRenderDashboard();
+    paSitRenderReport();
+  }
   /* Deep-link landing: scroll to the filtered list once, on the first
      render that has data. The site-wide scroll rule (site.js) resets
      the page to the top on window load AND on pageshow, both after an
@@ -694,6 +768,7 @@ function paSitOpenByIndex(i){
   } else {
     PA_SIT_INDEX = at;
   }
+  PA_SIT_FOCUS = true;
   paSitRender();
 }
 function paSitSyncFilterControls(){
@@ -716,19 +791,20 @@ function paSitSyncFilterControls(){
   paSitSyncDrawer();
 }
 function paSitPrev(){
-  if(PA_SIT_INDEX > 0){ PA_SIT_INDEX -= 1; paSitRender(); }
+  if(PA_SIT_INDEX > 0){ PA_SIT_INDEX -= 1; PA_SIT_FOCUS = true; paSitRender(); }
 }
 function paSitNext(){
-  if(PA_SIT_INDEX < paSitVisibleItems().length - 1){ PA_SIT_INDEX += 1; paSitRender(); }
+  if(PA_SIT_INDEX < paSitVisibleItems().length - 1){ PA_SIT_INDEX += 1; PA_SIT_FOCUS = true; paSitRender(); }
 }
 function paSitJump(v){
   var i = parseInt(v, 10);
-  if(!isNaN(i)){ PA_SIT_INDEX = i; paSitRender(); }
+  if(!isNaN(i)){ PA_SIT_INDEX = i; PA_SIT_FOCUS = true; paSitRender(); }
 }
 function paSitStageTab(stage, btn){
   PA_SIT_STAGE = stage || '';
   PA_SIT_INDEX = 0;
   PA_SIT_PAGE = 1;
+  PA_SIT_FOCUS = true;
   paSitSyncFilterControls();
   paSitRender();
   paSitSyncUrl();
@@ -746,9 +822,9 @@ function paSitSyncUrl(){
     history.replaceState(null, '', url);
   } catch(e){}
 }
-/* Land on the filtered list: the browser (or the paywall, when the
-   visitor is gated) sits far below the intro, so a stage selection
-   must scroll to it or the tap looks like a pointless reload. */
+/* Land on the filtered list: the browser sits far below the intro,
+   so a stage selection must scroll to it or the tap looks like a
+   pointless reload. */
 function paSitWallShowing(){
   var wall = document.getElementById('sit-paywall');
   if(!wall) return false;
@@ -792,6 +868,7 @@ function paSitCategory(stage, bookmarked){
   PA_SIT_BOOKMARKED_ONLY = !!bookmarked;
   PA_SIT_INDEX = 0;
   PA_SIT_PAGE = 1;
+  PA_SIT_FOCUS = true;
   paSitSyncFilterControls();
   paSitRender();
   paSitSyncUrl();
@@ -843,6 +920,7 @@ function paSitToggleDone(){
   var list = paSitVisibleItems();
   var item = list[PA_SIT_INDEX];
   if(!item) return;
+  if(paSitIsLocked(item)) return;
   var p = paSitProgress();
   if(p.completed[item.id]) delete p.completed[item.id];
   else p.completed[item.id] = true;
@@ -1019,18 +1097,30 @@ function paSitRenderSamples(samples){
   }
   paSitProtectElement(box);
 }
-function paSitShowContent(){
-  var wall = document.getElementById('sit-paywall');
-  var owned = document.getElementById('sit-owned');
+/* The browser always shows: gating is per case at render time, so
+   the data loads for every visitor. */
+function paSitShowBrowser(){
   var browser = document.getElementById('sit-browser');
-  if(wall) wall.style.display = 'none';
-  if(owned) owned.style.display = 'block';
   if(browser) browser.style.display = 'block';
   if(window.PA_SITUATIONS && window.PA_SITUATIONS.length){
     PA_SIT_ITEMS = window.PA_SITUATIONS;
     paSitRender();
   } else {
     paSitLoadData();
+  }
+}
+/* The Access section below the workspace: owners see the owned note,
+   everyone else sees the paywall block. Called once the entitlement
+   check resolves; until then both blocks stay hidden. */
+function paSitSyncAccessSection(){
+  var wall = document.getElementById('sit-paywall');
+  var owned = document.getElementById('sit-owned');
+  if(paSitHasAccess()){
+    if(wall) wall.style.display = 'none';
+    if(owned) owned.style.display = 'block';
+  } else {
+    if(wall) wall.style.display = 'block';
+    if(owned) owned.style.display = 'none';
   }
 }
 function paSitLoadData(){
@@ -1070,7 +1160,8 @@ function paSitReadUrlParams(){
   if(resolution){ PA_SIT_RESOLUTION = resolution; PA_SIT_SCROLL_ON_LOAD = true; }
   /* Deep link (15 Nov 2026, fix 4): a search result links to
      situations.html?id=<ID>. The id is resolved in paSitRender once
-     the data has loaded, so a gated visitor still sees the wall. */
+     the data has loaded, so a gated visitor lands on the paywall
+     view for that case. */
   var dl = params.get('id');
   if(dl){ PA_SIT_DEEPLINK_ID = dl; PA_SIT_SCROLL_ON_LOAD = true; }
   paSitSyncFilterControls();
@@ -1095,11 +1186,16 @@ document.addEventListener('DOMContentLoaded', function(){
     PA_SIT_LANDING_DONE = true;
     PA_SIT_SCROLL_ON_LOAD = false;
   });
-  var hasAccess = (typeof paHasSituationsAccess === 'function') ? paHasSituationsAccess() : false;
-  if(hasAccess){
-    paSitShowContent();
+  paSitShowBrowser();
+  /* Entitlement resolves async: re-render with the true gate state
+     when it lands, and sync the Access section. Until then every
+     non-sample case renders locked. */
+  if(typeof paGateState === 'function'){
+    paGateState().then(function(){
+      paSitSyncAccessSection();
+      paSitRender();
+    });
   } else {
-    wall.style.display = 'block';
-    browser.style.display = 'none';
+    paSitSyncAccessSection();
   }
 });
