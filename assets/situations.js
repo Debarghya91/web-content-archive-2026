@@ -1,21 +1,24 @@
 
-/* ===== Payment Situations page ===== */
-/* Render-time gating (17 Nov 2026): the item data file loads for
-   every visitor and the gate runs when each case renders, the same
-   model as the lesson gate. A case shows in full only when it is a
-   free sample (ABH-01, JEB-C01) or the learner owns Practice
-   Experiences or the Integrated Course, or is an admin; every other
-   case shows its teaser header plus the unlock card, and no case
-   text. Until the Supabase entitlement check resolves, every
-   non-sample case renders locked (fail closed), then the page
-   re-renders with the true state. Honest limit: the data file is a
-   static asset, so a determined user who inspects network requests
-   can fetch it, and screenshots cannot be prevented. Real
-   server-side enforcement needs the Supabase backend. */
+/* ===== Payment Situations list page ===== */
+/* List only (17 Nov 2026, owner order): this page is the dashboard
+   of all 564 situations, with filters, the catalogue, the personal
+   dashboard, the stage report and the review checklist. Opening a
+   case navigates to situation.html?id=CASE-ID, which renders the
+   case detail; nothing renders a case in place on this page, and
+   the focus mode that used to collapse the panels around an
+   in-page detail is gone.
+   Gating: the catalogue marks each row Locked unless the case is a
+   free sample (ABH-01, JEB-C01) or paHasSituationsAccess() passes
+   (admin, or an active unexpired practice or integrated purchase,
+   from bundles.js, the single source). Until the Supabase
+   entitlement check resolves, every non-sample row renders locked
+   (fail closed), then the page re-renders with the true state. The
+   case page applies the same gate at render time. Honest limit: the
+   data file is a static asset, so a determined user who inspects
+   network requests can fetch it, and screenshots cannot be
+   prevented. Real server-side enforcement needs the Supabase
+   backend. */
 var PA_SIT_ITEMS = [];
-var PA_SIT_INDEX = 0;
-var PA_SIT_DEEPLINK_ID = '';
-var PA_SIT_DEEPLINK_MISSING = '';
 /* Deep-link landing (17 Nov 2026, Task G): when the URL carries a
    filter or an item id, the first render scrolls the browser into
    view, so a shared or bookmarked filtered URL lands on the filtered
@@ -48,14 +51,6 @@ var PA_SIT_MASTERY_ORDER = ['read', 'understood', 'practised', 'reviewed'];
    JEB-C01 only. The 10 static samples in the page intro are
    marketing copy and are untouched by this gate. */
 var PA_SIT_FREE_SAMPLES = ['ABH-01', 'JEB-C01'];
-/* Reading focus (17 Nov 2026): when a case is open, the Categories
-   drawer and the catalogue column hide so the case takes the full
-   width. Back to list restores them. The flag starts on: the first
-   render opens focused. Case-opening actions (jump, previous, next,
-   open by index, stage tab, category, deep link) turn focus on;
-   filter, search, pagination and progress actions leave the mode
-   alone. */
-var PA_SIT_FOCUS = true;
 function paSitHasAccess(){
   try {
     if(typeof paHasSituationsAccess === 'function') return !!paHasSituationsAccess();
@@ -70,18 +65,6 @@ function paSitIsFreeSample(item){
 function paSitIsLocked(item){
   if(paSitIsFreeSample(item)) return false;
   return !paSitHasAccess();
-}
-function paSitApplyFocus(){
-  var browser = document.getElementById('sit-browser');
-  if(browser) browser.classList.toggle('sit-focus', !!PA_SIT_FOCUS);
-}
-function paSitSetFocus(on){
-  PA_SIT_FOCUS = !!on;
-  paSitApplyFocus();
-}
-function paSitExitFocus(){
-  paSitSetFocus(false);
-  paSitScrollToBrowser();
 }
 var PA_SIT_MASTERY_LABELS = {read: 'Read', understood: 'Understood', practised: 'Practised', reviewed: 'Reviewed'};
 function paSitProgress(){
@@ -372,37 +355,7 @@ function paSitRenderDashboard(){
 }
 function paSitDashFilter(f){
   PA_SIT_DASH_FILTER = f || '';
-  PA_SIT_INDEX = 0;
   PA_SIT_PAGE = 1;
-  paSitRender();
-}
-/* Mastery controls for the open situation. Opening marks it Read;
-   the learner marks the deeper states themselves by clicking. */
-function paSitRenderMastery(item){
-  var box = document.getElementById('sit-mastery-box');
-  if(!box) return;
-  if(!item){ box.innerHTML = ''; return; }
-  var p = paSitProgress();
-  var cur = paSitMasteryOf(p, item.id) || 'read';
-  var html = '<h4>How well do you know this situation?</h4>'
-    + '<p class="sit-note">Opening a situation marks it Read. Mark the deeper states yourself when you have worked through it.</p>'
-    + '<div class="sit-mastery-btns" role="group" aria-label="Mastery state">';
-  PA_SIT_MASTERY_ORDER.forEach(function(m){
-    html += '<button type="button" class="sit-btn' + (cur === m ? ' sit-btn-primary' : ' sit-btn-secondary') + '" aria-pressed="' + (cur === m) + '" onclick="paSitSetMastery(\'' + m + '\')">'+ PA_SIT_MASTERY_LABELS[m] + '</button> ';
-  });
-  html += '</div><p class="sit-mastery-state" aria-live="polite">Current state: <strong>' + escHtml(PA_SIT_MASTERY_LABELS[cur]) + '</strong>.</p>';
-  box.innerHTML = html;
-}
-function paSitSetMastery(state){
-  var list = paSitVisibleItems();
-  var item = list[PA_SIT_INDEX];
-  if(!item) return;
-  if(paSitIsLocked(item)) return;
-  if(PA_SIT_MASTERY_ORDER.indexOf(state) === -1) return;
-  var p = paSitProgress();
-  if(!p.mastery) p.mastery = {};
-  p.mastery[item.id] = state;
-  paSitSaveProgress(p);
   paSitRender();
 }
 /* Downloadable stage completion report (ChatGPT review P1#7, 9 Nov
@@ -476,12 +429,11 @@ function paSitUpdateProgressLine(){
 /* Numbered pagination (16 Nov 2026): the catalogue shows one page of
    20 situations, with a Previous, numbered pages and Next bar below
    the list. The range line above the list reports the honest slice
-   of the filtered list. data-sit-cat stays the index into the full
-   filtered list, so paSitJump keeps working. */
+   of the filtered list. Each row is a real link to the case page:
+   opening a case navigates to situation.html?id=CASE-ID. */
 function paSitRenderCatalogue(list){
   var cat = document.getElementById('sit-catalogue');
   if(!cat) return;
-  var cur = list[PA_SIT_INDEX];
   var p = paSitProgress();
   var totalPages = Math.max(1, Math.ceil(list.length / PA_SIT_PAGE_SIZE));
   if(PA_SIT_PAGE > totalPages) PA_SIT_PAGE = totalPages;
@@ -504,9 +456,9 @@ function paSitRenderCatalogue(list){
     var lockTag = paSitIsLocked(it) ? ' \u00b7 Locked' : '';
     var thumb = it.thumbnail ? '<img class="pf-thumb pf-thumb-sm" src="' + escHtml(it.thumbnail) + '" alt="" loading="lazy"> ' : '';
     var agenda = it.agenda ? '<span class="pf-row-agenda">' + escHtml(it.agenda) + '</span>' : '';
-    html += '<button type="button" class="sit-catalogue-item' + (it === cur ? ' active' : '') + '" data-sit-cat="' + i + '" onclick="paSitJump(' + i + ')">'
+    html += '<a class="sit-catalogue-item" href="situation.html?id=' + escHtml(it.id || '') + '">'
       + '<span class="sit-cat-stage">Stage ' + (it.stage || '') + ' &middot; ' + escHtml(it.id || '') + ' &middot; ' + pos + ' of ' + PA_SIT_ITEMS.length + mark + done + mastTag + lockTag + '</span>'
-      + thumb + escHtml(it.title || it.id || '') + agenda + '</button>';
+      + thumb + escHtml(it.title || it.id || '') + agenda + '</a>';
   }
   html += paSitPaginationBar(totalPages);
   cat.innerHTML = html;
@@ -567,180 +519,13 @@ function paSitPageNext(){ paSitPageGo(PA_SIT_PAGE + 1); }
 function escHtml(s){
   return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
-function paSitRelated(item){
-  var rel = [];
-  if(!item) return rel;
-  PA_SIT_ITEMS.forEach(function(it){
-    if(it.id === item.id || rel.length >= 3) return;
-    var sameStage = it.stage === item.stage;
-    var sharedMsg = (it.messages || []).some(function(m){ return (item.messages || []).indexOf(m) !== -1; });
-    var sameDomain = it.domain && item.domain && it.domain === item.domain;
-    if((sameStage && (sharedMsg || sameDomain)) || (sharedMsg && sameDomain)) rel.push(it);
-  });
-  if(rel.length < 3){
-    PA_SIT_ITEMS.forEach(function(it){
-      if(it.id === item.id || rel.length >= 3) return;
-      if(it.stage === item.stage && rel.indexOf(it) === -1) rel.push(it);
-    });
-  }
-  return rel;
-}
-function paSitRenderRelated(item){
-  var box = document.getElementById('sit-related');
-  if(!box) return;
-  var rel = paSitRelated(item);
-  if(!rel.length){ box.innerHTML = ''; return; }
-  var html = '<h4>Related situations</h4>';
-  rel.forEach(function(it){
-    var pos = PA_SIT_ITEMS.indexOf(it);
-    html += '<button type="button" onclick="paSitOpenByIndex(' + pos + ')">' + escHtml(it.title || it.id) + ' (Stage ' + (it.stage || '') + ')</button>';
-  });
-  box.innerHTML = html;
-}
-function paSitSyncActionButtons(item, locked){
-  var p = paSitProgress();
-  var bm = document.getElementById('sit-bookmark');
-  if(bm){
-    bm.setAttribute('aria-pressed', item && p.bookmarked[item.id] ? 'true' : 'false');
-    bm.textContent = (item && p.bookmarked[item.id]) ? 'Bookmarked \u2605' : 'Bookmark';
-  }
-  var dn = document.getElementById('sit-done');
-  if(dn){
-    /* A locked case can be bookmarked (a discovery marker) but never
-       marked complete: the learner has not seen its content. */
-    dn.disabled = !!locked;
-    dn.setAttribute('aria-pressed', item && !locked && p.completed[item.id] ? 'true' : 'false');
-    dn.textContent = (item && !locked && p.completed[item.id]) ? 'Completed \u2713' : 'Mark complete';
-  }
-}
-function paSitRenderNote(item){
-  var box = document.getElementById('sit-note-box');
-  if(!box) return;
-  if(!item){ box.innerHTML = ''; return; }
-  var p = paSitProgress();
-  var saved = (p.notes && p.notes[item.id]) || '';
-  box.innerHTML = '<h4>Your note on this situation</h4>'
-    + '<p class="sit-note">Private to this browser. Notes are stored with your bookmarks and progress, and clearing browser data wipes them.</p>'
-    + '<textarea id="sit-note-text" rows="3" aria-label="Your note on this situation">' + escHtml(saved) + '</textarea>'
-    + '<p><button type="button" class="sit-btn sit-btn-primary" onclick="paSitSaveNote()">Save note</button> '
-    + '<span class="sit-note-status" id="sit-note-status"></span></p>';
-}
-function paSitSaveNote(){
-  var list = paSitVisibleItems();
-  var item = list[PA_SIT_INDEX];
-  if(!item) return;
-  var ta = document.getElementById('sit-note-text');
-  var st = document.getElementById('sit-note-status');
-  var text = ta ? ta.value : '';
-  var p = paSitProgress();
-  if(!p.notes) p.notes = {};
-  if(text.trim()) p.notes[item.id] = text;
-  else delete p.notes[item.id];
-  paSitSaveProgress(p);
-  if(st) st.textContent = 'Note saved.';
-  paSitUpdateProgressLine();
-}
 function paSitRender(){
-  var box = document.getElementById('sit-content');
-  if(!box) return;
   var list = paSitVisibleItems();
   paSitUpdateProgressLine();
   paSitRenderReport();
   paSitRenderReview();
   paSitRenderDashboard();
-  if(!PA_SIT_ITEMS.length){
-    box.innerHTML = '<p class="sit-note">The situations are being prepared.</p>';
-    var _b0 = document.getElementById('sit-browser');
-    if(_b0) _b0.classList.remove('sit-focus');
-    return;
-  }
-  if(!list.length){
-    box.innerHTML = '<p class="sit-note">No situations match this filter. Clear a filter to see more.</p>';
-    var _b1 = document.getElementById('sit-browser');
-    if(_b1) _b1.classList.remove('sit-focus');
-    paSitRenderCatalogue(list);
-    paSitRenderRelated(null);
-    paSitRenderNote(null);
-    paSitRenderMastery(null);
-    return;
-  }
-  if(PA_SIT_DEEPLINK_ID){
-    var _dl = PA_SIT_DEEPLINK_ID;
-    PA_SIT_DEEPLINK_ID = '';
-    var _found = -1;
-    for(var _i = 0; _i < PA_SIT_ITEMS.length; _i++){ if(PA_SIT_ITEMS[_i].id === _dl){ _found = _i; break; } }
-    if(_found !== -1){
-      PA_SIT_STAGE = ''; PA_SIT_DOMAIN = ''; PA_SIT_MESSAGE = ''; PA_SIT_FAILURE = '';
-      PA_SIT_LEVEL = ''; PA_SIT_RESOLUTION = ''; PA_SIT_QUERY = ''; PA_SIT_BOOKMARKED_ONLY = false;
-      PA_SIT_DASH_FILTER = '';
-      PA_SIT_PAGE = 1;
-      /* A deep link opens a case, so it lands in reading focus. */
-      PA_SIT_FOCUS = true;
-      paSitSyncFilterControls();
-      list = paSitVisibleItems();
-      PA_SIT_INDEX = list.indexOf(PA_SIT_ITEMS[_found]);
-      setTimeout(function(){ var _box = document.getElementById('sit-content'); if(_box) _box.scrollIntoView({behavior: 'smooth', block: 'start'}); }, 50);
-    } else {
-      PA_SIT_DEEPLINK_MISSING = _dl;
-    }
-  }
-  if(PA_SIT_INDEX >= list.length) PA_SIT_INDEX = list.length - 1;
-  if(PA_SIT_INDEX < 0) PA_SIT_INDEX = 0;
-  var item = list[PA_SIT_INDEX];
-  var locked = paSitIsLocked(item);
-  paSitApplyFocus();
-  var pos = PA_SIT_ITEMS.indexOf(item) + 1;
-  var prog = document.getElementById('sit-progress');
-  if(prog) prog.textContent = 'Situation ' + pos + ' of ' + PA_SIT_ITEMS.length + (list.length !== PA_SIT_ITEMS.length ? ' (filtered)' : '');
-  var prev = document.getElementById('sit-prev');
-  var next = document.getElementById('sit-next');
-  if(prev) prev.disabled = PA_SIT_INDEX <= 0;
-  if(next) next.disabled = PA_SIT_INDEX >= list.length - 1;
-  if(locked){
-    box.innerHTML = (window.PFSituations && window.PFSituations.renderLocked) ? window.PFSituations.renderLocked(item) : '';
-  } else {
-    box.innerHTML = window.PFSituations ? window.PFSituations.render(item) : '';
-    if(window.PFSituations) window.PFSituations.renderAll(box);
-  }
-  if(PA_SIT_DEEPLINK_MISSING){
-    var _note = document.createElement('p');
-    _note.className = 'sit-note';
-    _note.textContent = 'No situation with code ' + PA_SIT_DEEPLINK_MISSING + ' was found. Showing the first situation instead.';
-    box.insertBefore(_note, box.firstChild);
-    PA_SIT_DEEPLINK_MISSING = '';
-  }
   paSitRenderCatalogue(list);
-  if(locked){
-    /* A locked case shows no related cases, no note box and no
-       mastery box: nothing beyond the paywall view. */
-    paSitRenderRelated(null);
-    paSitRenderNote(null);
-    paSitRenderMastery(null);
-  } else {
-    paSitRenderRelated(item);
-    paSitRenderNote(item);
-    paSitRenderMastery(item);
-  }
-  paSitSyncActionButtons(item, locked);
-  paSitApplyDeterrents();
-  /* A locked case records nothing: no last visit, no Read state.
-     The learner has not seen the content. */
-  if(!locked){
-    var p = paSitProgress();
-    p.last = item.id;
-    p.last_at = new Date().toISOString();
-    if(!p.mastery) p.mastery = {};
-    /* Opening a situation marks it Read only. Deeper states are set by
-       the learner through the mastery controls, never here. */
-    if(!p.mastery[item.id]) p.mastery[item.id] = 'read';
-    paSitSaveProgress(p);
-    /* Refresh the progress line, dashboard and report with the newly
-       recorded visit and Read state; they rendered above before this
-       item was recorded. */
-    paSitUpdateProgressLine();
-    paSitRenderDashboard();
-    paSitRenderReport();
-  }
   /* Deep-link landing: scroll to the filtered list once, on the first
      render that has data. The site-wide scroll rule (site.js) resets
      the page to the top on window load AND on pageshow, both after an
@@ -752,24 +537,14 @@ function paSitRender(){
     if(PA_SIT_LANDING_DONE) PA_SIT_SCROLL_ON_LOAD = false;
   }
 }
+/* Dashboard buttons open a case by its index in the full list.
+   Opening a case navigates to the case page. */
 function paSitOpenByIndex(i){
   var idx = parseInt(i, 10);
   if(isNaN(idx)) return;
-  var list = paSitVisibleItems();
   var item = PA_SIT_ITEMS[idx];
-  var at = list.indexOf(item);
-  if(at === -1){
-    PA_SIT_STAGE = ''; PA_SIT_DOMAIN = ''; PA_SIT_MESSAGE = ''; PA_SIT_FAILURE = '';
-    PA_SIT_LEVEL = ''; PA_SIT_RESOLUTION = ''; PA_SIT_QUERY = ''; PA_SIT_BOOKMARKED_ONLY = false;
-    PA_SIT_DASH_FILTER = '';
-    PA_SIT_PAGE = 1;
-    paSitSyncFilterControls();
-    PA_SIT_INDEX = idx;
-  } else {
-    PA_SIT_INDEX = at;
-  }
-  PA_SIT_FOCUS = true;
-  paSitRender();
+  if(!item || !item.id) return;
+  window.location.href = 'situation.html?id=' + encodeURIComponent(item.id);
 }
 function paSitSyncFilterControls(){
   var map = [['sit-domain-filter', PA_SIT_DOMAIN], ['sit-message-filter', PA_SIT_MESSAGE],
@@ -790,21 +565,9 @@ function paSitSyncFilterControls(){
   });
   paSitSyncDrawer();
 }
-function paSitPrev(){
-  if(PA_SIT_INDEX > 0){ PA_SIT_INDEX -= 1; PA_SIT_FOCUS = true; paSitRender(); }
-}
-function paSitNext(){
-  if(PA_SIT_INDEX < paSitVisibleItems().length - 1){ PA_SIT_INDEX += 1; PA_SIT_FOCUS = true; paSitRender(); }
-}
-function paSitJump(v){
-  var i = parseInt(v, 10);
-  if(!isNaN(i)){ PA_SIT_INDEX = i; PA_SIT_FOCUS = true; paSitRender(); }
-}
 function paSitStageTab(stage, btn){
   PA_SIT_STAGE = stage || '';
-  PA_SIT_INDEX = 0;
   PA_SIT_PAGE = 1;
-  PA_SIT_FOCUS = true;
   paSitSyncFilterControls();
   paSitRender();
   paSitSyncUrl();
@@ -866,9 +629,7 @@ function paSitBindStageLinks(){
 function paSitCategory(stage, bookmarked){
   PA_SIT_STAGE = stage || '';
   PA_SIT_BOOKMARKED_ONLY = !!bookmarked;
-  PA_SIT_INDEX = 0;
   PA_SIT_PAGE = 1;
-  PA_SIT_FOCUS = true;
   paSitSyncFilterControls();
   paSitRender();
   paSitSyncUrl();
@@ -894,37 +655,15 @@ function paSitSyncDrawer(){
     }
   });
 }
-function paSitFilterDomain(v){ PA_SIT_DOMAIN = v || ''; PA_SIT_INDEX = 0; PA_SIT_PAGE = 1; paSitRender(); }
-function paSitFilterMessage(v){ PA_SIT_MESSAGE = v || ''; PA_SIT_INDEX = 0; PA_SIT_PAGE = 1; paSitRender(); }
-function paSitFilterFailure(v){ PA_SIT_FAILURE = v || ''; PA_SIT_INDEX = 0; PA_SIT_PAGE = 1; paSitRender(); }
-function paSitFilterLevel(v){ PA_SIT_LEVEL = v || ''; PA_SIT_INDEX = 0; PA_SIT_PAGE = 1; paSitRender(); }
-function paSitFilterResolution(v){ PA_SIT_RESOLUTION = v || ''; PA_SIT_INDEX = 0; PA_SIT_PAGE = 1; paSitRender(); }
-function paSitFilterBookmarked(on){ PA_SIT_BOOKMARKED_ONLY = !!on; PA_SIT_INDEX = 0; PA_SIT_PAGE = 1; paSitSyncDrawer(); paSitRender(); }
+function paSitFilterDomain(v){ PA_SIT_DOMAIN = v || ''; PA_SIT_PAGE = 1; paSitRender(); }
+function paSitFilterMessage(v){ PA_SIT_MESSAGE = v || ''; PA_SIT_PAGE = 1; paSitRender(); }
+function paSitFilterFailure(v){ PA_SIT_FAILURE = v || ''; PA_SIT_PAGE = 1; paSitRender(); }
+function paSitFilterLevel(v){ PA_SIT_LEVEL = v || ''; PA_SIT_PAGE = 1; paSitRender(); }
+function paSitFilterResolution(v){ PA_SIT_RESOLUTION = v || ''; PA_SIT_PAGE = 1; paSitRender(); }
+function paSitFilterBookmarked(on){ PA_SIT_BOOKMARKED_ONLY = !!on; PA_SIT_PAGE = 1; paSitSyncDrawer(); paSitRender(); }
 function paSitSearch(q){
   PA_SIT_QUERY = (q || '').trim().toLowerCase();
-  PA_SIT_INDEX = 0;
   PA_SIT_PAGE = 1;
-  paSitRender();
-}
-function paSitToggleBookmark(){
-  var list = paSitVisibleItems();
-  var item = list[PA_SIT_INDEX];
-  if(!item) return;
-  var p = paSitProgress();
-  if(p.bookmarked[item.id]) delete p.bookmarked[item.id];
-  else p.bookmarked[item.id] = true;
-  paSitSaveProgress(p);
-  paSitRender();
-}
-function paSitToggleDone(){
-  var list = paSitVisibleItems();
-  var item = list[PA_SIT_INDEX];
-  if(!item) return;
-  if(paSitIsLocked(item)) return;
-  var p = paSitProgress();
-  if(p.completed[item.id]) delete p.completed[item.id];
-  else p.completed[item.id] = true;
-  paSitSaveProgress(p);
   paSitRender();
 }
 /* Copy deterrents on protected content. The same protection applies
@@ -951,10 +690,6 @@ function paSitProtectElement(box){
       }
     });
   }
-}
-function paSitApplyDeterrents(){
-  var box = document.getElementById('sit-content');
-  paSitProtectElement(box);
 }
 /* Export and restore of the buyer own data (ChatGPT review P1#4,
    9 Nov 2026). The export is user data only: completed, bookmarked,
@@ -1136,14 +871,14 @@ function paSitLoadData(){
     paSitRender();
   };
   s.onerror = function(){
-    var box = document.getElementById('sit-content');
-    if(box) box.innerHTML = '<p class="sit-note">The situations data could not be loaded. Please refresh the page.</p>';
+    var cat = document.getElementById('sit-catalogue');
+    if(cat) cat.innerHTML = '<p class="sit-note">The situations data could not be loaded. Please refresh the page.</p>';
   };
   document.head.appendChild(s);
 }
 function paSitReadUrlParams(){
   var params = {};
-  try { params = new URLSearchParams(window.location.search); } catch(e){ return; }
+  try { params = new URLSearchParams(window.location.search); } catch(e){ return false; }
   var stage = params.get('stage');
   if(stage && ['1','2','3','4','5','6'].indexOf(stage) !== -1){ PA_SIT_STAGE = stage; PA_SIT_SCROLL_ON_LOAD = true; }
   var msg = params.get('message');
@@ -1158,19 +893,24 @@ function paSitReadUrlParams(){
   if(level && ['foundation', 'core', 'advanced'].indexOf(level) !== -1){ PA_SIT_LEVEL = level; PA_SIT_SCROLL_ON_LOAD = true; }
   var resolution = params.get('resolution');
   if(resolution){ PA_SIT_RESOLUTION = resolution; PA_SIT_SCROLL_ON_LOAD = true; }
-  /* Deep link (15 Nov 2026, fix 4): a search result links to
-     situations.html?id=<ID>. The id is resolved in paSitRender once
-     the data has loaded, so a gated visitor lands on the paywall
-     view for that case. */
+  /* Deep link (17 Nov 2026): a case id on this page redirects to the
+     case page, so old links (search results, bookmarks, shares) keep
+     working. location.replace, so the redirect leaves no dead entry
+     in the history. Returns true when it redirected, so the init
+     stops. */
   var dl = params.get('id');
-  if(dl){ PA_SIT_DEEPLINK_ID = dl; PA_SIT_SCROLL_ON_LOAD = true; }
+  if(dl){
+    window.location.replace('situation.html?id=' + encodeURIComponent(dl));
+    return true;
+  }
   paSitSyncFilterControls();
+  return false;
 }
 document.addEventListener('DOMContentLoaded', function(){
   var wall = document.getElementById('sit-paywall');
   var browser = document.getElementById('sit-browser');
   if(!wall || !browser) return;
-  paSitReadUrlParams();
+  if(paSitReadUrlParams()) return;
   paSitLoadSamples();
   paSitBindStageLinks();
   /* Re-apply the deep-link landing after the site-wide scroll-to-top
