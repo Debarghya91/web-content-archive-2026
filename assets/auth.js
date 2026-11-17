@@ -697,15 +697,33 @@ function paSignupCreateAccount(){
         }
         return;
       }
-      /* An existing email gets a fake success with an empty identities
-         list, to avoid leaking account existence. Show the same done
-         step (no existence leak), but do not arm the welcome popup or
-         record a confirmation send that never happened. */
-      var alreadyHadAccount = !!(newUser && newUser.identities && newUser.identities.length === 0);
-      if(!alreadyHadAccount){
-        paWelcomeArm(paSignupState.caseId);
-        paResendRecord('confirmation', email);
+      /* Duplicate detection from server timestamps. The empty
+         identities signal is disproved: genuine new signups carry
+         an empty identities list too. A confirmed address, or a
+         confirmation sent more than 120 seconds after creation,
+         proves the account already existed. Never show the done
+         step for a duplicate: claiming the account was created
+         and an email was sent, when neither happened, is wrong
+         information. Show the already-registered message on the
+         form instead, pointing at sign-in. */
+      var isDuplicate = false;
+      if(newUser){
+        if(newUser.email_confirmed_at || newUser.confirmed_at){
+          isDuplicate = true;
+        } else {
+          var createdMs = Date.parse(newUser.created_at || '');
+          var sentMs = Date.parse(newUser.confirmation_sent_at || '');
+          if(!isNaN(createdMs) && !isNaN(sentMs) && (sentMs - createdMs) > 120000){
+            isDuplicate = true;
+          }
+        }
       }
+      if(isDuplicate){
+        paSignupShowError('signupError', 'EMAIL_ALREADY_REGISTERED');
+        return;
+      }
+      paWelcomeArm(paSignupState.caseId);
+      paResendRecord('confirmation', email);
       paSignupShowCaseId('signupDoneCaseBox', 'signupDoneCaseIdText');
       paSignupShowStep('signupDone');
       paAuthRefreshState();
