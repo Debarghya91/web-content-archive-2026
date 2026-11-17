@@ -65,15 +65,15 @@
 
   /* ---------- diagnostic recommendation ---------- */
   var AREA_BUNDLE = {
-    "foundations": { bundle_id: "foundations", bundle_name: "Payment Foundations" },
-    "messaging": { bundle_id: "messaging", bundle_name: "ISO 20022 and SWIFT Messaging" },
-    "rails": { bundle_id: "rails", bundle_name: "Global Payment Rails" },
-    "crossborder": { bundle_id: "crossborder", bundle_name: "Cross-Border and Correspondent Banking" },
-    "clearing": { bundle_id: "clearing", bundle_name: "Clearing, Settlement and Liquidity" },
-    "cards": { bundle_id: "cards", bundle_name: "Cards and Domestic Payments" },
-    "compliance": { bundle_id: "compliance-ops", bundle_name: "Compliance, Risk, Operations and Reconciliation" },
-    "architecture-apis": { bundle_id: "architecture-apis", bundle_name: "Payment Architecture and APIs" },
-    "ba-practice": { bundle_id: "ba-practice", bundle_name: "AI Product Owner and Product Manager for Payments" }
+    "foundations": { bundle_id: "group-1", bundle_name: "Group 1: Payments Foundations" },
+    "messaging": { bundle_id: "group-2", bundle_name: "Group 2: Messages and Cross-Border Payments" },
+    "rails": { bundle_id: "group-1", bundle_name: "Group 1: Payments Foundations" },
+    "crossborder": { bundle_id: "group-2", bundle_name: "Group 2: Messages and Cross-Border Payments" },
+    "clearing": { bundle_id: "group-3", bundle_name: "Group 3: Clearing, Settlement and Exceptions" },
+    "cards": { bundle_id: "group-4", bundle_name: "Group 4: Cards, Architecture and Engineering" },
+    "compliance": { bundle_id: "group-3", bundle_name: "Group 3: Clearing, Settlement and Exceptions" },
+    "architecture-apis": { bundle_id: "group-4", bundle_name: "Group 4: Cards, Architecture and Engineering" },
+    "ba-practice": { bundle_id: "group-5", bundle_name: "Group 5: The BA at Work and Emerging Payments" }
   };
 
   /* ---------- competency feedback (10/10 plan, Priority 1) ----------
@@ -569,7 +569,7 @@
     }
     // Rules are evaluated in priority order. The fallback (lowest area) is last.
     if (overall >= 85 && noAreaBelow(50)) {
-      return { rule_id: "strong-everywhere", bundle_id: "full",
+      return { rule_id: "strong-everywhere", bundle_id: "integrated",
         bundle_name: "The Integrated Course", overall_percent: overall,
         reason: "You scored strongly across every area, so starting at the beginning would repeat what you already know. The Integrated Course fills the remaining gaps and gives you the full academy for completeness." };
     }
@@ -581,42 +581,42 @@
     if (areaPct("foundations") >= 75 && areaPct("messaging") < 50) {
       return { rule_id: "messaging-weak", bundle_id: "messaging",
         bundle_name: "ISO 20022 and SWIFT Messaging", overall_percent: overall,
-        reason: "Your foundations are strong, but messaging is your weakest area. The ISO 20022 and SWIFT Messaging bundle takes you through MT and MX messages field by field." };
+        reason: "Your foundations are strong, but messaging is your weakest area. Group 2: Messages and Cross-Border Payments takes you through MT and MX messages field by field." };
     }
     if (areaPct("crossborder") < 50) {
       return { rule_id: "crossborder-weak", bundle_id: "crossborder",
         bundle_name: "Cross-Border and Correspondent Banking", overall_percent: overall,
-        reason: "Cross-border is your weakest area. The Cross-Border and Correspondent Banking bundle covers correspondent banking, serial versus cover, charges, FX and exceptions end to end." };
+        reason: "Cross-border is your weakest area. Group 2: Messages and Cross-Border Payments covers correspondent banking, serial versus cover, charges, FX and exceptions end to end." };
     }
     if (areaPct("architecture-apis") < 50) {
       return { rule_id: "architecture-weak", bundle_id: "architecture-apis",
         bundle_name: "Payment Architecture and APIs", overall_percent: overall,
-        reason: "Architecture and APIs is your weakest area. The Payment Architecture and APIs bundle covers hubs, platforms, gateways and integration, the engineering view of payments." };
+        reason: "Architecture and APIs is your weakest area. Group 4: Cards, Architecture and Engineering covers hubs, platforms, gateways and integration, the engineering view of payments." };
     }
     if (areaPct("rails") < 50) {
       return { rule_id: "rails-weak", bundle_id: "rails",
         bundle_name: "Global Payment Rails", overall_percent: overall,
-        reason: "Global rails is your weakest area. The Global Payment Rails bundle covers India, US, Europe and UK rails, plus TARGET and TIPS." };
+        reason: "Global rails is your weakest area. Group 1: Payments Foundations covers India, US, Europe and UK rails, plus TARGET and TIPS." };
     }
     if (areaPct("clearing") < 50) {
       return { rule_id: "clearing-weak", bundle_id: "clearing",
         bundle_name: "Clearing, Settlement and Liquidity", overall_percent: overall,
-        reason: "Clearing and settlement is your weakest area. The Clearing, Settlement and Liquidity bundle covers netting, settlement models, liquidity and settlement risk." };
+        reason: "Clearing and settlement is your weakest area. Group 3: Clearing, Settlement and Exceptions covers netting, settlement models, liquidity and settlement risk." };
     }
     if (areaPct("cards") < 50) {
       return { rule_id: "cards-weak", bundle_id: "cards",
         bundle_name: "Cards and Domestic Payments", overall_percent: overall,
-        reason: "Cards is your weakest area. The Cards and Domestic Payments bundle covers authorisation, clearing, settlement, wallets and POS." };
+        reason: "Cards is your weakest area. Group 4: Cards, Architecture and Engineering covers authorisation, clearing, settlement, wallets and POS." };
     }
     if (areaPct("compliance") < 50) {
       return { rule_id: "compliance-weak", bundle_id: "compliance-ops",
         bundle_name: "Compliance, Risk, Operations and Reconciliation", overall_percent: overall,
-        reason: "Compliance and operations is your weakest area. The Compliance, Risk, Operations and Reconciliation bundle covers sanctions, AML, exceptions, returns and daily operations." };
+        reason: "Compliance and operations is your weakest area. Group 3: Clearing, Settlement and Exceptions covers sanctions, AML, exceptions, returns and daily operations." };
     }
     if (areaPct("ba-practice") < 50) {
       return { rule_id: "ba-practice-weak", bundle_id: "ba-practice",
         bundle_name: "AI Product Owner and Product Manager for Payments", overall_percent: overall,
-        reason: "AI product ownership is your weakest area. The AI Product Owner and Product Manager for Payments bundle covers AI for the payments BA and PO, AI-assisted work, product ownership, governance and the capstone." };
+        reason: "AI product ownership is your weakest area. Group 5: The BA at Work and Emerging Payments covers AI for the payments BA and PO, AI-assisted work, product ownership, governance and the capstone." };
     }
     // Fallback: recommend the bundle for the lowest scoring area.
     var worst = null, worstPct = 101;
@@ -624,7 +624,7 @@
       var p = areaPct(areas[k]);
       if (p < worstPct) { worstPct = p; worst = areas[k]; }
     }
-    var bundle = AREA_BUNDLE[worst] || { bundle_id: "full", bundle_name: "The Integrated Course" };
+    var bundle = AREA_BUNDLE[worst] || { bundle_id: "integrated", bundle_name: "The Integrated Course" };
     return { rule_id: "weakest-area-fallback", bundle_id: bundle.bundle_id,
       bundle_name: bundle.bundle_name, overall_percent: overall,
       reason: "Your lowest scoring area is the best place to start, so we recommend the bundle that covers it." };
@@ -911,7 +911,128 @@
     return decision;
   }
 
-  function paStartTest(containerId, testData, storage) {
+  /* Test gating (18 Nov 2026): every test belongs to one group, except the
+     three mixed mocks, which need any two groups. The Integrated Course and
+     admins unlock everything. The placement test has no entry here and stays
+     open. Fail closed: no gate state means the lock panel, never the test. */
+  var PA_TEST_GATE = {"ba-01":"group-5","ba-02":"group-5","ba-03":"group-5","ba-04":"group-5","ba-05":"group-5","ba-06":"group-5","ba-07":"group-5","ba-08":"group-5","ba-09":"group-4","ba-10":"group-5","ba-11":"group-5","ba-12":"group-5","ba-13":"group-5","ba-14":"group-5","ba-15":"group-5","ba-16":"group-5","ba-17":"group-5","ba-18":"group-5","ba-19":"group-5","ba-20":"group-5","ba-21":"group-5","ba-22":"group-5","ba-23":"group-5","ba-24":"group-5","ba-25":"group-5","ba-26":"group-5","ba-27":"group-5","ba-28":"group-5","ba-29":"group-4","ba-30":"group-5","pb-01":"group-1","pb-02":"group-1","pb-03":"group-1","pb-04":"group-1","pb-05":"group-1","pb-06":"group-1","pb-07":"group-2","pb-08":"group-2","pb-09":"group-2","pb-10":"group-2","pb-11":"group-2","pb-12":"group-3","pb-13":"group-4","pb-14":"group-3","pb-15":"group-3","pb-16":"group-3","pb-17":"group-3","pb-18":"group-3","pb-19":"group-2","pb-20":"group-2","pb-21":"group-5","pb-22":"group-2","pb-23":"group-4","pb-24":"group-4","pb-25":"group-4","pb-26":"group-4","pb-27":"group-2","pb-28":"group-5","pb-29":"group-3","pb-30":"group-5","px-01":"group-1","px-02":"group-1","px-03":"group-1","px-04":"group-1","px-05":"group-1","px-06":"group-2","px-07":"group-2","px-08":"group-2","px-09":"group-2","px-10":"group-2","px-11":"group-3","px-12":"group-3","px-13":"group-3","px-14":"group-4","px-15":"group-1","px-16":"group-3","px-17":"group-3","px-18":"group-4","px-19":"group-4","px-20":"group-4","px-21":"group-4","px-22":"group-2","px-23":"group-3","px-24":"group-3","px-25":"group-3","px-26":"group-2","px-27":"group-4","px-28":"group-4","px-29":"group-3","px-30":"group-3","t-apis":"group-4","t-architecture":"group-4","t-cards":"group-4","t-clearing":"group-3","t-compliance":"group-3","t-crossborder":"group-2","t-emerging":"group-5","t-foundations":"group-1","t-messaging":"group-2","t-mock-1":"multi","t-mock-2":"multi","t-mock-3":"multi","t-operations":"group-3","t-professional":"group-5","t-rails":"group-1"};
+  var PA_TEST_GROUP_META = {"group-1":{"name":"Group 1: Payments Foundations","lessons":186,"chapters":21,"tests":14,"sale":699,"list":999},"group-2":{"name":"Group 2: Messages and Cross-Border Payments","lessons":220,"chapters":22,"tests":18,"sale":699,"list":999},"group-3":{"name":"Group 3: Clearing, Settlement and Exceptions","lessons":208,"chapters":24,"tests":20,"sale":699,"list":999},"group-4":{"name":"Group 4: Cards, Architecture and Engineering","lessons":155,"chapters":19,"tests":17,"sale":699,"list":999},"group-5":{"name":"Group 5: The BA at Work and Emerging Payments","lessons":105,"chapters":13,"tests":33,"sale":699,"list":999}};
+  function paTestGateState(){
+    if(typeof window !== 'undefined' && typeof window.paGateState === 'function'){
+      try { return window.paGateState(); } catch(e){}
+    }
+    return Promise.resolve({isAdmin: false, owned: {}, signedIn: false});
+  }
+  function paTestAllowed(gate, state){
+    if(!state) return false;
+    if(state.isAdmin) return true;
+    var owned = state.owned || {};
+    if(owned.integrated) return true;
+    var groups = 0;
+    for(var i = 1; i <= 5; i++){ if(owned['group-' + i]) groups++; }
+    if(groups >= 2) return true;
+    if(gate === 'multi') return false;
+    return !!owned[gate];
+  }
+  function paTestLockPanel(container, testData, gate){
+    var title = (testData && testData.test && testData.test.title) || 'This test';
+    var panel = document.createElement('div');
+    panel.className = 'pa-test-intro';
+    var h = document.createElement('h1');
+    h.textContent = 'Unlock this test';
+    panel.appendChild(h);
+    var p1 = document.createElement('p');
+    if(gate === 'multi'){
+      p1.textContent = title + ' covers several groups. Buying any two groups unlocks all 105 tests. Buying one group unlocks the tests in that group only.';
+    } else {
+      var gm = PA_TEST_GROUP_META[gate];
+      p1.textContent = title + ' is part of ' + gm.name + '. Buying the group unlocks all ' + gm.tests + ' tests in the group, plus ' + gm.lessons + ' lessons in ' + gm.chapters + ' chapters, for 1 year.';
+    }
+    panel.appendChild(p1);
+    if(gate !== 'multi'){
+      var gm2 = PA_TEST_GROUP_META[gate];
+      var price = document.createElement('p');
+      var struck = document.createElement('s');
+      struck.textContent = 'Rs. ' + Number(gm2.list).toLocaleString('en-IN');
+      price.appendChild(struck);
+      price.appendChild(document.createTextNode(' '));
+      var sale = document.createElement('b');
+      sale.textContent = 'Rs. ' + Number(gm2.sale).toLocaleString('en-IN');
+      price.appendChild(sale);
+      price.appendChild(document.createTextNode(' for 1 year of access.'));
+      panel.appendChild(price);
+      var buy = document.createElement('p');
+      var buyLink = document.createElement('a');
+      buyLink.href = '/payment.html?bundle=' + gate;
+      buyLink.textContent = 'Buy ' + gm2.name;
+      buyLink.setAttribute('style', 'display:inline-block;padding:10px 18px;background:#1d4ed8;color:#fff;border-radius:8px;text-decoration:none');
+      buy.appendChild(buyLink);
+      panel.appendChild(buy);
+    } else {
+      var browse = document.createElement('p');
+      var browseLink = document.createElement('a');
+      browseLink.href = '/courses.html';
+      browseLink.textContent = 'Browse the groups';
+      browseLink.setAttribute('style', 'display:inline-block;padding:10px 18px;background:#1d4ed8;color:#fff;border-radius:8px;text-decoration:none');
+      browse.appendChild(browseLink);
+      panel.appendChild(browse);
+    }
+    var p2 = document.createElement('p');
+    p2.appendChild(document.createTextNode('Want the whole library? The Integrated Course unlocks all 99 chapters and 874 lessons, and every test. '));
+    var integLink = document.createElement('a');
+    integLink.href = '/payment.html?bundle=integrated';
+    integLink.textContent = 'See the Integrated Course';
+    p2.appendChild(integLink);
+    panel.appendChild(p2);
+    var p3 = document.createElement('p');
+    p3.appendChild(document.createTextNode('Already bought a group? '));
+    var signLink = document.createElement('a');
+    signLink.href = '/signin.html';
+    signLink.textContent = 'Sign in';
+    p3.appendChild(signLink);
+    p3.appendChild(document.createTextNode(' to unlock your tests.'));
+    panel.appendChild(p3);
+    container.innerHTML = '';
+    container.appendChild(panel);
+  }
+  function paStartTest(containerId, testData, storage){
+    if(typeof document === 'undefined') return createRunner(testData, storage);
+    var container = typeof containerId === 'string' ? document.getElementById(containerId) : containerId;
+    if(!container) throw new Error('Test container not found: ' + containerId);
+    var tid = testData && testData.test && testData.test.id;
+    var gate = tid && PA_TEST_GATE[tid];
+    if(!gate) return paStartTestRun(containerId, testData, storage);
+    container.innerHTML = '<p>Checking access...</p>';
+    paTestGateState().then(function(state){
+      if(paTestAllowed(gate, state)){ paStartTestRun(containerId, testData, storage); }
+      else { paTestLockPanel(container, testData, gate); }
+    }).catch(function(){ paTestLockPanel(container, testData, gate); });
+  }
+  function paDecorateTestCards(){
+    if(typeof document === 'undefined') return;
+    var cards = document.querySelectorAll('.test-card');
+    if(!cards.length) return;
+    paTestGateState().then(function(state){
+      cards.forEach(function(card){
+        var m = /test-(.+)$/.exec(card.id || '');
+        var tid = m && m[1];
+        var gate = tid && PA_TEST_GATE[tid];
+        if(!gate) return;
+        if(paTestAllowed(gate, state)) return;
+        if(card.querySelector('.test-lock-note')) return;
+        var note = document.createElement('p');
+        note.className = 'test-lock-note';
+        note.textContent = gate === 'multi' ? 'Unlocks with any two groups.' : 'Included in ' + PA_TEST_GROUP_META[gate].name + '.';
+        var link = card.querySelector('a');
+        if(link) card.insertBefore(note, link); else card.appendChild(note);
+      });
+    }).catch(function(){});
+  }
+  if(typeof document !== 'undefined'){
+    if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', paDecorateTestCards);
+    else paDecorateTestCards();
+  }
+  function paStartTestRun(containerId, testData, storage) {
     if (typeof document === "undefined") return createRunner(testData, storage);
     var container = typeof containerId === "string" ? document.getElementById(containerId) : containerId;
     if (!container) throw new Error("Test container not found: " + containerId);
@@ -945,7 +1066,7 @@
           if (r.recommendation) {
             html += '<h2>Your recommended starting course</h2><p><strong>' + esc(r.recommendation.bundle_name) + '</strong></p>' +
               '<p>' + esc(r.recommendation.reason) + '</p>' +
-              '<p><a href="courses.html#' + esc(r.recommendation.bundle_id) + '">View this course and payment page</a></p>';
+              '<p><a href="courses.html#bundle-' + esc(r.recommendation.bundle_id) + '">View this course and payment page</a></p>';
           }
           html += '<p><a href="tests.html">Take the full test series next</a></p>' +
             '<p><button type="button" data-pa="review">Review every question</button> ' +
