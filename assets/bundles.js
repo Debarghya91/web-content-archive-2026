@@ -491,12 +491,21 @@ function paStartPayuCheckout(bid){
   var btn = document.getElementById('pa-payu-pay');
   if(btn) btn.disabled = true;
   paCheckoutStatus('Starting PayU checkout. You will be taken to the PayU payment page.');
+  var payuTimedOut = false;
+  var payuTimer = setTimeout(function(){
+    payuTimedOut = true;
+    paCheckoutFail('Could not start the PayU payment. Check your connection and try again.');
+    if(btn) btn.disabled = false;
+  }, 20000);
   paAuthAccessToken().then(function(token){
+    if(payuTimedOut){ return; }
     if(!token){
+      clearTimeout(payuTimer);
       paCheckoutFail('Sign in first so the payment is linked to your account.');
       if(btn) btn.disabled = false;
       return;
     }
+    paCheckoutStatus('Contacting the payment server...');
     fetch(PA_CHECKOUT_CONFIG.payu_create_payment_url, {
       method: 'POST',
       headers: {'Content-Type': 'application/json', 'apikey': PA_AUTH_CONFIG.supabaseAnonKey, 'Authorization': 'Bearer ' + token},
@@ -504,6 +513,8 @@ function paStartPayuCheckout(bid){
     }).then(function(r){
       return r.json().then(function(data){ return {ok: r.ok, data: data}; });
     }).then(function(res){
+      clearTimeout(payuTimer);
+      if(payuTimedOut){ return; }
       var data = res.data || {};
       if(!res.ok || !data.action_url || !data.fields || typeof data.fields !== 'object'){
         var msg = paReferralErrorMessage(data.code);
@@ -522,6 +533,9 @@ function paStartPayuCheckout(bid){
       }
       /* PayU hosted checkout: build the hidden form from the server
          fields and auto-submit it to the server action URL. */
+      var payuHost = '';
+      try { payuHost = String(data.action_url).split('/')[2] || ''; } catch(e){ payuHost = ''; }
+      paCheckoutStatus('Payment started. Taking you to PayU' + (payuHost ? ' (' + payuHost + ')' : '') + '.');
       var form = document.createElement('form');
       form.method = 'POST';
       form.action = data.action_url;
@@ -535,6 +549,8 @@ function paStartPayuCheckout(bid){
       document.body.appendChild(form);
       form.submit();
     }).catch(function(){
+      clearTimeout(payuTimer);
+      if(payuTimedOut){ return; }
       paCheckoutFail('Could not start the PayU payment. Check your connection and try again.');
       if(btn) btn.disabled = false;
     });
