@@ -50,7 +50,7 @@ function paCohortRegister(){
       var user = session && session.user;
       if(!user){
         paCohortSetStatus('Sign in to reserve your free seat.');
-        window.location.href = '/signin.html?next=' + encodeURIComponent('/cohort.html');
+        window.location.href = '/signin?next=' + encodeURIComponent('/cohort');
         return;
       }
       paCohortSetStatus('Reserving your free seat.');

@@ -456,7 +456,7 @@ function paSitRenderCatalogue(list){
     var lockTag = paSitIsLocked(it) ? ' \u00b7 Locked' : '';
     var thumb = it.thumbnail ? '<img class="pf-thumb pf-thumb-sm" src="' + escHtml(it.thumbnail) + '" alt="" loading="lazy"> ' : '';
     var agenda = it.agenda ? '<span class="pf-row-agenda">' + escHtml(it.agenda) + '</span>' : '';
-    html += '<a class="sit-catalogue-item" href="situation.html?id=' + escHtml(it.id || '') + '">'
+    html += '<a class="sit-catalogue-item" href="situation?id=' + escHtml(it.id || '') + '">'
       + '<span class="sit-cat-stage">Stage ' + (it.stage || '') + ' &middot; ' + escHtml(it.id || '') + ' &middot; ' + pos + ' of ' + PA_SIT_ITEMS.length + mark + done + mastTag + lockTag + '</span>'
       + thumb + escHtml(it.title || it.id || '') + agenda + '</a>';
   }
@@ -544,7 +544,7 @@ function paSitOpenByIndex(i){
   if(isNaN(idx)) return;
   var item = PA_SIT_ITEMS[idx];
   if(!item || !item.id) return;
-  window.location.href = 'situation.html?id=' + encodeURIComponent(item.id);
+  window.location.href = 'situation?id=' + encodeURIComponent(item.id);
 }
 function paSitSyncFilterControls(){
   var map = [['sit-domain-filter', PA_SIT_DOMAIN], ['sit-message-filter', PA_SIT_MESSAGE],
@@ -900,7 +900,7 @@ function paSitReadUrlParams(){
      stops. */
   var dl = params.get('id');
   if(dl){
-    window.location.replace('situation.html?id=' + encodeURIComponent(dl));
+    window.location.replace('situation?id=' + encodeURIComponent(dl));
     return true;
   }
   paSitSyncFilterControls();

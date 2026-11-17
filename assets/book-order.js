@@ -15,7 +15,7 @@
     return m ? parseInt(m[1], 10) : 9999;
   }
   function lessonUrl(lid) {
-    return 'lessons/' + lid + '.html';
+    return 'lessons/' + lid;
   }
   function getBookOrder(mapData, catalogue) {
     catalogue = catalogue || {};

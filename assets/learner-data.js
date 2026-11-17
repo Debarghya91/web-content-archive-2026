@@ -278,7 +278,7 @@
         if (p < 80) {
           var area = areaById[areaId] || {};
           weakest.push({ label: area.name || areaId, percent: p, kind: "area",
-            link: "courses.html#" + (area.bundle_id || "full"),
+            link: "courses#" + (area.bundle_id || "full"),
             detail: (s.correct || 0) + " of " + (s.total || 0) + " correct" });
         }
       });
@@ -300,7 +300,7 @@
     var recommended = null;
     if (diagnostic && diagnostic.recommendation) {
       recommended = { text: "Start " + diagnostic.recommendation.bundle_name,
-        link: "courses.html#" + (diagnostic.recommendation.bundle_id || "full"),
+        link: "courses#" + (diagnostic.recommendation.bundle_id || "full"),
         detail: diagnostic.recommendation.reason || "" };
     } else if (weakest.length) {
       recommended = { text: "Work on your weakest area: " + weakest[0].label,
@@ -476,11 +476,11 @@
     if (!summary.hasAnything) {
       h += '<div class="pf-empty"><p>You have not started yet, and that is fine. Three steps get you going, and each one takes only a few minutes.</p>' +
         '<ol class="pa-onboard">' +
-        '<li><b>Step 1: find your level.</b> <a href="diagnostic.html">Take the placement test</a> (15 minutes). It tells you exactly which course to start with.</li>' +
-        '<li><b>Step 2: start Session 1.</b> <a href="courses.html#guided-path">Open the 8-session guided path</a> and work through Session 1, payment fundamentals. Each session maps to the chapters below it.</li>' +
+        '<li><b>Step 1: find your level.</b> <a href="diagnostic">Take the placement test</a> (15 minutes). It tells you exactly which course to start with.</li>' +
+        '<li><b>Step 2: start Session 1.</b> <a href="courses#guided-path">Open the 8-session guided path</a> and work through Session 1, payment fundamentals. Each session maps to the chapters below it.</li>' +
         '<li><b>Step 3: set a weekly goal.</b> Pick a number of lessons per week below. Your dashboard tracks it, and your streak counts the days you learn.</li>' +
         '</ol>' +
-        '<p>Or skip the plan and start reading: <a href="lessons/ch1s1.html">Lesson 1: What is a Payment</a>. Your progress appears here as you learn, in this browser only.</p></div>';
+        '<p>Or skip the plan and start reading: <a href="lessons/ch1s1">Lesson 1: What is a Payment</a>. Your progress appears here as you learn, in this browser only.</p></div>';
     } else {
       // Backup reminder (10 Nov 2026, ChatGPT review 4 priority 8):
       // a learner with progress but no backup yet gets one nudge at the
@@ -501,7 +501,7 @@
       } else if (summary.allLessonsDone) {
         h += '<div class="pf-card hp-dash-card"><b>All ' + summary.lessonsTotal + ' lessons complete</b><span>You finished the whole curriculum. ' +
           'Retake a test or work a capstone to keep it sharp.</span>' +
-          '<p><a href="tests.html">Retake a test</a></p></div>';
+          '<p><a href="tests">Retake a test</a></p></div>';
       }
       if (summary.latestAttempt) {
         var la = summary.latestAttempt;
@@ -510,8 +510,8 @@
         h += '<div class="pf-card hp-dash-card"><b>' + esc(la.title || la.test_id) + ': ' + (la.percent || 0) + '%</b>' +
           '<span>Last test, ' + esc(fmtDate(la.completed_at)) + ' ' +
           (la.passed ? '(passed)' : '(not yet a pass)') + '</span>' +
-          '<p><a href="' + esc(test ? test.url : "tests.html") + '">Retake this test</a> ' +
-          '<a href="tests.html">All tests</a></p></div>';
+          '<p><a href="' + esc(test ? test.url : "tests") + '">Retake this test</a> ' +
+          '<a href="tests">All tests</a></p></div>';
       }
       if (summary.recommended) {
         h += '<div class="pf-card hp-dash-card"><b>' + esc(summary.recommended.text) + '</b>' +
@@ -578,7 +578,7 @@
           'playing, or when you tap Mark complete under a lesson.</p>') +
       '<p>Test series: ' + summary.testAttempts + ' attempt' + (summary.testAttempts === 1 ? '' : 's') +
       ' (' + summary.testPassedCount + ' passed), pass mark 80%. ' +
-      '<a href="tests.html">Open the test series</a></p></section>';
+      '<a href="tests">Open the test series</a></p></section>';
 
     h += '<section class="section"><h2 class="pf-section-header">Your progress</h2>';
     h += '<h3>Progress by domain</h3><table class="pa-table"><tr><th>Domain</th><th>Lessons done</th><th></th></tr>';
@@ -594,7 +594,7 @@
       h += '<p><strong>Placement test:</strong> ' + (dg.percent || 0) + '% on ' +
         esc(fmtDate(dg.completed_at)) + '. ';
       if (dg.recommendation) {
-        h += 'Recommended starting course: <a href="courses.html#' +
+        h += 'Recommended starting course: <a href="courses#' +
           esc(dg.recommendation.bundle_id || "full") + '">' +
           esc(dg.recommendation.bundle_name) + '</a>.</p>';
       } else { h += '</p>'; }
@@ -610,9 +610,9 @@
         });
         h += '</table>';
       }
-      h += '<p><a href="diagnostic.html">Retake the placement test</a></p>';
+      h += '<p><a href="diagnostic">Retake the placement test</a></p>';
     } else {
-      h += '<p>Placement test: not taken yet. <a href="diagnostic.html">Take the 10-minute placement test</a> ' +
+      h += '<p>Placement test: not taken yet. <a href="diagnostic">Take the 10-minute placement test</a> ' +
         'and we will tell you exactly which course to start with.</p>';
     }
     h += '<h3>Test series: best score per test</h3><table class="pa-table">' +
@@ -667,10 +667,10 @@
     });
     h += '</table>';
     h += (summary.isoDone > 0
-      ? '<p>ISO 20022 lab: ' + summary.isoDone + ' of ' + summary.isoTotal + ' exercises marked done. <a href="iso-lab.html">Open the ISO lab</a></p>'
-      : '<p>ISO 20022 lab: no exercises marked done yet. <a href="iso-lab.html">Open the ISO lab</a></p>') +
+      ? '<p>ISO 20022 lab: ' + summary.isoDone + ' of ' + summary.isoTotal + ' exercises marked done. <a href="iso-lab">Open the ISO lab</a></p>'
+      : '<p>ISO 20022 lab: no exercises marked done yet. <a href="iso-lab">Open the ISO lab</a></p>') +
       '<p class="pa-note">Lab deliverables, the work products each lab asks for, are listed on ' +
-      'your <a href="portfolio.html">portfolio page</a>, with a downloadable record per lab.</p></section>';
+      'your <a href="portfolio">portfolio page</a>, with a downloadable record per lab.</p></section>';
 
     h += '<section class="section"><h2 class="pf-section-header">Capstone projects</h2><div class="hp-grid">';
     summary.capstoneRows.forEach(function (p) {
@@ -712,7 +712,7 @@
     h += '<p class="pa-note">' + (hasAccess ?
       'You have access to Payment Situations in this browser.' :
       'Payment Situations is a paid product. The counts above cover the free samples you have worked through.') +
-      ' <a href="situations.html">Open Payment Situations</a></p></section>';
+      ' <a href="situations">Open Payment Situations</a></p></section>';
 
     var simsVisited = (summary.simRows || []).filter(function (s) { return s.when; });
     h += '<section class="section"><h2 class="pf-section-header">Simulators</h2>' +
@@ -886,7 +886,7 @@
       '<button type="button" class="studio-btn" onclick="PALearner.downloadPortfolio()">Download portfolio (JSON)</button></p>' +
       '<p class="pa-note">The printed report is this page. The JSON file is a machine-readable copy of ' +
       'the same summary. To move all your progress to another browser, use ' +
-      '<a href="dashboard.html#backup">Backup and restore on your dashboard</a>.</p></section>';
+      '<a href="dashboard#backup">Backup and restore on your dashboard</a>.</p></section>';
     return h;
   }
 
@@ -1074,7 +1074,7 @@
     if (!session) {
       h += '<p><b>Guest</b></p>' +
         '<p>You are learning as a guest. Your progress stays on this browser.</p>' +
-        '<p><a class="pf-btn-primary studio-btn primary" href="signin.html">Sign in</a></p>' +
+        '<p><a class="pf-btn-primary studio-btn primary" href="signin">Sign in</a></p>' +
         '<p>Signing in syncs your progress across devices and keeps it safe if you change phones.</p>';
     } else {
       h += '<p><span class="pf-icon-tile" aria-hidden="true">' + esc(profileInitials(name, email)) + '</span> ' +
@@ -1129,7 +1129,7 @@
       '<span id="pa-profile-saved" class="pa-note" role="status"></span></p>';
     if (session) {
       h += '<p><button type="button" class="pf-btn-secondary studio-btn" onclick="paAuthSignOut()">Sign out</button></p>' +
-        '<p><a class="pa-delete-link" href="delete-account.html">Delete account</a></p>';
+        '<p><a class="pa-delete-link" href="delete-account">Delete account</a></p>';
     }
     h += '</div></section>';
     return h;

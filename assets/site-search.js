@@ -132,7 +132,7 @@
     if(words.length === 0){ hide(); return; }
     var top = scan(words, MAX_RESULTS).top;
     if(!top.length){
-      box.innerHTML = '<p class="pf-search-none">No results for &quot;' + esc(q) + '&quot;. Try fewer words, or browse the <a href="' + prefix + 'courses.html">Courses</a> page.</p>';
+      box.innerHTML = '<p class="pf-search-none">No results for &quot;' + esc(q) + '&quot;. Try fewer words, or browse the <a href="' + prefix + 'courses">Courses</a> page.</p>';
       box.hidden = false;
       return;
     }

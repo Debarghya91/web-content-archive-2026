@@ -78,7 +78,7 @@ function paSitCaseItem(){
   return PA_CASE_ITEMS[PA_CASE_INDEX];
 }
 function paSitCaseUrl(id){
-  return 'situation.html?id=' + encodeURIComponent(id);
+  return 'situation?id=' + encodeURIComponent(id);
 }
 function paSitRelated(item){
   var rel = [];
@@ -245,7 +245,7 @@ function paSitRenderCase(){
   }
   var item = paSitCaseItem();
   if(!item){
-    box.innerHTML = '<p class="sit-note">No situation with code ' + escHtml(PA_CASE_MISSING || PA_CASE_ID) + ' was found. <a href="situations.html">Back to the situations list</a>.</p>';
+    box.innerHTML = '<p class="sit-note">No situation with code ' + escHtml(PA_CASE_MISSING || PA_CASE_ID) + ' was found. <a href="situations">Back to the situations list</a>.</p>';
     paSitRenderRelated(null);
     paSitRenderNote(null);
     paSitRenderMastery(null);
@@ -337,7 +337,7 @@ document.addEventListener('DOMContentLoaded', function(){
   try { id = new URLSearchParams(window.location.search).get('id') || ''; } catch(e){ id = ''; }
   PA_CASE_ID = (id || '').trim();
   if(!PA_CASE_ID){
-    box.innerHTML = '<p class="sit-note">No situation was selected. <a href="situations.html">Back to the situations list</a>.</p>';
+    box.innerHTML = '<p class="sit-note">No situation was selected. <a href="situations">Back to the situations list</a>.</p>';
     var prev = document.getElementById('sit-prev');
     var next = document.getElementById('sit-next');
     if(prev) prev.disabled = true;

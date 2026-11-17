@@ -86,101 +86,101 @@
      sources, so a stale entry fails the build check instead of
      reaching a learner. No em dashes are used in any string here. */
   var CHAPTER_INFO = {
-  "ch1": { t: "What is a Payment", s: "ch1-what-is-a-payment.html", n: 7, l: "A payment, in plain words" },
-  "ch2": { t: "Payment Instruments and Types", s: "ch2-payment-instruments-and-types.html", n: 7, l: "Credit transfers, the default business payment" },
-  "ch3": { t: "The Payment Ecosystem", s: "ch3-the-payment-ecosystem.html", n: 8, l: "Debtor and creditor, the two ends of every payment" },
-  "ch4": { t: "Payment Lifecycle End to End", s: "ch4-payment-lifecycle-end-to-end.html", n: 9, l: "Initiation, where every payment begins" },
-  "ch5": { t: "SWIFT MT Messages", s: "ch5-swift-mt-messages.html", n: 13, l: "What SWIFT MT is, and why it lasted so long" },
-  "ch6": { t: "ISO 20022 Fundamentals", s: "ch6-iso-20022-fundamentals.html", n: 10, l: "What ISO 20022 is" },
-  "ch7": { t: "pacs.008 Deep Dive", s: "ch7-pacs-008-deep-dive.html", n: 8, l: "What pacs.008 is, and when it is used" },
-  "ch8": { t: "MT to MX Migration and CBPR+", s: "ch8-mt-to-mx-migration-and-cbpr.html", n: 10, l: "Why migration was needed, and how coexistence ended" },
-  "ch9": { t: "India: UPI, IMPS, NEFT, RTGS", s: "ch9-india-upi-imps-neft-rtgs.html", n: 9, l: "The Indian payments landscape at a glance" },
-  "ch10": { t: "US: Fedwire, FedNow, ACH, CHIPS", s: "ch10-us-fedwire-fednow-ach-chips.html", n: 11, l: "The US payments landscape at a glance" },
-  "ch11": { t: "Europe: SEPA and T2", s: "ch11-europe-sepa-and-t2.html", n: 11, l: "What SEPA is and why it was created" },
-  "ch12": { t: "UK: Faster Payments, CHAPS, BACS", s: "ch12-uk-faster-payments-chaps-bacs.html", n: 7, l: "The UK payments landscape at a glance" },
-  "ch13": { t: "Correspondent Banking and Nostro Vostro", s: "ch13-correspondent-banking-and-nostro-vostro.html", n: 11, l: "What correspondent banking is" },
-  "ch14": { t: "Serial vs Cover Payments", s: "ch14-serial-vs-cover-payments.html", n: 7, l: "Why there are two methods" },
-  "ch15": { t: "Charges, FX and gpi Tracking", s: "ch15-charges-fx-and-gpi-tracking.html", n: 8, l: "OUR, SHA and BEN: who pays the charges" },
-  "ch16": { t: "Cross-Border Exceptions", s: "ch16-cross-border-exceptions.html", n: 7, l: "Why cross border payments fail" },
-  "ch17": { t: "Clearing Concepts and Netting", s: "ch17-clearing-concepts-and-netting.html", n: 10, l: "What Clearing Really Means" },
-  "ch18": { t: "Settlement Models", s: "ch18-settlement-models.html", n: 7, l: "What Settlement Means After Clearing" },
-  "ch19": { t: "Liquidity Management", s: "ch19-liquidity-management.html", n: 7, l: "Why Liquidity Is the Lifeblood of Settlement" },
-  "ch20": { t: "Settlement Risk", s: "ch20-settlement-risk.html", n: 8, l: "What Settlement Risk Really Is" },
-  "ch21": { t: "Card Authorization, Clearing and Settlement", s: "ch21-card-authorization-clearing-and-settlement.html", n: 8, l: "The Four Parties and the Card Transaction" },
-  "ch22": { t: "3D Secure, Tokenization and Chargebacks", s: "ch22-3d-secure-tokenization-and-chargebacks.html", n: 7, l: "Why Card Payments Need Extra Protection" },
-  "ch23": { t: "Sanctions Screening", s: "ch23-sanctions-screening.html", n: 7, l: "Why Sanctions Exist" },
-  "ch24": { t: "AML, KYC and Fraud Prevention", s: "ch24-aml-kyc-and-fraud-prevention.html", n: 8, l: "What Money Laundering Really Looks Like" },
-  "ch25": { t: "Payment Hub Architecture", s: "ch25-payment-hub-architecture.html", n: 8, l: "What a Payment Hub Is and Why Banks Build One" },
-  "ch26": { t: "API Banking and Open Banking", s: "ch26-api-banking-and-open-banking.html", n: 9, l: "From Files and SWIFT to Real Time APIs" },
-  "ch27": { t: "CBDCs, Stablecoins and AI in Payments", s: "ch27-cbdcs-stablecoins-and-ai-in-payments.html", n: 9, l: "Central Bank Digital Currencies" },
-  "ch28": { t: "BA Practical Workshop", s: "ch28-ba-practical-workshop.html", n: 7, l: "Requirements Gathering for Payments Projects" },
-  "ch29": { t: "Capstone Project", s: "ch29-capstone-project.html", n: 9, l: "Capstone Brief: BA on a SWIFT MT to ISO 20022 Migration" },
-  "ch30": { t: "Payment Gateway Architecture", s: "ch30-payment-gateway-architecture.html", n: 7, l: "What a Payment Gateway Does" },
-  "ch31": { t: "Card Networks: Visa and Mastercard", s: "ch31-card-networks-visa-and-mastercard.html", n: 8, l: "Card Network Roles" },
-  "ch32": { t: "Digital Wallets and POS Systems", s: "ch32-digital-wallets-and-pos-systems.html", n: 7, l: "Digital Wallet Architecture: Where the Money Actually Sits" },
-  "ch33": { t: "Indian Payments Deep Dive: NACH, BBPS, FEMA", s: "ch33-indian-payments-deep-dive-nach-bbps-fema.html", n: 9, l: "NACH Mandate Processing in Depth: From Creation to Activation" },
-  "ch34": { t: "Recurring Payments and 3RI", s: "ch34-recurring-payments-and-3ri.html", n: 7, l: "Recurring Payments Explained" },
-  "ch35": { t: "Payment Platform Architecture and Your Career", s: "ch35-payment-platform-architecture-and-your-career.html", n: 7, l: "End-to-End Payment Platform Design" },
-  "ch36": { t: "System Design Deep Dive", s: "ch36-system-design-deep-dive.html", n: 7, l: "Payment Hub Architecture Inside a Bank" },
-  "ch37": { t: "How 10 Large Banks Do Payments", s: "ch37-how-10-large-banks-do-payments.html", n: 7, l: "JPMorgan Chase and Citibank" },
-  "ch38": { t: "Payment Data Model and Mapping", s: "ch38-payment-data-model-and-mapping.html", n: 7, l: "Why Banks Need a Canonical Payment Model" },
-  "ch39": { t: "Complete ISO 20022 Catalogue", s: "ch39-complete-iso-20022-catalogue.html", n: 8, l: "The Catalogue at a Glance: pain, pacs, camt, admi and head" },
-  "ch40": { t: "Payment Reconciliation", s: "ch40-payment-reconciliation.html", n: 7, l: "Why Reconciliation Is the Last Line of Defence" },
-  "ch41": { t: "Payment Exceptions and Investigations", s: "ch41-payment-exceptions-and-investigations.html", n: 7, l: "The Exception Landscape: What Can Go Wrong" },
-  "ch42": { t: "Payment Testing and Certification", s: "ch42-payment-testing-and-certification.html", n: 7, l: "Why Payment Testing Is Different" },
-  "ch43": { t: "Payment Security", s: "ch43-payment-security.html", n: 8, l: "The Threat Model for Payment Systems" },
-  "ch44": { t: "Payment Operations", s: "ch44-payment-operations.html", n: 7, l: "A Day in Payment Operations" },
-  "ch45": { t: "Payment Product Management", s: "ch45-payment-product-management.html", n: 7, l: "What a Payment Product Manager Actually Does" },
-  "ch46": { t: "Real-Time Payments Architecture", s: "ch46-real-time-payments-architecture.html", n: 8, l: "What Real-Time Really Means" },
-  "ch47": { t: "Banking Integration Patterns", s: "ch47-banking-integration-patterns.html", n: 10, l: "The Integration Landscape Inside a Bank" },
-  "ch48": { t: "Payment Hub: Enterprise Architecture", s: "ch48-payment-hub-enterprise-architecture.html", n: 10, l: "Hub components: what a hub is and what it contains" },
-  "ch49": { t: "Standby Letter of Credit", s: "ch49-standby-letter-of-credit.html", n: 7, l: "What a Standby Letter of Credit Is" },
-  "ch50": { t: "MT101 in Depth", s: "ch50-mt101-in-depth.html", n: 7, l: "What MT101 Is and When Corporations Use It" },
-  "ch51": { t: "Documentary Collections and SWIFT Category 4", s: "ch51-documentary-collections-and-swift-category-4.html", n: 7, l: "What a Documentary Collection Is" },
-  "ch52": { t: "SWIFT Reporting Messages Deep Dive", s: "ch52-swift-reporting-messages-deep-dive.html", n: 8, l: "Why Reporting Messages Matter" },
-  "ch53": { t: "MT103 Optional Fields Deep Dive", s: "ch53-mt103-optional-fields-deep-dive.html", n: 7, l: "A Basic MT103 Decrypted: Mandatory Fields Only" },
-  "ch54": { t: "SWIFT Fundamentals", s: "ch54-swift-fundamentals.html", n: 10, l: "What SWIFT Is and What It Is Not" },
-  "ch55": { t: "Payments in 2025 and Beyond", s: "ch55-payments-in-2025-and-beyond.html", n: 7, l: "ISO 20022 and One Leg Out: What Changes Next" },
-  "ch56": { t: "TARGET Services: T2, T2S and TIPS", s: "ch56-target-services-t2-t2s-and-tips.html", n: 7, l: "TARGET2 Does Not Exist Anymore: What Went Live on 20 March 2023" },
-  "ch57": { t: "Addressing Payments in T2", s: "ch57-addressing-payments-in-t2.html", n: 7, l: "How Addressing Works in the RTGS Component of T2" },
-  "ch58": { t: "Reject and Return in CBPR+", s: "ch58-reject-and-return-in-cbpr.html", n: 7, l: "Reject vs Return: The One Rule That Decides" },
-  "ch59": { t: "TIPS in Depth: Instant Payments and Liquidity Transfers", s: "ch59-tips-in-depth-instant-payments-and-liquidity-transfers.html", n: 8, l: "What TIPS Is and How It Fits TARGET Services" },
-  "ch60": { t: "pain.001 and pain.002 in Depth", s: "ch60-pain-001-and-pain-002-in-depth.html", n: 9, l: "pain.001.001.09 Customer Credit Transfer Initiation: What It Is and What It Carries" },
-  "ch61": { t: "SEPA Credit Transfer Deep Dive", s: "ch61-sepa-credit-transfer-deep-dive.html", n: 7, l: "The Four-Corner SCT Model and the EUR 48,250 Worked Example" },
-  "ch62": { t: "SEPA Direct Debit Deep Dive", s: "ch62-sepa-direct-debit-deep-dive.html", n: 7, l: "SDD Core and B2B: Two Schemes, Two Risk Profiles" },
-  "ch63": { t: "Card Payments Deep Dive", s: "ch63-card-payments-deep-dive.html", n: 7, l: "Types of Payment Cards and Their Services" },
-  "ch64": { t: "Cheques and Paper Instruments", s: "ch64-cheques-and-paper-instruments.html", n: 7, l: "What a Cheque Is and Why Cheques Still Exist" },
-  "ch65": { t: "Open Banking, PSD2 and PSD3", s: "ch65-open-banking-psd2-and-psd3.html", n: 7, l: "What Open Banking Is and Why Regulators Forced It" },
-  "ch66": { t: "Trade Finance Deep Dive", s: "ch66-trade-finance-deep-dive.html", n: 7, l: "Trade Finance Basics: Why Exporters and Importers Need Banks" },
-  "ch67": { t: "ISO 20022 Technical Implementation", s: "ch67-iso-20022-technical-implementation.html", n: 8, l: "Reading an ISO 20022 Schema: XSD Patterns" },
-  "ch68": { t: "Payment Operations Architecture: State, Resilience and Control", s: "ch68-payment-operations-architecture-state-resilience-and-control.html", n: 8, l: "Payment State Machines and Correlation" },
-  "ch69": { t: "What money is", s: "ch69-what-money-is.html", n: 6, l: "Functions of money" },
-  "ch70": { t: "Accounts and balances", s: "ch70-accounts-and-balances.html", n: 4, l: "Account taxonomy: current, savings, nostro, vostro, suspense, settlement, clearing, transit and wash" },
-  "ch71": { t: "Ledger, posting and reconciliation", s: "ch71-ledger-posting-and-reconciliation.html", n: 7, l: "Double-entry bookkeeping" },
-  "ch72": { t: "Lifecycle timelines and failure modes", s: "ch72-lifecycle-timelines-and-failure-modes.html", n: 5, l: "Minute-by-minute timeline for one instant payment" },
-  "ch73": { t: "Claims, enquiries and case management", s: "ch73-claims-enquiries-and-case-management.html", n: 11, l: "admi messages: the administration layer of ISO 20022" },
-  "ch74": { t: "Global instant systems", s: "ch74-global-instant-systems.html", n: 13, l: "NPP: Australia instant payments and PayID" },
-  "ch75": { t: "Cross-border investigations", s: "ch75-cross-border-investigations.html", n: 10, l: "Investigation: the missing MT103" },
-  "ch76": { t: "Cash management", s: "ch76-cash-management.html", n: 7, l: "Cash management services: what a bank offers a corporate treasurer" },
-  "ch77": { t: "Settlement design and failure", s: "ch77-settlement-design-and-failure.html", n: 8, l: "Settlement cycle design: choosing when and how often to settle" },
-  "ch78": { t: "Cards compliance and acquiring", s: "ch78-cards-compliance-and-acquiring.html", n: 8, l: "EMV chip and ARQC: how a chip card proves it is genuine" },
-  "ch79": { t: "Payment engine internals and observability", s: "ch79-payment-engine-internals-and-observability.html", n: 7, l: "Payment engine modules: the anatomy of an engine" },
-  "ch80": { t: "API design standards and integration patterns", s: "ch80-api-design-standards-and-integration-patterns.html", n: 7, l: "API versioning and lifecycle: how to change an API without breaking clients" },
-  "ch81": { t: "GDPR, BSA/AML and operational resilience", s: "ch81-gdpr-bsa-aml-and-operational-resilience.html", n: 7, l: "GDPR and payment data: what counts as personal data in a payment" },
-  "ch82": { t: "Product strategy and business models", s: "ch82-product-strategy-and-business-models.html", n: 7, l: "Payment product strategy: choosing who you serve and how you win" },
-  "ch83": { t: "Scheme onboarding, market expansion, build versus buy", s: "ch83-scheme-onboarding-market-expansion-build-versus-buy.html", n: 7, l: "Joining a payment scheme: membership, adherence and the application" },
-  "ch84": { t: "BA practice depth", s: "ch84-ba-practice-depth.html", n: 8, l: "Requirements gathering for payments: workshops, elicitation and the domain language" },
-  "ch85": { t: "Embedded finance and ISO 20022 data analytics", s: "ch85-embedded-finance-and-iso-20022-data-analytics.html", n: 7, l: "Embedded finance: payments inside another company's product" },
-  "ch86": { t: "Regulatory compliance in payments", s: "ch86-regulatory-compliance-in-payments.html", n: 7, l: "PSD2 vs PSD3 vs the Payment Services Regulation: what changes and when" },
-  "ch87": { t: "Controls that keep payments safe", s: "ch87-controls-that-keep-payments-safe.html", n: 7, l: "Fraud typologies in payments: APP scams, mule accounts and business email compromise" },
-  "ch88": { t: "Clearing and settlement mechanisms", s: "ch88-clearing-and-settlement-mechanisms.html", n: 6, l: "What a clearing and settlement mechanism is, and where it sits between banks and schemes" },
-  "ch89": { t: "How clearing systems work", s: "ch89-how-clearing-systems-work.html", n: 6, l: "Netting versus gross settlement: bilateral and multilateral netting with worked numbers" },
-  "ch90": { t: "Ledger systems inside banks", s: "ch90-ledger-systems-inside-banks.html", n: 8, l: "The core banking ledger, the chart of accounts and double entry" },
-  "ch91": { t: "UK payment systems in depth", s: "ch91-uk-payment-systems-in-depth.html", n: 7, l: "BACS in depth: Direct Debit, Direct Credit and the three-day cycle" },
-  "ch92": { t: "US payment systems in depth", s: "ch92-us-payment-systems-in-depth.html", n: 7, l: "Fedwire in depth: real-time gross settlement, the Federal Reserve and daylight overdraft" },
-  "ch93": { t: "SEPA in depth", s: "ch93-sepa-in-depth.html", n: 7, l: "SCT in depth: the credit transfer scheme, timelines, execution and the rulebook" },
-  "ch94": { t: "Cross-border payments in depth", s: "ch94-cross-border-payments-in-depth.html", n: 8, l: "Correspondent banking in depth: how the network really works" },
-  "ch95": { t: "Screening, fraud and sanctions operations in detail", s: "ch95-screening-fraud-and-sanctions-operations-in-detail.html", n: 9, l: "AML screening in detail: name screening, transaction screening and false positives" },
+  "ch1": { t: "What is a Payment", s: "ch1-what-is-a-payment", n: 7, l: "A payment, in plain words" },
+  "ch2": { t: "Payment Instruments and Types", s: "ch2-payment-instruments-and-types", n: 7, l: "Credit transfers, the default business payment" },
+  "ch3": { t: "The Payment Ecosystem", s: "ch3-the-payment-ecosystem", n: 8, l: "Debtor and creditor, the two ends of every payment" },
+  "ch4": { t: "Payment Lifecycle End to End", s: "ch4-payment-lifecycle-end-to-end", n: 9, l: "Initiation, where every payment begins" },
+  "ch5": { t: "SWIFT MT Messages", s: "ch5-swift-mt-messages", n: 13, l: "What SWIFT MT is, and why it lasted so long" },
+  "ch6": { t: "ISO 20022 Fundamentals", s: "ch6-iso-20022-fundamentals", n: 10, l: "What ISO 20022 is" },
+  "ch7": { t: "pacs.008 Deep Dive", s: "ch7-pacs-008-deep-dive", n: 8, l: "What pacs.008 is, and when it is used" },
+  "ch8": { t: "MT to MX Migration and CBPR+", s: "ch8-mt-to-mx-migration-and-cbpr", n: 10, l: "Why migration was needed, and how coexistence ended" },
+  "ch9": { t: "India: UPI, IMPS, NEFT, RTGS", s: "ch9-india-upi-imps-neft-rtgs", n: 9, l: "The Indian payments landscape at a glance" },
+  "ch10": { t: "US: Fedwire, FedNow, ACH, CHIPS", s: "ch10-us-fedwire-fednow-ach-chips", n: 11, l: "The US payments landscape at a glance" },
+  "ch11": { t: "Europe: SEPA and T2", s: "ch11-europe-sepa-and-t2", n: 11, l: "What SEPA is and why it was created" },
+  "ch12": { t: "UK: Faster Payments, CHAPS, BACS", s: "ch12-uk-faster-payments-chaps-bacs", n: 7, l: "The UK payments landscape at a glance" },
+  "ch13": { t: "Correspondent Banking and Nostro Vostro", s: "ch13-correspondent-banking-and-nostro-vostro", n: 11, l: "What correspondent banking is" },
+  "ch14": { t: "Serial vs Cover Payments", s: "ch14-serial-vs-cover-payments", n: 7, l: "Why there are two methods" },
+  "ch15": { t: "Charges, FX and gpi Tracking", s: "ch15-charges-fx-and-gpi-tracking", n: 8, l: "OUR, SHA and BEN: who pays the charges" },
+  "ch16": { t: "Cross-Border Exceptions", s: "ch16-cross-border-exceptions", n: 7, l: "Why cross border payments fail" },
+  "ch17": { t: "Clearing Concepts and Netting", s: "ch17-clearing-concepts-and-netting", n: 10, l: "What Clearing Really Means" },
+  "ch18": { t: "Settlement Models", s: "ch18-settlement-models", n: 7, l: "What Settlement Means After Clearing" },
+  "ch19": { t: "Liquidity Management", s: "ch19-liquidity-management", n: 7, l: "Why Liquidity Is the Lifeblood of Settlement" },
+  "ch20": { t: "Settlement Risk", s: "ch20-settlement-risk", n: 8, l: "What Settlement Risk Really Is" },
+  "ch21": { t: "Card Authorization, Clearing and Settlement", s: "ch21-card-authorization-clearing-and-settlement", n: 8, l: "The Four Parties and the Card Transaction" },
+  "ch22": { t: "3D Secure, Tokenization and Chargebacks", s: "ch22-3d-secure-tokenization-and-chargebacks", n: 7, l: "Why Card Payments Need Extra Protection" },
+  "ch23": { t: "Sanctions Screening", s: "ch23-sanctions-screening", n: 7, l: "Why Sanctions Exist" },
+  "ch24": { t: "AML, KYC and Fraud Prevention", s: "ch24-aml-kyc-and-fraud-prevention", n: 8, l: "What Money Laundering Really Looks Like" },
+  "ch25": { t: "Payment Hub Architecture", s: "ch25-payment-hub-architecture", n: 8, l: "What a Payment Hub Is and Why Banks Build One" },
+  "ch26": { t: "API Banking and Open Banking", s: "ch26-api-banking-and-open-banking", n: 9, l: "From Files and SWIFT to Real Time APIs" },
+  "ch27": { t: "CBDCs, Stablecoins and AI in Payments", s: "ch27-cbdcs-stablecoins-and-ai-in-payments", n: 9, l: "Central Bank Digital Currencies" },
+  "ch28": { t: "BA Practical Workshop", s: "ch28-ba-practical-workshop", n: 7, l: "Requirements Gathering for Payments Projects" },
+  "ch29": { t: "Capstone Project", s: "ch29-capstone-project", n: 9, l: "Capstone Brief: BA on a SWIFT MT to ISO 20022 Migration" },
+  "ch30": { t: "Payment Gateway Architecture", s: "ch30-payment-gateway-architecture", n: 7, l: "What a Payment Gateway Does" },
+  "ch31": { t: "Card Networks: Visa and Mastercard", s: "ch31-card-networks-visa-and-mastercard", n: 8, l: "Card Network Roles" },
+  "ch32": { t: "Digital Wallets and POS Systems", s: "ch32-digital-wallets-and-pos-systems", n: 7, l: "Digital Wallet Architecture: Where the Money Actually Sits" },
+  "ch33": { t: "Indian Payments Deep Dive: NACH, BBPS, FEMA", s: "ch33-indian-payments-deep-dive-nach-bbps-fema", n: 9, l: "NACH Mandate Processing in Depth: From Creation to Activation" },
+  "ch34": { t: "Recurring Payments and 3RI", s: "ch34-recurring-payments-and-3ri", n: 7, l: "Recurring Payments Explained" },
+  "ch35": { t: "Payment Platform Architecture and Your Career", s: "ch35-payment-platform-architecture-and-your-career", n: 7, l: "End-to-End Payment Platform Design" },
+  "ch36": { t: "System Design Deep Dive", s: "ch36-system-design-deep-dive", n: 7, l: "Payment Hub Architecture Inside a Bank" },
+  "ch37": { t: "How 10 Large Banks Do Payments", s: "ch37-how-10-large-banks-do-payments", n: 7, l: "JPMorgan Chase and Citibank" },
+  "ch38": { t: "Payment Data Model and Mapping", s: "ch38-payment-data-model-and-mapping", n: 7, l: "Why Banks Need a Canonical Payment Model" },
+  "ch39": { t: "Complete ISO 20022 Catalogue", s: "ch39-complete-iso-20022-catalogue", n: 8, l: "The Catalogue at a Glance: pain, pacs, camt, admi and head" },
+  "ch40": { t: "Payment Reconciliation", s: "ch40-payment-reconciliation", n: 7, l: "Why Reconciliation Is the Last Line of Defence" },
+  "ch41": { t: "Payment Exceptions and Investigations", s: "ch41-payment-exceptions-and-investigations", n: 7, l: "The Exception Landscape: What Can Go Wrong" },
+  "ch42": { t: "Payment Testing and Certification", s: "ch42-payment-testing-and-certification", n: 7, l: "Why Payment Testing Is Different" },
+  "ch43": { t: "Payment Security", s: "ch43-payment-security", n: 8, l: "The Threat Model for Payment Systems" },
+  "ch44": { t: "Payment Operations", s: "ch44-payment-operations", n: 7, l: "A Day in Payment Operations" },
+  "ch45": { t: "Payment Product Management", s: "ch45-payment-product-management", n: 7, l: "What a Payment Product Manager Actually Does" },
+  "ch46": { t: "Real-Time Payments Architecture", s: "ch46-real-time-payments-architecture", n: 8, l: "What Real-Time Really Means" },
+  "ch47": { t: "Banking Integration Patterns", s: "ch47-banking-integration-patterns", n: 10, l: "The Integration Landscape Inside a Bank" },
+  "ch48": { t: "Payment Hub: Enterprise Architecture", s: "ch48-payment-hub-enterprise-architecture", n: 10, l: "Hub components: what a hub is and what it contains" },
+  "ch49": { t: "Standby Letter of Credit", s: "ch49-standby-letter-of-credit", n: 7, l: "What a Standby Letter of Credit Is" },
+  "ch50": { t: "MT101 in Depth", s: "ch50-mt101-in-depth", n: 7, l: "What MT101 Is and When Corporations Use It" },
+  "ch51": { t: "Documentary Collections and SWIFT Category 4", s: "ch51-documentary-collections-and-swift-category-4", n: 7, l: "What a Documentary Collection Is" },
+  "ch52": { t: "SWIFT Reporting Messages Deep Dive", s: "ch52-swift-reporting-messages-deep-dive", n: 8, l: "Why Reporting Messages Matter" },
+  "ch53": { t: "MT103 Optional Fields Deep Dive", s: "ch53-mt103-optional-fields-deep-dive", n: 7, l: "A Basic MT103 Decrypted: Mandatory Fields Only" },
+  "ch54": { t: "SWIFT Fundamentals", s: "ch54-swift-fundamentals", n: 10, l: "What SWIFT Is and What It Is Not" },
+  "ch55": { t: "Payments in 2025 and Beyond", s: "ch55-payments-in-2025-and-beyond", n: 7, l: "ISO 20022 and One Leg Out: What Changes Next" },
+  "ch56": { t: "TARGET Services: T2, T2S and TIPS", s: "ch56-target-services-t2-t2s-and-tips", n: 7, l: "TARGET2 Does Not Exist Anymore: What Went Live on 20 March 2023" },
+  "ch57": { t: "Addressing Payments in T2", s: "ch57-addressing-payments-in-t2", n: 7, l: "How Addressing Works in the RTGS Component of T2" },
+  "ch58": { t: "Reject and Return in CBPR+", s: "ch58-reject-and-return-in-cbpr", n: 7, l: "Reject vs Return: The One Rule That Decides" },
+  "ch59": { t: "TIPS in Depth: Instant Payments and Liquidity Transfers", s: "ch59-tips-in-depth-instant-payments-and-liquidity-transfers", n: 8, l: "What TIPS Is and How It Fits TARGET Services" },
+  "ch60": { t: "pain.001 and pain.002 in Depth", s: "ch60-pain-001-and-pain-002-in-depth", n: 9, l: "pain.001.001.09 Customer Credit Transfer Initiation: What It Is and What It Carries" },
+  "ch61": { t: "SEPA Credit Transfer Deep Dive", s: "ch61-sepa-credit-transfer-deep-dive", n: 7, l: "The Four-Corner SCT Model and the EUR 48,250 Worked Example" },
+  "ch62": { t: "SEPA Direct Debit Deep Dive", s: "ch62-sepa-direct-debit-deep-dive", n: 7, l: "SDD Core and B2B: Two Schemes, Two Risk Profiles" },
+  "ch63": { t: "Card Payments Deep Dive", s: "ch63-card-payments-deep-dive", n: 7, l: "Types of Payment Cards and Their Services" },
+  "ch64": { t: "Cheques and Paper Instruments", s: "ch64-cheques-and-paper-instruments", n: 7, l: "What a Cheque Is and Why Cheques Still Exist" },
+  "ch65": { t: "Open Banking, PSD2 and PSD3", s: "ch65-open-banking-psd2-and-psd3", n: 7, l: "What Open Banking Is and Why Regulators Forced It" },
+  "ch66": { t: "Trade Finance Deep Dive", s: "ch66-trade-finance-deep-dive", n: 7, l: "Trade Finance Basics: Why Exporters and Importers Need Banks" },
+  "ch67": { t: "ISO 20022 Technical Implementation", s: "ch67-iso-20022-technical-implementation", n: 8, l: "Reading an ISO 20022 Schema: XSD Patterns" },
+  "ch68": { t: "Payment Operations Architecture: State, Resilience and Control", s: "ch68-payment-operations-architecture-state-resilience-and-control", n: 8, l: "Payment State Machines and Correlation" },
+  "ch69": { t: "What money is", s: "ch69-what-money-is", n: 6, l: "Functions of money" },
+  "ch70": { t: "Accounts and balances", s: "ch70-accounts-and-balances", n: 4, l: "Account taxonomy: current, savings, nostro, vostro, suspense, settlement, clearing, transit and wash" },
+  "ch71": { t: "Ledger, posting and reconciliation", s: "ch71-ledger-posting-and-reconciliation", n: 7, l: "Double-entry bookkeeping" },
+  "ch72": { t: "Lifecycle timelines and failure modes", s: "ch72-lifecycle-timelines-and-failure-modes", n: 5, l: "Minute-by-minute timeline for one instant payment" },
+  "ch73": { t: "Claims, enquiries and case management", s: "ch73-claims-enquiries-and-case-management", n: 11, l: "admi messages: the administration layer of ISO 20022" },
+  "ch74": { t: "Global instant systems", s: "ch74-global-instant-systems", n: 13, l: "NPP: Australia instant payments and PayID" },
+  "ch75": { t: "Cross-border investigations", s: "ch75-cross-border-investigations", n: 10, l: "Investigation: the missing MT103" },
+  "ch76": { t: "Cash management", s: "ch76-cash-management", n: 7, l: "Cash management services: what a bank offers a corporate treasurer" },
+  "ch77": { t: "Settlement design and failure", s: "ch77-settlement-design-and-failure", n: 8, l: "Settlement cycle design: choosing when and how often to settle" },
+  "ch78": { t: "Cards compliance and acquiring", s: "ch78-cards-compliance-and-acquiring", n: 8, l: "EMV chip and ARQC: how a chip card proves it is genuine" },
+  "ch79": { t: "Payment engine internals and observability", s: "ch79-payment-engine-internals-and-observability", n: 7, l: "Payment engine modules: the anatomy of an engine" },
+  "ch80": { t: "API design standards and integration patterns", s: "ch80-api-design-standards-and-integration-patterns", n: 7, l: "API versioning and lifecycle: how to change an API without breaking clients" },
+  "ch81": { t: "GDPR, BSA/AML and operational resilience", s: "ch81-gdpr-bsa-aml-and-operational-resilience", n: 7, l: "GDPR and payment data: what counts as personal data in a payment" },
+  "ch82": { t: "Product strategy and business models", s: "ch82-product-strategy-and-business-models", n: 7, l: "Payment product strategy: choosing who you serve and how you win" },
+  "ch83": { t: "Scheme onboarding, market expansion, build versus buy", s: "ch83-scheme-onboarding-market-expansion-build-versus-buy", n: 7, l: "Joining a payment scheme: membership, adherence and the application" },
+  "ch84": { t: "BA practice depth", s: "ch84-ba-practice-depth", n: 8, l: "Requirements gathering for payments: workshops, elicitation and the domain language" },
+  "ch85": { t: "Embedded finance and ISO 20022 data analytics", s: "ch85-embedded-finance-and-iso-20022-data-analytics", n: 7, l: "Embedded finance: payments inside another company's product" },
+  "ch86": { t: "Regulatory compliance in payments", s: "ch86-regulatory-compliance-in-payments", n: 7, l: "PSD2 vs PSD3 vs the Payment Services Regulation: what changes and when" },
+  "ch87": { t: "Controls that keep payments safe", s: "ch87-controls-that-keep-payments-safe", n: 7, l: "Fraud typologies in payments: APP scams, mule accounts and business email compromise" },
+  "ch88": { t: "Clearing and settlement mechanisms", s: "ch88-clearing-and-settlement-mechanisms", n: 6, l: "What a clearing and settlement mechanism is, and where it sits between banks and schemes" },
+  "ch89": { t: "How clearing systems work", s: "ch89-how-clearing-systems-work", n: 6, l: "Netting versus gross settlement: bilateral and multilateral netting with worked numbers" },
+  "ch90": { t: "Ledger systems inside banks", s: "ch90-ledger-systems-inside-banks", n: 8, l: "The core banking ledger, the chart of accounts and double entry" },
+  "ch91": { t: "UK payment systems in depth", s: "ch91-uk-payment-systems-in-depth", n: 7, l: "BACS in depth: Direct Debit, Direct Credit and the three-day cycle" },
+  "ch92": { t: "US payment systems in depth", s: "ch92-us-payment-systems-in-depth", n: 7, l: "Fedwire in depth: real-time gross settlement, the Federal Reserve and daylight overdraft" },
+  "ch93": { t: "SEPA in depth", s: "ch93-sepa-in-depth", n: 7, l: "SCT in depth: the credit transfer scheme, timelines, execution and the rulebook" },
+  "ch94": { t: "Cross-border payments in depth", s: "ch94-cross-border-payments-in-depth", n: 8, l: "Correspondent banking in depth: how the network really works" },
+  "ch95": { t: "Screening, fraud and sanctions operations in detail", s: "ch95-screening-fraud-and-sanctions-operations-in-detail", n: 9, l: "AML screening in detail: name screening, transaction screening and false positives" },
   };
   /* Book numbers (15 Nov 2026, display numbering): sequential
      display numbers from the reading-order map. ch37 has no
@@ -309,58 +309,58 @@
   };
   var DOMAIN_PRACTICE = {
     "foundations": [
-      { label: "Payment Lifecycle Simulator", url: "simulators/lifecycle.html" },
-      { label: "Payment State Machine Simulator", url: "simulators/state-machine.html" },
-      { label: "Scenario Simulator", url: "simulators/scenario.html" }
+      { label: "Payment Lifecycle Simulator", url: "simulators/lifecycle" },
+      { label: "Payment State Machine Simulator", url: "simulators/state-machine" },
+      { label: "Scenario Simulator", url: "simulators/scenario" }
     ],
     "messaging": [
-      { label: "ISO 20022 Message Explorer", url: "simulators/message-explorer.html" },
-      { label: "ISO 20022 Message and Mapping Lab", url: "iso-lab.html" },
-      { label: "LAB-03: Map MT103 to pacs.008 for a Migration", url: "labs/lab-03.html" },
-      { label: "ISO 20022 Mapping Workbench", url: "mapping-workbench.html" }
+      { label: "ISO 20022 Message Explorer", url: "simulators/message-explorer" },
+      { label: "ISO 20022 Message and Mapping Lab", url: "iso-lab" },
+      { label: "LAB-03: Map MT103 to pacs.008 for a Migration", url: "labs/lab-03" },
+      { label: "ISO 20022 Mapping Workbench", url: "mapping-workbench" }
     ],
     "rails": [
-      { label: "T2 and TIPS Simulator", url: "simulators/t2-tips.html" },
-      { label: "Payment Lifecycle Simulator", url: "simulators/lifecycle.html" }
+      { label: "T2 and TIPS Simulator", url: "simulators/t2-tips" },
+      { label: "Payment Lifecycle Simulator", url: "simulators/lifecycle" }
     ],
     "crossborder": [
-      { label: "Cross-Border Payment Configurator", url: "simulators/cross-border.html" },
-      { label: "FLOW-01: Deliver a Cross-Border Correspondent Payment in US Dollars", url: "labs/flow-01.html" },
-      { label: "Payment Failure Investigation Lab", url: "investigation-lab.html" }
+      { label: "Cross-Border Payment Configurator", url: "simulators/cross-border" },
+      { label: "FLOW-01: Deliver a Cross-Border Correspondent Payment in US Dollars", url: "labs/flow-01" },
+      { label: "Payment Failure Investigation Lab", url: "investigation-lab" }
     ],
     "clearing": [
-      { label: "Payment Accounting Simulator", url: "simulators/accounting.html" },
-      { label: "FLOW-04: Reconcile Payments Across Messages, Statements, and Ledger", url: "labs/flow-04.html" }
+      { label: "Payment Accounting Simulator", url: "simulators/accounting" },
+      { label: "FLOW-04: Reconcile Payments Across Messages, Statements, and Ledger", url: "labs/flow-04" }
     ],
     "cards": [
-      { label: "FLOW-03: Deliver a Card Payment from Authorisation to Dispute", url: "labs/flow-03.html" },
-      { label: "Scenario Simulator", url: "simulators/scenario.html" }
+      { label: "FLOW-03: Deliver a Card Payment from Authorisation to Dispute", url: "labs/flow-03" },
+      { label: "Scenario Simulator", url: "simulators/scenario" }
     ],
     "compliance": [
-      { label: "Payment Exception Investigation Simulator", url: "simulators/exception.html" },
-      { label: "Payment Failure Investigation Lab", url: "investigation-lab.html" }
+      { label: "Payment Exception Investigation Simulator", url: "simulators/exception" },
+      { label: "Payment Failure Investigation Lab", url: "investigation-lab" }
     ],
     "architecture": [
-      { label: "Payment Hub Architecture Simulator", url: "simulators/hub.html" },
-      { label: "LAB-06: Write a UAT Plan for a Payment Hub Go-Live", url: "labs/lab-06.html" }
+      { label: "Payment Hub Architecture Simulator", url: "simulators/hub" },
+      { label: "LAB-06: Write a UAT Plan for a Payment Hub Go-Live", url: "labs/lab-06" }
     ],
     "apis": [
-      { label: "API Playground", url: "simulators/api-playground.html" },
-      { label: "LAB-04: Specify a Payment Initiation API for a Corporate Channel", url: "labs/lab-04.html" }
+      { label: "API Playground", url: "simulators/api-playground" },
+      { label: "LAB-04: Specify a Payment Initiation API for a Corporate Channel", url: "labs/lab-04" }
     ],
     "operations": [
-      { label: "Reconciliation War Room", url: "reconciliation-war-room.html" },
-      { label: "Payment Exception Investigation Simulator", url: "simulators/exception.html" },
-      { label: "Mission Control", url: "mission-control.html" }
+      { label: "Reconciliation War Room", url: "reconciliation-war-room" },
+      { label: "Payment Exception Investigation Simulator", url: "simulators/exception" },
+      { label: "Mission Control", url: "mission-control" }
     ],
     "emerging": [
-      { label: "FLOW-02: Deliver an Instant Payment with Timeout and Duplicate Controls", url: "labs/flow-02.html" },
-      { label: "LAB-05: Deliver an Instant Payments Feature in Three Sprints", url: "labs/lab-05.html" }
+      { label: "FLOW-02: Deliver an Instant Payment with Timeout and Duplicate Controls", url: "labs/flow-02" },
+      { label: "LAB-05: Deliver an Instant Payments Feature in Three Sprints", url: "labs/lab-05" }
     ],
     "professional": [
-      { label: "Payments Business Analyst Studio", url: "ba-studio.html" },
-      { label: "LAB-01: Write Requirements for Same-Day Cross-Border Payments for SMEs", url: "labs/lab-01.html" },
-      { label: "LAB-02: Redesign the Payment Exception Repair Process", url: "labs/lab-02.html" }
+      { label: "Payments Business Analyst Studio", url: "ba-studio" },
+      { label: "LAB-01: Write Requirements for Same-Day Cross-Border Payments for SMEs", url: "labs/lab-01" },
+      { label: "LAB-02: Redesign the Payment Exception Repair Process", url: "labs/lab-02" }
     ]
   };
 
@@ -431,7 +431,7 @@
         book_number: (typeof BOOK_NUMBER[ch] === 'number' ? BOOK_NUMBER[ch] : null),
         chapter_title: info.t, chapter_url: base + "chapters/" + info.s,
         lesson_id: lessonId, lesson_title: info.l,
-        lesson_url: base + "lessons/" + lessonId + ".html",
+        lesson_url: base + "lessons/" + lessonId,
         lessons_in_chapter: info.n, wrong: entry.wrong, total: entry.total,
         domain: entry.domain, practice: practice };
     });
@@ -894,19 +894,19 @@
         '<div class="pa-diagnostic-banner" style="border:2px solid #1d4ed8;border-radius:12px;padding:20px;margin:16px 0;background:#eff6ff;">' +
         '<h2 style="margin:0 0 8px;">New here? Take the 10-minute placement test</h2>' +
         '<p style="margin:0 0 12px;">' + esc(decision.message) + ' Free, no account, no payment.</p>' +
-        '<a href="diagnostic.html" class="pa-cta" style="display:inline-block;padding:10px 18px;background:#1d4ed8;color:#fff;border-radius:8px;text-decoration:none;">Take the placement test</a> ' +
-        '<a href="courses.html" style="margin-left:12px;">Browse courses instead</a></div>';
+        '<a href="diagnostic" class="pa-cta" style="display:inline-block;padding:10px 18px;background:#1d4ed8;color:#fff;border-radius:8px;text-decoration:none;">Take the placement test</a> ' +
+        '<a href="courses" style="margin-left:12px;">Browse courses instead</a></div>';
     } else if (decision.hasDiagnostic && decision.recommendation) {
       container.innerHTML =
         '<div class="pa-diagnostic-saved" style="border:1px solid #cbd5e1;border-radius:12px;padding:16px;margin:16px 0;background:#f8fafc;">' +
         '<p style="margin:0 0 6px;"><strong>Your recommended starting course: ' + esc(decision.recommendation.bundle_name) + '</strong></p>' +
         '<p style="margin:0 0 10px;">' + esc(decision.recommendation.reason) + '</p>' +
-        '<a href="courses.html#' + esc(decision.recommendation.bundle_id) + '">View this course</a> ' +
-        '<a href="diagnostic.html" style="margin-left:12px;">Retake the placement test</a></div>';
+        '<a href="courses#' + esc(decision.recommendation.bundle_id) + '">View this course</a> ' +
+        '<a href="diagnostic" style="margin-left:12px;">Retake the placement test</a></div>';
     } else {
       container.innerHTML =
         '<div class="pa-diagnostic-quiet" style="margin:16px 0;">' +
-        '<p style="margin:0;">Not sure where to start? <a href="diagnostic.html">Take the 10-minute placement test</a> and we will tell you exactly which course to start with.</p></div>';
+        '<p style="margin:0;">Not sure where to start? <a href="diagnostic">Take the 10-minute placement test</a> and we will tell you exactly which course to start with.</p></div>';
     }
     return decision;
   }
@@ -963,7 +963,7 @@
       panel.appendChild(price);
       var buy = document.createElement('p');
       var buyLink = document.createElement('a');
-      buyLink.href = '/payment.html?bundle=' + gate;
+      buyLink.href = '/payment?bundle=' + gate;
       buyLink.textContent = 'Buy ' + gm2.name;
       buyLink.setAttribute('style', 'display:inline-block;padding:10px 18px;background:#1d4ed8;color:#fff;border-radius:8px;text-decoration:none');
       buy.appendChild(buyLink);
@@ -971,7 +971,7 @@
     } else {
       var browse = document.createElement('p');
       var browseLink = document.createElement('a');
-      browseLink.href = '/courses.html';
+      browseLink.href = '/courses';
       browseLink.textContent = 'Browse the groups';
       browseLink.setAttribute('style', 'display:inline-block;padding:10px 18px;background:#1d4ed8;color:#fff;border-radius:8px;text-decoration:none');
       browse.appendChild(browseLink);
@@ -980,14 +980,14 @@
     var p2 = document.createElement('p');
     p2.appendChild(document.createTextNode('Want the whole library? The Integrated Course unlocks all 99 chapters and 874 lessons, and every test. '));
     var integLink = document.createElement('a');
-    integLink.href = '/payment.html?bundle=integrated';
+    integLink.href = '/payment?bundle=integrated';
     integLink.textContent = 'See the Integrated Course';
     p2.appendChild(integLink);
     panel.appendChild(p2);
     var p3 = document.createElement('p');
     p3.appendChild(document.createTextNode('Already bought a group? '));
     var signLink = document.createElement('a');
-    signLink.href = '/signin.html';
+    signLink.href = '/signin';
     signLink.textContent = 'Sign in';
     p3.appendChild(signLink);
     p3.appendChild(document.createTextNode(' to unlock your tests.'));
@@ -1066,9 +1066,9 @@
           if (r.recommendation) {
             html += '<h2>Your recommended starting course</h2><p><strong>' + esc(r.recommendation.bundle_name) + '</strong></p>' +
               '<p>' + esc(r.recommendation.reason) + '</p>' +
-              '<p><a href="courses.html#bundle-' + esc(r.recommendation.bundle_id) + '">View this course and payment page</a></p>';
+              '<p><a href="courses#bundle-' + esc(r.recommendation.bundle_id) + '">View this course and payment page</a></p>';
           }
-          html += '<p><a href="tests.html">Take the full test series next</a></p>' +
+          html += '<p><a href="tests">Take the full test series next</a></p>' +
             '<p><button type="button" data-pa="review">Review every question</button> ' +
             '<button type="button" data-pa="retake">Retake the placement test</button></p>';
         } else {

@@ -142,7 +142,7 @@ function repointPurchasesRow(){
   if(parts.length && parts[parts.length - 1].indexOf('.') !== -1) parts.pop();
   var href = '';
   for(var i = 0; i < parts.length; i++) href += '../';
-  href += 'my-purchases.html';
+  href += 'my-purchases';
   try{ row.setAttribute('href', href); }catch(e){ /* ignore */ }
 }
 

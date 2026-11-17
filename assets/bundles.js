@@ -410,7 +410,7 @@ function paRenderCheckoutSummary(){
   }
   var p3 = document.createElement('p');
   var a = document.createElement('a');
-  a.href = 'payment.html';
+  a.href = 'payment';
   a.textContent = 'Choose a different course';
   p3.appendChild(a);
   box.appendChild(p3);
@@ -551,7 +551,7 @@ function paRenderPaypalButtons(bid){
           return;
         }
         var txn = (res.data && (res.data.capture_id || res.data.id)) || data.orderID;
-        window.location.href = 'payment-result.html?status=success&txnid=' + encodeURIComponent(txn);
+        window.location.href = 'payment-result?status=success&txnid=' + encodeURIComponent(txn);
       }).catch(function(){
         paCheckoutFail('The PayPal payment could not be confirmed. Please contact support with the PayPal order id.');
       });
@@ -902,12 +902,12 @@ function paBuyPromptOnKey(ev){
   if(ev && (ev.key === 'Escape' || ev.keyCode === 27)) paBuyPromptHide();
 }
 function paBuyPromptShow(href){
-  var returnPath = paBuyPromptResolve(href) || '/payment.html';
+  var returnPath = paBuyPromptResolve(href) || '/payment';
   try{
     paBuyPromptStyles();
     paBuyPromptHide();
     PA_BUY_PROMPT_LAST_FOCUS = document.activeElement;
-    var signinBase = '/signin.html?next=' + encodeURIComponent(returnPath);
+    var signinBase = '/signin?next=' + encodeURIComponent(returnPath);
     var ov = document.createElement('div');
     ov.id = 'pa-buy-prompt-overlay';
     ov.className = 'pa-buy-prompt-overlay';
@@ -1205,14 +1205,14 @@ function paGateLockPanel(lessonId, chapterId, partId, state, main){
   p2.appendChild(sale2);
   p2.appendChild(document.createTextNode('. '));
   var integLink = document.createElement('a');
-  integLink.href = '/payment.html?bundle=integrated';
+  integLink.href = '/payment?bundle=integrated';
   integLink.textContent = 'See the Integrated Course';
   p2.appendChild(integLink);
   panel.appendChild(p2);
   if(part){
     var buy = document.createElement('a');
     buy.className = 'pa-gate-buy';
-    buy.href = '/payment.html?bundle=' + encodeURIComponent(partId);
+    buy.href = '/payment?bundle=' + encodeURIComponent(partId);
     buy.textContent = 'Buy Course ' + String(partId).replace('part-', '') + ' for Rs. ' + Number(part.sale).toLocaleString('en-IN');
     panel.appendChild(buy);
   }
@@ -1234,12 +1234,12 @@ function paGateLockPanel(lessonId, chapterId, partId, state, main){
   if(!state.signedIn){
     foot.appendChild(document.createTextNode('Already bought this course? '));
     var signin = document.createElement('a');
-    var ret = '/payment.html';
+    var ret = '/payment';
     try {
       if(typeof paBuyPromptResolve === 'function'){ ret = paBuyPromptResolve(window.location.href) || ret; }
       else { ret = window.location.pathname + window.location.search; }
     } catch(e){}
-    signin.href = '/signin.html?next=' + encodeURIComponent(ret);
+    signin.href = '/signin?next=' + encodeURIComponent(ret);
     signin.textContent = 'Sign in to unlock it';
     foot.appendChild(signin);
     foot.appendChild(document.createTextNode('.'));

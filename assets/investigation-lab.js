@@ -478,7 +478,7 @@
       '<p>' + esc(c.symptom) + '</p>' +
       '<p><b>' + esc(c.amount) + '</b></p>' +
       '<p>This investigation case is part of the Investigation Lab: all 7 investigation cases for <s>Rs. 749</s> <b>Rs. 499</b>, with 1 year of access. The Integrated Course includes the Investigation Lab too.</p>' +
-      '<div class="pf-btnrow"><a class="pf-btn" href="payment.html?bundle=investigation-lab">Go to checkout</a> <a class="pf-btn secondary" href="payment.html?bundle=integrated">See the Integrated Course</a></div></article>';
+      '<div class="pf-btnrow"><a class="pf-btn" href="payment?bundle=investigation-lab">Go to checkout</a> <a class="pf-btn secondary" href="payment?bundle=integrated">See the Integrated Course</a></div></article>';
     panel.scrollIntoView({behavior: "smooth", block: "start"});
   }
   /* Locked markers on the case cards, shown only once the

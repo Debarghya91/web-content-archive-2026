@@ -1312,7 +1312,7 @@
         (expectBits.length ? '<p>' + expectBits.join(' &middot; ') + '</p>' : '') +
         '<p>What to expect: work through ' + stepNames + '. ' + objectives + '</p>' +
         '<p>Payment Situations is a paid product. Cases open in full once you have access.</p>' +
-        '<p><a class="pf-btn-primary" href="/payment.html?bundle=practice">How to buy</a> ' +
+        '<p><a class="pf-btn-primary" href="/payment?bundle=practice">How to buy</a> ' +
         '<button type="button" class="pf-btn-secondary" data-action="inv-exit">Back to case</button></p></div>';
       bindLockedExit(container, callbacks);
       return false;
@@ -1518,7 +1518,7 @@
           var parts = l.split(': ');
           return '<tr><th>' + escapeHtml(parts[0]) + '</th><td>' + escapeHtml(parts.slice(1).join(': ')) + '</td></tr>';
         }).join('') + '</tbody></table>';
-        h += '<p><a class="pf-btn-secondary" href="explorer.html">Open in the message explorer</a></p>';
+        h += '<p><a class="pf-btn-secondary" href="explorer">Open in the message explorer</a></p>';
       } else if (ev.structuredLines.length) {
         h += '<ul class="inv-structured">' + ev.structuredLines.map(function (l) {
           return '<li>' + escapeHtml(l) + '</li>';

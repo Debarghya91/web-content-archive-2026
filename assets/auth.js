@@ -268,7 +268,7 @@ function paAuthSignOut(){
     if(window.__pthGate){
       /* A gated page needs a session, so a signed-out visit belongs
          on the sign-in page rather than staying on content. */
-      window.location.href = '/signin.html';
+      window.location.href = '/signin';
     } else if(/dashboard(\.html)?$/.test(path) || /signin(\.html)?$/.test(path)){
       window.location.reload();
     }
@@ -1102,7 +1102,7 @@ function paWelcomeMaybeShow(){
   actions.className = 'pa-welcome-actions';
   var browse = document.createElement('a');
   browse.className = 'pa-welcome-btn';
-  browse.href = 'courses.html';
+  browse.href = 'courses';
   browse.textContent = 'Browse courses';
   var cont = document.createElement('button');
   cont.type = 'button';
