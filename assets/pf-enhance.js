@@ -460,6 +460,47 @@ function paUiInitSingleVoice(){
     }catch(e){}
   });
 }
+/* Canvas rest state (17 Nov 2026): in the Canvas lesson style the
+   studio canvas is a tall dark box that sits empty until the lesson
+   first plays. Mark each studio player at rest so CSS hides the box;
+   the first play event on its audio clears the mark for good, so
+   pausing mid-lesson never collapses the diagram. Players whose audio
+   is already playing, or has a saved position, are never marked. */
+function paUiCanvasRestMark(){
+  paUiAll('.studio').forEach(function(st){
+    if(st.getAttribute('data-pa-played') === '1') return;
+    var a = null;
+    try { a = st.querySelector('audio'); } catch(e){}
+    if(!a){
+      try { a = document.getElementById('studio-audio-' + String(st.id || '').replace(/^studio-/, '')); } catch(e){}
+    }
+    if(!a) return;
+    try {
+      if(!a.paused || (a.currentTime && a.currentTime >= 0.5)){
+        st.setAttribute('data-pa-played', '1');
+        st.classList.remove('pa-studio-rest');
+      } else {
+        st.classList.add('pa-studio-rest');
+      }
+    } catch(e){}
+  });
+}
+function paUiInitCanvasRest(){
+  document.addEventListener('play', function(ev){
+    var t = ev.target;
+    if(!t || !t.closest) return;
+    var st = t.closest('.studio');
+    if(st){
+      st.setAttribute('data-pa-played', '1');
+      st.classList.remove('pa-studio-rest');
+    }
+  }, true);
+  paUiCanvasRestMark();
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', paUiCanvasRestMark);
+  }
+  setTimeout(paUiCanvasRestMark, 2000);
+}
 function paUiNpAudios(){ return paUiAll('audio'); }
 function paUiNpVisible(a){
   /* The audio element itself computes display:none (no controls
@@ -612,6 +653,7 @@ paUiInitPanels();
 paUiInitPlaybackHide();
 paUiInitSidebarClose();
 paUiInitSingleVoice();
+paUiInitCanvasRest();
 paUiNpInit();
 if(document.readyState === 'loading'){
   document.addEventListener('DOMContentLoaded', function(){ paUiApplyPanels(); paUiNpSync(); });
