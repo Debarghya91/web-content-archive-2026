@@ -4,7 +4,10 @@
    open to signed-in learners: no locks, no payment needed. The lock code
    below stays parked behind PA_ENFORCE_ACCESS. Flip that one flag to true
    later to lock chapters behind their bundles. Real payment enforcement
-   needs the Razorpay account plus a backend or licence check. */
+   needs the Razorpay account plus a backend or licence check.
+   Lesson gating (17 Nov 2026) is separate and lives in the paGate
+   section at the end of this file: it is Supabase-backed and does not
+   use this flag. */
 var PA_ENFORCE_ACCESS = false;
 var PA_OWNED_KEY = 'pa-owned-bundles-v1';
 var PA_PREVIEW_KEY = 'pa-owner-preview-v1';
@@ -31,7 +34,7 @@ function paHasAccess(chid){
 /* ===== Payment Situations gate (9 Nov 2026) ===== */
 /* Practice Experiences holds the Payment Situations. It is gated
    independently of PA_ENFORCE_ACCESS, which stays false so the
-   flagship course and all lessons stay open for all. A buyer owns
+   flagship course lessons stay governed by the lesson gate below. A buyer owns
    this product when the 'practice' bundle (or the flagship
    'integrated', which includes everything) is in the owned list,
    or when owner preview is on. Purchases are made in the iOS app
@@ -995,3 +998,400 @@ function paBuyPromptOnClick(ev){
   if(!paBuyPromptGuard(href)) ev.preventDefault();
 }
 document.addEventListener('click', paBuyPromptOnClick);
+
+/* ===== Lesson gating: first lesson free, the rest preview + buy (17 Nov 2026) ===== */
+/* The first lesson of every chapter is free to read in full. Every other
+   lesson shows a free preview (the opening words plus the lesson outline
+   and objectives) and then a lock panel with the owning course price and
+   a Buy button. Signed-in owners of the owning course, owners of the
+   Integrated Course, and admins see the full lesson.
+   This is PRESENTATIONAL gating only: the full lesson stays in the
+   served HTML, so search engines keep indexing it, and no page
+   redirects to sign-in. It stops casual reading past the preview; it
+   does not stop a determined visitor who reads page source or fetches
+   the audio file directly. Real server-side enforcement is a later
+   step. This system is separate from PA_ENFORCE_ACCESS above, which
+   stays false: that flag drives a localStorage demo list that cannot
+   express per-course Supabase ownership, so ownership here is read
+   from user_purchases, the same table the My Purchases page reads,
+   and the admin check matches claims.js (app_metadata.is_admin).
+   PA_LESSON_GATE below is generated from assets/reading-order.json
+   (first lesson per chapter, chapter to course map) and the
+   pa-bundle-data prices on payment.html. Regenerate it if the book
+   order or prices change; never hand-edit the mapping. Held-out
+   chapter ch37 has no course and no entry here, so its lessons stay
+   fully open: no purchase could unlock them. */
+var PA_LESSON_GATE = {"first":{"ch1":"ch1s1","ch2":"ch2s1","ch3":"ch3s1","ch4":"ch4s1","ch64":"ch64s1","ch69":"ch69s1","ch70":"ch70s1","ch9":"ch9s1","ch10":"ch10s1","ch11":"ch11s1","ch12":"ch12s1","ch33":"ch33s1","ch56":"ch56s1","ch57":"ch57s1","ch59":"ch59s1","ch61":"ch61s1","ch62":"ch62s1","ch74":"ch74s1","ch91":"ch91s1","ch92":"ch92s1","ch93":"ch93s1","ch5":"ch5s1","ch6":"ch6s1","ch7":"ch7s1","ch8":"ch8s1","ch38":"ch38s1","ch54":"ch54s1","ch39":"ch39s1","ch50":"ch50s1","ch51":"ch51s1","ch52":"ch52s1","ch53":"ch53s1","ch58":"ch58s1","ch60":"ch60s1","ch67":"ch67s1","ch13":"ch13s1","ch14":"ch14s1","ch15":"ch15s1","ch16":"ch16s1","ch94":"ch94s1","ch49":"ch49s1","ch66":"ch66s1","ch75":"ch75s1","ch17":"ch17s1","ch18":"ch18s1","ch21":"ch21s1","ch71":"ch71s1","ch90":"ch90s1","ch19":"ch19s1","ch20":"ch20s1","ch40":"ch40s1","ch44":"ch44s1","ch76":"ch76s1","ch77":"ch77s1","ch88":"ch88s1","ch89":"ch89s1","ch72":"ch72s1","ch23":"ch23s1","ch24":"ch24s1","ch41":"ch41s1","ch86":"ch86s1","ch87":"ch87s1","ch95":"ch95s1","ch73":"ch73s1","ch78":"ch78s1","ch81":"ch81s1","ch99":"ch99s1","ch22":"ch22s1","ch31":"ch31s1","ch32":"ch32s1","ch34":"ch34s1","ch63":"ch63s1","ch25":"ch25s1","ch26":"ch26s1","ch30":"ch30s1","ch35":"ch35s1","ch36":"ch36s1","ch42":"ch42s1","ch43":"ch43s1","ch46":"ch46s1","ch47":"ch47s1","ch48":"ch48s1","ch65":"ch65s1","ch80":"ch80s1","ch68":"ch68s1","ch79":"ch79s1","ch28":"ch28s1","ch45":"ch45s1","ch82":"ch82s1","ch83":"ch83s1","ch84":"ch84s1","ch29":"ch29s1","ch96":"ch96s1","ch97":"ch97s1","ch98":"ch98s1","ch100":"ch100s1","ch55":"ch55s1","ch27":"ch27s1","ch85":"ch85s1"},"part":{"ch1":"part-1","ch2":"part-1","ch3":"part-1","ch4":"part-1","ch64":"part-1","ch69":"part-1","ch70":"part-1","ch9":"part-2","ch10":"part-2","ch11":"part-2","ch12":"part-2","ch33":"part-2","ch56":"part-2","ch57":"part-2","ch59":"part-2","ch61":"part-2","ch62":"part-2","ch74":"part-2","ch91":"part-2","ch92":"part-2","ch93":"part-2","ch5":"part-3","ch6":"part-3","ch7":"part-3","ch8":"part-3","ch38":"part-3","ch54":"part-3","ch39":"part-3","ch50":"part-3","ch51":"part-3","ch52":"part-3","ch53":"part-3","ch58":"part-3","ch60":"part-3","ch67":"part-3","ch13":"part-4","ch14":"part-4","ch15":"part-4","ch16":"part-4","ch94":"part-4","ch49":"part-4","ch66":"part-4","ch75":"part-4","ch17":"part-5","ch18":"part-5","ch21":"part-5","ch71":"part-5","ch90":"part-5","ch19":"part-5","ch20":"part-5","ch40":"part-5","ch44":"part-5","ch76":"part-5","ch77":"part-5","ch88":"part-5","ch89":"part-5","ch72":"part-6","ch23":"part-6","ch24":"part-6","ch41":"part-6","ch86":"part-6","ch87":"part-6","ch95":"part-6","ch73":"part-6","ch78":"part-6","ch81":"part-6","ch99":"part-6","ch22":"part-7","ch31":"part-7","ch32":"part-7","ch34":"part-7","ch63":"part-7","ch25":"part-8","ch26":"part-8","ch30":"part-8","ch35":"part-8","ch36":"part-8","ch42":"part-8","ch43":"part-8","ch46":"part-8","ch47":"part-8","ch48":"part-8","ch65":"part-8","ch80":"part-8","ch68":"part-8","ch79":"part-8","ch28":"part-9","ch45":"part-9","ch82":"part-9","ch83":"part-9","ch84":"part-9","ch29":"part-9","ch96":"part-9","ch97":"part-9","ch98":"part-9","ch100":"part-9","ch55":"part-10","ch27":"part-10","ch85":"part-10"},"parts":{"part-1":{"name":"Course 1: Foundations of Money and Payments","sale":399,"list":599,"chapters":7,"lessons":49},"part-2":{"name":"Course 2: How Payments Move","sale":399,"list":599,"chapters":14,"lessons":137},"part-3":{"name":"Course 3: Messages: SWIFT MT, ISO 20022 and Standards","sale":399,"list":599,"chapters":14,"lessons":149},"part-4":{"name":"Course 4: Cross-Border Payments and Correspondent Banking","sale":399,"list":599,"chapters":8,"lessons":71},"part-5":{"name":"Course 5: Clearing, Settlement, Liquidity and Reconciliation","sale":399,"list":599,"chapters":13,"lessons":110},"part-6":{"name":"Course 6: Exceptions, Investigations, Returns and Claims","sale":399,"list":599,"chapters":11,"lessons":98},"part-7":{"name":"Course 7: Cards and Customer Payments","sale":399,"list":599,"chapters":5,"lessons":37},"part-8":{"name":"Course 8: Architecture, APIs, Hubs and Engineering","sale":399,"list":599,"chapters":14,"lessons":118},"part-9":{"name":"Course 9: The Business Analyst at Work","sale":399,"list":599,"chapters":10,"lessons":79},"part-10":{"name":"Course 10: Emerging Payments and the Future","sale":399,"list":599,"chapters":3,"lessons":26}},"integrated":{"name":"The Integrated Course","sale":2999,"list":4499,"chapters":99,"lessons":874}};
+var PA_GATE_PREVIEW_WORDS = 150;
+var PA_GATE_STATE_PROMISE = null;
+function paGateChapterOf(lessonId){
+  var m = /^(ch\d+)s\d+$/.exec(String(lessonId || ''));
+  return m ? m[1] : null;
+}
+function paGateCanRead(lessonId, state){
+  var ch = paGateChapterOf(lessonId);
+  if(!ch) return true;
+  if(PA_LESSON_GATE.first[ch] === lessonId) return true;
+  if(!PA_LESSON_GATE.part[ch]) return true;
+  if(state && state.isAdmin) return true;
+  if(state && state.owned && state.owned.integrated) return true;
+  if(state && state.owned && state.owned[PA_LESSON_GATE.part[ch]]) return true;
+  return false;
+}
+function paGateState(){
+  if(PA_GATE_STATE_PROMISE) return PA_GATE_STATE_PROMISE;
+  PA_GATE_STATE_PROMISE = new Promise(function(resolve){
+    var sawUser = false;
+    function done(isAdmin, owned, signedIn){
+      resolve({isAdmin: !!isAdmin, owned: owned || {}, signedIn: !!signedIn});
+    }
+    if(typeof paAuthLoadClient !== 'function'){ done(false, {}, false); return; }
+    try {
+      paAuthLoadClient(function(client){
+        if(!client){ done(false, {}, false); return; }
+        client.auth.getSession().then(function(res){
+          var user = res && res.data && res.data.session && res.data.session.user;
+          if(!user){ done(false, {}, false); return; }
+          sawUser = true;
+          var meta = user.app_metadata || {};
+          if(meta.is_admin === true){ done(true, {}, true); return; }
+          return client.from('user_purchases')
+            .select('product_id, expires_at, status')
+            .eq('user_id', user.id)
+            .then(function(resp){
+              var owned = {};
+              var rows = (resp && !resp.error && resp.data) || [];
+              var now = Date.now();
+              for(var i = 0; i < rows.length; i++){
+                var row = rows[i] || {};
+                if(String(row.status) !== 'active') continue;
+                if(row.expires_at && Date.parse(row.expires_at) <= now) continue;
+                var pid = String(row.product_id || '')
+                  .replace(/^com\.paymentstraininghub\.app\./, '')
+                  .replace(/\.renewal$/, '');
+                if(pid) owned[pid] = true;
+              }
+              done(false, owned, true);
+            });
+        }).catch(function(){ done(false, {}, sawUser); });
+      });
+    } catch(e){ done(false, {}, sawUser); }
+  });
+  return PA_GATE_STATE_PROMISE;
+}
+function paGateStyles(){
+  if(document.getElementById('pa-gate-styles')) return;
+  var css = [
+    '.pa-gate-badge{display:inline-block;font-size:12px;font-weight:700;line-height:1.4;padding:2px 8px;border-radius:999px;margin-left:8px;vertical-align:middle;white-space:nowrap;}',
+    '.pa-gate-free{background:#DCFCE7;color:#166534;border:1px solid #86EFAC;}',
+    '.pa-gate-locked{background:#FEF3C7;color:#92400E;border:1px solid #FCD34D;}',
+    '.pa-gate-panel{background:#0B1B30;color:#E2E8F0;border:1px solid #1E3A5F;border-radius:12px;padding:20px 24px;margin:20px 0;}',
+    '.pa-gate-panel h2{color:#5EEAD4;margin:0 0 10px;font-size:20px;}',
+    '.pa-gate-panel p{color:#E2E8F0;line-height:1.6;margin:0 0 12px;}',
+    '.pa-gate-panel a{color:#5EEAD4;}',
+    '.pa-gate-panel s{color:#94A3B8;}',
+    '.pa-gate-panel .pa-gate-price b{color:#FFFFFF;font-size:19px;}',
+    '.pa-gate-panel .pa-gate-buy{display:inline-block;background:#FBBF24;color:#0B1B30;border-radius:10px;padding:12px 20px;font-size:16px;font-weight:700;text-decoration:none;margin:4px 0 14px;}',
+    '.pa-gate-panel .pa-gate-foot{font-size:14px;color:#CBD5E1;margin:0;}',
+    '.pa-gate-panel .pa-gate-foot a{color:#5EEAD4;}'
+  ].join('\n');
+  var st = document.createElement('style');
+  st.id = 'pa-gate-styles';
+  st.type = 'text/css';
+  if(st.styleSheet){ st.styleSheet.cssText = css; } else { st.appendChild(document.createTextNode(css)); }
+  document.head.appendChild(st);
+}
+function paGateHide(el){
+  try { el.style.display = 'none'; } catch(e){}
+  try { el.setAttribute('data-pa-gate-hidden', '1'); } catch(e){}
+}
+function paGateWords(el){
+  var t = el.textContent || '';
+  var skips = el.querySelectorAll ? el.querySelectorAll('script, style, noscript, template') : [];
+  for(var i = 0; i < skips.length; i++){ t = t.replace(skips[i].textContent || '', ' '); }
+  t = t.replace(/\s+/g, ' ').trim();
+  return t ? t.split(' ').length : 0;
+}
+function paGateHasVisibleKid(el){
+  for(var i = 0; i < el.children.length; i++){
+    var c = el.children[i];
+    if(c.tagName === 'SCRIPT' || c.tagName === 'STYLE' || c.tagName === 'TEMPLATE' || c.tagName === 'NOSCRIPT') continue;
+    if(!c.getAttribute('data-pa-gate-hidden')) return true;
+  }
+  return false;
+}
+function paGateCutKids(container, budget){
+  var kids = [];
+  for(var i = 0; i < container.children.length; i++) kids.push(container.children[i]);
+  for(var k = 0; k < kids.length; k++){
+    var el = kids[k];
+    var tag = el.tagName;
+    if(tag === 'SCRIPT' || tag === 'STYLE' || tag === 'TEMPLATE' || tag === 'NOSCRIPT') continue;
+    if(budget.left <= 0){ paGateHide(el); continue; }
+    var w = paGateWords(el);
+    if(w <= budget.left){ budget.left -= w; continue; }
+    if(tag === 'P' || tag === 'LI' || tag === 'H2' || tag === 'H3' || tag === 'H4' || tag === 'H5' || tag === 'H6' || tag === 'BLOCKQUOTE' || tag === 'FIGCAPTION' || tag === 'TD' || tag === 'TH' || tag === 'A' || tag === 'SPAN' || tag === 'B' || tag === 'I' || tag === 'EM' || tag === 'STRONG'){
+      budget.left = 0;
+      continue;
+    }
+    paGateCutKids(el, budget);
+    budget.left = 0;
+    if(!paGateHasVisibleKid(el)) paGateHide(el);
+  }
+}
+function paGateInsertPanelAfterVisible(container, panel){
+  var anchor = null;
+  for(var j = container.children.length - 1; j >= 0; j--){
+    var c = container.children[j];
+    if(c.tagName === 'SCRIPT' || c.tagName === 'STYLE') continue;
+    if(!c.getAttribute('data-pa-gate-hidden')){ anchor = c; break; }
+  }
+  if(anchor && anchor.nextSibling) container.insertBefore(panel, anchor.nextSibling);
+  else container.appendChild(panel);
+}
+/* The lesson text lives in the transcript inside the studio block, not
+   in the takeaways card. For a locked lesson, keep only the transcript
+   preview: hide every sibling along the path from the transcript
+   container up to the studio block (player, scenes, exercises, quiz,
+   notes, the second details block), open the enclosing details
+   element so the preview reads, and cut the transcript to the word
+   budget. Returns the transcript container, or null when the page
+   has none (the caller then hides the whole studio block). */
+function paGatePreviewTranscript(main, lessonId, studioEl){
+  var sampleId = 'studio-' + lessonId;
+  var container = document.getElementById('studio-transcript-' + sampleId);
+  if(!container && studioEl) container = studioEl.querySelector('[id^="studio-transcript-"]');
+  if(!container) return null;
+  var keep = [];
+  var n = container;
+  while(n && n !== main){ keep.push(n); n = n.parentNode; }
+  if(!n) return null;
+  for(var i = 0; i < keep.length; i++){
+    var node = keep[i];
+    var parent = node.parentNode;
+    if(!parent || parent === main) continue;
+    for(var j = 0; j < parent.children.length; j++){
+      var sib = parent.children[j];
+      if(sib === node) continue;
+      if(sib.tagName === 'SCRIPT' || sib.tagName === 'STYLE' || sib.tagName === 'TEMPLATE' || sib.tagName === 'NOSCRIPT' || sib.tagName === 'SUMMARY') continue;
+      paGateHide(sib);
+    }
+  }
+  var det = null;
+  var m = container.parentNode;
+  while(m && m !== main){ if(m.tagName === 'DETAILS'){ det = m; break; } m = m.parentNode; }
+  if(det){ try { det.setAttribute('open', ''); det.open = true; } catch(e){} }
+  paGateCutKids(container, {left: PA_GATE_PREVIEW_WORDS});
+  return container;
+}
+function paGateSilence(sampleId){
+  try { if(typeof pauseAllAudio === 'function') pauseAllAudio(); } catch(e){}
+  try { if(typeof studioDisarmAutoplayRetry === 'function') studioDisarmAutoplayRetry(sampleId); } catch(e){}
+  try {
+    var a = document.getElementById('studio-audio-' + sampleId);
+    if(a && a.pause) a.pause();
+  } catch(e){}
+}
+function paGateLockPanel(lessonId, chapterId, partId, state, main){
+  var part = (partId && PA_LESSON_GATE.parts[partId]) || null;
+  var integ = PA_LESSON_GATE.integrated;
+  var panel = document.createElement('div');
+  panel.id = 'pa-gate-panel';
+  panel.className = 'pa-gate-panel';
+  panel.setAttribute('role', 'region');
+  panel.setAttribute('aria-label', 'Unlock the full lesson');
+  var h = document.createElement('h2');
+  h.textContent = 'Unlock the full lesson';
+  panel.appendChild(h);
+  var p1 = document.createElement('p');
+  if(part){
+    p1.textContent = 'This lesson is part of ' + part.name + '. Buying the course unlocks all ' + part.lessons + ' lessons in ' + part.chapters + ' chapters, with full text and audio narration, for 1 year.';
+  } else {
+    p1.textContent = 'This lesson is part of a course. Buying the course unlocks the full lesson, with full text and audio narration, for 1 year.';
+  }
+  panel.appendChild(p1);
+  if(part){
+    var price = document.createElement('p');
+    price.className = 'pa-gate-price';
+    var struck = document.createElement('s');
+    struck.textContent = 'Rs. ' + Number(part.list).toLocaleString('en-IN');
+    price.appendChild(struck);
+    price.appendChild(document.createTextNode(' '));
+    var sale = document.createElement('b');
+    sale.textContent = 'Rs. ' + Number(part.sale).toLocaleString('en-IN');
+    price.appendChild(sale);
+    price.appendChild(document.createTextNode(' for 1 year of access.'));
+    panel.appendChild(price);
+  }
+  var p2 = document.createElement('p');
+  p2.appendChild(document.createTextNode('Want the whole library? ' + integ.name + ' unlocks all ' + integ.chapters + ' chapters and ' + integ.lessons + ' lessons for '));
+  var struck2 = document.createElement('s');
+  struck2.textContent = 'Rs. ' + Number(integ.list).toLocaleString('en-IN');
+  p2.appendChild(struck2);
+  p2.appendChild(document.createTextNode(' '));
+  var sale2 = document.createElement('b');
+  sale2.textContent = 'Rs. ' + Number(integ.sale).toLocaleString('en-IN');
+  p2.appendChild(sale2);
+  p2.appendChild(document.createTextNode('. '));
+  var integLink = document.createElement('a');
+  integLink.href = '/payment.html?bundle=integrated';
+  integLink.textContent = 'See the Integrated Course';
+  p2.appendChild(integLink);
+  panel.appendChild(p2);
+  if(part){
+    var buy = document.createElement('a');
+    buy.className = 'pa-gate-buy';
+    buy.href = '/payment.html?bundle=' + encodeURIComponent(partId);
+    buy.textContent = 'Buy Course ' + String(partId).replace('part-', '') + ' for Rs. ' + Number(part.sale).toLocaleString('en-IN');
+    panel.appendChild(buy);
+  }
+  var foot = document.createElement('p');
+  foot.className = 'pa-gate-foot';
+  foot.appendChild(document.createTextNode('The first lesson of every chapter is free to read in full. '));
+  var chLink = null;
+  if(main){
+    var anchors = main.querySelectorAll('a[href*="/chapters/"]');
+    if(anchors && anchors.length) chLink = anchors[0].getAttribute('href');
+  }
+  if(chLink){
+    var back = document.createElement('a');
+    back.href = chLink;
+    back.textContent = 'Back to the chapter';
+    foot.appendChild(back);
+    foot.appendChild(document.createTextNode('. '));
+  }
+  if(!state.signedIn){
+    foot.appendChild(document.createTextNode('Already bought this course? '));
+    var signin = document.createElement('a');
+    var ret = '/payment.html';
+    try {
+      if(typeof paBuyPromptResolve === 'function'){ ret = paBuyPromptResolve(window.location.href) || ret; }
+      else { ret = window.location.pathname + window.location.search; }
+    } catch(e){}
+    signin.href = '/signin.html?next=' + encodeURIComponent(ret);
+    signin.textContent = 'Sign in to unlock it';
+    foot.appendChild(signin);
+    foot.appendChild(document.createTextNode('.'));
+  }
+  panel.appendChild(foot);
+  return panel;
+}
+function paGateApplyToLessonPage(lessonId, state){
+  var main = document.querySelector('.lesson-main');
+  if(!main) return;
+  if(document.getElementById('pa-gate-panel')) return;
+  var chapterId = paGateChapterOf(lessonId);
+  var partId = chapterId ? PA_LESSON_GATE.part[chapterId] : null;
+  var contentEl = document.getElementById('pf-content-' + lessonId);
+  if(!contentEl) contentEl = main.querySelector('[id^="pf-content-"]');
+  var studioEl = document.getElementById('studio-studio-' + lessonId);
+  if(!studioEl) studioEl = main.querySelector('.studio');
+  var beatsEl = main.querySelector('ol.pf-beats');
+  var beatsCard = null;
+  if(beatsEl){
+    beatsCard = beatsEl.parentNode;
+    while(beatsCard && beatsCard !== main && !(beatsCard.classList && beatsCard.classList.contains('pf-card'))) beatsCard = beatsCard.parentNode;
+    if(beatsCard === main) beatsCard = beatsEl.parentNode;
+  }
+  var kids = [];
+  for(var i = 0; i < main.children.length; i++) kids.push(main.children[i]);
+  var seenH2 = false;
+  var navKeep = false;
+  for(var k = 0; k < kids.length; k++){
+    var el = kids[k];
+    var tag = el.tagName;
+    if(tag === 'SCRIPT' || tag === 'STYLE' || tag === 'TEMPLATE' || tag === 'NOSCRIPT') continue;
+    if(el === contentEl) continue;
+    if(el === beatsCard) continue;
+    if(el === studioEl) continue;
+    var cls = el.classList;
+    if(cls && (cls.contains('pf-player-card') || cls.contains('pf-tab-card') || cls.contains('flow-embed') || cls.contains('rail-tool'))){
+      paGateHide(el);
+      continue;
+    }
+    if(tag === 'H2'){
+      seenH2 = true;
+      var next = kids[k + 1];
+      var txt = (el.textContent || '').replace(/\s+/g, ' ').trim();
+      if(next === contentEl || next === beatsCard){ navKeep = false; continue; }
+      if(txt === 'More in this chapter' || txt === 'Next lesson'){ navKeep = true; continue; }
+      navKeep = false;
+      paGateHide(el);
+      continue;
+    }
+    if(!seenH2) continue;
+    if(navKeep) continue;
+    paGateHide(el);
+  }
+  paGateSilence('studio-' + lessonId);
+  /* The tool rail sits outside .lesson-main and holds the Open
+     transcript button, so hide it explicitly for locked lessons. */
+  var rails = document.querySelectorAll('nav.tool-rail, .tool-rail');
+  for(var r = 0; r < rails.length; r++) paGateHide(rails[r]);
+  var tContainer = null;
+  if(studioEl) tContainer = paGatePreviewTranscript(main, lessonId, studioEl);
+  if(!tContainer && studioEl) paGateHide(studioEl);
+  var panel = paGateLockPanel(lessonId, chapterId, partId, state, main);
+  if(tContainer) paGateInsertPanelAfterVisible(tContainer, panel);
+  else if(contentEl) paGateInsertPanelAfterVisible(contentEl, panel);
+  else main.appendChild(panel);
+}
+function paGateBadgeLessonLinks(state){
+  paGateStyles();
+  var links = document.querySelectorAll('a[href]');
+  for(var i = 0; i < links.length; i++){
+    var a = links[i];
+    if(a.getAttribute('data-pa-gate')) continue;
+    var href = a.getAttribute('href') || '';
+    if(!href || href.charAt(0) === '#') continue;
+    var lessonId = null;
+    var dl = a.getAttribute('data-lesson');
+    if(dl && /^ch\d+s\d+$/.test(dl)) lessonId = dl;
+    if(!lessonId){
+      try {
+        var u = new URL(href, window.location.href);
+        if(u.protocol !== 'http:' && u.protocol !== 'https:') continue;
+        var m = /\/lessons\/(ch\d+s\d+)(?:\.html)?$/.exec(u.pathname);
+        if(m) lessonId = m[1];
+      } catch(e){ continue; }
+    }
+    if(!lessonId) continue;
+    var ch = paGateChapterOf(lessonId);
+    if(!ch || !PA_LESSON_GATE.first[ch]) continue;
+    var locked = !paGateCanRead(lessonId, state);
+    var badge = null, cls = null;
+    if(locked){ badge = 'Locked'; cls = 'pa-gate-locked'; }
+    else if(PA_LESSON_GATE.first[ch] === lessonId){ badge = 'Free'; cls = 'pa-gate-free'; }
+    else continue;
+    a.setAttribute('data-pa-gate', locked ? 'locked' : 'free');
+    var s = document.createElement('span');
+    s.className = 'pa-gate-badge ' + cls;
+    s.textContent = badge;
+    a.appendChild(s);
+  }
+}
+function paGateInit(){
+  var lessonId = null;
+  try {
+    var m = /\/lessons\/(ch\d+s\d+)/.exec(window.location.pathname || '');
+    if(m) lessonId = m[1];
+  } catch(e){}
+  function apply(state){
+    paGateStyles();
+    if(lessonId && !paGateCanRead(lessonId, state)) paGateApplyToLessonPage(lessonId, state);
+    paGateBadgeLessonLinks(state);
+    setTimeout(function(){ try { paGateBadgeLessonLinks(state); } catch(e){} }, 1500);
+  }
+  var signedOut = false;
+  try {
+    if(typeof paBuyPromptHasSession === 'function') signedOut = !paBuyPromptHasSession();
+    else {
+      var raw = null;
+      try { raw = localStorage.getItem('sb-eofsotgclhwsdwvbbtib-auth-token'); } catch(e2){}
+      signedOut = !raw;
+    }
+  } catch(e){ signedOut = false; }
+  if(signedOut){ apply({isAdmin: false, owned: {}, signedIn: false}); return; }
+  paGateState().then(apply);
+}
+document.addEventListener('DOMContentLoaded', paGateInit);

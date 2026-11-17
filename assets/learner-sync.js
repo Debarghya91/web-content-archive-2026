@@ -412,7 +412,7 @@
     container.innerHTML =
       '<section class="section pa-cloud pf-card"><h2 class="pf-section-header">Sign in to sync your progress</h2>' +
       '<p>Your progress is currently stored only in this browser. Sign in and it is saved to your account, ' +
-      'so it follows you to any device and survives clearing browser data. Lessons are free to read once you sign in.</p>' +
+      'so it follows you to any device and survives clearing browser data. The first lesson of every chapter is free to read in full, and every lesson shows a free preview.</p>' +
       '<p><a class="pf-btn-primary studio-btn primary" href="signin.html">Sign in</a> ' +
       '<button type="button" class="pf-btn-secondary studio-btn" onclick="paAuthGoogle()">Continue with Google</button></p>' +
       '<p class="pa-note">Website checkout is being set up with PayU and PayPal and is in test setup. Courses are also available for purchase in the Payments Training Hub iOS app.</p>' +
