@@ -247,6 +247,7 @@ function paUiInitPanels(){
     hide.addEventListener('click', function(){
       paUiLsSet(RAIL_KEY, '1');
       document.body.classList.add('pa-ui-rail-hidden');
+      document.body.classList.remove('pa-ui-rail-playback-hidden');
     });
     railHead.appendChild(hide);
   }
@@ -264,6 +265,7 @@ function paUiInitPanels(){
     show.addEventListener('click', function(){
       paUiLsSet(RAIL_KEY, '0');
       document.body.classList.remove('pa-ui-rail-hidden');
+      document.body.classList.remove('pa-ui-rail-playback-hidden');
     });
     document.body.appendChild(show);
   }
@@ -298,6 +300,47 @@ function paUiInitPanels(){
 }
 var paUiNpBar = null, paUiNpBtn = null, paUiNpState = null, paUiNpTitle = null;
 var paUiNpCurrent = null;
+/* Playback-triggered panel hide (17 Nov 2026, owner rule): on lesson
+   pages only, starting playback hides the chapter panel so the content
+   expands, using the same body.pa-ui-rail-hidden reflow as the manual
+   Hide button. Pausing or ending restores the panel, but only when
+   playback hid it: the body marker pa-ui-rail-playback-hidden records
+   that, and the manual Hide/Show handlers above clear it, so a manual
+   Hide stays hidden and a manual Show during playback stays shown
+   until the next fresh play event. The learner can switch the
+   behaviour off with the "Hide side panel while playing" option next
+   to the lesson style toggle (key pa-ui-hide-panel-while-playing,
+   default on); the option lives in assets/bundles.js and shares this
+   key and marker. No timer, no pointer watching. */
+var PA_UI_PANEL_HIDE_KEY = 'pa-ui-hide-panel-while-playing';
+var paUiPlaybackHideWired = false;
+function paUiPanelHideEnabled(){ return paUiLsGet(PA_UI_PANEL_HIDE_KEY) !== '0'; }
+function paUiAnyMediaPlaying(){
+  var m = paUiAll('audio, video');
+  for(var i = 0; i < m.length; i++){ if(!m[i].paused && !m[i].ended) return true; }
+  return false;
+}
+function paUiPlaybackHideOnPlay(){
+  if(!paUiPanelHideEnabled()) return;
+  if(paUiLsGet(RAIL_KEY) === '1') return;
+  if(document.body.classList.contains('pa-ui-rail-playback-hidden')) return;
+  document.body.classList.add('pa-ui-rail-hidden');
+  document.body.classList.add('pa-ui-rail-playback-hidden');
+}
+function paUiPlaybackHideOnStop(){
+  if(!document.body.classList.contains('pa-ui-rail-playback-hidden')) return;
+  if(paUiAnyMediaPlaying()) return;
+  document.body.classList.remove('pa-ui-rail-playback-hidden');
+  document.body.classList.remove('pa-ui-rail-hidden');
+}
+function paUiInitPlaybackHide(){
+  if(paUiPlaybackHideWired) return;
+  if(!paUi$('.course-rail')) return;
+  paUiPlaybackHideWired = true;
+  document.addEventListener('play', paUiPlaybackHideOnPlay, true);
+  document.addEventListener('pause', paUiPlaybackHideOnStop, true);
+  document.addEventListener('ended', paUiPlaybackHideOnStop, true);
+}
 function paUiNpAudios(){ return paUiAll('audio'); }
 function paUiNpVisible(a){
   /* The audio element itself computes display:none (no controls
@@ -447,6 +490,7 @@ function paUiNpInit(){
 }
 paUiStyles();
 paUiInitPanels();
+paUiInitPlaybackHide();
 paUiNpInit();
 if(document.readyState === 'loading'){
   document.addEventListener('DOMContentLoaded', function(){ paUiApplyPanels(); paUiNpSync(); });

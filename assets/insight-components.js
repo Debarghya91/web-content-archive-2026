@@ -236,10 +236,14 @@
   }
 
   /* ------------------------------------ 3. Animated end-to-end flow ---
-   * Renders a step flow from a simple JSON step list. Play advances the
-   * highlight from step to step; pause stops it. With reduced motion the
-   * flow is static (all steps shown, play hidden). Each step is a button
-   * so keyboard users can jump to any step.
+   * Renders a step flow from a simple JSON step list. The flow has no
+   * buttons: on a lesson page its steps follow the narration clock
+   * (see flowSyncInit), advancing while the narration plays and
+   * holding their step while it is paused, so the highlight never
+   * drifts ahead of the audio. Pages with no narration audio keep a
+   * gentle timer advance. With reduced motion the flow is static
+   * (all steps shown, no status line). The Step X of Y text is a
+   * progress indicator only.
    * data: { meta, title?, steps: [{title, actor?, note?}],
    *   stepSeconds?, recordId? } */
   function flowPlayer(data) {
@@ -253,22 +257,18 @@
     if (reducedMotion) {
       html += '<p class="ic-note">Motion is off on this device, so the flow is shown as a static step list.</p>';
     } else {
-      html += '<div class="ic-flow-controls"><button type="button" class="ic-btn ic-btn-primary" data-ic-action="flow-play" data-ic-block="' +
-        esc(id) + '" aria-controls="' + esc(id) + '-steps">Play the flow</button>' +
-        '<button type="button" class="ic-btn ic-btn-secondary" data-ic-action="flow-pause" data-ic-block="' +
-        esc(id) + '" disabled>Pause</button>' +
-        '<span class="ic-flow-status" id="' + esc(id) + '-status" aria-live="polite">Step 0 of ' + steps.length + '</span></div>';
+      html += '<div class="ic-flow-controls">' +
+        '<span class="ic-flow-status" id="' + esc(id) + '-status" aria-live="polite">Step 1 of ' + steps.length + '</span></div>';
     }
     html += '<ol class="ic-flow-steps" id="' + esc(id) + '-steps" data-ic-step-seconds="' + esc(seconds) + '">';
     for (var i = 0; i < steps.length; i++) {
       var s = steps[i] || {};
-      html += '<li class="ic-flow-step" data-ic-step="' + i + '"><button type="button" class="ic-flow-step-btn" data-ic-action="flow-step" data-ic-block="' +
-        esc(id) + '" data-ic-idx="' + i + '" aria-label="Step ' + (i + 1) + ': ' + esc(s.title || '') + '">' +
+      html += '<li class="ic-flow-step" data-ic-step="' + i + '"><span class="ic-flow-step-btn">' +
         '<span class="ic-flow-num" aria-hidden="true">' + (i + 1) + '</span>' +
         '<span class="ic-flow-body"><span class="ic-flow-title">' + esc(s.title || '') + '</span>' +
         (s.actor ? '<span class="ic-flow-actor">' + esc(s.actor) + '</span>' : '') +
         (s.note ? '<span class="ic-flow-note">' + esc(s.note) + '</span>' : '') +
-        '</span></button>' +
+        '</span></span>' +
         (i < steps.length - 1 ? '<span class="ic-flow-arrow" aria-hidden="true">&#8595;</span>' : '') +
         '</li>';
     }
@@ -593,13 +593,6 @@
       clearInterval(flowTimers[blockId]);
       delete flowTimers[blockId];
     }
-    if (typeof document === 'undefined') return;
-    var block = document.getElementById(blockId);
-    if (!block) return;
-    var play = block.querySelector('[data-ic-action="flow-play"]');
-    var pause = block.querySelector('[data-ic-action="flow-pause"]');
-    if (play) { play.disabled = false; play.textContent = 'Play the flow'; }
-    if (pause) pause.disabled = true;
   }
 
   function flowPlay(blockId) {
@@ -615,11 +608,8 @@
     if (now) current = parseInt(now.getAttribute('data-ic-step'), 10) || 0;
     var done = block.querySelectorAll('.ic-flow-done').length;
     if (done >= steps.length) { current = 0; }
+    flowStop(blockId);
     flowSetStep(blockId, current);
-    var play = block.querySelector('[data-ic-action="flow-play"]');
-    var pause = block.querySelector('[data-ic-action="flow-pause"]');
-    if (play) { play.disabled = true; play.textContent = 'Playing...'; }
-    if (pause) pause.disabled = false;
     flowTimers[blockId] = setInterval(function () {
       current += 1;
       if (current >= steps.length) {
@@ -629,6 +619,66 @@
       }
       flowSetStep(blockId, current);
     }, Math.max(600, seconds * 1000));
+  }
+
+  /* Narration-synced flow (17 Nov 2026): the flow has no buttons. On a
+     lesson page its steps follow the narration clock, so the highlight
+     never drifts ahead of the audio: it advances while the narration
+     plays and holds its step while the narration is paused. The step
+     is the narration position spread across the steps, so a seek moves
+     the highlight to the matching step and the end of the narration
+     completes the flow. Pages with no narration audio keep the gentle
+     timer advance from flowPlay. Reduced motion never auto-advances. */
+  var flowSyncLast = {};
+  var flowSyncWired = false;
+  function flowSyncFindAudio() {
+    if (typeof document === 'undefined') return null;
+    var audios = document.querySelectorAll('audio');
+    for (var i = 0; i < audios.length; i++) {
+      var id = audios[i].getAttribute('id') || '';
+      if (id.indexOf('studio-audio-') === 0) return audios[i];
+    }
+    return null;
+  }
+  function flowSyncTick(audio) {
+    if (!audio || reducedMotion || typeof document === 'undefined') return;
+    var blocks = document.querySelectorAll('.ic-flow');
+    var dur = audio.duration;
+    var t = audio.currentTime || 0;
+    for (var b = 0; b < blocks.length; b++) {
+      var block = blocks[b];
+      var blockId = block.getAttribute('id');
+      if (!blockId) continue;
+      var steps = block.querySelectorAll('.ic-flow-step');
+      if (!steps.length) continue;
+      var idx;
+      if (audio.ended) idx = steps.length;
+      else if (dur && isFinite(dur) && dur > 0) idx = Math.min(steps.length - 1, Math.floor((t / dur) * steps.length));
+      else idx = 0;
+      if (flowSyncLast[blockId] !== idx) { flowSyncLast[blockId] = idx; flowSetStep(blockId, idx); }
+    }
+  }
+  function flowSyncInit(root) {
+    if (typeof document === 'undefined' || reducedMotion) return;
+    var scope = root || document;
+    var blocks = scope.querySelectorAll ? scope.querySelectorAll('.ic-flow') : [];
+    if (!blocks.length) return;
+    var audio = flowSyncFindAudio();
+    if (!audio) {
+      for (var i = 0; i < blocks.length; i++) {
+        var tid = blocks[i].getAttribute('id');
+        if (tid) flowPlay(tid);
+      }
+      return;
+    }
+    for (var j = 0; j < blocks.length; j++) {
+      var bid = blocks[j].getAttribute('id');
+      if (bid && flowSyncLast[bid] === undefined) { flowSyncLast[bid] = 0; flowSetStep(bid, 0); }
+    }
+    if (flowSyncWired) return;
+    flowSyncWired = true;
+    document.addEventListener('timeupdate', function (ev) { if (ev.target === audio) flowSyncTick(audio); }, true);
+    document.addEventListener('ended', function (ev) { if (ev.target === audio) flowSyncTick(audio); }, true);
   }
 
   /* Knowledge-check answers persist across reloads in localStorage, so
@@ -783,16 +833,6 @@
         return;
       }
 
-      if (action === 'flow-play') { flowPlay(t.getAttribute('data-ic-block')); return; }
-      if (action === 'flow-pause') { flowStop(t.getAttribute('data-ic-block')); return; }
-
-      if (action === 'flow-step') {
-        var fbid = t.getAttribute('data-ic-block');
-        flowStop(fbid);
-        flowSetStep(fbid, parseInt(t.getAttribute('data-ic-idx'), 10) || 0);
-        return;
-      }
-
       if (action === 'quiz-opt') {
         var qid = t.getAttribute('data-ic-block');
         var q = document.getElementById(qid);
@@ -876,6 +916,7 @@
     });
     if (root) renderAll(root);
     else renderAll(document);
+    flowSyncInit(root || document);
     icQuizRestore(root || document);
   }
 

@@ -1503,10 +1503,12 @@ function paGateInit(){
   } catch(e){}
   function apply(state){
     paGateStyles();
-    if(lessonId && !paGateCanRead(lessonId, state)) paGateApplyToLessonPage(lessonId, state);
+    var unlocked = !lessonId || paGateCanRead(lessonId, state);
+    if(lessonId && !unlocked) paGateApplyToLessonPage(lessonId, state);
     else if(lessonId) paGateEarlyUnlock();
     paGateBadgeLessonLinks(state);
     setTimeout(function(){ try { paGateBadgeLessonLinks(state); } catch(e){} }, 1500);
+    try { paStyleAfterGate(lessonId, unlocked); } catch(e){}
   }
   var signedOut = false;
   try {
@@ -1521,3 +1523,208 @@ function paGateInit(){
   paGateState().then(apply);
 }
 document.addEventListener('DOMContentLoaded', paGateInit);
+
+/* ===== Learner-chosen lesson style (17 Nov 2026) ===== */
+/* The learner picks List or Canvas once, with an example preview of each
+   style, at the start of a chapter. The choice is kept in localStorage
+   (no server change) and the toggle at the top of every lesson page
+   switches styles at any time. Only visibility classes change: the
+   audio element is never touched, so playback and position survive a
+   style switch. Locked lessons never see this UI: the style class and
+   the toggle/picker appear only after the gate resolves to unlocked
+   (see paStyleAfterGate, called from paGateInit). Before the gate
+   resolves, lesson pages provisionally show the safe default (list),
+   which matches the locked outline; a saved canvas preference applies
+   only after access is confirmed. No lesson content is changed here.
+   The side panel option shares the playback-hide contract with
+   assets/pf-enhance.js: the key pa-ui-hide-panel-while-playing and the
+   body marker class pa-ui-rail-playback-hidden. */
+var PA_STYLE_KEY = 'pa-ui-lesson-style';
+var PA_STYLE_PANEL_KEY = 'pa-ui-hide-panel-while-playing';
+function paStyleLsGet(k){ try { return window.localStorage.getItem(k); } catch(e){ return null; } }
+function paStyleLsSet(k, v){ try { window.localStorage.setItem(k, v); } catch(e){} }
+function paStyleGet(){ var v = paStyleLsGet(PA_STYLE_KEY); return (v === 'canvas' || v === 'list') ? v : null; }
+function paStylePath(){ try { return window.location.pathname || ''; } catch(e){ return ''; } }
+function paStyleIsLesson(){ return paStylePath().indexOf('/lessons/') !== -1; }
+function paStyleIsChapter(){ return paStylePath().indexOf('/chapters/') !== -1; }
+function paStyleEl(tag, cls, text){ var el = document.createElement(tag); if(cls) el.className = cls; if(text) el.textContent = text; return el; }
+function paStyleMarkFlows(){
+  try {
+    var main = document.querySelector('.lesson-main');
+    if(!main) return;
+    var beats = main.querySelector('ol.pf-beats');
+    if(beats){
+      var card = beats.parentNode;
+      while(card && card !== main && !(card.classList && card.classList.contains('pf-card'))) card = card.parentNode;
+      if(card && card !== main) card.classList.add('pf-flows-card');
+    }
+    var heads = main.querySelectorAll('h2');
+    for(var i = 0; i < heads.length; i++){
+      if(heads[i].textContent === 'How it flows') heads[i].classList.add('pf-flows-header');
+    }
+  } catch(e){}
+}
+function paStyleRefreshStudio(){
+  try {
+    if(typeof studioRefresh !== 'function') return;
+    var el = document.querySelector('.lesson-main .studio');
+    if(!el || !el.id) return;
+    var id = el.id;
+    if(id.indexOf('studio-') === 0) id = id.substring(7);
+    studioRefresh(id);
+  } catch(e){}
+}
+function paStyleApply(style){
+  try {
+    document.body.classList.remove('pf-style-list', 'pf-style-canvas');
+    document.body.classList.add(style === 'canvas' ? 'pf-style-canvas' : 'pf-style-list');
+    var btns = document.querySelectorAll('.pf-style-toggle button');
+    for(var i = 0; i < btns.length; i++){
+      btns[i].setAttribute('aria-pressed', btns[i].getAttribute('data-pf-style') === style ? 'true' : 'false');
+    }
+    if(style === 'canvas') paStyleRefreshStudio();
+  } catch(e){}
+}
+function paStyleChoose(style){
+  paStyleLsSet(PA_STYLE_KEY, style);
+  paStyleApply(style);
+  try {
+    var picker = document.querySelector('.pf-style-picker');
+    if(picker && picker.parentNode) picker.parentNode.removeChild(picker);
+  } catch(e){}
+}
+function paStyleAnyMediaPlaying(){
+  try {
+    var m = document.querySelectorAll('audio, video');
+    for(var i = 0; i < m.length; i++){ if(!m[i].paused && !m[i].ended) return true; }
+  } catch(e){}
+  return false;
+}
+function paStylePanelOptChanged(on){
+  paStyleLsSet(PA_STYLE_PANEL_KEY, on ? '1' : '0');
+  try {
+    if(!on){
+      if(document.body.classList.contains('pa-ui-rail-playback-hidden')){
+        document.body.classList.remove('pa-ui-rail-playback-hidden');
+        document.body.classList.remove('pa-ui-rail-hidden');
+      }
+    } else if(paStyleAnyMediaPlaying() && paStyleLsGet('pa-ui-rail-hidden') !== '1'){
+      document.body.classList.add('pa-ui-rail-hidden');
+      document.body.classList.add('pa-ui-rail-playback-hidden');
+    }
+  } catch(e){}
+}
+function paStyleBuildBar(){
+  try {
+    if(document.querySelector('.pf-style-bar')) return;
+    var main = document.querySelector('.lesson-main');
+    if(!main) return;
+    var bar = paStyleEl('div', 'pf-style-bar');
+    var toggle = paStyleEl('div', 'pf-style-toggle');
+    toggle.setAttribute('role', 'group');
+    toggle.setAttribute('aria-label', 'Lesson style');
+    var cur = paStyleGet() || 'list';
+    var listBtn = paStyleEl('button', null, 'List');
+    listBtn.type = 'button';
+    listBtn.setAttribute('data-pf-style', 'list');
+    listBtn.setAttribute('aria-pressed', cur === 'list' ? 'true' : 'false');
+    listBtn.addEventListener('click', function(){ paStyleChoose('list'); });
+    var canvasBtn = paStyleEl('button', null, 'Canvas');
+    canvasBtn.type = 'button';
+    canvasBtn.setAttribute('data-pf-style', 'canvas');
+    canvasBtn.setAttribute('aria-pressed', cur === 'canvas' ? 'true' : 'false');
+    canvasBtn.addEventListener('click', function(){ paStyleChoose('canvas'); });
+    toggle.appendChild(listBtn);
+    toggle.appendChild(canvasBtn);
+    bar.appendChild(toggle);
+    var opt = paStyleEl('label', 'pf-panel-hide-opt');
+    var box = document.createElement('input');
+    box.type = 'checkbox';
+    box.checked = paStyleLsGet(PA_STYLE_PANEL_KEY) !== '0';
+    box.addEventListener('change', function(){ paStylePanelOptChanged(box.checked); });
+    opt.appendChild(box);
+    opt.appendChild(document.createTextNode('Hide side panel while playing'));
+    bar.appendChild(opt);
+    main.insertBefore(bar, main.firstChild);
+  } catch(e){}
+}
+function paStyleBuildOption(style, name, desc){
+  var btn = paStyleEl('button', 'pf-style-option');
+  btn.type = 'button';
+  var prev;
+  var i;
+  if(style === 'list'){
+    prev = paStyleEl('div', 'pf-style-preview-list');
+    for(i = 0; i < 4; i++) prev.appendChild(paStyleEl('span', i === 1 ? 'pf-on' : null));
+  } else {
+    prev = paStyleEl('div', 'pf-style-preview-canvas');
+    for(i = 0; i < 3; i++) prev.appendChild(paStyleEl('span', i === 0 ? 'pf-on' : null));
+  }
+  prev.setAttribute('aria-hidden', 'true');
+  btn.appendChild(prev);
+  btn.appendChild(paStyleEl('div', 'pf-style-option-name', name));
+  btn.appendChild(paStyleEl('div', 'pf-style-option-desc', desc));
+  btn.addEventListener('click', function(){ paStyleChoose(style); });
+  return btn;
+}
+function paStyleBuildPicker(host, beforeNode){
+  try {
+    if(document.querySelector('.pf-style-picker')) return;
+    if(paStyleGet()) return;
+    var picker = paStyleEl('div', 'pf-style-picker');
+    picker.appendChild(paStyleEl('h2', 'pf-style-picker-title', 'How would you like to view lessons?'));
+    picker.appendChild(paStyleEl('p', 'pf-style-picker-sub', 'Pick a style. You can switch any time with the List and Canvas toggle at the top of a lesson.'));
+    var opts = paStyleEl('div', 'pf-style-options');
+    opts.appendChild(paStyleBuildOption('list', 'List', 'The lesson steps in a list, with the player card and the full text below.'));
+    opts.appendChild(paStyleBuildOption('canvas', 'Canvas', 'Visual scenes that follow the narration, in the Studio player.'));
+    picker.appendChild(opts);
+    if(beforeNode) host.insertBefore(picker, beforeNode);
+    else host.appendChild(picker);
+  } catch(e){}
+}
+function paStyleChapterPicker(){
+  try {
+    if(!paStyleIsChapter()) return;
+    if(paStyleGet()) return;
+    var main = document.querySelector('main');
+    if(!main) return;
+    var before = main.firstChild;
+    var h1 = main.querySelector('h1');
+    if(h1){
+      var card = h1.parentNode;
+      while(card && card !== main && !(card.classList && card.classList.contains('pf-card'))) card = card.parentNode;
+      if(card && card !== main && card.nextSibling) before = card.nextSibling;
+    }
+    paStyleBuildPicker(main, before);
+  } catch(e){}
+}
+function paStyleLessonPicker(){
+  try {
+    if(paStyleGet()) return;
+    var main = document.querySelector('.lesson-main');
+    if(!main) return;
+    var bar = main.querySelector('.pf-style-bar');
+    paStyleBuildPicker(main, bar ? bar.nextSibling : main.firstChild);
+  } catch(e){}
+}
+function paStyleAfterGate(lessonId, unlocked){
+  if(!lessonId) return;
+  paStyleMarkFlows();
+  if(!unlocked){
+    try { document.body.classList.remove('pf-style-list', 'pf-style-canvas'); } catch(e){}
+    return;
+  }
+  paStyleApply(paStyleGet() || 'list');
+  paStyleBuildBar();
+  paStyleLessonPicker();
+}
+(function paStyleProvisional(){
+  try {
+    if(paStyleIsLesson()){
+      paStyleMarkFlows();
+      if(paStyleGet() !== 'canvas') document.body.classList.add('pf-style-list');
+    } else if(paStyleIsChapter()){
+      paStyleChapterPicker();
+    }
+  } catch(e){}
+})();
