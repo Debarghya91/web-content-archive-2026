@@ -334,7 +334,8 @@ function paPaypalReady(){
    actually charged always comes from the server response in
    paRenderPaypalButtons. Never change these without the owner's
    approval, and keep them in step with the server price table. */
-var PA_USD_PRICES = {'part-1': '4.99', 'part-2': '4.99', 'part-3': '4.99',
+/* TEMP (live PayPal test): part-1 displays $0.50, matching the server test price. Restore to '4.99' after the test payment + refund. */
+var PA_USD_PRICES = {'part-1': '0.50', 'part-2': '4.99', 'part-3': '4.99',
   'part-4': '4.99', 'part-5': '4.99', 'part-6': '4.99', 'part-7': '4.99',
   'part-8': '4.99', 'part-9': '4.99', 'part-10': '4.99',
   'simulator': '5.99', 'investigation-lab': '5.99', 'studio': '9.99',
@@ -360,82 +361,6 @@ function paCheckoutStatus(msg){
   var er = document.getElementById('pa-checkout-error');
   if(er){ er.style.display = 'none'; er.textContent = ''; }
   if(st) st.textContent = msg;
-}
-/* ===== Referral codes and credit (15 Nov 2026, decided rules) ===== */
-/* The referral code and the use-credit choice are sent to the
-   server with the checkout request. A referral code gives the
-   buyer NO discount: when the purchase completes, the referrer
-   earns Rs 100 credit (PayU path). Referral credit applies only
-   to Practice Experiences, Interview Ready, and the Integrated
-   Course. Credit the buyer already earned can be spent on any
-   purchase by ticking the box. Nothing is computed in the
-   browser: every amount shown comes from the server response.
-   Error codes come from the server catalog (REFERRAL_INVALID,
-   REFERRAL_SELF, REFERRAL_ALREADY_USED, REFERRAL_NOT_ELIGIBLE);
-   each maps to one plain message below. A referral_status of
-   "unavailable" means the referral tables are not set up yet:
-   checkout continues at full price and the page says so,
-   instead of blocking. */
-function paReferralCode(){
-  try {
-    var el = document.getElementById('pa-referral-code');
-    return el ? String(el.value || '').trim().toUpperCase() : '';
-  } catch(e){ return ''; }
-}
-function paUseCredit(){
-  try {
-    var el = document.getElementById('pa-use-credit');
-    return !!(el && el.checked);
-  } catch(e){ return false; }
-}
-function paReferralErrorMessage(code){
-  if(code === 'REFERRAL_INVALID') return 'That referral code is not valid. Check the code and try again, or continue without a code.';
-  if(code === 'REFERRAL_SELF') return 'You cannot use your own referral code.';
-  if(code === 'REFERRAL_ALREADY_USED') return 'Your account has already used a referral code. Only one referral code is allowed per account.';
-  if(code === 'REFERRAL_NOT_ELIGIBLE') return 'Referral codes apply only to Practice Experiences, Interview Ready, and the Integrated Course. This product does not earn referral credit.';
-  if(code === 'REFERRAL_CHECK_FAILED') return 'The referral code could not be checked. Please try again.';
-  if(code === 'amount_zero') return 'The discount covers the full price of this course. Please choose another course or contact support.';
-  return '';
-}
-function paReferralStatus(msg){
-  var el = document.getElementById('pa-referral-status');
-  if(el) el.textContent = msg || '';
-}
-function paLoadCheckoutCredit(uid){
-  /* Show the signed-in buyer's referral credit balance, read
-     directly from referral_credits (own rows only, under RLS).
-     Any failure hides the line: the tables may not exist yet,
-     and a missing balance must never block checkout. */
-  var line = document.getElementById('pa-credit-balance');
-  if(!line || !uid) return;
-  if(typeof paAuthAccessToken !== 'function') return;
-  if(typeof PA_AUTH_CONFIG === 'undefined' || !PA_AUTH_CONFIG.supabaseUrl || !PA_AUTH_CONFIG.supabaseAnonKey) return;
-  paAuthAccessToken().then(function(token){
-    if(!token) return;
-    var url = String(PA_AUTH_CONFIG.supabaseUrl).replace(/\/+$/, '') +
-      '/rest/v1/referral_credits?select=amount_minor,currency,status,hold_expires_at&user_id=eq.' + encodeURIComponent(uid);
-    fetch(url, {headers: {'apikey': PA_AUTH_CONFIG.supabaseAnonKey, 'Authorization': 'Bearer ' + token, 'Accept': 'application/json'}})
-      .then(function(r){ return r.ok ? r.json() : null; })
-      .then(function(rows){
-        if(!rows || !rows.length) return;
-        var now = Date.now(), inr = 0, usd = 0;
-        rows.forEach(function(row){
-          if(!row) return;
-          var spendable = row.status === 'available' ||
-            (row.status === 'held' && row.hold_expires_at && Date.parse(row.hold_expires_at) <= now);
-          if(!spendable) return;
-          if(row.currency === 'INR') inr += Number(row.amount_minor) || 0;
-          if(row.currency === 'USD') usd += Number(row.amount_minor) || 0;
-        });
-        var parts = [];
-        if(inr > 0) parts.push('Rs ' + (inr / 100).toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2}));
-        if(usd > 0) parts.push('$' + (usd / 100).toFixed(2));
-        if(parts.length){
-          line.style.display = 'block';
-          line.textContent = 'Your referral credit: ' + parts.join(' and ') + '. Tick the box to use it on this purchase.';
-        }
-      }).catch(function(){});
-  }).catch(function(){});
 }
 function paRenderCheckoutSummary(){
   var box = document.getElementById('pa-order-summary');
@@ -527,7 +452,7 @@ function paStartPayuCheckout(bid){
     fetch(PA_CHECKOUT_CONFIG.payu_create_payment_url, {
       method: 'POST',
       headers: {'Content-Type': 'application/json', 'apikey': PA_AUTH_CONFIG.supabaseAnonKey, 'Authorization': 'Bearer ' + token},
-      body: JSON.stringify({bundle_id: bid, referral_code: paReferralCode(), use_credit: paUseCredit()})
+      body: JSON.stringify({bundle_id: bid})
     }).then(function(r){
       return r.json().then(function(data){ return {ok: r.ok, data: data}; });
     }).then(function(res){
@@ -535,19 +460,10 @@ function paStartPayuCheckout(bid){
       if(payuTimedOut){ return; }
       var data = res.data || {};
       if(!res.ok || !data.action_url || !data.fields || typeof data.fields !== 'object'){
-        var msg = paReferralErrorMessage(data.code);
+        var msg = (data.code === 'amount_zero') ? 'The discount covers the full price of this course. Please choose another course or contact support.' : '';
         paCheckoutFail(msg || 'Could not start the PayU payment. Please try again.');
         if(btn) btn.disabled = false;
         return;
-      }
-      /* The referral code gives the buyer no discount: the
-         referrer earns credit when the purchase completes. The
-         amounts shown come from the server response only. */
-      if(data.referral_applied){
-        paCheckoutStatus('Referral code applied. The referrer earns Rs 100 credit when your purchase completes. Total Rs ' + String(data.charged_amount || '') + '. Taking you to the PayU payment page.');
-        paReferralStatus('Referral code ' + String(data.referral_code || '') + ' applied.');
-      } else if(data.referral_status === 'unavailable' && paReferralCode()){
-        paReferralStatus('Referral codes are not available right now. Continuing at full price.');
       }
       /* PayU hosted checkout: build the hidden form from the server
          fields and auto-submit it to the server action URL. */
@@ -604,38 +520,22 @@ function paRenderPaypalButtons(bid){
         return fetch(PA_CHECKOUT_CONFIG.paypal_create_order_url, {
           method: 'POST',
           headers: {'Content-Type': 'application/json', 'apikey': PA_AUTH_CONFIG.supabaseAnonKey, 'Authorization': 'Bearer ' + token},
-          body: JSON.stringify({bundle_id: bid, referral_code: paReferralCode(), use_credit: paUseCredit()})
+          body: JSON.stringify({bundle_id: bid})
         });
       }).then(function(r){
         return r.json().then(function(data){ return {ok: r.ok, data: data}; });
       }).then(function(res){
         var data = res.data || {};
         if(!res.ok || !data.order_id){
-          var msg = paReferralErrorMessage(data.code);
+          var msg = (data.code === 'amount_zero') ? 'The discount covers the full price of this course. Please choose another course or contact support.' : '';
           paCheckoutFail(msg || 'Could not start the PayPal payment. Please try again.');
           throw new Error('order failed');
         }
         /* The amount shown is the server-returned amount only. No USD
-           amount is hardcoded anywhere on this page. The discount
-           breakdown comes from the server response. */
+           amount is hardcoded anywhere on this page. */
         var amt = document.getElementById('pa-paypal-amount');
         if(amt && data.amount != null){
-          var line = 'Total: ' + String(data.amount) + ' ' + (data.currency || 'USD');
-          if(data.referral_applied){
-            line += ' (list ' + String(data.list_amount || '') + ', $' +
-              Number(data.referral_discount || 0).toFixed(2) + ' referral discount applied';
-            if(Number(data.credit_applied || 0) > 0){
-              line += ', $' + Number(data.credit_applied || 0).toFixed(2) + ' credit applied';
-            }
-            line += ')';
-            paReferralStatus('Referral code ' + String(data.referral_code || '') + ' applied.');
-          } else if(Number(data.credit_applied || 0) > 0){
-            line += ' (list ' + String(data.list_amount || '') + ', $' +
-              Number(data.credit_applied || 0).toFixed(2) + ' credit applied)';
-          } else if(data.referral_status === 'unavailable' && paReferralCode()){
-            paReferralStatus('Referral codes are not available right now. Continuing at full price.');
-          }
-          amt.textContent = line;
+          amt.textContent = 'Total: ' + String(data.amount) + ' ' + (data.currency || 'USD');
         }
         return data.order_id;
       });
@@ -677,8 +577,7 @@ function paRenderPaypalButtons(bid){
    the proof. Product ids sent here are the full store ids
    (com.paymentstraininghub.app.<bundle>), matching App Store and
    Play purchases, so one purchase row means the same product on
-   every surface. Referral codes do not apply to this path: the
-   claim carries no referral code. */
+   every surface. */
 var PA_UPI_ID = 'deb.arghya@ptyes';
 var PA_UPI_PRODUCT_PREFIX = 'com.paymentstraininghub.app.';
 function paUpiUri(bid, amount){
@@ -901,7 +800,6 @@ function paInitCheckout(){
       return;
     }
     if(signin) signin.style.display = 'none';
-    paLoadCheckoutCredit(uid);
     paUpiRender(bid, uid);
     if(paPayuReady()){
       if(payuBtn) payuBtn.disabled = false;
