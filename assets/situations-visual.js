@@ -316,6 +316,45 @@
       return '<p class="' + cls + '">' + esc(p) + '</p>';
     }).join('');
   }
+  /* ---------- Explain section labels (17 Nov 2026) ----------
+     The explain text of every situation is written in labelled
+     parts: a flow label before the arrow sequence, a quote label
+     before the requirement or assumption, "Why?" before the
+     reason, "BA Takeaway" before the takeaway, and "Keep these
+     controls separate:" before the takeaway list. The labels are
+     literal paragraphs in the data, so they render as small bold
+     italic headings; nothing is added where the data carries no
+     label, and no situation text is changed. The quote label
+     shares its paragraph with the quote, so only the label words
+     take the bold italic treatment and the quote stays untouched. */
+  var SIT_FLOW_LABELS = [
+    "Here's how that happens:",
+    'Here is how that happens:',
+    'Here is how it happens:',
+    "Here's how it happened:",
+    'Here is what happened:'
+  ];
+  var SIT_PART_LABELS = SIT_FLOW_LABELS.concat(['Why?', 'BA Takeaway', 'Keep these controls separate:']);
+  var SIT_QUOTE_PREFIXES = ['The requirement said:', 'The assumption was:', 'The assumption said:', 'The instruction was:'];
+  function isSitPartLabel(p) {
+    return SIT_PART_LABELS.indexOf(p) !== -1;
+  }
+  function sitQuotePrefix(p) {
+    for (var i = 0; i < SIT_QUOTE_PREFIXES.length; i++) {
+      if (p.indexOf(SIT_QUOTE_PREFIXES[i]) === 0) return SIT_QUOTE_PREFIXES[i];
+    }
+    return '';
+  }
+  function explainHtml(text) {
+    var paras = explainParas(text);
+    if (!paras.length) paras = [String(text || '')];
+    return paras.map(function (p) {
+      if (isSitPartLabel(p)) return '<h5 class="sit-explain-label">' + esc(p) + '</h5>';
+      var q = sitQuotePrefix(p);
+      if (q) return '<p class="sit-explain"><b><i>' + esc(q) + '</i></b>' + esc(p.slice(q.length)) + '</p>';
+      return '<p class="sit-explain">' + esc(p) + '</p>';
+    }).join('');
+  }
   function capFirst(s) {
     s = String(s || '');
     return s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
@@ -403,7 +442,7 @@
     }
     if (item.explain) {
       html += '<h4 class="sit-case-label">What is happening</h4>';
-      html += paraHtml(item.explain, 'sit-explain');
+      html += explainHtml(item.explain);
     }
     html += '<h4 class="sit-case-label">Visual investigation</h4>';
     html += '<div class="sit-visual" data-sit-type="' + esc(type) + '">' + visual + '</div>';
