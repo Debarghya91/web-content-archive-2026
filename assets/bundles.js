@@ -259,9 +259,11 @@ function paStartRazorpayCheckout(bid){
    keys arrive: with empty or missing config every button stays disabled
    and the page says so in plain words. Payment requires sign-in: the
    server needs the Supabase JWT. Prices are never trusted from the
-   client: the server reads them from bundles.json. There is no manual
-   UPI flow here: UPI is offered only inside PayU hosted checkout (UPI
-   apps, cards, netbanking). No purchase is ever marked in
+   client: the server reads them from bundles.json. Direct UPI payment
+   lives in its own section below (17 Nov 2026): the buyer pays the
+   owner's UPI ID and submits the UPI reference, and the claim is
+   verified by hand. UPI is also offered inside PayU hosted checkout
+   once PayU is live. No purchase is ever marked in
    localStorage and no access is granted from this page: access is
    granted only after the server verifies the payment. */
 var PA_CHECKOUT_CONFIG = (function(){
@@ -600,6 +602,171 @@ function paRenderPaypalButtons(bid){
     onError: function(){ paCheckoutFail('The PayPal payment failed. Please try again.'); }
   }).render(host);
 }
+/* ===== Direct UPI payment (live, 17 Nov 2026) ===== */
+/* The buyer pays the exact course price straight to the owner's UPI
+   ID, from any UPI app, then submits the UTR on this page. The claim
+   is stored in Supabase (payment_claims, status pending) under the
+   buyer's own account: nothing is stored only in the browser, and
+   submitting a UTR NEVER unlocks anything. Only the admin, after
+   checking the payment in their UPI app or bank statement, verifies
+   the claim through the verify-upi-claim Edge Function, which is
+   what records the purchase. The admin reviews claims on claims.html.
+   No screenshot is asked for and none is sent anywhere: the UTR is
+   the proof. Product ids sent here are the full store ids
+   (com.paymentstraininghub.app.<bundle>), matching App Store and
+   Play purchases, so one purchase row means the same product on
+   every surface. Referral codes do not apply to this path: the
+   claim carries no referral code. */
+var PA_UPI_ID = 'deb.arghya@ptyes';
+var PA_UPI_PRODUCT_PREFIX = 'com.paymentstraininghub.app.';
+function paUpiUri(bid, amount){
+  return 'upi://pay?pa=' + PA_UPI_ID + '&pn=Payments%20Training%20Hub' +
+    '&am=' + String(amount) + '&cu=INR&tn=' + encodeURIComponent(bid);
+}
+function paUpiProductId(bid){ return PA_UPI_PRODUCT_PREFIX + bid; }
+function paUpiShortProduct(pid){
+  return String(pid || '').replace(PA_UPI_PRODUCT_PREFIX, '');
+}
+function paUpiStatusText(status){
+  if(status === 'verified') return 'Verified: access granted.';
+  if(status === 'rejected') return 'Rejected: the payment could not be matched. Check the UTR and submit again, or contact support.';
+  return 'Pending verification: the payment is being checked by hand.';
+}
+function paUpiRender(bid, uid){
+  var area = document.getElementById('pa-upi-pay-area');
+  var note = document.getElementById('pa-upi-note');
+  var claims = document.getElementById('pa-upi-claims');
+  if(!area) return;
+  if(!bid){
+    area.style.display = 'none';
+    if(note) note.textContent = 'Pick a course first.';
+    if(claims) claims.innerHTML = '';
+    return;
+  }
+  var b = paCheckoutBundle(bid);
+  if(!b || b.price_placeholder){
+    area.style.display = 'none';
+    if(note) note.textContent = 'This course is not on sale yet, so there is no payment step.';
+    if(claims) claims.innerHTML = '';
+    return;
+  }
+  if(!uid){
+    area.style.display = 'none';
+    if(note) note.textContent = 'Sign in to pay with UPI. The payment is linked to your account.';
+    if(claims) claims.innerHTML = '';
+    return;
+  }
+  var qr = document.getElementById('pa-upi-qr');
+  if(qr) qr.src = 'assets/upi-qr/' + bid + '.png';
+  var intent = document.getElementById('pa-upi-intent');
+  if(intent) intent.href = paUpiUri(bid, b.price_inr);
+  var amt = document.getElementById('pa-upi-amount-note');
+  if(amt) amt.textContent = 'Pay exactly Rs ' + Number(b.price_inr).toLocaleString('en-IN') + ' to ' + PA_UPI_ID + '. Scan the code or tap the button above; the amount and course are already filled in.';
+  if(note) note.textContent = '';
+  area.style.display = 'block';
+  paUpiLoadClaims(uid);
+}
+function paUpiLoadClaims(uid){
+  var host = document.getElementById('pa-upi-claims');
+  if(!host || !uid) return;
+  if(typeof paAuthAccessToken !== 'function') return;
+  if(typeof PA_AUTH_CONFIG === 'undefined' || !PA_AUTH_CONFIG.supabaseUrl || !PA_AUTH_CONFIG.supabaseAnonKey) return;
+  paAuthAccessToken().then(function(token){
+    if(!token) return;
+    var url = String(PA_AUTH_CONFIG.supabaseUrl).replace(/\/+$/, '') +
+      '/rest/v1/payment_claims?select=id,product_id,amount,utr,status,submitted_at&user_id=eq.' + encodeURIComponent(uid) +
+      '&order=submitted_at.desc&limit=5';
+    fetch(url, {headers: {'apikey': PA_AUTH_CONFIG.supabaseAnonKey, 'Authorization': 'Bearer ' + token, 'Accept': 'application/json'}})
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(rows){
+        host.innerHTML = '';
+        if(!rows || !rows.length) return;
+        var h = document.createElement('h4');
+        h.textContent = 'Your payment submissions';
+        host.appendChild(h);
+        rows.forEach(function(row){
+          var div = document.createElement('div');
+          div.className = 'pa-upi-claim';
+          var p1 = document.createElement('p');
+          var b = paCheckoutBundle(paUpiShortProduct(row.product_id));
+          p1.textContent = (b ? b.name : paUpiShortProduct(row.product_id)) + '  Rs ' + Number(row.amount).toLocaleString('en-IN');
+          div.appendChild(p1);
+          var p2 = document.createElement('p');
+          p2.textContent = 'UTR: ' + String(row.utr || '') + '  ' + paUpiStatusText(row.status);
+          div.appendChild(p2);
+          var p3 = document.createElement('p');
+          var d = row.submitted_at ? new Date(row.submitted_at) : null;
+          p3.textContent = 'Submitted ' + (d && !isNaN(d.getTime()) ? d.toLocaleString('en-IN') : '');
+          div.appendChild(p3);
+          host.appendChild(div);
+        });
+      }).catch(function(){});
+  }).catch(function(){});
+}
+function paUpiSubmit(){
+  var st = document.getElementById('pa-upi-status');
+  function say(msg){ if(st) st.textContent = msg; }
+  var bid = paCheckoutBundleId();
+  if(!bid){ say('Pick a course first.'); return; }
+  var b = paCheckoutBundle(bid);
+  if(!b || b.price_placeholder){ say('This course is not on sale yet.'); return; }
+  var utrEl = document.getElementById('pa-upi-utr');
+  var utr = utrEl ? String(utrEl.value || '').replace(/\s+/g, '') : '';
+  if(utr.length < 6 || utr.length > 32){ say('Enter the transaction reference (UTR) from your UPI app. It is usually 12 digits.'); return; }
+  var nameEl = document.getElementById('pa-upi-name');
+  var payerName = nameEl ? String(nameEl.value || '').trim().slice(0, 80) : '';
+  if(typeof paAuthCurrentUserId !== 'function' || typeof paAuthAccessToken !== 'function'){
+    say('Sign-in is not available. Please try again later.'); return;
+  }
+  var btn = document.getElementById('pa-upi-submit');
+  if(btn) btn.disabled = true;
+  say('Submitting your payment proof.');
+  paAuthCurrentUserId().then(function(uid){
+    if(!uid){ say('Sign in first so the payment is linked to your account.'); if(btn) btn.disabled = false; return; }
+    return paAuthAccessToken().then(function(token){
+      if(!token){ say('Sign in first so the payment is linked to your account.'); if(btn) btn.disabled = false; return; }
+      var url = String(PA_AUTH_CONFIG.supabaseUrl).replace(/\/+$/, '') + '/rest/v1/payment_claims';
+      return fetch(url, {
+        method: 'POST',
+        headers: {'apikey': PA_AUTH_CONFIG.supabaseAnonKey, 'Authorization': 'Bearer ' + token,
+                  'Content-Type': 'application/json', 'Prefer': 'return=representation'},
+        body: JSON.stringify({user_id: uid, product_id: paUpiProductId(bid),
+          amount: Number(b.price_inr), utr: utr, payer_name: payerName || null, status: 'pending'})
+      }).then(function(r){
+        return r.json().then(function(data){ return {ok: r.ok, data: data}; }).catch(function(){ return {ok: r.ok, data: null}; });
+      }).then(function(res){
+        if(!res.ok){
+          say('Could not submit your payment proof. Please try again.');
+          if(btn) btn.disabled = false;
+          return;
+        }
+        var row = Array.isArray(res.data) ? res.data[0] : res.data;
+        var cid = row && row.id ? String(row.id) : '';
+        say('Payment received, access will be granted after verification.' + (cid ? ' Claim id: ' + cid + '. Keep your UTR safe.' : ''));
+        if(utrEl) utrEl.value = '';
+        if(btn) btn.disabled = false;
+        paUpiLoadClaims(uid);
+      });
+    });
+  }).catch(function(){
+    say('Could not submit your payment proof. Check your connection and try again.');
+    if(btn) btn.disabled = false;
+  });
+}
+function paUpiCopyId(){
+  var done = document.getElementById('pa-upi-copy-status');
+  function ok(){ if(done) done.textContent = 'Copied.'; }
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(PA_UPI_ID).then(ok, function(){ if(done) done.textContent = ''; });
+  } else {
+    var ta = document.createElement('textarea');
+    ta.value = PA_UPI_ID;
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); ok(); } catch(e){}
+    document.body.removeChild(ta);
+  }
+}
 function paInitCheckout(){
   /* P0 fix 13 Nov 2026: the gate must name the id payment_html
      actually puts on the checkout section (id="payment"). It
@@ -608,6 +775,10 @@ function paInitCheckout(){
      never initialised. id="payment" stays: enrolBundle scrolls
      to it and the homepage stylesheet styles it. */
   if(!document.getElementById('payment')) return;
+  var upiSubmit = document.getElementById('pa-upi-submit');
+  if(upiSubmit && !upiSubmit.dataset.paBound){ upiSubmit.dataset.paBound = '1'; upiSubmit.addEventListener('click', paUpiSubmit); }
+  var upiCopy = document.getElementById('pa-upi-copy');
+  if(upiCopy && !upiCopy.dataset.paBound){ upiCopy.dataset.paBound = '1'; upiCopy.addEventListener('click', paUpiCopyId); }
   var bid = paRenderCheckoutSummary();
   var payuBtn = document.getElementById('pa-payu-pay');
   var payuNote = document.getElementById('pa-payu-note');
@@ -616,6 +787,7 @@ function paInitCheckout(){
     if(payuBtn) payuBtn.disabled = true;
     if(payuNote) payuNote.textContent = 'Pick a course first.';
     if(paypalNote) paypalNote.textContent = 'Pick a course first.';
+    paUpiRender('', null);
     return;
   }
   var b = paCheckoutBundle(bid);
@@ -623,12 +795,14 @@ function paInitCheckout(){
     if(payuBtn) payuBtn.disabled = true;
     if(payuNote) payuNote.textContent = 'This course is not on sale yet, so there is no payment step.';
     if(paypalNote) paypalNote.textContent = 'This course is not on sale yet, so there is no payment step.';
+    paUpiRender(bid, null);
     return;
   }
   if(typeof paAuthCurrentUserId !== 'function'){
     if(payuBtn) payuBtn.disabled = true;
     if(payuNote) payuNote.textContent = 'Sign-in is not available. Please try again later.';
     if(paypalNote) paypalNote.textContent = 'Sign-in is not available. Please try again later.';
+    paUpiRender(bid, null);
     return;
   }
   paAuthCurrentUserId().then(function(uid){
@@ -638,10 +812,12 @@ function paInitCheckout(){
       if(payuBtn) payuBtn.disabled = true;
       if(payuNote) payuNote.textContent = 'Sign in to pay. The payment is linked to your account.';
       if(paypalNote) paypalNote.textContent = 'Sign in to pay with PayPal.';
+      paUpiRender(bid, null);
       return;
     }
     if(signin) signin.style.display = 'none';
     paLoadCheckoutCredit(uid);
+    paUpiRender(bid, uid);
     if(paPayuReady()){
       if(payuBtn) payuBtn.disabled = false;
       if(payuNote) payuNote.textContent = 'You will be taken to the PayU payment page to complete the payment.';
