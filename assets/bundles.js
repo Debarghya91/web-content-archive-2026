@@ -334,8 +334,7 @@ function paPaypalReady(){
    actually charged always comes from the server response in
    paRenderPaypalButtons. Never change these without the owner's
    approval, and keep them in step with the server price table. */
-/* TEMP (live PayPal test): group-1 displays $0.50, matching the server test price. Restore to '8.99' after the test payment + refund. */
-var PA_USD_PRICES = {'group-1': '0.50', 'group-2': '8.99', 'group-3': '8.99', 'group-4': '8.99', 'group-5': '8.99', 'simulator': '5.99', 'investigation-lab': '5.99', 'studio': '9.99', 'practice': '11.99', 'interview': '18.99', 'integrated': '24.99'};
+var PA_USD_PRICES = {'group-1': '8.99', 'group-2': '8.99', 'group-3': '8.99', 'group-4': '8.99', 'group-5': '8.99', 'simulator': '5.99', 'investigation-lab': '5.99', 'studio': '9.99', 'practice': '11.99', 'interview': '18.99', 'integrated': '24.99'};
 function paRenderPaypalAmount(bid){
   var amt = document.getElementById('pa-paypal-amount');
   if(!amt) return;
