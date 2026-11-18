@@ -8,7 +8,7 @@
    the focus mode that used to collapse the panels around an
    in-page detail is gone.
    Gating: the catalogue marks each row Locked unless the case is a
-   free sample (ABH-01, JEB-C01) or paHasSituationsAccess() passes
+   free sample (CASE-001, CASE-196) or paHasSituationsAccess() passes
    (admin, or an active unexpired practice or integrated purchase,
    from bundles.js, the single source). Until the Supabase
    entitlement check resolves, every non-sample row renders locked
@@ -47,10 +47,10 @@ var PA_SIT_PROGRESS_KEY = 'pa-situations-progress-v1';
    themselves. Nothing else sets a state: opening is never proof of
    mastery. */
 var PA_SIT_MASTERY_ORDER = ['read', 'understood', 'practised', 'reviewed'];
-/* Free samples (settled access model, mirrors the apps): ABH-01 and
-   JEB-C01 only. The 10 static samples in the page intro are
+/* Free samples (settled access model, mirrors the apps): CASE-001 and
+   CASE-196 only. The 10 static samples in the page intro are
    marketing copy and are untouched by this gate. */
-var PA_SIT_FREE_SAMPLES = ['ABH-01', 'JEB-C01'];
+var PA_SIT_FREE_SAMPLES = ['CASE-001', 'CASE-196'];
 function paSitHasAccess(){
   try {
     if(typeof paHasSituationsAccess === 'function') return !!paHasSituationsAccess();

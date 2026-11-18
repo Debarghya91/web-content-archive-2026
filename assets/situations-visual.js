@@ -264,12 +264,11 @@
   function sourceLabel(item) {
     /* Learner-facing source labels show the evidence type only, never
        a person name. The shipped data already carries the evidence
-       type; the name check below covers raw data used in development.
+       type.
        The source id and URL stay in the internal source_ref field. */
     var s = String(item.source || '').toLowerCase();
     if (s === 'article and reader comments') return 'Article and reader comments';
     if (s === 'public post') return 'Public post';
-    if (s.indexOf('paiementor') !== -1) return 'Article and reader comments';
     if (s) return 'Public post';
     return '';
   }

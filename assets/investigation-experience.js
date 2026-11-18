@@ -13,8 +13,8 @@
 
   /* ================= Pure derivation (no DOM) ================= */
 
-  var SAMPLE_IDS = ['ABH-01', 'ABH-04', 'JEB-C01', 'ABH-10', 'INS-086',
-    'ABH-03', 'INS-033', 'INS-135', 'SCN-26', 'SCN-28'];
+  var SAMPLE_IDS = ['CASE-001', 'CASE-003', 'CASE-196', 'CASE-200', 'CASE-257',
+    'CASE-256', 'CASE-379', 'CASE-396', 'CASE-449', 'CASE-499'];
   var STORAGE_KEY = 'pth-investigation-v1';
   var CURRENCIES = ['EUR', 'USD', 'GBP', 'INR', 'JPY', 'CHF', 'AUD',
     'CAD', 'SGD', 'HKD', 'AED'];
@@ -704,7 +704,7 @@
     /* One log item per case, with one line per flow step. Each
        line carries the same sequence label as the matching
        timeline event, because both builders index the same flow
-       steps through sequenceLabel. ABH-01 keeps its hand-written
+       steps through sequenceLabel. CASE-001 keeps its hand-written
        marker and body text; its lines are the same step texts,
        aligned, instead of a shorter list that omitted the first
        step and shifted every label by one. */
@@ -713,12 +713,12 @@
       if (li === 0) line += ' Amount: ' + amountPhrase(ctx.header) + '.';
       return line + ' (SAMPLE)';
     });
-    var logBody = ctx.itemId === 'ABH-01'
+    var logBody = ctx.itemId === 'CASE-001'
       ? 'Hand-written for this case from the case text. Illustrative sequence log (SAMPLE). Sequence numbers only; no clock times.'
       : 'Illustrative sequence log (SAMPLE). Sequence numbers only; no clock times. Each line carries the same sequence label as the matching timeline event.';
     var logItem = makeEvidence('ev-log', 'log', 'Processing log',
-      logBody, logLines, ctx.itemId === 'ABH-01' ? 'authored' : 'template', 0);
-    if (ctx.itemId === 'ABH-01') logItem.authored = true;
+      logBody, logLines, ctx.itemId === 'CASE-001' ? 'authored' : 'template', 0);
+    if (ctx.itemId === 'CASE-001') logItem.authored = true;
     push(logItem);
     if (ctx.hasApi) {
       var apiLines = [

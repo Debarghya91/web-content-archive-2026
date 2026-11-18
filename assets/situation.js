@@ -11,7 +11,7 @@
    #sit-content, which this page keeps). Previous and Next move to
    the neighbouring case in the data order.
    Gating is unchanged and single-sourced in bundles.js: a case
-   shows in full only when it is a free sample (ABH-01, JEB-C01, the
+   shows in full only when it is a free sample (CASE-001, CASE-196, the
    same list as situations.js) or paHasSituationsAccess() passes
    (admin, or an active unexpired practice or integrated purchase).
    Every other case shows the locked view only, and until the
@@ -29,9 +29,9 @@ var PA_SIT_PROGRESS_KEY = 'pa-situations-progress-v1';
 var PA_SIT_MASTERY_ORDER = ['read', 'understood', 'practised', 'reviewed'];
 var PA_SIT_MASTERY_LABELS = {read: 'Read', understood: 'Understood', practised: 'Practised', reviewed: 'Reviewed'};
 /* Free samples (settled access model, mirrors the apps and the list
-   page): ABH-01 and JEB-C01 only. Keep this list identical to
+   page): CASE-001 and CASE-196 only. Keep this list identical to
    PA_SIT_FREE_SAMPLES in situations.js. */
-var PA_SIT_FREE_SAMPLES = ['ABH-01', 'JEB-C01'];
+var PA_SIT_FREE_SAMPLES = ['CASE-001', 'CASE-196'];
 function paSitHasAccess(){
   try {
     if(typeof paHasSituationsAccess === 'function') return !!paHasSituationsAccess();
@@ -336,6 +336,7 @@ document.addEventListener('DOMContentLoaded', function(){
   var id = '';
   try { id = new URLSearchParams(window.location.search).get('id') || ''; } catch(e){ id = ''; }
   PA_CASE_ID = (id || '').trim();
+  try { var _legacy = window.PA_LEGACY_CASE_IDS || {}; if (_legacy[PA_CASE_ID]) { PA_CASE_ID = _legacy[PA_CASE_ID]; try { history.replaceState(null, '', 'situation?id=' + encodeURIComponent(PA_CASE_ID)); } catch(e2){} } } catch(e){}
   if(!PA_CASE_ID){
     box.innerHTML = '<p class="sit-note">No situation was selected. <a href="situations">Back to the situations list</a>.</p>';
     var prev = document.getElementById('sit-prev');
