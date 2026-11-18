@@ -198,18 +198,21 @@ function paUiStyles(){
   var css = [
     'body.pa-ui-rail-hidden .course-rail{display:none;}',
     'body.pa-ui-rail-hidden .lesson-shell{grid-template-columns:minmax(0,1fr) auto;}',
-    '.pa-ui-rail-restore{display:none;position:fixed;left:0;top:160px;z-index:140;background:#FFFFFF;border:1px solid #E8EDF5;border-left:0;border-radius:0 10px 10px 0;box-shadow:4px 2px 12px rgba(13,28,56,.18);padding:10px 12px;font-size:14px;color:#0D1C38;cursor:pointer;white-space:nowrap;}',
-    'body.pa-ui-rail-hidden .pa-ui-rail-restore{display:inline-block;}',
+    '.pa-ui-rail-restore{display:none;position:fixed;left:12px;top:148px;z-index:140;width:40px;height:40px;box-sizing:border-box;align-items:center;justify-content:center;background:#FFFFFF;border:1px solid #E8EDF5;border-radius:10px;box-shadow:0 2px 10px rgba(13,28,56,.16);padding:0;color:#0D1C38;cursor:pointer;}',
+    'body.pa-ui-rail-hidden .pa-ui-rail-restore{display:inline-flex;}',
     '.pa-ui-rail-collapse{background:none;border:0;color:#0056D2;cursor:pointer;font-size:14px;padding:4px 6px;white-space:nowrap;}',
     '.pa-ui-rail-collapse:hover{text-decoration:underline;}',
     '@media (min-width:1024px){',
     'body.pa-ui-drawer-hidden #pfDrawer.pf-drawer{display:none;}',
     'body.pf-has-drawer.pa-ui-drawer-hidden{padding-left:0;}',
     'body.pa-ui-drawer-hidden .pa-ui-drawer-restore{display:inline-flex;}',
-    '.pa-ui-rail-restore{left:360px;}',
-    'body.pa-ui-drawer-hidden .pa-ui-rail-restore{left:0;}',
+    '.pa-ui-rail-restore{left:372px;}',
+    'body.pa-ui-drawer-hidden .pa-ui-rail-restore{left:12px;}',
     '}',
-    '.pa-ui-drawer-restore{display:none;position:fixed;left:0;top:96px;z-index:140;align-items:center;background:#0D1C38;color:#fff;border:0;border-radius:0 10px 10px 0;padding:10px 12px;font-size:14px;cursor:pointer;box-shadow:4px 2px 12px rgba(13,28,56,.25);}',
+    '.pa-ui-drawer-restore{display:none;position:fixed;left:12px;top:96px;z-index:140;width:40px;height:40px;box-sizing:border-box;align-items:center;justify-content:center;background:#0D1C38;color:#fff;border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:0;cursor:pointer;box-shadow:0 2px 10px rgba(13,28,56,.25);}',
+    '.pa-ui-drawer-restore svg,.pa-ui-rail-restore svg{width:20px;height:20px;display:block;}',
+    '.pa-ui-drawer-restore:hover,.pa-ui-rail-restore:hover{box-shadow:0 4px 16px rgba(13,28,56,.24);}',
+    '.pa-ui-drawer-restore:focus-visible,.pa-ui-rail-restore:focus-visible{outline:2px solid #0056D2;outline-offset:2px;}',
     '.pa-ui-drawer-collapse{margin-left:auto;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.30);color:#fff;border-radius:8px;padding:4px 8px;font-size:12px;cursor:pointer;white-space:nowrap;}',
     '.pa-ui-now-playing{position:sticky;top:0;z-index:140;display:flex;align-items:center;gap:10px;height:44px;box-sizing:border-box;padding:0 12px;background:#0D1C38;color:#FFFFFF;font-size:14px;}',
     '.pa-ui-now-playing[hidden]{display:none;}',
@@ -221,7 +224,8 @@ function paUiStyles(){
     'html.pf-dark .pa-ui-now-playing{background:#111827;color:#E5E7EB;border-bottom:1px solid #374151;}',
     'html.pf-dark .pa-ui-now-playing .pa-ui-np-title{color:#9CA3AF;}',
     'html.pf-dark .pa-ui-rail-collapse{color:#93C5FD;}',
-    'html.pf-dark .pa-ui-rail-restore{background:#111827;border-color:#374151;color:#E5E7EB;}'
+    'html.pf-dark .pa-ui-rail-restore{background:#111827;border-color:#374151;color:#E5E7EB;}',
+    'html.pf-dark .pa-ui-drawer-restore{background:#1F2937;border-color:#374151;color:#E5E7EB;}'
   ].join('\n');
   var st = document.createElement('style');
   st.id = 'pa-ui-styles';
@@ -251,7 +255,7 @@ function paUiInitPanels(){
     });
     railHead.appendChild(hide);
   }
-  /* Restore is a fixed edge tab, not an in-flow button: the lesson
+  /* Restore is a fixed floating icon button, not an in-flow button: the lesson
      title row is hidden on locked lessons and gating hides children
      of .lesson-main, so no in-flow host is reliably visible. The tab
      sits below the drawer restore tab and is reachable from any
@@ -260,8 +264,9 @@ function paUiInitPanels(){
     var show = document.createElement('button');
     show.type = 'button';
     show.className = 'pa-ui-rail-restore';
-    show.textContent = 'Show chapter panel';
+    show.innerHTML = '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="14" height="12" rx="2"/><path d="M8 4v12" stroke-linecap="round"/></svg>';
     show.setAttribute('aria-label', 'Show the chapter panel');
+    show.title = 'Show chapter panel';
     show.addEventListener('click', function(){
       paUiLsSet(RAIL_KEY, '0');
       document.body.classList.remove('pa-ui-rail-hidden');
@@ -288,8 +293,9 @@ function paUiInitPanels(){
       var dr = document.createElement('button');
       dr.type = 'button';
       dr.className = 'pa-ui-drawer-restore';
-      dr.textContent = 'Menu';
+      dr.innerHTML = '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 5h14M3 10h14M3 15h14"/></svg>';
       dr.setAttribute('aria-label', 'Show the menu panel');
+      dr.title = 'Menu';
       dr.addEventListener('click', function(){
         paUiLsSet(DRAWER_KEY, '0');
         document.body.classList.remove('pa-ui-drawer-hidden');
