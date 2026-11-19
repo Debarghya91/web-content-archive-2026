@@ -372,8 +372,21 @@ function paRenderCheckoutSummary(){
   h.textContent = 'Order summary';
   box.appendChild(h);
   if(!bid){
+    /* No bundle in the URL. The cart (localStorage) may still hold
+       courses, so say so instead of contradicting it: the old text
+       claimed nothing was selected while the cart showed an item. */
+    var cartIds = (typeof paCartGet === 'function') ? paCartGet() : [];
     var p0 = document.createElement('p');
-    p0.textContent = 'No course selected. Pick a course below to see its price and pay.';
+    if(cartIds.length){
+      var names = [];
+      cartIds.forEach(function(id){
+        var cb = paCheckoutBundle(id);
+        if(cb) names.push(cb.name + ' (Rs. ' + Number(cb.price_inr).toLocaleString('en-IN') + ')');
+      });
+      p0.textContent = 'No course selected for checkout yet. Your cart has ' + names.join(', ') + '. Use the Pay button in your cart to pay for one, or pick a course from the catalogue below.';
+    } else {
+      p0.textContent = 'No course selected. Pick a course from the catalogue below to see its price and pay.';
+    }
     box.appendChild(p0);
     if(picker) picker.style.display = 'block';
     return '';
