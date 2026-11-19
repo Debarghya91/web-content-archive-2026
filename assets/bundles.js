@@ -1591,8 +1591,9 @@ function paGateApplyToLessonPage(lessonId, state){
   var rails = document.querySelectorAll('nav.tool-rail, .tool-rail');
   for(var r = 0; r < rails.length; r++) paGateHide(rails[r]);
   /* No transcript preview: the whole studio block (transcript, player,
-     scenes, exercises, quiz, notes) stays hidden. Only the takeaways
-     card and the beats outline above remain visible. */
+     scenes, exercises, quiz, notes) stays hidden. Only the agenda
+     card (which now carries the pf-content-<lesson> id) and the beats
+     outline above remain visible. */
   if(studioEl) paGateHide(studioEl);
   /* The beats outline stays as what to expect, but its items must not
      act as audio jump controls: strip the seek affordance the inline
