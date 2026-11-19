@@ -132,17 +132,21 @@ function pfRevealDetail(el){
   }
 }
 
-/* Copy protection (11 Nov 2026): copy guards on content
-   pages only (lessons, situations, guides, FAQ). The CSS in
-   pf-theme.css already disables text selection on the same containers;
-   this layer blocks the right-click menu and the Copy/Cut commands (keyboard, menu and Edit menu) when the selection
-   sits inside protected content. Form fields, links, buttons and the
-   header search are never blocked. This stops casual copying only:
-   screenshots, OCR and view-source still work, so it is friction,
-   not a guarantee. The faint watermark overlay was removed 12 Nov 2026
-   on his order: no watermark div is injected any more. */
+/* Copy protection (11 Nov 2026, extended 20 Nov 2026 on his order:
+   NOTHING on the site is selectable or copyable). The guard was
+   scoped to content pages only (lessons, situations, guides, FAQ),
+   so pathway descriptions, chapter lists, the homepage and course
+   pages stayed selectable. The scope is now the whole body. The CSS
+   in pf-theme.css disables text selection site-wide; this layer
+   blocks the right-click menu and the Copy/Cut commands (keyboard,
+   menu and Edit menu) when the selection sits anywhere on the page.
+   Form fields, links, buttons and the header search are never
+   blocked. This stops casual copying only: screenshots, OCR and
+   view-source still work, so it is friction, not a guarantee. The
+   faint watermark overlay was removed 12 Nov 2026 on his order: no
+   watermark div is injected any more. */
 (function(){
-  var PROTECTED = '.lesson-main, .sit-case, .sit-catalogue, .guide-page, .faq-answer, .pf-search-results';
+  var PROTECTED = 'body';
   function inProtected(node){
     if(!node) return false;
     if(node.nodeType === 3) node = node.parentNode;

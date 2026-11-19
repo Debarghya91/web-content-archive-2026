@@ -1075,14 +1075,25 @@ button,.btn{transition:transform .12s,box-shadow .12s}
 .pf-search-none{padding:12px 14px;font-size:10.5px;color:var(--pf-ink-2);margin:0}
 @media(max-width:900px){.pf-search{flex:1 1 100%;order:2}}
 
-/* Copy protection (11 Nov 2026): lesson content is not selectable and
-   cannot be copied by right-click or keyboard shortcut. Scoped to the
-   content containers only: lesson body, situations, guides, FAQ answers
-   and the search-results dropdown. Navigation, headers, footers, the
-   lesson side rail and the homepage are NOT covered. The JS guard in
-   pf-enhance.js blocks the context menu and Copy/Cut on the same
-   containers. This stops casual copying only: screenshots, OCR and
-   view-source still work, so it is friction, not a guarantee. */
+/* Copy protection (11 Nov 2026, extended 20 Nov 2026 on his order:
+   NOTHING on the site is selectable or copyable). The earlier scope
+   covered only lesson body, situations, guides, FAQ answers and the
+   search dropdown, so pathway descriptions, chapter lists, the
+   homepage, course pages and every other page stayed selectable.
+   The rule is now site-wide on body. Form fields still take text,
+   buttons still click, and links still work; only text selection and
+   copying are blocked. The JS guard in pf-enhance.js blocks the
+   context menu and Copy/Cut on the same scope. This stops casual
+   copying only: screenshots, OCR and view-source still work, so it
+   is friction, not a guarantee. */
+body{
+  -webkit-user-select:none;
+  user-select:none;
+}
+body input, body textarea, body select{
+  -webkit-user-select:text;
+  user-select:text;
+}
 .lesson-main,
 .sit-case,
 .sit-catalogue,
