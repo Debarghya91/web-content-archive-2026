@@ -32,6 +32,13 @@
    only for success states. Layout, type scale, spacing, radius, and
    shadows are unchanged from v2; this revision is colour only.
    ========================================================================== */
+/* 19 Nov 2026: Inter is self-hosted (assets/fonts/inter.woff2, variable
+   font, weight axis 100-900). The body rule below has always declared
+   Inter first, but no @font-face ever loaded it and the CSP (font-src
+   'self') blocks Google Fonts, so every device fell back to system-ui.
+   That is why the type looked generic. One variable file covers all
+   weights; font-display:swap keeps text visible while it loads. */
+@font-face{font-family:'Inter';font-style:normal;font-weight:100 900;font-display:swap;src:url(fonts/inter.woff2) format('woff2')}
 :root{
   --pf-navy:#0D1C38;
   --pf-royal:#173F8C;
@@ -1668,7 +1675,12 @@ body.pf-tour-active .pf-tabbar{z-index:305}
 /* Accent cards: tab card capsule straddles the top edge, stripe card capsule runs down the leading edge, top bar card bar sits inset at the top. */
 .pf-tab-card{position:relative;background:#FFFFFF;border:1.5px solid var(--pf-accent-border,rgba(23,63,140,.45));border-radius:18px;box-shadow:0 8px 16px rgba(13,28,56,.10),0 2px 4px rgba(13,28,56,.05);padding:16px;box-sizing:border-box}
 .pf-tab-card::before{content:"";position:absolute;top:-3px;left:16px;width:44px;height:5px;border-radius:3px;background:var(--pf-accent,#173F8C)}
-.pf-stripe-card{position:relative;background:#FFFFFF;border:1.5px solid var(--pf-accent-border,rgba(23,63,140,.45));border-radius:18px;box-shadow:0 8px 16px rgba(13,28,56,.10),0 2px 4px rgba(13,28,56,.05);padding:16px 16px 16px 28px;box-sizing:border-box}
+.pf-stripe-card{position:relative;display:flex;flex-direction:column;height:100%;background:#FFFFFF;border:1.5px solid var(--pf-accent-border,rgba(23,63,140,.45));border-radius:18px;box-shadow:0 8px 16px rgba(13,28,56,.10),0 2px 4px rgba(13,28,56,.05);padding:16px 16px 16px 28px;box-sizing:border-box}
+/* 19 Nov 2026: buttons sit at uneven heights because card text lengths
+   differ. Cards are flex columns; the last paragraph pins to the bottom
+   only when it holds a link (the action row), so buttons line up across
+   a row while text-only cards are untouched. */
+.pf-stripe-card>p:last-child:has(>a){margin-top:auto}
 .pf-stripe-card::before{content:"";position:absolute;left:8px;top:12px;bottom:12px;width:5px;border-radius:3px;background:var(--pf-accent,#173F8C)}
 /* Session rows (15 Nov 2026, fix round 2): text colours as classes
    so dark mode can restyle them. They were inline styles, which
@@ -1713,6 +1725,10 @@ body.pf-tour-active .pf-tabbar{z-index:305}
 .pf-hero h1{margin:0 0 12px}
 .pf-hero b,.pf-hero strong{color:#FFFFFF}
 .pf-hero p.pf-hero-eyebrow{font-size:13px;line-height:1.4;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#C9A326;margin:0 0 12px}
+/* Hero badges (20 Nov 2026 review): the three audience/method badges in the
+   hero eyebrow. Pill outline on the dark hero, light text, inherits the
+   eyebrow's uppercase + letter-spacing. */
+.pf-hero-badge{display:inline-block;border:1px solid rgba(255,255,255,.45);border-radius:999px;padding:5px 13px;margin:0 8px 6px 0;font-size:12px;font-weight:700;letter-spacing:.08em;color:#E2E8F0;background:rgba(255,255,255,.06)}
 .pf-hero p.pf-hero-sub{font-size:17px;line-height:1.6;font-weight:400;color:rgba(255,255,255,.88);max-width:660px;margin:0 0 22px}
 .pf-hero .pf-hero-cta{margin:0 0 26px}
 .pf-hero-stats{display:flex;border-top:1px solid rgba(255,255,255,.22);padding-top:20px}
