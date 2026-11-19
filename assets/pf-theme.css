@@ -1677,10 +1677,15 @@ body.pf-tour-active .pf-tabbar{z-index:305}
 .pf-tab-card::before{content:"";position:absolute;top:-3px;left:16px;width:44px;height:5px;border-radius:3px;background:var(--pf-accent,#173F8C)}
 .pf-stripe-card{position:relative;display:flex;flex-direction:column;height:100%;background:#FFFFFF;border:1.5px solid var(--pf-accent-border,rgba(23,63,140,.45));border-radius:18px;box-shadow:0 8px 16px rgba(13,28,56,.10),0 2px 4px rgba(13,28,56,.05);padding:16px 16px 16px 28px;box-sizing:border-box}
 /* 19 Nov 2026: buttons sit at uneven heights because card text lengths
-   differ. Cards are flex columns; the last paragraph pins to the bottom
-   only when it holds a link (the action row), so buttons line up across
-   a row while text-only cards are untouched. */
-.pf-stripe-card>p:last-child:has(>a){margin-top:auto}
+   differ. Cards are flex columns; the first action row pins to the bottom
+   so buttons line up across a row while text-only cards are untouched.
+   20 Nov 2026: pin the FIRST action row, not the last. Cards with two
+   action rows (Test Series: Browse + Start Test 1) left the first row
+   floating at description height when only the last row was pinned, so
+   the Payments Expert Browse button sat 25-30px higher than the others.
+   The second rule keeps a following action row tight against the first. */
+.pf-stripe-card>p:has(>a){margin-top:auto}
+.pf-stripe-card>p:has(>a) + p:has(>a){margin-top:0}
 .pf-stripe-card::before{content:"";position:absolute;left:8px;top:12px;bottom:12px;width:5px;border-radius:3px;background:var(--pf-accent,#173F8C)}
 /* Session rows (15 Nov 2026, fix round 2): text colours as classes
    so dark mode can restyle them. They were inline styles, which
