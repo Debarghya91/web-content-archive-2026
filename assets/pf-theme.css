@@ -1699,13 +1699,15 @@ body.pf-tour-active .pf-tabbar{z-index:305}
    row by class and keep the Buy link tight under it. */
 .pf-courses-grid .pf-stripe-card .pf-card-action{margin-top:auto}
 .pf-courses-grid .pf-stripe-card .pf-card-buy{margin-top:0}
-/* Grid-rows pin (20 Nov 2026, second attempt): the margin-top:auto pin
-   still left the buttons 26px out even with the cards stretched to
-   equal height, so make the card a grid and let the description row
-   (1fr) absorb the free space instead of a margin. The six children
-   map to title / description / meta / price / View / Buy. */
-.pf-courses-grid .pf-stripe-card{display:grid;grid-template-rows:auto 1fr auto auto auto auto}
-.pf-courses-grid .pf-stripe-card .pf-card-action{margin-top:0}
+/* Absolute pin for the Courses cards (20 Nov 2026, third attempt): the
+   flex margin pin, the class pin, the grid-rows pin and a stylesheet
+   cache-bust all left the buttons 26px out, so position the View and
+   Buy rows absolutely at the bottom of the card. The card is stretched
+   to one row height by the grid, so a fixed offset from the bottom
+   aligns every button. Padding-bottom keeps the text clear of them. */
+.pf-courses-grid .pf-stripe-card{padding-bottom:118px}
+.pf-courses-grid .pf-stripe-card .pf-card-action{position:absolute;left:28px;right:16px;bottom:52px;margin:0}
+.pf-courses-grid .pf-stripe-card .pf-card-buy{position:absolute;left:28px;right:16px;bottom:16px;margin:0}
 /* What you can learn (Group cards): the Group 3 and 4 button labels wrap
    to three lines while Groups 1, 2 and 5 wrap to two, so the taller
    buttons start higher even though their bottoms align. Give these
