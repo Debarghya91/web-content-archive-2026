@@ -660,7 +660,7 @@
     var test = testData.test || {};
     var questions = testData.questions || [];
     var passMark = test.pass_mark_percent != null ? test.pass_mark_percent : PASS_MARK;
-    var durationSeconds = mode === "diagnostic" ? 0 : (test.duration_minutes || questions.length) * 60;
+    var durationSeconds = (mode === "diagnostic" || test.duration_minutes === 0) ? 0 : (test.duration_minutes || questions.length) * 60;
     var state = {
       mode: mode, testId: test.id || "diagnostic", title: test.title || "Placement Test",
       status: "intro", // intro, running, confirm, submitted
@@ -772,7 +772,7 @@
         state.status = "running";
         state.startedAt = new Date().toISOString();
         state.current = 0;
-        if (mode !== "diagnostic" && typeof root.setInterval === "function") {
+        if (mode !== "diagnostic" && durationSeconds > 0 && typeof root.setInterval === "function") {
           stopTimer();
           timerId = root.setInterval(function () { api.tick(1); }, 1000);
         }
@@ -858,7 +858,7 @@
       getResult: function () { return state.result; },
       timeLeft: function () { return formatTime(state.secondsLeft); },
       durationSeconds: durationSeconds,
-      durationMinutes: mode === "diagnostic" ? 0 : (test.duration_minutes || questions.length)
+      durationMinutes: (mode === "diagnostic" || test.duration_minutes === 0) ? 0 : (test.duration_minutes || questions.length)
     };
     return api;
   }
@@ -1065,6 +1065,10 @@
         if (s.mode === "diagnostic") {
           intro += '<p>This placement test is untimed. Take your time, there is no countdown and no pressure. It takes about 15 minutes.</p>' +
             '<p>When you finish, you will see a score for each area and one recommended starting course, with the reason.</p>';
+        } else if (runner.durationMinutes === 0) {
+          intro += '<p>This test is untimed and open book. Take your time, there is no countdown and no pressure.</p>' +
+            '<p>Pass mark: 80%.</p>' +
+            '<p>Answers are not revealed during the test. After you submit, you will see the correct answer and the explanation for every question, and you can retake the test.</p>';
         } else {
           intro += '<p>Time limit: ' + esc(String(runner.durationMinutes)) + ' minutes. The timer runs throughout and never pauses, and the time left counts down at the top of every question.</p>' +
             '<p>Pass mark: 80%. When the timer reaches zero, the test submits automatically.</p>' +
@@ -1141,10 +1145,14 @@
       var palette = runner.palette();
       var h = '<div class="pa-test-run">';
       if (s.mode !== "diagnostic") {
-        h += '<p>Time left: <strong id="pa-time-left" aria-live="polite">' + runner.timeLeft() + '</strong> of ' +
-          esc(String(runner.durationMinutes)) + ' minutes</p>' +
-          '<div class="pa-timebar" role="progressbar" aria-label="Time remaining"><div class="pa-timebar-fill" id="pa-timebar-fill" style="width:' +
-          (runner.durationSeconds ? Math.max(0, Math.round(runner.state.secondsLeft / runner.durationSeconds * 100)) : 100) + '%"></div></div>';
+        if (runner.durationSeconds === 0) {
+          h += '<p>Untimed, open book. Take your time.</p>';
+        } else {
+          h += '<p>Time left: <strong id="pa-time-left" aria-live="polite">' + runner.timeLeft() + '</strong> of ' +
+            esc(String(runner.durationMinutes)) + ' minutes</p>' +
+            '<div class="pa-timebar" role="progressbar" aria-label="Time remaining"><div class="pa-timebar-fill" id="pa-timebar-fill" style="width:' +
+            (runner.durationSeconds ? Math.max(0, Math.round(runner.state.secondsLeft / runner.durationSeconds * 100)) : 100) + '%"></div></div>';
+        }
       }
       h += '<div class="pa-palette">';
       palette.forEach(function (p) {
@@ -1154,7 +1162,11 @@
       });
       h += '</div><p>Answered: ' + palette.filter(function (p) { return p.answered; }).length +
         ' of ' + questions.length + '. Marked for review: ' + palette.filter(function (p) { return p.marked; }).length + '.</p>';
-      h += '<h2>Question ' + (s.current + 1) + ' of ' + questions.length + '</h2><p>' + esc(q.question) + '</p><ul class="pa-options">';
+      h += '<h2>Question ' + (s.current + 1) + ' of ' + questions.length + '</h2><p>' + esc(q.question) + '</p>';
+      if (q.hint) {
+        h += '<details class="pa-hint"><summary>Show hint</summary><p>' + esc(q.hint) + '</p></details>';
+      }
+      h += '<ul class="pa-options">';
       q.options.forEach(function (opt, i) {
         var checked = s.answers[s.current] === i ? ' checked' : '';
         h += '<li><label><input type="radio" name="pa-option" value="' + i + '"' + checked + '> ' + optionLetter(i) + '. ' + esc(opt) + '</label></li>';

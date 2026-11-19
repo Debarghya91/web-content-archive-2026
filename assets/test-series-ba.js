@@ -39,7 +39,7 @@ window.PA_TEST_SERIES_BA = {
       "test": {
         "id": "ba-01",
         "title": "BA Test 1: Requirements Foundations",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -250,7 +250,7 @@ window.PA_TEST_SERIES_BA = {
       "test": {
         "id": "ba-02",
         "title": "BA Test 2: Requirements Elicitation Techniques",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -461,7 +461,7 @@ window.PA_TEST_SERIES_BA = {
       "test": {
         "id": "ba-03",
         "title": "BA Test 3: Requirements Documentation",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -672,7 +672,7 @@ window.PA_TEST_SERIES_BA = {
       "test": {
         "id": "ba-04",
         "title": "BA Test 4: User Stories and Acceptance Criteria",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -883,7 +883,7 @@ window.PA_TEST_SERIES_BA = {
       "test": {
         "id": "ba-05",
         "title": "BA Test 5: Stakeholder Analysis and Management",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -1094,7 +1094,7 @@ window.PA_TEST_SERIES_BA = {
       "test": {
         "id": "ba-06",
         "title": "BA Test 6: Agile and Scrum Ways of Working",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -1305,7 +1305,7 @@ window.PA_TEST_SERIES_BA = {
       "test": {
         "id": "ba-07",
         "title": "BA Test 7: Process Analysis and Process Mapping",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -1516,7 +1516,7 @@ window.PA_TEST_SERIES_BA = {
       "test": {
         "id": "ba-08",
         "title": "BA Test 8: Data Analysis and SQL Basics",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -1727,7 +1727,7 @@ window.PA_TEST_SERIES_BA = {
       "test": {
         "id": "ba-09",
         "title": "BA Test 9: UAT Planning and Execution",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -1938,7 +1938,7 @@ window.PA_TEST_SERIES_BA = {
       "test": {
         "id": "ba-10",
         "title": "BA Test 10: Traceability and Coverage",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -2149,7 +2149,7 @@ window.PA_TEST_SERIES_BA = {
       "test": {
         "id": "ba-11",
         "title": "BA Test 11: Prioritisation Techniques",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -2360,7 +2360,7 @@ window.PA_TEST_SERIES_BA = {
       "test": {
         "id": "ba-12",
         "title": "BA Test 12: Workshops and Interviews",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -2571,7 +2571,7 @@ window.PA_TEST_SERIES_BA = {
       "test": {
         "id": "ba-13",
         "title": "BA Test 13: BRD, FRD and Use Cases",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -2782,7 +2782,7 @@ window.PA_TEST_SERIES_BA = {
       "test": {
         "id": "ba-14",
         "title": "BA Test 14: Change Control",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -2993,7 +2993,7 @@ window.PA_TEST_SERIES_BA = {
       "test": {
         "id": "ba-15",
         "title": "BA Test 15: Estimation Techniques",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -3204,7 +3204,7 @@ window.PA_TEST_SERIES_BA = {
       "test": {
         "id": "ba-16",
         "title": "BA Test 16: Definition of Done and Definition of Ready",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -3415,7 +3415,7 @@ window.PA_TEST_SERIES_BA = {
       "test": {
         "id": "ba-17",
         "title": "BA Test 17: Backlog Refinement",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -3626,7 +3626,7 @@ window.PA_TEST_SERIES_BA = {
       "test": {
         "id": "ba-18",
         "title": "BA Test 18: Non-Functional Requirements",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -3837,7 +3837,7 @@ window.PA_TEST_SERIES_BA = {
       "test": {
         "id": "ba-19",
         "title": "BA Test 19: RACI and Accountability",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -4048,7 +4048,7 @@ window.PA_TEST_SERIES_BA = {
       "test": {
         "id": "ba-20",
         "title": "BA Test 20: Swimlane and Flow Diagrams",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -4259,7 +4259,7 @@ window.PA_TEST_SERIES_BA = {
       "test": {
         "id": "ba-21",
         "title": "BA Test 21: Gap Analysis",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -4470,7 +4470,7 @@ window.PA_TEST_SERIES_BA = {
       "test": {
         "id": "ba-22",
         "title": "BA Test 22: Root Cause Analysis",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -4681,7 +4681,7 @@ window.PA_TEST_SERIES_BA = {
       "test": {
         "id": "ba-23",
         "title": "BA Test 23: BA Tools and Jira Hygiene",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -4892,7 +4892,7 @@ window.PA_TEST_SERIES_BA = {
       "test": {
         "id": "ba-24",
         "title": "BA Test 24: Advanced Requirements - Ambiguity and Conflict",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -5103,7 +5103,7 @@ window.PA_TEST_SERIES_BA = {
       "test": {
         "id": "ba-25",
         "title": "BA Test 25: Advanced Stakeholder and Negotiation Scenarios",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -5314,7 +5314,7 @@ window.PA_TEST_SERIES_BA = {
       "test": {
         "id": "ba-26",
         "title": "BA Test 26: Advanced Agile Delivery Scenarios",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -5525,7 +5525,7 @@ window.PA_TEST_SERIES_BA = {
       "test": {
         "id": "ba-27",
         "title": "BA Test 27: Advanced Process Improvement Scenarios",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -5736,7 +5736,7 @@ window.PA_TEST_SERIES_BA = {
       "test": {
         "id": "ba-28",
         "title": "BA Test 28: Advanced Data and Reporting Scenarios",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -5947,7 +5947,7 @@ window.PA_TEST_SERIES_BA = {
       "test": {
         "id": "ba-29",
         "title": "BA Test 29: Advanced UAT and Release Scenarios",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -6158,7 +6158,7 @@ window.PA_TEST_SERIES_BA = {
       "test": {
         "id": "ba-30",
         "title": "BA Test 30: Applied BA Capstone Scenarios",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [

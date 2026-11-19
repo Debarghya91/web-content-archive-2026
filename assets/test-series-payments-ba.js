@@ -39,7 +39,7 @@ window.PA_TEST_SERIES_PAYMENTS_BA = {
       "test": {
         "id": "pb-01",
         "title": "Payments BA Test 1: Payment Basics for a BA",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -250,7 +250,7 @@ window.PA_TEST_SERIES_PAYMENTS_BA = {
       "test": {
         "id": "pb-02",
         "title": "Payments BA Test 2: Payment Lifecycle and States",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -461,7 +461,7 @@ window.PA_TEST_SERIES_PAYMENTS_BA = {
       "test": {
         "id": "pb-03",
         "title": "Payments BA Test 3: India Rails - UPI, IMPS, NEFT, RTGS",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -672,7 +672,7 @@ window.PA_TEST_SERIES_PAYMENTS_BA = {
       "test": {
         "id": "pb-04",
         "title": "Payments BA Test 4: US Rails - Fedwire, FedNow, ACH, CHIPS",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -883,7 +883,7 @@ window.PA_TEST_SERIES_PAYMENTS_BA = {
       "test": {
         "id": "pb-05",
         "title": "Payments BA Test 5: Europe Rails - SEPA and T2",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -1094,7 +1094,7 @@ window.PA_TEST_SERIES_PAYMENTS_BA = {
       "test": {
         "id": "pb-06",
         "title": "Payments BA Test 6: UK Rails - Faster Payments, CHAPS, BACS",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -1305,7 +1305,7 @@ window.PA_TEST_SERIES_PAYMENTS_BA = {
       "test": {
         "id": "pb-07",
         "title": "Payments BA Test 7: SWIFT MT Messages Essentials",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -1516,7 +1516,7 @@ window.PA_TEST_SERIES_PAYMENTS_BA = {
       "test": {
         "id": "pb-08",
         "title": "Payments BA Test 8: ISO 20022 Fundamentals",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -1727,7 +1727,7 @@ window.PA_TEST_SERIES_PAYMENTS_BA = {
       "test": {
         "id": "pb-09",
         "title": "Payments BA Test 9: pacs.008 and Payment Messages",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -1938,7 +1938,7 @@ window.PA_TEST_SERIES_PAYMENTS_BA = {
       "test": {
         "id": "pb-10",
         "title": "Payments BA Test 10: Correspondent Banking and Nostro Vostro",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -2149,7 +2149,7 @@ window.PA_TEST_SERIES_PAYMENTS_BA = {
       "test": {
         "id": "pb-11",
         "title": "Payments BA Test 11: Charges, FX and Value Dating",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -2360,7 +2360,7 @@ window.PA_TEST_SERIES_PAYMENTS_BA = {
       "test": {
         "id": "pb-12",
         "title": "Payments BA Test 12: Cutoffs, Calendars and Settlement Timing",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -2571,7 +2571,7 @@ window.PA_TEST_SERIES_PAYMENTS_BA = {
       "test": {
         "id": "pb-13",
         "title": "Payments BA Test 13: Cards Lifecycle for a BA",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -2782,7 +2782,7 @@ window.PA_TEST_SERIES_PAYMENTS_BA = {
       "test": {
         "id": "pb-14",
         "title": "Payments BA Test 14: Sanctions Screening Basics for a BA",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -2993,7 +2993,7 @@ window.PA_TEST_SERIES_PAYMENTS_BA = {
       "test": {
         "id": "pb-15",
         "title": "Payments BA Test 15: AML, KYC and Fraud Basics for a BA",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -3204,7 +3204,7 @@ window.PA_TEST_SERIES_PAYMENTS_BA = {
       "test": {
         "id": "pb-16",
         "title": "Payments BA Test 16: Clearing, Netting and Settlement Models",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -3415,7 +3415,7 @@ window.PA_TEST_SERIES_PAYMENTS_BA = {
       "test": {
         "id": "pb-17",
         "title": "Payments BA Test 17: Reconciliation for a BA",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -3626,7 +3626,7 @@ window.PA_TEST_SERIES_PAYMENTS_BA = {
       "test": {
         "id": "pb-18",
         "title": "Payments BA Test 18: Exceptions and Investigations Basics",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -3837,7 +3837,7 @@ window.PA_TEST_SERIES_PAYMENTS_BA = {
       "test": {
         "id": "pb-19",
         "title": "Payments BA Test 19: Error Codes, Rejects and Returns",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -4048,7 +4048,7 @@ window.PA_TEST_SERIES_PAYMENTS_BA = {
       "test": {
         "id": "pb-20",
         "title": "Payments BA Test 20: Field Mapping MT to MX Basics",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -4259,7 +4259,7 @@ window.PA_TEST_SERIES_PAYMENTS_BA = {
       "test": {
         "id": "pb-21",
         "title": "Payments BA Test 21: Requirements for a Payments Migration",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -4470,7 +4470,7 @@ window.PA_TEST_SERIES_PAYMENTS_BA = {
       "test": {
         "id": "pb-22",
         "title": "Payments BA Test 22: Mapping Documents and Data Analysis",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -4681,7 +4681,7 @@ window.PA_TEST_SERIES_PAYMENTS_BA = {
       "test": {
         "id": "pb-23",
         "title": "Payments BA Test 23: API Specs for Payment Initiation",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -4892,7 +4892,7 @@ window.PA_TEST_SERIES_PAYMENTS_BA = {
       "test": {
         "id": "pb-24",
         "title": "Payments BA Test 24: UAT for a Hub Go-Live",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -5103,7 +5103,7 @@ window.PA_TEST_SERIES_PAYMENTS_BA = {
       "test": {
         "id": "pb-25",
         "title": "Payments BA Test 25: Test Data and Certification",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -5314,7 +5314,7 @@ window.PA_TEST_SERIES_PAYMENTS_BA = {
       "test": {
         "id": "pb-26",
         "title": "Payments BA Test 26: Payment Hub Architecture for a BA",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -5525,7 +5525,7 @@ window.PA_TEST_SERIES_PAYMENTS_BA = {
       "test": {
         "id": "pb-27",
         "title": "Payments BA Test 27: Advanced Exceptions and Multi-Leg Investigations",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -5736,7 +5736,7 @@ window.PA_TEST_SERIES_PAYMENTS_BA = {
       "test": {
         "id": "pb-28",
         "title": "Payments BA Test 28: Migration Cutover and Parallel Run Scenarios",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -5947,7 +5947,7 @@ window.PA_TEST_SERIES_PAYMENTS_BA = {
       "test": {
         "id": "pb-29",
         "title": "Payments BA Test 29: Reconciliation Breaks and Settlement Failures",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -6158,7 +6158,7 @@ window.PA_TEST_SERIES_PAYMENTS_BA = {
       "test": {
         "id": "pb-30",
         "title": "Payments BA Test 30: End-to-End Applied Scenarios - BA in Action",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [

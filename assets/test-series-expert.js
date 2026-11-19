@@ -39,7 +39,7 @@ window.PA_TEST_SERIES_EXPERT = {
       "test": {
         "id": "px-01",
         "title": "Payments Expert Test 1: SEPA Rulebooks in Depth",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -48,6 +48,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "rails",
           "chapter": "ch93",
           "question": "A bank is joining a SEPA scheme and its legal team asks what the rulebook actually governs. Which statement best describes the role of a SEPA scheme rulebook?",
+          "hint": "Think about what makes a scheme work the same way at every bank. A rulebook is not just a format guide.",
           "options": [
             "It sets the technical file format only and leaves all business rules to each bank.",
             "It is a voluntary code that banks may follow only for cross-border payments.",
@@ -68,6 +69,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "rails",
           "chapter": "ch93",
           "question": "Two SEPA banks disagree about who bears a loss after a recall. Where should the operations team look first to settle the dispute?",
+          "hint": "When banks join a scheme they accept one shared set of rules. Ask which document both banks have already agreed to.",
           "options": [
             "The bilateral correspondent agreement between the two banks.",
             "The SWIFT user handbook for the message type used.",
@@ -88,6 +90,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "clearing",
           "chapter": "ch93",
           "question": "A SEPA payment is cleared through a clearing mechanism but settles in central bank money. Why does the scheme separate clearing from settlement in its design?",
+          "hint": "Clearing is about exchanging instructions, settlement is about moving the money. Think about why doing the first in bulk makes the second cheaper.",
           "options": [
             "Because clearing and settlement must always happen at the same instant.",
             "Because separation lets many banks exchange instructions efficiently before final funds move once.",
@@ -108,6 +111,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "rails",
           "chapter": "ch61",
           "question": "A corporate customer asks why its SEPA credit transfer to another euro area country costs the same as a domestic one. What is the best explanation?",
+          "hint": "SEPA was built to make a euro payment to another country work like a domestic one. Think about what was harmonised.",
           "options": [
             "Cross-border SEPA payments are subsidised by the central bank.",
             "SEPA harmonised the rules and formats so a euro payment works the same across participating countries.",
@@ -128,6 +132,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "compliance",
           "chapter": "ch93",
           "question": "A new SEPA participant fails to meet a rulebook obligation and another bank suffers a loss. What does scheme adherence normally imply for the failing bank?",
+          "hint": "Joining a scheme means accepting its rules as binding. Think about what accountability that creates.",
           "options": [
             "It may face scheme compliance measures and liability under the scheme rules it accepted.",
             "It faces no consequence because rulebooks are advisory only.",
@@ -148,6 +153,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "rails",
           "chapter": "ch93",
           "question": "A bank's SEPA implementation team is debating whether the SCT and SDD schemes can share one processing engine. What is the strongest argument that they need distinct rule handling?",
+          "hint": "One is a push, the other is a pull. Think about what the pull model needs that the push model does not.",
           "options": [
             "SCT and SDD use completely different currencies.",
             "SDD payments never settle in central bank money.",
@@ -168,6 +174,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "operations",
           "chapter": "ch93",
           "question": "A SEPA rulebook change cycle introduces a new version of the implementation guidelines. What should a participating bank do first?",
+          "hint": "A new version has a fixed effective date. Think about what a bank must check before that date arrives.",
           "options": [
             "Assess the impact on messages, validations, timelines and testing, then plan adoption before the effective date.",
             "Ignore it until a customer complains about a failed payment.",
@@ -188,6 +195,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "rails",
           "chapter": "ch11",
           "question": "A payment from a SEPA country to a non-SEPA country is routed outside the SEPA schemes. Why can the bank not simply apply SEPA rulebook timelines to that payment?",
+          "hint": "Scheme rules only bind the banks that signed up to them. Think about whether the destination bank is a participant.",
           "options": [
             "Because the destination bank has not adhered to the SEPA scheme and its rules do not bind it.",
             "Because SEPA messages cannot carry non-euro amounts.",
@@ -208,6 +216,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "clearing",
           "chapter": "ch93",
           "question": "A bank is choosing between two clearing mechanisms for its SEPA volumes. Which factor is most important for scheme compliance?",
+          "hint": "Cost and brand are commercial. Think about what the bank must be able to do through the mechanism to meet its scheme duties.",
           "options": [
             "The marketing brand of the clearing mechanism.",
             "The number of offices the mechanism operator has.",
@@ -228,6 +237,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "professional",
           "chapter": "ch84",
           "question": "A BA is writing requirements for a SEPA scheme change. Which requirement is most precise for developers and testers?",
+          "hint": "Developers and testers need something they can build and check. Think about what makes a requirement testable.",
           "options": [
             "The system should handle SEPA payments better.",
             "The system must validate the new mandatory field, reject non-compliant instructions with the scheme reason code, and log the rejection.",
@@ -250,7 +260,7 @@ window.PA_TEST_SERIES_EXPERT = {
       "test": {
         "id": "px-02",
         "title": "Payments Expert Test 2: SCT Scheme Rules and Timelines",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -259,6 +269,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "rails",
           "chapter": "ch61",
           "question": "A customer sends an SCT payment late on a Friday. The payer bank accepts it but the beneficiary bank credits the account on Monday. What most likely explains the timing?",
+          "hint": "Scheme timelines run on business days, not calendar days. Think about which days the scheme counts.",
           "options": [
             "The scheme execution timeline counts business days, and weekends are not scheme business days.",
             "The payment was lost over the weekend.",
@@ -279,6 +290,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "rails",
           "chapter": "ch61",
           "question": "An SCT payment is rejected by the beneficiary bank because the account number is invalid. Who must be told, and what happens to the funds?",
+          "hint": "A reject means the money never reaches the account. Think about how the payer bank finds out.",
           "options": [
             "Nobody is told and the funds are kept by the beneficiary bank.",
             "The payer must discover the failure from a statement weeks later.",
@@ -299,6 +311,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "operations",
           "chapter": "ch61",
           "question": "A corporate sends the same SCT file twice by mistake. The payer bank's system processes both files. What is the correct expert assessment?",
+          "hint": "The originating bank is where duplicate controls belong. Think about what happens once a duplicate has already been credited.",
           "options": [
             "Duplicate detection is the beneficiary bank's problem only.",
             "Duplicates are impossible in SCT because the scheme prevents them.",
@@ -319,6 +332,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "rails",
           "chapter": "ch61",
           "question": "An SCT payment carries an incorrect beneficiary name but a correct IBAN. Under the scheme's general approach, which element normally drives routing and crediting?",
+          "hint": "One element is the account identifier the scheme uses to route and credit. Think about which one the system actually reads.",
           "options": [
             "The IBAN is the key identifier used to route and credit the payment.",
             "The name alone determines the account to credit.",
@@ -339,6 +353,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "operations",
           "chapter": "ch41",
           "question": "A payer claims an SCT payment never arrived. The payer bank's trace shows it was sent and accepted by the beneficiary bank. What is the right next step?",
+          "hint": "Acceptance by the beneficiary bank does not prove the customer account was credited. Think about what check confirms the credit status.",
           "options": [
             "Tell the payer the payment is lost and refund immediately without checking.",
             "Raise a scheme investigation to confirm the credit status with the beneficiary bank before deciding on next steps.",
@@ -359,6 +374,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "rails",
           "chapter": "ch61",
           "question": "A bank is designing its SCT cutoff handling. Why do cutoff times matter so much for SCT execution?",
+          "hint": "A cutoff decides which day an instruction counts as received. Think about how that affects the value date.",
           "options": [
             "Cutoffs decide the currency of the payment.",
             "Cutoffs decide whether an instruction counts as received today or on the next business day.",
@@ -379,6 +395,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "compliance",
           "chapter": "ch61",
           "question": "An SCT payment is stopped for sanctions screening and the screening result is a genuine match. What should the bank do?",
+          "hint": "Legal duties beat scheme timelines. Think about which obligation wins when the two clash.",
           "options": [
             "Release the payment to avoid breaching the scheme timeline.",
             "Return the payment without recording the screening outcome.",
@@ -399,6 +416,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "rails",
           "chapter": "ch93",
           "question": "A fintech wants to offer SCT payments but is not a bank. What is the normal route for it to participate in the scheme?",
+          "hint": "A non-bank cannot join alone. Think about the route through a participant bank or an eligible payment institution.",
           "options": [
             "It must become a central bank.",
             "It can join the scheme with no bank relationship at all.",
@@ -419,6 +437,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "operations",
           "chapter": "ch61",
           "question": "An SCT return arrives after the beneficiary account was closed. What does the return signify?",
+          "hint": "A return happens after processing, a reject before. Think about what the closed account means for a payment already sent.",
           "options": [
             "The payment was rejected before any credit attempt.",
             "The payer cancelled the payment before it was sent.",
@@ -439,6 +458,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "rails",
           "chapter": "ch61",
           "question": "A bank's SCT recall request is refused by the beneficiary bank. What is the most accurate statement about the payer bank's position?",
+          "hint": "A recall is a request, not a right to debit someone else's customer. Think about whose consent is needed.",
           "options": [
             "The payer bank can force the debit from the beneficiary account.",
             "The recall depends on the beneficiary bank and beneficiary; refusal means the payer bank must pursue other remedies and explain the position to its customer.",
@@ -461,7 +481,7 @@ window.PA_TEST_SERIES_EXPERT = {
       "test": {
         "id": "px-03",
         "title": "Payments Expert Test 3: SDD Core and B2B in Depth",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -470,6 +490,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "rails",
           "chapter": "ch62",
           "question": "A company wants to collect recurring payments by SDD Core. What must it hold before the first collection?",
+          "hint": "SDD is a pull payment. Think about what authorisation the creditor must hold before it can pull funds.",
           "options": [
             "Only the debtor's IBAN, with no authorisation needed.",
             "A signed mandate from the debtor authorising the collections.",
@@ -490,6 +511,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "rails",
           "chapter": "ch62",
           "question": "A debtor disputes an SDD Core collection, saying the amount was higher than expected. What refund right does the Core scheme generally give the debtor?",
+          "hint": "Core gives the debtor a strong refund right for authorised collections. Think about how much justification the debtor needs.",
           "options": [
             "No refund right at all once the debit is made.",
             "A no-questions-asked refund right for authorised collections within the scheme refund period.",
@@ -510,6 +532,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "rails",
           "chapter": "ch62",
           "question": "How does the SDD B2B scheme differ most importantly from SDD Core for the debtor?",
+          "hint": "B2B is for businesses and the debtor gives something up. Think about which refund right disappears and what the debtor bank must check first.",
           "options": [
             "B2B debtors waive the no-questions-asked refund right and the debtor bank must verify the mandate before debiting.",
             "B2B is only for consumer debtors.",
@@ -530,6 +553,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "operations",
           "chapter": "ch62",
           "question": "A creditor changes its bank but keeps collecting from the same debtors. What must happen to the mandates?",
+          "hint": "The mandate belongs to the creditor and debtor relationship. Think about what travels with the creditor identifier.",
           "options": [
             "All mandates become void and every debtor must sign a new paper mandate.",
             "Mandates transfer automatically with no action or notification at all.",
@@ -550,6 +574,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "rails",
           "chapter": "ch62",
           "question": "A debtor bank receives an SDD collection with a mandate reference that does not match any mandate it holds. What should it do?",
+          "hint": "No matching mandate means no basis to debit. Think about what the debtor bank must do with an unsupported collection.",
           "options": [
             "Reject or return the collection under the scheme rules, since no valid mandate supports the debit.",
             "Debit the account anyway and check later.",
@@ -570,6 +595,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "operations",
           "chapter": "ch62",
           "question": "A creditor sends SDD collections without pre-notifying debtors of the amount and date. What risk does this create?",
+          "hint": "Debtors must know the amount and date before the debit. Think about what happens when that duty is skipped.",
           "options": [
             "No risk, because pre-notification is optional decoration.",
             "Debtors may dispute the collections, and the creditor breaches the scheme duty to pre-notify.",
@@ -590,6 +616,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "rails",
           "chapter": "ch62",
           "question": "An SDD collection is returned with reason code for insufficient funds. The creditor wants to retry. What is the correct approach?",
+          "hint": "A retry is allowed but it must respect the mandate and the debtor. Think about what the creditor must do before collecting again.",
           "options": [
             "Retry immediately dozens of times on the same day.",
             "Convert the collection into an SCT payment without consent.",
@@ -610,6 +637,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "compliance",
           "chapter": "ch62",
           "question": "A debtor claims an SDD collection was never authorised. The creditor produces a mandate, but the debtor says the signature is forged. What is the right handling?",
+          "hint": "A forgery claim turns this into an unauthorised transaction question. Think about what evidence matters and which rules then apply.",
           "options": [
             "The creditor's word settles the matter with no investigation.",
             "The debtor bank must refuse all future mandates from that creditor.",
@@ -630,6 +658,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "operations",
           "chapter": "ch62",
           "question": "A creditor's SDD file contains a first collection and a recurring collection with the same mandate reference. Why does the scheme distinguish sequence types?",
+          "hint": "First, recurring, final and one-off are not just labels. Think about what the debtor bank needs to know to validate the collection.",
           "options": [
             "Sequence types are decorative and have no processing effect.",
             "They determine the currency of the collection.",
@@ -650,6 +679,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "rails",
           "chapter": "ch62",
           "question": "A business debtor signed up for SDD B2B but its bank debited an amount above the agreed maximum. What protection does B2B give the debtor here?",
+          "hint": "In B2B the debtor bank is supposed to check the collection against the mandate before debiting. Think about where the protection sits.",
           "options": [
             "None, because B2B debtors have no rights at all.",
             "The debtor bank should have verified the collection against the agreed mandate terms, and the debtor can raise the breach through the bank and scheme processes.",
@@ -672,7 +702,7 @@ window.PA_TEST_SERIES_EXPERT = {
       "test": {
         "id": "px-04",
         "title": "Payments Expert Test 4: TARGET Services: T2 in Depth",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -681,6 +711,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "rails",
           "chapter": "ch56",
           "question": "A bank's treasurer asks why T2 settlement is described as settlement in central bank money. What does that mean in practice?",
+          "hint": "Think about where the settlement accounts sit. Finality in central bank money means the funds move across the central bank's own books.",
           "options": [
             "The central bank guarantees every commercial payment in full.",
             "The payment is settled in physical cash at the central bank.",
@@ -701,6 +732,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "rails",
           "chapter": "ch56",
           "question": "T2 processes payments on a real-time gross settlement basis. What is the key consequence for a bank's liquidity?",
+          "hint": "Gross settlement means each payment settles on its own, in full. Think about what that demands from the bank's balance at the moment of settlement.",
           "options": [
             "Payments are netted so no liquidity is ever needed.",
             "Liquidity needs are identical to a deferred net settlement system.",
@@ -721,6 +753,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "operations",
           "chapter": "ch56",
           "question": "A T2 payment is queued because the sending bank lacks funds at that moment. What happens next in a well-run operation?",
+          "hint": "A queue is not a dead end. Think about what can happen while the payment waits and who must watch it.",
           "options": [
             "The payment is cancelled immediately with no retry.",
             "The central bank pays it from its own funds as a gift.",
@@ -741,6 +774,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "architecture",
           "chapter": "ch57",
           "question": "A bank is implementing T2 addressing and must choose how to identify parties. Why does correct addressing matter so much in T2?",
+          "hint": "In an RTGS system the payment must reach exactly the right participant. Think about which identifiers do the routing.",
           "options": [
             "Addressing only affects the font used on statements.",
             "Addressing determines the payment amount.",
@@ -761,6 +795,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "rails",
           "chapter": "ch56",
           "question": "A bank holds both a main cash account and dedicated cash accounts in TARGET services. Why would it separate liquidity across accounts?",
+          "hint": "Different TARGET services have different liquidity needs. Think about why mixing them in one pot is risky.",
           "options": [
             "To make reconciliation impossible.",
             "To avoid all liquidity reporting.",
@@ -781,6 +816,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "operations",
           "chapter": "ch56",
           "question": "Near the T2 end-of-day cutoff, a bank still has queued payments and a low balance. What is the most urgent action?",
+          "hint": "The cutoff is a hard stop. Think about what the bank must do before it arrives.",
           "options": [
             "Ignore the queue until tomorrow.",
             "Actively fund the account, prioritise critical payments and escalate to treasury before the cutoff.",
@@ -801,6 +837,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "rails",
           "chapter": "ch56",
           "question": "A payment settles in T2 and the sending bank later discovers an error in the amount. What does settlement finality imply?",
+          "hint": "Final means final. Think about whether one bank can undo a settled payment on its own.",
           "options": [
             "The settled payment cannot be unilaterally reversed; recovery requires agreement or a separate return flow.",
             "The central bank will automatically reverse any erroneous settlement.",
@@ -821,6 +858,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "architecture",
           "chapter": "ch56",
           "question": "A bank is connecting to T2 through a new interface. Why is ISO 20022 message compliance critical for this connection?",
+          "hint": "T2 speaks ISO 20022. Think about what happens to a message that does not follow the format.",
           "options": [
             "ISO 20022 is only a recommendation for T2.",
             "T2 accepts any file format without validation.",
@@ -841,6 +879,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "operations",
           "chapter": "ch57",
           "question": "A bank's T2 reference data for a counterparty BIC is outdated. What is the most likely operational impact?",
+          "hint": "Routing depends on reference data being right. Think about what goes wrong when it is stale.",
           "options": [
             "No impact, because BICs never change.",
             "Payments will automatically find the new BIC.",
@@ -861,6 +900,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "rails",
           "chapter": "ch56",
           "question": "T2, T2S and TIPS are all TARGET services. What best distinguishes TIPS from T2 in purpose?",
+          "hint": "One runs around the clock for instant payments, the other is the large-value RTGS. Think about which does which.",
           "options": [
             "TIPS settles instant payments continuously, while T2 is the RTGS system for large-value and time-critical payments.",
             "TIPS is only for securities settlement.",
@@ -883,7 +923,7 @@ window.PA_TEST_SERIES_EXPERT = {
       "test": {
         "id": "px-05",
         "title": "Payments Expert Test 5: TIPS Instant Payments in Depth",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -892,6 +932,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "rails",
           "chapter": "ch59",
           "question": "A customer sends an instant payment at 2am on a Sunday through TIPS. Why can it settle immediately?",
+          "hint": "Instant means the system never sleeps. Think about whether TIPS keeps banking hours.",
           "options": [
             "Because Sunday payments are processed manually by central bank staff.",
             "Because TIPS operates continuously, including outside normal banking hours.",
@@ -912,6 +953,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "rails",
           "chapter": "ch59",
           "question": "An instant payment via TIPS times out with no confirmation. The payer bank does not know if the beneficiary was credited. What is the correct handling?",
+          "hint": "A timeout leaves the outcome uncertain. Think about what must be established before the bank resends or refunds.",
           "options": [
             "Assume the payment failed and resend immediately.",
             "Assume it succeeded and close the case.",
@@ -932,6 +974,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "operations",
           "chapter": "ch59",
           "question": "A bank's TIPS dedicated cash account runs low on a Saturday night. Why is this more urgent than a low balance on a weekday morning?",
+          "hint": "TIPS runs when T2 does not. Think about how hard it is to move liquidity outside T2 hours.",
           "options": [
             "Because liquidity transfers may be harder outside T2 operating hours, so the bank must pre-fund for continuous operation.",
             "Because TIPS does not need liquidity at weekends.",
@@ -952,6 +995,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "rails",
           "chapter": "ch59",
           "question": "A TIPS payment is rejected by the beneficiary bank within seconds. What does the payer bank owe its customer?",
+          "hint": "The customer needs to know quickly. Think about what the payer bank owes the customer when a payment fails.",
           "options": [
             "Nothing, because instant payments have no customer communication duty.",
             "Prompt notification that the payment failed and that funds were not transferred, with the reason where appropriate.",
@@ -972,6 +1016,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "architecture",
           "chapter": "ch59",
           "question": "A bank is designing its instant payment platform. Why must its fraud and sanctions checks run in milliseconds rather than batch?",
+          "hint": "An instant payment settles in seconds. Think about how long the checks have before the scheme times out.",
           "options": [
             "Because instant payments settle in seconds, so checks must complete within the scheme timeout or payments will fail.",
             "Because batch checks are illegal for all payments.",
@@ -992,6 +1037,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "rails",
           "chapter": "ch59",
           "question": "A beneficiary bank receives a TIPS payment but its core banking system is down. What should happen to the payment?",
+          "hint": "If the beneficiary bank cannot credit the account, the payment cannot complete. Think about what the scheme does then.",
           "options": [
             "It is rejected or timed out per scheme rules, since the beneficiary bank cannot credit the account, and the payer bank is informed.",
             "It is accepted anyway and the credit is invented later.",
@@ -1012,6 +1058,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "operations",
           "chapter": "ch59",
           "question": "A bank wants to offer instant payments to corporates with high-value transactions. What must it check first?",
+          "hint": "Limits apply to instant payments. Think about what must be checked before promising high-value instant transfers.",
           "options": [
             "Whether the corporate likes the colour of the app.",
             "Whether the scheme and its own limits support the transaction amounts it plans to offer.",
@@ -1032,6 +1079,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "rails",
           "chapter": "ch74",
           "question": "How does TIPS differ from a deferred net settlement instant scheme in terms of settlement risk?",
+          "hint": "Immediate settlement in central bank money leaves nothing hanging between cycles. Think about where the risk would build up otherwise.",
           "options": [
             "TIPS builds up more settlement risk because it is faster.",
             "Deferred net settlement has no risk at all.",
@@ -1052,6 +1100,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "operations",
           "chapter": "ch59",
           "question": "A bank's TIPS liquidity transfer from its main account fails. What is the immediate operational risk?",
+          "hint": "The dedicated account is the fuel for instant payments. Think about what happens when it cannot be topped up.",
           "options": [
             "The bank may be unable to settle outgoing instant payments until funding is restored.",
             "No risk, because TIPS works without liquidity.",
@@ -1072,6 +1121,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "professional",
           "chapter": "ch84",
           "question": "A BA is documenting TIPS timeout handling. Which requirement best captures the expert approach?",
+          "hint": "On timeout the payment state is uncertain, not failed. Think about the three things the system must do before anyone resends.",
           "options": [
             "On timeout, always assume failure.",
             "On timeout, delete the payment record.",
@@ -1094,7 +1144,7 @@ window.PA_TEST_SERIES_EXPERT = {
       "test": {
         "id": "px-06",
         "title": "Payments Expert Test 6: ISO 20022 Message Versions and Supplementary Data",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -1103,6 +1153,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "messaging",
           "chapter": "ch67",
           "question": "A bank receives a pacs.008 in a newer ISO 20022 version than its system supports. What is the safest handling?",
+          "hint": "A newer version can change what a field means. Think about the safe way to handle a version the system does not understand.",
           "options": [
             "Process it anyway and ignore unknown elements.",
             "Convert it to an MT message automatically.",
@@ -1123,6 +1174,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "messaging",
           "chapter": "ch67",
           "question": "A scheme allows supplementary data in an ISO 20022 message. What is supplementary data designed for?",
+          "hint": "It is for information that has no standard home in the message. Think about who agrees what goes in there.",
           "options": [
             "Replacing all standard message elements.",
             "Carrying additional information agreed between parties that does not fit the standard message elements.",
@@ -1143,6 +1195,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "messaging",
           "chapter": "ch39",
           "question": "Two banks agree to use a newer pacs.008 version bilaterally, but the clearing system supports only the older version. What must happen?",
+          "hint": "The clearing system sets the version it accepts. Think about which version must be used on that route.",
           "options": [
             "The banks can ignore the clearing system version.",
             "The clearing system must accept any version.",
@@ -1163,6 +1216,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "messaging",
           "chapter": "ch67",
           "question": "A developer proposes putting unstructured free text into a structured ISO 20022 element to save effort. Why is this a poor design?",
+          "hint": "Structured elements exist so machines can read them. Think about what is lost when free text goes in.",
           "options": [
             "It is actually the recommended approach.",
             "Structured elements exist so systems can validate, screen and process data automatically; free text defeats that purpose.",
@@ -1183,6 +1237,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "messaging",
           "chapter": "ch67",
           "question": "An ISO 20022 usage guideline marks an element as mandatory for a scheme, although the base message marks it optional. What must the sender do?",
+          "hint": "The usage guideline is the scheme's rule for that message. Think about which one the sender must follow.",
           "options": [
             "Follow the base message and omit it.",
             "Follow the usage guideline and always populate it for that scheme.",
@@ -1203,6 +1258,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "messaging",
           "chapter": "ch39",
           "question": "A bank is migrating from MT to MX messages. Why is field-level mapping documentation critical?",
+          "hint": "Fields do not always map one to one. Think about what must be written down so nothing is lost or changed silently.",
           "options": [
             "It proves the bank owns the messages.",
             "It is only needed for marketing.",
@@ -1223,6 +1279,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "messaging",
           "chapter": "ch67",
           "question": "A message fails schema validation because an element contains an invalid code. What is the correct response?",
+          "hint": "A message that fails validation cannot be trusted. Think about the clean way to send it back.",
           "options": [
             "Correct the code silently and process the payment.",
             "Reject the message with a validation error so the sender can fix and resend correctly.",
@@ -1243,6 +1300,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "messaging",
           "chapter": "ch67",
           "question": "A corporate sends a pain.001 with an unsupported character set in the remittance information. What is the most likely consequence?",
+          "hint": "Characters outside the allowed set can break downstream. Think about where the check must happen.",
           "options": [
             "The payment settles faster.",
             "The message may be rejected or the characters may be corrupted downstream, so character rules must be enforced at origination.",
@@ -1263,6 +1321,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "messaging",
           "chapter": "ch39",
           "question": "Why do ISO 20022 messages separate the business application header from the message payload?",
+          "hint": "Routing and identity are separate from the business content. Think about why the infrastructure should not need to read the payload.",
           "options": [
             "To separate routing, identity and processing metadata from the business content, so infrastructure can route and validate without parsing business data.",
             "To make messages longer for no reason.",
@@ -1283,6 +1342,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "messaging",
           "chapter": "ch67",
           "question": "A scheme publishes a new version of its usage guidelines with a future effective date. What should a bank's change plan include?",
+          "hint": "A future date means a change plan, not a scramble. Think about the steps between now and cutover.",
           "options": [
             "Only a note to the marketing team.",
             "Impact analysis, development, testing with counterparties, reference data updates and a cutover plan before the effective date.",
@@ -1305,7 +1365,7 @@ window.PA_TEST_SERIES_EXPERT = {
       "test": {
         "id": "px-07",
         "title": "Payments Expert Test 7: Structured Addresses and Party Identification",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -1314,6 +1374,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "messaging",
           "chapter": "ch67",
           "question": "A cross-border payment carries the beneficiary address as unstructured free text. Why do modern usage guidelines prefer structured addresses?",
+          "hint": "Free text cannot be checked by a machine. Think about what structured fields let a system do that free text cannot.",
           "options": [
             "Structured elements let systems validate, screen and match address components reliably, reducing manual repair.",
             "Structured addresses look nicer on statements.",
@@ -1334,6 +1395,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "compliance",
           "chapter": "ch95",
           "question": "A sanctions screening engine flags a payment because the beneficiary town name matches a sanctioned location. The structured country code shows a different, unsanctioned country. What should the analyst do?",
+          "hint": "A town name alone is not enough. Think about which fields together give the full picture.",
           "options": [
             "Release the payment immediately without review.",
             "Block the payment permanently with no investigation.",
@@ -1354,6 +1416,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "messaging",
           "chapter": "ch38",
           "question": "A bank's customer master holds party names in mixed formats with abbreviations. Why does this create payment risk?",
+          "hint": "Screening and matching depend on names being consistent. Think about what breaks when the same party is spelled many ways.",
           "options": [
             "It has no effect on payments.",
             "Abbreviations always improve screening.",
@@ -1374,6 +1437,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "messaging",
           "chapter": "ch67",
           "question": "An ISO 20022 message offers both a structured and a hybrid address option. What is the key rule for using the hybrid option?",
+          "hint": "Hybrid is allowed but only in defined combinations. Think about whose rules decide which combinations are safe.",
           "options": [
             "Follow the usage guideline rules for which combinations are allowed, so receivers can parse the address predictably.",
             "Mix structured and unstructured elements freely with no rules.",
@@ -1394,6 +1458,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "messaging",
           "chapter": "ch38",
           "question": "A payment identifies the debtor agent by BIC and the creditor agent by a national clearing code. Why might a chain need both identifier types?",
+          "hint": "Different systems know different identifiers. Think about what each system in the chain needs to route the payment.",
           "options": [
             "Because different systems and markets use different identifiers, and the message must carry what each processing system needs.",
             "Because BICs are being abolished.",
@@ -1414,6 +1479,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "compliance",
           "chapter": "ch95",
           "question": "A payment carries a legal entity identifier (LEI) for the corporate payer. What value does the LEI add beyond the company name?",
+          "hint": "Company names repeat and vary. Think about what a unique legal entity code adds.",
           "options": [
             "It replaces the need for an account number.",
             "It uniquely identifies the legal entity, reducing ambiguity from similar names and supporting screening and reporting.",
@@ -1434,6 +1500,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "messaging",
           "chapter": "ch67",
           "question": "A bank truncates a long beneficiary name to fit a legacy field limit. What risk does truncation create?",
+          "hint": "Cutting a name short changes what it says. Think about what screening and the beneficiary bank do with a partial name.",
           "options": [
             "The truncated name may fail screening, mismatch the account holder or cause the beneficiary bank to reject or repair the payment.",
             "No risk, because names are not important.",
@@ -1454,6 +1521,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "operations",
           "chapter": "ch38",
           "question": "A corporate customer changes its registered address. The bank updates the core system but not the payment template store. What is the likely consequence?",
+          "hint": "Templates are a second copy of the data. Think about which copy the payment actually uses.",
           "options": [
             "Payment templates will keep sending the old address until they are refreshed, causing data quality and screening issues.",
             "Payments will automatically use the new address.",
@@ -1474,6 +1542,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "messaging",
           "chapter": "ch67",
           "question": "A usage guideline requires the town name and country code as a minimum for structured addresses. Why set a minimum rather than requiring every element?",
+          "hint": "A minimum is a compromise. Think about which two elements matter most for screening and routing.",
           "options": [
             "To make addresses useless.",
             "To balance data quality with what senders can realistically provide, while ensuring the elements most needed for screening and routing are present.",
@@ -1494,6 +1563,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "messaging",
           "chapter": "ch38",
           "question": "A BA is specifying party identification for a new payment product. Which design is most robust?",
+          "hint": "One identifier is rarely enough. Think about the combination that gives validation, screening and matching the most to work with.",
           "options": [
             "Name only, with no identifiers.",
             "Free text only, with no validation.",
@@ -1516,7 +1586,7 @@ window.PA_TEST_SERIES_EXPERT = {
       "test": {
         "id": "px-08",
         "title": "Payments Expert Test 8: CBPR+ Usage Guidelines and Message Design",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -1525,6 +1595,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "messaging",
           "chapter": "ch8",
           "question": "What is the primary purpose of the CBPR+ usage guidelines for cross-border payments?",
+          "hint": "CBPR+ is about how to use ISO 20022 for cross-border payments. Think about what consistent use gives every bank in the chain.",
           "options": [
             "To replace all domestic payment systems.",
             "To set foreign exchange rates.",
@@ -1545,6 +1616,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "messaging",
           "chapter": "ch8",
           "question": "A bank sends a CBPR+ payment that omits a mandatory element. What is the expected result?",
+          "hint": "Mandatory means the message cannot be processed without it. Think about what validation does.",
           "options": [
             "The receiving bank will invent the missing data.",
             "The payment will settle normally.",
@@ -1565,6 +1637,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "messaging",
           "chapter": "ch8",
           "question": "A payment chain includes an intermediary bank. Why must the original instruction preserve the full payment information through each hop?",
+          "hint": "Every bank in the chain must screen and process the payment. Think about what happens if a hop drops information.",
           "options": [
             "Because intermediaries need the data for marketing.",
             "Because the information is decorative.",
@@ -1585,6 +1658,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "messaging",
           "chapter": "ch39",
           "question": "A developer asks which message carries the customer credit transfer instruction in CBPR+. Which is correct?",
+          "hint": "Customer credit transfers have their own pacs message. Think about which one moves money between financial institutions for a customer.",
           "options": [
             "pain.001, the customer to bank initiation message.",
             "camt.053, the bank to customer statement.",
@@ -1605,6 +1679,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "messaging",
           "chapter": "ch8",
           "question": "A bank is testing CBPR+ messages with a counterparty. Why is bilateral testing important even after both banks pass network validation?",
+          "hint": "Passing network validation proves the format, not the interpretation. Think about what two banks must agree on in real flows.",
           "options": [
             "It is not important; network validation is enough.",
             "Testing is only needed for domestic payments.",
@@ -1625,6 +1700,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "messaging",
           "chapter": "ch8",
           "question": "A CBPR+ payment uses an incorrect charge bearer code. What is the practical consequence?",
+          "hint": "The charge bearer code decides who pays the charges. Think about what goes wrong when it does not match the payer's intent.",
           "options": [
             "No consequence; charge codes are ignored.",
             "Charges may be applied differently from what the payer intended, causing disputes and reconciliation breaks.",
@@ -1645,6 +1721,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "messaging",
           "chapter": "ch39",
           "question": "A bank receives a pacs.002 with a rejected status for a payment it sent. What should its system do?",
+          "hint": "A rejected status is a state change with consequences. Think about what the system must update and who must be told.",
           "options": [
             "Ignore it, because status reports are informational only.",
             "Resend the original payment automatically without review.",
@@ -1665,6 +1742,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "messaging",
           "chapter": "ch8",
           "question": "Why do CBPR+ guidelines restrict the use of certain free-text fields that were common in MT messages?",
+          "hint": "Free text was common in MT but it cannot be validated or screened automatically. Think about what structured data makes possible.",
           "options": [
             "To make messages harder to read.",
             "To reduce message size for aesthetic reasons.",
@@ -1685,6 +1763,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "messaging",
           "chapter": "ch8",
           "question": "A bank's CBPR+ implementation truncates remittance information when converting from a legacy format. What should the BA insist on?",
+          "hint": "Data loss in conversion must be a conscious decision. Think about what the BA must define and who must be warned.",
           "options": [
             "Accept truncation silently.",
             "Remove remittance information entirely.",
@@ -1705,6 +1784,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "messaging",
           "chapter": "ch8",
           "question": "A new joiner asks why CBPR+ migration took years across the industry. What is the best expert answer?",
+          "hint": "Every bank in the chain must change together. Think about why a single bank cannot migrate on its own.",
           "options": [
             "Because every bank, system and counterparty in the chain must upgrade, test and cut over consistently, with no break in live payment flows.",
             "Because banks were lazy.",
@@ -1727,7 +1807,7 @@ window.PA_TEST_SERIES_EXPERT = {
       "test": {
         "id": "px-09",
         "title": "Payments Expert Test 9: Reject vs Return Rules in CBPR+",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -1736,6 +1816,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "messaging",
           "chapter": "ch58",
           "question": "A payment fails validation before any funds move. Is this a reject or a return, and why does the distinction matter?",
+          "hint": "The key is whether funds moved. Think about what a reject means for the money.",
           "options": [
             "A return, because the payment came back.",
             "Both terms mean the same thing.",
@@ -1756,6 +1837,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "messaging",
           "chapter": "ch58",
           "question": "A beneficiary bank credits an account, then discovers the account was closed before the credit. What flow applies?",
+          "hint": "The funds were already processed. Think about which flow sends money back.",
           "options": [
             "A reject, because the account is closed.",
             "No flow; the bank keeps the funds.",
@@ -1776,6 +1858,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "operations",
           "chapter": "ch58",
           "question": "A return arrives with a reason code the payer bank's system does not recognise. What should the system do?",
+          "hint": "An unknown code is not a reason to lose the return. Think about what must be recorded and who must look at it.",
           "options": [
             "Drop the return silently.",
             "Record the return with the unrecognised code, flag it for operations review and do not lose the funds movement.",
@@ -1796,6 +1879,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "messaging",
           "chapter": "ch58",
           "question": "Why must a return carry the original payment references, such as the original instruction identification?",
+          "hint": "The payer bank must match the return to the payment it sent. Think about which identifiers make that match possible.",
           "options": [
             "For decoration only.",
             "Because returns must look identical to new payments.",
@@ -1816,6 +1900,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "operations",
           "chapter": "ch58",
           "question": "A payment is rejected for an invalid account format. The payer corrects the format and resends. What reference discipline should apply?",
+          "hint": "The corrected payment is a new instruction. Think about what reference it needs and how the old rejection stays linked.",
           "options": [
             "Use a new instruction identification for the corrected payment, keeping the original rejection record linked by business reference.",
             "Reuse the exact same instruction identification so the two attempts look like one.",
@@ -1836,6 +1921,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "messaging",
           "chapter": "ch58",
           "question": "An intermediary bank rejects a payment for a compliance concern. What must it consider before simply passing the payment onward?",
+          "hint": "Each bank has its own screening duty. Think about whether one bank's acceptance binds the next.",
           "options": [
             "Nothing; intermediaries never screen payments.",
             "Only the fee it will earn.",
@@ -1856,6 +1942,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "operations",
           "chapter": "ch58",
           "question": "A return is received but the original payment was already reconciled and the customer was told it succeeded. What is the correct handling?",
+          "hint": "The customer was given wrong news. Think about what must be corrected and how quickly.",
           "options": [
             "Hide the return from the customer.",
             "Ignore the return because the customer was already told.",
@@ -1876,6 +1963,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "messaging",
           "chapter": "ch58",
           "question": "What is the role of the reason code in a reject or return message?",
+          "hint": "A reason code is how banks explain a failure to each other. Think about what the receiving bank does with it.",
           "options": [
             "It tells the receiving bank why the payment failed, enabling correct customer communication and fixing the root cause.",
             "It is optional decoration.",
@@ -1896,6 +1984,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "operations",
           "chapter": "ch58",
           "question": "A bank's reject rate suddenly doubles after a system change. What is the most likely cause to investigate first?",
+          "hint": "A sudden change in rejects points at something that just changed. Think about what in the release could affect validation.",
           "options": [
             "Customers suddenly sending worse instructions.",
             "The time of year.",
@@ -1916,6 +2005,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "messaging",
           "chapter": "ch58",
           "question": "A payment is returned after the payer bank has already released the payer's funds hold. What accounting care is needed?",
+          "hint": "The money must land in the right place once. Think about the accounting care needed to avoid a double credit.",
           "options": [
             "None, because returns never affect accounting.",
             "The return should be credited twice to be safe.",
@@ -1938,7 +2028,7 @@ window.PA_TEST_SERIES_EXPERT = {
       "test": {
         "id": "px-10",
         "title": "Payments Expert Test 10: pacs and pain Messages in Depth",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -1947,6 +2037,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "messaging",
           "chapter": "ch60",
           "question": "A corporate uploads a pain.001 file with 500 payments. One payment has an invalid account number. What is the best file-level handling?",
+          "hint": "One bad payment should not sink the whole file. Think about what happens to the valid ones and how the failure is reported.",
           "options": [
             "Reject the entire file with no detail.",
             "Reject only the invalid payment where the design allows, accept the valid ones, and report the failure precisely in a pain.002.",
@@ -1967,6 +2058,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "messaging",
           "chapter": "ch60",
           "question": "What does a pain.002 message report?",
+          "hint": "It is a status report on a payment initiation. Think about what levels it can report at.",
           "options": [
             "The bank's marketing offers.",
             "The beneficiary's account balance.",
@@ -1987,6 +2079,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "messaging",
           "chapter": "ch7",
           "question": "A pacs.008 carries a payment that must be processed as a cover payment. What distinguishes cover handling from serial handling?",
+          "hint": "In one method the instruction and the money travel together, in the other they take different routes. Think about which one splits them.",
           "options": [
             "Cover payments have no intermediary banks.",
             "In cover handling, the payment instruction and the funds movement travel by different routes, with the cover carrying the settlement.",
@@ -2007,6 +2100,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "messaging",
           "chapter": "ch60",
           "question": "A pain.001 file uses duplicate instruction identifications across two batches. What should the bank's validation do?",
+          "hint": "Duplicate IDs mean the same instruction twice. Think about what validation must catch to stop a double payment.",
           "options": [
             "Accept both, since duplicates are harmless.",
             "Detect the duplicates and reject or hold the repeated instructions to prevent double payment.",
@@ -2027,6 +2121,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "messaging",
           "chapter": "ch7",
           "question": "A pacs.008 includes structured remittance information with an invoice reference. Why does the beneficiary value this?",
+          "hint": "The beneficiary wants to match the money to an invoice without typing. Think about what structured data lets their system do.",
           "options": [
             "It has no value to the beneficiary.",
             "It increases the payment amount.",
@@ -2047,6 +2142,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "messaging",
           "chapter": "ch60",
           "question": "A corporate's pain.001 requests an execution date that has already passed. What should the bank do?",
+          "hint": "A date in the past cannot be honoured as requested. Think about the clean response.",
           "options": [
             "Process it as if the date were in the future.",
             "Backdate the payment silently.",
@@ -2067,6 +2163,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "messaging",
           "chapter": "ch7",
           "question": "A pacs.008 payment is sent with an intermediary agent specified. What is the intermediary agent's role?",
+          "hint": "The intermediary is a link in the chain. Think about what it does to move the payment toward the next bank.",
           "options": [
             "To receive the funds as the final beneficiary.",
             "To set the exchange rate for the payer.",
@@ -2087,6 +2184,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "messaging",
           "chapter": "ch60",
           "question": "A bank offers both pain.001 upload and an API for payment initiation. Why must both channels apply the same validation rules?",
+          "hint": "Two channels, one instruction. Think about what happens if the rules differ by channel.",
           "options": [
             "They need not; API payments can skip validation.",
             "Consistent validation ensures the same instruction is treated the same way regardless of channel, preventing control gaps and customer confusion.",
@@ -2107,6 +2205,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "messaging",
           "chapter": "ch39",
           "question": "A pacs.002 reports a payment as pending. The corporate asks whether the payment has settled. What is the correct answer?",
+          "hint": "Pending is not a final state. Think about what pending actually means.",
           "options": [
             "No, pending means the payment is still being processed and has not reached a final state.",
             "Yes, pending means settled.",
@@ -2127,6 +2226,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "messaging",
           "chapter": "ch60",
           "question": "A BA is writing acceptance criteria for pain.002 generation. Which criterion is most testable?",
+          "hint": "A testable criterion names exactly what must appear and when. Think about the fields a rejected instruction must carry.",
           "options": [
             "The system should send good status reports.",
             "For each rejected instruction, pain.002 must carry the instruction identification, a rejection status and a reason code within the agreed timeframe.",
@@ -2149,7 +2249,7 @@ window.PA_TEST_SERIES_EXPERT = {
       "test": {
         "id": "px-11",
         "title": "Payments Expert Test 11: Intraday Liquidity Management",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -2158,6 +2258,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "rails",
           "chapter": "ch19",
           "question": "A bank ends every day with a healthy balance but repeatedly fails morning payments. What does this pattern indicate?",
+          "hint": "The total is fine but the timing is wrong. Think about when the money arrives versus when it is needed.",
           "options": [
             "An intraday liquidity timing problem: funds arrive too late in the day for morning outflows.",
             "The bank has no liquidity problem at all.",
@@ -2178,6 +2279,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "operations",
           "chapter": "ch19",
           "question": "A treasurer wants an early warning of intraday liquidity stress. Which indicator is most useful?",
+          "hint": "You need to see the future, not just the present balance. Think about what a projected view shows.",
           "options": [
             "Last month's average balance.",
             "The number of staff on duty.",
@@ -2198,6 +2300,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "rails",
           "chapter": "ch19",
           "question": "A bank delays releasing low-priority payments when liquidity is tight. What is this technique called in spirit, and why is it used?",
+          "hint": "Holding back the less urgent frees funds for the urgent. Think about what this technique is called and why it helps.",
           "options": [
             "Throttling, to preserve liquidity for time-critical and high-priority payments.",
             "Abandoning, to cancel all payments.",
@@ -2218,6 +2321,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "operations",
           "chapter": "ch76",
           "question": "A bank's intraday liquidity report shows heavy reliance on incoming payments to fund outgoing ones. What risk does this create?",
+          "hint": "If the money you are waiting for does not arrive, your own payments stall. Think about the name for this dependency.",
           "options": [
             "No risk, because incoming payments always arrive on time.",
             "The bank will earn extra interest.",
@@ -2238,6 +2342,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "rails",
           "chapter": "ch19",
           "question": "Why do regulators expect banks to monitor intraday liquidity, not only end-of-day liquidity?",
+          "hint": "A bank can look healthy at close and still fail during the day. Think about what an intraday failure can disrupt.",
           "options": [
             "Because regulators enjoy extra reporting.",
             "Because intraday failures can disrupt the payment system even when end-of-day positions look sound.",
@@ -2258,6 +2363,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "operations",
           "chapter": "ch19",
           "question": "A bank sets an intraday liquidity buffer. What should determine the size of the buffer?",
+          "hint": "The buffer must fit the bank's actual flows. Think about what drives how big it needs to be.",
           "options": [
             "A random number chosen each morning.",
             "The colour of the treasury dashboard.",
@@ -2278,6 +2384,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "rails",
           "chapter": "ch19",
           "question": "A large time-critical payment is due at a specific time. What should the bank do in advance?",
+          "hint": "A deadline payment needs the money set aside in advance. Think about what the bank must confirm before the time arrives.",
           "options": [
             "Hope funds arrive by chance.",
             "Reserve or earmark liquidity and confirm the funding plan before the deadline.",
@@ -2298,6 +2405,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "operations",
           "chapter": "ch76",
           "question": "A bank operates in several currencies. Why is intraday liquidity management harder across currencies?",
+          "hint": "Money in one currency cannot pay a bill in another. Think about what each currency needs on its own.",
           "options": [
             "Because currencies never change value.",
             "Because liquidity in one currency cannot automatically fund payments in another, and each currency has its own systems, hours and funding routes.",
@@ -2318,6 +2426,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "rails",
           "chapter": "ch19",
           "question": "A bank's payment queue grows sharply after a counterparty's system outage. What is the correct interpretation?",
+          "hint": "The outage stopped money coming in. Think about how that affects the bank's own outgoing payments.",
           "options": [
             "The bank's own systems must have failed.",
             "Queues only grow when the bank is insolvent.",
@@ -2338,6 +2447,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "professional",
           "chapter": "ch84",
           "question": "A BA is specifying an intraday liquidity dashboard. Which requirement adds the most operational value?",
+          "hint": "Operators need to see the live position and what is coming. Think about the views that let them act before a breach.",
           "options": [
             "Show live balance, projected balance by hour, queue value, largest expected flows and breach alerts for agreed thresholds.",
             "Show last year's balances in a large font.",
@@ -2360,7 +2470,7 @@ window.PA_TEST_SERIES_EXPERT = {
       "test": {
         "id": "px-12",
         "title": "Payments Expert Test 12: Queues, Gridlock and Liquidity Optimisation",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -2369,6 +2479,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "rails",
           "chapter": "ch77",
           "question": "In an RTGS system, several banks each wait for incoming funds from another bank before their own payments can settle. What is this situation called?",
+          "hint": "Each bank waits for another, and nobody can move. Think about the name for a circle that blocks settlement even when the system has enough money.",
           "options": [
             "Gridlock, where circular payment dependencies prevent settlement even though the system as a whole has enough liquidity.",
             "Netting, which always resolves itself.",
@@ -2389,6 +2500,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "rails",
           "chapter": "ch88",
           "question": "How does a gridlock resolution mechanism typically work?",
+          "hint": "The fix finds payments that cancel each other out. Think about how settling them together unlocks the queue.",
           "options": [
             "It identifies a set of offsetting queued payments that can settle simultaneously, unlocking the queue.",
             "It cancels all queued payments.",
@@ -2409,6 +2521,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "operations",
           "chapter": "ch77",
           "question": "A bank's payment is stuck behind a large queued payment to a different counterparty. What queue management feature could help?",
+          "hint": "A queue is not always strictly first in first out. Think about the feature that lets a payment jump ahead when funds allow.",
           "options": [
             "No feature can help; queues are always strictly first in, first out.",
             "Deleting the large payment.",
@@ -2429,6 +2542,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "rails",
           "chapter": "ch88",
           "question": "A bank repeatedly queues payments because it releases them in a large batch each morning. What change would most improve its liquidity efficiency?",
+          "hint": "Releasing everything at once creates a morning spike. Think about how spreading the releases helps inflows fund outflows.",
           "options": [
             "Release even larger batches.",
             "Stop sending payments in the morning.",
@@ -2449,6 +2563,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "operations",
           "chapter": "ch77",
           "question": "A payment system offers bilateral and multilateral offsetting. What is the difference?",
+          "hint": "One matches two banks, the other matches many. Think about the scope of each.",
           "options": [
             "There is no difference.",
             "Bilateral offsetting is only for cards.",
@@ -2469,6 +2584,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "rails",
           "chapter": "ch19",
           "question": "A bank sets payment priorities in the RTGS queue. Why must priority use be governed, not left to individual operators?",
+          "hint": "If every operator marks everything urgent, priority means nothing. Think about why the use of priority must be controlled.",
           "options": [
             "Because ungoverned priority inflation defeats the system: if everything is urgent, nothing is, and liquidity is misallocated.",
             "Because priorities have no effect.",
@@ -2489,6 +2605,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "operations",
           "chapter": "ch77",
           "question": "During a stress event, a bank's queue grows and its funding options narrow. What is the most appropriate escalation?",
+          "hint": "This is not a wait-and-see situation. Think about who must be told and what information they need.",
           "options": [
             "Escalate to treasury and senior management early, with queue data and funding options, and communicate with affected counterparties as needed.",
             "Wait silently and hope the queue clears.",
@@ -2509,6 +2626,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "rails",
           "chapter": "ch88",
           "question": "Why do RTGS systems run optimisation cycles at intervals rather than continuously?",
+          "hint": "Each cycle needs a frozen picture of the queue. Think about why running it non-stop would not work.",
           "options": [
             "Because each cycle needs a stable snapshot of the queue to compute offsetting sets, and too-frequent cycles would disrupt live settlement.",
             "Because optimisation is never useful.",
@@ -2529,6 +2647,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "operations",
           "chapter": "ch19",
           "question": "A bank measures its queue performance. Which metric best shows whether its liquidity management is improving?",
+          "hint": "Good liquidity management shows up in how long payments wait. Think about the numbers that prove improvement.",
           "options": [
             "The number of payment system logos on the wall.",
             "The number of staff in operations.",
@@ -2549,6 +2668,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "rails",
           "chapter": "ch77",
           "question": "A small bank argues that gridlock cannot affect it because its volumes are low. What is the flaw in this argument?",
+          "hint": "Gridlock is about dependencies, not volume. Think about how a single large payment can trap a small bank.",
           "options": [
             "Gridlock depends on payment dependencies across the system, so even a small bank can be caught in a circle or cause one with a single large payment.",
             "There is no flaw; small banks are immune.",
@@ -2571,7 +2691,7 @@ window.PA_TEST_SERIES_EXPERT = {
       "test": {
         "id": "px-13",
         "title": "Payments Expert Test 13: Liquidity Funding and Collateral",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -2580,6 +2700,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "rails",
           "chapter": "ch19",
           "question": "A bank needs intraday liquidity from the central bank. What does the central bank normally require in return?",
+          "hint": "Central bank credit is not unsecured. Think about what the central bank takes to protect itself.",
           "options": [
             "Nothing; intraday credit is always unsecured.",
             "A promise to lend to the government.",
@@ -2600,6 +2721,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "operations",
           "chapter": "ch76",
           "question": "A bank's eligible collateral pool shrinks because securities mature. What operational risk follows?",
+          "hint": "Less collateral means less credit capacity. Think about what that does to the bank's ability to settle payments.",
           "options": [
             "No risk, because collateral is decorative.",
             "Increased profits automatically.",
@@ -2620,6 +2742,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "rails",
           "chapter": "ch19",
           "question": "What is a haircut in the context of collateral for central bank credit?",
+          "hint": "It is a discount on the collateral's value. Think about why a lender would value collateral below its market price.",
           "options": [
             "A fee charged to customers.",
             "A discount applied to the value of collateral to protect the lender against price falls.",
@@ -2640,6 +2763,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "operations",
           "chapter": "ch76",
           "question": "A bank holds collateral in one location but needs intraday credit in another currency system. Why might it not be usable?",
+          "hint": "Collateral is not automatically usable everywhere. Think about eligibility, location and how long it takes to move.",
           "options": [
             "Collateral eligibility, location and mobilisation rules differ by central bank and system, and moving collateral takes time.",
             "Collateral is always usable everywhere instantly.",
@@ -2660,6 +2784,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "rails",
           "chapter": "ch19",
           "question": "A bank repays its intraday credit late, after the central bank's repayment deadline. What is the likely consequence?",
+          "hint": "Intraday means repaid the same day. Think about what happens when the deadline passes.",
           "options": [
             "No consequence at all.",
             "The credit may convert to overnight borrowing with associated costs and potential penalties, and the incident will be recorded.",
@@ -2680,6 +2805,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "operations",
           "chapter": "ch76",
           "question": "A treasurer is planning liquidity for a day with unusually large settlement obligations. What is the most prudent preparation?",
+          "hint": "A big day needs preparation, not improvisation. Think about the steps treasury takes before the day begins.",
           "options": [
             "Assume normal inflows will cover everything.",
             "Reduce the buffer to save costs.",
@@ -2700,6 +2826,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "rails",
           "chapter": "ch77",
           "question": "How does prefunding differ from intraday credit as a liquidity source?",
+          "hint": "One uses the bank's own money held in advance, the other is borrowed during the day. Think about which is which.",
           "options": [
             "They are identical.",
             "Prefunding is always free.",
@@ -2720,6 +2847,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "operations",
           "chapter": "ch76",
           "question": "A bank's collateral management system fails to update after a securities settlement. What is the immediate risk?",
+          "hint": "If the system shows the wrong collateral, the bank's decisions are wrong. Think about the two ways it can mislead.",
           "options": [
             "The bank will have too much collateral.",
             "The bank may overstate or understate its available collateral, leading to failed credit draws or unnecessarily constrained payments.",
@@ -2740,6 +2868,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "rails",
           "chapter": "ch19",
           "question": "A bank is considering using less liquid assets as collateral to preserve its high-quality assets. What trade-off must it weigh?",
+          "hint": "Lower quality collateral is worth less as security. Think about how haircuts and eligibility change the usable credit.",
           "options": [
             "There is no trade-off.",
             "Less liquid assets always provide more credit.",
@@ -2760,6 +2889,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "professional",
           "chapter": "ch84",
           "question": "A BA is documenting a contingency funding plan for payments. Which element is most important?",
+          "hint": "A plan that nobody can act on is useless. Think about what makes it executable: triggers, actions, owners and escalation.",
           "options": [
             "A list of nice restaurants near the office.",
             "A statement that funding will always be available.",
@@ -2782,7 +2912,7 @@ window.PA_TEST_SERIES_EXPERT = {
       "test": {
         "id": "px-14",
         "title": "Payments Expert Test 14: PSD2 and PSD3 in Depth",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -2791,6 +2921,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "compliance",
           "chapter": "ch65",
           "question": "A third-party provider wants to initiate payments from a customer's bank account under PSD2. What must the customer do first?",
+          "hint": "The customer must agree first, and the agreement must be backed by proper authentication. Think about the two things required.",
           "options": [
             "Nothing; the provider can initiate freely.",
             "Share their bank password with the provider.",
@@ -2811,6 +2942,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "compliance",
           "chapter": "ch65",
           "question": "What is strong customer authentication (SCA) in the PSD2 sense?",
+          "hint": "Strong means more than one factor, and the factors must be independent. Think about the three kinds of factor.",
           "options": [
             "Authentication using two or more independent factors: knowledge, possession and inherence.",
             "A single password chosen by the customer.",
@@ -2831,6 +2963,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "compliance",
           "chapter": "ch65",
           "question": "A bank refuses to let a licensed third-party provider access a customer's account data, citing security concerns. What does PSD2 generally require?",
+          "hint": "PSD2 opens access to authorised providers. Think about when a bank must allow it.",
           "options": [
             "Banks must provide access through secure interfaces where the provider is authorised and the customer has consented, subject to the regulatory framework.",
             "Banks may refuse all third-party access at will.",
@@ -2851,6 +2984,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "compliance",
           "chapter": "ch65",
           "question": "A payment is made without SCA where SCA was required, and the payer later disputes it as unauthorised. What is the general liability consequence for the payer's bank?",
+          "hint": "Skipping a required check has a cost. Think about who bears the loss when the bank did not authenticate properly.",
           "options": [
             "The payer always bears the loss.",
             "The payee always bears the loss.",
@@ -2871,6 +3005,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "compliance",
           "chapter": "ch65",
           "question": "PSD3 and the Payment Services Regulation aim to build on PSD2. Which direction of change best characterises this evolution?",
+          "hint": "PSD3 builds on PSD2 rather than reversing it. Think about the themes: fraud, access, liability and harmonisation.",
           "options": [
             "Removing all authentication requirements.",
             "Banning third-party providers.",
@@ -2891,6 +3026,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "compliance",
           "chapter": "ch65",
           "question": "A customer uses a payment initiation service and the payment goes wrong. Who is primarily responsible to the customer for the payment execution?",
+          "hint": "The customer's bank holds the account. Think about who remains responsible for correct execution.",
           "options": [
             "Nobody, because a third party was involved.",
             "The account-servicing bank remains responsible for correct execution, with defined redress and liability allocation between the parties.",
@@ -2911,6 +3047,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "compliance",
           "chapter": "ch65",
           "question": "An e-commerce merchant wants an SCA exemption for low-value transactions. What must it understand about exemptions?",
+          "hint": "Exemptions have conditions and limits. Think about whether the bank must grant one just because the merchant asks.",
           "options": [
             "Exemptions are defined in the regulatory technical standards, carry conditions and limits, and the bank may still apply SCA based on risk.",
             "Exemptions apply automatically to all transactions.",
@@ -2931,6 +3068,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "apis",
           "chapter": "ch80",
           "question": "A bank's open banking API returns errors that reveal internal system details. Why is this a problem?",
+          "hint": "Error messages can leak useful information to attackers. Think about what good API practice requires.",
           "options": [
             "It is helpful and should be encouraged.",
             "Error messages never matter.",
@@ -2951,6 +3089,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "compliance",
           "chapter": "ch86",
           "question": "A bank detects a pattern of fraud through a specific third-party provider. What should it do?",
+          "hint": "The bank must act but cannot simply cut off lawful access. Think about the proportionate, regulatory route.",
           "options": [
             "Block all third-party access permanently without process.",
             "Ignore the pattern.",
@@ -2971,6 +3110,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "compliance",
           "chapter": "ch65",
           "question": "A customer revokes consent for an account information service. What must the provider do?",
+          "hint": "Revoking consent ends the access. Think about what the provider must stop and what happens to the data.",
           "options": [
             "Keep accessing the account indefinitely.",
             "Access the account more frequently to use up the consent.",
@@ -2993,7 +3133,7 @@ window.PA_TEST_SERIES_EXPERT = {
       "test": {
         "id": "px-15",
         "title": "Payments Expert Test 15: FEMA and Cross-Border Regulation",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -3002,6 +3142,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "compliance",
           "chapter": "ch33",
           "question": "A resident Indian wants to send funds abroad for education. Under FEMA, what is the fundamental requirement for the transaction?",
+          "hint": "Cross-border payments from India have a framework and a channel. Think about what the transaction needs and through whom it must go.",
           "options": [
             "No requirement; foreign exchange is unregulated.",
             "Only cash may be used.",
@@ -3022,6 +3163,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "compliance",
           "chapter": "ch33",
           "question": "Why do authorised dealers collect purpose codes for cross-border payments from India?",
+          "hint": "Purpose codes classify the payment. Think about what they let the bank and the regulator do.",
           "options": [
             "To classify the transaction under FEMA, support regulatory reporting and ensure the payment matches a permitted purpose.",
             "For decoration on the payment message.",
@@ -3042,6 +3184,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "compliance",
           "chapter": "ch33",
           "question": "A customer asks the bank to split a large outward remittance into smaller amounts to avoid documentation. What should the bank do?",
+          "hint": "Splitting to dodge a requirement has a name and it is not allowed. Think about what the bank must do.",
           "options": [
             "Agree, since smaller payments are easier.",
             "Split it but charge extra.",
@@ -3062,6 +3205,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "compliance",
           "chapter": "ch86",
           "question": "A cross-border payment from India is for a purpose that requires prior approval. The customer asks the bank to send it anyway. What is the correct response?",
+          "hint": "Approval first, payment second. Think about whether the bank can send it anyway.",
           "options": [
             "Send it and seek approval later.",
             "Decline to send until the required approval is obtained, and explain the requirement.",
@@ -3082,6 +3226,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "compliance",
           "chapter": "ch33",
           "question": "An Indian exporter receives payment from abroad. Why must the bank monitor the realisation of export proceeds?",
+          "hint": "Export proceeds must come back within a time limit. Think about whose job it is to watch that.",
           "options": [
             "Export proceeds need no monitoring.",
             "FEMA requires exporters to realise and repatriate proceeds within prescribed timelines, and banks must monitor compliance.",
@@ -3102,6 +3247,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "compliance",
           "chapter": "ch94",
           "question": "A payment involves both Indian FEMA requirements and the destination country's exchange controls. What must the bank consider?",
+          "hint": "Two countries, two sets of rules. Think about whether meeting one is enough.",
           "options": [
             "Both regimes: the payment must comply with Indian requirements and with the destination country's rules where they apply.",
             "Only Indian requirements matter.",
@@ -3122,6 +3268,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "compliance",
           "chapter": "ch33",
           "question": "A customer provides documents for an outward remittance that appear inconsistent with the stated purpose. What should the bank do?",
+          "hint": "Inconsistent documents are a red flag. Think about the steps before the bank proceeds.",
           "options": [
             "Process the payment and ignore the inconsistency.",
             "Alter the documents to match the purpose.",
@@ -3142,6 +3289,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "compliance",
           "chapter": "ch86",
           "question": "Why must authorised dealers retain records of foreign exchange transactions?",
+          "hint": "Records prove the bank did its job. Think about who might ask to see them and why.",
           "options": [
             "To evidence compliance, support regulatory inspection and audit, and enable investigation of suspicious activity.",
             "For no reason; records can be discarded immediately.",
@@ -3162,6 +3310,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "compliance",
           "chapter": "ch33",
           "question": "A fintech wants to offer cross-border remittances from India. What is the key regulatory point it must address?",
+          "hint": "Remittances need a licence and a framework. Think about the route a fintech must take.",
           "options": [
             "It needs no regulatory consideration.",
             "It can operate entirely outside FEMA.",
@@ -3182,6 +3331,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "compliance",
           "chapter": "ch33",
           "question": "A BA is specifying FEMA purpose code validation. Which design is most effective?",
+          "hint": "A code is only useful if it is checked. Think about the design that ties the code to the transaction and its documents.",
           "options": [
             "A governed list of purpose codes, with the code required, validated against the transaction type and supporting documents, and exceptions routed for review.",
             "Free text purpose with no validation.",
@@ -3204,7 +3354,7 @@ window.PA_TEST_SERIES_EXPERT = {
       "test": {
         "id": "px-16",
         "title": "Payments Expert Test 16: GDPR for Payment Data",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -3213,6 +3363,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "compliance",
           "chapter": "ch81",
           "question": "A bank processes payment messages containing names, addresses and account numbers. Why is this personal data under GDPR?",
+          "hint": "Names, addresses and account numbers point to a person. Think about what makes data personal.",
           "options": [
             "It is not personal data because it is financial.",
             "Only names count as personal data.",
@@ -3233,6 +3384,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "compliance",
           "chapter": "ch81",
           "question": "A customer asks for all their payment data to be deleted immediately. The bank is subject to AML record retention duties. How should the bank respond?",
+          "hint": "Two duties clash here. Think about which one wins for the data the law requires the bank to keep.",
           "options": [
             "Delete everything immediately with no consideration.",
             "Refuse all deletion without explanation.",
@@ -3253,6 +3405,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "compliance",
           "chapter": "ch81",
           "question": "A payment processor in a third country will process EU payment data. What must the bank ensure before the transfer?",
+          "hint": "Moving personal data outside the EU needs a legal basis. Think about the safeguards that must be in place first.",
           "options": [
             "Nothing; data can flow freely anywhere.",
             "Only that the processor is cheap.",
@@ -3273,6 +3426,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "compliance",
           "chapter": "ch81",
           "question": "A bank wants to use payment transaction data for a new marketing analytics product. What GDPR principle is most directly engaged?",
+          "hint": "Data collected for one purpose cannot be reused for another. Think about which principle that is.",
           "options": [
             "Storage limitation only.",
             "Accuracy only.",
@@ -3293,6 +3447,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "compliance",
           "chapter": "ch81",
           "question": "A data breach exposes payment messages containing customer details. What is the bank's immediate priority under GDPR?",
+          "hint": "A breach has a clock on it. Think about the order: contain, assess, notify.",
           "options": [
             "Hide the breach from everyone.",
             "Contain the breach, assess the risk to individuals, notify the supervisory authority within the required timeframe where required, and inform affected individuals where the risk is high.",
@@ -3313,6 +3468,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "compliance",
           "chapter": "ch81",
           "question": "A bank's fraud team wants to keep payment data indefinitely for future analysis. What principle limits this?",
+          "hint": "Keeping data forever is not allowed. Think about the principle that limits how long data may be held.",
           "options": [
             "Storage limitation: personal data must be kept only as long as necessary for the purposes for which it is processed.",
             "No principle limits retention.",
@@ -3333,6 +3489,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "architecture",
           "chapter": "ch81",
           "question": "A payment hub logs full payment messages including personal data for debugging. What should the design do?",
+          "hint": "Logs are a common leak of personal data. Think about what should be reduced, masked and controlled.",
           "options": [
             "Log everything forever in plain text.",
             "Minimise personal data in logs, mask or pseudonymise where possible, control access and set retention.",
@@ -3353,6 +3510,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "compliance",
           "chapter": "ch81",
           "question": "A customer exercises their right of access and asks for their payment data. What must the bank provide?",
+          "hint": "The customer is entitled to a copy and to information about processing. Think about what the bank must provide and by when.",
           "options": [
             "Nothing, because payment data is exempt.",
             "Only data from the last week.",
@@ -3373,6 +3531,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "compliance",
           "chapter": "ch81",
           "question": "A bank engages a cloud provider to host payment data. What GDPR role does the provider normally take?",
+          "hint": "The provider processes data on the bank's instructions. Think about what role that makes it.",
           "options": [
             "The provider becomes the controller of all data.",
             "The provider acts as a processor, processing data on the bank's instructions under a contract meeting GDPR requirements.",
@@ -3393,6 +3552,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "compliance",
           "chapter": "ch81",
           "question": "A payment product collects more customer data than needed, just in case it proves useful later. What principle does this breach?",
+          "hint": "Collecting extra data for a possible future use is not allowed. Think about the principle that limits collection to what is necessary.",
           "options": [
             "Data minimisation: collect only what is adequate, relevant and necessary for the purpose.",
             "Fairness only.",
@@ -3415,7 +3575,7 @@ window.PA_TEST_SERIES_EXPERT = {
       "test": {
         "id": "px-17",
         "title": "Payments Expert Test 17: Operational Resilience and Regulatory Expectations",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -3424,6 +3584,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "compliance",
           "chapter": "ch81",
           "question": "A bank's payment hub fails for four hours. Under operational resilience expectations, what matters most in the response?",
+          "hint": "The priority is the important business service. Think about what must be restored and within what limit.",
           "options": [
             "Blaming the vendor immediately.",
             "Waiting for the failure to fix itself.",
@@ -3444,6 +3605,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "operations",
           "chapter": "ch87",
           "question": "What is an impact tolerance in operational resilience terms?",
+          "hint": "It is a limit on how much disruption is acceptable. Think about how it is expressed.",
           "options": [
             "The maximum profit a bank will accept.",
             "The maximum tolerable disruption to an important business service, in terms such as duration and volume, before harm becomes unacceptable.",
@@ -3464,6 +3626,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "compliance",
           "chapter": "ch81",
           "question": "A bank outsources its payment processing to a third-party provider. Who remains accountable for resilience under regulatory expectations?",
+          "hint": "Outsourcing the work does not outsource the responsibility. Think about who remains accountable.",
           "options": [
             "Only the provider.",
             "Nobody, because outsourcing transfers all accountability.",
@@ -3484,6 +3647,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "operations",
           "chapter": "ch87",
           "question": "A bank tests its disaster recovery plan once a year with a tabletop exercise only. What is the weakness?",
+          "hint": "Talking through a recovery is not the same as doing it. Think about what a tabletop cannot prove.",
           "options": [
             "Tabletop exercises are the only test needed.",
             "Annual testing is too frequent.",
@@ -3504,6 +3668,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "compliance",
           "chapter": "ch81",
           "question": "Under DORA-style expectations, what must a financial entity do about ICT third-party risk?",
+          "hint": "Third parties are a concentration risk. Think about the register, the contracts and the exit plan.",
           "options": [
             "Ignore third-party risk.",
             "Trust all providers without checks.",
@@ -3524,6 +3689,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "operations",
           "chapter": "ch87",
           "question": "A payment service depends on a single data centre. What is the core resilience concern?",
+          "hint": "One site means one failure can stop everything. Think about the name for that weakness.",
           "options": [
             "A single point of failure: one incident can take down the entire service with no alternate site to fail over to.",
             "There is no concern.",
@@ -3544,6 +3710,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "operations",
           "chapter": "ch87",
           "question": "During an incident, a bank's status page says all systems are normal while payments are failing. What has gone wrong?",
+          "hint": "The monitoring or the escalation failed. Think about where the gap is between reality and what was reported.",
           "options": [
             "Incident communication has failed: monitoring, detection or escalation did not surface the true customer impact.",
             "Nothing; status pages are decorative.",
@@ -3564,6 +3731,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "compliance",
           "chapter": "ch81",
           "question": "A bank must report a major ICT incident to its regulator. What determines whether an incident is reportable?",
+          "hint": "Not every incident must be reported. Think about the criteria that decide.",
           "options": [
             "Defined criteria such as duration, affected customers, financial impact and geographic spread, per the regulatory framework.",
             "Whether the bank feels like reporting.",
@@ -3584,6 +3752,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "operations",
           "chapter": "ch87",
           "question": "A bank's resilience programme focuses only on technology recovery. What is missing?",
+          "hint": "Resilience is wider than technology. Think about the people, processes and third parties that also matter.",
           "options": [
             "Nothing; technology is all that matters.",
             "People, processes, third parties, data and communications: resilience is end to end across the business service.",
@@ -3604,6 +3773,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "professional",
           "chapter": "ch84",
           "question": "A BA is writing a resilience requirement for a payment service. Which requirement is most precise?",
+          "hint": "A precise requirement names the recovery limit, the scenarios and how it is proven. Think about what makes it testable.",
           "options": [
             "The service must recover within its agreed impact tolerance under the defined severe scenarios, with no loss of committed payment data, as proven by annual live recovery tests.",
             "The service should be resilient.",
@@ -3626,7 +3796,7 @@ window.PA_TEST_SERIES_EXPERT = {
       "test": {
         "id": "px-18",
         "title": "Payments Expert Test 18: Payment Hub Design and State Machines",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -3635,6 +3805,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "architecture",
           "chapter": "ch68",
           "question": "A payment hub models each payment as a state machine. Why is this design valuable?",
+          "hint": "A state machine makes the allowed paths explicit. Think about what it prevents and what it makes auditable.",
           "options": [
             "It makes diagrams look impressive.",
             "It removes the need for a database.",
@@ -3655,6 +3826,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "architecture",
           "chapter": "ch68",
           "question": "A payment is in state SETTLED. A late status message arrives suggesting it should be REJECTED. What should the state machine do?",
+          "hint": "Settled is a terminal state. Think about what the state machine must do with a transition that cannot happen.",
           "options": [
             "Reject the invalid transition, since settled is a terminal state, and raise an exception for investigation.",
             "Allow the transition and mark it rejected.",
@@ -3675,6 +3847,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "architecture",
           "chapter": "ch48",
           "question": "A hub processes payments from many channels. Why should channel adapters be separated from core payment processing?",
+          "hint": "Channels change often, core rules should not. Think about what separation gives you.",
           "options": [
             "Separation is unnecessary.",
             "So channels can bypass core controls.",
@@ -3695,6 +3868,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "architecture",
           "chapter": "ch68",
           "question": "A payment fails validation in the hub. Where should the failure be recorded?",
+          "hint": "A failure must be visible and auditable. Think about where it belongs so operations can act on it.",
           "options": [
             "Nowhere; failed payments leave no trace.",
             "Only in a developer's notebook.",
@@ -3715,6 +3889,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "architecture",
           "chapter": "ch79",
           "question": "A hub must handle a downstream system outage without losing payments. Which design best achieves this?",
+          "hint": "The payments must survive the outage. Think about the pattern: persist, queue, retry.",
           "options": [
             "Drop payments during the outage.",
             "Tell customers to resend everything.",
@@ -3735,6 +3910,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "architecture",
           "chapter": "ch68",
           "question": "Two updates for the same payment arrive concurrently: a settlement confirmation and a cancellation request. What must the hub ensure?",
+          "hint": "Two updates racing can corrupt the state. Think about what guarantees a single consistent outcome.",
           "options": [
             "That both are applied in any order.",
             "That the cancellation always wins.",
@@ -3755,6 +3931,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "architecture",
           "chapter": "ch48",
           "question": "A bank is consolidating several payment silos into one hub. What is the biggest risk of a big-bang migration?",
+          "hint": "One cutover means one failure hits everything. Think about what is lost when there is no fallback.",
           "options": [
             "Too much success.",
             "Hubs are always risk-free.",
@@ -3775,6 +3952,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "architecture",
           "chapter": "ch79",
           "question": "A hub's observability design includes metrics, logs and traces. Why are all three needed?",
+          "hint": "Each answers a different question. Think about what trends, events and single-payment journeys each give you.",
           "options": [
             "They are redundant; one is enough.",
             "Only logs matter.",
@@ -3795,6 +3973,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "architecture",
           "chapter": "ch68",
           "question": "A payment stays in PENDING for hours with no update. What should the hub do?",
+          "hint": "A payment that does not move is a signal. Think about how the hub should notice and what it should do.",
           "options": [
             "Detect the stuck payment through ageing alerts, investigate the cause and apply the defined timeout or escalation handling.",
             "Leave it forever.",
@@ -3815,6 +3994,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "architecture",
           "chapter": "ch48",
           "question": "A hub must support a new payment rail. What is the cleanest way to add it?",
+          "hint": "A new rail should plug in, not rebuild the hub. Think about the adapter and what core logic it reuses.",
           "options": [
             "Rewrite the entire hub.",
             "Build a separate silo with its own core logic.",
@@ -3837,7 +4017,7 @@ window.PA_TEST_SERIES_EXPERT = {
       "test": {
         "id": "px-19",
         "title": "Payments Expert Test 19: Idempotency and Duplicate Handling",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -3846,6 +4026,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "architecture",
           "chapter": "ch68",
           "question": "A client retries a payment API call because the first response was lost. The API is idempotent. What should happen?",
+          "hint": "Idempotent means the same request has the same effect once. Think about what the retry should return.",
           "options": [
             "The payment is executed twice.",
             "The retry is rejected as an error.",
@@ -3866,6 +4047,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "architecture",
           "chapter": "ch68",
           "question": "A client sends the same idempotency key with different payment details. What should the API do?",
+          "hint": "A key must always mean the same request. Think about what a mismatch signals.",
           "options": [
             "Execute the new details silently.",
             "Reject the request as a key conflict, since the same key must always represent the same request.",
@@ -3886,6 +4068,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "operations",
           "chapter": "ch68",
           "question": "A batch file is uploaded twice by mistake. What control should catch this before payments are duplicated?",
+          "hint": "The file itself needs a duplicate check before its payments are read. Think about what identifies a file as already seen.",
           "options": [
             "No control; duplicates are expected.",
             "File-level duplicate detection using file hash or control totals, plus instruction-level duplicate checks.",
@@ -3906,6 +4089,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "architecture",
           "chapter": "ch79",
           "question": "A payment service processes the same message twice because of a redelivery from the message queue. What design prevents double posting?",
+          "hint": "Redelivery is normal in messaging. Think about how the consumer knows it has already handled this message.",
           "options": [
             "Idempotent consumers that check whether the message was already processed, using a unique message identifier and a processed-record store.",
             "Processing messages as fast as possible.",
@@ -3926,6 +4110,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "operations",
           "chapter": "ch44",
           "question": "A duplicate payment is discovered after both copies settled. What is the correct recovery path?",
+          "hint": "Both copies have settled, so recovery is a process. Think about the steps: investigate, contact, inform, fix.",
           "options": [
             "Do nothing and hope the beneficiary returns it.",
             "Investigate immediately, contact the beneficiary bank through the recall or return process, inform the customer and fix the control that allowed the duplicate.",
@@ -3946,6 +4131,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "architecture",
           "chapter": "ch68",
           "question": "How long should idempotency keys be retained?",
+          "hint": "Keys must live long enough to catch late retries. Think about what window they must cover.",
           "options": [
             "They can be discarded immediately after the response.",
             "Forever, with no limit.",
@@ -3966,6 +4152,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "operations",
           "chapter": "ch68",
           "question": "Two payments have the same amount, beneficiary and value date but different references and different underlying invoices. Are they duplicates?",
+          "hint": "Amount alone does not make a duplicate. Think about what else must match.",
           "options": [
             "Yes, always.",
             "No, duplicates never share amounts.",
@@ -3986,6 +4173,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "architecture",
           "chapter": "ch68",
           "question": "A payment API returns a timeout with no result. The client retries with the same idempotency key while the original is still processing. What should the API return?",
+          "hint": "The original has not finished, so the retry cannot just run again. Think about what the client should be told.",
           "options": [
             "A duplicate execution.",
             "An error telling the client to use a new key.",
@@ -4006,6 +4194,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "operations",
           "chapter": "ch44",
           "question": "A bank's duplicate detection flags a payment for manual review. The reviewer is under time pressure. What is the safe action?",
+          "hint": "Pressure is not a reason to release blindly. Think about the evidence that must be checked first.",
           "options": [
             "Release it without checking to save time.",
             "Reject it without checking.",
@@ -4026,6 +4215,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "professional",
           "chapter": "ch84",
           "question": "A BA is specifying duplicate controls for a new channel. Which requirement is most complete?",
+          "hint": "Complete means every level covered, with review, logging and reporting. Think about the layers a good requirement names.",
           "options": [
             "The system must detect duplicates at file, batch and instruction level using defined keys, hold suspected duplicates for review, log decisions and report duplicate rates.",
             "The system should avoid duplicates.",
@@ -4048,7 +4238,7 @@ window.PA_TEST_SERIES_EXPERT = {
       "test": {
         "id": "px-20",
         "title": "Payments Expert Test 20: Resilience Patterns and Failure Design",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -4057,6 +4247,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "architecture",
           "chapter": "ch68",
           "question": "A payment service calls a downstream system that is slow to respond. Why is a timeout essential on the call?",
+          "hint": "Without a timeout the caller waits forever. Think about what piles up while it waits.",
           "options": [
             "Timeouts are optional decoration.",
             "Without a timeout, threads and connections pile up waiting, exhausting resources and cascading the failure to the caller.",
@@ -4077,6 +4268,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "architecture",
           "chapter": "ch68",
           "question": "A downstream system is failing. A circuit breaker opens. What does this achieve?",
+          "hint": "The breaker stops the bleeding. Think about what it does to the failing system and to the callers.",
           "options": [
             "It stops sending requests to the failing system, letting it recover, and returns fast failures instead of piling up load.",
             "It makes the downstream system work again.",
@@ -4097,6 +4289,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "architecture",
           "chapter": "ch68",
           "question": "A service retries a failed call immediately in a tight loop. What is the danger?",
+          "hint": "Retrying fast makes a bad situation worse. Think about what the extra load does to a struggling system.",
           "options": [
             "No danger; retries are always safe.",
             "Retries always succeed.",
@@ -4117,6 +4310,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "architecture",
           "chapter": "ch68",
           "question": "Why should retries use exponential backoff with jitter?",
+          "hint": "Backoff spreads retries out, jitter stops them landing together. Think about why both matter.",
           "options": [
             "To make retries slower for no reason.",
             "To guarantee success.",
@@ -4137,6 +4331,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "architecture",
           "chapter": "ch68",
           "question": "A payment service uses bulkheads to isolate dependencies. What does this mean?",
+          "hint": "Bulkheads divide the ship so one leak does not sink it. Think about what is partitioned and why.",
           "options": [
             "The service runs on a ship.",
             "All dependencies share one pool.",
@@ -4157,6 +4352,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "architecture",
           "chapter": "ch46",
           "question": "A real-time payment service degrades gracefully when a non-critical feature fails. What does graceful degradation mean here?",
+          "hint": "The core keeps working while the extra is switched off. Think about what continues and what is paused.",
           "options": [
             "The whole service shuts down.",
             "All features fail together.",
@@ -4177,6 +4373,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "architecture",
           "chapter": "ch68",
           "question": "A service fails over to a standby site. What must be true about the data for failover to be safe?",
+          "hint": "Failover is only safe if the standby has the right data. Think about what must be true about the copy.",
           "options": [
             "Data does not matter.",
             "The standby can start empty.",
@@ -4197,6 +4394,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "architecture",
           "chapter": "ch79",
           "question": "A team runs chaos engineering exercises on its payment platform. What is the purpose?",
+          "hint": "It is about proving resilience before a real incident. Think about where and how the failures are injected.",
           "options": [
             "To deliberately inject controlled failures in safe environments to prove resilience patterns work before a real incident.",
             "To break production for fun.",
@@ -4217,6 +4415,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "architecture",
           "chapter": "ch68",
           "question": "A payment service is deployed as a single instance with no redundancy. What is the resilience assessment?",
+          "hint": "One instance means one failure stops everything. Think about the name for that weakness.",
           "options": [
             "Fully resilient.",
             "A single point of failure: any host, deployment or process failure takes down the service.",
@@ -4237,6 +4436,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "professional",
           "chapter": "ch84",
           "question": "A BA is writing failure requirements for a payment API. Which set is most complete?",
+          "hint": "Complete means every failure behaviour is named and testable. Think about the list a good requirement covers.",
           "options": [
             "The API should work.",
             "The API should never fail.",
@@ -4259,7 +4459,7 @@ window.PA_TEST_SERIES_EXPERT = {
       "test": {
         "id": "px-21",
         "title": "Payments Expert Test 21: API Design for Payment Initiation",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -4268,6 +4468,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "apis",
           "chapter": "ch80",
           "question": "A payment initiation API uses POST to create a payment. Why is POST the right method rather than GET?",
+          "hint": "Creating a payment has a side effect. Think about which HTTP method is safe and which is not.",
           "options": [
             "GET is faster.",
             "POST is for creating resources with side effects, while GET must be safe and have no side effects; a payment must never be triggered by a GET.",
@@ -4288,6 +4489,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "apis",
           "chapter": "ch80",
           "question": "A payment API returns 200 OK for a payment that was rejected by validation. What is wrong?",
+          "hint": "The status code should tell the truth. Think about what a validation failure should return.",
           "options": [
             "Nothing; 200 means the server responded.",
             "APIs must always return 200.",
@@ -4308,6 +4510,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "apis",
           "chapter": "ch80",
           "question": "A payment API needs versioning. Which approach best protects existing clients when a breaking change is needed?",
+          "hint": "Old clients must keep working. Think about how a new version is introduced and the old one retired.",
           "options": [
             "Change the existing endpoints silently.",
             "Break all clients at once.",
@@ -4328,6 +4531,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "apis",
           "chapter": "ch80",
           "question": "A payment API accepts requests without authentication in a test environment that mirrors production data. What is the risk?",
+          "hint": "Production-like data deserves production-like protection. Think about what unauthenticated access exposes.",
           "options": [
             "Unauthenticated access to production-like data exposes sensitive payment information and allows unauthorised initiation.",
             "No risk in test environments.",
@@ -4348,6 +4552,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "apis",
           "chapter": "ch80",
           "question": "A client polls a payment status endpoint every second for hours. What should the API design offer instead?",
+          "hint": "Polling wastes effort. Think about the push alternative that tells the client when something changes.",
           "options": [
             "Webhooks or event notifications that push status changes to the client, reducing load and latency.",
             "Nothing; polling is ideal.",
@@ -4368,6 +4573,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "apis",
           "chapter": "ch80",
           "question": "A webhook delivers a payment status update, but the receiving system is down. What must the webhook design handle?",
+          "hint": "A webhook must survive the receiver being down. Think about retries, storage and reconciliation.",
           "options": [
             "Retries with backoff, durable event storage and a way for the receiver to reconcile missed events.",
             "Nothing; lost webhooks do not matter.",
@@ -4388,6 +4594,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "apis",
           "chapter": "ch80",
           "question": "A payment API error response includes only the text Error. What is missing?",
+          "hint": "A bare word helps nobody. Think about what a useful error response must contain.",
           "options": [
             "Nothing; Error is sufficient.",
             "A stack trace.",
@@ -4408,6 +4615,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "apis",
           "chapter": "ch26",
           "question": "An API uses OAuth 2.0 with short-lived access tokens. Why are short lifetimes preferred for payment APIs?",
+          "hint": "A stolen token is only dangerous while it works. Think about why short lifetimes limit the damage.",
           "options": [
             "To annoy developers.",
             "Short tokens are easier to guess.",
@@ -4428,6 +4636,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "apis",
           "chapter": "ch80",
           "question": "A payment API must support a corporate client sending thousands of payments. What design best serves this need?",
+          "hint": "Bulk needs async processing and per-item status. Think about the design that handles volume safely.",
           "options": [
             "Bulk initiation with clear limits, asynchronous processing, per-item status and idempotency, plus published rate limits.",
             "One payment per call with no batching, no rate limit communication.",
@@ -4448,6 +4657,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "apis",
           "chapter": "ch80",
           "question": "A BA is reviewing an API specification for payment initiation. Which element is most critical for safe integration?",
+          "hint": "Safe integration needs the whole contract. Think about what a complete specification must define.",
           "options": [
             "The colour scheme of the documentation.",
             "The length of the document.",
@@ -4470,7 +4680,7 @@ window.PA_TEST_SERIES_EXPERT = {
       "test": {
         "id": "px-22",
         "title": "Payments Expert Test 22: Multi-Leg Investigations and Case Management",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -4479,6 +4689,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "operations",
           "chapter": "ch75",
           "question": "A cross-border payment passes through three banks and the beneficiary claims non-receipt. Where should the investigation start?",
+          "hint": "Trace it hop by hop. Think about the order: start at the payer bank and confirm each leg.",
           "options": [
             "By blaming the last bank.",
             "By refunding immediately without tracing.",
@@ -4499,6 +4710,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "operations",
           "chapter": "ch73",
           "question": "An investigation case involves several banks and takes weeks. What case management practice keeps it on track?",
+          "hint": "A long case needs one record that holds everything. Think about what a single case file must contain.",
           "options": [
             "A single case record with the payment references, each bank's response, deadlines, owner and next action, updated at every step.",
             "No tracking; rely on memory.",
@@ -4519,6 +4731,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "operations",
           "chapter": "ch75",
           "question": "A bank in the chain does not respond to an investigation query. What should the investigating bank do?",
+          "hint": "Silence is not an answer. Think about escalation, deadlines and keeping the customer informed.",
           "options": [
             "Escalate through defined channels, set deadlines, document the non-response and keep the customer informed of progress.",
             "Give up after one message.",
@@ -4539,6 +4752,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "operations",
           "chapter": "ch73",
           "question": "Two investigation cases are opened for the same payment by different channels. What is the correct handling?",
+          "hint": "Two cases mean two answers. Think about what linking them achieves.",
           "options": [
             "Run both independently.",
             "Delete both.",
@@ -4559,6 +4773,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "operations",
           "chapter": "ch75",
           "question": "An investigation reveals the payment was credited to the wrong account due to an intermediary's error. Who should bear the cost of recovery?",
+          "hint": "The error caused the loss. Think about who normally bears the recovery responsibility.",
           "options": [
             "Always the payer.",
             "Always the beneficiary bank.",
@@ -4579,6 +4794,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "operations",
           "chapter": "ch73",
           "question": "A customer is told an investigation will take five days, but it takes fifteen with no updates. What has failed?",
+          "hint": "The timeline slipped and nobody said so. Think about what failed.",
           "options": [
             "Nothing; investigations always take longer.",
             "Expectation management: the bank must update the customer when timelines slip and explain the reason and the next step.",
@@ -4599,6 +4815,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "operations",
           "chapter": "ch75",
           "question": "An investigation query uses the wrong payment reference. What is the likely result?",
+          "hint": "A wrong reference matches nothing. Think about the delay that follows.",
           "options": [
             "The query will fail to match, causing delay while the correct reference is established.",
             "The receiving bank will guess the correct payment.",
@@ -4619,6 +4836,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "operations",
           "chapter": "ch73",
           "question": "A bank measures investigation performance. Which metric best reflects customer experience?",
+          "hint": "Customers care about being kept informed and about resolution. Think about the times that matter to them.",
           "options": [
             "The number of investigation staff.",
             "The number of desks in the office.",
@@ -4639,6 +4857,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "operations",
           "chapter": "ch75",
           "question": "A payment investigation involves a suspected fraud. What additional handling is required?",
+          "hint": "Fraud changes the handling. Think about evidence, escalation and reporting.",
           "options": [
             "Treat it exactly like a routine delay.",
             "Tell the suspected fraudster everything.",
@@ -4659,6 +4878,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "professional",
           "chapter": "ch84",
           "question": "A BA is specifying case management for payment investigations. Which requirement is most valuable?",
+          "hint": "A good case system links everything and enforces the clock. Think about what it must hold and do.",
           "options": [
             "Cases should be handled quickly.",
             "Cases should be stored on paper.",
@@ -4681,7 +4901,7 @@ window.PA_TEST_SERIES_EXPERT = {
       "test": {
         "id": "px-23",
         "title": "Payments Expert Test 23: Nostro Breaks and Reconciliation Depth",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -4690,6 +4910,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "operations",
           "chapter": "ch40",
           "question": "A nostro account statement shows a debit the bank's ledger does not expect. What is this called and what is the first step?",
+          "hint": "A statement entry with no matching ledger entry is a break. Think about the first step: match it.",
           "options": [
             "A profit; record it as income.",
             "A rounding error; ignore it.",
@@ -4710,6 +4931,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "operations",
           "chapter": "ch71",
           "question": "A nostro break is caused by a value date difference: the statement shows a payment one day earlier than the ledger. What is the correct treatment?",
+          "hint": "The money is right but the date is off by a day. Think about whether this is a real loss or a timing difference.",
           "options": [
             "Recognise it as a timing break, track it until the dates align, and confirm it clears without a real funds difference.",
             "Write off the amount immediately.",
@@ -4730,6 +4952,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "operations",
           "chapter": "ch40",
           "question": "A nostro account has an ageing break that has been open for 90 days. What does this indicate?",
+          "hint": "A break open for 90 days means something failed. Think about what ageing breaks signal.",
           "options": [
             "Excellent reconciliation.",
             "Normal practice for all breaks.",
@@ -4750,6 +4973,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "operations",
           "chapter": "ch40",
           "question": "Why is daily nostro reconciliation important, rather than monthly?",
+          "hint": "Evidence goes stale fast. Think about what daily matching catches that monthly misses.",
           "options": [
             "Daily reconciliation is a waste of time.",
             "Daily matching catches breaks while evidence is fresh, counterparties can still act and losses can still be recovered.",
@@ -4770,6 +4994,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "operations",
           "chapter": "ch71",
           "question": "A nostro break is caused by an unadvised charge deducted by the correspondent bank. How should it be resolved?",
+          "hint": "A charge nobody agreed to needs a query. Think about what it must be checked against.",
           "options": [
             "Accept the charge without question.",
             "Deduct the same amount from a customer.",
@@ -4790,6 +5015,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "operations",
           "chapter": "ch40",
           "question": "A reconciliation system auto-matches 95 percent of nostro entries. What should happen to the remaining 5 percent?",
+          "hint": "The unmatched few are the ones that matter. Think about how they must be handled and prioritised.",
           "options": [
             "They are ignored.",
             "They are written off automatically.",
@@ -4810,6 +5036,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "operations",
           "chapter": "ch90",
           "question": "A bank's ledger and nostro statement agree in total but individual entries differ. What does this suggest?",
+          "hint": "Totals can hide errors that cancel out. Think about why entry-level matching is essential.",
           "options": [
             "Perfect reconciliation.",
             "Offsetting breaks: two or more errors cancel in total while individual entries are wrong, so entry-level matching is essential.",
@@ -4830,6 +5057,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "operations",
           "chapter": "ch40",
           "question": "A suspense account holds unreconciled payment items. What is the correct discipline for suspense accounts?",
+          "hint": "Suspense is a waiting room, not a home. Think about the rules for clearing it.",
           "options": [
             "Let items accumulate indefinitely.",
             "Clear items promptly, age and escalate old items, and never use suspense as a permanent home for unexplained differences.",
@@ -4850,6 +5078,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "operations",
           "chapter": "ch40",
           "question": "A nostro statement arrives late, delaying reconciliation. What is the operational risk?",
+          "hint": "Late statements mean late detection. Think about the risks while reconciliation waits.",
           "options": [
             "No risk.",
             "Late statements improve accuracy.",
@@ -4870,6 +5099,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "professional",
           "chapter": "ch84",
           "question": "A BA is specifying auto-matching rules for nostro reconciliation. Which rule design is safest?",
+          "hint": "Matching needs more than one field and a way back. Think about the combination and the safety net.",
           "options": [
             "Match on a combination of amount, value date, reference and counterparty, with tolerances defined and all auto-matches logged and reversible.",
             "Match on amount alone.",
@@ -4892,7 +5122,7 @@ window.PA_TEST_SERIES_EXPERT = {
       "test": {
         "id": "px-24",
         "title": "Payments Expert Test 24: Timeout, Reversal and Uncertainty Design",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -4901,6 +5131,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "operations",
           "chapter": "ch72",
           "question": "A payment request times out. The system cannot tell whether the downstream system processed it. What state should the payment be given?",
+          "hint": "The outcome is unknown, so the state must say so. Think about what must be blocked until it is known.",
           "options": [
             "Failed, definitively.",
             "Settled, definitively.",
@@ -4921,6 +5152,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "architecture",
           "chapter": "ch68",
           "question": "A system automatically reverses a payment after a timeout. What is the danger if the original payment had in fact settled?",
+          "hint": "Reversing a settled payment takes money that is not yours to take. Think about the danger.",
           "options": [
             "No danger.",
             "The reversal creates a second, incorrect funds movement, potentially taking money the beneficiary is entitled to keep.",
@@ -4941,6 +5173,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "operations",
           "chapter": "ch72",
           "question": "A payment is debited from the payer but the credit to the beneficiary is uncertain. What must the bank avoid telling the customer?",
+          "hint": "The bank does not know the outcome. Think about what it must not claim.",
           "options": [
             "That the payment is being investigated.",
             "That the bank is working on it.",
@@ -4961,6 +5194,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "architecture",
           "chapter": "ch68",
           "question": "What is a compensating transaction in payment processing?",
+          "hint": "Some payments cannot be undone. Think about what a compensating transaction does instead.",
           "options": [
             "A payment that compensates staff.",
             "A duplicate payment.",
@@ -4981,6 +5215,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "operations",
           "chapter": "ch72",
           "question": "A reversal request arrives for a payment that was already returned. What should the system do?",
+          "hint": "The payment is already returned. Think about what the system must detect and do with the duplicate request.",
           "options": [
             "Reverse it again.",
             "Detect that the payment is already in a returned state and reject the duplicate reversal, logging the attempt.",
@@ -5001,6 +5236,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "architecture",
           "chapter": "ch68",
           "question": "A distributed payment flow has no single transaction spanning all systems. How is consistency achieved?",
+          "hint": "Without one transaction, consistency comes from patterns. Think about sagas, idempotency and reconciliation.",
           "options": [
             "It cannot be achieved.",
             "Through patterns such as sagas with compensating actions, idempotent operations and reconciliation that detects and corrects divergence.",
@@ -5021,6 +5257,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "operations",
           "chapter": "ch72",
           "question": "A timeout occurs during a card authorisation. The cardholder was not charged, but the merchant believes the sale completed. What resolves the dispute?",
+          "hint": "The records settle the dispute. Think about which two records show what really happened.",
           "options": [
             "The merchant's belief alone.",
             "The authorisation and clearing records, which show whether an authorisation was approved and whether a clearing record followed.",
@@ -5041,6 +5278,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "architecture",
           "chapter": "ch68",
           "question": "Why should timeout values differ between a user-facing payment request and a back-office batch job?",
+          "hint": "A user waits seconds, a batch job can wait longer. Think about why one value cannot serve both.",
           "options": [
             "They should always be identical.",
             "Batch jobs never need timeouts.",
@@ -5061,6 +5299,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "operations",
           "chapter": "ch72",
           "question": "An uncertain payment is resolved as settled after investigation. What must happen to the customer communication?",
+          "hint": "The customer was left waiting. Think about what must now be told and released.",
           "options": [
             "The customer must be told the confirmed outcome, the payment state updated and any temporary holds or blocks released.",
             "Nothing; the customer will guess.",
@@ -5081,6 +5320,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "professional",
           "chapter": "ch84",
           "question": "A BA is specifying timeout handling for a payment integration. Which requirement is most robust?",
+          "hint": "Robust means every step is defined. Think about the chain: mark, block, check, escalate, log.",
           "options": [
             "On timeout, assume success.",
             "On timeout, delete the request.",
@@ -5103,7 +5343,7 @@ window.PA_TEST_SERIES_EXPERT = {
       "test": {
         "id": "px-25",
         "title": "Payments Expert Test 25: Settlement Design and Failure Modes",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -5112,6 +5352,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "clearing",
           "chapter": "ch77",
           "question": "A deferred net settlement system nets payments and settles the net amount at the end of the cycle. What is the main risk if a participant defaults before settlement?",
+          "hint": "Netting means the net amount is what settles. Think about what the others face if one participant cannot pay its net position.",
           "options": [
             "No risk, because netting removes all risk.",
             "Other participants face exposures from the defaulting participant's net position, and the settlement may need to be unwound or covered.",
@@ -5132,6 +5373,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "clearing",
           "chapter": "ch77",
           "question": "What is delivery versus payment (DvP) in settlement design?",
+          "hint": "DvP ties the two legs together. Think about what it protects each side from.",
           "options": [
             "Paying before delivery with no link.",
             "A mechanism ensuring the asset transfer and the payment happen together, so neither side is exposed to the other defaulting mid-settlement.",
@@ -5152,6 +5394,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "clearing",
           "chapter": "ch77",
           "question": "A settlement system fails partway through a settlement cycle. What design feature best protects participants?",
+          "hint": "A cycle must either complete or roll back cleanly. Think about the design that guarantees that.",
           "options": [
             "No protection is possible.",
             "Atomic settlement: the cycle either completes fully or is rolled back to a defined state, with clear recovery procedures.",
@@ -5172,6 +5415,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "clearing",
           "chapter": "ch88",
           "question": "A central counterparty (CCP) stands between buyers and sellers. What risk does it primarily manage?",
+          "hint": "A CCP stands in the middle of every trade. Think about the risk it takes on and how it protects itself.",
           "options": [
             "It removes all market risk.",
             "It manages only operational risk.",
@@ -5192,6 +5436,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "clearing",
           "chapter": "ch77",
           "question": "A payment settles in commercial bank money rather than central bank money. What additional risk does the receiver bear?",
+          "hint": "The settlement asset matters. Think about the extra risk when the money sits at a commercial bank.",
           "options": [
             "No additional risk.",
             "The receiver bears no risk at all.",
@@ -5212,6 +5457,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "clearing",
           "chapter": "ch77",
           "question": "A settlement fails because the delivering participant lacks the securities. What is this called and what happens next?",
+          "hint": "A failed delivery has a name and a process. Think about what it is called and what follows.",
           "options": [
             "A fail; the settlement is retried, penalties or buy-in procedures may apply under the system rules, and the counterparty is affected.",
             "A success; nothing happens.",
@@ -5232,6 +5478,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "clearing",
           "chapter": "ch88",
           "question": "Why do settlement systems impose cutoffs and deadlines?",
+          "hint": "Cutoffs create a timetable. Think about what they let participants plan and the system complete.",
           "options": [
             "To inconvenience participants.",
             "Cutoffs have no purpose.",
@@ -5252,6 +5499,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "clearing",
           "chapter": "ch77",
           "question": "A bank's settlement account is funded late, causing its payments to fail. What is the root control failure?",
+          "hint": "The funds were not there in time. Think about which control failed.",
           "options": [
             "The payment system.",
             "Liquidity and funding management: the bank did not ensure funds were available by the required time.",
@@ -5272,6 +5520,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "clearing",
           "chapter": "ch77",
           "question": "A settlement design uses prefunding for all participants. What trade-off does this create?",
+          "hint": "Prefunding removes settlement risk but ties up money. Think about the two sides of the trade.",
           "options": [
             "No trade-off.",
             "Higher risk and lower liquidity.",
@@ -5292,6 +5541,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "professional",
           "chapter": "ch84",
           "question": "A BA is documenting settlement failure handling. Which requirement best serves operations?",
+          "hint": "Operations need to know what failed and what to do. Think about the steps a good requirement names.",
           "options": [
             "Failures should not happen.",
             "On settlement failure, the system must identify the failing leg, notify operations with the cause, apply the defined retry or unwind procedure and update participant positions consistently.",
@@ -5314,7 +5564,7 @@ window.PA_TEST_SERIES_EXPERT = {
       "test": {
         "id": "px-26",
         "title": "Payments Expert Test 26: Correspondent Banking Depth",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -5323,6 +5573,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "crossborder",
           "chapter": "ch94",
           "question": "A bank has no branch in the destination country. How does correspondent banking let it pay beneficiaries there?",
+          "hint": "The bank uses another bank's presence. Think about the account it holds and who pays the beneficiary.",
           "options": [
             "It cannot pay at all.",
             "It sends cash by courier.",
@@ -5343,6 +5594,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "crossborder",
           "chapter": "ch13",
           "question": "What is the difference between a nostro and a vostro account?",
+          "hint": "They are two views of the same account. Think about whose perspective each name reflects.",
           "options": [
             "They are the same account with different names.",
             "Nostro is our account with you, viewed from our side; vostro is your account with us, viewed from our side. They are two views of the same relationship.",
@@ -5363,6 +5615,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "crossborder",
           "chapter": "ch94",
           "question": "A correspondent bank terminates a respondent bank's account due to de-risking. What is the respondent bank's immediate problem?",
+          "hint": "Losing a correspondent means losing a corridor. Think about what the respondent must rebuild.",
           "options": [
             "Loss of a payment corridor: it must find an alternative correspondent, re-establish compliance checks and reroute payments, which takes time.",
             "No problem; accounts are easily replaced.",
@@ -5383,6 +5636,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "compliance",
           "chapter": "ch94",
           "question": "Why do correspondent banks conduct due diligence on respondent banks?",
+          "hint": "The correspondent's account can move the respondent's customers' money. Think about the risks that creates.",
           "options": [
             "For curiosity.",
             "To manage AML, sanctions and reputational risk, since the correspondent's account can be used to move funds on behalf of the respondent's customers.",
@@ -5403,6 +5657,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "crossborder",
           "chapter": "ch14",
           "question": "A payment uses the serial method through two correspondents. What happens to the payment instruction at each hop?",
+          "hint": "In the serial method the instruction travels hop by hop. Think about what each bank does with it.",
           "options": [
             "It is discarded.",
             "It is converted to a cheque.",
@@ -5423,6 +5678,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "crossborder",
           "chapter": "ch14",
           "question": "Why might a bank prefer the cover method over the serial method for a payment?",
+          "hint": "Cover sends the instruction straight to the beneficiary bank. Think about what that gains in speed and data.",
           "options": [
             "Cover is always slower.",
             "Cover sends the instruction directly to the beneficiary bank while funds move separately, which can be faster and keeps the instruction data intact.",
@@ -5443,6 +5699,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "operations",
           "chapter": "ch13",
           "question": "A nostro account balance falls below the agreed minimum. What should the bank do?",
+          "hint": "A minimum exists for a reason. Think about the immediate fix and the longer review.",
           "options": [
             "Ignore it.",
             "Close the account.",
@@ -5463,6 +5720,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "crossborder",
           "chapter": "ch94",
           "question": "A correspondent charges fees that the respondent disputes. What evidence should the respondent gather first?",
+          "hint": "Disputes need evidence. Think about the documents that prove what was agreed and charged.",
           "options": [
             "The account agreement, the fee schedule, the statements showing the charges and the payment records to which they relate.",
             "None; disputes need no evidence.",
@@ -5483,6 +5741,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "crossborder",
           "chapter": "ch94",
           "question": "A respondent bank's payments are repeatedly delayed by its correspondent's screening. What is the most constructive response?",
+          "hint": "Delays have a cause that can be fixed. Think about the constructive way to work with the correspondent.",
           "options": [
             "Send payments without data to avoid screening.",
             "Engage the correspondent to understand the screening triggers, improve data quality and agree on handling for time-sensitive payments.",
@@ -5503,6 +5762,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "crossborder",
           "chapter": "ch13",
           "question": "A bank is selecting a new correspondent for a key corridor. Which factor is most important?",
+          "hint": "A corridor needs reach, service and compliance. Think about the full set of factors for that corridor.",
           "options": [
             "The correspondent's office decor.",
             "The correspondent's advertising budget.",
@@ -5525,7 +5785,7 @@ window.PA_TEST_SERIES_EXPERT = {
       "test": {
         "id": "px-27",
         "title": "Payments Expert Test 27: Card Scheme Depth: EMV and Tokenisation",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -5534,6 +5794,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "cards",
           "chapter": "ch63",
           "question": "An EMV chip card is inserted at a terminal. What does the chip do that a magnetic stripe cannot?",
+          "hint": "The chip proves the card is genuine for this transaction. Think about what it generates that a stripe cannot.",
           "options": [
             "It stores the cardholder's photo.",
             "It prints a receipt.",
@@ -5554,6 +5815,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "cards",
           "chapter": "ch63",
           "question": "A card transaction is declined offline by the chip. What does this mean?",
+          "hint": "Offline means no call to the issuer. Think about who decided and on what basis.",
           "options": [
             "The issuer declined it online.",
             "The card is fake.",
@@ -5574,6 +5836,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "cards",
           "chapter": "ch63",
           "question": "A merchant stores card numbers in plain text in its database. What is the core problem?",
+          "hint": "Plain text is the worst way to store card numbers. Think about the standard it breaches and the exposure.",
           "options": [
             "No problem; storage is free.",
             "Storage is required by schemes.",
@@ -5594,6 +5857,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "cards",
           "chapter": "ch63",
           "question": "How does network tokenisation differ from simply encrypting a card number?",
+          "hint": "One replaces the number, the other hides it. Think about which is useless if stolen.",
           "options": [
             "Tokenisation replaces the card number with a token that is useless if stolen, while encryption merely obscures the number until decrypted.",
             "They are identical.",
@@ -5614,6 +5878,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "cards",
           "chapter": "ch63",
           "question": "A customer's card is replaced after loss. Their tokenised wallet payments keep working. Why?",
+          "hint": "The token is tied to the account, not the card number. Think about what updates when the card changes.",
           "options": [
             "Because the wallet ignores the loss.",
             "Because tokens never expire.",
@@ -5634,6 +5899,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "cards",
           "chapter": "ch31",
           "question": "A contactless transaction exceeds the cardholder verification limit. What normally happens?",
+          "hint": "Above the limit the cardholder must prove it is them. Think about what is required or what happens.",
           "options": [
             "The transaction is always approved.",
             "Cardholder verification, such as a PIN or device authentication, is required, or the transaction is declined.",
@@ -5654,6 +5920,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "cards",
           "chapter": "ch63",
           "question": "An issuer receives an EMV cryptogram it cannot validate. What should it do?",
+          "hint": "A cryptogram that cannot be validated proves nothing. Think about the safe response.",
           "options": [
             "Approve the transaction anyway.",
             "Approve it and investigate later.",
@@ -5674,6 +5941,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "cards",
           "chapter": "ch63",
           "question": "A merchant's terminal supports both chip and magnetic stripe fallback. Why do schemes discourage routine fallback?",
+          "hint": "Fallback skips the chip's protection. Think about the risk it reintroduces and who bears it.",
           "options": [
             "Fallback is faster.",
             "Fallback is more secure.",
@@ -5694,6 +5962,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "cards",
           "chapter": "ch63",
           "question": "A token is restricted to a single merchant. What happens if it is stolen and used at a different merchant?",
+          "hint": "A domain-restricted token only works where it belongs. Think about what happens elsewhere.",
           "options": [
             "It works everywhere.",
             "It is declined, because the token is only valid in its designated domain.",
@@ -5714,6 +5983,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "cards",
           "chapter": "ch63",
           "question": "A BA is specifying EMV terminal behaviour. Which requirement is most precise?",
+          "hint": "A precise requirement names the order, the fallback and the logging. Think about what must be specified.",
           "options": [
             "The terminal must attempt chip processing first, apply the defined fallback rules, request cardholder verification per the card and transaction parameters, and log the outcome with the cryptogram result.",
             "Terminals should accept cards.",
@@ -5736,7 +6006,7 @@ window.PA_TEST_SERIES_EXPERT = {
       "test": {
         "id": "px-28",
         "title": "Payments Expert Test 28: 3D Secure, 3RI and Authentication",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -5745,6 +6015,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "cards",
           "chapter": "ch22",
           "question": "A customer pays online and is asked to authenticate in their banking app. What is 3D Secure achieving here?",
+          "hint": "3D Secure connects the cardholder to the issuer during the purchase. Think about what it proves.",
           "options": [
             "Delaying the payment for fun.",
             "Charging the customer extra.",
@@ -5765,6 +6036,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "cards",
           "chapter": "ch22",
           "question": "A transaction goes through 3D Secure with a frictionless flow and no challenge. What does this mean?",
+          "hint": "Frictionless does not mean unchecked. Think about what the issuer did with the transaction data.",
           "options": [
             "No authentication happened.",
             "The merchant bypassed security.",
@@ -5785,6 +6057,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "cards",
           "chapter": "ch34",
           "question": "A subscription merchant charges a card monthly without the customer being present. Which 3D Secure flow supports this?",
+          "hint": "The customer is not there, so a different flow authenticates the charge. Think about which one is built for merchant-initiated transactions.",
           "options": [
             "Standard customer-present challenge every month.",
             "3RI, or 3D Secure Requestor Initiated, which authenticates merchant-initiated transactions using the original authentication context.",
@@ -5805,6 +6078,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "cards",
           "chapter": "ch34",
           "question": "A merchant stores a card for future purchases. What must happen at the time of storage?",
+          "hint": "Storing a card needs the cardholder's agreement at the time. Think about what must be established then.",
           "options": [
             "Nothing; storage needs no authentication.",
             "The merchant can store any card it sees.",
@@ -5825,6 +6099,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "cards",
           "chapter": "ch22",
           "question": "An issuer's 3D Secure challenge fails because the cardholder's phone is offline. What is the correct outcome?",
+          "hint": "The challenge cannot complete without the phone. Think about the outcome for the transaction.",
           "options": [
             "Approve the transaction anyway.",
             "Share the code by email to anyone.",
@@ -5845,6 +6120,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "cards",
           "chapter": "ch22",
           "question": "A merchant sees high 3D Secure abandonment. What is the most likely cause to investigate first?",
+          "hint": "Customers give up when the challenge is painful. Think about the experience problems that drive abandonment.",
           "options": [
             "Customers love challenges.",
             "A poor challenge experience, such as slow loading, confusing prompts or unsupported devices, causing customers to give up.",
@@ -5865,6 +6141,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "cards",
           "chapter": "ch22",
           "question": "How does 3D Secure 2 differ most importantly from the original 3D Secure?",
+          "hint": "Version 2 adds data and risk-based decisions. Think about what it improves over the original.",
           "options": [
             "It removes authentication entirely.",
             "It only works on desktop.",
@@ -5885,6 +6162,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "cards",
           "chapter": "ch34",
           "question": "A recurring payment amount changes from the originally agreed amount. What should the merchant do?",
+          "hint": "The customer agreed to one amount. Think about what the merchant must do when it changes.",
           "options": [
             "Charge the new amount silently.",
             "Cancel the subscription without telling the customer.",
@@ -5905,6 +6183,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "cards",
           "chapter": "ch22",
           "question": "An authentication succeeds but the subsequent authorisation is declined. What does this tell the merchant?",
+          "hint": "Authentication and authorisation are two different checks. Think about what each one decides.",
           "options": [
             "Authentication guarantees authorisation.",
             "Authentication and authorisation are separate: the cardholder was verified, but the issuer declined the transaction for another reason, such as funds or risk.",
@@ -5925,6 +6204,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "professional",
           "chapter": "ch84",
           "question": "A BA is specifying 3D Secure handling for a checkout. Which requirement best balances security and conversion?",
+          "hint": "A good requirement covers all outcomes and the customer experience. Think about the flows and the messaging.",
           "options": [
             "Support risk-based flows, handle frictionless, challenge and error outcomes explicitly, provide clear customer messaging and log authentication results for analysis.",
             "Challenge every transaction with the longest flow.",
@@ -5947,7 +6227,7 @@ window.PA_TEST_SERIES_EXPERT = {
       "test": {
         "id": "px-29",
         "title": "Payments Expert Test 29: Chargeback Rules and Dispute Strategy",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -5956,6 +6236,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "cards",
           "chapter": "ch78",
           "question": "A cardholder disputes a transaction they do not recognise. What is the chargeback process designed to do?",
+          "hint": "A chargeback lets the issuer reverse a disputed transaction. Think about who it protects and how.",
           "options": [
             "Punish the merchant automatically.",
             "Delete the transaction record.",
@@ -5976,6 +6257,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "cards",
           "chapter": "ch78",
           "question": "A merchant receives a chargeback for a delivery the customer signed for. What should the merchant do?",
+          "hint": "The merchant has proof. Think about what it must do with that evidence and by when.",
           "options": [
             "Represent the chargeback with compelling evidence, such as delivery proof and the transaction record, within the scheme deadline.",
             "Ignore it.",
@@ -5996,6 +6278,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "cards",
           "chapter": "ch78",
           "question": "Why do chargeback reason codes matter?",
+          "hint": "Each reason code defines a different dispute. Think about what the code tells each party.",
           "options": [
             "They are decorative.",
             "They define the dispute type, the evidence required and the handling rules, so each party knows what must be proved.",
@@ -6016,6 +6299,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "cards",
           "chapter": "ch78",
           "question": "A merchant's chargeback ratio rises sharply. What is the strategic risk?",
+          "hint": "High ratios attract scheme attention. Think about the consequences if they stay high.",
           "options": [
             "No risk; ratios do not matter.",
             "Scheme monitoring programmes, fines, higher processing costs and potential loss of card acceptance if ratios stay excessive.",
@@ -6036,6 +6320,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "cards",
           "chapter": "ch22",
           "question": "A transaction was authenticated with 3D Secure and the cardholder later claims fraud. How does authentication affect the dispute?",
+          "hint": "Authentication changes who bears the fraud loss. Think about the liability shift.",
           "options": [
             "It has no effect.",
             "It guarantees the merchant loses.",
@@ -6056,6 +6341,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "cards",
           "chapter": "ch78",
           "question": "A customer says goods never arrived, but the merchant has no tracking evidence. What is the merchant's position?",
+          "hint": "Without delivery evidence the merchant cannot prove receipt. Think about how weak that position is.",
           "options": [
             "Strong, because the customer is lying.",
             "Irrelevant, because evidence does not matter.",
@@ -6076,6 +6362,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "cards",
           "chapter": "ch78",
           "question": "A chargeback is raised after the scheme time limit for that reason code. What should happen?",
+          "hint": "Scheme rules have deadlines. Think about what happens to a claim raised too late.",
           "options": [
             "It is processed anyway.",
             "The merchant must pay double.",
@@ -6096,6 +6383,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "cards",
           "chapter": "ch78",
           "question": "A merchant wants to reduce friendly fraud, where customers dispute legitimate purchases. What is the most effective approach?",
+          "hint": "Customers charge back when they cannot resolve it directly. Think about what makes them choose the easy route instead.",
           "options": [
             "Refuse all refunds.",
             "Hide the merchant name.",
@@ -6116,6 +6404,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "cards",
           "chapter": "ch78",
           "question": "An issuer and acquirer disagree after representment. What is the next stage in the scheme dispute process?",
+          "hint": "Representment is not the end. Think about the next stages and who decides.",
           "options": [
             "The dispute ends automatically.",
             "The merchant decides.",
@@ -6136,6 +6425,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "professional",
           "chapter": "ch84",
           "question": "A BA is specifying dispute case handling for an acquirer. Which requirement is most valuable?",
+          "hint": "A good dispute system tracks deadlines and evidence by code. Think about what it must hold and enforce.",
           "options": [
             "Each dispute must carry the reason code, deadline timers with alerts, evidence checklists per code, representment workflow and outcome tracking for reporting.",
             "Disputes should be handled somehow.",
@@ -6158,7 +6448,7 @@ window.PA_TEST_SERIES_EXPERT = {
       "test": {
         "id": "px-30",
         "title": "Payments Expert Test 30: Expert Judgment: Design Trade-offs and Regulatory Edge Cases",
-        "duration_minutes": 10,
+        "duration_minutes": 0,
         "pass_mark_percent": 80
       },
       "questions": [
@@ -6167,6 +6457,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "architecture",
           "chapter": "ch68",
           "question": "A payment platform must choose between immediate consistency and higher availability during a network partition. What is the fundamental trade-off?",
+          "hint": "A network partition forces a choice. Think about the two things that cannot both be had.",
           "options": [
             "Under a partition, the system must choose between refusing requests to stay consistent or accepting them and reconciling later, per the CAP theorem.",
             "There is no trade-off; both are always achievable.",
@@ -6187,6 +6478,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "compliance",
           "chapter": "ch86",
           "question": "A sanctions list update arrives mid-day. Payments already in flight were screened against the old list. What should the bank do?",
+          "hint": "Payments screened against the old list may now match. Think about what must be checked.",
           "options": [
             "Assess whether in-flight payments need rescreening against the new list, following the sanctions policy, and hold any that now match.",
             "Nothing; old screening is good enough.",
@@ -6207,6 +6499,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "operations",
           "chapter": "ch72",
           "question": "A multi-leg payment fails on the final leg after earlier legs settled. What is the hardest part of resolving it?",
+          "hint": "Earlier legs are already final. Think about why unwinding them is the hard part.",
           "options": [
             "Finding the payment.",
             "Telling the customer.",
@@ -6227,6 +6520,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "architecture",
           "chapter": "ch80",
           "question": "A bank must expose payment APIs to third parties while protecting customer data. What design principle best balances openness and security?",
+          "hint": "Openness and security need a balance. Think about the principle that gives each caller only what it needs.",
           "options": [
             "Least privilege: each caller gets only the scopes and data it needs, with strong authentication, consent checks and audit logging.",
             "Expose all data to all callers.",
@@ -6247,6 +6541,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "compliance",
           "chapter": "ch81",
           "question": "A regulator asks for payment data that includes another customer's personal data. What must the bank consider?",
+          "hint": "Disclosure must have a lawful basis and be minimal. Think about what must be weighed before sharing.",
           "options": [
             "Send everything without review.",
             "Refuse all regulatory requests.",
@@ -6267,6 +6562,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "operations",
           "chapter": "ch77",
           "question": "A settlement system must choose between gross and net settlement for a new product. What is the key decision factor?",
+          "hint": "Gross and net trade risk against liquidity. Think about the factors that decide for a given product.",
           "options": [
             "Which sounds more modern.",
             "Gross is always better.",
@@ -6287,6 +6583,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "architecture",
           "chapter": "ch46",
           "question": "A real-time payment system faces a choice: add a fraud check that adds latency, or skip it for speed. What is the expert approach?",
+          "hint": "Speed and safety both matter. Think about how to fit the check inside the time budget.",
           "options": [
             "Skip the check for speed.",
             "Run the check within the latency budget using optimised real-time scoring, and design fallback behaviour if the check times out.",
@@ -6307,6 +6604,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "compliance",
           "chapter": "ch86",
           "question": "A payment is lawful in the sending country but appears to breach the receiving country's rules. What should the bank do?",
+          "hint": "Both countries' rules matter. Think about the safe action while the position is unclear.",
           "options": [
             "Hold the payment, seek advice on the receiving country's requirements and do not proceed until the position is clear.",
             "Send it anyway.",
@@ -6327,6 +6625,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "operations",
           "chapter": "ch73",
           "question": "An investigation reveals a systemic error affecting hundreds of payments. What is the right response?",
+          "hint": "A systemic error needs a systemic response. Think about the order: stop, find, fix, inform.",
           "options": [
             "Stop the error at source, identify the full affected population, remediate each case, inform affected customers and fix the root cause.",
             "Fix one payment and move on.",
@@ -6347,6 +6646,7 @@ window.PA_TEST_SERIES_EXPERT = {
           "domain": "professional",
           "chapter": "ch84",
           "question": "A senior BA must recommend build versus buy for a payment hub. What is the most important input to the decision?",
+          "hint": "The decision needs a structured comparison. Think about the factors that must be weighed against strategy.",
           "options": [
             "The vendor's sales presentation.",
             "A structured assessment of functional fit, total cost, time to value, control, differentiation, risk and exit options against the bank's strategy.",
