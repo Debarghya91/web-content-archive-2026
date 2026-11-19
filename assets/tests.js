@@ -915,6 +915,7 @@
      three mixed mocks, which need any two groups. The Integrated Course and
      admins unlock everything. The placement test has no entry here and stays
      open. Fail closed: no gate state means the lock panel, never the test. */
+  var PA_TEST_FREE = {"ba-01": true, "ba-02": true};
   var PA_TEST_GATE = {"ba-01":"group-5","ba-02":"group-5","ba-03":"group-5","ba-04":"group-5","ba-05":"group-5","ba-06":"group-5","ba-07":"group-5","ba-08":"group-5","ba-09":"group-4","ba-10":"group-5","ba-11":"group-5","ba-12":"group-5","ba-13":"group-5","ba-14":"group-5","ba-15":"group-5","ba-16":"group-5","ba-17":"group-5","ba-18":"group-5","ba-19":"group-5","ba-20":"group-5","ba-21":"group-5","ba-22":"group-5","ba-23":"group-5","ba-24":"group-5","ba-25":"group-5","ba-26":"group-5","ba-27":"group-5","ba-28":"group-5","ba-29":"group-4","ba-30":"group-5","pb-01":"group-1","pb-02":"group-1","pb-03":"group-1","pb-04":"group-1","pb-05":"group-1","pb-06":"group-1","pb-07":"group-2","pb-08":"group-2","pb-09":"group-2","pb-10":"group-2","pb-11":"group-2","pb-12":"group-3","pb-13":"group-4","pb-14":"group-3","pb-15":"group-3","pb-16":"group-3","pb-17":"group-3","pb-18":"group-3","pb-19":"group-2","pb-20":"group-2","pb-21":"group-5","pb-22":"group-2","pb-23":"group-4","pb-24":"group-4","pb-25":"group-4","pb-26":"group-4","pb-27":"group-2","pb-28":"group-5","pb-29":"group-3","pb-30":"group-5","px-01":"group-1","px-02":"group-1","px-03":"group-1","px-04":"group-1","px-05":"group-1","px-06":"group-2","px-07":"group-2","px-08":"group-2","px-09":"group-2","px-10":"group-2","px-11":"group-3","px-12":"group-3","px-13":"group-3","px-14":"group-4","px-15":"group-1","px-16":"group-3","px-17":"group-3","px-18":"group-4","px-19":"group-4","px-20":"group-4","px-21":"group-4","px-22":"group-2","px-23":"group-3","px-24":"group-3","px-25":"group-3","px-26":"group-2","px-27":"group-4","px-28":"group-4","px-29":"group-3","px-30":"group-3","t-apis":"group-4","t-architecture":"group-4","t-cards":"group-4","t-clearing":"group-3","t-compliance":"group-3","t-crossborder":"group-2","t-emerging":"group-5","t-foundations":"group-1","t-messaging":"group-2","t-mock-1":"multi","t-mock-2":"multi","t-mock-3":"multi","t-operations":"group-3","t-professional":"group-5","t-rails":"group-1"};
   var PA_TEST_GROUP_META = {"group-1":{"name":"Group 1: Payments Foundations","lessons":186,"chapters":21,"tests":14,"sale":699,"list":999},"group-2":{"name":"Group 2: Messages and Cross-Border Payments","lessons":220,"chapters":22,"tests":18,"sale":699,"list":999},"group-3":{"name":"Group 3: Clearing, Settlement and Exceptions","lessons":208,"chapters":24,"tests":20,"sale":699,"list":999},"group-4":{"name":"Group 4: Cards, Architecture and Engineering","lessons":155,"chapters":19,"tests":17,"sale":699,"list":999},"group-5":{"name":"Group 5: The BA at Work and Emerging Payments","lessons":105,"chapters":13,"tests":33,"sale":699,"list":999}};
   function paTestGateState(){
@@ -928,6 +929,7 @@
     if(state.isAdmin) return true;
     var owned = state.owned || {};
     if(owned.integrated) return true;
+    if(owned['test-series']) return true;
     var groups = 0;
     for(var i = 1; i <= 5; i++){ if(owned['group-' + i]) groups++; }
     if(groups >= 2) return true;
@@ -943,7 +945,7 @@
     panel.appendChild(h);
     var p1 = document.createElement('p');
     if(gate === 'multi'){
-      p1.textContent = title + ' covers several groups. Buying any two groups unlocks all 105 tests. Buying one group unlocks the tests in that group only.';
+      p1.textContent = title + ' covers several groups. Buying any two groups unlocks all 105 tests, or buy the Test Series for Rs. 499 to unlock all 105 tests. Buying one group unlocks the tests in that group only.';
     } else {
       var gm = PA_TEST_GROUP_META[gate];
       p1.textContent = title + ' is part of ' + gm.name + '. Buying the group unlocks all ' + gm.tests + ' tests in the group, plus ' + gm.lessons + ' lessons in ' + gm.chapters + ' chapters, for 1 year.';
@@ -977,8 +979,15 @@
       browse.appendChild(browseLink);
       panel.appendChild(browse);
     }
+    var pTs = document.createElement('p');
+    pTs.appendChild(document.createTextNode('Or unlock all 105 tests with the Test Series, Rs. 499 for 1 year. '));
+    var tsLink = document.createElement('a');
+    tsLink.href = '/payment?bundle=test-series';
+    tsLink.textContent = 'Buy the Test Series';
+    pTs.appendChild(tsLink);
+    panel.appendChild(pTs);
     var p2 = document.createElement('p');
-    p2.appendChild(document.createTextNode('Want the whole library? The Integrated Course unlocks all 100 chapters and 881 lessons, and every test. '));
+    p2.appendChild(document.createTextNode('Want the whole library? The Integrated Course unlocks all 99 chapters and 874 lessons, and every test. '));
     var integLink = document.createElement('a');
     integLink.href = '/payment?bundle=integrated';
     integLink.textContent = 'See the Integrated Course';
@@ -1002,6 +1011,7 @@
     var tid = testData && testData.test && testData.test.id;
     var gate = tid && PA_TEST_GATE[tid];
     if(!gate) return paStartTestRun(containerId, testData, storage);
+    if(PA_TEST_FREE[tid]) return paStartTestRun(containerId, testData, storage);
     container.innerHTML = '<p>Checking access...</p>';
     paTestGateState().then(function(state){
       if(paTestAllowed(gate, state)){ paStartTestRun(containerId, testData, storage); }
@@ -1018,6 +1028,14 @@
         var tid = m && m[1];
         var gate = tid && PA_TEST_GATE[tid];
         if(!gate) return;
+        if(PA_TEST_FREE[tid]){
+          var freeNote = document.createElement('p');
+          freeNote.className = 'test-lock-note';
+          freeNote.textContent = 'Free for everyone.';
+          var freeLink = card.querySelector('a');
+          if(freeLink) card.insertBefore(freeNote, freeLink); else card.appendChild(freeNote);
+          return;
+        }
         if(paTestAllowed(gate, state)) return;
         if(card.querySelector('.test-lock-note')) return;
         var note = document.createElement('p');
