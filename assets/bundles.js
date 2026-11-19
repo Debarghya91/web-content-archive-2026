@@ -426,11 +426,10 @@ function paRenderCheckoutSummary(){
    lands on the payment page with the same cart waiting. Checkout stays
    one course at a time, because each gateway order is a single
    product, so the cart is a holding place: pick a cart item to pay
-   for it, then come back for the next one. The hidden Rs 50 test
-   product is never a cart item. */
+   for it, then come back for the next one. */
 var PA_CART_KEY = 'pth_cart';
 function paCartValidId(bid){
-  return typeof bid === 'string' && /^[a-z0-9][a-z0-9-]*$/.test(bid) && bid !== 'test-50';
+  return typeof bid === 'string' && /^[a-z0-9][a-z0-9-]*$/.test(bid);
 }
 function paCartGet(){
   var ids = [];
