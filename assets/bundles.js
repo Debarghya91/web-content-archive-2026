@@ -454,6 +454,7 @@ function paCartGet(){
 function paCartSave(ids){
   try { window.localStorage.setItem(PA_CART_KEY, JSON.stringify(ids)); } catch(e){}
   paCartRender();
+  paCartRefreshButtons();
 }
 function paCartAdd(bid){
   if(!paCartValidId(bid)) return false;
@@ -473,6 +474,19 @@ function paCartTotal(){
     if(b && !b.price_placeholder) total += Number(b.price_inr) || 0;
   });
   return total;
+}
+function paCartRefreshButtons(){
+  /* Keep every "Add to cart" button in step with the cart, so a
+     Remove (or an add from another spot) does not leave a stale
+     "Added to cart" button on the page until a reload. */
+  var btns = document.querySelectorAll('.pa-cart-btn');
+  for(var i = 0; i < btns.length; i++){
+    var bid = btns[i].dataset.paCartBid;
+    if(!bid) continue;
+    var inCart = paCartGet().indexOf(bid) !== -1;
+    btns[i].textContent = inCart ? 'Added to cart' : 'Add to cart';
+    btns[i].disabled = inCart;
+  }
 }
 function paCartRender(){
   var host = document.getElementById('pa-cart');
@@ -535,6 +549,7 @@ function paCartAddButtons(){
       var btn = document.createElement('button');
       btn.type = 'button';
       btn.className = 'studio-btn pa-cart-btn';
+      btn.dataset.paCartBid = bid;
       var inCart = paCartGet().indexOf(bid) !== -1;
       btn.textContent = inCart ? 'Added to cart' : 'Add to cart';
       if(inCart) btn.disabled = true;
