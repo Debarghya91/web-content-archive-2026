@@ -296,7 +296,7 @@ var PA_CHECKOUT_CONFIG = (function(){
     var el = document.getElementById('payment-config');
     if(el) return JSON.parse(el.textContent);
   } catch(e){}
-  return {payu_create_payment_url: '', paypal_client_id: '',
+  return {payu_create_payment_url: '', cashfree_create_order_url: '', paypal_client_id: '',
           paypal_create_order_url: '', paypal_capture_order_url: ''};
 })();
 function paCheckoutBundleData(){
@@ -320,6 +320,10 @@ function paCheckoutBundleId(){
 function paPayuReady(){
   var c = PA_CHECKOUT_CONFIG;
   return !!(c && c.payu_create_payment_url);
+}
+function paCashfreeReady(){
+  var c = PA_CHECKOUT_CONFIG;
+  return !!(c && c.cashfree_create_order_url);
 }
 function paPaypalReady(){
   var c = PA_CHECKOUT_CONFIG;
@@ -484,6 +488,118 @@ function paStartPayuCheckout(bid){
       if(btn) btn.disabled = false;
     });
   });
+}
+/* Cashfree checkout (19 Nov 2026): mirrors paStartPayuCheckout. The
+   server creates the order and returns a payment_session_id plus the
+   mode (sandbox or production); the browser opens the Cashfree
+   Checkout JS drop-in with that session id. Cards, wallets, UPI,
+   netbanking and EMI are all offered inside Cashfree checkout, so
+   no method is built separately here. The buyer leaves this page
+   for Cashfree's hosted checkout (redirectTarget _self) and returns
+   to payment.html?cashfree_return=1, which is UX only: access is
+   granted by the cashfree-webhook function after it verifies the
+   payment server side. The section stays pa-pay-disabled until the
+   live keys are set, so this code is inert until then. */
+var paCashfreeSdkState = 'idle';
+var paCashfreeSdkQueue = [];
+function paLoadCashfreeSdk(callback){
+  if(window.Cashfree){ if(callback) callback(true); return; }
+  if(paCashfreeSdkState === 'ready'){ if(callback) callback(true); return; }
+  if(paCashfreeSdkState === 'failed'){ if(callback) callback(false); return; }
+  if(callback) paCashfreeSdkQueue.push(callback);
+  if(paCashfreeSdkState === 'loading') return;
+  paCashfreeSdkState = 'loading';
+  var s = document.createElement('script');
+  s.src = 'https://sdk.cashfree.com/js/v3/cashfree.js';
+  s.async = true;
+  s.onload = function(){
+    paCashfreeSdkState = 'ready';
+    var q = paCashfreeSdkQueue; paCashfreeSdkQueue = [];
+    q.forEach(function(cb){ cb(true); });
+  };
+  s.onerror = function(){
+    paCashfreeSdkState = 'failed';
+    var q = paCashfreeSdkQueue; paCashfreeSdkQueue = [];
+    q.forEach(function(cb){ cb(false); });
+  };
+  document.head.appendChild(s);
+}
+function paStartCashfreeCheckout(bid){
+  bid = bid || paCheckoutBundleId();
+  if(!bid){ paCheckoutFail('Pick a course first.'); return; }
+  if(!paCashfreeReady()){
+    paCheckoutFail('Cashfree checkout is not set up yet. Website checkout is in test setup.');
+    return;
+  }
+  if(typeof paAuthAccessToken !== 'function'){
+    paCheckoutFail('Sign-in is not available. Please try again later.');
+    return;
+  }
+  var btn = document.getElementById('pa-cashfree-pay');
+  if(btn) btn.disabled = true;
+  paCheckoutStatus('Starting Cashfree checkout. You will be taken to the Cashfree payment page.');
+  var cfTimedOut = false;
+  var cfTimer = setTimeout(function(){
+    cfTimedOut = true;
+    paCheckoutFail('Could not start the Cashfree payment. Check your connection and try again.');
+    if(btn) btn.disabled = false;
+  }, 20000);
+  paAuthAccessToken().then(function(token){
+    if(cfTimedOut){ return; }
+    if(!token){
+      clearTimeout(cfTimer);
+      paCheckoutFail('Sign in first so the payment is linked to your account.');
+      if(btn) btn.disabled = false;
+      return;
+    }
+    paCheckoutStatus('Contacting the payment server...');
+    fetch(PA_CHECKOUT_CONFIG.cashfree_create_order_url, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json', 'apikey': PA_AUTH_CONFIG.supabaseAnonKey, 'Authorization': 'Bearer ' + token},
+      body: JSON.stringify({product_id: paUpiProductId(bid)})
+    }).then(function(r){
+      return r.json().then(function(data){ return {ok: r.ok, data: data}; });
+    }).then(function(res){
+      clearTimeout(cfTimer);
+      if(cfTimedOut){ return; }
+      var data = res.data || {};
+      if(!res.ok || !data.payment_session_id){
+        paCheckoutFail('Could not start the Cashfree payment. Please try again.');
+        if(btn) btn.disabled = false;
+        return;
+      }
+      paCheckoutStatus('Payment started. Opening Cashfree checkout.');
+      paLoadCashfreeSdk(function(loaded){
+        if(!loaded){
+          paCheckoutFail('Could not load the Cashfree payment page. Check your connection and try again.');
+          if(btn) btn.disabled = false;
+          return;
+        }
+        try{
+          var cf = window.Cashfree({mode: (data.mode === 'sandbox' ? 'sandbox' : 'production')});
+          cf.checkout({paymentSessionId: data.payment_session_id, redirectTarget: '_self'});
+        }catch(e){
+          paCheckoutFail('Could not open the Cashfree payment page. Please try again.');
+          if(btn) btn.disabled = false;
+        }
+      });
+    }).catch(function(){
+      clearTimeout(cfTimer);
+      if(cfTimedOut){ return; }
+      paCheckoutFail('Could not start the Cashfree payment. Check your connection and try again.');
+      if(btn) btn.disabled = false;
+    });
+  });
+}
+/* Cashfree return (19 Nov 2026): the buyer lands back here after
+   Cashfree checkout. UX only: access is granted by the webhook
+   after server-side verification, never by this page. */
+function paCashfreeReturnNotice(){
+  try{
+    var m = /[?&]cashfree_return=1/.exec(window.location.search || '');
+    if(!m) return;
+    paCheckoutStatus('Payment received by Cashfree. Access is granted after the payment is verified, usually within a few minutes. Check My Purchases or your dashboard.');
+  }catch(e){}
 }
 var paPaypalSdkLoading = false;
 function paLoadPaypalSdk(callback){
@@ -753,6 +869,7 @@ function paInitCheckout(){
      never initialised. id="payment" stays: enrolBundle scrolls
      to it and the homepage stylesheet styles it. */
   if(!document.getElementById('payment')) return;
+  paCashfreeReturnNotice();
   var upiSubmit = document.getElementById('pa-upi-submit');
   if(upiSubmit && !upiSubmit.dataset.paBound){ upiSubmit.dataset.paBound = '1'; upiSubmit.addEventListener('click', paUpiSubmit); }
   var upiCopy = document.getElementById('pa-upi-copy');
@@ -761,10 +878,14 @@ function paInitCheckout(){
   paRenderPaypalAmount(bid);
   var payuBtn = document.getElementById('pa-payu-pay');
   var payuNote = document.getElementById('pa-payu-note');
+  var cfBtn = document.getElementById('pa-cashfree-pay');
+  var cfNote = document.getElementById('pa-cashfree-note');
   var paypalNote = document.getElementById('pa-paypal-note');
   if(!bid){
     if(payuBtn) payuBtn.disabled = true;
     if(payuNote) payuNote.textContent = 'Pick a course first.';
+    if(cfBtn) cfBtn.disabled = true;
+    if(cfNote) cfNote.textContent = 'Pick a course first.';
     if(paypalNote) paypalNote.textContent = 'Pick a course first.';
     paUpiRender('', null);
     return;
@@ -773,6 +894,8 @@ function paInitCheckout(){
   if(b && b.price_placeholder){
     if(payuBtn) payuBtn.disabled = true;
     if(payuNote) payuNote.textContent = 'This course is not on sale yet, so there is no payment step.';
+    if(cfBtn) cfBtn.disabled = true;
+    if(cfNote) cfNote.textContent = 'This course is not on sale yet, so there is no payment step.';
     if(paypalNote) paypalNote.textContent = 'This course is not on sale yet, so there is no payment step.';
     paUpiRender(bid, null);
     return;
@@ -780,6 +903,8 @@ function paInitCheckout(){
   if(typeof paAuthCurrentUserId !== 'function'){
     if(payuBtn) payuBtn.disabled = true;
     if(payuNote) payuNote.textContent = 'Sign-in is not available. Please try again later.';
+    if(cfBtn) cfBtn.disabled = true;
+    if(cfNote) cfNote.textContent = 'Sign-in is not available. Please try again later.';
     if(paypalNote) paypalNote.textContent = 'Sign-in is not available. Please try again later.';
     paUpiRender(bid, null);
     return;
@@ -790,6 +915,8 @@ function paInitCheckout(){
       if(signin) signin.style.display = 'block';
       if(payuBtn) payuBtn.disabled = true;
       if(payuNote) payuNote.textContent = 'Sign in to pay. The payment is linked to your account.';
+      if(cfBtn) cfBtn.disabled = true;
+      if(cfNote) cfNote.textContent = 'Sign in to pay. The payment is linked to your account.';
       if(paypalNote) paypalNote.textContent = 'Sign in to pay with PayPal.';
       paUpiRender(bid, null);
       return;
@@ -802,6 +929,13 @@ function paInitCheckout(){
     } else {
       if(payuBtn) payuBtn.disabled = true;
       if(payuNote) payuNote.textContent = 'PayU checkout is not set up yet. Website checkout is in test setup.';
+    }
+    if(paCashfreeReady()){
+      if(cfBtn) cfBtn.disabled = false;
+      if(cfNote) cfNote.textContent = 'You will be taken to the Cashfree payment page to complete the payment.';
+    } else {
+      if(cfBtn) cfBtn.disabled = true;
+      if(cfNote) cfNote.textContent = 'Cashfree checkout is not set up yet. Website checkout is in test setup.';
     }
     if(paPaypalReady()){
       if(paypalNote) paypalNote.textContent = '';
