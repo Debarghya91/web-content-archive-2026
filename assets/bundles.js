@@ -419,6 +419,133 @@ function paRenderCheckoutSummary(){
   box.appendChild(p3);
   return bid;
 }
+/* ===== Cart (19 Nov 2026, owner order: "Add to cart") ===== */
+/* A buyer adds courses to a cart instead of paying for one course and
+   then hunting for the next one. The cart lives in localStorage, so it
+   survives the trip to sign-in and back: after signing in, the buyer
+   lands on the payment page with the same cart waiting. Checkout stays
+   one course at a time, because each gateway order is a single
+   product, so the cart is a holding place: pick a cart item to pay
+   for it, then come back for the next one. The hidden Rs 50 test
+   product is never a cart item. */
+var PA_CART_KEY = 'pth_cart';
+function paCartValidId(bid){
+  return typeof bid === 'string' && /^[a-z0-9][a-z0-9-]*$/.test(bid) && bid !== 'test-50';
+}
+function paCartGet(){
+  var ids = [];
+  try {
+    var raw = window.localStorage.getItem(PA_CART_KEY);
+    var arr = raw ? JSON.parse(raw) : [];
+    if(Array.isArray(arr)) ids = arr.filter(function(id){ return paCartValidId(id); });
+  } catch(e){ ids = []; }
+  /* On the payment page the bundle table is the authority: drop any
+     id it does not know, so a stale cart never shows a dead course. */
+  try {
+    var data = paCheckoutBundleData();
+    if(data && data.length){
+      var known = {};
+      data.forEach(function(b){ known[b.id] = true; });
+      ids = ids.filter(function(id){ return known[id]; });
+    }
+  } catch(e){}
+  return ids;
+}
+function paCartSave(ids){
+  try { window.localStorage.setItem(PA_CART_KEY, JSON.stringify(ids)); } catch(e){}
+  paCartRender();
+}
+function paCartAdd(bid){
+  if(!paCartValidId(bid)) return false;
+  var ids = paCartGet();
+  if(ids.indexOf(bid) === -1){ ids.push(bid); paCartSave(ids); }
+  return true;
+}
+function paCartRemove(bid){
+  var ids = paCartGet();
+  var i = ids.indexOf(bid);
+  if(i !== -1){ ids.splice(i, 1); paCartSave(ids); }
+}
+function paCartTotal(){
+  var total = 0;
+  paCartGet().forEach(function(id){
+    var b = paCheckoutBundle(id);
+    if(b && !b.price_placeholder) total += Number(b.price_inr) || 0;
+  });
+  return total;
+}
+function paCartRender(){
+  var host = document.getElementById('pa-cart');
+  if(!host) return;
+  var ids = paCartGet();
+  host.innerHTML = '';
+  var h = document.createElement('h3');
+  h.textContent = ids.length ? 'Your cart (' + ids.length + ')' : 'Your cart';
+  host.appendChild(h);
+  if(!ids.length){
+    var p0 = document.createElement('p');
+    p0.textContent = 'Your cart is empty. Add a course below and it stays here, even if you sign in and come back.';
+    host.appendChild(p0);
+    return;
+  }
+  var ul = document.createElement('ul');
+  ul.className = 'pa-cart-list';
+  ids.forEach(function(id){
+    var b = paCheckoutBundle(id);
+    if(!b) return;
+    var li = document.createElement('li');
+    li.className = 'pa-cart-item';
+    var name = document.createElement('span');
+    name.textContent = b.name + ' — Rs. ' + Number(b.price_inr).toLocaleString('en-IN');
+    li.appendChild(name);
+    var pay = document.createElement('a');
+    pay.href = 'payment?bundle=' + encodeURIComponent(id);
+    pay.className = 'studio-btn pa-cart-pay';
+    pay.textContent = 'Pay for this';
+    li.appendChild(pay);
+    var rm = document.createElement('button');
+    rm.type = 'button';
+    rm.className = 'studio-btn pa-cart-remove';
+    rm.textContent = 'Remove';
+    rm.addEventListener('click', function(){ paCartRemove(id); });
+    li.appendChild(rm);
+    ul.appendChild(li);
+  });
+  host.appendChild(ul);
+  var total = document.createElement('p');
+  var tb = document.createElement('b');
+  tb.textContent = 'Total: Rs. ' + Number(paCartTotal()).toLocaleString('en-IN');
+  total.appendChild(tb);
+  total.appendChild(document.createTextNode(' — pay for one course at a time, starting with any item above.'));
+  host.appendChild(total);
+}
+function paCartAddButtons(){
+  /* "Add to cart" beside every Buy link that names a bundle: the
+     payment page picker, the course cards, and the pricing page.
+     The button carries the bundle id from the link it sits beside. */
+  var links = document.querySelectorAll('a[href^="payment?bundle="]');
+  for(var i = 0; i < links.length; i++){
+    (function(link){
+      if(link.dataset.paCartBound) return;
+      link.dataset.paCartBound = '1';
+      var m = /[?&]bundle=([^&#]*)/.exec(link.getAttribute('href') || '');
+      var bid = '';
+      try { bid = m ? decodeURIComponent(m[1]) : ''; } catch(e){ bid = m ? m[1] : ''; }
+      if(!paCartValidId(bid)) return;
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'studio-btn pa-cart-btn';
+      var inCart = paCartGet().indexOf(bid) !== -1;
+      btn.textContent = inCart ? 'Added to cart' : 'Add to cart';
+      if(inCart) btn.disabled = true;
+      btn.addEventListener('click', function(){
+        if(paCartAdd(bid)){ btn.textContent = 'Added to cart'; btn.disabled = true; }
+      });
+      if(link.parentNode) link.parentNode.insertBefore(btn, link.nextSibling);
+    })(links[i]);
+  }
+}
+document.addEventListener('DOMContentLoaded', paCartAddButtons);
 function paStartPayuCheckout(bid){
   bid = bid || paCheckoutBundleId();
   if(!bid){ paCheckoutFail('Pick a course first.'); return; }
@@ -870,6 +997,23 @@ function paInitCheckout(){
      to it and the homepage stylesheet styles it. */
   if(!document.getElementById('payment')) return;
   paCashfreeReturnNotice();
+  /* Cart (19 Nov 2026): the cart section lives on this page, and the
+     "Add to cart" buttons are wired here too, so a reload always
+     shows the current cart. */
+  paCartRender();
+  paCartAddButtons();
+  /* Sign-in lands back on this checkout page (19 Nov 2026, owner
+     order): the sign-in link carries ?next= with this exact page, so
+     after signing in the buyer returns here with the cart intact
+     instead of landing on the dashboard and searching again. */
+  var signinNote = document.getElementById('pa-checkout-signin');
+  if(signinNote){
+    var signinLink = signinNote.querySelector('a');
+    if(signinLink){
+      var here = window.location.pathname + window.location.search;
+      signinLink.href = '/signin?next=' + encodeURIComponent(here);
+    }
+  }
   var upiSubmit = document.getElementById('pa-upi-submit');
   if(upiSubmit && !upiSubmit.dataset.paBound){ upiSubmit.dataset.paBound = '1'; upiSubmit.addEventListener('click', paUpiSubmit); }
   var upiCopy = document.getElementById('pa-upi-copy');
