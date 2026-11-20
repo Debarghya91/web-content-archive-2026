@@ -17,7 +17,14 @@
     }
     var html = '';
     rows.forEach(function(r){
-      html += '<div class="pf-testimonial"><p class="pf-testimonial-text">' + esc(r.text) + '</p><div class="pf-testimonial-name">' + esc(r.name) + '</div>' + (r.role ? '<div class="pf-testimonial-role">' + esc(r.role) + '</div>' : '') + '</div>';
+      var stars = '';
+      var n = parseInt(r.rating, 10);
+      if(n >= 1 && n <= 5){
+        var s = '';
+        for(var i = 0; i < 5; i++){ s += i < n ? '★' : '☆'; }
+        stars = '<div class="pf-testimonial-stars" aria-label="' + n + ' out of 5 stars">' + s + '</div>';
+      }
+      html += '<div class="pf-testimonial">' + stars + '<p class="pf-testimonial-text">' + esc(r.text) + '</p><div class="pf-testimonial-name">' + esc(r.name) + '</div>' + (r.role ? '<div class="pf-testimonial-role">' + esc(r.role) + '</div>' : '') + '</div>';
     });
     list.innerHTML = html;
   }
@@ -37,7 +44,7 @@
         if(signinBox) signinBox.hidden = false;
         return;
       }
-      client.from('testimonials').select('name, role, text, created_at').eq('status', 'approved').order('created_at', {ascending: false}).limit(20).then(function(resp){
+      client.from('testimonials').select('name, role, text, rating, created_at').eq('status', 'approved').order('created_at', {ascending: false}).limit(20).then(function(resp){
         if(resp && !resp.error && resp.data) renderList(resp.data);
       });
       client.auth.getSession().then(function(res){
@@ -58,9 +65,11 @@
             var name = el('pa-tst-name').value.trim();
             var role = el('pa-tst-role').value.trim();
             var text = el('pa-tst-text').value.trim();
+            var ratingEl = el('pa-tst-rating');
+            var rating = ratingEl ? parseInt(ratingEl.value, 10) : NaN;
             if(!name || !text) return;
             if(statusEl) statusEl.textContent = 'Submitting...';
-            client.from('testimonials').insert({user_id: user.id, name: name, role: role || null, text: text, status: 'pending'}).then(function(resp){
+            client.from('testimonials').insert({user_id: user.id, name: name, role: role || null, text: text, rating: (rating >= 1 && rating <= 5) ? rating : null, status: 'pending'}).then(function(resp){
               if(resp && resp.error){
                 if(statusEl) statusEl.textContent = 'Could not submit your testimonial. Please try again.';
                 return;
