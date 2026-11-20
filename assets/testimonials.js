@@ -57,7 +57,7 @@
         var nameInput = el('pa-tst-name');
         if(nameInput && !nameInput.value){
           var meta = user.user_metadata || {};
-          nameInput.value = meta.display_name || meta.full_name || (user.email ? user.email.split('@')[0] : '');
+          nameInput.value = meta.display_name || meta.full_name || '';
         }
         if(form){
           form.addEventListener('submit', function(ev){
