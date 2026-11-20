@@ -678,6 +678,73 @@ function paLoadCashfreeSdk(callback){
   };
   document.head.appendChild(s);
 }
+/* Discount code WELCOME24 (20 Nov 2026, invitation mail): 25% off
+   the Integrated Course only, until 21 Nov 2026, 3:00 PM IST. The
+   code is checked on the server when the order is created; the
+   preview below is display only and the server amount is what is
+   charged. The code never applies to any other course and never
+   stacks with a referral code. */
+var PA_PROMO_WELCOME24 = 'WELCOME24';
+var PA_PROMO_WELCOME24_EXPIRY_LABEL = '21 Nov 2026, 3:00 PM IST';
+function paPromoCode(){
+  var el = document.getElementById('pa-promo-code');
+  if(!el) return '';
+  return String(el.value || '').trim().toUpperCase();
+}
+function paPromoPreviewAmount(bid){
+  var b = paCheckoutBundle(bid);
+  if(!b || b.price_placeholder || bid !== 'integrated') return null;
+  return Math.round(Number(b.price_inr) * 75 / 100);
+}
+function paApplyPromoCode(){
+  var st = document.getElementById('pa-promo-status');
+  var code = paPromoCode();
+  var bid = paCheckoutBundleId();
+  var b = bid ? paCheckoutBundle(bid) : null;
+  if(!code){
+    if(st) st.textContent = 'Enter a discount code first.';
+    return;
+  }
+  if(code !== PA_PROMO_WELCOME24){
+    if(st) st.textContent = 'That code is not valid for this checkout.';
+    return;
+  }
+  if(!b || bid !== 'integrated'){
+    if(st) st.textContent = 'WELCOME24 applies to the Integrated Course only. Pick the Integrated Course to use it.';
+    return;
+  }
+  var discounted = paPromoPreviewAmount(bid);
+  if(discounted == null){
+    if(st) st.textContent = 'That code does not apply to this course.';
+    return;
+  }
+  if(st) st.textContent = 'WELCOME24 applied: Rs. ' + Number(discounted).toLocaleString('en-IN') + ' (was Rs. ' + Number(b.price_inr).toLocaleString('en-IN') + '). Valid until ' + PA_PROMO_WELCOME24_EXPIRY_LABEL + '. The price is confirmed on the payment server before you pay.';
+  paRenderPromoSummary(discounted);
+}
+function paRenderPromoSummary(discounted){
+  /* Show the discounted price in the order summary so the buyer
+     sees it before paying. The server amount is authoritative;
+     this only updates the display. */
+  var box = document.getElementById('pa-order-summary');
+  if(!box) return;
+  var bid = paCheckoutBundleId();
+  var b = bid ? paCheckoutBundle(bid) : null;
+  if(!b) return;
+  var line = document.getElementById('pa-promo-summary-line');
+  if(!line){
+    line = document.createElement('p');
+    line.id = 'pa-promo-summary-line';
+    box.appendChild(line);
+  }
+  line.innerHTML = '';
+  var s = document.createElement('s');
+  s.textContent = 'Rs. ' + Number(b.price_inr).toLocaleString('en-IN');
+  line.appendChild(s);
+  line.appendChild(document.createTextNode(' '));
+  var strong = document.createElement('b');
+  strong.textContent = 'Rs. ' + Number(discounted).toLocaleString('en-IN') + ' with WELCOME24';
+  line.appendChild(strong);
+}
 function paStartCashfreeCheckout(bid){
   bid = bid || paCheckoutBundleId();
   if(!bid){ paCheckoutFail('Pick a course first.'); return; }
@@ -710,7 +777,7 @@ function paStartCashfreeCheckout(bid){
     fetch(PA_CHECKOUT_CONFIG.cashfree_create_order_url, {
       method: 'POST',
       headers: {'Content-Type': 'application/json', 'apikey': PA_AUTH_CONFIG.supabaseAnonKey, 'Authorization': 'Bearer ' + token},
-      body: JSON.stringify({product_id: paUpiProductId(bid)})
+      body: JSON.stringify({product_id: paUpiProductId(bid), promo_code: paPromoCode() || undefined})
     }).then(function(r){
       return r.json().then(function(data){ return {ok: r.ok, data: data}; });
     }).then(function(res){
@@ -718,11 +785,21 @@ function paStartCashfreeCheckout(bid){
       if(cfTimedOut){ return; }
       var data = res.data || {};
       if(!res.ok || !data.payment_session_id){
-        paCheckoutFail('Could not start the Cashfree payment. Please try again.');
+        var pmsg = '';
+        if(data && typeof data.code === 'string' && data.code.indexOf('promo_') === 0){
+          pmsg = data.error || 'That discount code could not be applied.';
+        }
+        paCheckoutFail(pmsg || 'Could not start the Cashfree payment. Please try again.');
         if(btn) btn.disabled = false;
         return;
       }
-      paCheckoutStatus('Payment started. Opening Cashfree checkout.');
+      /* The amount shown is the server-returned amount only: it is
+         the price actually charged, including any applied discount. */
+      if(data.amount != null){
+        paCheckoutStatus('Total: Rs. ' + Number(data.amount).toLocaleString('en-IN') + (data.promo_code ? ' with code ' + String(data.promo_code) : '') + '. Opening Cashfree checkout.');
+      } else {
+        paCheckoutStatus('Payment started. Opening Cashfree checkout.');
+      }
       paLoadCashfreeSdk(function(loaded){
         if(!loaded){
           paCheckoutFail('Could not load the Cashfree payment page. Check your connection and try again.');
