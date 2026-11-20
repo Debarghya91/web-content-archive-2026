@@ -167,6 +167,29 @@ function paSitRenderMastery(item){
   html += '</div><p class="sit-mastery-state" aria-live="polite">Current state: <strong>' + escHtml(PA_SIT_MASTERY_LABELS[cur]) + '</strong>.</p>';
   box.innerHTML = html;
 }
+/* Summary card at the bottom of the case page: the same card the
+   Situations list shows for this case (stage, case code, position,
+   thumbnail, meaningful title and agenda), so the case is named and
+   summarised again at the foot of its own detail page. It is a plain
+   block, not a link, because the reader is already on this case. */
+function paSitRenderSummaryCard(item){
+  var box = document.getElementById('sit-summary-card');
+  if(!box) return;
+  if(!item){ box.innerHTML = ''; return; }
+  var p = paSitProgress();
+  var pos = PA_CASE_INDEX + 1;
+  var mark = p.bookmarked[item.id] ? ' \u2605 ' : '';
+  var done = p.completed[item.id] ? ' \u2713 ' : '';
+  var mast = paSitMasteryOf(p, item.id);
+  var mastTag = (mast === 'understood' || mast === 'practised' || mast === 'reviewed') ? ' \u00b7 ' + PA_SIT_MASTERY_LABELS[mast] : '';
+  var lockTag = paSitIsLocked(item) ? ' \u00b7 Locked' : '';
+  var thumb = item.thumbnail ? '<img class="pf-thumb pf-thumb-sm" src="' + escHtml(item.thumbnail) + '" alt="" loading="lazy"> ' : '';
+  var agenda = item.agenda ? '<span class="pf-row-agenda">' + escHtml(item.agenda) + '</span>' : '';
+  box.innerHTML = '<h4>This situation</h4>'
+    + '<div class="sit-catalogue-item">'
+    + '<span class="sit-cat-stage">Stage ' + (item.stage || '') + ' &middot; ' + escHtml(item.id || '') + ' &middot; ' + pos + ' of ' + PA_CASE_ITEMS.length + mark + done + mastTag + lockTag + '</span>'
+    + thumb + escHtml(item.title || item.id || '') + agenda + '</div>';
+}
 function paSitSetMastery(state){
   var item = paSitCaseItem();
   if(!item) return;
@@ -249,6 +272,7 @@ function paSitRenderCase(){
     paSitRenderRelated(null);
     paSitRenderNote(null);
     paSitRenderMastery(null);
+    paSitRenderSummaryCard(null);
     paSitSyncActionButtons(null, true);
     var prev0 = document.getElementById('sit-prev');
     var next0 = document.getElementById('sit-next');
@@ -280,6 +304,7 @@ function paSitRenderCase(){
     paSitRenderNote(item);
     paSitRenderMastery(item);
   }
+  paSitRenderSummaryCard(item);
   paSitSyncActionButtons(item, locked);
   paSitApplyDeterrents();
   /* A locked case records nothing: no last visit, no Read state.
