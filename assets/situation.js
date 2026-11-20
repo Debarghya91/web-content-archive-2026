@@ -326,7 +326,7 @@ function paSitResolveAndRender(){
     var item = PA_CASE_ITEMS[found];
     try { document.title = (item.title || item.id) + ' | Payments Training Hub'; } catch(e){}
     var crumb = document.getElementById('sit-crumb-case');
-    if(crumb) crumb.textContent = 'Case ' + item.id;
+    if(crumb) crumb.textContent = item.title || item.id;
   }
   paSitRenderCase();
 }
