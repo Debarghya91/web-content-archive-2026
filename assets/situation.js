@@ -28,10 +28,11 @@ var PA_CASE_MISSING = '';
 var PA_SIT_PROGRESS_KEY = 'pa-situations-progress-v1';
 var PA_SIT_MASTERY_ORDER = ['read', 'understood', 'practised', 'reviewed'];
 var PA_SIT_MASTERY_LABELS = {read: 'Read', understood: 'Understood', practised: 'Practised', reviewed: 'Reviewed'};
-/* Free samples (settled access model, mirrors the apps and the list
-   page): CASE-001 and CASE-196 only. Keep this list identical to
+/* Free samples (owner order 20 Nov 2026: keep 10 samples free): the
+   10 situations shown as free samples on the Situations page, so they
+   open in full as standalone pages too. Keep this list identical to
    PA_SIT_FREE_SAMPLES in situations.js. */
-var PA_SIT_FREE_SAMPLES = ['CASE-001', 'CASE-196'];
+var PA_SIT_FREE_SAMPLES = ['CASE-001', 'CASE-003', 'CASE-196', 'CASE-200', 'CASE-256', 'CASE-257', 'CASE-379', 'CASE-396', 'CASE-449', 'CASE-499'];
 function paSitHasAccess(){
   try {
     if(typeof paHasSituationsAccess === 'function') return !!paHasSituationsAccess();

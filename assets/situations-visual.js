@@ -545,7 +545,7 @@
     html += '<p class="sit-meta">' + pills.join(' ') + '</p>';
     html += '<div class="sit-paywall" role="region" aria-label="Unlock this case">';
     html += '<h3>Unlock this case</h3>';
-    html += '<p>This situation is part of Practice Experiences. Unlock all 564 situations for <s>Rs. 1,499</s> <b>Rs. 999</b>, with 1 year of access. The 2 free samples stay free. The Integrated Course includes Practice Experiences too.</p>';
+    html += '<p>This situation is part of Practice Experiences. Unlock all 564 situations for <s>Rs. 1,499</s> <b>Rs. 999</b>, with 1 year of access. The 10 free samples stay free. The Integrated Course includes Practice Experiences too.</p>';
     html += '<p><a class="studio-btn primary" href="payment?bundle=practice">Go to checkout</a> <a class="studio-btn" href="payment?bundle=integrated">See the Integrated Course</a></p>';
     html += '</div>';
     html += '</section>';

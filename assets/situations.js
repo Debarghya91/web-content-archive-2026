@@ -47,10 +47,11 @@ var PA_SIT_PROGRESS_KEY = 'pa-situations-progress-v1';
    themselves. Nothing else sets a state: opening is never proof of
    mastery. */
 var PA_SIT_MASTERY_ORDER = ['read', 'understood', 'practised', 'reviewed'];
-/* Free samples (settled access model, mirrors the apps): CASE-001 and
-   CASE-196 only. The 10 static samples in the page intro are
-   marketing copy and are untouched by this gate. */
-var PA_SIT_FREE_SAMPLES = ['CASE-001', 'CASE-196'];
+/* Free samples (owner order 20 Nov 2026: keep 10 samples free): the
+   10 situations shown as free samples on the Situations page, so they
+   open in full as standalone pages too, not only in the page intro.
+   The other 554 stay locked behind Practice Experiences. */
+var PA_SIT_FREE_SAMPLES = ['CASE-001', 'CASE-003', 'CASE-196', 'CASE-200', 'CASE-256', 'CASE-257', 'CASE-379', 'CASE-396', 'CASE-449', 'CASE-499'];
 function paSitHasAccess(){
   try {
     if(typeof paHasSituationsAccess === 'function') return !!paHasSituationsAccess();
