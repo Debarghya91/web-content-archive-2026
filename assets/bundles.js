@@ -679,13 +679,13 @@ function paLoadCashfreeSdk(callback){
   document.head.appendChild(s);
 }
 /* Discount code WELCOME24 (20 Nov 2026, invitation mail): 25% off
-   the Integrated Course only, until 21 Nov 2026, 3:00 PM IST. The
+   the Integrated Course only, until 22 Nov 2026, 11:00 PM IST. The
    code is checked on the server when the order is created; the
    preview below is display only and the server amount is what is
    charged. The code never applies to any other course and never
    stacks with a referral code. */
 var PA_PROMO_WELCOME24 = 'WELCOME24';
-var PA_PROMO_WELCOME24_EXPIRY_LABEL = '21 Nov 2026, 3:00 PM IST';
+var PA_PROMO_WELCOME24_EXPIRY_LABEL = '22 Nov 2026, 11:00 PM IST';
 function paPromoCode(){
   var el = document.getElementById('pa-promo-code');
   if(!el) return '';
