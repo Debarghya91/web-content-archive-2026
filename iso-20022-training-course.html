@@ -31,7 +31,14 @@
 <section class="section">
 <h1>ISO 20022 Training Course for Banking Professionals and Business Analysts</h1>
 <p>ISO 20022 is the global standard for financial messaging between banks. It defines a common dictionary of business terms and a set of XML message definitions that banks use to instruct, clear, settle and report payments. This course teaches ISO 20022 the way working BAs need it: read the messages, map them from the old MT standard, follow a payment through its lifecycle, and handle the errors that occur when a message fails validation. No prior ISO 20022 knowledge is assumed.</p>
-<p><small>Last updated: 19 November 2026.</small></p>
+<p><small>Last updated: 22 November 2026.</small></p>
+<h2 class="pf-section-header">Key Takeaways</h2>
+<div class="pf-card"><ul class="bundle-included">
+<li>ISO 20022 is the global XML messaging standard for payments, giving every bank the same business definitions and message structures.</li>
+<li>Three message families cover the lifecycle: pain for initiation, pacs for clearing and settlement, and camt for reporting.</li>
+<li>MT maps to MX, MT103 to pacs.008 and MT202 to pacs.009, and under coexistence rich ISO data can be truncated when forwarded as MT.</li>
+<li>A message fails on schema, business rules or character set, and a pacs.002 ACCP means acceptance, not settlement; settlement is ACSC.</li>
+</ul></div>
 <h2 class="pf-section-header">By the end of this course you will be able to</h2>
 <div class="pf-card"><ul class="bundle-included">
 <li>Read pain.001, pacs.008, pacs.009, pacs.002 and camt.052, camt.053 and camt.054 messages field by field.</li>
@@ -57,6 +64,16 @@
 <h2 class="pf-section-header">MT to ISO 20022 Migration and Mapping</h2>
 <p>Migration is a mapping exercise. Each MT message has an ISO 20022 counterpart, but the mapping is rarely one field to one element. An MT103 maps to a pacs.008, an MT202 maps to a pacs.009, an MT900 or MT910 maps to a camt.054, and an MT940 or MT942 maps to a camt.053 or camt.052. The mapping must handle three problems: data that exists in MT but has no exact ISO equivalent, data that exists in ISO but never existed in MT, and data that gets truncated because the receiving system cannot accept the full ISO content.</p>
 <p>Truncation is the trap most projects underestimate. Under coexistence, a bank receiving a rich ISO 20022 message may have to forward it as an MT message to a bank that has not migrated. Fields get shortened, structured addresses collapse into free text, and remittance information is cut. The BA's mapping workbook must record, field by field, what survives, what is truncated, and what is lost, and the business must accept the loss in writing. Work through the mapping in the <a href="/mapping-workbench">ISO 20022 Mapping Workbench</a> and the <a href="/guides/mt-to-mx-migration">MT to MX Migration Guide</a>, with field-level detail in <a href="/guides/mt-mx-field-mapping">MT to MX Field Mapping</a>.</p>
+<h2 class="pf-section-header">MT vs ISO 20022 (MX) at a Glance</h2>
+<table>
+<tr><th></th><th>MT</th><th>ISO 20022 (MX)</th></tr>
+<tr><td><b>Format</b></td><td>Fixed-length fields with limited structure</td><td>XML with a published schema</td></tr>
+<tr><td><b>Data richness</b></td><td>Limited structured data</td><td>Rich structured party, address and remittance data</td></tr>
+<tr><td><b>Address</b></td><td>Free text, often truncated</td><td>Structured address elements</td></tr>
+<tr><td><b>Remittance</b></td><td>Short free text</td><td>Complete remittance information</td></tr>
+<tr><td><b>Validation</b></td><td>Limited validation</td><td>Schema plus business rules plus character set</td></tr>
+<tr><td><b>Example messages</b></td><td>MT103, MT202, MT940</td><td>pacs.008, pacs.009, camt.053</td></tr>
+</table>
 <h2 class="pf-section-header">End-to-End Payment Processing Using ISO 20022</h2>
 <p>Follow one payment: a corporate customer in Mumbai pays a supplier in Frankfurt for EUR 50,000.</p>
 <p>First, the corporate treasury system sends a <b>pain.001</b> to its bank, instructing a credit transfer with the supplier's name, IBAN, amount and remittance details. Second, the bank validates the instruction: the account, the balance, the sanctions screening, the completeness of the message. If validation passes, the bank sends a <b>pacs.008</b> to the beneficiary bank, either directly or through correspondent banks, carrying the same payment with full structured data. Third, the beneficiary bank receives the pacs.008, validates it, and credits the supplier's account. Fourth, <b>pacs.002</b> status reports flow back along the chain: ACCP when the payment is accepted, ACSP while settlement is in process, and ACSC when settlement completes.</p>
@@ -79,6 +96,78 @@
 <p><b>Which messages will I learn?</b> The three payments families: pain for initiation (pain.001, pain.002), pacs for clearing and settlement (pacs.008, pacs.009, pacs.002, pacs.004), and camt for cash management and reporting (camt.052, camt.053, camt.054, camt.029, camt.056), plus the Business Application Header, head.001.</p>
 <p><b>How do I practise?</b> Look up 27 MT and ISO 20022 messages field by field in the <a href="/explorer">ISO 20022 Message Explorer</a>, practise mapping in the <a href="/mapping-workbench">Mapping Workbench</a> and the <a href="/iso-lab">ISO 20022 Message and Mapping Lab</a>, and test yourself with <a href="/tests">practice tests</a> and the <a href="/guides/iso-20022-interview-questions">ISO 20022 Interview Questions guide</a>.</p>
 <p><b>What does it cost, and how long do I have access?</b> Group 2 costs Rs 699 at the launch offer price, for 1 year of access. The full Integrated Course, all five groups together, costs Rs 2,999 for 1 year.</p>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Is ISO 20022 replacing SWIFT?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. ISO 20022 is a messaging standard, not a network. SWIFT is the network that carries the messages, and SWIFT now carries ISO 20022 messages for cross-border payments under CBPR+."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the difference between MT and MX?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "MT is the older SWIFT message format, fixed-length fields with limited structured data. MX is the ISO 20022 XML format, with richer structured data and a published schema. A payment can be an MT103 or a pacs.008; both instruct the same movement of money, but the MX version carries far more information."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do all banks use ISO 20022 now?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. Adoption varies by system and country. Cross-border payments on SWIFT, the Eurosystem, the UK and several domestic high-value systems have migrated or are migrating. Many domestic and legacy systems still run on older formats."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does a pacs.002 ACCP mean the beneficiary has been paid?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. ACCP means the payment was accepted for processing. The beneficiary is paid when settlement completes, reported as ACSC, and the account is credited."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is CBPR+?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "CBPR+ is SWIFT's programme for migrating cross-border payments to ISO 20022. It started in November 2022, and MT messages for cross-border payments were phased out by November 2025. Under CBPR+, the MT103 maps to a pacs.008 and the MT202 maps to a pacs.009."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Which messages will I learn?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The three payments families: pain for initiation (pain.001, pain.002), pacs for clearing and settlement (pacs.008, pacs.009, pacs.002, pacs.004), and camt for cash management and reporting (camt.052, camt.053, camt.054, camt.029, camt.056), plus the Business Application Header, head.001."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I practise?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Look up 27 MT and ISO 20022 messages field by field in the ISO 20022 Message Explorer, practise mapping in the Mapping Workbench and the ISO 20022 Message and Mapping Lab, and test yourself with practice tests and the ISO 20022 Interview Questions guide."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What does it cost, and how long do I have access?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Group 2 costs Rs 699 at the launch offer price, for 1 year of access. The full Integrated Course, all five groups together, costs Rs 2,999 for 1 year."
+      }
+    }
+  ]
+}
+</script>
 <h2 class="pf-section-header">About the author</h2>
 <div class="pf-card"><p>This course is written by a working payments business analyst with 8.5 years in banking and payments, and checked against scheme documentation. The teaching comes from live payment operations, not from textbooks: real messages, real failures, real investigations.</p></div>
 <p>Related: <a href="/swift-payments-training">SWIFT Payments Training</a> &middot; <a href="/rtgs-vs-ach">RTGS vs ACH</a> &middot; <a href="/payments-business-analyst-training">Payments Business Analyst Training</a> &middot; <a href="/guides/iso-20022-explained">ISO 20022 Explained</a></p>

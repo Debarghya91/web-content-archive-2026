@@ -31,7 +31,14 @@
 <section class="section">
 <h1>SWIFT Payments Training</h1>
 <p>SWIFT carries the messages behind most cross-border payments. This track teaches SWIFT the way working BAs need it: read MT messages field by field, explain correspondent banking and nostro accounts, tell serial from cover, handle charges and FX, track payments with gpi, and explain the migration from MT to ISO 20022 under CBPR+. No prior SWIFT knowledge is assumed.</p>
-<p><small>Last updated: 19 November 2026.</small></p>
+<p><small>Last updated: 22 November 2026.</small></p>
+<h2 class="pf-section-header">Key Takeaways</h2>
+<div class="pf-card"><ul class="bundle-included">
+<li>SWIFT moves messages, not money. Settlement moves separately, through correspondent accounts.</li>
+<li>The MT103 fields tell the whole story of a payment: the reference, the value date and amount, the ordering and beneficiary customers, the remittance information, and the charges.</li>
+<li>Serial and cover are the two ways to send a cross-border payment, with different instruction and settlement paths.</li>
+<li>gpi tracking with the UETR makes a payment traceable, and CBPR+ migrated cross-border payments from MT to ISO 20022.</li>
+</ul></div>
 <h2 class="pf-section-header">What Is SWIFT and How Does It Work?</h2>
 <p>SWIFT is a member-owned cooperative that provides the secure messaging network banks use to exchange payment instructions and other financial messages. It is not a bank, and it does not move money. When a bank sends an MT103, SWIFT delivers that message to the receiving bank securely and reliably. The money itself moves separately, through correspondent bank accounts and settlement systems. SWIFT's network is called SWIFTNet, and every institution on it is identified by a BIC, the Business Identifier Code.</p>
 <h2 class="pf-section-header">SWIFT Network vs Payment Settlement</h2>
@@ -45,6 +52,16 @@
 <p>Most banks cannot hold accounts in every currency in every country, so they hold accounts with correspondent banks that can. A nostro account is an account a bank holds with another bank, in that bank's books, in a foreign currency: "our account with you". A vostro account is the same account seen from the other side: "your account with us". When bank A pays bank B's customer in euros, the money moves by debiting A's nostro account with B and crediting the customer's account. Correspondent banking is the plumbing of cross-border payments, and its costs, cut-off times and account balances shape how fast a payment can settle. Read <a href="/guides/correspondent-banking-explained">Correspondent Banking Explained</a>.</p>
 <h2 class="pf-section-header">Serial vs Cover Payments</h2>
 <p>There are two ways to send a cross-border payment. In a serial payment, the MT103 travels from bank to bank along the chain, and each bank passes the funds to the next. In a cover payment, the customer instruction (MT103) goes directly to the beneficiary's bank, while the funds travel separately through a cover payment (MT202 COV) between the correspondent banks. Cover payments are faster for the instruction and give the beneficiary's bank full information upfront, but they need a separate settlement leg that must be matched to the instruction. Serial payments are simpler to trace but slower, because each bank in the chain must process the message and the funds in turn.</p>
+<h2 class="pf-section-header">Serial vs Cover Payments at a Glance</h2>
+<table>
+<tr><th></th><th>Serial payment</th><th>Cover payment</th></tr>
+<tr><td><b>Instruction path</b></td><td>The MT103 travels bank to bank along the chain.</td><td>The MT103 goes directly to the beneficiary bank.</td></tr>
+<tr><td><b>Funds path</b></td><td>Funds pass bank to bank with the instruction.</td><td>Funds travel separately through an MT202 COV between correspondents.</td></tr>
+<tr><td><b>Speed</b></td><td>Slower, because each bank processes in turn.</td><td>Faster instruction delivery to the beneficiary bank.</td></tr>
+<tr><td><b>Information</b></td><td>Each bank sees the instruction as it passes along the chain.</td><td>The beneficiary bank gets full information upfront.</td></tr>
+<tr><td><b>Traceability</b></td><td>Simpler to trace, one chain to follow.</td><td>Instruction and settlement legs must be matched.</td></tr>
+<tr><td><b>When used</b></td><td>Simpler corridors and smaller chains.</td><td>Large correspondent networks where speed and upfront information matter.</td></tr>
+</table>
 <h2 class="pf-section-header">SWIFT gpi and Payment Tracking</h2>
 <p>SWIFT gpi (Global Payments Innovation) added tracking and transparency to cross-border payments. Every gpi payment carries a UETR, a Unique End-to-End Transaction Reference, which identifies the payment across every bank in the chain. Any bank in the chain can look up the payment's status, the fees deducted at each step, and the FX applied, and the end customer can see where the payment is. The gpi Tracker turns a cross-border payment from a black box into a traceable journey. Read <a href="/guides/swift-gpi-explained">SWIFT gpi Explained</a> and <a href="/guides/uetr-explained">UETR Explained</a>.</p>
 <h2 class="pf-section-header">SWIFT and ISO 20022 Migration</h2>
@@ -85,6 +102,78 @@
 <p><b>Why do cross-border payments get delayed?</b> Most delays resolve to one of four causes: incomplete or incorrect beneficiary details, a repair queue hold, a cut-off missed, or a compliance screen. The investigation starts with the MT103: field 20 for the reference, field 32A for value date and amount, field 59 for beneficiary details, and field 71A for the charges.</p>
 <p><b>Do I need prior SWIFT knowledge?</b> No. The track starts from first principles: what SWIFT is, how the network works, and how to read an MT103 field by field.</p>
 <p><b>What does it cost, and how long do I have access?</b> Group 2 costs Rs 699 at the launch offer price, for 1 year of access. The full Integrated Course, all five groups together, costs Rs 2,999 for 1 year.</p>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Does SWIFT move money?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. SWIFT moves messages. Settlement moves money, through correspondent accounts: bank A holds an account with bank B, and the payment is settled by debiting and crediting those accounts. A payment can be messaged in seconds and settle hours later."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is a BIC?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The Business Identifier Code: the code that identifies an institution on the SWIFT network, so messages reach the right bank."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the difference between a serial payment and a cover payment?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "In a serial payment, the MT103 travels from bank to bank along the chain, and each bank passes the funds to the next. In a cover payment, the customer instruction (MT103) goes directly to the beneficiary's bank, while the funds travel separately through a cover payment (MT202 COV) between the correspondent banks."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is a UETR?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The Unique End-to-End Transaction Reference: the identifier that follows a SWIFT gpi payment across every bank in the chain, so any bank can look up its status, the fees deducted and the FX applied."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is CBPR+?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "SWIFT's programme for migrating cross-border payments from MT messages to ISO 20022 MX messages. It started in November 2022, and MT messages for cross-border payments were phased out by November 2025. The MT103 maps to a pacs.008 and the MT202 to a pacs.009."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why do cross-border payments get delayed?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Most delays resolve to one of four causes: incomplete or incorrect beneficiary details, a repair queue hold, a cut-off missed, or a compliance screen. The investigation starts with the MT103: field 20 for the reference, field 32A for value date and amount, field 59 for beneficiary details, and field 71A for the charges."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do I need prior SWIFT knowledge?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. The track starts from first principles: what SWIFT is, how the network works, and how to read an MT103 field by field."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What does it cost, and how long do I have access?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Group 2 costs Rs 699 at the launch offer price, for 1 year of access. The full Integrated Course, all five groups together, costs Rs 2,999 for 1 year."
+      }
+    }
+  ]
+}
+</script>
 <h2 class="pf-section-header">About the author</h2>
 <div class="pf-card"><p>This track is written by a working payments business analyst with 8.5 years in banking and payments, and checked against scheme documentation. The teaching comes from live payment operations, not from textbooks: real messages, real failures, real investigations.</p></div>
 <p>Related: <a href="/iso-20022-training-course">ISO 20022 Training Course</a> &middot; <a href="/rtgs-vs-ach">RTGS vs ACH</a> &middot; <a href="/payments-business-analyst-training">Payments Business Analyst Training</a> &middot; <a href="/sepa-faster-payments-training">SEPA and Faster Payments Training</a></p>
