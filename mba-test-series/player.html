@@ -283,6 +283,10 @@
     flushTime();
     state.currentIndex = idx;
     state.currentSectionId = target.section;
+    /* Start this section's clock the moment the user first enters it.
+       ensureSectionDeadline is a no-op when a deadline already exists,
+       so a resume never resets a running section clock. */
+    ensureSectionDeadline(sec);
     saveState();
     renderQuestion();
     renderPalette();
