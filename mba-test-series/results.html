@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Results | MBA Test Series | Payments Training Hub</title>
+<meta name="description" content="MBA mock test results from Payments Training Hub: total score, section-wise accuracy, time per question and full answer review with explanations.">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="../assets/pf-theme.css">
+<link rel="stylesheet" href="mba-test-series.css">
+</head>
+<body class="mba-page">
+<header class="pf-topnav">
+<div class="pf-topnav-row1">
+<a class="pf-topnav-word" href="../">Payments Training Hub</a>
+<span class="pf-topnav-right"><span class="pf-topnav-badge">MBA Test Series</span><a class="pf-topnav-signin" href="../signin">Sign in</a></span>
+</div>
+<nav class="pf-topnav-links" aria-label="Main sections">
+<a href="../courses">Courses</a>
+<a href="../course-map">Learning Paths</a>
+<a href="../practice">Practice</a>
+<a href="../reference">Resources</a>
+<a href="../pricing">Pricing</a>
+</nav>
+</header>
+<main class="mba-wrap mba-wrap-wide">
+<p class="crumbs"><a href="../">Home</a> / <a href="catalog.html">MBA Test Series</a> / Results</p>
+<div id="errorBox" class="mba-error" hidden></div>
+<div id="resultBody" hidden>
+  <section class="mba-score-hero" aria-label="Score summary">
+    <div style="flex:1;min-width:240px">
+      <h1 id="resTitle">Test Results</h1>
+      <p id="resMeta"></p>
+      <p id="resCounts"></p>
+    </div>
+    <div style="text-align:right">
+      <div class="mba-big-score"><span id="resScore">0</span> <small id="resMax"></small></div>
+      <p id="resPct"></p>
+      <p id="resPercentile"></p>
+    </div>
+  </section>
+
+  <section aria-label="Topic-wise performance">
+    <div class="pf-section-header accent-gold"><h2>Topic-wise performance</h2></div>
+    <table class="mba-result-table" id="topicTable">
+      <thead><tr><th>Topic</th><th>Questions</th><th>Attempted</th><th>Correct</th><th>Accuracy</th><th>Time spent</th></tr></thead>
+      <tbody></tbody>
+    </table>
+    <p class="mba-muted mba-small">Topics are weakest first. Use the player topic mode from the catalog to practise a weak topic on its own.</p>
+  </section>
+
+  <section aria-label="Section-wise performance">
+    <div class="pf-section-header accent-gold"><h2>Section-wise performance</h2></div>
+    <table class="mba-result-table" id="sectionTable">
+      <thead><tr><th>Section</th><th>Questions</th><th>Attempted</th><th>Correct</th><th>Wrong</th><th>Unattempted</th><th>Score</th><th>Accuracy</th><th>Time spent</th></tr></thead>
+      <tbody></tbody>
+    </table>
+    <p class="mba-muted mba-small">Accuracy is correct divided by attempted. Essays are not auto-scored and are excluded from the total; compare your essay with the model outline in the review below.</p>
+  </section>
+
+  <section aria-label="Answer review">
+    <div class="pf-section-header accent-gold"><h2>Answer review</h2></div>
+    <div class="mba-filter-row">
+      <label for="filterSection">Section:</label>
+      <select id="filterSection"><option value="">All sections</option></select>
+      <label for="filterStatus">Show:</label>
+      <select id="filterStatus">
+        <option value="">All questions</option>
+        <option value="correct">Correct only</option>
+        <option value="wrong">Wrong only</option>
+        <option value="unattempted">Unattempted only</option>
+        <option value="essay">Essays only</option>
+        <option value="bookmarked">Bookmarked only</option>
+      </select>
+      <span class="mba-muted mba-small" id="filterCount"></span>
+    </div>
+    <div id="reviewList"></div>
+  </section>
+
+  <p>
+    <button type="button" class="mba-btn mba-btn-primary" id="retakeBtn">Retake this mock</button>
+    <a class="mba-btn mba-btn-secondary" href="catalog.html">Back to Catalog</a>
+    <a class="mba-btn mba-btn-secondary" href="analytics.html">My Performance Analytics</a>
+    <a class="mba-btn mba-btn-secondary" id="playerLink" href="#">Open Player</a>
+  </p>
+</div>
+</main>
+<footer class="pf-footer"><p>Payments Training Hub. Practical Payments Training for Banking Professionals. Content is for education; check current exam rules before relying on it.</p><div class="pf-footer-cols"><div class="pf-footer-col"><h3>Explore</h3><ul><li><a href="../">Home</a></li><li><a href="../courses">Courses</a></li><li><a href="../course-map">Learning Paths</a></li><li><a href="../pricing">Pricing</a></li></ul></div><div class="pf-footer-col"><h3>Practice</h3><ul><li><a href="../situations">Payment Cases</a></li><li><a href="../tests">Assessments</a></li><li><a href="../simulators">Simulators</a></li><li><a href="../interview-prep">Interview Prep</a></li></ul></div><div class="pf-footer-col"><h3>Resources</h3><ul><li><a href="../explorer">ISO 20022 Explorer</a></li><li><a href="../reference">Reference Library</a></li><li><a href="../insights">Insights and Scenarios</a></li></ul></div><div class="pf-footer-col"><h3>Company</h3><ul><li><a href="../about">About</a></li><li><a href="../contact">Contact</a></li><li><a href="../privacy">Privacy</a></li><li><a href="../terms">Terms</a></li><li><a href="../support">Help and Support</a></li></ul></div></div></footer>
+<script src="mba-engine.js"></script>
+<script>
+(function () {
+  'use strict';
+  var E = window.MbaEngine;
+  var params = new URLSearchParams(window.location.search);
+  var mockId = (params.get('mock') || '').trim();
+  var examKey = mockId.split('-')[0] || '';
+  var mock = null;
+  var result = null;
+
+  function $(id) { return document.getElementById(id); }
+
+  function showError(msg, detail) {
+    var box = $('errorBox');
+    box.hidden = false;
+    box.innerHTML = '<b>' + E.escapeHtml(msg) + '</b><br>' + E.escapeHtml(detail || '') +
+      '<br><a href="catalog.html">Back to the test catalog</a>';
+  }
+
+  function mockCandidates() {
+    var urls = [];
+    if (examKey && mockId) {
+      urls.push('data/' + examKey + '/' + mockId + '.json');
+      urls.push('../data/' + examKey + '/' + mockId + '.json');
+    }
+    if (mockId) { urls.push(mockId + '.json'); }
+    return urls;
+  }
+
+  function fetchFirst(urls) {
+    return urls.reduce(function (p, url) {
+      return p.catch(function () {
+        return fetch(url).then(function (r) {
+          if (!r.ok) { throw new Error('HTTP ' + r.status); }
+          return r.json();
+        });
+      });
+    }, Promise.reject(new Error('no candidates')));
+  }
+
+  function loadResult() {
+    try {
+      var raw = localStorage.getItem('mba-ts-result-' + mockId);
+      return raw ? JSON.parse(raw) : null;
+    } catch (e) { return null; }
+  }
+
+  function statusBadge(status) {
+    if (status === 'correct') { return '<span class="mba-badge correct">Correct</span>'; }
+    if (status === 'wrong') { return '<span class="mba-badge wrong">Wrong</span>'; }
+    if (status === 'essay') { return '<span class="mba-badge essay">Essay, not auto-scored</span>'; }
+    return '<span class="mba-badge unattempted">Unattempted</span>';
+  }
+
+  function answerLine(item, pq) {
+    var user = E.userAnswerText(item, { value: pq.userValue });
+    var correct = E.correctAnswerText(item);
+    if (item.type === 'mcq') {
+      var uLetter = (pq.userValue === null || pq.userValue === undefined || pq.userValue === '')
+        ? 'Not answered' : E.optionLetter(Number(pq.userValue));
+      var cLetter = E.optionLetter(Number(item.correct_index));
+      return '<p class="mba-answer-line"><b>Your answer:</b> ' + E.escapeHtml(uLetter) +
+        (user !== null ? ' (' + E.escapeHtml(user) + ')' : '') + '</p>' +
+        '<p class="mba-answer-line"><b>Correct answer:</b> ' + E.escapeHtml(cLetter) +
+        ' (' + E.escapeHtml(correct) + ')</p>';
+    }
+    if (item.type === 'tita') {
+      return '<p class="mba-answer-line"><b>Your answer:</b> ' +
+        E.escapeHtml(user === null ? 'Not answered' : user) + '</p>' +
+        '<p class="mba-answer-line"><b>Correct answer:</b> ' + E.escapeHtml(correct) + '</p>';
+    }
+    return '<p class="mba-answer-line"><b>Your response:</b></p>' +
+      '<div class="mba-user-essay">' + E.escapeHtml(user === null ? 'Not written.' : user) + '</div>' +
+      '<p class="mba-answer-line" style="margin-top:10px"><b>Model outline:</b></p>' +
+      '<div class="mba-model-outline">' + E.escapeHtml(correct || 'No model outline provided.') + '</div>';
+  }
+
+  function renderReview() {
+    var secFilter = $('filterSection').value;
+    var statusFilter = $('filterStatus').value;
+    var setMap = E.buildSetContext(mock.items);
+    var shown = 0;
+    var html = '';
+    var reviewItems = mock.items;
+    if (result.itemIds && result.itemIds.length) {
+      var wanted = {};
+      result.itemIds.forEach(function (id) { wanted[id] = true; });
+      reviewItems = mock.items.filter(function (it) { return wanted[it.id]; });
+    }
+    var bookmarked = {};
+    (result.bookmarks || []).forEach(function (id) { bookmarked[id] = true; });
+    reviewItems.forEach(function (item, idx) {
+      var pq = result.score.perQuestion.filter(function (q) { return q.id === item.id; })[0] ||
+        { status: 'unattempted', score: 0, userValue: null, timeMs: 0 };
+      if (secFilter && item.section !== secFilter) { return; }
+      if (statusFilter === 'bookmarked' && !bookmarked[item.id]) { return; }
+      if (statusFilter && statusFilter !== 'bookmarked' && pq.status !== statusFilter) { return; }
+      shown += 1;
+      var ctx = E.setContextFor(item, setMap);
+      var setHtml = '';
+      if (ctx) {
+        if (ctx.set_title) { setHtml += '<p class="mba-set-title">' + E.escapeHtml(ctx.set_title) + '</p>'; }
+        if (ctx.passage) { setHtml += '<div class="mba-passage">' + E.escapeHtml(ctx.passage) + '</div>'; }
+        if (ctx.diagram) { setHtml += E.renderDiagramHTML(ctx.diagram); }
+      }
+      if (!ctx && item.diagram) { setHtml += E.renderDiagramHTML(item.diagram); }
+      var typeLabel = item.type === 'mcq' ? 'Multiple Choice' : item.type === 'tita' ? 'Type In The Answer' : 'Essay';
+      html += '<article class="mba-review-item ' + pq.status + '">' +
+        '<div class="mba-q-meta"><span class="mba-chip">' + E.escapeHtml(item.section) + '</span>' +
+        '<span>Question ' + (idx + 1) + ' of ' + reviewItems.length + '</span>' +
+        '<span>' + E.escapeHtml(typeLabel) + '</span>' +
+        '<span>' + E.escapeHtml(item.topic || '') + '</span>' +
+        '<span>Time spent: ' + E.escapeHtml(E.formatDurationMs(pq.timeMs)) + '</span>' +
+        '<span>Score: ' + pq.score + '</span>' +
+        statusBadge(pq.status) +
+        (bookmarked[item.id] ? '<span class="mba-badge bookmarked">Bookmarked</span>' : '') + '</div>' +
+        setHtml +
+        '<p class="mba-q-text">' + E.escapeHtml(item.question || '') + '</p>' +
+        (item.type === 'mcq' ? '<ul class="mba-options">' + (item.options || []).map(function (opt, i) {
+          var isUser = pq.userValue !== null && pq.userValue !== undefined && Number(pq.userValue) === i;
+          var isCorrect = Number(item.correct_index) === i;
+          var cls = isCorrect ? ' selected' : '';
+          var tag = isCorrect ? ' (correct answer)' : isUser ? ' (your answer)' : '';
+          return '<li><div class="mba-option' + cls + '"><span class="mba-opt-letter">' + E.optionLetter(i) + '.</span><span>' +
+            E.escapeHtml(opt) + E.escapeHtml(tag) + '</span></div></li>';
+        }).join('') + '</ul>' : '') +
+        answerLine(item, pq) +
+        (item.type !== 'essay' && item.explanation ? '<div class="mba-explanation"><h4>Explanation</h4>' +
+          E.escapeHtml(item.explanation) + '</div>' : '') +
+        '</article>';
+    });
+    $('reviewList').innerHTML = html || '<p class="mba-muted">No questions match this filter.</p>';
+    $('filterCount').textContent = shown + ' of ' + reviewItems.length + ' questions shown.';
+  }
+
+  function render() {
+    var s = result.score;
+    $('resTitle').textContent = result.title + ' Results';
+    var when = result.submittedAt ? new Date(result.submittedAt).toLocaleString() : '';
+    $('resMeta').textContent = result.exam + ' | ' + result.mock_id + ' | Submitted ' + when +
+      (result.autoSubmitted ? ' (auto-submitted when time ended)' : '') +
+      ' | Marking: ' + E.markingLabel(result.marking);
+    $('resCounts').textContent = s.correct + ' correct, ' + s.wrong + ' wrong, ' + s.unattempted +
+      ' unattempted, ' + s.essayCount + ' essay(s) out of ' + s.totalQuestions + ' questions.';
+    $('resScore').textContent = s.totalScore;
+    $('resMax').textContent = '/ ' + s.maxScore;
+    var pct = s.maxScore > 0 ? Math.round(s.totalScore / s.maxScore * 100) : 0;
+    $('resPct').textContent = pct + '% of the maximum score. Maximum counts only auto-scored questions.';
+    var percentile = E.percentileForScore(s.totalScore, s.maxScore, result.exam);
+    $('resPercentile').textContent = percentile === null
+      ? ''
+      : 'Estimated percentile: ' + percentile + '. This is an estimate from a seeded baseline distribution for this mock, labelled as such until enough learners have taken it for a real percentile.';
+    var modeNote = result.mode && result.mode.type !== 'full'
+      ? ' Mode: ' + result.mode.label + ' (' + s.totalQuestions + ' questions run).' : '';
+    $('resMeta').textContent = result.exam + ' | ' + result.mock_id + ' | Submitted ' + when +
+      (result.autoSubmitted ? ' (auto-submitted when time ended)' : '') +
+      ' | Marking: ' + E.markingLabel(result.marking) + modeNote;
+    var tbody = document.querySelector('#sectionTable tbody');
+    tbody.innerHTML = s.sections.map(function (sec) {
+      return '<tr><td>' + E.escapeHtml(sec.name) + '</td><td>' + sec.total + '</td><td>' + sec.attempted +
+        '</td><td>' + sec.correct + '</td><td>' + sec.wrong + '</td><td>' + sec.unattempted +
+        '</td><td>' + sec.score + '</td><td>' + (sec.accuracy === null ? 'NA' : Math.round(sec.accuracy * 100) + '%') +
+        '</td><td>' + E.escapeHtml(E.formatDurationMs(sec.timeMs)) + '</td></tr>';
+    }).join('');
+    var topicBody = document.querySelector('#topicTable tbody');
+    var topics = E.topicAccuracy(mock, s);
+    topicBody.innerHTML = topics.map(function (t) {
+      return '<tr><td>' + E.escapeHtml(t.topic) + '</td><td>' + t.total + '</td><td>' + t.attempted +
+        '</td><td>' + t.correct + '</td><td>' + (t.accuracy === null ? 'NA' : Math.round(t.accuracy * 100) + '%') +
+        '</td><td>' + E.escapeHtml(E.formatDurationMs(t.timeMs)) + '</td></tr>';
+    }).join('') || '<tr><td colspan="6">No topic data.</td></tr>';
+    var sel = $('filterSection');
+    (mock.sections || []).slice().sort(function (a, b) { return (a.order || 0) - (b.order || 0); }).forEach(function (sec) {
+      var opt = document.createElement('option');
+      opt.value = sec.id;
+      opt.textContent = sec.name;
+      sel.appendChild(opt);
+    });
+    sel.addEventListener('change', renderReview);
+    $('filterStatus').addEventListener('change', renderReview);
+    renderReview();
+    $('retakeBtn').addEventListener('click', function () {
+      try { localStorage.removeItem('mba-ts-attempt-' + mockId); } catch (e) {}
+      try { localStorage.removeItem('mba-ts-result-' + mockId); } catch (e) {}
+      window.location.href = 'player.html?mock=' + encodeURIComponent(mockId);
+    });
+    $('playerLink').href = 'player.html?mock=' + encodeURIComponent(mockId);
+    $('resultBody').hidden = false;
+  }
+
+  function boot() {
+    if (!mockId) {
+      showError('No mock selected.', 'Open results from a submitted test, for example results.html?mock=CAT-01.');
+      return;
+    }
+    result = loadResult();
+    if (!result) {
+      showError('No submitted attempt found for ' + mockId + ' in this browser.',
+        'Results are stored in this browser when you submit a test. If you took the test in a different browser, open the results there, or take the mock again.');
+      return;
+    }
+    fetchFirst(mockCandidates()).then(function (data) {
+      mock = data;
+      document.title = result.title + ' Results | MBA Test Series | Payments Training Hub';
+      render();
+    }).catch(function () {
+      showError('Mock file not found: ' + mockId + '.',
+        'The result is saved, but the question file is needed to show the review. Looked for data/' + examKey + '/' + mockId + '.json and ../data/' + examKey + '/' + mockId + '.json.');
+    });
+  }
+
+  boot();
+})();
+</script>
+</body>
+</html>

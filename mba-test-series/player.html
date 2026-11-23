@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Test Player | MBA Test Series | Payments Training Hub</title>
+<meta name="description" content="MBA mock test player from Payments Training Hub: section tabs, sectional timers, question palette, mark for review, on-screen calculator and autosave.">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="../assets/pf-theme.css">
+<link rel="stylesheet" href="mba-test-series.css">
+</head>
+<body class="mba-page">
+<div class="mba-player">
+  <div class="mba-player-bar">
+    <div>
+      <div class="mba-title" id="barTitle">Payments Training Hub</div>
+      <div class="mba-sub" id="barSub">MBA Test Series</div>
+    </div>
+    <div class="mba-timer" id="overallTimer" hidden>
+      <span class="mba-clock-label">Time Left (overall)</span>
+      <span class="mba-clock" id="overallClock">--:--:--</span>
+    </div>
+    <div class="mba-timer" id="sectionTimer" hidden>
+      <span class="mba-clock-label" id="sectionClockLabel">Section time left</span>
+      <span class="mba-clock" id="sectionClock">--:--</span>
+    </div>
+    <button type="button" class="mba-btn mba-btn-gold" id="submitBtnTop" hidden>Submit Test</button>
+  </div>
+
+  <div id="errorBox" class="mba-error" hidden></div>
+
+  <div id="startScreen" hidden>
+    <div class="mba-start-card" id="startCard"></div>
+  </div>
+
+  <div id="testScreen" hidden>
+    <div class="mba-section-tabs" id="sectionTabs" role="tablist" aria-label="Sections"></div>
+    <div class="mba-player-grid">
+      <div class="mba-question-card" id="questionCard"></div>
+      <aside class="mba-palette" id="paletteAside" aria-label="Question palette">
+        <h3 id="paletteTitle">Question Palette</h3>
+        <button type="button" class="mba-btn mba-btn-secondary mba-palette-toggle" id="paletteToggle" aria-expanded="true">Hide palette</button>
+        <p class="mba-palette-user" id="paletteUser"></p>
+        <div class="mba-palette-grid" id="paletteGrid"></div>
+        <ul class="mba-legend-list">
+          <li><span class="mba-legend-dot answered"></span>Answered</li>
+          <li><span class="mba-legend-dot not-answered"></span>Not Answered</li>
+          <li><span class="mba-legend-dot marked"></span>Marked for Review</li>
+          <li><span class="mba-legend-dot answered-marked"></span>Answered and Marked</li>
+          <li><span class="mba-legend-dot not-visited"></span>Not Visited</li>
+        </ul>
+        <p class="mba-palette-counts" id="paletteCounts"></p>
+        <p style="margin:12px 0 0"><button type="button" class="mba-btn mba-btn-secondary" id="submitBtnSide" style="width:100%">Submit Test</button></p>
+        <p class="mba-small mba-muted" style="margin:8px 0 0">Your answers save automatically in this browser. A refresh keeps your progress and your remaining time.</p>
+      </aside>
+    </div>
+  </div>
+</div>
+
+<button type="button" class="mba-btn mba-btn-secondary mba-calc-fab" id="calcFab" hidden>Calculator</button>
+<div class="mba-calc" id="calcPanel" hidden aria-label="On-screen calculator">
+  <div class="mba-calc-head"><span>Calculator</span><button type="button" id="calcClose" aria-label="Close calculator">X</button></div>
+  <input class="mba-calc-display" id="calcDisplay" value="0" readonly aria-label="Calculator display">
+  <div class="mba-calc-grid" id="calcGrid"></div>
+</div>
+
+<div class="mba-modal-backdrop" id="submitModal" hidden>
+  <div class="mba-modal" role="dialog" aria-modal="true" aria-labelledby="submitModalTitle">
+    <h2 id="submitModalTitle">Submit this test?</h2>
+    <p>Check the summary below. Once you submit, answers cannot be changed and your result is calculated from the mock's marking scheme.</p>
+    <div id="submitSummary"></div>
+    <p>
+      <button type="button" class="mba-btn mba-btn-primary" id="confirmSubmit">Yes, submit my test</button>
+      <button type="button" class="mba-btn mba-btn-secondary" id="cancelSubmit">Keep working</button>
+    </p>
+  </div>
+</div>
+
+<div class="mba-toast" id="toast" hidden></div>
+
+<script src="mba-engine.js"></script>
+<script src="live-tests.js"></script>
+<script>
+(function () {
+  'use strict';
+  var E = window.MbaEngine;
+  var params = new URLSearchParams(window.location.search);
+  var mockId = (params.get('mock') || '').trim();
+  var examKey = mockId.split('-')[0] || '';
+  var sectionParam = (params.get('section') || '').trim();
+  var topicParam = (params.get('topic') || '').trim();
+
+  /* Sectional and topic modes run a subset of the mock as its own test.
+     The derived mock keeps the same shape, so the player code below does
+     not need to know it is a subset. The result record carries the item
+     ids and the mode, so the results page reviews only what was run. */
+  function deriveMock(full, sectionId, topic) {
+    if (!sectionId && !topic) { return { mock: full, mode: { type: 'full', label: 'Full mock' } }; }
+    var items = full.items || [];
+    var mode = null;
+    if (sectionId) {
+      items = items.filter(function (it) { return it.section === sectionId; });
+      mode = { type: 'sectional', label: 'Sectional test', section: sectionId };
+    } else {
+      var needle = topic.toLowerCase();
+      items = items.filter(function (it) { return (it.topic || '').toLowerCase().indexOf(needle) !== -1; });
+      mode = { type: 'topic', label: 'Topic test: ' + topic, topic: topic };
+    }
+    if (!items.length) { return { mock: null, mode: mode }; }
+    var total = (full.items || []).length;
+    var perQ = total > 0 ? (Number(full.duration_minutes) || 0) / total : 1;
+    var duration = Math.max(10, Math.ceil(items.length * perQ));
+    var secIds = [];
+    items.forEach(function (it) { if (secIds.indexOf(it.section) === -1) { secIds.push(it.section); } });
+    var sections = secIds.map(function (id, i) {
+      var orig = null;
+      (full.sections || []).forEach(function (s) { if (s.id === id) { orig = s; } });
+      var count = items.filter(function (it) { return it.section === id; }).length;
+      var limit = null;
+      if (sectionId && orig && orig.time_limit_minutes !== null && orig.time_limit_minutes !== undefined) {
+        limit = Number(orig.time_limit_minutes);
+        duration = limit;
+      }
+      return { id: id, name: orig ? orig.name : id, question_count: count, time_limit_minutes: limit, order: i + 1 };
+    });
+    var derived = {
+      exam: full.exam,
+      mock_id: full.mock_id,
+      title: full.title + ' (' + mode.label + ')',
+      duration_minutes: duration,
+      marking: full.marking,
+      sections: sections,
+      items: items
+    };
+    return { mock: derived, mode: mode };
+  }
+
+  function liveTestFor(id) {
+    var list = window.MBA_LIVE_TESTS || [];
+    for (var i = 0; i < list.length; i++) { if (list[i].mock === id) { return list[i]; } }
+    return null;
+  }
+
+  var mock = null;
+  var fullMock = null;
+  var runMode = { type: 'full', label: 'Full mock' };
+  var state = null;
+  var currentQid = null;
+  var enteredAt = null;
+  var timerHandle = null;
+  var toastHandle = null;
+
+  function $(id) { return document.getElementById(id); }
+
+  function showError(msg, detail) {
+    var box = $('errorBox');
+    box.hidden = false;
+    box.innerHTML = '<b>' + E.escapeHtml(msg) + '</b><br>' + E.escapeHtml(detail || '') +
+      '<br><a href="catalog.html">Back to the test catalog</a>';
+  }
+
+  function toast(msg) {
+    var t = $('toast');
+    t.textContent = msg;
+    t.hidden = false;
+    if (toastHandle) { clearTimeout(toastHandle); }
+    toastHandle = setTimeout(function () { t.hidden = true; }, 3500);
+  }
+
+  function attemptKey() { return 'mba-ts-attempt-' + mockId; }
+  function resultKey() { return 'mba-ts-result-' + mockId; }
+
+  function loadState() {
+    try {
+      var raw = localStorage.getItem(attemptKey());
+      return raw ? JSON.parse(raw) : null;
+    } catch (e) { return null; }
+  }
+
+  function saveState() {
+    if (!state) { return; }
+    try { localStorage.setItem(attemptKey(), JSON.stringify(state)); } catch (e) { /* storage full or blocked */ }
+  }
+
+  function mockCandidates() {
+    var urls = [];
+    if (examKey && mockId) {
+      urls.push('data/' + examKey + '/' + mockId + '.json');
+      urls.push('../data/' + examKey + '/' + mockId + '.json');
+    }
+    if (mockId) { urls.push(mockId + '.json'); }
+    return urls;
+  }
+
+  function fetchFirst(urls) {
+    return urls.reduce(function (p, url) {
+      return p.catch(function () {
+        return fetch(url).then(function (r) {
+          if (!r.ok) { throw new Error('HTTP ' + r.status); }
+          return r.json();
+        });
+      });
+    }, Promise.reject(new Error('no candidates')));
+  }
+
+  function sortedSections() {
+    return (mock.sections || []).slice().sort(function (a, b) { return (a.order || 0) - (b.order || 0); });
+  }
+
+  function sectionItems(sectionId) {
+    return mock.items.filter(function (it) { return it.section === sectionId; });
+  }
+
+  function currentItem() { return mock.items[state.currentIndex]; }
+
+  function currentSection() {
+    var item = currentItem();
+    if (!item) { return null; }
+    var found = null;
+    (mock.sections || []).forEach(function (s) { if (s.id === item.section) { found = s; } });
+    return found || { id: item.section, name: item.section, time_limit_minutes: null };
+  }
+
+  function sectionDeadline(sectionId) {
+    return state.sectionEndsAt ? state.sectionEndsAt[sectionId] : null;
+  }
+
+  function ensureSectionDeadline(section) {
+    if (!section || section.time_limit_minutes === null || section.time_limit_minutes === undefined) { return null; }
+    if (!state.sectionEndsAt) { state.sectionEndsAt = {}; }
+    if (!state.sectionEndsAt[section.id]) {
+      state.sectionEndsAt[section.id] = Date.now() + Number(section.time_limit_minutes) * 60000;
+      saveState();
+    }
+    return state.sectionEndsAt[section.id];
+  }
+
+  function sectionExpired(section) {
+    if (!section || section.time_limit_minutes === null || section.time_limit_minutes === undefined) { return false; }
+    var dl = sectionDeadline(section.id);
+    if (!dl) { return false; }
+    return Date.now() >= dl;
+  }
+
+  function sectionRemainingMs(section) {
+    if (!section || section.time_limit_minutes === null || section.time_limit_minutes === undefined) { return null; }
+    var dl = sectionDeadline(section.id);
+    if (!dl) { return Number(section.time_limit_minutes) * 60000; }
+    return Math.max(0, dl - Date.now());
+  }
+
+  function overallRemainingMs() {
+    if (!state || !state.overallEndsAt) { return null; }
+    return Math.max(0, state.overallEndsAt - Date.now());
+  }
+
+  function recFor(qid) {
+    if (!state.answers[qid]) {
+      state.answers[qid] = { value: null, marked: false, visited: false, timeMs: 0 };
+    }
+    return state.answers[qid];
+  }
+
+  function flushTime() {
+    if (!currentQid || !enteredAt) { return; }
+    var rec = recFor(currentQid);
+    rec.timeMs = (rec.timeMs || 0) + (Date.now() - enteredAt);
+    enteredAt = null;
+    saveState();
+  }
+
+  function goToIndex(idx, opts) {
+    opts = opts || {};
+    if (!mock || !mock.items.length) { return; }
+    idx = Math.max(0, Math.min(mock.items.length - 1, idx));
+    var target = mock.items[idx];
+    var sec = null;
+    (mock.sections || []).forEach(function (s) { if (s.id === target.section) { sec = s; } });
+    if (sec && sectionExpired(sec) && !opts.force) {
+      toast('Time for section ' + sec.name + ' has ended.');
+      return;
+    }
+    flushTime();
+    state.currentIndex = idx;
+    state.currentSectionId = target.section;
+    saveState();
+    renderQuestion();
+    renderPalette();
+    renderTabs();
+  }
+
+  function goToSection(sectionId) {
+    var items = sectionItems(sectionId);
+    if (!items.length) { return; }
+    var idx = mock.items.indexOf(items[0]);
+    goToIndex(idx);
+  }
+
+  function nextQuestion() {
+    if (state.currentIndex < mock.items.length - 1) { goToIndex(state.currentIndex + 1); }
+    else { toast('This is the last question. Use Submit Test when you are ready.'); }
+  }
+
+  function prevQuestion() {
+    if (state.currentIndex > 0) { goToIndex(state.currentIndex - 1); }
+  }
+
+  /* ---------- rendering ---------- */
+
+  function renderTabs() {
+    var tabs = $('sectionTabs');
+    tabs.innerHTML = '';
+    sortedSections().forEach(function (sec) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'mba-section-tab' + (currentSection() && currentSection().id === sec.id ? ' active' : '') +
+        (sectionExpired(sec) ? ' locked' : '');
+      b.setAttribute('role', 'tab');
+      var timeText;
+      if (sec.time_limit_minutes === null || sec.time_limit_minutes === undefined) { timeText = 'No sectional limit'; }
+      else if (sectionDeadline(sec.id)) { timeText = E.formatMS(sectionRemainingMs(sec) / 1000) + ' left'; }
+      else { timeText = sec.time_limit_minutes + ' min limit'; }
+      b.innerHTML = E.escapeHtml(sec.name) + '<span class="mba-tab-time">' + E.escapeHtml(timeText) + '</span>';
+      b.addEventListener('click', function () {
+        if (sectionExpired(sec)) { toast('Time for section ' + sec.name + ' has ended.'); return; }
+        goToSection(sec.id);
+      });
+      tabs.appendChild(b);
+    });
+  }
+
+  function renderPalette() {
+    var sec = currentSection();
+    if (!sec) { return; }
+    var items = sectionItems(sec.id);
+    $('paletteTitle').textContent = 'Question Palette: ' + sec.name;
+    $('paletteUser').textContent = mock.title + ' | ' + mock.mock_id;
+    var grid = $('paletteGrid');
+    grid.innerHTML = '';
+    items.forEach(function (item, i) {
+      var rec = state.answers[item.id];
+      var st = E.paletteState(rec);
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'mba-pal-btn st-' + st + (item.id === currentItem().id ? ' current' : '') +
+        ((state.answers[item.id] && state.answers[item.id].bookmarked) ? ' bm' : '');
+      b.textContent = String(i + 1);
+      b.title = 'Question ' + (i + 1) + ': ' + E.PALETTE_LABELS[st];
+      b.setAttribute('aria-label', 'Question ' + (i + 1) + ', ' + E.PALETTE_LABELS[st]);
+      b.addEventListener('click', function () { goToIndex(mock.items.indexOf(item)); });
+      grid.appendChild(b);
+    });
+    var counts = { answered: 0, 'not-answered': 0, marked: 0, 'answered-marked': 0, 'not-visited': 0 };
+    items.forEach(function (item) { counts[E.paletteState(state.answers[item.id])] += 1; });
+    $('paletteCounts').textContent = 'Section ' + sec.name + ': ' + counts.answered + ' answered, ' +
+      counts['not-answered'] + ' not answered, ' + counts.marked + ' marked, ' +
+      counts['answered-marked'] + ' answered and marked, ' + counts['not-visited'] + ' not visited.';
+  }
+
+  function setBlockHTML(item, setMap) {
+    var ctx = E.setContextFor(item, setMap);
+    var html = '';
+    if (ctx) {
+      if (ctx.set_title) { html += '<p class="mba-set-title">' + E.escapeHtml(ctx.set_title) + '</p>'; }
+      if (ctx.passage) { html += '<div class="mba-passage">' + E.escapeHtml(ctx.passage) + '</div>'; }
+      if (ctx.diagram) { html += E.renderDiagramHTML(ctx.diagram); }
+    }
+    if (!ctx && item.diagram) { html += E.renderDiagramHTML(item.diagram); }
+    return html;
+  }
+
+  function answerHTML(item, rec) {
+    if (item.type === 'mcq') {
+      var opts = item.options || [];
+      return '<ul class="mba-options">' + opts.map(function (opt, i) {
+        var checked = rec.value !== null && rec.value !== undefined && Number(rec.value) === i;
+        return '<li><label class="mba-option' + (checked ? ' selected' : '') + '">' +
+          '<input type="radio" name="mba-opt" value="' + i + '"' + (checked ? ' checked' : '') + '>' +
+          '<span class="mba-opt-letter">' + E.optionLetter(i) + '.</span><span>' + E.escapeHtml(opt) + '</span></label></li>';
+      }).join('') + '</ul>';
+    }
+    if (item.type === 'tita') {
+      var val = rec.value === null || rec.value === undefined ? '' : rec.value;
+      return '<p><label for="titaInput"><b>Type your answer:</b></label></p>' +
+        '<input id="titaInput" class="mba-tita-input" type="text" inputmode="decimal" autocomplete="off" value="' +
+        E.escapeHtml(val) + '" placeholder="Enter a number">' +
+        '<p class="mba-small mba-muted">Type the number only, for example 12.5. No units or commas needed.</p>';
+    }
+    if (item.type === 'essay') {
+      var text = rec.value === null || rec.value === undefined ? '' : rec.value;
+      var words = String(text).trim() === '' ? 0 : String(text).trim().split(/\s+/).length;
+      return '<p><label for="essayInput"><b>Write your response:</b></label></p>' +
+        '<textarea id="essayInput" class="mba-essay-input" placeholder="Write your essay here.">' + E.escapeHtml(text) + '</textarea>' +
+        '<p class="mba-wordcount" id="essayCount">' + words + ' words. Essays are not auto-scored; the results page shows the model outline for comparison.</p>';
+    }
+    return '';
+  }
+
+  function renderQuestion() {
+    var item = currentItem();
+    var sec = currentSection();
+    if (!item || !sec) { return; }
+    var rec = recFor(item.id);
+    rec.visited = true;
+    saveState();
+    currentQid = item.id;
+    enteredAt = Date.now();
+    var items = sectionItems(sec.id);
+    var posInSection = items.indexOf(item) + 1;
+    var setMap = E.buildSetContext(mock.items);
+    var typeLabel = item.type === 'mcq' ? 'Multiple Choice' : item.type === 'tita' ? 'Type In The Answer' : 'Essay';
+    var card = $('questionCard');
+    card.innerHTML =
+      '<div class="mba-q-meta"><span class="mba-chip">' + E.escapeHtml(sec.name) + '</span>' +
+      '<span>Question ' + posInSection + ' of ' + items.length + ' in this section</span>' +
+      '<span>Question ' + (state.currentIndex + 1) + ' of ' + mock.items.length + ' overall</span>' +
+      '<span>' + E.escapeHtml(typeLabel) + '</span>' +
+      '<span>' + E.escapeHtml(item.topic || '') + '</span>' +
+      '<span>Difficulty: ' + E.escapeHtml(item.difficulty || 'medium') + '</span>' +
+      '<span>Marks: ' + E.escapeHtml(E.markingLabel(mock.marking)) + '</span></div>' +
+      setBlockHTML(item, setMap) +
+      '<p class="mba-q-text">' + E.escapeHtml(item.question || '') + '</p>' +
+      answerHTML(item, rec) +
+      '<div class="mba-q-actions">' +
+      '<button type="button" class="mba-btn mba-btn-secondary" id="prevBtn">Previous</button>' +
+      '<button type="button" class="mba-btn mba-btn-secondary" id="clearBtn">Clear Response</button>' +
+      '<button type="button" class="mba-btn mba-btn-secondary" id="bookmarkBtn">' +
+      (rec.bookmarked ? 'Bookmarked, tap to remove' : 'Bookmark for later review') + '</button>' +
+      '<button type="button" class="mba-btn mba-btn-secondary" id="markBtn">Mark for Review and Next</button>' +
+      '<button type="button" class="mba-btn mba-btn-primary" id="nextBtn">Save and Next</button>' +
+      '</div>';
+    var prevBtn = $('prevBtn');
+    var nextBtn = $('nextBtn');
+    if (prevBtn) { prevBtn.addEventListener('click', prevQuestion); prevBtn.disabled = state.currentIndex === 0; }
+    if (nextBtn) { nextBtn.addEventListener('click', nextQuestion); }
+    var clearBtn = $('clearBtn');
+    if (clearBtn) {
+      clearBtn.addEventListener('click', function () {
+        rec.value = null; rec.marked = false; saveState(); renderQuestion(); renderPalette();
+      });
+    }
+    var markBtn = $('markBtn');
+    if (markBtn) {
+      markBtn.addEventListener('click', function () {
+        rec.marked = !rec.marked; saveState(); renderPalette(); nextQuestion();
+      });
+    }
+    var bookmarkBtn = $('bookmarkBtn');
+    if (bookmarkBtn) {
+      bookmarkBtn.addEventListener('click', function () {
+        rec.bookmarked = !rec.bookmarked;
+        saveState();
+        renderQuestion();
+        renderPalette();
+        toast(rec.bookmarked ? 'Question bookmarked for later review.' : 'Bookmark removed.');
+      });
+    }
+    card.querySelectorAll('input[name="mba-opt"]').forEach(function (radio) {
+      radio.addEventListener('change', function () {
+        rec.value = Number(radio.value); saveState(); renderPalette();
+        card.querySelectorAll('.mba-option').forEach(function (el) { el.classList.remove('selected'); });
+        if (radio.parentElement) { radio.parentElement.classList.add('selected'); }
+      });
+    });
+    var tita = $('titaInput');
+    if (tita) {
+      tita.addEventListener('input', function () { rec.value = tita.value; saveState(); renderPalette(); });
+    }
+    var essay = $('essayInput');
+    if (essay) {
+      essay.addEventListener('input', function () {
+        rec.value = essay.value; saveState(); renderPalette();
+        var w = essay.value.trim() === '' ? 0 : essay.value.trim().split(/\s+/).length;
+        var c = $('essayCount');
+        if (c) { c.textContent = w + ' words. Essays are not auto-scored; the results page shows the model outline for comparison.'; }
+      });
+    }
+  }
+
+  function renderTimers() {
+    var overall = overallRemainingMs();
+    if (overall !== null) {
+      var oc = $('overallClock');
+      oc.textContent = E.formatHMS(overall / 1000);
+      oc.classList.toggle('low', overall <= 5 * 60000);
+    }
+    var sec = currentSection();
+    var st = $('sectionTimer');
+    if (sec && sec.time_limit_minutes !== null && sec.time_limit_minutes !== undefined) {
+      st.hidden = false;
+      $('sectionClockLabel').textContent = 'Section time left: ' + sec.name;
+      var sc = $('sectionClock');
+      var rem = sectionRemainingMs(sec);
+      sc.textContent = E.formatMS(rem / 1000);
+      sc.classList.toggle('low', rem <= 5 * 60000);
+    } else {
+      st.hidden = true;
+    }
+  }
+
+  function tick() {
+    if (!state || state.submitted) { return; }
+    var overall = overallRemainingMs();
+    if (overall !== null && overall <= 0) {
+      toast('Time is up. Submitting your test.');
+      finalize(true);
+      return;
+    }
+    var sec = currentSection();
+    if (sec && sectionExpired(sec)) {
+      var secs = sortedSections();
+      var idx = secs.findIndex(function (s) { return s.id === sec.id; });
+      var moved = false;
+      for (var i = idx + 1; i < secs.length; i++) {
+        if (!sectionExpired(secs[i])) {
+          toast('Time for section ' + sec.name + ' ended. Moved to ' + secs[i].name + '.');
+          goToIndex(mock.items.indexOf(sectionItems(secs[i].id)[0]), { force: true });
+          moved = true;
+          break;
+        }
+      }
+      if (!moved) {
+        toast('Time is up for the last section. Submitting your test.');
+        finalize(true);
+        return;
+      }
+    }
+    renderTimers();
+    renderTabs();
+  }
+
+  /* ---------- submit ---------- */
+
+  function openSubmitModal() {
+    var rows = sortedSections().map(function (sec) {
+      var items = sectionItems(sec.id);
+      var counts = { answered: 0, 'not-answered': 0, marked: 0, 'answered-marked': 0, 'not-visited': 0 };
+      items.forEach(function (item) { counts[E.paletteState(state.answers[item.id])] += 1; });
+      return '<tr><td>' + E.escapeHtml(sec.name) + '</td><td>' + items.length + '</td><td>' +
+        counts.answered + '</td><td>' + counts['not-answered'] + '</td><td>' + counts.marked +
+        '</td><td>' + counts['answered-marked'] + '</td><td>' + counts['not-visited'] + '</td></tr>';
+    }).join('');
+    $('submitSummary').innerHTML = '<table><thead><tr><th>Section</th><th>Total</th><th>Answered</th>' +
+      '<th>Not answered</th><th>Marked</th><th>Answered and marked</th><th>Not visited</th></tr></thead><tbody>' +
+      rows + '</tbody></table>';
+    $('submitModal').hidden = false;
+  }
+
+  function finalize(auto) {
+    if (!state || state.submitted) { return; }
+    flushTime();
+    state.submitted = true;
+    saveState();
+    if (timerHandle) { clearInterval(timerHandle); }
+    var result = E.scoreAttempt(mock, state.answers);
+    var bookmarks = [];
+    Object.keys(state.answers).forEach(function (qid) {
+      if (state.answers[qid] && state.answers[qid].bookmarked) { bookmarks.push(qid); }
+    });
+    var record = {
+      mock_id: mock.mock_id,
+      exam: mock.exam,
+      title: mock.title,
+      marking: mock.marking,
+      duration_minutes: mock.duration_minutes,
+      submittedAt: new Date().toISOString(),
+      autoSubmitted: !!auto,
+      mode: runMode,
+      itemIds: mock.items.map(function (it) { return it.id; }),
+      bookmarks: bookmarks,
+      score: result,
+      answers: state.answers
+    };
+    try { localStorage.setItem(resultKey(), JSON.stringify(record)); } catch (e) { /* storage blocked */ }
+    window.location.href = 'results.html?mock=' + encodeURIComponent(mockId);
+  }
+
+  /* ---------- calculator ---------- */
+
+  var calc = { display: '0', stored: null, pending: null, fresh: true };
+
+  function calcRender() { $('calcDisplay').value = calc.display; }
+
+  function calcInputDigit(d) {
+    if (calc.fresh || calc.display === '0') { calc.display = d; calc.fresh = false; }
+    else if (calc.display.replace('-', '').replace('.', '').length < 12) { calc.display += d; }
+    calcRender();
+  }
+
+  function calcApplyOp(op) {
+    var cur = parseFloat(calc.display);
+    if (calc.pending !== null && calc.stored !== null && !calc.fresh) {
+      cur = calcCompute(calc.stored, cur, calc.pending);
+      if (cur === null) { calc.display = 'Error'; calc.stored = null; calc.pending = null; calc.fresh = true; calcRender(); return; }
+      calc.display = String(cur);
+    }
+    calc.stored = parseFloat(calc.display);
+    calc.pending = op;
+    calc.fresh = true;
+    calcRender();
+  }
+
+  function calcCompute(a, b, op) {
+    if (op === '+') { return a + b; }
+    if (op === '-') { return a - b; }
+    if (op === 'x' || op === '*') { return a * b; }
+    if (op === '/') { return b === 0 ? null : a / b; }
+    if (op === '%') { return b === 0 ? null : a % b; }
+    return b;
+  }
+
+  function calcEquals() {
+    if (calc.pending === null || calc.stored === null) { return; }
+    var cur = parseFloat(calc.display);
+    var out = calcCompute(calc.stored, cur, calc.pending);
+    calc.display = out === null ? 'Error' : String(out);
+    calc.stored = null; calc.pending = null; calc.fresh = true;
+    calcRender();
+  }
+
+  function calcUnary(kind) {
+    var v = parseFloat(calc.display);
+    if (kind === 'sqrt') { if (v < 0) { calc.display = 'Error'; } else { calc.display = String(Math.sqrt(v)); } }
+    if (kind === 'inv') { calc.display = v === 0 ? 'Error' : String(1 / v); }
+    if (kind === 'neg') { calc.display = String(-v); }
+    if (kind === 'pct') { calc.display = String(v / 100); }
+    calc.fresh = true;
+    calcRender();
+  }
+
+  function setupCalculator() {
+    var keys = ['C', 'back', '+/-', '/', '7', '8', '9', 'x', '4', '5', '6', '-', '1', '2', '3', '+', '0', '.', '%', '='];
+    var grid = $('calcGrid');
+    keys.forEach(function (k) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.textContent = k === 'back' ? 'Bksp' : k;
+      if (k === '/' || k === 'x' || k === '-' || k === '+' || k === '%') { b.className = 'op'; }
+      if (k === '=') { b.className = 'eq'; }
+      b.addEventListener('click', function () {
+        if (k === 'C') { calc.display = '0'; calc.stored = null; calc.pending = null; calc.fresh = true; }
+        else if (k === 'back') { calc.display = calc.display.length > 1 ? calc.display.slice(0, -1) : '0'; }
+        else if (k === '+/-') { calcUnary('neg'); return; }
+        else if (k === '%') { calcApplyOp('%'); return; }
+        else if (k === '/' || k === 'x' || k === '-' || k === '+') { calcApplyOp(k); return; }
+        else if (k === '=') { calcEquals(); return; }
+        else if (k === '.') { if (calc.fresh) { calc.display = '0.'; calc.fresh = false; } else if (calc.display.indexOf('.') === -1) { calc.display += '.'; } }
+        else { calcInputDigit(k); return; }
+        calcRender();
+      });
+      grid.appendChild(b);
+    });
+    var extra = document.createElement('div');
+    extra.style.cssText = 'display:flex;gap:6px;margin-top:6px';
+    [['sqrt', 'Square root'], ['1/x', 'Reciprocal']].forEach(function (pair) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'mba-btn mba-btn-secondary';
+      b.style.flex = '1';
+      b.textContent = pair[0];
+      b.setAttribute('aria-label', pair[1]);
+      b.addEventListener('click', function () { calcUnary(pair[0] === 'sqrt' ? 'sqrt' : 'inv'); });
+      extra.appendChild(b);
+    });
+    $('calcPanel').appendChild(extra);
+    $('calcFab').addEventListener('click', function () {
+      $('calcPanel').hidden = false;
+      $('calcFab').hidden = true;
+      calcRender();
+    });
+    $('calcClose').addEventListener('click', function () {
+      $('calcPanel').hidden = true;
+      $('calcFab').hidden = false;
+    });
+  }
+
+  /* ---------- start / boot ---------- */
+
+  function renderStartScreen() {
+    var secs = sortedSections();
+    var rows = secs.map(function (s) {
+      return '<tr><td>' + E.escapeHtml(s.name) + '</td><td>' + E.escapeHtml(String(s.question_count || sectionItems(s.id).length)) +
+        '</td><td>' + (s.time_limit_minutes === null || s.time_limit_minutes === undefined ? 'No sectional limit' : s.time_limit_minutes + ' minutes') + '</td></tr>';
+    }).join('');
+    var existing = loadState();
+    var resumable = existing && !existing.submitted && existing.mock_id === mockId;
+    var live = liveTestFor(mockId);
+    var liveNote = '';
+    var liveLocked = false;
+    if (live) {
+      var now = Date.now();
+      var startMs = new Date(live.start).getTime();
+      var endMs = new Date(live.end).getTime();
+      if (now < startMs) {
+        liveLocked = true;
+        var diffMs = startMs - now;
+        var days = Math.floor(diffMs / 86400000);
+        var hours = Math.floor((diffMs % 86400000) / 3600000);
+        var mins = Math.floor((diffMs % 3600000) / 60000);
+        liveNote = '<p class="mba-live-note"><b>This is a scheduled live test.</b> It opens on ' +
+          E.escapeHtml(new Date(live.start).toLocaleString()) + '. Opens in ' +
+          (days > 0 ? days + ' days, ' : '') + hours + ' hours ' + mins + ' minutes.</p>';
+      } else if (now <= endMs) {
+        liveNote = '<p class="mba-live-note"><b>Live test in progress.</b> The window closes at ' +
+          E.escapeHtml(new Date(live.end).toLocaleString()) + '. Submit before the window ends.</p>';
+      } else {
+        liveNote = '<p class="mba-muted">The live window for this test has ended. You can still attempt it as a practice mock.</p>';
+      }
+    }
+    $('startCard').innerHTML =
+      '<h1>' + E.escapeHtml(mock.title) + '</h1>' +
+      '<p class="mba-muted">' + E.escapeHtml(mock.exam) + ' | ' + E.escapeHtml(mock.mock_id) + ' | ' +
+      mock.items.length + ' questions | ' + mock.duration_minutes + ' minutes | Marking: ' +
+      E.escapeHtml(E.markingLabel(mock.marking)) + '</p>' +
+      (runMode.type !== 'full' ? '<p><b>Mode:</b> ' + E.escapeHtml(runMode.label) + '</p>' : '') +
+      liveNote +
+      '<table><thead><tr><th>Section</th><th>Questions</th><th>Section time limit</th></tr></thead><tbody>' + rows + '</tbody></table>' +
+      '<h3>Instructions</h3><ul>' +
+      '<li>Use the section tabs to move between sections. A section with a time limit moves you on automatically when its time ends.</li>' +
+      '<li>Click a palette number to jump to a question. Colours show answered, not answered, marked for review, answered and marked, and not visited.</li>' +
+      '<li>Your answers save automatically in this browser. If the page refreshes, resume from where you left off with the same time remaining.</li>' +
+      '<li>The on-screen calculator is available throughout the test.</li>' +
+      '<li>Submit only when you are finished. The confirmation screen shows your per-section summary first.</li>' +
+      '</ul>' +
+      (resumable ? '<p><b>You have an unfinished attempt for this mock.</b> Resume keeps your answers and remaining time.</p>' : '') +
+      '<p><button type="button" class="mba-btn mba-btn-primary" id="startBtn"' + (liveLocked ? ' disabled' : '') + '>' +
+      (resumable ? 'Resume Test' : 'Start Test') + '</button> ' +
+      (resumable ? '<button type="button" class="mba-btn mba-btn-secondary" id="freshBtn">Start Fresh (discards saved answers)</button> ' : '') +
+      '<a class="mba-btn mba-btn-secondary" href="catalog.html">Back to Catalog</a></p>';
+    $('startBtn').addEventListener('click', function () { startTest(resumable); });
+    var freshBtn = $('freshBtn');
+    if (freshBtn) {
+      freshBtn.addEventListener('click', function () {
+        try { localStorage.removeItem(attemptKey()); } catch (e) {}
+        try { localStorage.removeItem(resultKey()); } catch (e) {}
+        startTest(false);
+      });
+    }
+  }
+
+  function startTest(resume) {
+    var existing = resume ? loadState() : null;
+    if (existing && existing.mock_id === mockId && !existing.submitted) {
+      state = existing;
+      if (!state.answers) { state.answers = {}; }
+      if (!state.sectionEndsAt) { state.sectionEndsAt = {}; }
+    } else {
+      state = {
+        version: 1,
+        mock_id: mockId,
+        startedAt: Date.now(),
+        overallEndsAt: Date.now() + Number(mock.duration_minutes) * 60000,
+        sectionEndsAt: {},
+        currentIndex: 0,
+        currentSectionId: sortedSections()[0] ? sortedSections()[0].id : null,
+        answers: {},
+        submitted: false
+      };
+    }
+    saveState();
+    $('startScreen').hidden = true;
+    $('testScreen').hidden = false;
+    $('overallTimer').hidden = false;
+    $('submitBtnTop').hidden = false;
+    $('calcFab').hidden = false;
+    $('barTitle').textContent = mock.title;
+    $('barSub').textContent = mock.exam + ' | ' + mock.mock_id + ' | ' + mock.items.length +
+      ' questions | ' + mock.duration_minutes + ' minutes';
+    var first = currentItem();
+    if (first) { ensureSectionDeadline(currentSection()); }
+    renderTabs();
+    renderQuestion();
+    renderPalette();
+    renderTimers();
+    if (timerHandle) { clearInterval(timerHandle); }
+    timerHandle = setInterval(tick, 1000);
+  }
+
+  function boot() {
+    setupCalculator();
+    var paletteToggle = $('paletteToggle');
+    if (paletteToggle) {
+      paletteToggle.addEventListener('click', function () {
+        var aside = $('paletteAside');
+        var collapsed = aside.classList.toggle('collapsed');
+        paletteToggle.textContent = collapsed ? 'Show palette' : 'Hide palette';
+        paletteToggle.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+      });
+    }
+    $('submitBtnTop').addEventListener('click', openSubmitModal);
+    $('submitBtnSide').addEventListener('click', openSubmitModal);
+    $('confirmSubmit').addEventListener('click', function () { $('submitModal').hidden = true; finalize(false); });
+    $('cancelSubmit').addEventListener('click', function () { $('submitModal').hidden = true; });
+    window.addEventListener('beforeunload', function () { flushTime(); saveState(); });
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) { flushTime(); saveState(); }
+    });
+    if (!mockId) {
+      showError('No mock selected.', 'Open a mock from the catalog, for example player.html?mock=CAT-01.');
+      return;
+    }
+    fetchFirst(mockCandidates()).then(function (data) {
+      if (!data || !Array.isArray(data.items) || !data.items.length) {
+        showError('This mock file has no questions.', 'File loaded but the items list is empty or missing: ' + mockId + '.');
+        return;
+      }
+      fullMock = data;
+      var derived = deriveMock(fullMock, sectionParam, topicParam);
+      if (!derived.mock) {
+        showError('No questions match this filter.',
+          (sectionParam ? 'Section "' + sectionParam + '" ' : 'Topic "' + topicParam + '" ') +
+          'has no questions in mock ' + mockId + '. Try the full mock instead.');
+        return;
+      }
+      mock = derived.mock;
+      runMode = derived.mode;
+      document.title = mock.title + ' | MBA Test Series | Payments Training Hub';
+      renderStartScreen();
+      $('startScreen').hidden = false;
+    }).catch(function () {
+      showError('Mock file not found: ' + mockId + '.',
+        'Looked for data/' + examKey + '/' + mockId + '.json and ../data/' + examKey + '/' + mockId +
+        '.json, plus a bundled ' + mockId + '.json. The mock may not be published yet. Check the catalog for the mocks that are ready.');
+    });
+  }
+
+  boot();
+})();
+</script>
+</body>
+</html>

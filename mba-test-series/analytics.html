@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My Performance Analytics | MBA Test Series | Payments Training Hub</title>
+<meta name="description" content="MBA mock test analytics from Payments Training Hub: score trend, accuracy trend, section strengths and weaknesses, topic-wise accuracy and time per section.">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="../assets/pf-theme.css">
+<link rel="stylesheet" href="mba-test-series.css">
+</head>
+<body class="mba-page">
+<header class="pf-topnav">
+<div class="pf-topnav-row1">
+<a class="pf-topnav-word" href="../">Payments Training Hub</a>
+<span class="pf-topnav-right"><span class="pf-topnav-badge">MBA Test Series</span><a class="pf-topnav-signin" href="../signin">Sign in</a></span>
+</div>
+<nav class="pf-topnav-links" aria-label="Main sections">
+<a href="../courses">Courses</a>
+<a href="../course-map">Learning Paths</a>
+<a href="../practice">Practice</a>
+<a href="../reference">Resources</a>
+<a href="../pricing">Pricing</a>
+</nav>
+</header>
+<main class="mba-wrap mba-wrap-wide">
+<p class="crumbs"><a href="../">Home</a> / <a href="catalog.html">MBA Test Series</a> / My Performance Analytics</p>
+<div class="mba-hero">
+<h1>My Performance Analytics</h1>
+<p>Every mock you submit in this browser is tracked here: score trend, accuracy trend, section strengths and weaknesses, topic-wise accuracy, and time spent per section. Take more mocks to see the trends move.</p>
+</div>
+<div id="emptyState" hidden>
+<p class="mba-muted">No submitted attempts in this browser yet. Take a mock from the <a href="catalog.html">catalog</a> and your analytics will appear here.</p>
+</div>
+<div id="analyticsBody" hidden>
+  <section aria-label="Attempts">
+    <div class="pf-section-header accent-gold"><h2>Attempts so far</h2></div>
+    <div id="attemptSummary"></div>
+    <table class="mba-result-table" id="attemptTable">
+      <thead><tr><th>Date</th><th>Mock</th><th>Score</th><th>Accuracy</th><th>Attempted</th><th>Estimated percentile</th><th></th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </section>
+  <section aria-label="Score trend">
+    <div class="pf-section-header accent-gold"><h2>Score trend</h2></div>
+    <p class="mba-muted mba-small">Score as a percentage of the maximum, in the order you took the mocks.</p>
+    <div id="scoreChart"></div>
+  </section>
+  <section aria-label="Section strengths and weaknesses">
+    <div class="pf-section-header accent-gold"><h2>Section strengths and weaknesses</h2></div>
+    <table class="mba-result-table" id="sectionTable">
+      <thead><tr><th>Section</th><th>Questions</th><th>Attempted</th><th>Correct</th><th>Accuracy</th><th>Time spent</th></tr></thead>
+      <tbody></tbody>
+    </table>
+    <p class="mba-muted mba-small">Weakest section first. Accuracy is correct divided by attempted across all your attempts.</p>
+  </section>
+  <section aria-label="Topic-wise accuracy">
+    <div class="pf-section-header accent-gold"><h2>Topic-wise accuracy</h2></div>
+    <table class="mba-result-table" id="topicTable">
+      <thead><tr><th>Topic</th><th>Questions</th><th>Attempted</th><th>Correct</th><th>Accuracy</th></tr></thead>
+      <tbody></tbody>
+    </table>
+    <p class="mba-muted mba-small">Weakest topic first. Topics come from the mock files; a topic with few questions is a weaker signal than one with many.</p>
+  </section>
+  <p><a class="mba-btn mba-btn-secondary" href="catalog.html">Back to Catalog</a></p>
+</div>
+</main>
+<footer class="pf-footer"><p>Payments Training Hub. Practical Payments Training for Banking Professionals. Content is for education; check current exam rules before relying on it.</p><div class="pf-footer-cols"><div class="pf-footer-col"><h3>Explore</h3><ul><li><a href="../">Home</a></li><li><a href="../courses">Courses</a></li><li><a href="../pricing">Pricing</a></li></ul></div><div class="pf-footer-col"><h3>Practice</h3><ul><li><a href="../situations">Payment Cases</a></li><li><a href="../tests">Assessments</a></li><li><a href="../simulators">Simulators</a></li><li><a href="../interview-prep">Interview Prep</a></li></ul></div><div class="pf-footer-col"><h3>Resources</h3><ul><li><a href="../explorer">ISO 20022 Explorer</a></li><li><a href="../reference">Reference Library</a></li><li><a href="../insights">Insights and Scenarios</a></li></ul></div><div class="pf-footer-col"><h3>Company</h3><ul><li><a href="../about">About</a></li><li><a href="../contact">Contact</a></li><li><a href="../privacy">Privacy</a></li><li><a href="../terms">Terms</a></li><li><a href="../support">Help and Support</a></li></ul></div></div></footer>
+<script src="mba-engine.js"></script>
+<script>
+(function () {
+  'use strict';
+  var E = window.MbaEngine;
+
+  function esc(s) { return E.escapeHtml(s); }
+
+  function lineChart(points) {
+    /* points: [{label, pct}] rendered as a plain SVG line chart. */
+    var W = 640, H = 220, padL = 40, padB = 28, padT = 14, padR = 12;
+    var plotW = W - padL - padR, plotH = H - padT - padB;
+    var svg = '';
+    for (var g = 0; g <= 4; g++) {
+      var gy = padT + plotH - (plotH * g / 4);
+      svg += '<line x1="' + padL + '" y1="' + gy + '" x2="' + (W - padR) + '" y2="' + gy + '" stroke="#E2E8F0"/>' +
+        '<text x="' + (padL - 6) + '" y="' + (gy + 4) + '" text-anchor="end" font-size="10" fill="#47576E">' + (g * 25) + '%</text>';
+    }
+    var n = points.length;
+    var coords = points.map(function (p, i) {
+      var x = n === 1 ? padL + plotW / 2 : padL + (plotW * i / (n - 1));
+      var y = padT + plotH - (Math.max(0, Math.min(100, p.pct)) / 100 * plotH);
+      return { x: x, y: y, label: p.label, pct: p.pct };
+    });
+    var d = coords.map(function (c, i) { return (i === 0 ? 'M ' : 'L ') + c.x.toFixed(1) + ' ' + c.y.toFixed(1); }).join(' ');
+    svg += '<path d="' + d + '" fill="none" stroke="#173F8C" stroke-width="2"/>';
+    coords.forEach(function (c) {
+      svg += '<circle cx="' + c.x.toFixed(1) + '" cy="' + c.y.toFixed(1) + '" r="4" fill="#173F8C"/>' +
+        '<text x="' + c.x.toFixed(1) + '" y="' + (c.y - 9).toFixed(1) + '" text-anchor="middle" font-size="10" fill="#0B1F3D">' + c.pct + '%</text>' +
+        '<text x="' + c.x.toFixed(1) + '" y="' + (H - 8) + '" text-anchor="middle" font-size="10" fill="#47576E">' + esc(c.label) + '</text>';
+    });
+    return '<svg viewBox="0 0 ' + W + ' ' + H + '" width="100%" role="img" aria-label="Score trend chart">' + svg + '</svg>';
+  }
+
+  function boot() {
+    var attempts = E.readAllResults(localStorage);
+    if (!attempts.length) {
+      document.getElementById('emptyState').hidden = false;
+      return;
+    }
+    document.getElementById('analyticsBody').hidden = false;
+    var total = attempts.length;
+    var best = attempts.reduce(function (b, a) {
+      var pct = a.score.maxScore > 0 ? a.score.totalScore / a.score.maxScore : 0;
+      var bp = b.score.maxScore > 0 ? b.score.totalScore / b.score.maxScore : 0;
+      return pct > bp ? a : b;
+    }, attempts[0]);
+    var avgAcc = attempts.reduce(function (sum, a) {
+      return sum + (a.score.attempted > 0 ? a.score.correct / a.score.attempted : 0);
+    }, 0) / total;
+    document.getElementById('attemptSummary').innerHTML =
+      '<p><b>' + total + '</b> mock(s) taken. Average accuracy <b>' + Math.round(avgAcc * 100) +
+      '%</b>. Best score: <b>' + esc(best.title || best.mock_id) + '</b> (' +
+      best.score.totalScore + ' / ' + best.score.maxScore + ').</p>';
+
+    var tbody = document.querySelector('#attemptTable tbody');
+    tbody.innerHTML = attempts.map(function (a) {
+      var s = a.score;
+      var acc = s.attempted > 0 ? Math.round(s.correct / s.attempted * 100) + '%' : 'NA';
+      var pct = E.percentileForScore(s.totalScore, s.maxScore, a.exam);
+      var when = a.submittedAt ? new Date(a.submittedAt).toLocaleDateString() : '';
+      return '<tr><td>' + esc(when) + '</td><td>' + esc(a.title || a.mock_id) + '</td><td>' +
+        s.totalScore + ' / ' + s.maxScore + '</td><td>' + acc + '</td><td>' + s.attempted + ' / ' +
+        s.totalQuestions + '</td><td>' + (pct === null ? 'NA' : pct + ' (estimated)') + '</td><td>' +
+        '<a href="results.html?mock=' + encodeURIComponent(a.mock_id) + '">Review</a></td></tr>';
+    }).join('');
+
+    var points = attempts.map(function (a) {
+      var pct = a.score.maxScore > 0 ? Math.round(a.score.totalScore / a.score.maxScore * 100) : 0;
+      return { label: a.mock_id, pct: pct };
+    });
+    document.getElementById('scoreChart').innerHTML = lineChart(points);
+
+    var bySection = {};
+    attempts.forEach(function (a) {
+      (a.score.sections || []).forEach(function (sec) {
+        var key = a.exam + ' | ' + sec.name;
+        if (!bySection[key]) { bySection[key] = { name: key, total: 0, attempted: 0, correct: 0, timeMs: 0 }; }
+        var b = bySection[key];
+        b.total += sec.total; b.attempted += sec.attempted; b.correct += sec.correct; b.timeMs += sec.timeMs || 0;
+      });
+    });
+    var secList = Object.keys(bySection).map(function (k) { return bySection[k]; });
+    secList.forEach(function (s) { s.accuracy = s.attempted > 0 ? s.correct / s.attempted : null; });
+    secList.sort(function (a, b) { return (a.accuracy === null ? 1 : a.accuracy) - (b.accuracy === null ? 1 : b.accuracy); });
+    document.querySelector('#sectionTable tbody').innerHTML = secList.map(function (s) {
+      return '<tr><td>' + esc(s.name) + '</td><td>' + s.total + '</td><td>' + s.attempted + '</td><td>' +
+        s.correct + '</td><td>' + (s.accuracy === null ? 'NA' : Math.round(s.accuracy * 100) + '%') +
+        '</td><td>' + esc(E.formatDurationMs(s.timeMs)) + '</td></tr>';
+    }).join('');
+
+    var topicBody = document.querySelector('#topicTable tbody');
+    topicBody.innerHTML = '<tr><td colspan="5">Loading topic data from the mock files.</td></tr>';
+    var mockCache = {};
+    function fetchMock(exam, mockId) {
+      var key = exam + '/' + mockId;
+      if (mockCache[key]) { return mockCache[key]; }
+      var urls = ['data/' + exam + '/' + mockId + '.json', '../data/' + exam + '/' + mockId + '.json'];
+      var p = urls.reduce(function (acc, url) {
+        return acc.catch(function () {
+          return fetch(url).then(function (r) { if (!r.ok) { throw new Error('HTTP ' + r.status); } return r.json(); });
+        });
+      }, Promise.reject(new Error('no candidates')));
+      mockCache[key] = p;
+      return p;
+    }
+    var uniqueMocks = {};
+    attempts.forEach(function (a) { uniqueMocks[a.exam + '|' + a.mock_id] = { exam: a.exam, mock_id: a.mock_id }; });
+    var mockList = Object.keys(uniqueMocks).map(function (k) { return uniqueMocks[k]; });
+    Promise.all(mockList.map(function (m) {
+      return fetchMock(m.exam, m.mock_id).then(function (mock) { return { exam: m.exam, mock_id: m.mock_id, mock: mock }; })
+        .catch(function () { return null; });
+    })).then(function (loaded) {
+      var byId = {};
+      loaded.forEach(function (entry) { if (entry) { byId[entry.mock_id] = entry.mock; } });
+      var byTopic = {};
+      attempts.forEach(function (a) {
+        var mock = byId[a.mock_id];
+        if (!mock) { return; }
+        E.topicAccuracy(mock, a.score).forEach(function (t) {
+          if (!byTopic[t.topic]) { byTopic[t.topic] = { topic: t.topic, total: 0, attempted: 0, correct: 0 }; }
+          var b = byTopic[t.topic];
+          b.total += t.total; b.attempted += t.attempted; b.correct += t.correct;
+        });
+      });
+      var topicList = Object.keys(byTopic).map(function (k) { return byTopic[k]; });
+      topicList.forEach(function (t) { t.accuracy = t.attempted > 0 ? t.correct / t.attempted : null; });
+      topicList.sort(function (a, b) { return (a.accuracy === null ? 1 : a.accuracy) - (b.accuracy === null ? 1 : b.accuracy); });
+      topicBody.innerHTML = topicList.map(function (t) {
+        return '<tr><td>' + esc(t.topic) + '</td><td>' + t.total + '</td><td>' + t.attempted + '</td><td>' +
+          t.correct + '</td><td>' + (t.accuracy === null ? 'NA' : Math.round(t.accuracy * 100) + '%') + '</td></tr>';
+      }).join('') || '<tr><td colspan="5">No topic data yet.</td></tr>';
+    });
+  }
+
+  boot();
+})();
+</script>
+</body>
+</html>
