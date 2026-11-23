@@ -954,6 +954,7 @@ var PA_PURCHASE_PRODUCT_NAMES = {
   'com.paymentstraininghub.app.practice': 'Practice Experiences',
   'com.paymentstraininghub.app.interview': 'Interview Ready',
   'com.paymentstraininghub.app.integrated': 'The Integrated Course',
+  'com.paymentstraininghub.app.capstone': 'Capstone Case Studies',
   'com.paymentstraininghub.app.part-1.renewal': 'Part 1: Foundations of Money and Payments (renewal)',
   'com.paymentstraininghub.app.part-2.renewal': 'Part 2: How Payments Move (renewal)',
   'com.paymentstraininghub.app.part-3.renewal': 'Part 3: Messages: SWIFT MT, ISO 20022 and Standards (renewal)',
@@ -974,7 +975,8 @@ var PA_PURCHASE_PRODUCT_NAMES = {
   'com.paymentstraininghub.app.investigation-lab.renewal': 'Investigation Lab (renewal)',
   'com.paymentstraininghub.app.practice.renewal': 'Practice Experiences (renewal)',
   'com.paymentstraininghub.app.interview.renewal': 'Interview Ready (renewal)',
-  'com.paymentstraininghub.app.integrated.renewal': 'The Integrated Course (renewal)'
+  'com.paymentstraininghub.app.integrated.renewal': 'The Integrated Course (renewal)',
+  'com.paymentstraininghub.app.capstone.renewal': 'Capstone Case Studies (renewal)'
 };
 var PA_PURCHASE_STORE_NAMES = {
   'payu': 'PayU',
