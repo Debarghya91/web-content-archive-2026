@@ -239,10 +239,23 @@
   };
 
   /* ---- Diagram rendering: native HTML table or inline SVG, never raster ---- */
+  /* Infer the diagram kind from its shape when the kind field is missing,
+     so a diagram with recognisable data never silently vanishes. */
+  function inferDiagramKind(diagram) {
+    if (!diagram) { return ''; }
+    if (diagram.headers && diagram.rows) { return 'table'; }
+    if (diagram.labels && diagram.values) { return 'pie'; }
+    if (diagram.labels && diagram.series) { return 'bar'; }
+    if (typeof diagram.content === 'string') { return 'text'; }
+    return '';
+  }
+
   function renderDiagramHTML(diagram) {
-    if (!diagram || !diagram.kind) { return ''; }
+    if (!diagram) { return ''; }
+    var kind = diagram.kind || inferDiagramKind(diagram);
+    if (!kind) { return ''; }
     var caption = diagram.caption ? '<figcaption class="mba-diag-caption">' + escapeHtml(diagram.caption) + '</figcaption>' : '';
-    if (diagram.kind === 'table') {
+    if (kind === 'table') {
       var head = '<thead><tr>' + (diagram.headers || []).map(function (h) {
         return '<th>' + escapeHtml(h) + '</th>';
       }).join('') + '</tr></thead>';
@@ -254,11 +267,11 @@
       return '<figure class="mba-diagram mba-diagram-table">' + caption +
         '<table class="mba-diag-table">' + head + body + '</table></figure>';
     }
-    if (diagram.kind === 'text') {
+    if (kind === 'text') {
       return '<figure class="mba-diagram mba-diagram-text">' + caption +
         '<div class="mba-diag-text">' + escapeHtml(diagram.content || '') + '</div></figure>';
     }
-    if (diagram.kind === 'pie') {
+    if (kind === 'pie') {
       var labels = diagram.labels || [];
       var values = diagram.values || [];
       var total = values.reduce(function (a, b) { return a + (Number(b) || 0); }, 0);
@@ -294,7 +307,7 @@
         escapeHtml(diagram.caption || 'Pie chart') + '">' + slices + '</svg>' +
         '<ul class="mba-legend">' + legend + '</ul></div></figure>';
     }
-    if (diagram.kind === 'bar' || diagram.kind === 'line') {
+    if (kind === 'bar' || kind === 'line') {
       var bLabels = diagram.labels || [];
       var series = diagram.series || [];
       var W = 560, H = 300, padL = 48, padB = 34, padT = 16, padR = 12;
@@ -313,7 +326,7 @@
         svg += '<line x1="' + padL + '" y1="' + gy.toFixed(1) + '" x2="' + (W - padR) + '" y2="' + gy.toFixed(1) + '" stroke="#E2E8F0"/>' +
           '<text x="' + (padL - 6) + '" y="' + (gy + 4).toFixed(1) + '" text-anchor="end" font-size="10" fill="#47576E">' + escapeHtml(String(Math.round(gv))) + '</text>';
       }
-      if (diagram.kind === 'bar') {
+      if (kind === 'bar') {
         var groups = series.length || 1;
         var barW = Math.min(34, (slot * 0.8) / groups);
         series.forEach(function (s, si) {
@@ -492,6 +505,7 @@
     paletteState: paletteState,
     PALETTE_LABELS: PALETTE_LABELS,
     renderDiagramHTML: renderDiagramHTML,
+    inferDiagramKind: inferDiagramKind,
     correctAnswerText: correctAnswerText,
     userAnswerText: userAnswerText,
     optionLetter: optionLetter,
