@@ -122,18 +122,23 @@
         var id = ex.key + '-0' + n;
         var ready = readyMap[id];
         var diff = diffMap[id] ? 'Difficulty: ' + esc(diffMap[id]) : '';
+        /* A mock is a player link only when its file is confirmed to exist.
+           Until then it is plain text marked In preparation: never link to
+           a mock that is not published yet. */
         var status = ready === true ? '<span class="mba-mock-status ready">Ready</span>'
-          : ready === false ? '<span class="mba-mock-status">In preparation</span>' : '';
-        if (n === 1) {
-          mocks += '<li><a href="player.html?mock=' + id + '">' + esc(ex.name) + ' Mock ' + n + '</a>' +
-            '<span class="mba-muted mba-small">' + esc(id) + ' ' + diff + '</span>' +
+          : '<span class="mba-mock-status">In preparation</span>';
+        var label = esc(ex.name) + ' Mock ' + n;
+        var meta = '<span class="mba-muted mba-small">' + esc(id) + ' ' + diff + '</span>';
+        if (ready === true && (n === 1 || unlocked())) {
+          mocks += '<li><a href="player.html?mock=' + id + '">' + label + '</a>' + meta +
+            (n === 1 ? '<span class="mba-badge-free">FREE</span>' : '') + status + '</li>';
+        } else if (n === 1) {
+          mocks += '<li><span>' + label + '</span>' + meta +
             '<span class="mba-badge-free">FREE</span>' + status + '</li>';
         } else if (unlocked()) {
-          mocks += '<li><a href="player.html?mock=' + id + '">' + esc(ex.name) + ' Mock ' + n + '</a>' +
-            '<span class="mba-muted mba-small">' + esc(id) + ' ' + diff + '</span>' + status + '</li>';
+          mocks += '<li><span>' + label + '</span>' + meta + status + '</li>';
         } else {
-          mocks += '<li><span>' + esc(ex.name) + ' Mock ' + n + '</span>' +
-            '<span class="mba-muted mba-small">' + esc(id) + ' ' + diff + '</span>' +
+          mocks += '<li><span>' + label + '</span>' + meta +
             '<span class="mba-badge-locked">Locked</span>' +
             '<a class="mba-unlock-link" href="../payment?bundle=test-series">Unlock all mocks</a>' + status + '</li>';
         }
@@ -195,7 +200,44 @@
     renderDailyQuiz();
   }
 
-  /* ---- Live test banner ---- */
+  /* ---- Live test banner ----
+     A live test is shown only after its mock file is confirmed to exist.
+     Before the window opens it shows the scheduled time and a countdown
+     with no player link. Once the window opens it shows the join link.
+     After the window ends the banner hides. */
+  function countdownText(startMs) {
+    var ms = startMs - Date.now();
+    if (ms <= 0) { return 'starting now'; }
+    var totalMin = Math.floor(ms / 60000);
+    var d = Math.floor(totalMin / 1440);
+    var h = Math.floor((totalMin % 1440) / 60);
+    var m = totalMin % 60;
+    var parts = [];
+    if (d > 0) { parts.push(d + (d === 1 ? ' day' : ' days')); }
+    if (h > 0) { parts.push(h + (h === 1 ? ' hour' : ' hours')); }
+    parts.push(m + (m === 1 ? ' minute' : ' minutes'));
+    return 'Starts in ' + parts.join(' ');
+  }
+
+  function paintBanner(tests) {
+    var box = document.getElementById('liveBanner');
+    var now = Date.now();
+    var open = tests.filter(function (t) { return new Date(t.end).getTime() > now; });
+    if (!open.length) { box.hidden = true; box.innerHTML = ''; return; }
+    box.hidden = false;
+    box.innerHTML = '<h2>Live Tests</h2>' + open.map(function (t) {
+      var startMs = new Date(t.start).getTime();
+      var running = now >= startMs;
+      var when = new Date(t.start).toLocaleString();
+      var action = running
+        ? '<a class="mba-btn mba-btn-primary" href="player.html?mock=' + encodeURIComponent(t.mock) + '">Join the live test</a>'
+        : '<span class="mba-muted">Scheduled ' + window.MbaEngine.escapeHtml(when) + ' (' + countdownText(startMs) + ')</span>';
+      return '<p><b>' + window.MbaEngine.escapeHtml(t.title) + '</b> ' +
+        (running ? '<span class="mba-badge-live">Live now</span>' : '<span class="mba-badge-live soon">Scheduled</span>') +
+        '<br>' + action + '</p>';
+    }).join('');
+  }
+
   function renderLiveBanner() {
     var list = window.MBA_LIVE_TESTS || [];
     var box = document.getElementById('liveBanner');
@@ -203,19 +245,16 @@
     var now = Date.now();
     var upcoming = list.filter(function (t) { return new Date(t.end).getTime() > now; });
     if (!upcoming.length) { return; }
-    box.hidden = false;
-    box.innerHTML = '<h2>Live Tests</h2>' + upcoming.map(function (t) {
-      var start = new Date(t.start);
-      var running = now >= start.getTime();
-      var when = start.toLocaleString();
-      var action = running
-        ? '<a class="mba-btn mba-btn-primary" href="player.html?mock=' + encodeURIComponent(t.mock) + '">Join the live test</a>'
-        : '<span class="mba-muted">Starts ' + window.MbaEngine.escapeHtml(when) + '</span> ' +
-          '<a class="mba-btn mba-btn-secondary" href="player.html?mock=' + encodeURIComponent(t.mock) + '">View test</a>';
-      return '<p><b>' + window.MbaEngine.escapeHtml(t.title) + '</b> ' +
-        (running ? '<span class="mba-badge-live">Live now</span>' : '<span class="mba-badge-live soon">Scheduled</span>') +
-        '<br>' + action + '</p>';
-    }).join('');
+    var checks = upcoming.map(function (t) {
+      var key = String(t.mock).split('-')[0];
+      return fetchFirst(mockCandidates(key, t.mock)).then(function () { return t; }).catch(function () { return null; });
+    });
+    Promise.all(checks).then(function (ready) {
+      var shown = ready.filter(function (t) { return t; });
+      if (!shown.length) { box.hidden = true; box.innerHTML = ''; return; }
+      paintBanner(shown);
+      setInterval(function () { paintBanner(shown); }, 30000);
+    });
   }
 
   /* ---- Daily quiz: 5 questions, same set all day, drawn from the
