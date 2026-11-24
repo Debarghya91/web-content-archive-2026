@@ -1437,6 +1437,14 @@
       return 'Part 1 shared clock';
     }
     if (sec.time_limit_minutes === null || sec.time_limit_minutes === undefined) { return 'No sectional limit'; }
+    /* Fix round 7, item 3 (follow-up): the section tab chip is a second
+       live section-time display, updated every second by tick() via
+       renderTabs(). While the break modal is open it must show the
+       same frozen value as the top bar, or the screen shows two
+       different section times at once (shot 76 caught the QR tab at
+       44:21 while the top bar was frozen at 44:51). Only the section
+       with a live deadline is frozen; locked sections stay 'Locked'. */
+    if (frozenTimerDisplay && !$('breakModal').hidden && sectionDeadline(sec.id)) { return frozenTimerDisplay.section + ' left'; }
     if (sectionDeadline(sec.id)) { return E.formatMS(sectionRemainingMs(sec) / 1000) + ' left'; }
     return sec.time_limit_minutes + ' min limit';
   }
