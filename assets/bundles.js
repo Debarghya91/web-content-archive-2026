@@ -685,7 +685,7 @@ function paLoadCashfreeSdk(callback){
    charged. The code never applies to any other course and never
    stacks with a referral code. */
 var PA_PROMO_WELCOME24 = 'WELCOME24';
-var PA_PROMO_WELCOME24_EXPIRY_LABEL = '22 Nov 2026, 11:00 PM IST';
+var PA_PROMO_WELCOME24_EXPIRY_LABEL = '31 Dec 2027, 11:00 PM IST';
 function paPromoCode(){
   var el = document.getElementById('pa-promo-code');
   if(!el) return '';

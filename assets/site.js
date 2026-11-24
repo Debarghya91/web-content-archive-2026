@@ -1008,3 +1008,70 @@ document.addEventListener('DOMContentLoaded', function(){
   });
 });
 
+/* WELCOME24 site-wide announcement banner (24 Nov 2026, owner order:
+   advertise WELCOME24 to every visitor). Injected as the first child
+   of <body> on every page that loads site.js. Static, in normal flow,
+   so it never covers the sticky top bar or the side drawer.
+   Dismissible; dismissal is remembered in localStorage. The code is
+   25% off the Integrated Course only, now Rs 2,249. */
+(function () {
+  var KEY = 'pa-welcome24-banner-dismissed';
+  function paShowPromoBanner() {
+    try { if (window.localStorage && window.localStorage.getItem(KEY)) return; } catch (e) {}
+    if (document.getElementById('pa-promo-banner')) return;
+    if (!document.body) return;
+    var bar = document.createElement('div');
+    bar.id = 'pa-promo-banner';
+    bar.className = 'pa-promo-banner';
+    bar.setAttribute('role', 'region');
+    bar.setAttribute('aria-label', 'WELCOME24 offer');
+    var text = document.createElement('span');
+    text.textContent = 'Use code ';
+    bar.appendChild(text);
+    var code = document.createElement('button');
+    code.type = 'button';
+    code.className = 'pa-promo-code';
+    code.textContent = 'WELCOME24';
+    code.title = 'Tap to copy the code';
+    code.addEventListener('click', function () {
+      var show = function () {
+        var note = document.createElement('span');
+        note.className = 'pa-promo-copied';
+        note.textContent = 'Copied';
+        code.replaceWith(note);
+        setTimeout(function () { if (note.parentNode) note.replaceWith(code); }, 1500);
+      };
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText('WELCOME24').then(show, show);
+        } else { show(); }
+      } catch (e) { show(); }
+    });
+    bar.appendChild(code);
+    var rest = document.createElement('span');
+    rest.textContent = ' and get 25% off the Integrated Course. Now Rs 2,249.';
+    bar.appendChild(rest);
+    var cta = document.createElement('a');
+    cta.className = 'pa-promo-cta';
+    cta.href = '/payment?bundle=integrated';
+    cta.textContent = 'Claim 25% off';
+    bar.appendChild(cta);
+    var close = document.createElement('button');
+    close.type = 'button';
+    close.className = 'pa-promo-close';
+    close.setAttribute('aria-label', 'Dismiss offer');
+    close.textContent = '×';
+    close.addEventListener('click', function () {
+      try { if (window.localStorage) window.localStorage.setItem(KEY, '1'); } catch (e) {}
+      if (bar.parentNode) bar.parentNode.removeChild(bar);
+    });
+    bar.appendChild(close);
+    document.body.insertBefore(bar, document.body.firstChild);
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', paShowPromoBanner);
+  } else {
+    paShowPromoBanner();
+  }
+})();
+
