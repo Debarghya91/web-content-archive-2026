@@ -26,24 +26,22 @@
 
 body.mba-page { background: var(--mba-bg); color: var(--mba-ink2); }
 
-/* Shared site header (fix round 7, stream A, item 1). Root cause of
+/* Shared site header (fix round 7, stream A, item 1; override moved
+   to pf-theme.css in fix round 8, stream A, item 4). Root cause of
    the "Sign in" clip reported at 1280px (round 6, shot
-   gmat-results-header-check.png): pf-theme.css gives .pf-topnav,
+   gmat-results-header-check.png): pf-theme.css gave .pf-topnav,
    .pf-topnav-row1 and .pf-topnav-links NO horizontal padding at all,
-   so the only inset is the accidental 8px UA body margin. The
-   wordmark starts 8px from the left edge, the nav links start 8px
-   from the left edge, and "Sign in" ends 8px from the right edge:
+   so the only inset was the accidental 8px UA body margin. The
+   wordmark started 8px from the left edge, the nav links started 8px
+   from the left edge, and "Sign in" ended 8px from the right edge:
    pixel-precise measurement of the round-6 capture proves the text
    itself renders in full (it ends at x 1271 of 1280), but flush
    against the viewport edge it reads as clipped, and it breaks the
    20px side rhythm every other site header row uses (.topbar-row and
    .header-inner use padding 12px 20px; main uses padding 24px 20px).
-   This override lives here, not in pf-theme.css, so it ships with
-   the staged mba-test-series tree (this file loads after
-   pf-theme.css on catalog, results and analytics, same specificity,
-   so it wins). It fixes the MBA pages only; the site-wide fix
-   belongs in pf-theme.css itself on a later site-wide deploy. */
-.pf-topnav { box-sizing: border-box; padding-left: 20px; padding-right: 20px; }
+   The 20px side padding now lives in the .pf-topnav base rule in
+   pf-theme.css itself, so it applies site-wide and this file carries
+   no header override. */
 
 /* Per-exam skins (fix round 4 closing, item 6). The player sets
    body[data-exam] from the exam key at boot, and the rules below read
@@ -234,16 +232,17 @@ body[data-exam="XAT"] #submitBtnSide { background: var(--mba-skin-primary); colo
    is wider to hold it; the Transfer Display bar spans the panel. */
 .mba-calc-gre { width: 264px; }
 .mba-calc-gmat { width: 264px; }
-/* GMAT DI backspace key (fix round 7, item 2): the visible label is
-   the word "Backspace" (9 characters) in a 5-column 264px panel, so
-   each key is about 48px wide with a 47px content box. The 14px grid
-   font does not fit the word; at 9px the text measured exactly
-   47px, zero slack, so the shipped size is 8px, which measures
-   about 42px and leaves real slack against font-metric differences
-   on the live site. Verified live by measuring the rendered button
-   (text width against content width, scrollWidth against
-   clientWidth). Only this key shrinks. */
-.mba-calc-grid button.mba-calc-bs { font-size: 8px; letter-spacing: 0; padding-left: 1px; padding-right: 1px; }
+/* GMAT DI backspace key (fix round 7, item 2; readability fix round 8,
+   stream A, item 3): the visible label is the word "Backspace"
+   (9 characters) in a 5-column 264px panel, so a single key is about
+   48px wide with a 47px content box. The 14px grid font does not fit
+   the word; the round-7 fix shrank it to 8px, which fits but is too
+   small to read. The round-8 fix spans the key across 2 columns
+   (about 102px) so it reads at 12px, close to the 14px grid font.
+   The 27-key set and the internal id 'BS' are unchanged, and the
+   automated fit check (scrollWidth <= clientWidth) still applies.
+   Only this key spans two columns. */
+.mba-calc-grid button.mba-calc-bs { grid-column: span 2; font-size: 12px; letter-spacing: 0; padding-left: 1px; padding-right: 1px; }
 .mba-calc-grid-5 { grid-template-columns: repeat(5, 1fr); }
 .mba-calc-transfer { width: 100%; margin-top: 8px; padding: 9px 0; font-size: 13px; font-weight: 700; border-radius: 6px; border: 1px solid var(--mba-royal); background: var(--mba-royal); color: #FFFFFF; cursor: pointer; }
 .mba-calc-transfer:disabled { background: #CBD5E1; border-color: #CBD5E1; cursor: not-allowed; }
