@@ -41,6 +41,7 @@
       <tbody></tbody>
     </table>
   </section>
+  <section aria-label="CAT performance" id="catPerformanceSection" hidden></section>
   <section aria-label="Score trend">
     <div class="pf-section-header accent-gold"><h2>Score trend</h2></div>
     <p class="mba-muted mba-small">Score as a percentage of the maximum, in the order you took the mocks.</p>
@@ -67,6 +68,7 @@
 </main>
 <footer class="pf-footer"><p>Payments Training Hub. Practical Payments Training for Banking Professionals. Content is for education; check current exam rules before relying on it.</p><div class="pf-footer-cols"><div class="pf-footer-col"><h3>Explore</h3><ul><li><a href="../">Home</a></li><li><a href="../courses">Courses</a></li><li><a href="../pricing">Pricing</a></li></ul></div><div class="pf-footer-col"><h3>Practice</h3><ul><li><a href="../situations">Payment Cases</a></li><li><a href="../tests">Assessments</a></li><li><a href="../simulators">Simulators</a></li><li><a href="../interview-prep">Interview Prep</a></li></ul></div><div class="pf-footer-col"><h3>Resources</h3><ul><li><a href="../explorer">ISO 20022 Explorer</a></li><li><a href="../reference">Reference Library</a></li><li><a href="../insights">Insights and Scenarios</a></li></ul></div><div class="pf-footer-col"><h3>Company</h3><ul><li><a href="../about">About</a></li><li><a href="../contact">Contact</a></li><li><a href="../privacy">Privacy</a></li><li><a href="../terms">Terms</a></li><li><a href="../support">Help and Support</a></li></ul></div></div></footer>
 <script src="mba-engine.js"></script>
+<script src="cat-predictor.js"></script>
 <script>
 (function () {
   'use strict';
@@ -198,6 +200,36 @@
         return '<tr><td>' + esc(t.topic) + '</td><td>' + t.total + '</td><td>' + t.attempted + '</td><td>' +
           t.correct + '</td><td>' + (t.accuracy === null ? 'NA' : Math.round(t.accuracy * 100) + '%') + '</td></tr>';
       }).join('') || '<tr><td colspan="5">No topic data yet.</td></tr>';
+      /* CAT performance view (cat-predictor.js): once 2 or more full
+         CAT mocks (maxScore 204) exist in this browser, show the
+         per-mock scores, the trend, and the predicted CAT percentile
+         plus top 5 colleges from the recency-weighted average of
+         hardness-adjusted scores. A mock whose file failed to load
+         uses the reference difficulty index (no adjustment). */
+      var CP = window.CatPredictor || null;
+      var catSection = document.getElementById('catPerformanceSection');
+      if (CP && catSection) {
+        var catAttempts = attempts.filter(function (a) {
+          return a.exam === 'CAT' && a.score && a.score.maxScore === 204;
+        });
+        if (catAttempts.length >= 2) {
+          var pred = CP.weightedPrediction(catAttempts.map(function (a) {
+            var m = byId[a.mock_id];
+            return {
+              mockId: a.mock_id,
+              rawScore: a.score.totalScore,
+              mockDifficultyIndex: m ? CP.difficultyIndexFromItems(m.items) : CP.REFERENCE_DIFFICULTY_INDEX,
+              maxScore: a.score.maxScore,
+              submittedAt: a.submittedAt
+            };
+          }));
+          if (pred) {
+            catSection.innerHTML = '<div class="pf-section-header accent-gold"><h2>CAT performance and predicted percentile</h2></div>' +
+              CP.performanceViewHTML(pred);
+            catSection.hidden = false;
+          }
+        }
+      }
     });
   }
 

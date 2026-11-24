@@ -43,6 +43,8 @@
     </div>
   </section>
 
+  <section aria-label="CAT score predictor" id="catPredictorSection" hidden></section>
+
   <section aria-label="Unofficial score" id="unofficialScoreSection" hidden>
     <div class="pf-section-header accent-gold"><h2>Your unofficial score</h2></div>
     <p id="resUnofficial"></p>
@@ -97,6 +99,7 @@
 <footer class="pf-footer"><p>Payments Training Hub. Practical Payments Training for Banking Professionals. Content is for education; check current exam rules before relying on it.</p><div class="pf-footer-cols"><div class="pf-footer-col"><h3>Explore</h3><ul><li><a href="../">Home</a></li><li><a href="../courses">Courses</a></li><li><a href="../course-map">Learning Paths</a></li><li><a href="../pricing">Pricing</a></li></ul></div><div class="pf-footer-col"><h3>Practice</h3><ul><li><a href="../situations">Payment Cases</a></li><li><a href="../tests">Assessments</a></li><li><a href="../simulators">Simulators</a></li><li><a href="../interview-prep">Interview Prep</a></li></ul></div><div class="pf-footer-col"><h3>Resources</h3><ul><li><a href="../explorer">ISO 20022 Explorer</a></li><li><a href="../reference">Reference Library</a></li><li><a href="../insights">Insights and Scenarios</a></li></ul></div><div class="pf-footer-col"><h3>Company</h3><ul><li><a href="../about">About</a></li><li><a href="../contact">Contact</a></li><li><a href="../privacy">Privacy</a></li><li><a href="../terms">Terms</a></li><li><a href="../support">Help and Support</a></li></ul></div></div></footer>
 <script src="mba-engine.js"></script>
 <script src="exam-profiles.js"></script>
+<script src="cat-predictor.js"></script>
 <script>
 (function () {
   'use strict';
@@ -136,6 +139,62 @@
         });
       });
     }, Promise.reject(new Error('no candidates')));
+  }
+
+  /* Fetch one mock's items for its difficulty index (CAT predictor).
+     Resolves to the items array, or null when the file cannot be
+     loaded; the caller then uses the reference index (no adjustment). */
+  function fetchMockItems(examKey, id) {
+    var urls = ['data/' + examKey + '/' + id + '.json', '../data/' + examKey + '/' + id + '.json'];
+    return urls.reduce(function (p, url) {
+      return p.catch(function () {
+        return fetch(url).then(function (r) {
+          if (!r.ok) { throw new Error('HTTP ' + r.status); }
+          return r.json();
+        });
+      });
+    }, Promise.reject(new Error('no candidates'))).then(function (data) {
+      return (data && data.items) || [];
+    }).catch(function () { return null; });
+  }
+
+  /* CAT performance view (2 or more full CAT mocks in this browser):
+     per-attempt scores, trend, and a prediction from the
+     recency-weighted average of hardness-adjusted scores. Appends to
+     the predictor section; the single-mock prediction is already
+     there. A mock whose file cannot be loaded uses the reference
+     difficulty index, so it gets no hardness adjustment. */
+  function renderCatPerformance() {
+    var CP = window.CatPredictor || null;
+    if (!CP) { return; }
+    var catAttempts = E.readAllResults(localStorage).filter(function (a) {
+      return a.exam === 'CAT' && a.score && a.score.maxScore === 204;
+    });
+    if (catAttempts.length < 2) { return; }
+    var jobs = catAttempts.map(function (a) {
+      if (a.mock_id === mockId) { return Promise.resolve({ id: a.mock_id, items: mock.items }); }
+      return fetchMockItems('CAT', a.mock_id).then(function (items) {
+        return { id: a.mock_id, items: items };
+      });
+    });
+    Promise.all(jobs).then(function (loaded) {
+      var byId = {};
+      loaded.forEach(function (entry) { if (entry) { byId[entry.id] = entry.items; } });
+      var attempts = catAttempts.map(function (a) {
+        var items = byId[a.mock_id];
+        return {
+          mockId: a.mock_id,
+          rawScore: a.score.totalScore,
+          mockDifficultyIndex: items ? CP.difficultyIndexFromItems(items) : CP.REFERENCE_DIFFICULTY_INDEX,
+          maxScore: a.score.maxScore,
+          submittedAt: a.submittedAt
+        };
+      });
+      var pred = CP.weightedPrediction(attempts);
+      if (!pred) { return; }
+      var section = $('catPredictorSection');
+      if (section) { section.innerHTML += CP.performanceViewHTML(pred); }
+    });
   }
 
   function loadResult() {
@@ -397,6 +456,33 @@
       try { localStorage.removeItem('mba-ts-result-' + mockId); } catch (e) {}
       window.location.href = 'player.html?mock=' + encodeURIComponent(mockId);
     });
+    /* CAT score predictor (cat-predictor.js): predicted CAT percentile
+       plus the top 5 colleges, from the hardness-adjusted score of
+       this mock. CAT full mocks only (maxScore 204); other exams and
+       the CAT-00 sample mock get no predictor. The existing mock-based
+       estimated percentile above is untouched. When 2 or more full CAT
+       mocks exist in this browser, the performance view (weighted
+       average across mocks) is appended below by renderCatPerformance. */
+    var CP = window.CatPredictor || null;
+    var predSection = $('catPredictorSection');
+    if (CP && result.exam === 'CAT' && s.maxScore === 204) {
+      var mockIdx = CP.difficultyIndexFromItems(mock.items);
+      var adjScore = CP.normaliseScore(s.totalScore, mockIdx, s.maxScore);
+      var predPct = CP.scoreToPercentile(adjScore);
+      predSection.innerHTML = CP.singlePredictionHTML({
+        rawScore: s.totalScore,
+        maxScore: s.maxScore,
+        mockDifficultyIndex: mockIdx,
+        normalisedScore: adjScore,
+        percentile: predPct,
+        colleges: CP.topColleges(predPct),
+        stretch: CP.stretchTarget(predPct)
+      });
+      predSection.hidden = false;
+      renderCatPerformance();
+    } else if (predSection) {
+      predSection.hidden = true;
+    }
     $('playerLink').href = 'player.html?mock=' + encodeURIComponent(mockId);
     $('resultBody').hidden = false;
     /* F-11: focus lands on the results heading on load, so the score
