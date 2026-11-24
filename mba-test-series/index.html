@@ -87,6 +87,7 @@
 </main>
 <footer class="pf-footer"><p>Payments Training Hub. Practical Payments Training for Banking Professionals. Content is for education; check current exam rules before relying on it.</p><div class="pf-footer-cols"><div class="pf-footer-col"><h3>Explore</h3><ul><li><a href="../">Home</a></li><li><a href="../courses">Courses</a></li><li><a href="../course-map">Learning Paths</a></li><li><a href="../pricing">Pricing</a></li></ul></div><div class="pf-footer-col"><h3>Practice</h3><ul><li><a href="../situations">Payment Cases</a></li><li><a href="../tests">Assessments</a></li><li><a href="../simulators">Simulators</a></li><li><a href="../interview-prep">Interview Prep</a></li></ul></div><div class="pf-footer-col"><h3>Resources</h3><ul><li><a href="../explorer">ISO 20022 Explorer</a></li><li><a href="../reference">Reference Library</a></li><li><a href="../insights">Insights and Scenarios</a></li></ul></div><div class="pf-footer-col"><h3>Company</h3><ul><li><a href="../about">About</a></li><li><a href="../contact">Contact</a></li><li><a href="../privacy">Privacy</a></li><li><a href="../terms">Terms</a></li><li><a href="../support">Help and Support</a></li></ul></div></div></footer>
 <script src="mba-engine.js"></script>
+<script src="exam-profiles.js"></script>
 <script src="live-tests.js"></script>
 <script>
 (function () {
@@ -100,7 +101,7 @@
       sections: 'VARC 24, DILR 22, QA 22', questions: 68, timeShort: '120 min', markingShort: '+3 / -1', note: '40 minutes per section. Type-in answers appear in all three sections.',
       accent: '#173F8C', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" y1="20" x2="20" y2="20"/><rect x="6" y="12" width="3" height="8" fill="currentColor" stroke="none"/><rect x="11" y="7" width="3" height="13" fill="currentColor" stroke="none"/><rect x="16" y="10" width="3" height="10" fill="currentColor" stroke="none"/></svg>' },
     { key: 'XAT', name: 'XAT', tagline: 'Verbal and logical reasoning, decision making, and quantitative aptitude with data interpretation.',
-      sections: 'VALR 26, Decision Making 21, QA and DI 28, General Knowledge 20', questions: 95, timeShort: '180 min', markingShort: '+1 / -0.25', note: 'General Knowledge carries no negative marking.',
+      sections: 'Part 1: VALR 26, Decision Making 21, QA and DI 28 (170 min shared); Part 2: General Knowledge 20 (10 min)', questions: 95, timeShort: '180 min', markingShort: '+1 / -0.25', note: 'Part 1 shares one 170-minute clock. General Knowledge carries no negative marking; more than 12 unattempted Part 1 questions lose 0.10 marks each.',
       accent: '#B42318', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v16"/><path d="M6 20h12"/><path d="M4 7h16"/><path d="M6 7l-2 5h4L6 7z"/><path d="M18 7l-2 5h4l-2-5z"/></svg>' },
     { key: 'NMAT', name: 'NMAT', tagline: 'Language, quantitative and logical reasoning, each in its own timed section.',
       sections: 'Language Skills 36, Quantitative Skills 36, Logical Reasoning 36', questions: 108, timeShort: '120 min', markingShort: 'No negative', note: 'No negative marking. Sections are individually timed: 28, 52 and 40 minutes.',
@@ -109,7 +110,7 @@
       sections: 'General English 10, Analytical and Logical Reasoning 20, QA, DI and DS 20, Ethics 10', questions: 60, timeShort: '60 min', markingShort: '+1 / -0.25', note: 'No sectional time limits. The Ethics section is new for 2026.',
       accent: '#C2410C', icon: '<svg viewBox="0 0 24 24" fill="currentColor" stroke="none" stroke-linejoin="round" aria-hidden="true"><path d="M13 2L4 14h6l-1 8 9-12h-6l1-8z"/></svg>' },
     { key: 'MAT', name: 'MAT', tagline: 'Five sections of 30 questions each, including economic and business environment.',
-      sections: 'Language Comprehension 30, Mathematical Skills 30, Data Analysis 30, Intelligence and Critical Reasoning 30, Economic and Business Environment 30', questions: 150, timeShort: '120 min', markingShort: '+1 / -0.25', note: 'No sectional time limits.',
+      sections: 'Language Comprehension 30, Intelligence and Critical Reasoning 30, Mathematical Skills 30, Data Analysis 30, Economic and Business Environment 30', questions: 150, timeShort: '120 min', markingShort: '+1 / -0.25', note: 'No sectional time limits.',
       accent: '#7C3AED', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg>' },
     { key: 'CMAT', name: 'CMAT', tagline: 'Quantitative, logical reasoning, language, general awareness and innovation and entrepreneurship.',
       sections: 'Quantitative Techniques and DI 20, Logical Reasoning 20, Language Comprehension 20, General Awareness 20, Innovation and Entrepreneurship 20', questions: 100, timeShort: '180 min', markingShort: '+4 / -1', note: 'No sectional time limits.',
@@ -156,11 +157,47 @@
     return '+' + c + ' / ' + w;
   }
 
+  /* XAT shows the part model, not per-section timers: Part 1 shares one
+     170-minute clock across VALR, Decision Making and QADI; Part 2 is
+     General Knowledge for 10 minutes. Built from the exam profile when
+     it loaded, otherwise from the same contract values. */
+  function xatPartSummary(live) {
+    var part1Names = ['VALR', 'Decision Making', 'QA and DI'];
+    var part1Count = 75;
+    var part2Count = 20;
+    if (live && live.sections) {
+      var byId = {};
+      live.sections.forEach(function (s) { byId[s.id] = s; });
+      if (byId.VALR && byId.DM && byId.QADI) {
+        part1Names = [byId.VALR.name + ' ' + (byId.VALR.question_count || ''),
+          byId.DM.name + ' ' + (byId.DM.question_count || ''),
+          byId.QADI.name + ' ' + (byId.QADI.question_count || '')];
+        part1Count = (byId.VALR.question_count || 0) + (byId.DM.question_count || 0) + (byId.QADI.question_count || 0);
+      }
+      if (byId.GK) { part2Count = byId.GK.question_count || 20; }
+    }
+    var p1Min = 170, p2Min = 10;
+    if (window.MbaExamProfiles && window.MbaExamProfiles.getProfile) {
+      try {
+        var prof = window.MbaExamProfiles.getProfile('XAT');
+        if (prof && prof.parts) {
+          prof.parts.forEach(function (p) {
+            if (p.id === 'PART1') { p1Min = p.minutes; }
+            if (p.id === 'PART2') { p2Min = p.minutes; }
+          });
+        }
+      } catch (e) { /* keep the contract defaults */ }
+    }
+    return 'Part 1: ' + part1Names.join(', ') + ', ' + p1Min + ' minutes shared; Part 2: General Knowledge ' +
+      part2Count + ', ' + p2Min + ' minutes';
+  }
+
   function render(exams, readyMap, liveMap) {
     var grid = document.getElementById('examGrid');
     grid.innerHTML = exams.map(function (ex) {
       var live = liveMap[ex.key];
       var sections = live ? sectionSummary(live) : ex.sections;
+      if (ex.key === 'XAT') { sections = xatPartSummary(live); }
       var questions = live ? live.items.length : ex.questions;
       var time = live ? (live.duration_minutes + ' min') : ex.timeShort;
       var marking = live ? shortMarking(live.marking) : ex.markingShort;

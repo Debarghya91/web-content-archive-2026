@@ -25,6 +25,51 @@
 }
 
 body.mba-page { background: var(--mba-bg); color: var(--mba-ink2); }
+
+/* Per-exam skins (fix round 4 closing, item 6). The player sets
+   body[data-exam] from the exam key at boot, and the rules below read
+   these variables. Only MEASURED values are applied; everything else
+   keeps the shared skin. Full record:
+   interface-audit/fix-round-4/skin-hex-disposition-2026-11-24.md.
+   The header foregrounds for IBSAT reuse existing palette variables
+   (navy / muted) for legibility on the pale header; no new hex is
+   invented for them. The TCS primary blue was re-sampled 24 Nov 2026
+   as a clean solid rectangle (see the CAT/XAT comment). */
+body[data-exam="IBSAT"] {
+  /* SAMPLED-APPROXIMATE: header #D9EDF6. Source: MeritTrac Students'
+     User Manual screenshot ibsat-official-console-q3.png (genuine
+     official image), header band. Samples: 54,122 agreeing pixels
+     re-sampled 24 Nov 2026 (disposition recorded 4,584 in a narrower
+     band). Settle step: logged-in official IBSAT 2026 National Mock
+     Test console (ibsat.org/national-mock-test; next window 9 Dec
+     2026): screenshot palette + legend and re-sample. Palette
+     green/red stays as-is: JPEG-scatter approximations only. */
+  --mba-skin-header-bg: #D9EDF6;
+  --mba-skin-header-title: var(--mba-navy);
+  --mba-skin-header-sub: var(--mba-muted);
+  --mba-skin-header-clock: var(--mba-navy);
+  --mba-skin-header-tag-border: rgba(13, 28, 56, .35);
+}
+body[data-exam="CAT"], body[data-exam="XAT"] {
+  /* SAMPLED-APPROXIMATE: top strip #363636. Source: genuine TCS iON
+     console screenshot ref/tcs-ion-reference.png. Samples: 1,517
+     agreeing (re-sampled 24 Nov 2026: 7,383 in the strip crop).
+     Settle step: logged-in official CAT mock on iimcat.ac.in /
+     official XAT mock: screenshot the question screen, sample header,
+     tabs, buttons, palette fills. */
+  --mba-skin-header-bg: #363636;
+  /* SAMPLED (re-sampled 24 Nov 2026): primary / Submit blue #0C7CD5.
+     Source: same TCS iON screenshot. The Save & Next button is a clean
+     solid rectangle (x 520-577, y 330-348) of #0C7CD5, 848 agreeing
+     pixels in the bottom half, dominant over the #38AAE9 palette-header
+     blue. Same settle step as the top strip. */
+  --mba-skin-primary: #0C7CD5;
+}
+/* TCS marks strip #4E85C5 is already applied where the strip renders
+   (XAT; .mba-marks-strip, 479 agreeing samples in the same TCS iON
+   screenshot, re-sampled 24 Nov 2026: 4,852 in the strip crop). CAT
+   shows no strip: the CAT fidelity spec does not prove one, so none
+   is added here. */
 .mba-wrap { max-width: 1100px; margin: 0 auto; padding: 16px 16px 48px; }
 .mba-wrap-wide { max-width: 1240px; }
 .mba-muted { color: var(--mba-muted); }
@@ -74,20 +119,27 @@ body.mba-page { background: var(--mba-bg); color: var(--mba-ink2); }
 
 /* Player: TCS iON style layout, palette right, question centre, header top */
 .mba-player { max-width: 1360px; margin: 0 auto; padding: 0 12px 40px; }
-.mba-player-bar { background: var(--mba-navy); color: #E2E8F0; border-radius: 0 0 12px 12px; padding: 10px 16px; display: flex; gap: 16px; align-items: center; flex-wrap: wrap; position: sticky; top: 0; z-index: 20; }
-.mba-player-bar .mba-title { font-weight: 700; color: #FFFFFF; font-size: 14px; }
-.mba-player-bar .mba-sub { font-size: 11px; color: #94A3B8; }
+.mba-player-bar { background: var(--mba-skin-header-bg, var(--mba-navy)); color: #E2E8F0; border-radius: 0 0 12px 12px; padding: 10px 16px; display: flex; gap: 16px; align-items: center; flex-wrap: wrap; position: sticky; top: 0; z-index: 20; }
+.mba-player-bar .mba-title { font-weight: 700; color: var(--mba-skin-header-title, #FFFFFF); font-size: 14px; }
+.mba-player-bar .mba-sub { font-size: 11px; color: var(--mba-skin-header-sub, #94A3B8); }
 .mba-timer { margin-left: auto; text-align: right; }
-.mba-timer .mba-clock { font-size: 18px; font-weight: 700; color: #FBBF24; font-variant-numeric: tabular-nums; }
+.mba-timer .mba-clock { font-size: 18px; font-weight: 700; color: var(--mba-skin-header-clock, #FBBF24); font-variant-numeric: tabular-nums; }
 .mba-timer .mba-clock.low { color: #F87171; }
-.mba-timer .mba-clock-label { font-size: 10px; color: #94A3B8; display: block; }
+.mba-timer .mba-clock-label { font-size: 10px; color: var(--mba-skin-header-sub, #94A3B8); display: block; }
 .mba-section-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin: 12px 0; }
 .mba-section-tab { border: 1px solid var(--mba-line2); background: var(--mba-surface); border-radius: 8px; padding: 8px 14px; cursor: pointer; font-weight: 600; font-size: 12px; color: var(--mba-ink); }
 .mba-section-tab.active { background: var(--mba-royal); color: #FFFFFF; border-color: var(--mba-royal); }
 .mba-section-tab .mba-tab-time { display: block; font-size: 10px; font-weight: 400; opacity: .85; }
 .mba-section-tab.locked { opacity: .5; cursor: not-allowed; }
 .mba-player-grid { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 16px; align-items: start; }
-.mba-question-card { background: var(--mba-surface); border: 1px solid var(--mba-line); border-radius: 12px; padding: 20px 22px; }
+.mba-question-card { background: var(--mba-surface); border: 1px solid var(--mba-line); border-radius: 12px; padding: 20px 22px;
+  /* Fix round 4 closing (CAT section-tabs clip, PROVEN 24 Nov 2026):
+     the skip-link anchor jump and any other native focus scroll to this
+     card ignore the sticky header, so they land the card top under it.
+     scroll-margin-top keeps those jumps clear of the 53px header.
+     The per-navigation path does not rely on this: focusQuestionCard()
+     focuses with preventScroll and scrolls explicitly via
+     scrollTestTopIntoView, which also keeps the tabs row visible. */ scroll-margin-top: 76px; }
 .mba-q-meta { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; color: var(--mba-muted); font-size: 11px; margin-bottom: 10px; }
 .mba-q-meta .mba-chip { background: #E8EEFB; color: var(--mba-royal); border-radius: 999px; padding: 2px 9px; font-weight: 700; }
 .mba-passage { background: #F8FAFC; border: 1px solid var(--mba-line); border-left: 4px solid var(--mba-royal); border-radius: 8px; padding: 14px 16px; margin: 0 0 16px; max-height: 320px; overflow-y: auto; font-size: 12.5px; line-height: 1.7; white-space: pre-wrap; }
@@ -105,8 +157,18 @@ body.mba-page { background: var(--mba-bg); color: var(--mba-ink2); }
 .mba-wordcount { font-size: 11px; color: var(--mba-muted); margin-top: 6px; }
 .mba-q-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--mba-line); }
 .mba-btn { display: inline-block; font-family: inherit; font-size: 12px; font-weight: 600; border-radius: 8px; padding: 10px 16px; cursor: pointer; border: 1px solid transparent; text-decoration: none; }
-.mba-btn-primary { background: var(--mba-royal); color: #FFFFFF; }
+.mba-btn-primary { background: var(--mba-skin-primary, var(--mba-royal)); color: #FFFFFF; }
 .mba-btn-primary:hover { background: #122F6B; }
+/* TCS family (CAT, XAT): the shared hover navy would undo the sampled
+   blue, so keep the sampled blue and darken with a filter instead. */
+body[data-exam="CAT"] .mba-btn-primary:hover,
+body[data-exam="XAT"] .mba-btn-primary:hover { background: var(--mba-skin-primary); filter: brightness(.9); }
+/* TCS family (CAT, XAT): both Submit buttons blue, not gold / secondary.
+   Sampled #0C7CD5, same source and settle step as --mba-skin-primary. */
+body[data-exam="CAT"] #submitBtnTop,
+body[data-exam="XAT"] #submitBtnTop,
+body[data-exam="CAT"] #submitBtnSide,
+body[data-exam="XAT"] #submitBtnSide { background: var(--mba-skin-primary); color: #FFFFFF; border-color: var(--mba-skin-primary); }
 .mba-btn-secondary { background: var(--mba-surface); color: var(--mba-ink); border-color: var(--mba-line2); }
 .mba-btn-secondary:hover { border-color: var(--mba-royal); }
 .mba-btn-warn { background: #FFFFFF; color: var(--mba-red); border-color: #FECDC2; }
@@ -122,8 +184,7 @@ body.mba-page { background: var(--mba-bg); color: var(--mba-ink2); }
 .mba-palette { background: var(--mba-surface); border: 1px solid var(--mba-line); border-radius: 12px; padding: 14px; position: sticky; top: 64px; }
 .mba-palette h3 { margin: 0 0 4px; font-size: 14px; }
 .mba-palette-user { font-size: 11px; color: var(--mba-muted); margin: 0 0 10px; }
-.mba-palette-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin: 10px 0; }
-.mba-pal-btn { aspect-ratio: 1; border: 1px solid var(--mba-line2); border-radius: 6px; background: #FFFFFF; font-weight: 700; font-size: 12px; cursor: pointer; color: var(--mba-ink); padding: 0; }
+.mba-palette-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin: 10px 0; }.mba-pal-btn { position: relative; aspect-ratio: 1; border: 1px solid var(--mba-line2); border-radius: 6px; background: #FFFFFF; font-weight: 700; font-size: 12px; cursor: pointer; color: var(--mba-ink); padding: 0; }
 .mba-pal-btn.current { outline: 2px solid var(--mba-navy); outline-offset: 1px; }
 .mba-pal-btn.st-answered { background: var(--mba-green); border-color: var(--mba-green); color: #FFFFFF; }
 .mba-pal-btn.st-not-answered { background: var(--mba-red); border-color: var(--mba-red); color: #FFFFFF; }
@@ -149,6 +210,13 @@ body.mba-page { background: var(--mba-bg); color: var(--mba-ink2); }
 .mba-calc-grid button { padding: 9px 0; font-size: 14px; border-radius: 6px; border: 1px solid var(--mba-line2); background: #F8FAFC; cursor: pointer; font-weight: 600; }
 .mba-calc-grid button.op { background: #E8EEFB; color: var(--mba-royal); }
 .mba-calc-grid button.eq { background: var(--mba-royal); color: #FFFFFF; }
+.mba-calc-grid button.fn { background: #EEF2F7; }
+/* GRE (fix round 4): the ETS 25-key set is 5 columns, and the panel
+   is wider to hold it; the Transfer Display bar spans the panel. */
+.mba-calc-gre { width: 264px; }
+.mba-calc-grid-5 { grid-template-columns: repeat(5, 1fr); }
+.mba-calc-transfer { width: 100%; margin-top: 8px; padding: 9px 0; font-size: 13px; font-weight: 700; border-radius: 6px; border: 1px solid var(--mba-royal); background: var(--mba-royal); color: #FFFFFF; cursor: pointer; }
+.mba-calc-transfer:disabled { background: #CBD5E1; border-color: #CBD5E1; cursor: not-allowed; }
 .mba-calc-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-weight: 700; font-size: 12px; }
 .mba-calc-head button { border: 0; background: none; cursor: pointer; font-size: 14px; }
 .mba-calc-fab { position: fixed; right: 16px; bottom: 16px; z-index: 40; }
@@ -318,4 +386,289 @@ body.mba-page { background: var(--mba-bg); color: var(--mba-ink2); }
   .mba-explanation { background: #0E1930; border-color: #24344F; }
   .mba-catalog-tools .mba-btn-secondary { background: #111C33; color: #E2E8F0; border-color: #334155; }
   .mba-review-item { background: #111C33; border-color: #24344F; }
+}
+
+/* ---- MBA interface fix round, 24 Nov 2026 (G1-G21) ---- */
+
+/* G1 mobile sticky bar. pf-theme.css sets html,body{overflow-x:hidden}
+   below 480px, which makes overflow-y compute to auto and disables
+   position:sticky page-wide. This file loads after pf-theme.css on engine
+   pages only, so this scoped override restores sticky without touching
+   the shared site theme. overflow-x:clip does not create a scroll
+   container, so sticky keeps working. */
+@media (max-width: 480px) {
+  html, body { overflow-x: clip; }
+}
+
+/* G14 exam identity: small provider tag in the player bar. */
+.mba-provider-tag { font-size: 10px; color: var(--mba-skin-header-sub, #94A3B8); border: 1px solid var(--mba-skin-header-tag-border, rgba(255,255,255,.25)); border-radius: 999px; padding: 2px 8px; white-space: nowrap; }
+
+/* G10/G20/G21 utility strip. */
+.mba-utility { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin: 12px 0; }
+.mba-candidate { font-size: 12px; font-weight: 700; color: var(--mba-navy); margin-right: auto; }
+.mba-util-btn { padding: 7px 12px; }
+.mba-util-btn:disabled { opacity: .45; cursor: not-allowed; }
+
+/* G20/FIDELITY text selection: NO exam console allows selecting
+   question or passage text, and no console has a highlighter (the
+   fidelity spec, all nine exams). The old G20 override that made
+   passage and question text selectable so the Highlight button could
+   work is REMOVED: text selection is off inside the player question
+   card, and the Highlight buttons are gone from the player. The only
+   selectable text in the player is inside editable fields: the GRE
+   essay textarea (ETS Cut/Paste needs mouse selection there) and the
+   TITA answer input. */
+.mba-player .mba-passage,
+.mba-player .mba-q-text,
+.mba-player .mba-set-title,
+.mba-player .mba-option span,
+.mba-player .mba-legend-list,
+.mba-player .mba-palette-counts { -webkit-user-select: none; user-select: none; }
+.mba-player input, .mba-player textarea, .mba-player select { -webkit-user-select: text; user-select: text; }
+
+/* SNAP left-hand summary panel (SIU mock page, PROVEN): the summary
+   sits on the left of the question, not the right. The numbered
+   summary buttons are kept (clickability UNPROVEN, flagged). */
+.mba-player-grid.snap-left { grid-template-columns: 300px minmax(0, 1fr); }
+.mba-player-grid.snap-left .mba-palette { grid-column: 1; grid-row: 1; }
+.mba-player-grid.snap-left .mba-question-card { grid-column: 2; grid-row: 1; }
+@media (max-width: 900px) {
+  .mba-player-grid.snap-left { grid-template-columns: 1fr; }
+  .mba-player-grid.snap-left.palette-narrow { grid-template-columns: 1fr; }
+  .mba-player-grid.snap-left .mba-palette,
+  .mba-player-grid.snap-left .mba-question-card { grid-column: auto; grid-row: auto; }
+}
+
+/* ---- MBA interface fix round 4, 24 Nov 2026 (DIFFERS sweep) ---- */
+
+/* TCS iON palette shapes (CAT, XAT: PROVEN from the TCS iON manual and
+   the genuine reference screenshot): answered is a pentagon (point
+   up), not answered an inverted pentagon (point down), marked and
+   answered-and-marked are circles. Not visited stays a square. The
+   legend dots take the same shapes, and the palette grid is 4 columns,
+   as on the real console. clip-path removes the border on the
+   pentagon buttons, so the current-question marker is a drop shadow
+   that follows the clipped shape instead of an outline. */
+.palette-tcs .mba-palette-grid { grid-template-columns: repeat(4, 1fr); }
+.palette-tcs .mba-pal-btn.st-answered { clip-path: polygon(50% 0, 100% 28%, 100% 100%, 0 100%, 0 28%); border: 0; border-radius: 0; }
+.palette-tcs .mba-pal-btn.st-not-answered { clip-path: polygon(0 0, 100% 0, 100% 72%, 50% 100%, 0 72%); border: 0; border-radius: 0; }
+.palette-tcs .mba-pal-btn.st-marked, .palette-tcs .mba-pal-btn.st-answered-marked { border-radius: 50%; }
+.palette-tcs .mba-pal-btn.current { outline: none; filter: drop-shadow(0 0 3px var(--mba-navy)); }
+.palette-tcs .mba-legend-dot.answered { clip-path: polygon(50% 0, 100% 28%, 100% 100%, 0 100%, 0 28%); border-radius: 0; }
+.palette-tcs .mba-legend-dot.not-answered { clip-path: polygon(0 0, 100% 0, 100% 72%, 50% 100%, 0 72%); border-radius: 0; }
+.palette-tcs .mba-legend-dot.marked, .palette-tcs .mba-legend-dot.answered-marked { border-radius: 50%; }
+
+/* Marks strip (XAT, CMAT): the blue marks line above the question. */
+.mba-marks-strip { background: #4E85C5; color: #FFFFFF; font-size: 12px; font-weight: 600; padding: 6px 10px; border-radius: 6px; margin: 10px 0 0; }
+
+/* IBSAT MeritTrac palette (manual screenshots, PROVEN): narrow left
+   panel, small 28px tiles, 4 per row, current question marked by a
+   black corner triangle instead of a navy outline, palette grid
+   scrolls so the legend stays visible on 50-question sections. */
+.mba-player-grid.snap-left.palette-narrow { grid-template-columns: 230px minmax(0, 1fr); }
+.palette-merittrac .mba-palette-grid { grid-template-columns: repeat(4, 28px); justify-content: center; max-height: 340px; overflow-y: auto; }
+.palette-merittrac .mba-pal-btn { width: 28px; height: 28px; aspect-ratio: auto; font-size: 11px; border-radius: 4px; }
+.palette-merittrac .mba-legend-list { grid-template-columns: 1fr; }
+.palette-merittrac .mba-pal-btn.current { outline: none; }
+.palette-merittrac .mba-pal-btn.current::before { content: ""; position: absolute; top: 0; left: 0; width: 0; height: 0; border-style: solid; border-width: 9px 9px 0 0; border-color: #000000 transparent transparent transparent; }
+
+/* G4 calculator: docked bottom-left on desktop so it never covers the
+   palette; a bottom sheet above the action row on mobile. */
+.mba-calc { left: 16px; right: auto; }
+.mba-calc-fab { left: 16px; right: auto; }
+@media (max-width: 900px) {
+  .mba-calc { left: 0; right: 0; bottom: 0; width: auto; max-height: 55vh; overflow-y: auto; border-radius: 14px 14px 0 0; }
+  .mba-calc-fab { left: 12px; bottom: 12px; }
+}
+
+/* G9 split-pane RC / DILR sets on desktop: shared material left,
+   independently scrollable; question and options right. Mobile stays
+   stacked. */
+@media (min-width: 901px) {
+  .mba-split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 18px; align-items: start; }
+  .mba-split-left { position: sticky; top: 76px; max-height: calc(100vh - 96px); overflow-y: auto; padding-right: 4px; }
+  .mba-split-left .mba-passage { max-height: none; overflow-y: visible; }
+}
+
+/* G17 set navigation. */
+.mba-set-nav { font-size: 12px; color: var(--mba-muted); display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin: 0 0 12px; }
+.mba-set-nav-btns { display: inline-flex; gap: 6px; }
+.mba-set-nav-btn { padding: 6px 10px; }
+
+/* G7 CAT TITA on-screen keypad. */
+.mba-keypad { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 4px; max-width: 340px; }
+.mba-keypad-btn { min-width: 44px; padding: 9px 12px; font-size: 14px; font-weight: 700; border-radius: 6px; border: 1px solid var(--mba-line2); background: #F8FAFC; cursor: pointer; }
+.mba-keypad-btn:hover { border-color: var(--mba-royal); }
+
+/* G20 passage highlights. */
+mark.mba-hl { background: #FDE68A; color: inherit; padding: 0 1px; border-radius: 2px; }
+
+/* G18 GRE essay workspace. */
+.mba-essay-large { min-height: 320px; }
+.mba-essay-prompt-label { margin: 0 0 4px; }
+.mba-scratch-input { width: 100%; min-height: 220px; font-size: 13px; line-height: 1.6; resize: vertical; box-sizing: border-box; }
+
+/* G16 CAT section-aware palette: removed in interface fix round 4
+   (the real TCS iON console has no "View section" control); the
+   rules below are deleted with it. */
+.mba-pal-btn:disabled { opacity: .45; cursor: not-allowed; }
+
+/* G21 accessibility: visible keyboard focus on every interactive
+   control, and text-size scaling driven by the A- / A+ buttons. */
+.mba-player button:focus-visible, .mba-player input:focus-visible,
+.mba-player textarea:focus-visible, .mba-player select:focus-visible,
+.mba-player a:focus-visible, .mba-start-card button:focus-visible,
+.mba-start-card input:focus-visible, .mba-start-card select:focus-visible,
+.mba-modal button:focus-visible, .mba-modal input:focus-visible,
+.mba-modal textarea:focus-visible {
+  outline: 3px solid #FBBF24; outline-offset: 2px;
+}
+.mba-question-card { --mba-qscale: 1; }
+.mba-question-card .mba-q-text { font-size: calc(14px * var(--mba-qscale, 1)); }
+.mba-question-card .mba-option { font-size: calc(13px * var(--mba-qscale, 1)); }
+.mba-question-card .mba-passage { font-size: calc(12.5px * var(--mba-qscale, 1)); }
+
+/* Review modals (GMAT end-of-section, GRE in-section, Question Paper)
+   share the modal table style. */
+.mba-modal table { width: 100%; border-collapse: collapse; font-size: 12px; margin: 12px 0; }
+
+/* ---- MBA interface fix round 2, 24 Nov 2026 (G22-G28, G1/G4/G25, G11/G26) ---- */
+
+/* G24-2 root cause: `hidden` did not hide `.mba-btn` elements, because
+   `.mba-btn { display: inline-block }` beats the UA [hidden] rule.
+   Every hidden Submit button, QP button and break control stayed
+   visible, focusable and clickable. This global rule makes `hidden`
+   mean not rendered for every current and future use. */
+[hidden] { display: none !important; }
+
+/* G21 accessibility: skip link, visually hidden live announcer,
+   MCQ fieldset grouping. */
+.mba-skip-link { position: absolute; left: -9999px; top: 0; background: var(--mba-navy); color: #FFFFFF; padding: 8px 12px; z-index: 200; font-size: 12px; font-weight: 700; text-decoration: none; }
+.mba-skip-link:focus { left: 0; }
+.mba-sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+.mba-mcq-group { border: 0; margin: 0; padding: 0; min-width: 0; }
+.mba-mcq-group legend { padding: 0; margin: 0 0 14px; }
+
+/* G25 mobile exam workspace: no floating Calculator button on small
+   screens (it overlapped answer options while scrolling). The
+   calculator opens from the utility bar instead, as a bottom sheet.
+   On desktop the utility-bar button is hidden and the floating button
+   stays. The utility bar collapses to one toggle. */
+@media (max-width: 900px) {
+  .mba-calc-fab { display: none; }
+  .mba-calc { left: 0; right: 0; bottom: 0; width: auto; max-height: 55vh; overflow-y: auto; border-radius: 14px 14px 0 0; }
+}
+@media (min-width: 901px) {
+  #calcUtilBtn { display: none; }
+}
+.mba-utility.collapsed .mba-util-btn:not(#utilToggle) { display: none; }
+.mba-utility.collapsed { gap: 4px; }
+
+/* ---- Fix round 2, section 8: visual refinement ----
+   Less generic web-app styling, closer to an exam console: less
+   rounded corners, a lighter and more neutral passage background,
+   thinner and less prominent borders, more compact question
+   navigation, a more restrained header, and utility controls pulled
+   tighter into the workspace. No exam is restyled to copy another
+   exam's console; profiles still determine behaviour. */
+.mba-player-bar { padding: 8px 14px; border-radius: 0 0 6px 6px; }
+.mba-player-bar .mba-title { font-size: 13px; }
+.mba-question-card { border-radius: 6px; border-color: #E8EDF3; padding: 16px 18px; }
+.mba-palette { border-radius: 6px; border-color: #E8EDF3; padding: 10px; }
+.mba-modal { border-radius: 6px; }
+.mba-section-tab { border-radius: 6px; padding: 6px 10px; }
+.mba-btn { border-radius: 6px; }
+.mba-option { border-radius: 6px; border-color: var(--mba-line); padding: 8px 10px; }
+.mba-passage { background: #FBFCFD; border: 1px solid #E8EDF3; border-left: 2px solid #94A3B8; border-radius: 6px; padding: 12px 14px; }
+.mba-utility { margin: 8px 0; gap: 6px; }
+.mba-util-btn { padding: 6px 10px; }
+.mba-palette-grid { gap: 4px; }
+.mba-pal-btn { font-size: 11px; border-radius: 4px; }
+.mba-start-card { border-radius: 6px; }
+.mba-calc { border-radius: 6px; }
+
+/* G27 IBSAT MeritTrac palette: orange marked, blue answered-and-marked,
+   grey "not answered and skipped". The TCS/NTA purple stays the default. */
+.mba-pal-btn.st-skipped { background: #94A3B8; border-color: #94A3B8; color: #FFFFFF; }
+.mba-legend-dot.skipped { background: #94A3B8; border-color: #94A3B8; }
+.palette-merittrac .mba-pal-btn.st-marked { background: #EA7A1F; border-color: #EA7A1F; }
+.palette-merittrac .mba-pal-btn.st-answered-marked { background: #2563EB; border-color: #2563EB; }
+.palette-merittrac .mba-legend-dot.marked { background: #EA7A1F; border-color: #EA7A1F; }
+.palette-merittrac .mba-legend-dot.answered-marked { background: #2563EB; border-color: #2563EB; box-shadow: inset -5px -5px 0 var(--mba-green); }
+
+/* ---- MBA interface fix round 3, 24 Nov 2026 (N6 mobile chrome, N7 desktop FAB) ---- */
+
+/* N7 desktop calculator FAB: the FAB was docked bottom-left, where the
+   split-pane passage column runs to the bottom of the viewport, so the
+   button floated over passage text (measured 71x39px overlap on CAT-01
+   Q1 at 1280x900). It now docks bottom-right, under the palette column,
+   and the calculator panel moves with it so trigger and panel stay on
+   the same side. The palette is capped so its bottom edge always sits
+   above the FAB: the palette's natural top at desktop is 172px
+   (header + utility + tabs + card top), and the FAB top sits at
+   viewport height minus 55px, so max-height calc(100vh - 235px) leaves
+   an 8px gap at any viewport height. The palette scrolls internally
+   when it is taller than the cap; its buttons, legend, counts and side
+   Submit stay reachable. Desktop only: below 900px the FAB is hidden
+   and the calculator is a bottom sheet from the utility bar (G25). */
+@media (min-width: 901px) {
+  .mba-calc-fab { left: auto; right: 16px; }
+  .mba-calc { left: auto; right: 16px; }
+  .mba-palette { max-height: calc(100vh - 235px); overflow-y: auto; }
+}
+
+/* N6 mobile chrome: at 390px the sticky header, utility bar and section
+   tabs measured 243px + 142px + 129px, so the question card started at
+   y=554 and only 290px of the question was visible. This block compacts
+   all three without removing anything the candidate needs:
+   - Header: title and subtitle truncate to one line each (ellipsis),
+     the provider pill is hidden (the exam title stays), Submit Test
+     stays on the first row, and the two timers share a second row.
+     Clocks stay 14px and tabular so both timers stay legible.
+   - Utility bar: tighter buttons (two rows instead of three) and the
+     static "Candidate: Practice Candidate" label is hidden; the
+     collapse toggle is untouched and keeps working.
+   - Section tabs: one horizontally scrollable row instead of three
+     stacked two-line tabs, with the time inline after the name.
+   - Question card and player side padding shrink slightly.
+   Measured after, at 390x844 on CAT-01 Q1 (before values in brackets):
+   header 95px [243], utility 55px in two rows [142 in three], tabs
+   24px [129], question card top 204px [554], question visible 640px
+   [290], first option top 796px [1150]. Submit Test stays on the
+   header first row and stays visible after scrolling; both clocks
+   stay 14px; the collapse toggle still collapses the strip to one
+   toggle with Submit visible. */
+@media (max-width: 480px) {
+  .mba-player { padding: 0 8px 40px; }
+  .mba-player-bar { padding: 6px 10px; gap: 4px 8px; }
+  /* 60% basis: title plus Submit fill row 1, so both timers (45% each)
+     wrap to row 2 together. A 0 basis would let the first timer pack
+     onto row 1 and crush the title. */
+  .mba-player-bar > div:first-child { flex: 1 1 60%; min-width: 0; }
+  .mba-player-bar .mba-title { font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .mba-player-bar .mba-sub { font-size: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .mba-player-bar .mba-provider-tag { display: none; }
+  /* Flex line breaking is sequential: once a timer wraps to row 2, the
+     Submit button (later in the DOM) can only pack onto row 2, never
+     back onto row 1. So Submit is ordered before the timers, and the
+     title basis (60%) leaves room for it: row 1 is title + Submit,
+     row 2 is both timers side by side. */
+  .mba-player-bar #submitBtnTop { flex: none; padding: 7px 12px; order: 1; }
+  .mba-player-bar #overallTimer { order: 2; }
+  .mba-player-bar #sectionTimer { order: 3; }
+  .mba-player-bar .mba-timer { margin-left: 0; flex: 1 1 45%; min-width: 0; text-align: left; }
+  /* Labels run inline with their clocks so the timer row is two lines
+     tall at most (one for the overall clock), not label lines plus a
+     clock line. Clocks stay 14px bold tabular numerals. */
+  .mba-player-bar .mba-timer .mba-clock-label { display: inline; font-size: 9px; }
+  .mba-player-bar .mba-timer .mba-clock { font-size: 14px; }
+  .mba-utility { margin: 6px 0; gap: 3px; }
+  .mba-utility .mba-candidate { display: none; }
+  .mba-utility .mba-util-btn { padding: 5px 6px; font-size: 10px; }
+  .mba-section-tabs { flex-wrap: nowrap; overflow-x: auto; margin: 8px 0; }
+  .mba-section-tabs .mba-section-tab { flex: none; white-space: nowrap; padding: 5px 8px; font-size: 11px; }
+  .mba-section-tabs .mba-section-tab .mba-tab-time { display: inline; }
+  .mba-section-tabs .mba-section-tab .mba-tab-time::before { content: " - "; }
+  .mba-question-card { padding: 12px 14px; }
+  .mba-q-actions { margin-top: 12px; padding-top: 10px; }
 }

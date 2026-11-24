@@ -102,6 +102,18 @@
     return norm(u) === norm(c);
   }
 
+  /* What kind of answer a TITA expects: 'numeric' when the correct
+     answer parses as a number (commas and a trailing % ignored),
+     'letter' for a sequence of A-D letters (e.g. a para-jumble order),
+     'text' for anything else. Drives the TITA input shown to the
+     candidate. */
+  function titaKind(correctAnswer) {
+    if (correctAnswer === null || correctAnswer === undefined) { return 'text'; }
+    if (numericValue(correctAnswer) !== null) { return 'numeric'; }
+    if (/^[A-D]+$/i.test(String(correctAnswer).trim())) { return 'letter'; }
+    return 'text';
+  }
+
   function isAnswered(item, answer) {
     if (answer === null || answer === undefined) { return false; }
     if (item.type === 'mcq') {
@@ -116,8 +128,14 @@
     return false;
   }
 
-  /* One item scored against the mock marking scheme. */
-  function scoreItem(item, answer, marking) {
+  /* One item scored against the mock marking scheme. The optional 4th
+     arg markingResolver is a function (item) => {correct, wrong,
+     unattempted}; when passed it supplies the marking for this item
+     (per-exam overrides, e.g. no negative marking on CAT TITA). */
+  function scoreItem(item, answer, marking, markingResolver) {
+    if (typeof markingResolver === 'function') {
+      marking = markingResolver(item) || marking;
+    }
     marking = marking || {};
     var correct = (marking.correct === undefined || marking.correct === null) ? 0 : Number(marking.correct);
     var wrong = (marking.wrong === undefined || marking.wrong === null) ? 0 : Number(marking.wrong);
@@ -150,9 +168,17 @@
 
   /* Full attempt scoring: totals plus per-section breakdown.
      subsetItems (optional) scores only those items, for sectional and
-     topic modes; sections with no scored items are left out. */
-  function scoreAttempt(mock, answers, subsetItems) {
+     topic modes; sections with no scored items are left out.
+     opts (optional): { markingResolver, unattemptedPenalty }.
+     markingResolver is passed through to scoreItem per item.
+     unattemptedPenalty, when a non-zero number, is subtracted from the
+     total and reported as result.unattemptedPenalty. */
+  function scoreAttempt(mock, answers, subsetItems, opts) {
     answers = answers || {};
+    opts = opts || {};
+    var markingResolver = opts.markingResolver || null;
+    var unattemptedPenalty = (typeof opts.unattemptedPenalty === 'number' && opts.unattemptedPenalty !== 0)
+      ? opts.unattemptedPenalty : 0;
     var marking = mock.marking || {};
     var allItems = mock.items || [];
     var itemsToScore = subsetItems || allItems;
@@ -174,7 +200,7 @@
         sections[item.section] = sec;
       }
       var ans = answers[item.id] || null;
-      var r = scoreItem(item, ans, marking);
+      var r = scoreItem(item, ans, marking, markingResolver);
       var timeMs = ans && ans.timeMs ? Number(ans.timeMs) : 0;
       sec.total += 1;
       sec.timeMs += timeMs;
@@ -205,8 +231,12 @@
     var subsetMax = 0;
     itemsToScore.forEach(function (it) { if (it.type !== 'essay') { subsetMax += 1; } });
     var max = subsetItems ? subsetMax * Number(marking.correct || 0) : maxScore(mock);
+    if (unattemptedPenalty !== 0) {
+      totalScore = Math.round((totalScore + unattemptedPenalty) * 100) / 100;
+    }
     return {
       totalScore: totalScore,
+      unattemptedPenalty: unattemptedPenalty,
       maxScore: max,
       totalQuestions: itemsToScore.length,
       attempted: attempted,
@@ -219,8 +249,79 @@
     };
   }
 
-  /* Palette state for one question, from its stored answer record. */
-  function paletteState(rec) {
+  /* ---- One authoritative scoring path (G26) ---- */
+  /* XAT rule, computed from the profile: -penalty per unattempted
+     question beyond the threshold in the rule's scope. Returns 0 or a
+     negative number; 0 for every other exam. Mirrors the profile
+     module's computeUnattemptedPenalty; the engine owns this copy so
+     scoreAttemptWithProfile needs no second module. */
+  function computeProfileUnattemptedPenalty(profile, mock, answers) {
+    var rule = profile && profile.unattemptedPenalty;
+    if (!rule) { return 0; }
+    var scopeSections = null;
+    if (rule.scope === 'PART1' && profile.parts) {
+      for (var i = 0; i < profile.parts.length; i++) {
+        if (profile.parts[i].id === 'PART1') { scopeSections = profile.parts[i].sections || []; }
+      }
+    } else if (Array.isArray(rule.scope)) {
+      scopeSections = rule.scope;
+    }
+    if (!scopeSections || !(Number(rule.penalty) > 0)) { return 0; }
+    var count = 0;
+    (mock && mock.items || []).forEach(function (item) {
+      if (scopeSections.indexOf(item.section) === -1) { return; }
+      var ans = (answers || {})[item.id];
+      if (!isAnswered(item, ans)) { count += 1; }
+    });
+    var excess = count - Number(rule.threshold || 0);
+    if (excess <= 0) { return 0; }
+    return -Math.round(excess * Number(rule.penalty) * 100) / 100;
+  }
+
+  /* THE single scoring path for a whole attempt (G26). Builds the
+     marking resolver from the exam profile (per-section overrides,
+     TITA wrong mark) and the unattempted-question penalty from the
+     same profile, then scores through scoreAttempt. The player, the
+     unit tests and the results page (via the stored record) all use
+     this function, never a second re-pricing pass, so unit tests,
+     live attempts and results-page scores cannot disagree. When
+     profile is null the mock marking is used as-is. */
+  function scoreAttemptWithProfile(mock, answers, profile, subsetItems) {
+    profile = profile || {};
+    var marking = (mock && mock.marking) || {};
+    function num(v, fallback) {
+      return (v === undefined || v === null) ? fallback : Number(v);
+    }
+    var resolver = function (item) {
+      var correct = num(marking.correct, 0);
+      var wrong = num(marking.wrong, 0);
+      var unattempted = num(marking.unattempted, 0);
+      var overrides = profile.sectionMarkingOverrides || {};
+      if (item && item.section && overrides[item.section]) {
+        var o = overrides[item.section];
+        correct = num(o.correct, correct);
+        wrong = num(o.wrong, wrong);
+        unattempted = num(o.unattempted, unattempted);
+      }
+      if (item && item.type === 'tita' && profile.titaWrongMark !== null && profile.titaWrongMark !== undefined) {
+        wrong = Number(profile.titaWrongMark);
+      }
+      return { correct: correct, wrong: wrong, unattempted: unattempted };
+    };
+    var penalty = computeProfileUnattemptedPenalty(profile, mock, answers);
+    return scoreAttempt(mock, answers, subsetItems, { markingResolver: resolver, unattemptedPenalty: penalty });
+  }
+
+  /* Palette state for one question, from its stored answer record.
+     mode 'merittrac' (IBSAT) uses the MeritTrac semantics: an unvisited
+     question is white "not visited", exactly as on the TCS/NTA consoles.
+     The MeritTrac manual's own screenshots show white Not Visited tiles
+     with a live legend count; the manual text paragraph that lists grey
+     "skipped" instead disagrees with its screenshots, and the
+     screenshots are the visual truth. A visited-but-unanswered question
+     is red "not answered". The 'skipped' state is retained in
+     PALETTE_LABELS for old records only; no current path returns it. */
+  function paletteState(rec, mode) {
     if (!rec || !rec.visited) { return 'not-visited'; }
     var answered = rec.value !== null && rec.value !== undefined &&
       String(rec.value).trim() !== '';
@@ -235,7 +336,8 @@
     'not-answered': 'Not Answered',
     'marked': 'Marked for Review',
     'answered-marked': 'Answered and Marked for Review',
-    'not-visited': 'Not Visited'
+    'not-visited': 'Not Visited',
+    'skipped': 'Not answered and skipped'
   };
 
   /* ---- Diagram rendering: native HTML table or inline SVG, never raster ---- */
@@ -257,7 +359,7 @@
     var caption = diagram.caption ? '<figcaption class="mba-diag-caption">' + escapeHtml(diagram.caption) + '</figcaption>' : '';
     if (kind === 'table') {
       var head = '<thead><tr>' + (diagram.headers || []).map(function (h) {
-        return '<th>' + escapeHtml(h) + '</th>';
+        return '<th scope="col">' + escapeHtml(h) + '</th>';
       }).join('') + '</tr></thead>';
       var body = '<tbody>' + (diagram.rows || []).map(function (row) {
         return '<tr>' + row.map(function (cell) {
@@ -429,6 +531,189 @@
     return pct;
   }
 
+  /* ---- Exam instructions, generated from the profile + mock ---- */
+  /* One instruction document per exam, rendered from the same profile
+     object that drives the player and the same mock that supplies the
+     questions, so instructions and behaviour cannot contradict (G23).
+     profile: exam-profiles entry (or the player fallback shape).
+     mock: mock JSON. opts: { runModeType: 'full'|'sectional'|'topic',
+     nmatMode: 'simulation'|'standard' }. Returns an HTML <ul>. */
+  function buildExamInstructions(profile, mock, examKey, opts) {
+    opts = opts || {};
+    profile = profile || {};
+    mock = mock || {};
+    var key = String(examKey || '').trim().toUpperCase();
+    var secs = ((mock.sections || []).slice()).sort(function (a, b) { return (a.order || 0) - (b.order || 0); });
+    function secById(id) {
+      var found = null;
+      secs.forEach(function (s) { if (s.id === id) { found = s; } });
+      return found;
+    }
+    function calcAllowed(sectionId) {
+      var list = profile.calculatorSections || [];
+      for (var i = 0; i < list.length; i++) {
+        if (list[i] === '*') { return true; }
+        if (list[i] === sectionId) { return true; }
+        if (sectionId && String(sectionId).indexOf(list[i]) === 0) { return true; }
+      }
+      return false;
+    }
+    function calcNames() {
+      var names = [];
+      secs.forEach(function (s) { if (calcAllowed(s.id)) { names.push(s.name || s.id); } });
+      return names;
+    }
+    function calcLine() {
+      var names = calcNames();
+      if (!names.length) { return 'This mock provides no on-screen calculator.'; }
+      if (names.length === secs.length) { return 'The on-screen calculator is available in all sections.'; }
+      return 'The on-screen calculator is available in ' + names.join(' and ') + ' only.';
+    }
+    function sectionListLine() {
+      return secs.map(function (s) {
+        var q = s.question_count || 0;
+        var m = (s.time_limit_minutes === null || s.time_limit_minutes === undefined) ? null : s.time_limit_minutes;
+        return (s.name || s.id) + ' (' + q + ' question' + (q === 1 ? '' : 's') +
+          (m !== null ? ', ' + m + ' minutes' : '') + ')';
+      }).join('; ');
+    }
+    function partMinutes(partId) {
+      var parts = profile.parts || [];
+      for (var i = 0; i < parts.length; i++) {
+        if (parts[i].id === partId) { return Number(parts[i].minutes || 0); }
+      }
+      return null;
+    }
+    var items = [];
+    var totalMin = Number(mock.duration_minutes || 0);
+    if (key === 'CAT') {
+      var catNames = secs.map(function (s) { return s.name || s.id; }).join(', then ');
+      var catMin = secs.length ? secs[0].time_limit_minutes : null;
+      items.push('Sections run in a fixed order: ' + catNames + '.' +
+        (catMin ? ' Each section has ' + catMin + ' minutes.' : ''));
+      items.push('You cannot return to a finished section. The next section starts automatically when a section ends.');
+      items.push('Your answer is saved only when you click Save & Next or Mark for Review & Next. Selecting an option alone does not save it. Jumping to another question from the palette without Save & Next does not save your answer.');
+      items.push('There is no Previous button. Move back to an earlier question with the palette.');
+      items.push('Palette: white not visited, red not answered, green answered, purple marked for review, purple with a green dot answered and marked for review. A marked question with no answer is not evaluated.');
+      items.push('The clock is set at the server. When a section timer reaches zero, the section ends by itself and the next section starts. There is no manual submit in the real exam; this mock keeps a whole-test Submit button instead, and does not yet build the real per-section submit and summary.');
+      items.push('There is no highlighter and no on-screen scratchpad. Rough work is on the rough sheets provided at the centre.');
+      items.push(calcLine());
+      if (profile.titaWrongMark !== null && profile.titaWrongMark !== undefined) {
+        items.push('Type-in answers (TITA) carry no negative marking: a wrong TITA scores ' + profile.titaWrongMark + '.');
+      }
+      items.push('For number and letter-sequence answers, an on-screen keypad appears below the TITA input. Text answers have no keypad; type them directly.');
+    } else if (key === 'XAT') {
+      var p1 = (profile.parts || []).filter(function (p) { return p.id === 'PART1'; })[0] || null;
+      var p1Names = p1 ? p1.sections.map(function (id) { var s = secById(id); return s ? (s.name || id) : id; }) : [];
+      var p1Min = partMinutes('PART1') || 170;
+      var p2Min = partMinutes('PART2') || 10;
+      var gk = secById('GK');
+      var gkCount = gk ? (gk.question_count || 0) : 20;
+      if (opts.runModeType && opts.runModeType !== 'full') {
+        /* Sectional/topic mode enforces the per-section limits stored
+           on the mock sections, so the instructions must state them
+           instead of the shared Part 1 clock (G23-9). */
+        items.push('Sectional mode: each section has its own time limit: ' + sectionListLine() + '.');
+      } else {
+        items.push('Part 1 (' + p1Names.join(', ') + ') shares one ' + p1Min + '-minute clock. There are no separate section time limits in Part 1; divide the time yourself.');
+        items.push('General Knowledge is Part 2: ' + gkCount + ' questions in ' + p2Min + ' minutes, starting only after Part 1 ends. You cannot return to Part 1.');
+      }
+      var gkMark = (profile.sectionMarkingOverrides || {}).GK;
+      if (gkMark) {
+        items.push('General Knowledge has no negative marking (' + markingLabel(gkMark) + ').');
+      }
+      if (profile.unattemptedPenalty) {
+        items.push('In Part 1, every unattempted question beyond the first ' + profile.unattemptedPenalty.threshold +
+          ' loses ' + profile.unattemptedPenalty.penalty + ' marks.');
+      }
+      items.push('Your answer is saved only when you click Save & Next or Mark for Review & Next. Selecting an option alone does not save it. Jumping to another question from the palette without Save & Next does not save your answer.');
+      items.push('Every question has five options (A to E). There is no Previous button. Move back to an earlier question with the palette.');
+      items.push('Palette: white not visited, red not answered, green answered, purple marked for review, purple with a green dot answered and marked for review.');
+      items.push('There is no highlighter and no on-screen scratchpad. Rough work is on the rough sheets provided at the centre.');
+      items.push(calcLine());
+    } else if (key === 'NMAT') {
+      var nmatMode = opts.nmatMode || 'simulation';
+      if (nmatMode === 'simulation') {
+        items.push('NMAT simulation: you chose your section order before starting. Questions come one at a time with no Previous button and no palette.');
+        items.push('You cannot revisit a question or return to a finished section.');
+      } else {
+        items.push('Practice mode: free navigation is on, with the Previous button available. The real NMAT is one-way with no revisiting, and the real console has no palette in either mode.');
+      }
+      items.push('Your answer is recorded when you move to the next question. You can change an answer while its section is still open; once a section ends, its answers are final.');
+      items.push('At the end of each section, if time remains, a review screen lists that section questions so you can revise them before the section closes.');
+      items.push('Each section has its own time limit: ' + sectionListLine() + '. Total time ' + totalMin + ' minutes.');
+      items.push('There is no negative marking and no on-screen calculator. There is no palette, no Question Paper in simulation, no highlighter and no on-screen scratchpad. Rough work is on the noteboard booklet and pen provided at the centre.');
+      if (profile.simulationDisclosure) { items.push(profile.simulationDisclosure); }
+      if (profile.scaledScoreNote) { items.push(profile.scaledScoreNote); }
+    } else if (key === 'GMAT') {
+      var gmatMin = secs.length ? secs[0].time_limit_minutes : 45;
+      items.push('You chose your section order before starting. Each section has ' + gmatMin + ' minutes.');
+      items.push('Your answer is recorded when you move to the next question. There is no Save step and no going back to an earlier question within a section.');
+      items.push('There is no palette. Bookmark questions to find them on the Question Review and Edit screen.');
+      var max = (profile.reviewAndEdit && profile.reviewAndEdit.maxChanges) || 0;
+      if (profile.reviewAndEdit && profile.reviewAndEdit.enabled) {
+        items.push('At the end of a section, if time remains, you get a Question Review and Edit screen: you may review as many questions as you like and change up to ' + max + ' answers per section. If the section time runs out, there is no review screen and you move straight on.');
+      }
+      if (profile.breakMinutes) {
+        items.push('One optional ' + profile.breakMinutes + '-minute break is offered between sections.');
+      }
+      items.push('There is no highlighter. Rough work is on the on-screen whiteboard.');
+      items.push(calcLine());
+      if (profile.scaledScoreNote) { items.push(profile.scaledScoreNote); }
+    } else if (key === 'GRE') {
+      var greOrder = secs.map(function (s) {
+        var m = (s.time_limit_minutes === null || s.time_limit_minutes === undefined) ? '' : ' (' + s.time_limit_minutes + ' minutes)';
+        return (s.name || s.id) + m;
+      }).join(', then ');
+      items.push('Sections run in this order: ' + greOrder + '.');
+      items.push('Your answers are recorded as you enter them and you can change them freely within the section. There is no Save step.');
+      items.push('The real test is section-adaptive: how you do in the first Verbal or Quantitative section sets the difficulty of the second section of that measure. This fixed mock does not adapt; both sections are the same for every candidate.');
+      items.push('Use Time to hide or show the timer, Help for directions (the clock keeps running), Review to see the section status table, Mark to mark a question, Back and Next to move within the section, and Exit Section to leave a section early.');
+      items.push('There is no palette. The Review screen lists each question with whether you answered it and a check mark if you marked it.');
+      items.push('Analytical Writing is always first: one task, 30 minutes. The editor has Cut, Paste and Undo only, and no spellcheck or grammar check.');
+      items.push('In the real test the Verbal and Quantitative sections after Analytical Writing appear in an order assigned by the system; this mock uses the fixed order above.');
+      items.push('There is no highlighter and no on-screen scratchpad. Rough work is on the scratch paper provided at the centre.');
+      items.push('You cannot return to a finished section.');
+      items.push(calcLine());
+    } else {
+      /* SNAP, MAT, CMAT, IBSAT and any other free-navigation exam:
+         the same generated block, with each exam's own sections,
+         counts, total time and marking. */
+      items.push('Sections: ' + sectionListLine() + '. Total time ' + totalMin + ' minutes.');
+      items.push('There are no sectional time limits in this exam. Move freely between sections with the tabs or the palette, and start in any section you choose.');
+      items.push(calcLine());
+      if (key === 'MAT' || key === 'CMAT') {
+        items.push('Your answer is saved only when you click Save & Next or Mark for Review & Next. Selecting an option alone does not save it. Jumping to another question from the palette without Save & Next does not save your answer.');
+        items.push('There is no Previous button. Move back to an earlier question with the palette.');
+        items.push('Palette: white not visited, red not answered, green answered, purple marked for review, purple with a green dot answered and marked for review.');
+        items.push('There is no highlighter and no on-screen scratchpad. Rough work is on the rough sheets provided at the centre.');
+      }
+      if (key === 'SNAP') {
+        items.push('Your answers are recorded as you select them. Use Next to move on, Mark for Review to flag a question, and Clear to remove your answer. There is no Save & Next button and no Previous button.');
+        items.push('The summary on the left shows how many questions are answered, not answered, marked for review, not visited, and answered and marked for review.');
+        items.push('Click Submit when you are finished. A submission summary appears, showing answered, unattempted and marked counts; choose Submit to finish or Go Back to make changes. Then END TEST and VIEW RESULT show your scores.');
+        items.push('There is no highlighter and no on-screen scratchpad.');
+      }
+      if (key === 'IBSAT') {
+        items.push('Save each answer before moving on: your answer is recorded when you click Next or Mark for Review. Moving with the palette without Next does not record it.');
+        items.push('Use Next and Previous to move between questions, Mark for Review to flag a question, and Clear to remove your answer.');
+        items.push('The question palette uses the MeritTrac colours: green answered, red not answered, orange marked for review, blue answered and marked, white not visited.');
+        items.push('There is no highlighter and no on-screen scratchpad.');
+      }
+      if (key === 'SNAP') {
+        var ethics = secById('ETHICS');
+        if (ethics) {
+          items.push('Ethics, Morality and Values is the fourth section: ' + (ethics.question_count || 10) +
+            ' questions, ' + (ethics.question_count || 10) + ' marks, 1 mark each, same marking as the other sections.');
+        }
+      }
+    }
+    items.push('Marking for this mock: ' + markingLabel(mock.marking) + '.');
+    items.push('If the page refreshes, resume from where you left off with the same time remaining.');
+    items.push('Submit only when you are finished. The confirmation screen shows your per-section summary first.');
+    return '<ul>' + items.map(function (t) { return '<li>' + escapeHtml(t) + '</li>'; }).join('') + '</ul>';
+  }
+
   /* Difficulty label for a whole mock, from its question mix. */
   function mockDifficultyLabel(mock) {
     var items = (mock && mock.items) || [];
@@ -489,6 +774,426 @@
     return out;
   }
 
+  /* ---- On-screen calculator (fix round 4, GRE ETS precedence) ----
+     ETS GRE on-screen calculator (PROVEN, ETS "Guidelines to Using
+     the On-screen Calculator", fidelity-GRE section 11): 25 keys
+     plus a Transfer Display bar, display up to 8 digits, ERROR on
+     division by zero, square root of a negative number, or a result
+     greater than 99,999,999 (press C to clear), a positive result
+     below 0.0000001 displays as zero, and standard order of
+     operations: parentheses, exponentiation (including square
+     roots), multiplication and division left to right, addition and
+     subtraction left to right. One memory location with M+ / MR / MC.
+     Other exams keep the 19-key basic panel they already had: CAT's
+     exact key set is UNPROVEN (fidelity-CAT section 11: reported
+     keys are LEAD only), so no keys are added to it on unproven
+     evidence. The evaluator tokenises the expression and uses
+     shunting-yard; eval() and Function() are never used. */
+  var CALC_KEYS_BASIC = ['C', 'back', '+/-', '/', '7', '8', '9', 'x', '4', '5', '6', '-', '1', '2', '3', '+', '0', '.', '='];
+  /* 5 rows of 5: memory and clear, then digits with operators. */
+  var CALC_KEYS_GRE = ['MC', 'MR', 'M+', 'C', 'CE',
+    '7', '8', '9', '/', '√',
+    '4', '5', '6', 'x', '(',
+    '1', '2', '3', '-', ')',
+    '0', '.', '+/-', '+', '='];
+
+  function calcKeysForExam(examKey) {
+    return (examKey === 'GRE' ? CALC_KEYS_GRE : CALC_KEYS_BASIC).slice();
+  }
+
+  function calcHasTransferDisplay(examKey) { return examKey === 'GRE'; }
+
+  function calcDigitCap(examKey) { return examKey === 'GRE' ? 8 : 12; }
+
+  function calcErrorText(examKey) { return examKey === 'GRE' ? 'ERROR' : 'Error'; }
+
+  function calcTokenize(expr) {
+    var tokens = [];
+    var s = String(expr || '');
+    var i = 0;
+    while (i < s.length) {
+      var ch = s.charAt(i);
+      if (ch === ' ' || ch === '\t') { i++; continue; }
+      if ((ch >= '0' && ch <= '9') || ch === '.') {
+        var num = '';
+        var dots = 0;
+        while (i < s.length && ((s.charAt(i) >= '0' && s.charAt(i) <= '9') || s.charAt(i) === '.')) {
+          if (s.charAt(i) === '.') { dots++; }
+          num += s.charAt(i);
+          i++;
+        }
+        if (dots > 1 || num === '.') { return null; }
+        tokens.push({ t: 'num', v: parseFloat(num) });
+        continue;
+      }
+      if (ch === '+' || ch === '-' || ch === 'x' || ch === '*' || ch === '/' || ch === '÷' ||
+          ch === '(' || ch === ')' || ch === '√') {
+        tokens.push({ t: 'op', v: ch === '*' ? 'x' : (ch === '÷' ? '/' : ch) });
+        i++;
+        continue;
+      }
+      return null;
+    }
+    return tokens;
+  }
+
+  function calcPrecedence(op) {
+    if (op === '+' || op === '-') { return 1; }
+    if (op === 'x' || op === '/') { return 2; }
+    if (op === 'u-') { return 3; }
+    if (op === '√') { return 4; }
+    return 0;
+  }
+
+  function calcIsRightAssoc(op) { return op === 'u-' || op === '√'; }
+
+  /* Shunting-yard. A '-' is unary when it opens the expression or
+     follows '(', another operator or '√'. '√' is a prefix function
+     with the highest precedence, so it binds tighter than
+     multiplication: √9x2 is 6, √(9+16) is 5. */
+  function calcToRpn(tokens) {
+    var out = [];
+    var stack = [];
+    var prev = null;
+    for (var i = 0; i < tokens.length; i++) {
+      var tk = tokens[i];
+      if (tk.t === 'num') { out.push(tk); prev = tk; continue; }
+      var op = tk.v;
+      if (op === '(') { stack.push('('); prev = tk; continue; }
+      if (op === ')') {
+        var found = false;
+        while (stack.length) {
+          var top = stack.pop();
+          if (top === '(') { found = true; break; }
+          out.push({ t: 'op', v: top });
+        }
+        if (!found) { return null; }
+        if (stack.length && stack[stack.length - 1] === '√') { out.push({ t: 'op', v: stack.pop() }); }
+        prev = tk;
+        continue;
+      }
+      if (op === '√') { stack.push('√'); prev = tk; continue; }
+      if (op === '-') {
+        var unary = !prev || (prev.t === 'op' && prev.v !== ')');
+        if (unary) { op = 'u-'; }
+      }
+      while (stack.length) {
+        var topOp = stack[stack.length - 1];
+        if (topOp === '(') { break; }
+        /* A pending √ has finished its operand once a binary
+           operator arrives, so it pops now. */
+        if (topOp === '√') { out.push({ t: 'op', v: stack.pop() }); continue; }
+        if (calcPrecedence(topOp) > calcPrecedence(op) ||
+            (calcPrecedence(topOp) === calcPrecedence(op) && !calcIsRightAssoc(op))) {
+          out.push({ t: 'op', v: stack.pop() });
+        } else { break; }
+      }
+      stack.push(op);
+      prev = tk;
+    }
+    while (stack.length) {
+      var rest = stack.pop();
+      if (rest === '(') { return null; }
+      out.push({ t: 'op', v: rest });
+    }
+    return out;
+  }
+
+  function calcEvalRpn(rpn) {
+    var st = [];
+    for (var i = 0; i < rpn.length; i++) {
+      var tk = rpn[i];
+      if (tk.t === 'num') { st.push(tk.v); continue; }
+      if (tk.v === '√') {
+        if (!st.length) { return { ok: false, error: 'syntax' }; }
+        var a = st.pop();
+        if (a < 0) { return { ok: false, error: 'sqrt' }; }
+        st.push(Math.sqrt(a));
+        continue;
+      }
+      if (tk.v === 'u-') {
+        if (!st.length) { return { ok: false, error: 'syntax' }; }
+        st.push(-st.pop());
+        continue;
+      }
+      if (st.length < 2) { return { ok: false, error: 'syntax' }; }
+      var b = st.pop();
+      var c = st.pop();
+      if (tk.v === '+') { st.push(c + b); }
+      else if (tk.v === '-') { st.push(c - b); }
+      else if (tk.v === 'x') { st.push(c * b); }
+      else if (tk.v === '/') {
+        if (b === 0) { return { ok: false, error: 'div0' }; }
+        st.push(c / b);
+      } else { return { ok: false, error: 'syntax' }; }
+    }
+    if (st.length !== 1) { return { ok: false, error: 'syntax' }; }
+    return { ok: true, value: st[0] };
+  }
+
+  /* Returns { ok: true, value } or { ok: false, error } where error
+     is 'div0' (division by zero), 'sqrt' (square root of a negative
+     number) or 'syntax' (malformed expression). */
+  function calcEvaluate(expr) {
+    var tokens = calcTokenize(expr);
+    if (!tokens || !tokens.length) { return { ok: false, error: 'syntax' }; }
+    var rpn = calcToRpn(tokens);
+    if (!rpn) { return { ok: false, error: 'syntax' }; }
+    return calcEvalRpn(rpn);
+  }
+
+  /* Number to a display string without ever using exponent notation,
+     so a small result never shows as 1.2e-7 on the calculator. */
+  function calcPlainNumberString(n) {
+    var s = String(n);
+    if (s.indexOf('e') === -1 && s.indexOf('E') === -1) { return s; }
+    var parts = s.split(/e/i);
+    var mant = parts[0];
+    var exp = parseInt(parts[1], 10);
+    var neg = mant.charAt(0) === '-';
+    if (neg) { mant = mant.slice(1); }
+    var dot = mant.indexOf('.');
+    var digits = mant.replace('.', '').replace(/0+$/, '') || '0';
+    var point = (dot === -1 ? mant.length : dot) + exp;
+    var out;
+    if (point <= 0) {
+      var zeros = '';
+      for (var i = 0; i < -point; i++) { zeros += '0'; }
+      out = '0.' + zeros + digits;
+    } else if (point >= digits.length) {
+      var tail = '';
+      for (var j = 0; j < point - digits.length; j++) { tail += '0'; }
+      out = digits + tail;
+    } else {
+      out = digits.slice(0, point) + '.' + digits.slice(point);
+    }
+    return (neg ? '-' : '') + out;
+  }
+
+  /* Format an evaluated result for the display. GRE (ETS): ERROR
+     past 99,999,999, a result with magnitude below 0.0000001 shows
+     as zero, otherwise at most 8 significant digits. The ETS wording
+     covers positive tiny results; the same zero is used for a
+     negative result of that size, since the display cannot show it.
+     Other exams keep the previous behaviour: the full JS number. */
+  function calcFormatResult(value, examKey) {
+    var err = calcErrorText(examKey);
+    if (typeof value !== 'number' || !isFinite(value)) { return err; }
+    if (examKey === 'GRE') {
+      if (Math.abs(value) > 99999999) { return err; }
+      if (value === 0 || Math.abs(value) < 0.0000001) { return '0'; }
+      var rounded = Number(value.toPrecision(8));
+      if (Math.abs(rounded) > 99999999) { return err; }
+      return calcPlainNumberString(rounded);
+    }
+    return String(value);
+  }
+
+  /* One memory location (ETS: three memory buttons, one location). */
+  function createCalcMemory() {
+    var stored = null;
+    return {
+      add: function (v) {
+        var n = Number(v);
+        if (!isFinite(n)) { return; }
+        stored = (stored === null ? 0 : stored) + n;
+      },
+      recall: function () { return stored; },
+      clear: function () { stored = null; },
+      has: function () { return stored !== null; }
+    };
+  }
+
+  /* Key-press state machine for the on-screen calculator, so the
+     player and the Node tests drive the same logic. press() takes
+     one key id from calcKeysForExam(examKey); display() is what the
+     panel shows. In an ERROR state only C does anything (ETS: press
+     C to clear). CE clears the entry only and leaves a pending
+     expression alone. */
+  function createCalculator(examKey) {
+    var mem = createCalcMemory();
+    var st = { display: '0', entry: '', tokens: [], fresh: true, justEvaluated: false, error: false };
+
+    function errText() { return calcErrorText(examKey); }
+    function digitCap() { return calcDigitCap(examKey); }
+    function showError() {
+      st.display = errText();
+      st.entry = '';
+      st.tokens = [];
+      st.fresh = true;
+      st.justEvaluated = false;
+      st.error = true;
+    }
+    function entryDigits() { return st.entry.replace('-', '').replace('.', '').length; }
+    function isBinOp(t) { return t === '+' || t === '-' || t === 'x' || t === '/'; }
+    function flushEntry() { if (st.entry !== '') { st.tokens.push(st.entry); st.entry = ''; } }
+    function openParens() {
+      var d = 0;
+      st.tokens.forEach(function (t) { if (t === '(') { d++; } else if (t === ')') { d--; } });
+      return d;
+    }
+    function currentValue() { return st.entry !== '' ? parseFloat(st.entry) : parseFloat(st.display); }
+    function resetEntry() { st.entry = ''; st.tokens = []; st.justEvaluated = false; st.fresh = true; }
+    function lastToken() { return st.tokens.length ? st.tokens[st.tokens.length - 1] : null; }
+    function needsImplicitMultiply() {
+      var last = lastToken();
+      return last === ')' || (last !== null && last !== '(' && last !== '√' && !isBinOp(last));
+    }
+
+    function inputDigit(d) {
+      if (st.justEvaluated) { resetEntry(); }
+      if (st.fresh || st.entry === '') { st.entry = d; st.fresh = false; }
+      else if (entryDigits() < digitCap()) { st.entry += d; }
+      st.display = st.entry;
+    }
+
+    function inputDot() {
+      if (st.justEvaluated) { resetEntry(); }
+      if (st.fresh || st.entry === '') { st.entry = '0.'; st.fresh = false; }
+      else if (st.entry.indexOf('.') === -1) { st.entry += '.'; }
+      st.display = st.entry;
+    }
+
+    function applyOp(op) {
+      if (st.justEvaluated) { st.tokens = [st.display]; st.justEvaluated = false; }
+      /* A leading minus starts a negative number, it is not 0 minus. */
+      if (st.tokens.length === 0 && st.entry === '' && op === '-') {
+        st.entry = '-';
+        st.fresh = false;
+        st.display = st.entry;
+        return;
+      }
+      flushEntry();
+      if (st.tokens.length === 0) { st.tokens.push(st.display); }
+      if (isBinOp(lastToken())) { st.tokens[st.tokens.length - 1] = op; }
+      else { st.tokens.push(op); }
+      st.fresh = true;
+    }
+
+    function openParen() {
+      if (st.justEvaluated) { resetEntry(); }
+      flushEntry();
+      if (needsImplicitMultiply()) { st.tokens.push('x'); }
+      st.tokens.push('(');
+      st.fresh = true;
+    }
+
+    function closeParen() {
+      flushEntry();
+      if (openParens() > 0) { st.tokens.push(')'); }
+      st.fresh = true;
+    }
+
+    function sqrtKey() {
+      if (st.justEvaluated) { st.entry = st.display; st.justEvaluated = false; }
+      if (st.entry !== '') {
+        /* Square root of the number being typed: applied at once, so
+           √9 then x 2 is 6. A negative entry is an ETS ERROR. */
+        var v = parseFloat(st.entry);
+        if (v < 0) { showError(); return; }
+        st.entry = calcFormatResult(Math.sqrt(v), examKey);
+        if (st.entry === errText()) { showError(); return; }
+        st.display = st.entry;
+        st.fresh = false;
+      } else {
+        /* No entry: square root of what follows, as √( ... ). */
+        if (needsImplicitMultiply()) { st.tokens.push('x'); }
+        st.tokens.push('√');
+        st.tokens.push('(');
+        st.fresh = true;
+      }
+    }
+
+    function signChange() {
+      if (st.entry !== '' && st.entry !== '-') {
+        st.entry = String(-parseFloat(st.entry));
+        st.display = st.entry;
+      } else if (st.entry === '-') {
+        st.entry = '';
+        st.display = '0';
+        st.fresh = true;
+      } else {
+        st.entry = String(-parseFloat(st.display));
+        st.display = st.entry;
+        st.justEvaluated = false;
+        st.fresh = false;
+      }
+    }
+
+    function equals() {
+      if (st.justEvaluated) { return; }
+      flushEntry();
+      while (st.tokens.length && isBinOp(lastToken())) { st.tokens.pop(); }
+      if (!st.tokens.length) { return; }
+      var res = calcEvaluate(st.tokens.join(''));
+      st.tokens = [];
+      st.entry = '';
+      if (!res.ok) { showError(); return; }
+      st.display = calcFormatResult(res.value, examKey);
+      if (st.display === errText()) { st.error = true; }
+      st.justEvaluated = true;
+      st.fresh = true;
+    }
+
+    function press(key) {
+      if (st.error) {
+        if (key === 'C') {
+          st.display = '0'; st.entry = ''; st.tokens = [];
+          st.fresh = true; st.justEvaluated = false; st.error = false;
+        }
+        return;
+      }
+      if (key === 'C') {
+        st.display = '0'; st.entry = ''; st.tokens = [];
+        st.fresh = true; st.justEvaluated = false; st.error = false;
+      } else if (key === 'CE') {
+        st.entry = ''; st.display = '0'; st.fresh = true;
+      } else if (key === 'back') {
+        if (st.entry !== '') {
+          st.entry = st.entry.slice(0, -1);
+          st.display = (st.entry === '' || st.entry === '-') ? '0' : st.entry;
+          if (st.entry === '') { st.fresh = true; }
+        } else if (st.justEvaluated) {
+          st.display = st.display.length > 1 ? st.display.slice(0, -1) : '0';
+          st.entry = st.display;
+          st.justEvaluated = false;
+          st.fresh = false;
+        }
+      } else if (key === '+/-') { signChange(); }
+      else if (key === '√') { sqrtKey(); }
+      else if (key === '(') { openParen(); }
+      else if (key === ')') { closeParen(); }
+      else if (key === 'M+') {
+        var v = currentValue();
+        if (isFinite(v)) { mem.add(v); }
+        /* M+ completes the entry: the next digit starts a new
+           number instead of appending to the stored one. */
+        st.fresh = true;
+      }
+      else if (key === 'MR') {
+        var m = mem.recall();
+        st.entry = m === null ? '0' : String(m);
+        st.display = st.entry;
+        st.justEvaluated = false;
+        st.fresh = true;
+      }
+      else if (key === 'MC') { mem.clear(); }
+      else if (key === '/' || key === 'x' || key === '-' || key === '+') { applyOp(key); }
+      else if (key === '=') { equals(); }
+      else if (key === '.') { inputDot(); }
+      else if (key >= '0' && key <= '9') { inputDigit(key); }
+    }
+
+    return {
+      press: press,
+      display: function () { return st.display; },
+      isError: function () { return st.error; },
+      memoryValue: function () { return mem.recall(); },
+      keys: function () { return calcKeysForExam(examKey); },
+      hasTransferDisplay: function () { return calcHasTransferDisplay(examKey); }
+    };
+  }
+
   return {
     escapeHtml: escapeHtml,
     formatHMS: formatHMS,
@@ -498,9 +1203,12 @@
     buildSetContext: buildSetContext,
     setContextFor: setContextFor,
     titaMatches: titaMatches,
+    titaKind: titaKind,
     isAnswered: isAnswered,
     scoreItem: scoreItem,
     scoreAttempt: scoreAttempt,
+    scoreAttemptWithProfile: scoreAttemptWithProfile,
+    computeProfileUnattemptedPenalty: computeProfileUnattemptedPenalty,
     maxScore: maxScore,
     paletteState: paletteState,
     PALETTE_LABELS: PALETTE_LABELS,
@@ -510,8 +1218,17 @@
     userAnswerText: userAnswerText,
     optionLetter: optionLetter,
     percentileForScore: percentileForScore,
+    buildExamInstructions: buildExamInstructions,
     mockDifficultyLabel: mockDifficultyLabel,
     topicAccuracy: topicAccuracy,
-    readAllResults: readAllResults
+    readAllResults: readAllResults,
+    calcKeysForExam: calcKeysForExam,
+    calcHasTransferDisplay: calcHasTransferDisplay,
+    calcDigitCap: calcDigitCap,
+    calcErrorText: calcErrorText,
+    calcEvaluate: calcEvaluate,
+    calcFormatResult: calcFormatResult,
+    createCalcMemory: createCalcMemory,
+    createCalculator: createCalculator
   };
 });
