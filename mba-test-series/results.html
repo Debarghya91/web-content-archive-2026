@@ -10,6 +10,7 @@
 <link rel="stylesheet" href="mba-test-series.css">
 </head>
 <body class="mba-page">
+<a class="mba-skip-link" href="#resTitle" id="resultsSkipLink">Skip to results</a>
 <header class="pf-topnav">
 <div class="pf-topnav-row1">
 <a class="pf-topnav-word" href="../">Payments Training Hub</a>
@@ -25,11 +26,11 @@
 </header>
 <main class="mba-wrap mba-wrap-wide">
 <p class="crumbs"><a href="../">Home</a> / <a href="catalog.html">MBA Test Series</a> / Results</p>
-<div id="errorBox" class="mba-error" hidden></div>
+<div id="errorBox" class="mba-error" role="alert" hidden></div>
 <div id="resultBody" hidden>
   <section class="mba-score-hero" aria-label="Score summary">
     <div style="flex:1;min-width:240px">
-      <h1 id="resTitle">Test Results</h1>
+      <h1 id="resTitle" tabindex="-1">Test Results</h1>
       <p id="resMeta"></p>
       <p id="resCounts"></p>
     </div>
@@ -37,13 +38,21 @@
       <div class="mba-big-score"><span id="resScore">0</span> <small id="resMax"></small></div>
       <p id="resPct"></p>
       <p id="resPercentile"></p>
+      <p id="resScaleNote" class="mba-small" hidden></p>
+      <p id="resPenalty" class="mba-small" hidden></p>
     </div>
+  </section>
+
+  <section aria-label="Unofficial score" id="unofficialScoreSection" hidden>
+    <div class="pf-section-header accent-gold"><h2>Your unofficial score</h2></div>
+    <p id="resUnofficial"></p>
+    <p id="resUnofficialCounts" class="mba-small"></p>
   </section>
 
   <section aria-label="Topic-wise performance">
     <div class="pf-section-header accent-gold"><h2>Topic-wise performance</h2></div>
     <table class="mba-result-table" id="topicTable">
-      <thead><tr><th>Topic</th><th>Questions</th><th>Attempted</th><th>Correct</th><th>Accuracy</th><th>Time spent</th></tr></thead>
+      <thead><tr><th scope="col">Topic</th><th scope="col">Questions</th><th scope="col">Attempted</th><th scope="col">Correct</th><th scope="col">Accuracy</th><th scope="col">Time spent</th></tr></thead>
       <tbody></tbody>
     </table>
     <p class="mba-muted mba-small">Topics are weakest first. Use the player topic mode from the catalog to practise a weak topic on its own.</p>
@@ -52,7 +61,7 @@
   <section aria-label="Section-wise performance">
     <div class="pf-section-header accent-gold"><h2>Section-wise performance</h2></div>
     <table class="mba-result-table" id="sectionTable">
-      <thead><tr><th>Section</th><th>Questions</th><th>Attempted</th><th>Correct</th><th>Wrong</th><th>Unattempted</th><th>Score</th><th>Accuracy</th><th>Time spent</th></tr></thead>
+      <thead><tr><th scope="col">Section</th><th scope="col">Questions</th><th scope="col">Attempted</th><th scope="col">Correct</th><th scope="col">Wrong</th><th scope="col">Unattempted</th><th scope="col">Score</th><th scope="col">Accuracy</th><th scope="col">Time spent</th></tr></thead>
       <tbody></tbody>
     </table>
     <p class="mba-muted mba-small">Accuracy is correct divided by attempted. Essays are not auto-scored and are excluded from the total; compare your essay with the model outline in the review below.</p>
@@ -87,10 +96,12 @@
 </main>
 <footer class="pf-footer"><p>Payments Training Hub. Practical Payments Training for Banking Professionals. Content is for education; check current exam rules before relying on it.</p><div class="pf-footer-cols"><div class="pf-footer-col"><h3>Explore</h3><ul><li><a href="../">Home</a></li><li><a href="../courses">Courses</a></li><li><a href="../course-map">Learning Paths</a></li><li><a href="../pricing">Pricing</a></li></ul></div><div class="pf-footer-col"><h3>Practice</h3><ul><li><a href="../situations">Payment Cases</a></li><li><a href="../tests">Assessments</a></li><li><a href="../simulators">Simulators</a></li><li><a href="../interview-prep">Interview Prep</a></li></ul></div><div class="pf-footer-col"><h3>Resources</h3><ul><li><a href="../explorer">ISO 20022 Explorer</a></li><li><a href="../reference">Reference Library</a></li><li><a href="../insights">Insights and Scenarios</a></li></ul></div><div class="pf-footer-col"><h3>Company</h3><ul><li><a href="../about">About</a></li><li><a href="../contact">Contact</a></li><li><a href="../privacy">Privacy</a></li><li><a href="../terms">Terms</a></li><li><a href="../support">Help and Support</a></li></ul></div></div></footer>
 <script src="mba-engine.js"></script>
+<script src="exam-profiles.js"></script>
 <script>
 (function () {
   'use strict';
   var E = window.MbaEngine;
+  var EP = window.MbaExamProfiles || null;
   var params = new URLSearchParams(window.location.search);
   var mockId = (params.get('mock') || '').trim();
   var examKey = mockId.split('-')[0] || '';
@@ -199,6 +210,7 @@
         '<span>Question ' + (idx + 1) + ' of ' + reviewItems.length + '</span>' +
         '<span>' + E.escapeHtml(typeLabel) + '</span>' +
         '<span>' + E.escapeHtml(item.topic || '') + '</span>' +
+        '<span>Difficulty: ' + E.escapeHtml(item.difficulty || 'medium') + '</span>' +
         '<span>Time spent: ' + E.escapeHtml(E.formatDurationMs(pq.timeMs)) + '</span>' +
         '<span>Score: ' + pq.score + '</span>' +
         statusBadge(pq.status) +
@@ -231,14 +243,126 @@
       ' | Marking: ' + E.markingLabel(result.marking);
     $('resCounts').textContent = s.correct + ' correct, ' + s.wrong + ' wrong, ' + s.unattempted +
       ' unattempted, ' + s.essayCount + ' essay(s) out of ' + s.totalQuestions + ' questions.';
-    $('resScore').textContent = s.totalScore;
-    $('resMax').textContent = '/ ' + s.maxScore;
-    var pct = s.maxScore > 0 ? Math.round(s.totalScore / s.maxScore * 100) : 0;
-    $('resPct').textContent = pct + '% of the maximum score. Maximum counts only auto-scored questions.';
-    var percentile = E.percentileForScore(s.totalScore, s.maxScore, result.exam);
+    /* GRE (fix round 5, R4-03): ETS reports no combined GRE score
+       (fidelity-GRE 1: VR 130-170, QR 130-170, AW 0-6), so the hero
+       shows raw correct counts per measure instead of one combined
+       total. Other exams keep the combined total. */
+    if (result.exam === 'GRE') {
+      var greCounts = E.greMeasureCounts(s);
+      var greScore = $('resScore');
+      greScore.textContent = 'VR ' + greCounts.VR.correct + '/' + greCounts.VR.total +
+        '  |  QR ' + greCounts.QR.correct + '/' + greCounts.QR.total;
+      greScore.classList.add('gre-measures');
+      $('resMax').textContent = '';
+      $('resPct').textContent = 'Raw correct counts by measure. The GRE reports no combined score.';
+    } else {
+      $('resScore').textContent = s.totalScore;
+      $('resMax').textContent = '/ ' + s.maxScore;
+      var pct = s.maxScore > 0 ? Math.round(s.totalScore / s.maxScore * 100) : 0;
+      $('resPct').textContent = pct + '% of the maximum score. Maximum counts only auto-scored questions.';
+    }
+    /* SNAP: the official mock states "Percentile will not be calculated
+       for Mock Test", so no estimated percentile is shown for SNAP.
+       GRE: ETS reports no combined score and no percentile for the
+       test, so no estimated percentile is shown for GRE either.
+       Every other exam keeps the labelled mock-based estimate. */
+    var percentile = (result.exam === 'SNAP' || result.exam === 'GRE') ? null : E.percentileForScore(s.totalScore, s.maxScore, result.exam);
     $('resPercentile').textContent = percentile === null
       ? ''
-      : 'Estimated percentile: ' + percentile + '. This is an estimate from a seeded baseline distribution for this mock, labelled as such until enough learners have taken it for a real percentile.';
+      : 'Estimated percentile (indicative mock-based estimate, not an official percentile): ' + percentile + '. This is an estimate from a seeded baseline distribution for this mock, not a percentile from real candidate data, and it is labelled as such until enough learners have taken it for a real percentile.';
+    /* GRE (fix round 5, R4-03): the console shows no score at the end
+       of the test; official scores are reported later, typically in
+       8 to 10 days (fidelity-GRE 2.6). The real GRE reports Verbal
+       Reasoning 130-170 and Quantitative Reasoning 130-170, and
+       Analytical Writing 0-6, with no combined score. The POWERPREP
+       timed practice test gives an official scaled score for Verbal
+       and Quantitative Reasoning, shown on screen before its End of
+       Test screen (ETS POWERPREP FAQ). This mock shows raw correct
+       counts only; no scaled score is shown here because the real
+       scale comes from the adaptive test and cannot be computed from
+       a fixed mock. */
+    var scaleNote = $('resScaleNote');
+    if (result.exam === 'GRE') {
+      scaleNote.textContent = 'The GRE console shows no score at the end of the test; official scores are reported later, typically in 8 to 10 days. The real GRE reports Verbal Reasoning 130-170 and Quantitative Reasoning 130-170, and Analytical Writing 0-6, with no combined score. The POWERPREP timed practice test gives an official scaled score for Verbal and Quantitative Reasoning. This mock shows raw correct counts only (Verbal ' + greCounts.VR.correct + ' of ' + greCounts.VR.total + ', Quantitative ' + greCounts.QR.correct + ' of ' + greCounts.QR.total + '); no scaled score is shown here because the real scale comes from the adaptive test and cannot be computed from a fixed mock.';
+      scaleNote.hidden = false;
+    } else if (result.exam === 'NMAT' || result.exam === 'GMAT') {
+      var note = '';
+      if (EP && EP.getProfile) {
+        try { note = EP.getProfile(result.exam).scaledScoreNote || ''; } catch (e) { note = ''; }
+      }
+      if (!note && result.exam === 'NMAT') {
+        note = 'The real NMAT reports a scaled score from 36 to 360 (12 to 120 per section) produced by its adaptive algorithm. This mock reports a raw score out of 108 with +1 per correct answer and no negative marking. No scaled score is shown here because the real scale cannot be computed from a fixed mock.';
+      }
+      if (!note && result.exam === 'GMAT') {
+        note = 'The real GMAT Focus reports an adaptive scaled score. This mock reports a raw count of correct answers only; no scaled score is shown here because the real scale cannot be computed from a fixed mock.';
+      }
+      /* R4-10 (fix round 5): the on-screen results conflict is settled
+         in favour of mba.com (GMAC, re-checked 24 Nov 2026): an
+         unofficial score shows immediately after the test and the
+         official scorecard follows within 48 hours. Label this mock
+         score unofficial and state the 48-hour official scorecard, so
+         the results page matches the settled behaviour. The Pearson
+         VUE SAARC "Onscreen: No" line refers to no official result or
+         printout at the centre, not to the unofficial on-screen score. */
+      if (result.exam === 'NMAT') {
+        note += ' Unofficial mock score shown immediately after the test; the real NMAT official scorecard is available within 48 hours.';
+      }
+      scaleNote.textContent = note;
+      scaleNote.hidden = false;
+    } else {
+      scaleNote.hidden = true;
+    }
+    /* Round 5 (R4-02): GMAT unofficial-score panel (fidelity-GMAT
+       section 2.7, PROVEN from mba.com): the unofficial score appears
+       on screen immediately after the exam, Total Score 205-805 and
+       section scores 60-90 each. This mock cannot compute the adaptive
+       scaled score, so the panel shows the official scale framing plus
+       the mock's raw per-section counts, and never an invented scaled
+       score. */
+    var unoff = $('unofficialScoreSection');
+    if (result.exam === 'GMAT') {
+      $('resUnofficial').textContent = E.unofficialScoreNote('GMAT') || '';
+      var countsLine = s.sections.map(function (sec) {
+        return sec.name + ' ' + sec.correct + ' of ' + sec.total + ' correct';
+      }).join('; ');
+      $('resUnofficialCounts').textContent = 'Your mock counts: ' + countsLine + ' (' + s.correct + ' of ' + s.totalQuestions + ' correct overall).';
+      unoff.hidden = false;
+    } else {
+      unoff.hidden = true;
+    }
+    /* XAT unattempted-question penalty, when the profile applied one.
+       The threshold comes from the profile (8 for the 2026-cycle
+       mocks; 12 is the XAT 2027 figure), never a hardcoded number.
+       Fix round 7, item 4: it resolves through the cycle-aware
+       resolver against the loaded mock, so a 2027 mock labels 12
+       and a 2026 mock (no cycle field) labels 8. */
+    var penEl = $('resPenalty');
+    if (s.unattemptedPenalty) {
+      var penThreshold = 8;
+      var penProfile = (window.MbaExamProfiles && window.MbaExamProfiles.getProfile)
+        ? window.MbaExamProfiles.getProfile(result.exam) : null;
+      if (penProfile && penProfile.unattemptedPenalty) {
+        if (window.MbaExamProfiles && window.MbaExamProfiles.resolveUnattemptedPenaltyThreshold) {
+          penThreshold = window.MbaExamProfiles.resolveUnattemptedPenaltyThreshold(penProfile, mock);
+        } else if (penProfile.unattemptedPenalty.threshold) {
+          penThreshold = penProfile.unattemptedPenalty.threshold;
+        }
+      }
+      penEl.textContent = 'Unattempted-question penalty: -' + Math.abs(s.unattemptedPenalty) +
+        ' marks (XAT Part 1: every unattempted question beyond the first ' + penThreshold + ' loses 0.10 marks). Already included in the score above.';
+      penEl.hidden = false;
+    } else {
+      penEl.hidden = true;
+    }
+    /* The bookmark filter stays for GMAT (bookmarking exists there) and
+       for any attempt that already has bookmarks; other exams hide it. */
+    var hasBookmarks = (result.bookmarks || []).length > 0;
+    if (result.exam !== 'GMAT' && !hasBookmarks) {
+      var fs = $('filterStatus');
+      for (var oi = 0; oi < fs.options.length; oi++) {
+        if (fs.options[oi].value === 'bookmarked') { fs.remove(oi); break; }
+      }
+    }
     var modeNote = result.mode && result.mode.type !== 'full'
       ? ' Mode: ' + result.mode.label + ' (' + s.totalQuestions + ' questions run).' : '';
     $('resMeta').textContent = result.exam + ' | ' + result.mock_id + ' | Submitted ' + when +
@@ -275,6 +399,18 @@
     });
     $('playerLink').href = 'player.html?mock=' + encodeURIComponent(mockId);
     $('resultBody').hidden = false;
+    /* F-11: focus lands on the results heading on load, so the score
+       is announced instead of silence, and the skip link above jumps
+       straight to it past the site navigation. */
+    var skip = $('resultsSkipLink');
+    if (skip) {
+      skip.addEventListener('click', function (ev) {
+        ev.preventDefault();
+        var h = $('resTitle');
+        if (h) { h.focus(); h.scrollIntoView(); }
+      });
+    }
+    $('resTitle').focus();
   }
 
   function boot() {
