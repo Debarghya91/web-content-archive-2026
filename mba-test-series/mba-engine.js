@@ -737,12 +737,20 @@
       var nmatMode = opts.nmatMode || 'simulation';
       if (nmatMode === 'simulation') {
         items.push('NMAT simulation: you chose your section order before starting. Questions come one at a time with no Previous button and no palette.');
-        items.push('You can revisit a question only from the review screen at the end of its section, before the section closes; you cannot return to a finished section.');
+        /* Fix round 8, stream A, item 1: official GMAC sources prove
+           the real NMAT does not let the candidate review or return
+           to previous questions (GMAC support FAQ: "You cannot review
+           or return to previous questions"; gmac.com 2026-27 page;
+           Shiksha firsthand 2026), so there is no review screen and
+           no revisit path in simulation. */
+        items.push('You cannot go back to a previous question, review a question, or change an answer once you move on. Each answer is final when you move to the next question, and you cannot return to a finished section.');
+        items.push('Your answer is recorded when you move to the next question and is final; you cannot go back to change it, and once a section ends, its answers are final.');
+        items.push('At the end of each section you move straight to the next section; there is no review screen.');
       } else {
         items.push('Practice mode: free navigation is on, with the Previous button available. The real NMAT has no Previous button and no palette in either mode; revisiting is only through the review screen at the end of a section.');
+        items.push('Your answer is recorded when you move to the next question. You can change an answer while its section is still open; once a section ends, its answers are final.');
+        items.push('At the end of each section, if time remains, a review screen lists that section questions so you can revise them before the section closes.');
       }
-      items.push('Your answer is recorded when you move to the next question. You can change an answer while its section is still open; once a section ends, its answers are final.');
-      items.push('At the end of each section, if time remains, a review screen lists that section questions so you can revise them before the section closes.');
       items.push('Hide clock hides the section timer; the clock keeps running. This follows the 2011 demo; the current console has not confirmed it.');
       items.push('Each section has its own time limit: ' + sectionListLine() + '. Total time ' + totalMin + ' minutes.');
       items.push('There is no negative marking and no on-screen calculator. There is no palette, no Question Paper in simulation, no highlighter and no on-screen scratchpad. Rough work is on the noteboard booklet and pen provided at the centre.');
@@ -760,7 +768,10 @@
       var unofficial = unofficialScoreNote('GMAT');
       if (unofficial) { items.push(unofficial); }
       if (profile.breakMinutes) {
-        items.push('One optional ' + profile.breakMinutes + '-minute break is offered between sections.');
+        /* Fix round 8, stream A, item 2: the one optional break is
+           offered after the first section only, never after the
+           second. */
+        items.push('One optional ' + profile.breakMinutes + '-minute break is offered after the first section only.');
       }
       items.push('There is no highlighter. Rough work is on the on-screen whiteboard.');
       items.push(calcLine());

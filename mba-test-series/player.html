@@ -314,7 +314,7 @@
       return extend(base, { examName: 'NMAT', navigation: 'one-way', sectionOrder: 'candidate-choice',
         sectionTimer: 'per-section', allowPrevious: false, palette: 'none',
         nmatModes: ['standard', 'simulation'],
-        simulationDisclosure: 'NMAT simulation matches the real NMAT navigation: you choose the section order once, then questions come one at a time with no Previous button and no palette. You can revisit a question only from the review screen at the end of its section, before the section closes; you cannot return to a finished section. You must answer each question before Next will move on, as in the real exam. The real exam is also computer-adaptive, which a fixed mock cannot reproduce.',
+        simulationDisclosure: 'NMAT simulation matches the real NMAT navigation: you choose the section order once, then questions come one at a time with no Previous button and no palette. You cannot go back to a previous question, review a question, or change an answer once you move on; each answer is final when you move to the next question, and you cannot return to a finished section. You must answer each question before Next will move on, as in the real exam. The real exam is also computer-adaptive, which a fixed mock cannot reproduce.',
         scaledScoreNote: 'The real NMAT reports a scaled score from 36 to 360 (12 to 120 per section) produced by its adaptive algorithm. This mock reports a raw score out of 108 with +1 per correct answer and no negative marking. No scaled score is shown here because the real scale cannot be computed from a fixed mock.',
         saveModel: 'commit-on-move', primaryLabel: 'Next',
         markLabel: 'Mark for Review', markAdvances: false,
@@ -1339,11 +1339,19 @@
       goToIndex(state.currentIndex + 1);
       return;
     }
-    /* Last question of this section. NMAT opens its per-section review
-       screen here when time remains; the tick advances the section
+    /* Last question of this section. NMAT simulation has no review
+       screen at all (fix round 8, stream A, item 1): official GMAC
+       sources prove the real NMAT does not let the candidate review
+       or return to previous questions (GMAC support FAQ: "You cannot
+       review or return to previous questions"; gmac.com 2026-27 page;
+       Shiksha firsthand 2026). Next on the last question therefore
+       finishes the section at once; the answer was already committed
+       above and Next already required one. NMAT standard mode keeps
+       the per-section review screen. The tick advances the section
        directly when the time has expired. */
     if (examKey === 'NMAT') {
       if (sectionExpired(sec)) { return; }
+      if (isNmatSimulation()) { finishNmatSection(); return; }
       openNmatReview(sec.id);
       return;
     }
@@ -1437,6 +1445,14 @@
       return 'Part 1 shared clock';
     }
     if (sec.time_limit_minutes === null || sec.time_limit_minutes === undefined) { return 'No sectional limit'; }
+    /* Fix round 7, item 3 (follow-up): the section tab chip is a second
+       live section-time display, updated every second by tick() via
+       renderTabs(). While the break modal is open it must show the
+       same frozen value as the top bar, or the screen shows two
+       different section times at once (shot 76 caught the QR tab at
+       44:21 while the top bar was frozen at 44:51). Only the section
+       with a live deadline is frozen; locked sections stay 'Locked'. */
+    if (frozenTimerDisplay && !$('breakModal').hidden && sectionDeadline(sec.id)) { return frozenTimerDisplay.section + ' left'; }
     if (sectionDeadline(sec.id)) { return E.formatMS(sectionRemainingMs(sec) / 1000) + ' left'; }
     return sec.time_limit_minutes + ' min limit';
   }
@@ -1821,13 +1837,16 @@
        and IBSAT get "Next" with their own mark wording; SNAP gets
        "Next" / "Mark for Review" / "Clear"; GRE gets "Back", "Mark",
        "Review", "Hide Time", "Exit Section", "Next"; GMAT gets
-       bookmark + "Next" and no mark control. */
+       bookmark + "Next" and no mark control. NMAT simulation has no
+       mark control at all (fix round 8, stream A, item 1): the real
+       NMAT has no Mark for Review, so the button is not rendered in
+       simulation. NMAT standard mode keeps it. */
     var actionsHtml = '<div class="mba-q-actions">' +
       (showPrevButton() ? '<button type="button" class="mba-btn mba-btn-secondary" id="prevBtn">' + E.escapeHtml(profile.prevLabel || 'Previous') + '</button>' : '') +
       '<button type="button" class="mba-btn mba-btn-secondary" id="clearBtn">' + E.escapeHtml(profile.clearLabel || 'Clear Response') + '</button>' +
       (profile.bookmark ? '<button type="button" class="mba-btn mba-btn-secondary" id="bookmarkBtn">' +
         (rec.bookmarked ? 'Bookmarked, tap to remove' : 'Bookmark for later review') + '</button>' : '') +
-      (profile.markLabel ? '<button type="button" class="mba-btn mba-btn-secondary" id="markBtn">' + E.escapeHtml(profile.markLabel) + '</button>' : '') +
+      (profile.markLabel && !isNmatSimulation() ? '<button type="button" class="mba-btn mba-btn-secondary" id="markBtn">' + E.escapeHtml(profile.markLabel) + '</button>' : '') +
       (profile.navigation === 'within-section-review' ? '<button type="button" class="mba-btn mba-btn-secondary" id="reviewBtn">Review</button>' : '') +
       (profile.navigation === 'within-section-review' ? '<button type="button" class="mba-btn mba-btn-secondary" id="timeBtn">Hide Time</button>' : '') +
       (profile.navigation === 'within-section-review' ? '<button type="button" class="mba-btn mba-btn-secondary" id="exitSectionBtn">Exit Section</button>' : '') +
@@ -2116,7 +2135,13 @@
           (profile.markLabel ? ' ' + profile.markLabel + ' marks the question and moves on.' : '') +
           ' Selecting an option alone does not save it.';
       } else if (saveModel() === 'commit-on-move') {
-        helpSave.textContent = 'Next records your answer and moves to the next question. You can change an answer while its section is still open.';
+        /* Fix round 8, stream A, item 1: in NMAT simulation an answer
+           is final the moment Next moves on; there is no going back
+           and no review screen. Standard mode still allows changing
+           an answer while its section is open. */
+        helpSave.textContent = isNmatSimulation()
+          ? 'Next records your answer and moves to the next question. You cannot go back to a previous question or change an answer once you move on.'
+          : 'Next records your answer and moves to the next question. You can change an answer while its section is still open.';
       } else if (examKey === 'GMAT') {
         helpSave.textContent = 'Next records your answer and moves to the next question. There is no going back within a section.';
       } else {
@@ -2816,21 +2841,19 @@
     ta.focus();
   }
 
-  /* NMAT per-section review screen (fidelity spec 2.3): the review
-     lists the section's questions with their status and lets the
+  /* NMAT per-section review screen, STANDARD MODE ONLY since fix
+     round 8, stream A, item 1. The real NMAT does not let the
+     candidate review or return to previous questions (GMAC support
+     FAQ: "You cannot review or return to previous questions";
+     gmac.com 2026-27 page; Shiksha firsthand 2026), so simulation
+     never opens this screen: Next on the last question of a section
+     finishes the section at once (see nextQuestion). Standard mode
+     is a free-navigation practice convenience and keeps the review:
+     it lists the section's questions with their status and lets the
      candidate revise answers while the section clock runs. Access is
-     from the last question of the section only (the 2011-demo rule,
-     STALE and unproven for the current console); it is not offered
-     when the section time has expired. A Go jump from this screen is
-     the sanctioned revisit path: the handbook and the Pearson VUE
-     SAARC client reference both state candidates may mark questions
-     and review them within a section only (re-checked 24 Nov 2026),
-     so Go bypasses the simulation one-way block, same as the GMAT
-     review Go. The one-way block still applies everywhere else: there
-     is no Previous button and no palette in simulation, and the
-     Question Paper is removed. The stricter EMEA line ("once answered,
-     the candidate may not return to the previous question") is a
-     variant the fidelity spec does not treat as operative for India. */
+     from the last question of the section only; it is not offered
+     when the section time has expired. A Go jump from this screen
+     revises within the section, same as the GMAT review Go. */
   function openNmatReview(secId) {
     var sec = sectionById(secId);
     if (!sec) { return; }
@@ -2857,9 +2880,9 @@
         var all = runItems();
         for (var k = 0; k < all.length; k++) {
           if (all[k].id === qid) {
-            /* R4-10 (fix round 5): review-originated Go revises within
-               the section even in simulation (see the comment above
-               openNmatReview). Targets are same-section by
+            /* R4-10 (fix round 5), standard mode only since fix round 8:
+               review-originated Go revises within the section (see the
+               comment above openNmatReview). Targets are same-section by
                construction, so force only lifts the one-way block. */
             if (goToIndex(k, { force: true })) { closeModal('nmatReviewModal'); }
             break;
@@ -2959,7 +2982,11 @@
     }
     toast('Time for section ' + sec.name + ' ended. There is no time left to review, so you move on without the Question Review and Edit screen.');
     announce('Time for section ' + sec.name + ' ended. There is no time left to review, so you move on without the Question Review and Edit screen.');
-    openBreak(next.id);
+    /* Fix round 8, stream A, item 2: the spec permits only one
+       optional break, offered after the first section only. A later
+       section end moves straight to the next section. */
+    if (idx === 0) { openBreak(next.id); return; }
+    advanceToSection(next.id);
   }
 
   function finishGmatSection() {
@@ -2969,7 +2996,11 @@
     var secs = effectiveSections();
     var idx = sectionIdx(sec.id);
     if (idx >= secs.length - 1) { openSubmitModal(); return; }
-    openBreak(secs[idx + 1].id);
+    /* Fix round 8, stream A, item 2: the one optional break is
+       offered after the first section only, never after the second.
+       Finishing the second section moves straight to the next one. */
+    if (idx === 0) { openBreak(secs[idx + 1].id); return; }
+    advanceToSection(secs[idx + 1].id);
   }
 
   /* ---------- GRE section directions (fix round 5, R4-03) ----------
@@ -3110,11 +3141,13 @@
 
   function openBreak(nextSecId, opts) {
     opts = opts || {};
-    /* Round 4 (GMAT): one optional 10-minute break per exam (fidelity
-       spec, PROVEN from mba.com: after the first section OR after the
-       second, not both). The break was offered after every non-final
-       section, so it could be taken twice. Once taken, later section
-       ends move straight to the next section. A break in progress that
+    /* Round 4 (GMAT), tightened fix round 8, stream A, item 2: one
+       optional 10-minute break per exam (fidelity spec, PROVEN from
+       mba.com), offered only after the first section, never after the
+       second. The callers (finishGmatSection, moveOnAfterGmatSection)
+       enforce the first-section-only offer; this guard is the safety
+       net for a break already taken. Once taken, later section ends
+       move straight to the next section. A break in progress that
        survives a reload resumes through opts.resume, not this guard. */
     if (!opts.resume && profile.navigation === 'order-choice-review' && state && state.gmatBreakTaken) {
       toast('You already took your one optional 10-minute break for this exam. Moving to the next section.');
@@ -3449,7 +3482,7 @@
     }
     if (!resumable && !submittedExisting && isFullMode() && examKey === 'NMAT') {
       var disclosure = profile.simulationDisclosure ||
-        'NMAT simulation matches the real NMAT navigation: one question at a time, no Previous button, no palette; revisiting only from the review screen at the end of a section.';
+        'NMAT simulation matches the real NMAT navigation: one question at a time, no Previous button, no palette; no going back and no review screen, each answer is final when you move on.';
       choiceHtml += '<h3>Choose your mode</h3>' +
         '<p><label><input type="radio" name="nmatMode" value="simulation" checked> NMAT simulation (real navigation)</label></p>' +
         '<p><label><input type="radio" name="nmatMode" value="standard"> Standard practice (free navigation)</label></p>' +

@@ -109,7 +109,7 @@
       palette: 'none',
       calculatorSections: [],
       nmatModes: ['standard', 'simulation'],
-      simulationDisclosure: 'This simulation is not adaptively generated. Questions are fixed; the real NMAT adapts to your answers. Like the real exam, you must answer each question before Next will move on.',
+      simulationDisclosure: 'This simulation is not adaptively generated. Questions are fixed; the real NMAT adapts to your answers. Like the real exam, you must answer each question before Next will move on. You cannot go back to a previous question, review a question, or change an answer once you move on.',
       scaledScoreNote: 'Practice score out of 108. The real NMAT reports a scaled score from 36 to 360 (12 to 120 per section) from an adaptive algorithm; this raw score is not on that scale.',
       saveModel: 'commit-on-move',
       primaryLabel: 'Next',
