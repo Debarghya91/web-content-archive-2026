@@ -43,6 +43,12 @@
     </div>
   </section>
 
+  <section aria-label="Unofficial score" id="unofficialScoreSection" hidden>
+    <div class="pf-section-header accent-gold"><h2>Your unofficial score</h2></div>
+    <p id="resUnofficial"></p>
+    <p id="resUnofficialCounts" class="mba-small"></p>
+  </section>
+
   <section aria-label="Topic-wise performance">
     <div class="pf-section-header accent-gold"><h2>Topic-wise performance</h2></div>
     <table class="mba-result-table" id="topicTable">
@@ -237,21 +243,49 @@
       ' | Marking: ' + E.markingLabel(result.marking);
     $('resCounts').textContent = s.correct + ' correct, ' + s.wrong + ' wrong, ' + s.unattempted +
       ' unattempted, ' + s.essayCount + ' essay(s) out of ' + s.totalQuestions + ' questions.';
-    $('resScore').textContent = s.totalScore;
-    $('resMax').textContent = '/ ' + s.maxScore;
-    var pct = s.maxScore > 0 ? Math.round(s.totalScore / s.maxScore * 100) : 0;
-    $('resPct').textContent = pct + '% of the maximum score. Maximum counts only auto-scored questions.';
+    /* GRE (fix round 5, R4-03): ETS reports no combined GRE score
+       (fidelity-GRE 1: VR 130-170, QR 130-170, AW 0-6), so the hero
+       shows raw correct counts per measure instead of one combined
+       total. Other exams keep the combined total. */
+    if (result.exam === 'GRE') {
+      var greCounts = E.greMeasureCounts(s);
+      var greScore = $('resScore');
+      greScore.textContent = 'VR ' + greCounts.VR.correct + '/' + greCounts.VR.total +
+        '  |  QR ' + greCounts.QR.correct + '/' + greCounts.QR.total;
+      greScore.classList.add('gre-measures');
+      $('resMax').textContent = '';
+      $('resPct').textContent = 'Raw correct counts by measure. The GRE reports no combined score.';
+    } else {
+      $('resScore').textContent = s.totalScore;
+      $('resMax').textContent = '/ ' + s.maxScore;
+      var pct = s.maxScore > 0 ? Math.round(s.totalScore / s.maxScore * 100) : 0;
+      $('resPct').textContent = pct + '% of the maximum score. Maximum counts only auto-scored questions.';
+    }
     /* SNAP: the official mock states "Percentile will not be calculated
        for Mock Test", so no estimated percentile is shown for SNAP.
+       GRE: ETS reports no combined score and no percentile for the
+       test, so no estimated percentile is shown for GRE either.
        Every other exam keeps the labelled mock-based estimate. */
-    var percentile = result.exam === 'SNAP' ? null : E.percentileForScore(s.totalScore, s.maxScore, result.exam);
+    var percentile = (result.exam === 'SNAP' || result.exam === 'GRE') ? null : E.percentileForScore(s.totalScore, s.maxScore, result.exam);
     $('resPercentile').textContent = percentile === null
       ? ''
       : 'Estimated percentile (indicative mock-based estimate, not an official percentile): ' + percentile + '. This is an estimate from a seeded baseline distribution for this mock, not a percentile from real candidate data, and it is labelled as such until enough learners have taken it for a real percentile.';
-    /* NMAT and GMAT: raw score only, plus the profile note explaining
-       the real scaled score. Never show a generated scaled score. */
+    /* GRE (fix round 5, R4-03): the console shows no score at the end
+       of the test; official scores are reported later, typically in
+       8 to 10 days (fidelity-GRE 2.6). The real GRE reports Verbal
+       Reasoning 130-170 and Quantitative Reasoning 130-170, and
+       Analytical Writing 0-6, with no combined score. The POWERPREP
+       timed practice test gives an official scaled score for Verbal
+       and Quantitative Reasoning, shown on screen before its End of
+       Test screen (ETS POWERPREP FAQ). This mock shows raw correct
+       counts only; no scaled score is shown here because the real
+       scale comes from the adaptive test and cannot be computed from
+       a fixed mock. */
     var scaleNote = $('resScaleNote');
-    if (result.exam === 'NMAT' || result.exam === 'GMAT') {
+    if (result.exam === 'GRE') {
+      scaleNote.textContent = 'The GRE console shows no score at the end of the test; official scores are reported later, typically in 8 to 10 days. The real GRE reports Verbal Reasoning 130-170 and Quantitative Reasoning 130-170, and Analytical Writing 0-6, with no combined score. The POWERPREP timed practice test gives an official scaled score for Verbal and Quantitative Reasoning. This mock shows raw correct counts only (Verbal ' + greCounts.VR.correct + ' of ' + greCounts.VR.total + ', Quantitative ' + greCounts.QR.correct + ' of ' + greCounts.QR.total + '); no scaled score is shown here because the real scale comes from the adaptive test and cannot be computed from a fixed mock.';
+      scaleNote.hidden = false;
+    } else if (result.exam === 'NMAT' || result.exam === 'GMAT') {
       var note = '';
       if (EP && EP.getProfile) {
         try { note = EP.getProfile(result.exam).scaledScoreNote || ''; } catch (e) { note = ''; }
@@ -262,16 +296,53 @@
       if (!note && result.exam === 'GMAT') {
         note = 'The real GMAT Focus reports an adaptive scaled score. This mock reports a raw count of correct answers only; no scaled score is shown here because the real scale cannot be computed from a fixed mock.';
       }
+      /* R4-10 (fix round 5): the on-screen results conflict is settled
+         in favour of mba.com (GMAC, re-checked 24 Nov 2026): an
+         unofficial score shows immediately after the test and the
+         official scorecard follows within 48 hours. Label this mock
+         score unofficial and state the 48-hour official scorecard, so
+         the results page matches the settled behaviour. The Pearson
+         VUE SAARC "Onscreen: No" line refers to no official result or
+         printout at the centre, not to the unofficial on-screen score. */
+      if (result.exam === 'NMAT') {
+        note += ' Unofficial mock score shown immediately after the test; the real NMAT official scorecard is available within 48 hours.';
+      }
       scaleNote.textContent = note;
       scaleNote.hidden = false;
     } else {
       scaleNote.hidden = true;
     }
-    /* XAT unattempted-question penalty, when the profile applied one. */
+    /* Round 5 (R4-02): GMAT unofficial-score panel (fidelity-GMAT
+       section 2.7, PROVEN from mba.com): the unofficial score appears
+       on screen immediately after the exam, Total Score 205-805 and
+       section scores 60-90 each. This mock cannot compute the adaptive
+       scaled score, so the panel shows the official scale framing plus
+       the mock's raw per-section counts, and never an invented scaled
+       score. */
+    var unoff = $('unofficialScoreSection');
+    if (result.exam === 'GMAT') {
+      $('resUnofficial').textContent = E.unofficialScoreNote('GMAT') || '';
+      var countsLine = s.sections.map(function (sec) {
+        return sec.name + ' ' + sec.correct + ' of ' + sec.total + ' correct';
+      }).join('; ');
+      $('resUnofficialCounts').textContent = 'Your mock counts: ' + countsLine + ' (' + s.correct + ' of ' + s.totalQuestions + ' correct overall).';
+      unoff.hidden = false;
+    } else {
+      unoff.hidden = true;
+    }
+    /* XAT unattempted-question penalty, when the profile applied one.
+       The threshold comes from the profile (8 for the 2026-cycle
+       mocks; 12 is the XAT 2027 figure), never a hardcoded number. */
     var penEl = $('resPenalty');
     if (s.unattemptedPenalty) {
+      var penThreshold = 8;
+      var penProfile = (window.MbaExamProfiles && window.MbaExamProfiles.getProfile)
+        ? window.MbaExamProfiles.getProfile(result.exam) : null;
+      if (penProfile && penProfile.unattemptedPenalty && penProfile.unattemptedPenalty.threshold) {
+        penThreshold = penProfile.unattemptedPenalty.threshold;
+      }
       penEl.textContent = 'Unattempted-question penalty: -' + Math.abs(s.unattemptedPenalty) +
-        ' marks (XAT Part 1: every unattempted question beyond the first 12 loses 0.10 marks). Already included in the score above.';
+        ' marks (XAT Part 1: every unattempted question beyond the first ' + penThreshold + ' loses 0.10 marks). Already included in the score above.';
       penEl.hidden = false;
     } else {
       penEl.hidden = true;

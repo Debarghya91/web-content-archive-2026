@@ -91,7 +91,7 @@
       palette: 'section',
       calculatorSections: ['QADI'],
       sectionMarkingOverrides: { GK: { correct: 1, wrong: 0, unattempted: 0 } },
-      unattemptedPenalty: { threshold: 12, penalty: 0.10, scope: 'PART1' },
+      unattemptedPenalty: { threshold: 8, penalty: 0.10, scope: 'PART1' },
       saveModel: 'save-next',
       primaryLabel: 'Save & Next',
       markLabel: 'Mark for Review & Next',
@@ -307,11 +307,16 @@
     return String(ans.value).trim() !== '';
   }
 
-  /* XAT rule (XAT 2027: XLRI raised the allowance from 8 to 12):
-     -0.10 per unattempted question beyond the first 12 in
-     Part 1. Returns 0 or a negative number; 0 for every other exam. */
-  function computeUnattemptedPenalty(profile, mock, answers) {
+  /* XAT rule (2026 cycle: -0.10 per unattempted question beyond the
+     first 8 in Part 1; XLRI raised the allowance to 12 for XAT 2027
+     only, so 12 must never be used for these 2026-cycle mocks).
+     Part-1-wide (fix round 6): the penalty is defined over Part 1 as
+     a whole, so it applies only on a full run, never on a
+     sectional/topic run; isFullRun false returns 0. Returns 0 or a
+     negative number; 0 for every other exam. */
+  function computeUnattemptedPenalty(profile, mock, answers, isFullRun) {
     if (!profile || !profile.unattemptedPenalty) { return 0; }
+    if (isFullRun === false) { return 0; }
     var rule = profile.unattemptedPenalty;
     var threshold = Number(rule.threshold || 0);
     var penalty = Number(rule.penalty || 0);

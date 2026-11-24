@@ -41,6 +41,30 @@
     return (m < 10 ? '0' : '') + m + ':' + (sec < 10 ? '0' : '') + sec;
   }
 
+  /* Fix round 6, D-01 (GMAT 60-second break auto-start): the official
+     rule (GMAC "GMAT Exam Policies and Procedures (Focus Edition)",
+     7 May 2024, fidelity-GMAT 2.5, PROVEN) is "Unless you elect to
+     skip the break, your break will automatically start in 60
+     seconds." These pure helpers drive the break-screen countdown in
+     the player: how many seconds of the 60-second wait are left, and
+     whether the wait has expired. A missing offer timestamp means the
+     full wait is still ahead; elapsed time past 60 clamps to zero, so
+     a late reader auto-starts instead of going negative. The official
+     document does NOT state what the 60-second wait deducts from, so
+     the player treats the wait as neutral (credited back to the
+     overall deadline when it ends); that neutrality is a product
+     decision recorded here, not an official rule. */
+  var GMAT_BREAK_AUTO_START_SECONDS = 60;
+  function gmatBreakWaitRemaining(offeredAtMs, nowMs) {
+    if (!offeredAtMs || !nowMs || nowMs <= offeredAtMs) { return GMAT_BREAK_AUTO_START_SECONDS; }
+    var elapsed = Math.floor((nowMs - offeredAtMs) / 1000);
+    return Math.max(0, GMAT_BREAK_AUTO_START_SECONDS - elapsed);
+  }
+  function gmatBreakWaitExpired(offeredAtMs, nowMs) {
+    if (!offeredAtMs || !nowMs) { return false; }
+    return (nowMs - offeredAtMs) >= GMAT_BREAK_AUTO_START_SECONDS * 1000;
+  }
+
   function formatDurationMs(ms) {
     var s = Math.floor((Number(ms) || 0) / 1000);
     if (s < 60) { return s + 's'; }
@@ -251,13 +275,17 @@
 
   /* ---- One authoritative scoring path (G26) ---- */
   /* XAT rule, computed from the profile: -penalty per unattempted
-     question beyond the threshold in the rule's scope. Returns 0 or a
-     negative number; 0 for every other exam. Mirrors the profile
-     module's computeUnattemptedPenalty; the engine owns this copy so
+     question beyond the threshold in the rule's scope. Part-1-wide
+     (fix round 6): the penalty is defined over Part 1 as a whole, so
+     it applies only on a full run, never on a sectional/topic run;
+     isFullRun false returns 0. Returns 0 or a negative number; 0 for
+     every other exam. Mirrors the profile module's
+     computeUnattemptedPenalty; the engine owns this copy so
      scoreAttemptWithProfile needs no second module. */
-  function computeProfileUnattemptedPenalty(profile, mock, answers) {
+  function computeProfileUnattemptedPenalty(profile, mock, answers, isFullRun) {
     var rule = profile && profile.unattemptedPenalty;
     if (!rule) { return 0; }
+    if (isFullRun === false) { return 0; }
     var scopeSections = null;
     if (rule.scope === 'PART1' && profile.parts) {
       for (var i = 0; i < profile.parts.length; i++) {
@@ -285,8 +313,14 @@
      unit tests and the results page (via the stored record) all use
      this function, never a second re-pricing pass, so unit tests,
      live attempts and results-page scores cannot disagree. When
-     profile is null the mock marking is used as-is. */
-  function scoreAttemptWithProfile(mock, answers, profile, subsetItems) {
+     profile is null the mock marking is used as-is. subsetItems scores
+     a subset of the mock (sectional/topic runs). opts (optional):
+     { fullRun }. The XAT unattempted penalty is Part-1-wide (fix
+     round 6), so it applies only when the run is a full run:
+     opts.fullRun false suppresses it, and passing a strict subset in
+     subsetItems suppresses it too. An explicit opts.fullRun true
+     overrides the subset inference. */
+  function scoreAttemptWithProfile(mock, answers, profile, subsetItems, opts) {
     profile = profile || {};
     var marking = (mock && mock.marking) || {};
     function num(v, fallback) {
@@ -308,7 +342,13 @@
       }
       return { correct: correct, wrong: wrong, unattempted: unattempted };
     };
-    var penalty = computeProfileUnattemptedPenalty(profile, mock, answers);
+    var penalty = 0;
+    /* Part-1-wide (fix round 6): see the function comment above. */
+    var fullRun = true;
+    if (opts && opts.fullRun === false) { fullRun = false; }
+    else if (subsetItems && mock && mock.items && subsetItems.length < mock.items.length) { fullRun = false; }
+    if (opts && opts.fullRun === true) { fullRun = true; }
+    if (fullRun) { penalty = computeProfileUnattemptedPenalty(profile, mock, answers); }
     return scoreAttempt(mock, answers, subsetItems, { markingResolver: resolver, unattemptedPenalty: penalty });
   }
 
@@ -339,6 +379,34 @@
     'not-visited': 'Not Visited',
     'skipped': 'Not answered and skipped'
   };
+
+  /* Fix round 5 (R4-01, CAT per-section submit): answer counts for one
+     section, from palette states. A selected-but-unsaved answer counts
+     as not answered, because scoring and the palette read rec.value
+     only. Used by the player for the per-section submit summary. */
+  function sectionAnswerCounts(mock, answers, sectionId) {
+    var counts = { answered: 0, 'not-answered': 0, marked: 0, 'answered-marked': 0, 'not-visited': 0, total: 0 };
+    ((mock && mock.items) || []).forEach(function (item) {
+      if (item.section !== sectionId) { return; }
+      counts.total += 1;
+      var st = paletteState((answers || {})[item.id]);
+      if (counts[st] === undefined) { counts[st] = 0; }
+      counts[st] += 1;
+    });
+    return counts;
+  }
+
+  /* Fix round 5 (R4-02, GMAT unofficial score): the official framing
+     for the score shown immediately after the exam (fidelity-GMAT
+     sections 1 and 2.7, PROVEN from mba.com): Total Score 205-805
+     with section scores 60-90 each, and the Official Score Report
+     within 3 to 5 days. The mock cannot compute the adaptive scaled
+     score, so the note discloses that and points at the raw counts
+     instead. Returns null for every other exam. */
+  function unofficialScoreNote(examKey) {
+    if (String(examKey || '').trim().toUpperCase() !== 'GMAT') { return null; }
+    return 'Unofficial score: on the real GMAT your Total Score (205-805) and your three section scores (60-90 each) appear on screen immediately after the exam, and your Official Score Report follows within 3 to 5 days. This mock cannot compute the adaptive scaled score, so it reports raw counts instead: see your per-section correct answers.';
+  }
 
   /* ---- Diagram rendering: native HTML table or inline SVG, never raster ---- */
   /* Infer the diagram kind from its shape when the kind field is missing,
@@ -566,7 +634,12 @@
     function calcLine() {
       var names = calcNames();
       if (!names.length) { return 'This mock provides no on-screen calculator.'; }
-      if (names.length === secs.length) { return 'The on-screen calculator is available in all sections.'; }
+      /* "All sections" is only true when the run covers the whole exam.
+         A topic/sectional run holds a subset of the exam sections, so the
+         derived mock's section list makes the comparison vacuously true
+         (D-03, final verification, fix round 5): name the sections. */
+      var fullRun = !opts.runModeType || opts.runModeType === 'full';
+      if (fullRun && names.length === secs.length) { return 'The on-screen calculator is available in all sections.'; }
       return 'The on-screen calculator is available in ' + names.join(' and ') + ' only.';
     }
     function sectionListLine() {
@@ -595,7 +668,7 @@
       items.push('Your answer is saved only when you click Save & Next or Mark for Review & Next. Selecting an option alone does not save it. Jumping to another question from the palette without Save & Next does not save your answer.');
       items.push('There is no Previous button. Move back to an earlier question with the palette.');
       items.push('Palette: white not visited, red not answered, green answered, purple marked for review, purple with a green dot answered and marked for review. A marked question with no answer is not evaluated.');
-      items.push('The clock is set at the server. When a section timer reaches zero, the section ends by itself and the next section starts. There is no manual submit in the real exam; this mock keeps a whole-test Submit button instead, and does not yet build the real per-section submit and summary.');
+      items.push('The official mock adds a Submit Section button for each section: submitting a section closes it and moves to the next section, and after all three sections are submitted a summary of your answers is shown. The real exam has no manual submit: when a section timer reaches zero, the section ends by itself and the next section starts.');
       items.push('There is no highlighter and no on-screen scratchpad. Rough work is on the rough sheets provided at the centre.');
       items.push(calcLine());
       if (profile.titaWrongMark !== null && profile.titaWrongMark !== undefined) {
@@ -609,8 +682,15 @@
       var p2Min = partMinutes('PART2') || 10;
       var gk = secById('GK');
       var gkCount = gk ? (gk.question_count || 0) : 20;
-      if (opts.runModeType && opts.runModeType !== 'full') {
-        /* Sectional/topic mode enforces the per-section limits stored
+      if (opts.runModeType === 'topic') {
+        /* Topic mode has no per-section limit: the derived mock sets
+           section time limits to null and enforces one overall clock
+           (mock.duration_minutes, derived from the question count,
+           minimum 10 minutes). State that clock honestly (G23
+           follow-up, fix round 5); never claim a per-section limit. */
+        items.push('Topic mode: this run covers ' + sectionListLine() + ' under one overall ' + totalMin + '-minute clock. There is no separate per-section time limit in this run; the test auto-submits when the overall clock ends.');
+      } else if (opts.runModeType && opts.runModeType !== 'full') {
+        /* Sectional mode enforces the per-section limits stored
            on the mock sections, so the instructions must state them
            instead of the shared Part 1 clock (G23-9). */
         items.push('Sectional mode: each section has its own time limit: ' + sectionListLine() + '.');
@@ -622,7 +702,11 @@
       if (gkMark) {
         items.push('General Knowledge has no negative marking (' + markingLabel(gkMark) + ').');
       }
-      if (profile.unattemptedPenalty) {
+      /* The unattempted penalty is a Part-1-wide rule (it spans all Part 1
+         sections), so it only belongs on a full run. A topic/sectional run
+         is not Part 1, and on a 4-question topic run the line is
+         meaningless (D-04, final verification, fix round 5). */
+      if (profile.unattemptedPenalty && (!opts.runModeType || opts.runModeType === 'full')) {
         items.push('In Part 1, every unattempted question beyond the first ' + profile.unattemptedPenalty.threshold +
           ' loses ' + profile.unattemptedPenalty.penalty + ' marks.');
       }
@@ -635,12 +719,13 @@
       var nmatMode = opts.nmatMode || 'simulation';
       if (nmatMode === 'simulation') {
         items.push('NMAT simulation: you chose your section order before starting. Questions come one at a time with no Previous button and no palette.');
-        items.push('You cannot revisit a question or return to a finished section.');
+        items.push('You can revisit a question only from the review screen at the end of its section, before the section closes; you cannot return to a finished section.');
       } else {
-        items.push('Practice mode: free navigation is on, with the Previous button available. The real NMAT is one-way with no revisiting, and the real console has no palette in either mode.');
+        items.push('Practice mode: free navigation is on, with the Previous button available. The real NMAT has no Previous button and no palette in either mode; revisiting is only through the review screen at the end of a section.');
       }
       items.push('Your answer is recorded when you move to the next question. You can change an answer while its section is still open; once a section ends, its answers are final.');
       items.push('At the end of each section, if time remains, a review screen lists that section questions so you can revise them before the section closes.');
+      items.push('Hide clock hides the section timer; the clock keeps running. This follows the 2011 demo; the current console has not confirmed it.');
       items.push('Each section has its own time limit: ' + sectionListLine() + '. Total time ' + totalMin + ' minutes.');
       items.push('There is no negative marking and no on-screen calculator. There is no palette, no Question Paper in simulation, no highlighter and no on-screen scratchpad. Rough work is on the noteboard booklet and pen provided at the centre.');
       if (profile.simulationDisclosure) { items.push(profile.simulationDisclosure); }
@@ -654,11 +739,14 @@
       if (profile.reviewAndEdit && profile.reviewAndEdit.enabled) {
         items.push('At the end of a section, if time remains, you get a Question Review and Edit screen: you may review as many questions as you like and change up to ' + max + ' answers per section. If the section time runs out, there is no review screen and you move straight on.');
       }
+      var unofficial = unofficialScoreNote('GMAT');
+      if (unofficial) { items.push(unofficial); }
       if (profile.breakMinutes) {
         items.push('One optional ' + profile.breakMinutes + '-minute break is offered between sections.');
       }
       items.push('There is no highlighter. Rough work is on the on-screen whiteboard.');
       items.push(calcLine());
+      items.push('The Data Insights calculator keys follow the description in secondary sources (a Magoosh tour of the calculator in the official Data Insights practice questions and the Princeton Review Math Workout for the GMAT): digits, the four operations, plus/minus, decimal, equals, square root, percent, reciprocal, memory keys MC, MR, MS and M+, backspace, clear entry and clear all. GMAC does not publish the official key list, so the exact set is unconfirmed.');
       if (profile.scaledScoreNote) { items.push(profile.scaledScoreNote); }
     } else if (key === 'GRE') {
       var greOrder = secs.map(function (s) {
@@ -666,11 +754,12 @@
         return (s.name || s.id) + m;
       }).join(', then ');
       items.push('Sections run in this order: ' + greOrder + '.');
+      items.push('Every section opens with its directions. Read them, then begin the section; the section clock starts when you begin.');
       items.push('Your answers are recorded as you enter them and you can change them freely within the section. There is no Save step.');
       items.push('The real test is section-adaptive: how you do in the first Verbal or Quantitative section sets the difficulty of the second section of that measure. This fixed mock does not adapt; both sections are the same for every candidate.');
       items.push('Use Time to hide or show the timer, Help for directions (the clock keeps running), Review to see the section status table, Mark to mark a question, Back and Next to move within the section, and Exit Section to leave a section early.');
       items.push('There is no palette. The Review screen lists each question with whether you answered it and a check mark if you marked it.');
-      items.push('Analytical Writing is always first: one task, 30 minutes. The editor has Cut, Paste and Undo only, and no spellcheck or grammar check.');
+      items.push('Analytical Writing is always first: one task, 30 minutes. The editor has Cut, Paste and Undo only, and no spellcheck or grammar check. There is no Redo button.');
       items.push('In the real test the Verbal and Quantitative sections after Analytical Writing appear in an order assigned by the system; this mock uses the fixed order above.');
       items.push('There is no highlighter and no on-screen scratchpad. Rough work is on the scratch paper provided at the centre.');
       items.push('You cannot return to a finished section.');
@@ -687,6 +776,13 @@
         items.push('There is no Previous button. Move back to an earlier question with the palette.');
         items.push('Palette: white not visited, red not answered, green answered, purple marked for review, purple with a green dot answered and marked for review.');
         items.push('There is no highlighter and no on-screen scratchpad. Rough work is on the rough sheets provided at the centre.');
+      }
+      if (key === 'CMAT') {
+        /* R4-06: the Exam Summary wording (REPRO, shared NTA platform)
+           and the auto-end rule (PROVEN, CMAT 2027 bulletin Appendix IV
+           point 2: when the timer reaches zero the examination ends by
+           itself and the candidate is not required to end or submit it). */
+        items.push('SUBMIT opens the Exam Summary, showing how many questions you answered out of the total. Once you submit, your responses will be locked and cannot be changed. When the timer reaches zero, the examination ends by itself; you are not required to end or submit it.');
       }
       if (key === 'SNAP') {
         items.push('Your answers are recorded as you select them. Use Next to move on, Mark for Review to flag a question, and Clear to remove your answer. There is no Save & Next button and no Previous button.');
@@ -753,6 +849,27 @@
     return list;
   }
 
+  /* GRE per-measure raw counts (fix round 5, R4-03): ETS reports no
+     combined GRE score (fidelity-GRE 1: Verbal Reasoning 130-170,
+     Quantitative Reasoning 130-170, Analytical Writing 0-6), so the
+     results page shows raw correct counts per measure instead of one
+     combined total. score is a scoreAttempt result; its sections
+     carry id, correct and total. A section whose id starts with VR
+     counts toward Verbal, QR toward Quantitative; anything else
+     (including the AW essay section) is ignored. */
+  function greMeasureCounts(score) {
+    var out = { VR: { correct: 0, total: 0 }, QR: { correct: 0, total: 0 } };
+    (score && score.sections || []).forEach(function (sec) {
+      var key = null;
+      if (sec.id && sec.id.indexOf('VR') === 0) { key = 'VR'; }
+      else if (sec.id && sec.id.indexOf('QR') === 0) { key = 'QR'; }
+      if (!key) { return; }
+      out[key].correct += Number(sec.correct || 0);
+      out[key].total += Number(sec.total || 0);
+    });
+    return out;
+  }
+
   /* Read every stored result in this browser, for the analytics page. */
   function readAllResults(storage) {
     var out = [];
@@ -787,8 +904,15 @@
      Other exams keep the 19-key basic panel they already had: CAT's
      exact key set is UNPROVEN (fidelity-CAT section 11: reported
      keys are LEAD only), so no keys are added to it on unproven
-     evidence. The evaluator tokenises the expression and uses
-     shunting-yard; eval() and Function() are never used. */
+     evidence. GMAT Data Insights gets its own 27-key set (fix round
+     6, D-02, LEAD: convergent Magoosh and Princeton Review
+     descriptions, exact set UNPROVEN, GMAC publishes no key list).
+     The evaluator tokenises the expression and uses shunting-yard;
+     eval() and Function() are never used. Note the evaluator keeps
+     standard precedence (1+2x4 is 9) for every exam: Magoosh says
+     the DI calculator does not understand order of operations and
+     works left to right, which the shared evaluator does not
+     reproduce; that difference is UNSETTLED, not built here. */
   var CALC_KEYS_BASIC = ['C', 'back', '+/-', '/', '7', '8', '9', 'x', '4', '5', '6', '-', '1', '2', '3', '+', '0', '.', '='];
   /* 5 rows of 5: memory and clear, then digits with operators. */
   var CALC_KEYS_GRE = ['MC', 'MR', 'M+', 'C', 'CE',
@@ -797,8 +921,31 @@
     '1', '2', '3', '-', ')',
     '0', '.', '+/-', '+', '='];
 
+  /* GMAT Data Insights only, 27 keys in 5 columns: memory and clear
+     on the top row, digits with operators, then CE and CA/C. LEAD
+     (fix round 6, D-02): convergent secondary sources, Magoosh's
+     tour of the calculator in GMAC's official DI practice questions
+     and the Princeton Review "Math Workout for the GMAT", agree on
+     digits, + - x /, +/-, decimal, =, sqrt, %, 1/x, MC, MR, MS, M+,
+     BS, CE and a clear-all key (Magoosh labels it CA, Princeton
+     labels it C, so the player labels it CA/C). GMAC publishes no
+     key list, so the exact set is UNPROVEN; the settle step is the
+     free official practice tests 1 and 2 on mba.com, opening the
+     calculator in Data Insights. This set is NOT the GRE set: no
+     parentheses, no C, and it adds %, 1/x, MS, BS and CA/C. The
+     panel only ever opens in Data Insights: GMAT calculatorSections
+     is ['DI'], so routing on examKey here is DI-only in practice. */
+  var CALC_KEYS_GMAT_DI = ['MC', 'MR', 'MS', 'M+', 'BS',
+    '7', '8', '9', '/', '√',
+    '4', '5', '6', 'x', '%',
+    '1', '2', '3', '-', '1/x',
+    '0', '.', '+/-', '+', '=',
+    'CE', 'CA/C'];
+
   function calcKeysForExam(examKey) {
-    return (examKey === 'GRE' ? CALC_KEYS_GRE : CALC_KEYS_BASIC).slice();
+    if (examKey === 'GRE') { return CALC_KEYS_GRE.slice(); }
+    if (examKey === 'GMAT') { return CALC_KEYS_GMAT_DI.slice(); }
+    return CALC_KEYS_BASIC.slice();
   }
 
   function calcHasTransferDisplay(examKey) { return examKey === 'GRE'; }
@@ -998,6 +1145,13 @@
         if (!isFinite(n)) { return; }
         stored = (stored === null ? 0 : stored) + n;
       },
+      /* MS (GMAT DI): replace the stored value outright. M+ adds;
+         MS overwrites, erasing whatever was stored before. */
+      store: function (v) {
+        var n = Number(v);
+        if (!isFinite(n)) { return; }
+        stored = n;
+      },
       recall: function () { return stored; },
       clear: function () { stored = null; },
       has: function () { return stored !== null; }
@@ -1008,8 +1162,8 @@
      player and the Node tests drive the same logic. press() takes
      one key id from calcKeysForExam(examKey); display() is what the
      panel shows. In an ERROR state only C does anything (ETS: press
-     C to clear). CE clears the entry only and leaves a pending
-     expression alone. */
+     C to clear; CA/C clears on the GMAT DI set). CE clears the
+     entry only and leaves a pending expression alone. */
   function createCalculator(examKey) {
     var mem = createCalcMemory();
     var st = { display: '0', entry: '', tokens: [], fresh: true, justEvaluated: false, error: false };
@@ -1104,6 +1258,47 @@
       }
     }
 
+    /* Percent key (GMAT DI, LEAD: Magoosh and Princeton agree).
+       130 + 15% is 149.50 and 400 x 20% is 80, so % is not just
+       divide-by-100: after + or - the entry is that percent OF the
+       number on the left (15% of 130 is 19.5, then = adds it), while
+       after x or / (or with no pending operator) the entry itself
+       becomes hundredths (20% is 0.2). The result lands in the
+       entry at once, so no = is needed after % (Princeton). */
+    function percentKey() {
+      var v;
+      if (st.entry !== '') { v = parseFloat(st.entry); }
+      else if (st.justEvaluated) { st.entry = st.display; st.justEvaluated = false; v = parseFloat(st.entry); }
+      else { return; }
+      if (!isFinite(v)) { return; }
+      var last = lastToken();
+      var pct = v / 100;
+      if ((last === '+' || last === '-') && st.tokens.length >= 2) {
+        var base = parseFloat(st.tokens[st.tokens.length - 2]);
+        if (isFinite(base)) { pct = base * v / 100; }
+      }
+      st.entry = calcFormatResult(pct, examKey);
+      if (st.entry === errText()) { showError(); return; }
+      st.display = st.entry;
+      st.fresh = false;
+    }
+
+    /* Reciprocal key (GMAT DI, LEAD: Magoosh and Princeton agree).
+       2 then 1/x is 0.5, applied at once with no = needed. 1/0 is
+       an error, cleared by CA/C (C on the GRE set). */
+    function reciprocalKey() {
+      var v;
+      if (st.entry !== '') { v = parseFloat(st.entry); }
+      else if (st.justEvaluated) { st.entry = st.display; st.justEvaluated = false; v = parseFloat(st.entry); }
+      else { return; }
+      if (!isFinite(v)) { return; }
+      if (v === 0) { showError(); return; }
+      st.entry = calcFormatResult(1 / v, examKey);
+      if (st.entry === errText()) { showError(); return; }
+      st.display = st.entry;
+      st.fresh = false;
+    }
+
     function signChange() {
       if (st.entry !== '' && st.entry !== '-') {
         st.entry = String(-parseFloat(st.entry));
@@ -1137,18 +1332,21 @@
 
     function press(key) {
       if (st.error) {
-        if (key === 'C') {
+        if (key === 'C' || key === 'CA/C') {
           st.display = '0'; st.entry = ''; st.tokens = [];
           st.fresh = true; st.justEvaluated = false; st.error = false;
         }
         return;
       }
-      if (key === 'C') {
+      /* C and CA/C are both clear-all: C is the GRE/basic key, CA/C
+         is the GMAT DI key (Magoosh labels it CA, Princeton C). */
+      if (key === 'C' || key === 'CA/C') {
         st.display = '0'; st.entry = ''; st.tokens = [];
         st.fresh = true; st.justEvaluated = false; st.error = false;
       } else if (key === 'CE') {
         st.entry = ''; st.display = '0'; st.fresh = true;
-      } else if (key === 'back') {
+      } else if (key === 'back' || key === 'BS') {
+        /* 'back' is the basic-panel key; 'BS' is the GMAT DI key. */
         if (st.entry !== '') {
           st.entry = st.entry.slice(0, -1);
           st.display = (st.entry === '' || st.entry === '-') ? '0' : st.entry;
@@ -1161,8 +1359,17 @@
         }
       } else if (key === '+/-') { signChange(); }
       else if (key === '√') { sqrtKey(); }
+      else if (key === '%') { percentKey(); }
+      else if (key === '1/x') { reciprocalKey(); }
       else if (key === '(') { openParen(); }
       else if (key === ')') { closeParen(); }
+      else if (key === 'MS') {
+        var sv = currentValue();
+        if (isFinite(sv)) { mem.store(sv); }
+        /* MS completes the entry, like M+: the next digit starts a
+           new number instead of appending to the stored one. */
+        st.fresh = true;
+      }
       else if (key === 'M+') {
         var v = currentValue();
         if (isFinite(v)) { mem.add(v); }
@@ -1194,10 +1401,31 @@
     };
   }
 
+  /* R4-05 (fix round 5): the SIU SNAP mock shows scores only after two
+     separate steps, END TEST then VIEW RESULT (PROVEN, snaptest.org
+     mock instructions). The order is a contract: Submit, END TEST,
+     VIEW RESULT. */
+  function snapSubmitSteps() { return ['Submit', 'END TEST', 'VIEW RESULT']; }
+
+  /* R4-06 (fix round 5): the CMAT Exam Summary as attested for the
+     shared NTA platform (REPRO): SUBMIT leads to an Exam Summary
+     confirming how many were answered out of the total, with a
+     confirmation warning that responses will be locked. This is
+     platform-attested, not CMAT-bulletin-proven: the CMAT 2027
+     bulletin Appendix IV describes auto-end at zero only and no
+     manual submit. */
+  function cmatExamSummaryLine(answered, total) {
+    return 'Exam Summary: ' + answered + ' answered out of ' + total +
+      ' questions. Once you submit, your responses will be locked and cannot be changed.';
+  }
+
   return {
     escapeHtml: escapeHtml,
     formatHMS: formatHMS,
     formatMS: formatMS,
+    GMAT_BREAK_AUTO_START_SECONDS: GMAT_BREAK_AUTO_START_SECONDS,
+    gmatBreakWaitRemaining: gmatBreakWaitRemaining,
+    gmatBreakWaitExpired: gmatBreakWaitExpired,
     formatDurationMs: formatDurationMs,
     markingLabel: markingLabel,
     buildSetContext: buildSetContext,
@@ -1212,6 +1440,8 @@
     maxScore: maxScore,
     paletteState: paletteState,
     PALETTE_LABELS: PALETTE_LABELS,
+    sectionAnswerCounts: sectionAnswerCounts,
+    unofficialScoreNote: unofficialScoreNote,
     renderDiagramHTML: renderDiagramHTML,
     inferDiagramKind: inferDiagramKind,
     correctAnswerText: correctAnswerText,
@@ -1219,8 +1449,11 @@
     optionLetter: optionLetter,
     percentileForScore: percentileForScore,
     buildExamInstructions: buildExamInstructions,
+    snapSubmitSteps: snapSubmitSteps,
+    cmatExamSummaryLine: cmatExamSummaryLine,
     mockDifficultyLabel: mockDifficultyLabel,
     topicAccuracy: topicAccuracy,
+    greMeasureCounts: greMeasureCounts,
     readAllResults: readAllResults,
     calcKeysForExam: calcKeysForExam,
     calcHasTransferDisplay: calcHasTransferDisplay,

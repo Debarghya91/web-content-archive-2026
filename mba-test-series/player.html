@@ -43,6 +43,7 @@
       <button type="button" class="mba-btn mba-btn-secondary mba-util-btn" id="qpBtn">Question Paper</button>
       <button type="button" class="mba-btn mba-btn-secondary mba-util-btn" id="instrBtn">Instructions</button>
       <button type="button" class="mba-btn mba-btn-secondary mba-util-btn" id="helpBtn">Help</button>
+      <button type="button" class="mba-btn mba-btn-secondary mba-util-btn" id="clockToggleBtn" hidden>Hide clock</button>
       <button type="button" class="mba-btn mba-btn-secondary mba-util-btn" id="scratchBtn">Scratchpad</button>
       <button type="button" class="mba-btn mba-btn-secondary mba-util-btn" id="fontMinus" aria-label="Decrease text size">A-</button>
       <button type="button" class="mba-btn mba-btn-secondary mba-util-btn" id="fontPlus" aria-label="Increase text size">A+</button>
@@ -65,6 +66,7 @@
         </ul>
         <p class="mba-palette-counts" id="paletteCounts"></p>
         <p style="margin:12px 0 0"><button type="button" class="mba-btn mba-btn-secondary" id="submitBtnSide" style="width:100%">Submit Test</button></p>
+        <p style="margin:12px 0 0" id="catSubmitSectionWrap" hidden><button type="button" class="mba-btn mba-btn-secondary" id="catSubmitSectionBtn" style="width:100%">Submit Section</button></p>
         <p class="mba-small mba-muted" style="margin:8px 0 0" id="paletteSaveNote">A refresh keeps your progress and your remaining time.</p>
       </aside>
     </div>
@@ -86,6 +88,29 @@
     <p>
       <button type="button" class="mba-btn mba-btn-primary" id="confirmSubmit">Yes, submit my test</button>
       <button type="button" class="mba-btn mba-btn-secondary" id="cancelSubmit">Keep working</button>
+    </p>
+  </div>
+</div>
+
+<div class="mba-modal-backdrop" id="catSectionModal" hidden>
+  <div class="mba-modal" role="dialog" aria-modal="true" aria-labelledby="catSectionModalTitle" aria-describedby="catSectionModalDesc">
+    <h2 id="catSectionModalTitle">Submit this section?</h2>
+    <p id="catSectionModalDesc">This is how the official CAT mock works: each section has its own Submit button. Submitting closes the section and moves to the next one; you cannot return to it. The real exam has no manual submit and ends each section by itself when its time runs out.</p>
+    <div id="catSectionBody"></div>
+    <p>
+      <button type="button" class="mba-btn mba-btn-primary" id="catConfirmSection">Submit section</button>
+      <button type="button" class="mba-btn mba-btn-secondary" id="catCancelSection">Keep working</button>
+    </p>
+  </div>
+</div>
+
+<div class="mba-modal-backdrop" id="snapEndModal" hidden>
+  <div class="mba-modal" role="dialog" aria-modal="true" aria-labelledby="snapEndTitle" aria-describedby="snapEndDesc">
+    <h2 id="snapEndTitle">Test submitted</h2>
+    <p id="snapEndDesc">Your responses are submitted. Click END TEST, then VIEW RESULT to see your scores. No percentile is calculated for the mock test.</p>
+    <p>
+      <button type="button" class="mba-btn mba-btn-primary" id="snapEndTestBtn">END TEST</button>
+      <button type="button" class="mba-btn mba-btn-primary" id="snapViewResultBtn" hidden>VIEW RESULT</button>
     </p>
   </div>
 </div>
@@ -116,6 +141,7 @@
       <li id="helpPrevLine">Previous goes back to the previous question where your exam allows it. Some exams do not allow going back.</li>
       <li>Clear Response removes your answer for this question.</li>
       <li id="helpPaletteLine">The palette shows answered, not answered, marked and not visited questions. Tap a palette number to jump where your exam allows it.</li>
+      <li id="helpClockItem" hidden>Hide clock hides the section timer; the clock keeps running. This control follows the 2011 demo; the current console has not confirmed it.</li>
       <li id="helpQpItem">Question Paper lists every question. Tap Go to open a question where your exam allows it.</li>
       <li>Instructions shows this exam's rules again.</li>
       <li id="helpScratchItem">Scratchpad is rough work for the current question and is never scored.</li>
@@ -149,7 +175,7 @@
 <div class="mba-modal-backdrop" id="gmatReviewModal" hidden>
   <div class="mba-modal" role="dialog" aria-modal="true" aria-labelledby="gmatReviewTitle" aria-describedby="gmatReviewDesc gmatTimeoutNote">
     <h2 id="gmatReviewTitle">Review this section</h2>
-    <p class="mba-muted mba-small" id="gmatReviewDesc">Check every question in this section. You can change up to 3 answers per section. Changes are counted once per question, against the answer you had when this review opened.</p>
+    <p class="mba-muted mba-small" id="gmatReviewDesc">Check every question in this section. Bookmarked questions are marked in the list. You can change up to 3 answers per section. Changes are counted once per question, against the answer you had when this review opened.</p>
     <p id="gmatTimeoutNote" class="mba-live-note" hidden>Time expired for this section. Review your answers, then finish the section to move on.</p>
     <p id="gmatChangeCount" class="mba-small"></p>
     <div id="gmatReviewBody"></div>
@@ -169,6 +195,16 @@
     <p>
       <button type="button" class="mba-btn mba-btn-primary" id="greFinishSection">Finish section</button>
       <button type="button" class="mba-btn mba-btn-secondary" id="greReviewClose">Keep working</button>
+    </p>
+  </div>
+</div>
+
+<div class="mba-modal-backdrop" id="greDirectionsModal" hidden>
+  <div class="mba-modal" role="dialog" aria-modal="true" aria-labelledby="greDirectionsTitle" aria-describedby="greDirectionsBody">
+    <h2 id="greDirectionsTitle">Section directions</h2>
+    <div id="greDirectionsBody"></div>
+    <p>
+      <button type="button" class="mba-btn mba-btn-primary" id="greBeginSection">Begin section</button>
     </p>
   </div>
 </div>
@@ -193,9 +229,10 @@
   <div class="mba-modal" role="dialog" aria-modal="true" aria-labelledby="breakModalTitle" aria-describedby="breakBody">
     <h2 id="breakModalTitle">Optional break</h2>
     <p id="breakBody"></p>
+    <p class="mba-muted" id="breakCountdown" hidden>Your break will start automatically in <span id="breakCountdownSecs">60</span> seconds.</p>
     <p class="mba-big-score" id="breakClock" hidden>10:00</p>
     <p>
-      <button type="button" class="mba-btn mba-btn-primary" id="breakStart">Start 10-minute break</button>
+      <button type="button" class="mba-btn mba-btn-primary" id="breakStart">Start break now</button>
       <button type="button" class="mba-btn mba-btn-secondary" id="breakEnd" hidden>End break early</button>
       <button type="button" class="mba-btn mba-btn-secondary" id="breakSkip">Skip break</button>
     </p>
@@ -268,7 +305,7 @@
         ],
         calculatorSections: ['QADI'],
         sectionMarkingOverrides: { GK: { correct: 1, wrong: 0, unattempted: 0 } },
-        unattemptedPenalty: { threshold: 12, penalty: 0.10, scope: 'PART1' },
+        unattemptedPenalty: { threshold: 8, penalty: 0.10, scope: 'PART1' },
         saveModel: 'save-next', primaryLabel: 'Save & Next',
         markLabel: 'Mark for Review & Next', markAdvances: true,
         showPrevious: false, showQuestionPaper: true, showScratchpad: false });
@@ -277,7 +314,7 @@
       return extend(base, { examName: 'NMAT', navigation: 'one-way', sectionOrder: 'candidate-choice',
         sectionTimer: 'per-section', allowPrevious: false, palette: 'none',
         nmatModes: ['standard', 'simulation'],
-        simulationDisclosure: 'NMAT simulation matches the real NMAT navigation: you choose the section order once, then questions come one at a time with no Previous button and no palette. You cannot revisit a question or return to a finished section. You must answer each question before Next will move on, as in the real exam. The real exam is also computer-adaptive, which a fixed mock cannot reproduce.',
+        simulationDisclosure: 'NMAT simulation matches the real NMAT navigation: you choose the section order once, then questions come one at a time with no Previous button and no palette. You can revisit a question only from the review screen at the end of its section, before the section closes; you cannot return to a finished section. You must answer each question before Next will move on, as in the real exam. The real exam is also computer-adaptive, which a fixed mock cannot reproduce.',
         scaledScoreNote: 'The real NMAT reports a scaled score from 36 to 360 (12 to 120 per section) produced by its adaptive algorithm. This mock reports a raw score out of 108 with +1 per correct answer and no negative marking. No scaled score is shown here because the real scale cannot be computed from a fixed mock.',
         saveModel: 'commit-on-move', primaryLabel: 'Next',
         markLabel: 'Mark for Review', markAdvances: false,
@@ -346,9 +383,14 @@
     };
   }
 
-  function localComputeUnattemptedPenalty(profile, mock, answers) {
+  /* Part-1-wide (fix round 6): the XAT unattempted penalty is defined
+     over Part 1 as a whole, so it applies only on a full run, never on
+     a sectional/topic run; isFullRun false returns 0. Threshold 8 is
+     the 2026-cycle figure; 12 is the XAT 2027 figure. */
+  function localComputeUnattemptedPenalty(profile, mock, answers, isFullRun) {
     var rule = profile.unattemptedPenalty;
     if (!rule) { return 0; }
+    if (isFullRun === false) { return 0; }
     var part1Sections = [];
     if (profile.parts) {
       for (var i = 0; i < profile.parts.length; i++) {
@@ -415,9 +457,9 @@
       if (EP && EP.makeMarkingResolver) { try { return EP.makeMarkingResolver(pr, mm); } catch (e) {} }
       return localMakeMarkingResolver(pr, mm);
     },
-    computeUnattemptedPenalty: function (pr, mk, ans) {
-      if (EP && EP.computeUnattemptedPenalty) { try { return EP.computeUnattemptedPenalty(pr, mk, ans); } catch (e) {} }
-      return localComputeUnattemptedPenalty(pr, mk, ans);
+    computeUnattemptedPenalty: function (pr, mk, ans, isFullRun) {
+      if (EP && EP.computeUnattemptedPenalty) { try { return EP.computeUnattemptedPenalty(pr, mk, ans, isFullRun); } catch (e) {} }
+      return localComputeUnattemptedPenalty(pr, mk, ans, isFullRun);
     },
     canGoPrevious: function (pr) {
       if (EP && EP.canGoPrevious) { try { return EP.canGoPrevious(pr); } catch (e) {} }
@@ -513,12 +555,39 @@
   var breakHandle = null;
   var breakStartedAt = null;
   var breakNextSectionId = null;
+  /* Fix round 6, D-01 (GMAT 60-second break auto-start): the wait
+     before the break auto-starts. breakOfferedAt is the wall-clock
+     time the break screen opened; it is persisted in state.break so a
+     refresh resumes the countdown instead of resetting it.
+     breakWaitHandle ticks the countdown once a second. */
+  var breakWaitHandle = null;
+  var breakOfferedAt = null;
   var finalizing = false;
   var submitFailed = false;
   var saveFailedShown = false;
   /* GRE Time button state: the timer display is hidden, the clock keeps
      running (ETS behaviour). Not persisted; a fresh attempt shows it. */
   var timeHidden = false;
+
+  /* GRE essay editor undo history (fix round 5, R4-03): the ETS editor
+     has Undo but no Redo, so one stack of past values is enough. The
+     stack resets when the candidate moves to a different essay, and
+     essayClipboard holds text cut inside the editor for Paste when
+     the system clipboard cannot be read. */
+  var essayUndoQid = null;
+  var essayUndoStack = [];
+  var essayUndoLast = '';
+  var essayUndoLastPush = 0;
+  var essayClipboard = '';
+  function essayPushHistory(force) {
+    var now = Date.now();
+    if (!force && now - essayUndoLastPush < 1500) { return; }
+    if (essayUndoStack.length === 0 || essayUndoStack[essayUndoStack.length - 1] !== essayUndoLast) {
+      essayUndoStack.push(essayUndoLast);
+      if (essayUndoStack.length > 200) { essayUndoStack.shift(); }
+    }
+    essayUndoLastPush = now;
+  }
 
   function $(id) { return document.getElementById(id); }
 
@@ -559,6 +628,8 @@
      never open on a Go button deep in a table. */
   var MODAL_SAFE_FOCUS = {
     submitModal: 'cancelSubmit',
+    catSectionModal: 'catCancelSection',
+    snapEndModal: 'snapEndTestBtn',
     qpModal: 'qpClose',
     instrModal: 'instrClose',
     helpModal: 'helpClose',
@@ -567,6 +638,7 @@
     nmatAnswerModal: 'nmatAnswerOk',
     gmatReviewModal: 'gmatFinishSection',
     greReviewModal: 'greFinishSection',
+    greDirectionsModal: 'greBeginSection',
     xatModal: 'xatContinue',
     breakModal: 'breakStart'
   };
@@ -614,6 +686,13 @@
       var f = modalFocusable(el);
       if (f.length) { f[0].focus(); }
     }
+    /* R4-20 (fix round 5): a dialog must open at its title. Focusing a
+       footer control scrolls the dialog so that control is visible,
+       which left the NMAT review modal (safe focus Finish section)
+       opening scrolled to its footer. Reset the dialog scroll after
+       focusing; focus stays on the safe control. */
+    var dialog = el.querySelector('.mba-modal');
+    if (dialog) { dialog.scrollTop = 0; }
     /* F-15: announce the dialog by its title when it opens. */
     var title = el.querySelector('h2');
     if (title) { announce(title.textContent + ' dialog opened.'); }
@@ -1076,7 +1155,7 @@
 
   /* Scroll the top of the test screen (utility strip first, then the
      section tabs, then the question card) just clear of the sticky
-     header — but only when it is actually under the header, so an
+     header, but only when it is actually under the header, so an
      in-place navigation never yanks the page. The anchor is the
      utility strip, the topmost row, so clearing it clears the tabs
      and the card too. */
@@ -1149,13 +1228,18 @@
     var sec = sectionById(target.section);
     /* Start this section's clock the moment the user first enters it.
        ensureSectionDeadline is a no-op when a deadline already exists,
-       so a resume never resets a running section clock. */
-    ensureSectionDeadline(sec);
+       so a resume never resets a running section clock. GRE is the
+       exception (fix round 5, R4-03): every GRE section opens with its
+       directions, and the clock starts only when the candidate begins
+       the section, so the directions gate runs first and the deadline
+       is created by Begin section instead. */
+    if (!showGreDirectionsIfNeeded(sec, prevSectionId)) { ensureSectionDeadline(sec); }
     saveState();
     renderQuestion();
     renderPalette();
     renderTabs();
     renderTimers();
+    refreshSubmitVisibility();
     refreshCalcVisibility();
     /* F-15: a section change is announced on its own, before the
        question position the focus move announces. */
@@ -1232,7 +1316,30 @@
       openNmatReview(sec.id);
       return;
     }
+    /* Last question of this section. GRE (fix round 5, R4-03): Next on
+       the last question opens the Review screen, the section-end path
+       the console documents, instead of jumping silently into the next
+       section. Finish section in the review advances; Keep working
+       returns to the question. Whether the real console opens the
+       review on Next here is UNPROVEN (no ETS source states it); the
+       review itself is PROVEN available throughout the section, and
+       this matches the NMAT section-end pattern already in this
+       player. The tick advances the section directly when the time has
+       expired. */
+    if (examKey === 'GRE') {
+      if (sectionExpired(sec)) { return; }
+      openGreReview();
+      return;
+    }
     /* Last question of this section. */
+    /* Round 5 (GMAT, R4-02): finishing the last question with no time
+       left does not open the Question Review and Edit screen (mba.com,
+       PROVEN); the candidate moves straight to the break or the next
+       section, the same path tick() takes at zero time. */
+    if (profile.navigation === 'order-choice-review' && sectionExpired(sec)) {
+      moveOnAfterGmatSection(sec);
+      return;
+    }
     var secs = effectiveSections();
     var sIdx = sectionIdx(sec.id);
     if (sIdx >= secs.length - 1) {
@@ -1369,7 +1476,13 @@
     var aside = $('paletteAside');
     /* No palette at all on the NMAT, GMAT and GRE consoles (fidelity
        spec, PROVEN): NMAT uses its per-section review screen, GMAT its
-       Question Review and Edit list, GRE its Review screen table. */
+       Question Review and Edit list, GRE its Review screen table.
+       Fix round 5 (R4-03): the grid template kept a 300px second
+       column even with the palette hidden, leaving a blank gutter
+       beside the question. A palette-less console is a single-column
+       layout, so the grid collapses to one column here. */
+    var playerGrid = document.querySelector('.mba-player-grid');
+    if (playerGrid) { playerGrid.classList.toggle('no-palette', P.paletteMode(profile) === 'none'); }
     if (P.paletteMode(profile) === 'none') { aside.hidden = true; return; }
     aside.hidden = false;
     /* SNAP puts its summary on the LEFT (SIU mock page, PROVEN), and
@@ -1554,12 +1667,29 @@
     if (item.type === 'essay') {
       var text = rec.value === null || rec.value === undefined ? '' : rec.value;
       var words = String(text).trim() === '' ? 0 : String(text).trim().split(/\s+/).length;
+      /* Fix round 5 (R4-03): the ETS editor is a split screen, prompt
+         on the left, writing area on the right (PROVEN, ETS Analytical
+         Writing page; fidelity-GRE 2.3), with Cut, Paste and Undo
+         buttons above the writing area. ETS lists only insert, delete,
+         cut-and-paste and undo: there is NO Redo button, and none is
+         rendered here. The live word count is a practice aid; the ETS
+         editor shows none, and the count says so. */
       return '<div class="mba-essay-workspace">' +
+        '<div class="mba-essay-prompt">' +
         '<p class="mba-essay-prompt-label"><b>Essay prompt</b></p>' +
         '<p class="mba-q-text">' + E.escapeHtml(item.question || '') + '</p>' +
+        '</div>' +
+        '<div class="mba-essay-write">' +
         '<p><label for="essayInput"><b>Write your response:</b></label></p>' +
+        '<div class="mba-essay-tools" role="group" aria-label="Essay editor tools">' +
+        '<button type="button" class="mba-btn mba-btn-secondary" id="essayCut">Cut</button>' +
+        '<button type="button" class="mba-btn mba-btn-secondary" id="essayPaste">Paste</button>' +
+        '<button type="button" class="mba-btn mba-btn-secondary" id="essayUndo">Undo</button>' +
+        '</div>' +
+        '<p class="mba-small mba-muted">The editor has Cut, Paste and Undo only, and no spellcheck or grammar check. There is no Redo button.</p>' +
         '<textarea id="essayInput" class="mba-essay-input mba-essay-large" placeholder="Write your essay here." aria-describedby="essayCount">' + E.escapeHtml(text) + '</textarea>' +
-        '<p class="mba-wordcount" id="essayCount" aria-live="polite">' + words + ' words. Essays are not auto-scored; the results page shows the model outline for comparison.</p>' +
+        '<p class="mba-wordcount" id="essayCount" aria-live="polite">' + words + ' words. Word count is a practice aid; the ETS editor shows no live word count. Essays are not auto-scored; the results page shows the model outline for comparison.</p>' +
+        '</div>' +
         '</div>';
     }
     return '';
@@ -1679,7 +1809,7 @@
     }
     var nmatNote = '';
     if (examKey === 'NMAT' && state.nmatMode === 'standard') {
-      nmatNote = '<p class="mba-live-note">Practice mode: free navigation is on. The real NMAT is one-way with no revisiting, so switch to NMAT simulation from the start screen for the real navigation.</p>';
+      nmatNote = '<p class="mba-live-note">Practice mode: free navigation is on. The real NMAT has no Previous button and no palette; revisiting is only through the review screen at the end of a section, so switch to NMAT simulation from the start screen for the real navigation.</p>';
     }
     card.innerHTML =
       '<div class="mba-q-meta"><span class="mba-chip">' + E.escapeHtml(sec.name) + '</span>' +
@@ -1840,18 +1970,82 @@
     }
     var essay = $('essayInput');
     if (essay) {
-      essay.addEventListener('input', function () {
-        rec.value = essay.value; saveState(); renderPalette();
+      if (essayUndoQid !== item.id) {
+        essayUndoQid = item.id;
+        essayUndoStack = [];
+        essayUndoLast = essay.value;
+        essayUndoLastPush = 0;
+      }
+      /* The live word count updates only when the count itself
+         changes, so typing inside a word does not re-announce the
+         same number (F-10). */
+      function essayRefreshCount() {
         var w = essay.value.trim() === '' ? 0 : essay.value.trim().split(/\s+/).length;
         var c = $('essayCount');
         if (c) {
-          /* F-10: update the live word count only when the count
-             itself changes, so typing inside a word does not
-             re-announce the same number. */
-          var newText = w + ' words. Essays are not auto-scored; the results page shows the model outline for comparison.';
+          var newText = w + ' words. Word count is a practice aid; the ETS editor shows no live word count. Essays are not auto-scored; the results page shows the model outline for comparison.';
           if (c.textContent !== newText) { c.textContent = newText; }
         }
+      }
+      essay.addEventListener('input', function () {
+        essayPushHistory(false);
+        essayUndoLast = essay.value;
+        rec.value = essay.value; saveState(); renderPalette();
+        essayRefreshCount();
       });
+      /* ETS editor tools (fix round 5, R4-03): Cut, Paste, Undo. No
+         Redo exists in the ETS editor, so none is wired here. Cut
+         removes the selected text into the editor clipboard; Paste
+         reads the system clipboard and falls back to that clipboard
+         when the browser refuses access; Undo restores the last
+         pushed value. Every tool records the answer through the
+         exam's own save model (GRE autosave). */
+      var cutBtn = $('essayCut');
+      if (cutBtn) {
+        cutBtn.addEventListener('click', function () {
+          essay.focus();
+          var s = essay.selectionStart, e = essay.selectionEnd;
+          if (s === null || s === undefined || s === e) { toast('Select text in your essay first to cut it.'); return; }
+          essayPushHistory(true);
+          essayClipboard = essay.value.slice(s, e);
+          essay.setRangeText('', s, e, 'end');
+          essayUndoLast = essay.value;
+          rec.value = essay.value; saveState(); renderPalette(); essayRefreshCount();
+          toast('Cut to the clipboard.');
+        });
+      }
+      var pasteBtn = $('essayPaste');
+      if (pasteBtn) {
+        pasteBtn.addEventListener('click', function () {
+          essay.focus();
+          var done = function (text) {
+            if (!text) { toast('Nothing to paste. Cut or copy text first, or use Ctrl+V.'); return; }
+            essayPushHistory(true);
+            essay.setRangeText(text, essay.selectionStart, essay.selectionEnd, 'end');
+            essayUndoLast = essay.value;
+            rec.value = essay.value; saveState(); renderPalette(); essayRefreshCount();
+          };
+          if (navigator.clipboard && navigator.clipboard.readText) {
+            navigator.clipboard.readText().then(done, function () { done(essayClipboard); });
+          } else { done(essayClipboard); }
+        });
+      }
+      var undoBtn = $('essayUndo');
+      if (undoBtn) {
+        undoBtn.addEventListener('click', function () {
+          essay.focus();
+          var cur = essay.value;
+          var prev = null;
+          while (essayUndoStack.length) {
+            var v = essayUndoStack.pop();
+            if (v !== cur) { prev = v; break; }
+          }
+          if (prev === null) { toast('Nothing to undo.'); return; }
+          essay.value = prev;
+          essayUndoLast = prev;
+          rec.value = prev; saveState(); renderPalette(); essayRefreshCount();
+        });
+      }
     }
     renderUtility();
   }
@@ -1908,6 +2102,21 @@
         helpPalette.textContent = 'The summary on the left shows answered, not answered, marked and not visited questions. Tap a summary number to jump where your exam allows it.';
       } else { helpPalette.hidden = false; }
     }
+    /* R4-04 (fix round 5): NMAT clock hide/show. STALE: the only source
+       is the 2011 Pearson VUE demo (hideable clock, top-right, toggled
+       by clicking the clock symbol); the current console has not
+       confirmed it, so this control is flagged as 2011-demo behaviour
+       in Help and in the instructions, never as proven. It reuses the
+       GRE Time mechanism: the display hides, the clock keeps running. */
+    var clockBtn = $('clockToggleBtn');
+    if (clockBtn) {
+      if (examKey === 'NMAT') {
+        clockBtn.hidden = false;
+        clockBtn.textContent = timeHidden ? 'Show clock' : 'Hide clock';
+      } else { clockBtn.hidden = true; }
+    }
+    var helpClock = $('helpClockItem');
+    if (helpClock) { helpClock.hidden = examKey !== 'NMAT'; }
     /* Transfer Display is enabled only on a numeric Numeric Entry
        question; the question just changed, so refresh it here. */
     refreshTransferButton();
@@ -1962,6 +2171,28 @@
     }
   }
 
+  /* R4-04 (fix round 5): on the NMAT console the whole-test End Test
+     control appears only in the final section; earlier sections end
+     through Finish section on the per-section review screen, which
+     moves to the next section. The player Submit Test button used to
+     be shown in every section, letting a candidate end the whole test
+     from section one. For NMAT, show Submit Test only while the
+     candidate is in the last section of their chosen order; every
+     other exam keeps it always. The button label stays Submit Test:
+     the exact official wording is UNPROVEN (fidelity spec section 5),
+     and the auto-submit at zero time still finalizes regardless of
+     section, because that path does not go through this button. */
+  function refreshSubmitVisibility() {
+    var allowed = true;
+    if (examKey === 'NMAT' && state) {
+      var secs = effectiveSections();
+      var cur = currentSection();
+      allowed = !!cur && secs.length > 0 && sectionIdx(cur.id) >= secs.length - 1;
+    }
+    $('submitBtnTop').hidden = !allowed;
+    $('submitBtnSide').hidden = !allowed;
+  }
+
   function tick() {
     if (!state || state.submitted) { return; }
     var overall = overallRemainingMs();
@@ -1999,7 +2230,26 @@
         renderTabs();
         return;
       }
-      if (!$('gmatReviewModal').hidden || !$('greReviewModal').hidden || !$('nmatReviewModal').hidden || !$('xatModal').hidden) {
+      if (!$('gmatReviewModal').hidden && profile.navigation === 'order-choice-review') {
+        /* Round 5 (GMAT, R4-02): review time counts inside the 45
+           minutes (fidelity-GMAT section 2.4). If the section clock
+           hits zero while the Question Review and Edit screen is open,
+           the section ends with no further review: close the review
+           and fall through to the timeout path below, which moves to
+           the break or the next section. While time remains the review
+           stays open, as before. */
+        var gSec = currentSection();
+        if (gSec && sectionExpired(gSec)) {
+          closeModal('gmatReviewModal');
+          toast('Time for section ' + gSec.name + ' ended while reviewing. There is no time left to review, so you move on without the Question Review and Edit screen.');
+          announce('Time for section ' + gSec.name + ' ended while reviewing. There is no time left to review, so you move on without the Question Review and Edit screen.');
+        } else {
+          renderTimers();
+          renderTabs();
+          return;
+        }
+      }
+      if (!$('greReviewModal').hidden || !$('nmatReviewModal').hidden || !$('xatModal').hidden) {
         /* A review or transition modal is already open for this
            section end: do not re-trigger it every second. */
         renderTimers();
@@ -2014,22 +2264,7 @@
            pre-existing G23-7/G28-3 behaviour that opened the review on
            timeout. The manual path (finishing the last question with
            time left) still opens the review via openGmatReview. */
-        var gSecs = effectiveSections();
-        var gIdx = sectionIdx(sec.id);
-        var gNext = null;
-        for (var gi = gIdx + 1; gi < gSecs.length; gi++) {
-          if (!sectionExpired(gSecs[gi])) { gNext = gSecs[gi]; break; }
-        }
-        if (!gNext) {
-          if (submitFailed) { renderTimers(); return; }
-          toast('Time is up for the last section. Submitting your test.');
-          announce('Time is up for the last section. Submitting your test.');
-          finalize(true);
-          return;
-        }
-        toast('Time for section ' + sec.name + ' ended. There is no time left to review, so you move on without the Question Review and Edit screen.');
-        announce('Time for section ' + sec.name + ' ended. There is no time left to review, so you move on without the Question Review and Edit screen.');
-        openBreak(gNext.id);
+        moveOnAfterGmatSection(sec);
         renderTimers();
         renderTabs();
         return;
@@ -2069,14 +2304,51 @@
 
   /* ---------- submit ---------- */
 
-  function openSubmitModal() {
+  function openSubmitModal(opts) {
+    opts = opts || {};
     /* G28-10: no working Submit control exists before the test starts;
        a stray call with no active attempt must never throw. */
     if (!state) { return; }
+    /* Reset the modal chrome every open: the CMAT Exam Summary and
+       the SNAP wording below overwrite it per exam. */
+    $('submitModalTitle').textContent = 'Submit this test?';
+    $('submitModalDesc').textContent = 'Check the summary below. Once you submit, answers cannot be changed and your result is calculated from the mock\'s marking scheme.';
+    /* R4-06: CMAT shows the NTA Exam Summary (REPRO, shared NTA
+       platform): answered out of the total, with the locked warning. */
+    if (examKey === 'CMAT') {
+      var totalQ = (mock.items || []).length;
+      var answeredQ = 0;
+      (mock.items || []).forEach(function (it) {
+        var r = state.answers[it.id];
+        if (r && r.value !== null && r.value !== undefined && String(r.value).trim() !== '') { answeredQ += 1; }
+      });
+      $('submitModalTitle').textContent = 'Exam Summary';
+      $('submitModalDesc').textContent = E.cmatExamSummaryLine(answeredQ, totalQ);
+    }
+    /* Round 5 (R4-02): the GMAT unofficial score appears on screen
+       immediately after the exam (mba.com, PROVEN), so the submit
+       dialog says so before the candidate confirms. */
+    if (examKey === 'GMAT') {
+      $('submitModalTitle').textContent = 'Finish the test?';
+      $('submitModalDesc').textContent = 'Check the summary below. Your unofficial score appears on screen immediately after you submit: Total Score 205-805 and section scores 60-90 each. The Official Score Report follows within 3 to 5 days.';
+    }
+    /* Round 5 (R4-01): after all three sections are submitted, the
+       official CAT mock shows a summary of the answers. This dialog
+       is that end summary; the table below lists every section. */
+    if (examKey === 'CAT' && opts.catEndSummary) {
+      $('submitModalTitle').textContent = 'Summary of your answers';
+      $('submitModalDesc').textContent = 'Mock summary: after all three sections are submitted, the official mock shows this summary of your answers. Check it, then submit to view your result.';
+    }
     /* SNAP uses the SIU wording: the summary offers Submit or Go Back. */
     if (examKey === 'SNAP') {
       $('confirmSubmit').textContent = 'Submit';
       $('cancelSubmit').textContent = 'Go Back';
+    } else if (examKey === 'GMAT') {
+      $('confirmSubmit').textContent = 'Submit and view unofficial score';
+      $('cancelSubmit').textContent = 'Keep working';
+    } else if (examKey === 'CAT' && opts.catEndSummary) {
+      $('confirmSubmit').textContent = 'Submit and view result';
+      $('cancelSubmit').textContent = 'Keep working';
     } else {
       $('confirmSubmit').textContent = 'Yes, submit my test';
       $('cancelSubmit').textContent = 'Keep working';
@@ -2093,6 +2365,65 @@
       '<th scope="col">Not answered</th><th scope="col">Marked</th><th scope="col">Answered and marked</th><th scope="col">Not visited</th></tr></thead><tbody>' +
       rows + '</tbody></table>';
     openModal('submitModal');
+  }
+
+  /* R4-05: SNAP END TEST and VIEW RESULT are two separate steps
+     (PROVEN, SIU mock instructions). Confirming Submit in the summary
+     only opens step 1 (END TEST); scores appear only after step 2
+     (VIEW RESULT) finalizes and navigates to the results page. */
+  function openSnapEndModal() {
+    $('snapEndTestBtn').hidden = false;
+    $('snapViewResultBtn').hidden = true;
+    openModal('snapEndModal');
+  }
+
+  function snapAdvanceToViewResult() {
+    $('snapEndTestBtn').hidden = true;
+    $('snapViewResultBtn').hidden = false;
+    $('snapViewResultBtn').focus();
+    announce('END TEST done. Click VIEW RESULT to see your scores.');
+  }
+
+  /* Round 5 (R4-01): CAT per-section Submit, as the official mock
+     does (mock-only behaviour, LEAD: the real exam has no manual
+     submit). The modal shows this section's counts from the shared
+     palette-state helper; confirming closes the section. */
+  function openCatSectionModal() {
+    if (!state || examKey !== 'CAT') { return; }
+    var sec = currentSection();
+    if (!sec) { return; }
+    var counts = E.sectionAnswerCounts(mock, state.answers, sec.id);
+    $('catSectionBody').innerHTML = '<p>Section ' + E.escapeHtml(sec.name) + ': ' + counts.total + ' questions. ' +
+      counts.answered + ' answered, ' + counts['not-answered'] + ' not answered, ' + counts.marked +
+      ' marked for review, ' + counts['answered-marked'] + ' answered and marked, ' + counts['not-visited'] +
+      ' not visited. A pending selection that was never saved with Save and Next is not counted as answered.</p>';
+    openModal('catSectionModal');
+  }
+
+  function submitCatSection() {
+    if (!state || examKey !== 'CAT') { return; }
+    var sec = currentSection();
+    if (!sec) { return; }
+    closeModal('catSectionModal');
+    /* Save and Next model (fidelity-CAT section 9, PROVEN): only Save
+       and Next or Mark for Review and Next saves an answer. Submitting
+       the section does not save a pending selection; it is discarded,
+       exactly as a palette jump discards it. */
+    discardPending(currentQid);
+    if (!state.catSubmittedSections) { state.catSubmittedSections = {}; }
+    state.catSubmittedSections[sec.id] = true;
+    saveState();
+    var secs = effectiveSections();
+    var idx = sectionIdx(sec.id);
+    if (idx >= secs.length - 1) {
+      toast('Section ' + sec.name + ' submitted. Here is the summary of your answers.');
+      announce('Section ' + sec.name + ' submitted. Here is the summary of your answers.');
+      openSubmitModal({ catEndSummary: true });
+      return;
+    }
+    toast('Section ' + sec.name + ' submitted. Moving to ' + secs[idx + 1].name + '.');
+    announce('Section ' + sec.name + ' submitted. Moving to ' + secs[idx + 1].name + '.');
+    advanceToSection(secs[idx + 1].id);
   }
 
   /* Shown when finalize() cannot write the result record (G28-9).
@@ -2137,7 +2468,9 @@
        disagree. */
     var result;
     try {
-      result = E.scoreAttemptWithProfile(mock, state.answers, profile);
+      /* Part-1-wide (fix round 6): the XAT unattempted penalty applies
+         only on a full run, so the run mode travels with the score call. */
+      result = E.scoreAttemptWithProfile(mock, state.answers, profile, null, { fullRun: isFullMode() });
     } catch (e) {
       result = E.scoreAttempt(mock, state.answers);
     }
@@ -2194,10 +2527,17 @@
      +, -, x, division, =, square root, +/-, parentheses, M+ / MR /
      MC, C / CE; 8-digit display; ERROR on division by zero, square
      root of a negative number, or a result over 99,999,999 (press C
-     to clear). Other exams keep the 19-key basic panel: CAT's exact
-     key set is UNPROVEN (fidelity-CAT section 11, reported keys
-     LEAD only), so no keys are added to it on unproven evidence.
-     Shown only where the exam provides one. */
+     to clear). GMAT Data Insights (fix round 6, D-02, LEAD) gets its
+     own 27-key set: digits, decimal point, +, -, x, division, =,
+     square root, +/-, percent, reciprocal, MC / MR / MS / M+, BS,
+     CE, CA/C; the exact official set is UNPROVEN (GMAC publishes no
+     key list) and the set is labelled as a secondary-source
+     description, not the official keys. Other exams keep the 19-key
+     basic panel: CAT's exact key set is UNPROVEN (fidelity-CAT
+     section 11, reported keys LEAD only), so no keys are added to it
+     on unproven evidence. Shown only where the exam provides one:
+     GMAT is DI only, so the GMAT set can only ever open in Data
+     Insights. */
   var calc = E.createCalculator(examKey);
 
   function calcRender() {
@@ -2271,6 +2611,7 @@
 
   function setupCalculator() {
     var isGre = examKey === 'GRE';
+    var isGmat = examKey === 'GMAT';
     var keys = calc.keys();
     var grid = $('calcGrid');
     grid.innerHTML = '';
@@ -2278,19 +2619,25 @@
       grid.classList.add('mba-calc-grid-5');
       $('calcPanel').classList.add('mba-calc-gre');
     }
+    if (isGmat) {
+      grid.classList.add('mba-calc-grid-5');
+      $('calcPanel').classList.add('mba-calc-gmat');
+    }
     var labels = {
       'back': 'Backspace', '+/-': 'Change sign', '√': 'Square root',
       '(': 'Open parenthesis', ')': 'Close parenthesis',
       'M+': 'Memory plus', 'MR': 'Memory recall', 'MC': 'Memory clear',
+      'MS': 'Memory store', 'BS': 'Backspace', 'CA/C': 'Clear all',
+      '%': 'Percent', '1/x': 'Reciprocal',
       'CE': 'Clear entry', 'C': 'Clear'
     };
     keys.forEach(function (k) {
       var b = document.createElement('button');
       b.type = 'button';
       b.textContent = k === 'back' ? 'Bksp' : k;
-      if (k === '/' || k === 'x' || k === '-' || k === '+' || k === '√' || k === '(' || k === ')') { b.className = 'op'; }
-      if (k === 'M+' || k === 'MR' || k === 'MC' || k === 'CE') { b.className = 'fn'; }
-      if (k === '=') { b.className = 'eq'; if (!isGre) { b.style.gridColumn = 'span 2'; } }
+      if (k === '/' || k === 'x' || k === '-' || k === '+' || k === '√' || k === '%' || k === '1/x' || k === '(' || k === ')') { b.className = 'op'; }
+      if (k === 'M+' || k === 'MR' || k === 'MC' || k === 'MS' || k === 'BS' || k === 'CE' || k === 'CA/C') { b.className = 'fn'; }
+      if (k === '=') { b.className = 'eq'; if (!isGre && !isGmat) { b.style.gridColumn = 'span 2'; } }
       b.setAttribute('aria-label', labels[k] || ('Calculator key ' + k));
       b.addEventListener('click', function () { calc.press(k); calcRender(); });
       grid.appendChild(b);
@@ -2419,8 +2766,16 @@
      candidate revise answers while the section clock runs. Access is
      from the last question of the section only (the 2011-demo rule,
      STALE and unproven for the current console); it is not offered
-     when the section time has expired. A Go jump backwards is blocked
-     in simulation by the one-way rule in goToIndex. */
+     when the section time has expired. A Go jump from this screen is
+     the sanctioned revisit path: the handbook and the Pearson VUE
+     SAARC client reference both state candidates may mark questions
+     and review them within a section only (re-checked 24 Nov 2026),
+     so Go bypasses the simulation one-way block, same as the GMAT
+     review Go. The one-way block still applies everywhere else: there
+     is no Previous button and no palette in simulation, and the
+     Question Paper is removed. The stricter EMEA line ("once answered,
+     the candidate may not return to the previous question") is a
+     variant the fidelity spec does not treat as operative for India. */
   function openNmatReview(secId) {
     var sec = sectionById(secId);
     if (!sec) { return; }
@@ -2447,7 +2802,11 @@
         var all = runItems();
         for (var k = 0; k < all.length; k++) {
           if (all[k].id === qid) {
-            if (goToIndex(k)) { closeModal('nmatReviewModal'); }
+            /* R4-10 (fix round 5): review-originated Go revises within
+               the section even in simulation (see the comment above
+               openNmatReview). Targets are same-section by
+               construction, so force only lifts the one-way block. */
+            if (goToIndex(k, { force: true })) { closeModal('nmatReviewModal'); }
             break;
           }
         }
@@ -2494,7 +2853,10 @@
       } else if ((item.type === 'tita' || item.type === 'essay') && rec && rec.value) {
         ans = String(rec.value).slice(0, 24);
       }
-      html += '<tr><td>' + (i + 1) + '</td><td>' + E.escapeHtml(E.PALETTE_LABELS[st]) + '</td><td>' +
+      /* Round 5 (R4-02): mba.com says the Review and Edit screen
+         indicates the questions the candidate bookmarked. */
+      var bm = (rec && rec.bookmarked) ? ' <span class="mba-badge bookmarked">Bookmarked</span>' : '';
+      html += '<tr><td>' + (i + 1) + '</td><td>' + E.escapeHtml(E.PALETTE_LABELS[st]) + bm + '</td><td>' +
         E.escapeHtml(ans) + '</td><td><button type="button" class="mba-btn mba-btn-secondary" data-qid="' +
         E.escapeHtml(item.id) + '">Go to question</button></td></tr>';
     });
@@ -2520,6 +2882,31 @@
     openModal('gmatReviewModal', { closable: !opts.timeExpired });
   }
 
+  /* Round 5 (GMAT, R4-02): the shared end-of-section path for a GMAT
+     section with no time left, used by tick() at zero time and by
+     nextQuestion() when the last question is finished after expiry.
+     No Review and Edit screen (mba.com, PROVEN); the candidate moves
+     to the optional break screen or the next section, or the test is
+     auto-submitted after the last section. */
+  function moveOnAfterGmatSection(sec) {
+    var secs = effectiveSections();
+    var idx = sectionIdx(sec.id);
+    var next = null;
+    for (var i = idx + 1; i < secs.length; i++) {
+      if (!sectionExpired(secs[i])) { next = secs[i]; break; }
+    }
+    if (!next) {
+      if (submitFailed) { return; }
+      toast('Time is up for the last section. Submitting your test.');
+      announce('Time is up for the last section. Submitting your test.');
+      finalize(true);
+      return;
+    }
+    toast('Time for section ' + sec.name + ' ended. There is no time left to review, so you move on without the Question Review and Edit screen.');
+    announce('Time for section ' + sec.name + ' ended. There is no time left to review, so you move on without the Question Review and Edit screen.');
+    openBreak(next.id);
+  }
+
   function finishGmatSection() {
     closeModal('gmatReviewModal');
     var sec = currentSection();
@@ -2530,12 +2917,88 @@
     openBreak(secs[idx + 1].id);
   }
 
+  /* ---------- GRE section directions (fix round 5, R4-03) ----------
+     Every GRE section opens with its directions, and the section clock
+     starts only when the candidate begins the section (PROVEN, ETS:
+     the candidate reads the directions, then starts the section
+     clock; fidelity-GRE 2.1). The exact ETS wording is inside
+     POWERPREP (UNPROVEN here), so this screen states the rules in
+     the mock's own words and says so; it never presents invented
+     text as ETS wording. The directions modal is not closable: the
+     only way forward is Begin section. Reading time is credited back
+     to the overall deadline, so directions never consume test time. */
+  var greDirectionsSectionId = null;
+  var greDirectionsOpenedAt = null;
+
+  function greDirectionsHTML(sec) {
+    var items = sectionItems(sec.id);
+    var isAW = sec.id === 'AW';
+    var isQR = sec.id && sec.id.indexOf('QR') === 0;
+    var head = '<p><b>' + E.escapeHtml(sec.name) + '.</b> ' + items.length +
+      ' question' + (items.length === 1 ? '' : 's') + ', ' +
+      (sec.time_limit_minutes === null || sec.time_limit_minutes === undefined
+        ? 'no sectional time limit' : sec.time_limit_minutes + ' minutes') + '.</p>';
+    var rules = [];
+    if (isAW) {
+      rules.push('One Analyze an Issue task. The essay editor has Cut, Paste and Undo only, and no spellcheck or grammar check. There is no Redo button.');
+      rules.push('The prompt is on the left and the writing area is on the right. The word count under the writing area is a practice aid; the ETS editor shows no live word count.');
+    } else {
+      rules.push('One question at a time. Use Back and Next to move within this section, Mark to mark a question, and Review to see this section status table.');
+      rules.push('Your answers are recorded as you enter them and you can change them freely while this section is open. There is no Save step.');
+      if (isQR) {
+        rules.push('The on-screen calculator is available in this section: open it with the Calculator button.');
+      }
+    }
+    rules.push('Use Time to hide or show the timer, and Help for directions. The clock keeps running while Help is open.');
+    rules.push('Use Exit Section to leave this section early. Once this section ends, by time or by Exit Section, you cannot return to it.');
+    var list = '<ul>' + rules.map(function (r) { return '<li>' + E.escapeHtml(r) + '</li>'; }).join('') + '</ul>';
+    return head + list +
+      '<p class="mba-muted mba-small">Mock directions based on the official ETS rules for this section. The exact wording on the real console is shown inside POWERPREP.</p>';
+  }
+
+  function showGreDirectionsIfNeeded(sec, prevSectionId) {
+    if (examKey !== 'GRE' || !sec || !state) { return false; }
+    if (prevSectionId !== undefined && prevSectionId !== null && prevSectionId === sec.id) { return false; }
+    if (!state.greDirectionsShown) { state.greDirectionsShown = {}; }
+    if (state.greDirectionsShown[sec.id]) { return false; }
+    if (sectionDeadline(sec.id)) { return false; }
+    greDirectionsSectionId = sec.id;
+    greDirectionsOpenedAt = Date.now();
+    $('greDirectionsTitle').textContent = sec.name + ': directions';
+    $('greDirectionsBody').innerHTML = greDirectionsHTML(sec);
+    openModal('greDirectionsModal', { closable: false });
+    return true;
+  }
+
+  function beginGreSection() {
+    var secId = greDirectionsSectionId;
+    closeModal('greDirectionsModal');
+    greDirectionsSectionId = null;
+    var sec = secId ? sectionById(secId) : currentSection();
+    if (!state || !sec) { greDirectionsOpenedAt = null; return; }
+    if (!state.greDirectionsShown) { state.greDirectionsShown = {}; }
+    state.greDirectionsShown[sec.id] = true;
+    if (greDirectionsOpenedAt && state.overallEndsAt) {
+      state.overallEndsAt += Date.now() - greDirectionsOpenedAt;
+    }
+    greDirectionsOpenedAt = null;
+    saveState();
+    ensureSectionDeadline(sec);
+    renderTimers();
+    renderTabs();
+    focusQuestionCard();
+  }
+
   function openGreReview(opts) {
     opts = opts || {};
     var sec = currentSection();
     if (!sec) { return; }
     var items = sectionItems(sec.id);
-    var html = '<table><thead><tr><th scope="col">Q</th><th scope="col">Status</th><th scope="col">Your answer</th><th scope="col"></th></tr></thead><tbody>';
+    /* Fix round 5 (R4-03): the Review screen is a table, and a marked
+       question carries a check mark (PROVEN, ETS India script plus the
+       Kaplan description of the ETS interface, fidelity-GRE 2.4). The
+       Status text alone did not show one. */
+    var html = '<table><thead><tr><th scope="col">Q</th><th scope="col">Status</th><th scope="col">Marked</th><th scope="col">Your answer</th><th scope="col"></th></tr></thead><tbody>';
     items.forEach(function (item, i) {
       var rec = state.answers[item.id];
       var st = palState(rec);
@@ -2545,7 +3008,10 @@
       } else if ((item.type === 'tita' || item.type === 'essay') && rec && rec.value) {
         ans = String(rec.value).slice(0, 24);
       }
-      html += '<tr><td>' + (i + 1) + '</td><td>' + E.escapeHtml(E.PALETTE_LABELS[st]) + '</td><td>' +
+      var markedCell = (rec && rec.marked)
+        ? '<td aria-label="Marked for review">&#10003;</td>'
+        : '<td aria-label="Not marked"></td>';
+      html += '<tr><td>' + (i + 1) + '</td><td>' + E.escapeHtml(E.PALETTE_LABELS[st]) + '</td>' + markedCell + '<td>' +
         E.escapeHtml(ans) + '</td><td><button type="button" class="mba-btn mba-btn-secondary" data-qid="' +
         E.escapeHtml(item.id) + '">Go</button></td></tr>';
     });
@@ -2609,10 +3075,30 @@
     $('breakStart').hidden = false;
     $('breakEnd').hidden = true;
     $('breakSkip').hidden = false;
+    $('breakCountdown').hidden = true;
+    if (!opts.resume) {
+      /* Fix round 6, D-01 (GMAT 60-second break auto-start): a fresh
+         break offer starts the official 60-second wait (GMAC Policies
+         and Procedures, PROVEN, fidelity-GMAT 2.5). The offer time is
+         persisted in state.break so a refresh resumes the countdown
+         instead of resetting it; resumeBreak handles the resume path
+         and never comes through here. */
+      breakOfferedAt = Date.now();
+      if (state) {
+        state.break = { offeredAt: breakOfferedAt, nextSectionId: breakNextSectionId, minutes: (profile.breakMinutes || 10) };
+        saveState();
+      }
+      startBreakWait();
+    }
     openModal('breakModal', { closable: false });
   }
 
   function endBreak() {
+    /* The wait is over by the time a break ends, but clear its
+       interval here too so no stale tick can fire after the modal
+       closes (the skip path reaches endBreak with the wait still
+       running; the wait itself is credited in the skip handler). */
+    clearBreakWait();
     if (breakHandle) { clearInterval(breakHandle); breakHandle = null; }
     var elapsed = 0;
     var brk = state && state.break;
@@ -2635,7 +3121,68 @@
     }
   }
 
+  /* Fix round 6, D-01 (GMAT 60-second break auto-start): the official
+     rule (GMAC "GMAT Exam Policies and Procedures (Focus Edition)",
+     7 May 2024, fidelity-GMAT 2.5, PROVEN) is "Unless you elect to
+     skip the break, your break will automatically start in 60
+     seconds." The break screen therefore shows a 60-second countdown
+     and auto-starts the break on expiry. The official document does
+     NOT state what the 60-second wait deducts from, so the player
+     treats the wait as neutral: the elapsed wait is credited back to
+     the overall deadline when the wait ends (start now, skip, or
+     auto-start), exactly as the break itself is credited in endBreak.
+     The section clock does not run during the wait or the break: the
+     next section's deadline is created only when the candidate
+     advances to it (ensureSectionDeadline), and tick() never advances
+     while the break modal is open. */
+  function breakWaitRemainingSecs() {
+    return E.gmatBreakWaitRemaining(breakOfferedAt, Date.now());
+  }
+
+  function renderBreakCountdown() {
+    $('breakCountdownSecs').textContent = String(breakWaitRemainingSecs());
+    $('breakCountdown').hidden = false;
+  }
+
+  function clearBreakWait() {
+    if (breakWaitHandle) { clearInterval(breakWaitHandle); breakWaitHandle = null; }
+  }
+
+  /* Credit the elapsed pre-break wait back to the overall deadline so
+     the wait deducts from nothing, then forget the offer timestamp so
+     it can never be credited twice (for example across a reload, where
+     the credit already happened before the reload). A no-op when no
+     wait is running, which is the resume-break path. */
+  function creditBreakWait() {
+    if (!breakOfferedAt) { return; }
+    var elapsedMs = Math.min(Date.now() - breakOfferedAt, E.GMAT_BREAK_AUTO_START_SECONDS * 1000);
+    breakOfferedAt = null;
+    if (elapsedMs > 0 && state && state.overallEndsAt) {
+      state.overallEndsAt += elapsedMs;
+      saveState();
+    }
+  }
+
+  function startBreakWait() {
+    clearBreakWait();
+    renderBreakCountdown();
+    breakWaitHandle = setInterval(function () {
+      if (breakWaitRemainingSecs() <= 0) {
+        clearBreakWait();
+        $('breakCountdown').hidden = true;
+        startBreakCountdown();
+        return;
+      }
+      renderBreakCountdown();
+    }, 1000);
+  }
+
   function startBreakCountdown(resumeRemaining) {
+    /* Starting the break ends the 60-second wait: credit it so the
+       wait deducts from nothing. No-op on the resume path, where the
+       wait was already credited before the reload. */
+    clearBreakWait();
+    creditBreakWait();
     var total = (profile.breakMinutes || 10) * 60;
     var remaining = total;
     if (typeof resumeRemaining === 'number') {
@@ -2661,6 +3208,7 @@
     }
     $('breakClock').hidden = false;
     $('breakClock').textContent = E.formatMS(remaining);
+    $('breakCountdown').hidden = true;
     $('breakStart').hidden = true;
     $('breakEnd').hidden = false;
     $('breakSkip').hidden = true;
@@ -2668,6 +3216,11 @@
        focus drops to the body while the modal is open. Move it to the
        End button that just appeared. */
     $('breakEnd').focus();
+    /* Fix round 6, D-01: the overall clock is credited for the wait
+       above, but renderTimers only runs on the 1-second tick, so the
+       display would show the pre-credit value until the next tick.
+       Re-render now so the credited overall time shows at once. */
+    renderTimers();
     if (breakHandle) { clearInterval(breakHandle); }
     breakHandle = setInterval(function () {
       remaining -= 1;
@@ -2681,10 +3234,26 @@
      elapsed break time is preserved: the modal reopens with the
      remaining time, and the overall clock is credited only when the
      break actually ends. If the whole break elapsed while the page was
-     away, credit the full break and move on. */
+     away, credit the full break and move on.
+     Fix round 6, D-01: the same resume covers a refresh during the
+     60-second wait. The offer timestamp lives in the saved attempt
+     state, so the countdown resumes from it instead of resetting; if
+     the wait already expired while the page was away, the break
+     auto-starts, exactly as if the countdown had run out on screen. */
   function resumeBreak() {
     var brk = state && state.break;
-    if (!brk || !brk.startedAt) { return; }
+    if (!brk || (!brk.startedAt && !brk.offeredAt)) { return; }
+    if (!brk.startedAt) {
+      breakOfferedAt = brk.offeredAt;
+      if (E.gmatBreakWaitExpired(brk.offeredAt, Date.now())) {
+        openBreak(brk.nextSectionId, { resume: true });
+        startBreakCountdown();
+        return;
+      }
+      openBreak(brk.nextSectionId, { resume: true });
+      startBreakWait();
+      return;
+    }
     var totalMs = (brk.minutes || profile.breakMinutes || 10) * 60000;
     var elapsed = Date.now() - brk.startedAt;
     if (elapsed >= totalMs) {
@@ -2794,7 +3363,7 @@
     }
     if (!resumable && !submittedExisting && isFullMode() && examKey === 'NMAT') {
       var disclosure = profile.simulationDisclosure ||
-        'NMAT simulation matches the real NMAT navigation: one question at a time, no going back, no palette.';
+        'NMAT simulation matches the real NMAT navigation: one question at a time, no Previous button, no palette; revisiting only from the review screen at the end of a section.';
       choiceHtml += '<h3>Choose your mode</h3>' +
         '<p><label><input type="radio" name="nmatMode" value="simulation" checked> NMAT simulation (real navigation)</label></p>' +
         '<p><label><input type="radio" name="nmatMode" value="standard"> Standard practice (free navigation)</label></p>' +
@@ -2806,9 +3375,12 @@
        the distinction prominent before the candidate starts. */
     var xatGkNote = '';
     if (examKey === 'XAT') {
+      /* The unattempted-penalty clause is a Part-1-wide rule: state it only
+         on a full run. On a topic/sectional run the run is not Part 1 and
+         the clause cannot apply to the run (D-04 companion, fix round 5). */
       xatGkNote = '<p class="mba-live-note"><b>General Knowledge (Part 2) has no negative marking.</b> ' +
         'Part 1 marking is ' + E.escapeHtml(E.markingLabel(mock.marking)) +
-        ', and every unattempted Part 1 question beyond the first ' + (profile.unattemptedPenalty ? profile.unattemptedPenalty.threshold : 12) + ' loses 0.10 marks.</p>';
+        (isFullMode() ? ', and every unattempted Part 1 question beyond the first ' + (profile.unattemptedPenalty ? profile.unattemptedPenalty.threshold : 8) + ' loses 0.10 marks.</p>' : '.</p>');
     }
     var actionHtml;
     if (submittedExisting) {
@@ -2878,7 +3450,7 @@
         if (r.value === 'simulation') {
           d.textContent = profile.simulationDisclosure || d.textContent;
         } else {
-          d.textContent = 'Standard practice: free navigation with the palette and Previous button. The real NMAT is one-way with no revisiting.';
+          d.textContent = 'Standard practice: free navigation with the palette and Previous button. The real NMAT has no Previous button and no palette; revisiting is only through the review screen at the end of a section.';
         }
         var nmatNote = $('nmatSimNote');
         if (nmatNote) { nmatNote.hidden = (r.value !== 'simulation'); }
@@ -2903,10 +3475,17 @@
     if (!s.gmatChanges) { s.gmatChanges = {}; }
     if (!s.gmatChangedQids) { s.gmatChangedQids = {}; }
     if (!s.gmatReviewed) { s.gmatReviewed = {}; }
+    /* Fix round 5 (GRE directions): an attempt that predates the
+       per-section directions screen has no record of which sections
+       already showed it; start with none shown. */
+    if (!s.greDirectionsShown) { s.greDirectionsShown = {}; }
     if (!('break' in s)) { s.break = null; }
     /* Round 4 (GMAT): a break already in progress when an old attempt
        resumes counts as taken; otherwise the flag starts false. */
     if (!('gmatBreakTaken' in s)) { s.gmatBreakTaken = !!(s.break && s.break.startedAt); }
+    /* Round 5 (CAT, R4-01): sections submitted with the mock's
+       per-section Submit button. */
+    if (!s.catSubmittedSections) { s.catSubmittedSections = {}; }
     if (s.fontScale === undefined || s.fontScale === null) { s.fontScale = 1; }
     if (s.version !== 2) {
       s.version = 2;
@@ -2976,7 +3555,7 @@
          loaded: answers, currentIndex and deadlines are kept, but the
          section order becomes the derived mock's sections and
          currentSectionId becomes the section holding the resumed
-         question. (Decision: reset, not refuse-resume — refusing would
+         question. (Decision: reset, not refuse-resume; refusing would
          force a fresh start and discard saved answers for a worse UX.) */
       if (!isFullMode()) {
         state.sectionOrder = sortedSections().map(function (s) { return s.id; });
@@ -3010,6 +3589,8 @@
         gmatReviewed: {},
         gmatReviewSnapshot: null,
         gmatBreakTaken: false,
+        catSubmittedSections: {},
+        greDirectionsShown: {},
         break: null
       };
       if (isXatFull()) {
@@ -3041,11 +3622,20 @@
        clock as the overall timer. The overall deadline still runs
        underneath for every exam and still auto-submits at zero. */
     $('overallTimer').hidden = (profile.sectionTimer === 'per-section' || profile.sectionTimer === 'shared-part');
-    $('submitBtnTop').hidden = false;
+    refreshSubmitVisibility();
+    /* Round 5 (CAT, R4-01): the mock's per-section Submit button lives
+       in the palette aside and is shown for CAT only. */
+    var catWrap = $('catSubmitSectionWrap');
+    if (catWrap) { catWrap.hidden = examKey !== 'CAT'; }
     $('providerTag').hidden = false;
     $('barTitle').textContent = profile.examName || mock.exam;
     var first = currentItem();
-    if (first) { ensureSectionDeadline(currentSection()); }
+    /* GRE (fix round 5, R4-03): the first section opens with its
+       directions, and its clock starts only when the candidate begins
+       the section. On a resume the gate returns false (directions were
+       already shown, or a deadline already runs) and the deadline is
+       created here as before. */
+    if (first && !showGreDirectionsIfNeeded(currentSection(), null)) { ensureSectionDeadline(currentSection()); }
     renderTabs();
     renderQuestion();
     renderPalette();
@@ -3062,8 +3652,10 @@
     if (timerHandle) { clearInterval(timerHandle); }
     timerHandle = setInterval(tick, 1000);
     /* A break that was running when the page reloaded resumes with
-       its remaining time instead of being lost (G22 D1). */
-    if (state.break && state.break.startedAt) { resumeBreak(); }
+       its remaining time instead of being lost (G22 D1). Fix round 6,
+       D-01: a refresh during the 60-second wait resumes the countdown
+       the same way, from the persisted offer timestamp. */
+    if (state.break && (state.break.startedAt || state.break.offeredAt)) { resumeBreak(); }
   }
 
   /* Test-only duration hook: REMOVED in fidelity round 3 (required
@@ -3152,7 +3744,19 @@
     }
     $('submitBtnTop').addEventListener('click', openSubmitModal);
     $('submitBtnSide').addEventListener('click', openSubmitModal);
-    $('confirmSubmit').addEventListener('click', function () { closeModal('submitModal'); finalize(false); });
+    /* Round 5 (CAT, R4-01): per-section Submit button and its modal. */
+    $('catSubmitSectionBtn').addEventListener('click', openCatSectionModal);
+    $('catConfirmSection').addEventListener('click', submitCatSection);
+    $('catCancelSection').addEventListener('click', function () { closeModal('catSectionModal'); });
+    $('confirmSubmit').addEventListener('click', function () {
+      closeModal('submitModal');
+      /* R4-05: SNAP does not go straight to results. Submit opens the
+         separate END TEST step, and VIEW RESULT is the step after it. */
+      if (examKey === 'SNAP') { openSnapEndModal(); return; }
+      finalize(false);
+    });
+    $('snapEndTestBtn').addEventListener('click', function () { snapAdvanceToViewResult(); });
+    $('snapViewResultBtn').addEventListener('click', function () { closeModal('snapEndModal'); finalize(false); });
     $('cancelSubmit').addEventListener('click', function () { closeModal('submitModal'); });
     $('qpBtn').addEventListener('click', openQuestionPaper);
     $('qpClose').addEventListener('click', function () { closeModal('qpModal'); });
@@ -3163,6 +3767,17 @@
     $('instrClose').addEventListener('click', function () { closeModal('instrModal'); });
     $('helpBtn').addEventListener('click', function () { openModal('helpModal'); });
     $('helpClose').addEventListener('click', function () { closeModal('helpModal'); });
+    /* R4-04 (fix round 5): NMAT clock hide/show, STALE 2011-demo
+       behaviour (see renderUtility). The display hides; the clock
+       keeps running, same as the GRE Time button. */
+    var clockToggleBtn = $('clockToggleBtn');
+    if (clockToggleBtn) {
+      clockToggleBtn.addEventListener('click', function () {
+        timeHidden = !timeHidden;
+        clockToggleBtn.textContent = timeHidden ? 'Show clock' : 'Hide clock';
+        renderTimers();
+      });
+    }
     $('scratchBtn').addEventListener('click', openScratchpad);
     $('scratchClose').addEventListener('click', function () { closeModal('scratchModal'); });
     $('scratchText').addEventListener('input', function () {
@@ -3186,6 +3801,7 @@
     $('nmatReviewClose').addEventListener('click', function () { closeModal('nmatReviewModal'); });
     $('nmatAnswerOk').addEventListener('click', function () { closeModal('nmatAnswerModal'); });
     $('greFinishSection').addEventListener('click', finishGreSection);
+    $('greBeginSection').addEventListener('click', beginGreSection);
     $('greReviewClose').addEventListener('click', function () { closeModal('greReviewModal'); });
     $('xatContinue').addEventListener('click', function () {
       closeModal('xatModal');
@@ -3203,7 +3819,11 @@
     $('breakEnd').addEventListener('click', endBreak);
     $('breakSkip').addEventListener('click', function () {
       /* Skipping means no break time was taken, so nothing is credited:
-         clear the persisted break before endBreak runs. */
+         clear the persisted break before endBreak runs. The 60-second
+         wait is credited back first, so skipping during the wait
+         deducts the wait from nothing either. */
+      clearBreakWait();
+      creditBreakWait();
       breakStartedAt = null;
       if (state) { state.break = null; saveState(); }
       endBreak();

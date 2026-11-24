@@ -214,6 +214,7 @@ body[data-exam="XAT"] #submitBtnSide { background: var(--mba-skin-primary); colo
 /* GRE (fix round 4): the ETS 25-key set is 5 columns, and the panel
    is wider to hold it; the Transfer Display bar spans the panel. */
 .mba-calc-gre { width: 264px; }
+.mba-calc-gmat { width: 264px; }
 .mba-calc-grid-5 { grid-template-columns: repeat(5, 1fr); }
 .mba-calc-transfer { width: 100%; margin-top: 8px; padding: 9px 0; font-size: 13px; font-weight: 700; border-radius: 6px; border: 1px solid var(--mba-royal); background: var(--mba-royal); color: #FFFFFF; cursor: pointer; }
 .mba-calc-transfer:disabled { background: #CBD5E1; border-color: #CBD5E1; cursor: not-allowed; }
@@ -246,6 +247,10 @@ body[data-exam="XAT"] #submitBtnSide { background: var(--mba-skin-primary); colo
 .mba-score-hero p { color: #E2E8F0; margin: 0; }
 .mba-big-score { font-size: 40px; font-weight: 700; color: #FBBF24; line-height: 1; }
 .mba-big-score small { font-size: 14px; color: #94A3B8; font-weight: 400; }
+/* R4-03 GRE results hero (fix round 5): the per-measure counts
+   ("VR 18/27 | QR 20/27") replace the combined total, so the hero
+   number drops to 24px to fit on one line. */
+.mba-big-score #resScore.gre-measures { font-size: 24px; }
 .mba-result-table { width: 100%; border-collapse: collapse; font-size: 12px; margin: 12px 0; background: var(--mba-surface); }
 .mba-result-table th, .mba-result-table td { border: 1px solid var(--mba-line); padding: 9px 11px; text-align: left; }
 .mba-result-table th { background: #F8FAFC; color: var(--mba-navy); }
@@ -430,6 +435,13 @@ body[data-exam="XAT"] #submitBtnSide { background: var(--mba-skin-primary); colo
    sits on the left of the question, not the right. The numbered
    summary buttons are kept (clickability UNPROVEN, flagged). */
 .mba-player-grid.snap-left { grid-template-columns: 300px minmax(0, 1fr); }
+/* R4-03 GRE single-column layout (fix round 5): a palette-less console
+   (GRE, GMAT, NMAT) has no second column at all. The grid template
+   kept a 300px column even with the palette hidden, leaving a blank
+   gutter beside the question; collapsing it to one column gives the
+   question the full width, one question at a time, as on the real
+   console. Below 900px the grid is already one column. */
+.mba-player-grid.no-palette { grid-template-columns: 1fr; }
 .mba-player-grid.snap-left .mba-palette { grid-column: 1; grid-row: 1; }
 .mba-player-grid.snap-left .mba-question-card { grid-column: 2; grid-row: 1; }
 @media (max-width: 900px) {
@@ -506,6 +518,18 @@ mark.mba-hl { background: #FDE68A; color: inherit; padding: 0 1px; border-radius
 /* G18 GRE essay workspace. */
 .mba-essay-large { min-height: 320px; }
 .mba-essay-prompt-label { margin: 0 0 4px; }
+/* R4-03 GRE essay split screen (fix round 5): the ETS editor is a
+   split screen, prompt on the left, writing area on the right
+   (PROVEN, ETS Analytical Writing page). Desktop only; below 900px
+   the workspace stays stacked in a single column. The prompt column
+   scrolls on its own so a long prompt never pushes the editor away.
+   The RC split-pane proportions are UNPROVEN and untouched. */
+@media (min-width: 901px) {
+  .mba-essay-workspace { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 18px; align-items: start; }
+  .mba-essay-prompt { position: sticky; top: 76px; max-height: calc(100vh - 96px); overflow-y: auto; padding-right: 4px; }
+}
+.mba-essay-tools { display: flex; gap: 8px; flex-wrap: wrap; margin: 0 0 10px; }
+.mba-essay-tools .mba-btn { padding: 7px 12px; }
 .mba-scratch-input { width: 100%; min-height: 220px; font-size: 13px; line-height: 1.6; resize: vertical; box-sizing: border-box; }
 
 /* G16 CAT section-aware palette: removed in interface fix round 4
