@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>try{var _d=localStorage.getItem('pf.appearance.darkMode');if(_d===null&&window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches){_d='true';}if(_d==='true'){document.documentElement.classList.add('pf-dark');}}catch(e){}</script>
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>Unit 2: Frameworks - AI Agents in Payments | Payments Training Hub</title>
+<meta name="description" content="Unit 2 of AI Agents in Payments: smolagents, LangGraph, and LlamaIndex, and when to pick each framework. Free short course from Payments Training Hub.">
+<link rel="canonical" href="https://www.paymentstraininghub.com/courses/short-ai-agents-in-payments-unit-2">
+<meta property="og:url" content="https://www.paymentstraininghub.com/courses/short-ai-agents-in-payments-unit-2">
+<meta property="og:title" content="Unit 2: Frameworks - AI Agents in Payments | Payments Training Hub">
+<meta property="og:description" content="Unit 2 of AI Agents in Payments: smolagents, LangGraph, and LlamaIndex, and when to pick each framework. Free short course from Payments Training Hub.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.com/assets/hero/hero-poster.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Unit 2: Frameworks - AI Agents in Payments | Payments Training Hub">
+<meta name="twitter:description" content="Unit 2 of AI Agents in Payments: smolagents, LangGraph, and LlamaIndex, and when to pick each framework. Free short course from Payments Training Hub.">
+<meta name="twitter:image" content="https://www.paymentstraininghub.com/assets/hero/hero-poster.jpg">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Organization", "name": "Payments Training Hub", "url": "https://www.paymentstraininghub.com"}, {"@type": "WebSite", "name": "Payments Training Hub", "url": "https://www.paymentstraininghub.com", "description": "Payments Training Hub: professional payments training, 881 narrated lessons across 100 chapters covering ISO 20022, SWIFT, SEPA, cross-border payments, cards and settlement.", "inLanguage": "en"}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.paymentstraininghub.com/"}, {"@type": "ListItem", "position": 2, "name": "Courses", "item": "https://www.paymentstraininghub.com/courses"}, {"@type": "ListItem", "position": 3, "name": "AI Agents in Payments", "item": "https://www.paymentstraininghub.com/courses/short-ai-agents-in-payments"}, {"@type": "ListItem", "position": 4, "name": "Unit 2", "item": "https://www.paymentstraininghub.com/courses/short-ai-agents-in-payments-unit-2"}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Course", "name": "Unit 2: Frameworks - AI Agents in Payments", "description": "Unit 2 of AI Agents in Payments: smolagents, LangGraph, and LlamaIndex, and when to pick each framework. Free short course from Payments Training Hub.", "url": "https://www.paymentstraininghub.com/courses/short-ai-agents-in-payments-unit-2", "inLanguage": "en", "provider": {"@type": "Organization", "name": "Payments Training Hub", "url": "https://www.paymentstraininghub.com"}}</script>
+<link rel="stylesheet" href="../assets/pf-theme.css">
+</head>
+<body class="pf-has-drawer">
+<div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div><nav class="pf-drawer" id="pfDrawer" aria-label="Main menu" tabindex="-1"><div class="pf-drawer-brand"><div class="pf-drawer-brand-text"><div class="pf-drawer-brand-title">Payments Training Hub</div><div class="pf-drawer-brand-sub">Practical Payments Training for Banking Professionals</div></div></div><span id="authBox" class="pf-drawer-profile"><span class="pf-drawer-profile-icon"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="8" r="4"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/></svg></span><span class="pf-drawer-profile-text"><span id="authState">Not signed in</span></span> <a id="authSignInLink" class="pf-drawer-profile-btn" href="../signin">Sign in</a> <a id="authDashLink" class="pf-drawer-profile-btn" href="../dashboard" style="display:none">Dashboard</a> <button class="pf-drawer-profile-btn" id="authSignOutBtn" onclick="paAuthSignOut()" style="display:none">Sign out</button></span><div class="pf-drawer-list"><a class="pf-drawer-row" data-drawer="home" href="../"><span class="pf-drawer-icon"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 11.5 12 3l9 8.5"/><path d="M5.5 10.5V20h13v-9.5"/><path d="M9.5 20v-5.5h5V20"/></svg></span><span class="pf-drawer-row-text"><span class="pf-drawer-title">Home</span><span class="pf-drawer-sub">Your personalised home for continuing to learn</span></span><span class="pf-drawer-chev"><svg class="pf-ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 5 7 7-7 7"/></svg></span></a><a class="pf-drawer-row" data-drawer="search" href="../search"><span class="pf-drawer-icon"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="7"/><path d="m20.5 20.5-4.8-4.8"/></svg></span><span class="pf-drawer-row-text"><span class="pf-drawer-title">Search</span><span class="pf-drawer-sub">Search lessons, guides, cases and questions</span></span><span class="pf-drawer-chev"><svg class="pf-ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 5 7 7-7 7"/></svg></span></a><a class="pf-drawer-row" data-drawer="pricing" href="../pricing"><span class="pf-drawer-icon"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20.59 13.41 11 3H4v7l9.59 9.59a2 2 0 0 0 2.82 0l4.18-4.18a2 2 0 0 0 0-2.82z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg></span><span class="pf-drawer-row-text"><span class="pf-drawer-title">Pricing</span><span class="pf-drawer-sub">Course prices, access and renewal</span></span><span class="pf-drawer-chev"><svg class="pf-ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 5 7 7-7 7"/></svg></span></a><div class="pf-drawer-sep" role="presentation"></div><div class="pf-drawer-cat">Courses</div><a class="pf-drawer-row pf-drawer-active" data-drawer="learn" href="../courses" aria-current="page"><span class="pf-drawer-icon"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 6.5C10 4.8 7.2 4.5 4 5v14c3.2-.5 6-.2 8 1.5 2-1.7 4.8-2 8-1.5V5c-3.2-.5-6-.2-8 1.5z"/><path d="M12 6.5v14"/></svg></span><span class="pf-drawer-row-text"><span class="pf-drawer-title">Learn</span><span class="pf-drawer-sub">Learning paths, courses and all chapters</span></span><span class="pf-drawer-chev"><svg class="pf-ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 5 7 7-7 7"/></svg></span></a><a class="pf-drawer-row" data-drawer="learningPaths" href="../course-map"><span class="pf-drawer-icon"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2z"/><path d="M9 4v14"/><path d="M15 6v14"/></svg></span><span class="pf-drawer-row-text"><span class="pf-drawer-title">Learning Paths</span><span class="pf-drawer-sub">Role-based learning journeys</span></span><span class="pf-drawer-chev"><svg class="pf-ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 5 7 7-7 7"/></svg></span></a><a class="pf-drawer-row" data-drawer="baStudio" href="../ba-studio"><span class="pf-drawer-icon"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 20h4.5L20 8.5a2.1 2.1 0 0 0-3-3L5.5 17z"/><path d="M14.5 7.5l3 3"/></svg></span><span class="pf-drawer-row-text"><span class="pf-drawer-title">BA/PO Studio</span><span class="pf-drawer-sub">Draft BA and PO deliverables</span></span><span class="pf-drawer-chev"><svg class="pf-ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 5 7 7-7 7"/></svg></span></a><div class="pf-drawer-sep" role="presentation"></div><div class="pf-drawer-cat">Practice & Labs</div><a class="pf-drawer-row" data-drawer="paymentCases" href="../situations"><span class="pf-drawer-icon"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="7.5" width="18" height="12" rx="2"/><path d="M9 7.5V6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v1.5"/><path d="M3 12.5h18"/></svg></span><span class="pf-drawer-row-text"><span class="pf-drawer-title">Payment Cases</span><span class="pf-drawer-sub">Real-world payment situations to practise</span></span><span class="pf-drawer-chev"><svg class="pf-ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 5 7 7-7 7"/></svg></span></a><a class="pf-drawer-row" data-drawer="practice" href="../practice"><span class="pf-drawer-icon"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M10 3h4"/><path d="M10 3v5.2L4.8 17.5A2 2 0 0 0 6.6 20.5h10.8a2 2 0 0 0 1.8-3L14 8.2V3"/><path d="M7.5 14h9"/></svg></span><span class="pf-drawer-row-text"><span class="pf-drawer-title">Practice</span><span class="pf-drawer-sub">Test yourself on real payment scenarios</span></span><span class="pf-drawer-chev"><svg class="pf-ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 5 7 7-7 7"/></svg></span></a><a class="pf-drawer-row" data-drawer="weeklyFreeCase" href="../weekly-case"><span class="pf-drawer-icon"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3.5" y="5" width="17" height="16" rx="2"/><path d="M3.5 10h17"/><path d="M8 3v4M16 3v4"/><circle cx="12" cy="15" r="2.2"/><path d="M12 13.8V15l1 1"/></svg></span><span class="pf-drawer-row-text"><span class="pf-drawer-title">Free Case of the Week</span><span class="pf-drawer-sub">One real payment case, free every week</span></span><span class="pf-drawer-chev"><svg class="pf-ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 5 7 7-7 7"/></svg></span></a><a class="pf-drawer-row" data-drawer="communityChallenge" href="../practice#weekly-challenge"><span class="pf-drawer-icon"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M8 4h8v5a4 4 0 0 1-8 0V4z"/><path d="M8 5H5a3 3 0 0 0 3 4M16 5h3a3 3 0 0 1-3 4"/><path d="M12 13v4"/><path d="M8 20h8"/><path d="M9.5 17h5"/></svg></span><span class="pf-drawer-row-text"><span class="pf-drawer-title">Weekly Challenge</span><span class="pf-drawer-sub">One case a week, scored on investigation quality</span></span><span class="pf-drawer-chev"><svg class="pf-ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 5 7 7-7 7"/></svg></span></a><a class="pf-drawer-row" data-drawer="simulator" href="../simulators"><span class="pf-drawer-icon"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20 12a8 8 0 1 1-2.3-5.6"/><path d="M20 3.5V8h-4.5"/></svg></span><span class="pf-drawer-row-text"><span class="pf-drawer-title">Payment Simulator</span><span class="pf-drawer-sub">Follow a payment through its lifecycle</span></span><span class="pf-drawer-chev"><svg class="pf-ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 5 7 7-7 7"/></svg></span></a><a class="pf-drawer-row" data-drawer="exceptionLab" href="../investigation-lab"><span class="pf-drawer-icon"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 3.5 22 20H2z"/><path d="M12 10v4"/><path d="M12 17h.01"/></svg></span><span class="pf-drawer-row-text"><span class="pf-drawer-title">Exception Lab</span><span class="pf-drawer-sub">Investigate payment exceptions</span></span><span class="pf-drawer-chev"><svg class="pf-ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 5 7 7-7 7"/></svg></span></a><div class="pf-drawer-sep" role="presentation"></div><div class="pf-drawer-cat">Assessments</div><a class="pf-drawer-row" data-drawer="testSeries" href="../tests#series-ba"><span class="pf-drawer-icon"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4.5V3h6v1.5"/><path d="m9 13 2 2 4-4"/></svg></span><span class="pf-drawer-row-text"><span class="pf-drawer-title">Test Series</span><span class="pf-drawer-sub">105 timed tests for BA, Payments BA and Expert</span></span><span class="pf-drawer-chev"><svg class="pf-ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 5 7 7-7 7"/></svg></span></a><a class="pf-drawer-row" data-drawer="interviewPrep" href="../interview-prep"><span class="pf-drawer-icon"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 5h16v11H8l-4 4V5z"/><path d="M9 9.5h6"/><path d="M9 12.5h4"/></svg></span><span class="pf-drawer-row-text"><span class="pf-drawer-title">Interview Prep</span><span class="pf-drawer-sub">Payments interview questions and preparation</span></span><span class="pf-drawer-chev"><svg class="pf-ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 5 7 7-7 7"/></svg></span></a><div class="pf-drawer-sep" role="presentation"></div><div class="pf-drawer-cat">Knowledge Centre</div><a class="pf-drawer-row" data-drawer="isoExplorer" href="../explorer"><span class="pf-drawer-icon"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/><circle cx="10.5" cy="13" r="2.5"/><path d="m12.5 15 2 2"/></svg></span><span class="pf-drawer-row-text"><span class="pf-drawer-title">ISO 20022 Explorer</span><span class="pf-drawer-sub">Look up ISO 20022 messages and fields</span></span><span class="pf-drawer-chev"><svg class="pf-ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 5 7 7-7 7"/></svg></span></a><a class="pf-drawer-row" data-drawer="reference" href="../reference"><span class="pf-drawer-icon"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 4h3v16H5z"/><path d="M10.5 4h3v16h-3z"/><path d="M16 4h3v16h-3z"/></svg></span><span class="pf-drawer-row-text"><span class="pf-drawer-title">Reference Library</span><span class="pf-drawer-sub">Message references, guides and scheme documentation</span></span><span class="pf-drawer-chev"><svg class="pf-ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 5 7 7-7 7"/></svg></span></a><div class="pf-drawer-sep" role="presentation"></div><div class="pf-drawer-cat">My Account</div><a class="pf-drawer-row" data-drawer="myProgress" href="../dashboard"><span class="pf-drawer-icon"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 20V4"/><path d="M4 20h16"/><path d="M8 16v-5M12 16V8M16 16v-3"/></svg></span><span class="pf-drawer-row-text"><span class="pf-drawer-title">My Progress</span><span class="pf-drawer-sub">Your learning analytics, streak and quiz scores</span></span><span class="pf-drawer-chev"><svg class="pf-ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 5 7 7-7 7"/></svg></span></a><a class="pf-drawer-row" data-drawer="profile" href="../dashboard#profile"><span class="pf-drawer-icon"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="8" r="4"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/></svg></span><span class="pf-drawer-row-text"><span class="pf-drawer-title">Profile</span><span class="pf-drawer-sub">Your name, privacy and account settings</span></span><span class="pf-drawer-chev"><svg class="pf-ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 5 7 7-7 7"/></svg></span></a><a class="pf-drawer-row" data-drawer="myPurchases" href="../my-purchases"><span class="pf-drawer-icon"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 8h14l-1 12H6z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/></svg></span><span class="pf-drawer-row-text"><span class="pf-drawer-title">My Purchases</span><span class="pf-drawer-sub">Your bundles and Payment Situations, payment and access status</span></span><span class="pf-drawer-chev"><svg class="pf-ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 5 7 7-7 7"/></svg></span></a><a class="pf-drawer-row" data-drawer="helpAndSupport" href="../support"><span class="pf-drawer-icon"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="8.5"/><path d="M9.6 9.4a2.5 2.5 0 1 1 3.5 2.3c-.8.35-1.1.9-1.1 1.8"/><path d="M12 16.8h.01"/></svg></span><span class="pf-drawer-row-text"><span class="pf-drawer-title">Help and Support</span><span class="pf-drawer-sub">Customer support, your queries and FAQs</span></span><span class="pf-drawer-chev"><svg class="pf-ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 5 7 7-7 7"/></svg></span></a><a class="pf-drawer-row" data-drawer="about" href="../about"><span class="pf-drawer-icon"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="8.5"/><path d="M12 11v5"/><path d="M12 8h.01"/></svg></span><span class="pf-drawer-row-text"><span class="pf-drawer-title">About</span><span class="pf-drawer-sub">About Payments Training Hub, the operator and the curriculum</span></span><span class="pf-drawer-chev"><svg class="pf-ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 5 7 7-7 7"/></svg></span></a></div><div class="pf-drawer-keep"><span class="pf-drawer-keep-icon"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 3.5 13.8 9l5.7 1.8-5.7 1.8L12 18l-1.8-5.4L4.5 10.8 10.2 9z"/><path d="M18.5 15.5l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8z"/></svg></span><span class="pf-drawer-keep-text"><span class="pf-drawer-keep-title">Keep learning</span><span class="pf-drawer-keep-sub">Continue with your courses and keep your streak going.</span></span><a class="pf-drawer-keep-btn" href="../courses">Continue</a></div><div class="pf-drawer-foot"><div class="pf-drawer-foot-title">Payments Training Hub</div><div class="pf-drawer-foot-sub">Practical Payments Training for Banking Professionals.</div></div></nav><button type="button" class="pf-drawer-scrim" id="pfDrawerScrim" aria-label="Close menu"></button><header class="pf-topbar-app"><button type="button" class="pf-topbar-btn" data-pf-drawer-open="1" aria-label="Open menu" aria-expanded="false" aria-controls="pfDrawer"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button><a class="pf-topbar-word" href="../">Payments Training Hub</a><button type="button" class="pf-topbar-avatar" data-pf-drawer-open="1" aria-label="Open menu" aria-expanded="false" aria-controls="pfDrawer"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="8" r="4"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/></svg></button></header><nav class="pf-tabbar" aria-label="Main sections"><a class="pf-tabbar-item" data-tab="home" href="../"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 11.5 12 3l9 8.5"/><path d="M5.5 10.5V20h13v-9.5"/><path d="M9.5 20v-5.5h5V20"/></svg><span>Home</span></a><a class="pf-tabbar-item is-active" data-tab="learn" href="../courses"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 6.5C10 4.8 7.2 4.5 4 5v14c3.2-.5 6-.2 8 1.5 2-1.7 4.8-2 8-1.5V5c-3.2-.5-6-.2-8 1.5z"/><path d="M12 6.5v14"/></svg><span>Learn</span></a><a class="pf-tabbar-item" data-tab="search" href="../search"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="7"/><path d="m20.5 20.5-4.8-4.8"/></svg><span>Search</span></a><a class="pf-tabbar-item" data-tab="cases" href="../situations"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="7.5" width="18" height="12" rx="2"/><path d="M9 7.5V6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v1.5"/><path d="M3 12.5h18"/></svg><span>Payment Cases</span></a><a class="pf-tabbar-item" data-tab="progress" href="../dashboard"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 20V4"/><path d="M4 20h16"/><path d="M8 16v-5M12 16V8M16 16v-3"/></svg><span>My Progress</span></a></nav>
+<main>
+<nav class="crumbs"><a href="../">Home</a> / <a href="../courses">Courses</a> / <a href="short-ai-agents-in-payments">AI Agents in Payments</a> / Unit 2</nav>
+<div class="pf-card"><h1>Unit 2: Frameworks</h1>
+<p class="bundle-tag">smolagents, LangGraph, and LlamaIndex. How the Unit 1 fundamentals map onto each one, and when to pick which.</p>
+<p>4 lessons. About 3 to 4 hours. All three libraries in this unit, smolagents 1.26.0, langgraph 1.2.24, and llama-index 0.14.26, are free, open-source, and pip-installable.</p></div>
+<h3>Lesson 2.1: smolagents in depth</h3>
+<p>smolagents is a small library built around one idea: let the model write short code that calls your tools. A CodeAgent takes a model and a list of tools, then runs the think, act, observe loop by generating code. The @tool decorator turns an ordinary Python function into a tool the agent can call, using the function docstring as the description the model reads. Because the agent writes code, it can also combine tool results in a few lines, for example by looking up two payments and comparing their statuses. The strengths are simplicity and transparency: the code the agent writes is visible, so you can read exactly what it did. The limits are also clear. Code the model writes can fail, so you need step limits and error handling. The library suits short tasks with a few tools, such as a status lookup or a rule question. It is not the right pick for a long workflow with many branches and approvals, where a state machine fits better. Keep tools small, descriptions precise, and the step limit low.</p>
+<h4>Try it in your browser (no account needed)</h4>
+<p>Run this demo in the lesson page. It uses only the Python standard library, no network, and no API keys. It prints each Thought, each Action with its tool call, each Observation, and the final answer.</p>
+<pre class="pf-runnable-python">STATUS = {
+    "PAY-1042": "held, reason: missing field",
+    "PAY-1043": "complete",
+}
+
+def lookup_payment_status(reference):
+    return STATUS.get(reference, "reference not found")
+
+# The lines a CodeAgent writes: each line is one tool call in code.
+CODE = [
+    ("Check the first payment.", "status_1042 = lookup_payment_status('PAY-1042')"),
+    ("Check the second payment.", "status_1043 = lookup_payment_status('PAY-1043')"),
+]
+
+results = {}
+for thought, line in CODE:
+    print("Thought: " + thought)
+    print("Action: " + line)
+    if "PAY-1042" in line:
+        results["status_1042"] = lookup_payment_status("PAY-1042")
+        print("Observation: " + results["status_1042"])
+    else:
+        results["status_1043"] = lookup_payment_status("PAY-1043")
+        print("Observation: " + results["status_1043"])
+
+print("Thought: Compare the two results.")
+print("Action: compare(status_1042, status_1043)")
+if results["status_1042"] != "complete" and results["status_1043"] == "complete":
+    outcome = "PAY-1042 needs action first."
+elif results["status_1043"] != "complete" and results["status_1042"] == "complete":
+    outcome = "PAY-1043 needs action first."
+else:
+    outcome = "Both payments need a check."
+print("Observation: " + outcome)
+print("Final answer: " + outcome + " PAY-1042 is held because a field is missing. PAY-1043 is complete and needs no action.")</pre>
+<p>A hosted version of this demo will be linked here once it is published.</p>
+<h4>Run it locally (real agent code)</h4>
+<pre><code>from smolagents import CodeAgent, LiteLLMModel, tool
+
+STATUS = {
+    "PAY-1042": "held, reason: missing field",
+    "PAY-1043": "complete",
+}
+
+@tool
+def get_payment_status(reference: str) -> str:
+    """Look up the status of a payment by its reference.
+    Args:
+        reference: the payment reference, for example PAY-1042.
+    """
+    return STATUS.get(reference, "reference not found")
+
+model = LiteLLMModel(
+    model_id="ollama_chat/qwen2.5:7b",
+    api_base="http://127.0.0.1:11434",
+    num_ctx=8192,
+)
+agent = CodeAgent(tools=[get_payment_status], model=model, max_steps=6)
+answer = agent.run(
+    "Check payments PAY-1042 and PAY-1043 and say which one needs action first, with a reason."
+)
+print(answer)</code></pre>
+<p>Install first with pip install "smolagents[litellm]" and start Ollama with ollama pull qwen2.5:7b. The model is swappable: change the model_id and api_base to point at any provider you choose.</p>
+<p>What you should see:</p>
+<pre>PAY-1042 needs action first: it is held because a field is missing. PAY-1043 is complete and needs no action.</pre>
+<p>Your wording may differ slightly. The answer must name PAY-1042 first with its reason, and must not claim PAY-1043 needs action.</p>
+<h4>End-to-end trace: exception triage for payments PAY-1042 and PAY-1043</h4>
+<table>
+<tr><th>Step</th><th>Think</th><th>Act</th><th>Observe</th></tr>
+<tr><td>1</td><td>Check the first payment.</td><td>get_payment_status("PAY-1042")</td><td>Held, reason: missing field.</td></tr>
+<tr><td>2</td><td>Check the second payment.</td><td>get_payment_status("PAY-1043")</td><td>Complete.</td></tr>
+<tr><td>3</td><td>Compare the two results and rank them.</td><td>Write the final answer with the reason.</td><td>Answer ready: PAY-1042 first.</td></tr>
+</table>
+<p>Final answer: PAY-1042 needs action first: it is held because a field is missing. PAY-1043 is complete and needs no action.</p>
+
+<div class="pf-card"><h4>Worked example</h4><p>An agent needs the statuses of two payments to compare them. With smolagents, it writes a few lines of code: call the status tool for PAY-1042, call it again for PAY-1043, then compare the two results. The code is visible in the log, so a reviewer can see both calls and the comparison. If the second call fails, the agent sees the error as an observation and can say so, rather than comparing a real status with an invented one. The visible code is the audit trail: anyone can check what the agent actually did.</p></div>
+<h4>Hands-on exercise</h4>
+<ol><li>Add a second tool to your Unit 1 agent, for example a detail lookup that returns the missing field for a held payment.</li><li>Ask the agent to check two payments and report which one needs action first, with a reason.</li><li>Read the code the agent wrote in the log and check that both tool calls happened.</li><li>Tighten one tool description that the agent misread, and run the task again.</li></ol>
+<div class="pf-quiz" data-quiz="u2l1q1" data-unit="2" data-answer="a">
+<p><strong>Quiz 2.1.1.</strong> What is the core idea of smolagents?</p>
+<label><input type="radio" name="u2l1q1" value="a"> The model writes short code that calls your tools</label><br>
+<label><input type="radio" name="u2l1q1" value="b"> The model draws diagrams</label><br>
+<label><input type="radio" name="u2l1q1" value="c"> The model stores data in a database</label><br>
+<label><input type="radio" name="u2l1q1" value="d"> The model sends emails</label><br>
+<button type="button" class="pf-btn-secondary pf-quiz-check">Check answer</button>
+<p class="pf-quiz-feedback" hidden></p>
+<p class="pf-quiz-explain" hidden><strong>Why:</strong> A CodeAgent lets the model write short code that calls your tools.</p>
+</div>
+<div class="pf-quiz" data-quiz="u2l1q2" data-unit="2" data-answer="b">
+<p><strong>Quiz 2.1.2.</strong> What does the @tool decorator use as the tool description?</p>
+<label><input type="radio" name="u2l1q2" value="a"> The function name only</label><br>
+<label><input type="radio" name="u2l1q2" value="b"> The function docstring</label><br>
+<label><input type="radio" name="u2l1q2" value="c"> The file name</label><br>
+<label><input type="radio" name="u2l1q2" value="d"> A random sentence</label><br>
+<button type="button" class="pf-btn-secondary pf-quiz-check">Check answer</button>
+<p class="pf-quiz-feedback" hidden></p>
+<p class="pf-quiz-explain" hidden><strong>Why:</strong> The @tool decorator turns a function into a tool and uses its docstring as the description.</p>
+</div>
+<div class="pf-quiz" data-quiz="u2l1q3" data-unit="2" data-answer="b">
+<p><strong>Quiz 2.1.3.</strong> What is a strength of smolagents?</p>
+<label><input type="radio" name="u2l1q3" value="a"> It hides what the agent did</label><br>
+<label><input type="radio" name="u2l1q3" value="b"> The code the agent writes is visible, so you can read exactly what it did</label><br>
+<label><input type="radio" name="u2l1q3" value="c"> It needs no model</label><br>
+<label><input type="radio" name="u2l1q3" value="d"> It moves money by itself</label><br>
+<button type="button" class="pf-btn-secondary pf-quiz-check">Check answer</button>
+<p class="pf-quiz-feedback" hidden></p>
+<p class="pf-quiz-explain" hidden><strong>Why:</strong> The generated code is visible, which makes the agent's actions transparent and checkable.</p>
+</div>
+<div class="pf-quiz" data-quiz="u2l1q4" data-unit="2" data-answer="d">
+<p><strong>Quiz 2.1.4.</strong> When is smolagents not the right pick?</p>
+<label><input type="radio" name="u2l1q4" value="a"> A short task with a few tools</label><br>
+<label><input type="radio" name="u2l1q4" value="b"> A status lookup</label><br>
+<label><input type="radio" name="u2l1q4" value="c"> A long workflow with many branches and approvals</label><br>
+<label><input type="radio" name="u2l1q4" value="d"> A rule question</label><br>
+<button type="button" class="pf-btn-secondary pf-quiz-check">Check answer</button>
+<p class="pf-quiz-feedback" hidden></p>
+<p class="pf-quiz-explain" hidden><strong>Why:</strong> Long workflows with many branches and approvals fit a state machine better than a code writing agent.</p>
+</div>
+<h3>Lesson 2.2: LangGraph, state machines for payment flows</h3>
+<p>LangGraph builds agents as graphs: nodes that do work, and edges that decide what happens next. The shared state is the key idea. Every node reads the same state, for example the payment reference, the status so far, and the list of checks done, and every node writes its result back into that state. Edges can branch: if the payment is held, go to the missing field node; if it is complete, go to the summary node; if a tool fails, go to the human review node. This makes long payment flows predictable. You can see the path a case took through the graph, pause it for approval, and resume it later, which matters when a payment case waits for a person. The cost is more setup than smolagents: you define the state, the nodes, and the edges up front. That cost pays off when the flow has branches, retries, and approval points. Use LangGraph when the workflow matters as much as the answer, and when you need to prove which path a case took.</p>
+<h4>Try it in your browser (no account needed)</h4>
+<p>Run this demo in the lesson page. It uses only the Python standard library, no network, and no API keys. It prints each Thought, each Action with its tool call, each Observation, and the final answer.</p>
+<pre class="pf-runnable-python">STATUS = {
+    "PAY-1042": "held, reason: missing field",
+    "PAY-1043": "complete",
+}
+
+def lookup_payment_status(reference):
+    return STATUS.get(reference, "reference not found")
+
+def fetch_status(state):
+    print("Thought: Fetch the status first.")
+    print("Action: lookup_payment_status('" + state["reference"] + "')")
+    state["status"] = lookup_payment_status(state["reference"])
+    print("Observation: " + state["status"])
+    return "check_reason"
+
+def check_reason(state):
+    print("Thought: Map the reason to a route.")
+    print("Action: route(state)")
+    if "missing field" in state["status"]:
+        state["route"] = "ask the sender"
+    elif state["status"] == "complete":
+        state["route"] = "no action"
+    else:
+        state["route"] = "human review"
+    print("Observation: Route is " + state["route"] + ".")
+    if state["route"] == "ask the sender":
+        return "draft_reply"
+    return "END"
+
+def draft_reply(state):
+    print("Thought: Write the triage summary.")
+    print("Action: draft(state)")
+    state["draft"] = state["reference"] + " is " + state["status"] + ". Route: " + state["route"] + "."
+    print("Observation: Draft ready.")
+    return "END"
+
+NODES = {"fetch_status": fetch_status, "check_reason": check_reason, "draft_reply": draft_reply}
+state = {"reference": "PAY-1042", "status": "", "route": "", "draft": ""}
+node = "fetch_status"
+while node != "END":
+    node = NODES[node](state)
+print("Final answer: " + state["draft"])</pre>
+<p>A hosted version of this demo will be linked here once it is published.</p>
+<h4>Run it locally (real agent code)</h4>
+<pre><code>from typing import TypedDict
+from langgraph.graph import StateGraph, START, END
+
+STATUS = {"PAY-1042": "held, reason: missing field", "PAY-1043": "complete"}
+
+class TriageState(TypedDict):
+    reference: str
+    status: str
+    route: str
+    draft: str
+
+def fetch_status(state):
+    return {"status": STATUS.get(state["reference"], "reference not found")}
+
+def check_reason(state):
+    if "missing field" in state["status"]:
+        return {"route": "ask the sender"}
+    if state["status"] == "complete":
+        return {"route": "no action"}
+    return {"route": "human review"}
+
+def draft_reply(state):
+    return {"draft": state["reference"] + " is " + state["status"] + ". Route: " + state["route"] + "."}
+
+def route(state):
+    if state["route"] == "ask the sender":
+        return "draft_reply"
+    return END
+
+graph = StateGraph(TriageState)
+graph.add_node("fetch_status", fetch_status)
+graph.add_node("check_reason", check_reason)
+graph.add_node("draft_reply", draft_reply)
+graph.add_edge(START, "fetch_status")
+graph.add_edge("fetch_status", "check_reason")
+graph.add_conditional_edges("check_reason", route)
+graph.add_edge("draft_reply", END)
+app = graph.compile()
+result = app.invoke({"reference": "PAY-1042", "status": "", "route": "", "draft": ""})
+print(result)</code></pre>
+<p>Install first with pip install langgraph and run it with Python. The nodes here call the lookup table directly so the graph runs without a model; in a real agent the decide node would call the model. If an import name differs in your installed version, check that version's docs; the pattern stays the same.</p>
+<p>What you should see:</p>
+<pre>{'reference': 'PAY-1042', 'status': 'held, reason: missing field', 'route': 'ask the sender', 'draft': 'PAY-1042 is held, reason: missing field. Route: ask the sender.'}</pre>
+<p>The final state shows the path the case took: fetched, routed to ask the sender, and drafted.</p>
+<h4>End-to-end trace: exception triage for payment PAY-1042</h4>
+<table>
+<tr><th>Step</th><th>Think</th><th>Act</th><th>Observe</th></tr>
+<tr><td>1</td><td>Fetch the status first.</td><td>fetch_status node: lookup_payment_status("PAY-1042")</td><td>Held, reason: missing field.</td></tr>
+<tr><td>2</td><td>Map the reason to a route.</td><td>check_reason node: route(state)</td><td>Route is ask the sender.</td></tr>
+<tr><td>3</td><td>Write the triage summary.</td><td>draft_reply node: draft(state)</td><td>Draft ready: PAY-1042 is held, route ask the sender.</td></tr>
+</table>
+<p>Final answer: Payment PAY-1042 is held because a field is missing. Route: ask the sender for the missing field.</p>
+
+<div class="pf-card"><h4>Worked example</h4><p>A triage flow has four nodes: fetch status, check the reason, draft a reply, and human review. The state holds the payment reference, the status, and the draft. If the status is held, the edge goes to the reason check. If the reason is a missing field, the edge goes to draft a reply asking for it. If the tool fails, the edge goes to human review. Every case leaves a clear path through the graph, so a reviewer can see why this case went to a human and that case did not. The graph is the control; the model does the thinking inside the nodes.</p></div>
+<h4>Hands-on exercise</h4>
+<ol><li>Sketch a graph for your running example with four nodes and the edges between them.</li><li>Write down what the shared state holds at each node.</li><li>Add one branch for a tool failure that goes to human review.</li><li>Compare your graph with your smolagents version and note which one is easier to audit for this task.</li></ol>
+<div class="pf-quiz" data-quiz="u2l2q1" data-unit="2" data-answer="a">
+<p><strong>Quiz 2.2.1.</strong> What is the key idea of LangGraph?</p>
+<label><input type="radio" name="u2l2q1" value="a"> Agents as graphs, with nodes, edges, and shared state</label><br>
+<label><input type="radio" name="u2l2q1" value="b"> Agents that write code only</label><br>
+<label><input type="radio" name="u2l2q1" value="c"> Agents with no tools</label><br>
+<label><input type="radio" name="u2l2q1" value="d"> Agents that run without a model</label><br>
+<button type="button" class="pf-btn-secondary pf-quiz-check">Check answer</button>
+<p class="pf-quiz-feedback" hidden></p>
+<p class="pf-quiz-explain" hidden><strong>Why:</strong> LangGraph builds agents as graphs of nodes and edges over shared state.</p>
+</div>
+<div class="pf-quiz" data-quiz="u2l2q2" data-unit="2" data-answer="b">
+<p><strong>Quiz 2.2.2.</strong> What does the shared state hold?</p>
+<label><input type="radio" name="u2l2q2" value="a"> Only the final answer</label><br>
+<label><input type="radio" name="u2l2q2" value="b"> The payment reference, the status so far, and the checks done</label><br>
+<label><input type="radio" name="u2l2q2" value="c"> The model password</label><br>
+<label><input type="radio" name="u2l2q2" value="d"> The quiz answers</label><br>
+<button type="button" class="pf-btn-secondary pf-quiz-check">Check answer</button>
+<p class="pf-quiz-feedback" hidden></p>
+<p class="pf-quiz-explain" hidden><strong>Why:</strong> Shared state holds the working data every node reads and writes, such as the reference and the status so far.</p>
+</div>
+<div class="pf-quiz" data-quiz="u2l2q3" data-unit="2" data-answer="b">
+<p><strong>Quiz 2.2.3.</strong> When does LangGraph pay off over smolagents?</p>
+<label><input type="radio" name="u2l2q3" value="a"> For a one step lookup</label><br>
+<label><input type="radio" name="u2l2q3" value="b"> For a long flow with branches, retries, and approval points</label><br>
+<label><input type="radio" name="u2l2q3" value="c"> For a task with no tools</label><br>
+<label><input type="radio" name="u2l2q3" value="d"> For a task with no human review</label><br>
+<button type="button" class="pf-btn-secondary pf-quiz-check">Check answer</button>
+<p class="pf-quiz-feedback" hidden></p>
+<p class="pf-quiz-explain" hidden><strong>Why:</strong> Graphs pay off when the flow has branches, retries, and approval points that must be controlled and audited.</p>
+</div>
+<div class="pf-quiz" data-quiz="u2l2q4" data-unit="2" data-answer="a">
+<p><strong>Quiz 2.2.4.</strong> Why can a graph case be paused and resumed?</p>
+<label><input type="radio" name="u2l2q4" value="a"> Because the state holds the case progress</label><br>
+<label><input type="radio" name="u2l2q4" value="b"> Because the model remembers everything</label><br>
+<label><input type="radio" name="u2l2q4" value="c"> Because the graph is small</label><br>
+<label><input type="radio" name="u2l2q4" value="d"> Because no tools are used</label><br>
+<button type="button" class="pf-btn-secondary pf-quiz-check">Check answer</button>
+<p class="pf-quiz-feedback" hidden></p>
+<p class="pf-quiz-explain" hidden><strong>Why:</strong> The shared state holds the case progress, so a case can pause for approval and resume later.</p>
+</div>
+<h3>Lesson 2.3: LlamaIndex, retrieval for scheme rules, and choosing a framework</h3>
+<p>LlamaIndex is built for retrieval: turning documents into an index the agent can search. You load documents, such as scheme rule extracts or internal procedure notes, split them into chunks, and store them in an index. At run time the agent searches the index for the passages most relevant to the question, then answers using those passages. This is retrieval augmented generation, or RAG: the model generates the answer, but the facts come from your documents. It is the right tool when the answer must come from a specific source, such as a rulebook, rather than from the model memory. The quality of the answer depends on the quality of the chunks and the search: short, focused chunks with clear headings beat long, mixed ones. LlamaIndex is not a full agent framework on its own; it is the retrieval layer you pair with an agent. Choosing a framework is then simple. Pick smolagents for short tool tasks, LangGraph for branched workflows with approvals, and LlamaIndex retrieval whenever the answer must be grounded in your documents. Many real systems combine them.</p>
+<h4>Try it in your browser (no account needed)</h4>
+<p>Run this demo in the lesson page. It uses only the Python standard library, no network, and no API keys. It prints each Thought, each Action with its tool call, each Observation, and the final answer.</p>
+<pre class="pf-runnable-python">DOCUMENTS = [
+    ("missing field", "A payment held for a missing field waits for the sender to supply the field. Do not release it early."),
+    ("duplicate payment", "A suspected duplicate payment must be checked against the original reference before any refund."),
+]
+
+def retrieve(query):
+    return [text for key, text in DOCUMENTS if key in query]
+
+print("Thought: The rule must come from the documents, not from memory.")
+print("Action: retrieve('missing field')")
+passages = retrieve("missing field")
+print("Observation: Found 1 passage: " + passages[0])
+print("Thought: Answer using only the retrieved passage.")
+print("Action: synthesise(passages)")
+answer = passages[0] + " Check the current scheme rulebook for the latest wording."
+print("Observation: Answer ready.")
+print("Final answer: " + answer)
+print("")
+print("Thought: Try a question no passage answers.")
+print("Action: retrieve('weekend cut-off')")
+misses = retrieve("weekend cut-off")
+print("Observation: Found 0 passages.")
+print("Final answer: No rule passage found for that question. Ask a human instead of guessing.")</pre>
+<p>A hosted version of this demo will be linked here once it is published.</p>
+<h4>Run it locally (real agent code)</h4>
+<pre><code>from llama_index.core import VectorStoreIndex, Settings, Document
+from llama_index.llms.ollama import Ollama
+from llama_index.embeddings.ollama import OllamaEmbedding
+
+Settings.llm = Ollama(model="qwen2.5:7b")
+Settings.embed_model = OllamaEmbedding(model_name="nomic-embed-text")
+
+documents = [
+    Document(text="A payment held for a missing field waits for the sender to supply the field. Do not release it early."),
+    Document(text="A suspected duplicate payment must be checked against the original reference before any refund."),
+]
+index = VectorStoreIndex.from_documents(documents)
+query_engine = index.as_query_engine(similarity_top_k=2)
+response = query_engine.query("What should we do when a payment is held for a missing field?")
+print(response)</code></pre>
+<p>Install first with pip install llama-index llama-index-llms-ollama llama-index-embeddings-ollama and start Ollama with ollama pull qwen2.5:7b and ollama pull nomic-embed-text. The model is swappable: change the Ollama model name or point Settings.llm at any provider you choose. If an import name differs in your installed version, check that version's docs; the pattern stays the same.</p>
+<p>What you should see:</p>
+<pre>A payment held for a missing field waits for the sender to supply the field. Do not release it early. Check the current scheme rulebook for the latest wording.</pre>
+<p>Your wording may differ slightly. The answer must repeat the retrieved rule and must not add a rule the search did not return.</p>
+<h4>End-to-end trace: exception triage for payment PAY-1042</h4>
+<table>
+<tr><th>Step</th><th>Think</th><th>Act</th><th>Observe</th></tr>
+<tr><td>1</td><td>Find the rule for this reason, not from memory.</td><td>retrieve("missing field")</td><td>One passage: wait for the sender to supply the field.</td></tr>
+<tr><td>2</td><td>Answer using only the retrieved passage.</td><td>query_engine.query("What should we do when a payment is held for a missing field?")</td><td>Answer grounded in the passage.</td></tr>
+</table>
+<p>Final answer: Payment PAY-1042 is held because a field is missing. The rule says it waits for the sender to supply the field, so ask the sender for it and do not release the payment early. Check the current scheme rulebook for the latest wording.</p>
+
+<div class="pf-card"><h4>Worked example</h4><p>A learner asks: what does the scheme rulebook say about a missing field on a payment? The agent searches the rule index, retrieves two short passages about missing fields, and answers using only those passages, quoting the source. It adds that the reader should check the current scheme rulebook for the latest wording. Without retrieval, the model might answer from memory and state a rule that has changed. With retrieval, the answer is grounded in the documents the team trusts. The index, not the model memory, is the source of truth.</p></div>
+<h4>Hands-on exercise</h4>
+<ol><li>List the documents your running example agent should retrieve from, such as rule extracts or procedure notes.</li><li>Write three test questions that must be answered from those documents, not from memory.</li><li>For each framework, write one sentence saying when you would pick it for your task.</li><li>Decide which framework, or combination, fits your running example best, and write down why.</li></ol>
+<div class="pf-quiz" data-quiz="u2l3q1" data-unit="2" data-answer="b">
+<p><strong>Quiz 2.3.1.</strong> What is LlamaIndex built for?</p>
+<label><input type="radio" name="u2l3q1" value="a"> Moving money</label><br>
+<label><input type="radio" name="u2l3q1" value="b"> Retrieval: turning documents into an index the agent can search</label><br>
+<label><input type="radio" name="u2l3q1" value="c"> Drawing graphs</label><br>
+<label><input type="radio" name="u2l3q1" value="d"> Writing code</label><br>
+<button type="button" class="pf-btn-secondary pf-quiz-check">Check answer</button>
+<p class="pf-quiz-feedback" hidden></p>
+<p class="pf-quiz-explain" hidden><strong>Why:</strong> LlamaIndex turns documents into a searchable index for retrieval.</p>
+</div>
+<div class="pf-quiz" data-quiz="u2l3q2" data-unit="2" data-answer="b">
+<p><strong>Quiz 2.3.2.</strong> What does RAG mean?</p>
+<label><input type="radio" name="u2l3q2" value="a"> The model answers from memory only</label><br>
+<label><input type="radio" name="u2l3q2" value="b"> The model generates an answer using facts retrieved from your documents</label><br>
+<label><input type="radio" name="u2l3q2" value="c"> The model refuses to answer</label><br>
+<label><input type="radio" name="u2l3q2" value="d"> The model copies a whole document</label><br>
+<button type="button" class="pf-btn-secondary pf-quiz-check">Check answer</button>
+<p class="pf-quiz-feedback" hidden></p>
+<p class="pf-quiz-explain" hidden><strong>Why:</strong> Retrieval augmented generation grounds the model answer in facts retrieved from your documents.</p>
+</div>
+<div class="pf-quiz" data-quiz="u2l3q3" data-unit="2" data-answer="b">
+<p><strong>Quiz 2.3.3.</strong> When should you pick smolagents?</p>
+<label><input type="radio" name="u2l3q3" value="a"> For a long branched workflow with approvals</label><br>
+<label><input type="radio" name="u2l3q3" value="b"> For short tool tasks with a few tools</label><br>
+<label><input type="radio" name="u2l3q3" value="c"> When the answer must come from a rulebook</label><br>
+<label><input type="radio" name="u2l3q3" value="d"> When you need no model</label><br>
+<button type="button" class="pf-btn-secondary pf-quiz-check">Check answer</button>
+<p class="pf-quiz-feedback" hidden></p>
+<p class="pf-quiz-explain" hidden><strong>Why:</strong> smolagents fits short tool tasks with a few tools.</p>
+</div>
+<div class="pf-quiz" data-quiz="u2l3q4" data-unit="2" data-answer="a">
+<p><strong>Quiz 2.3.4.</strong> When should you add LlamaIndex retrieval?</p>
+<label><input type="radio" name="u2l3q4" value="a"> When the answer must be grounded in your documents</label><br>
+<label><input type="radio" name="u2l3q4" value="b"> When the task has no documents</label><br>
+<label><input type="radio" name="u2l3q4" value="c"> When the workflow has many approvals</label><br>
+<label><input type="radio" name="u2l3q4" value="d"> When you want the fastest answer</label><br>
+<button type="button" class="pf-btn-secondary pf-quiz-check">Check answer</button>
+<p class="pf-quiz-feedback" hidden></p>
+<p class="pf-quiz-explain" hidden><strong>Why:</strong> Add retrieval when the answer must come from a specific source, such as a rulebook, rather than from model memory.</p>
+</div>
+<h3>Lesson 2.4: The 8-layer agentic banking AI framework</h3>
+<p>Good tools are not enough. A bank that wants agents in production needs more than a strong model and a clever prompt: it needs an enterprise-grade architecture that holds together under real load, real data, and real regulation. That is the point of the 8-layer agentic banking AI framework described by Arosti Nahas in a LinkedIn post published 27 Nov 2026. The framework is a blueprint for deploying autonomous AI in financial services. Its holistic point is that the work does not stop at the Orchestration and Model layers. It equally prioritises the Data Foundation, built on real-time unified data fabrics, and strict Governance, Risk and Compliance, incorporating SR 11-7 and EU AI Act checks. The full stack has eight layers, and the post names four of them: Orchestration, Model, Data Foundation, and Governance, Risk and Compliance. To move from AI pilots to secure, scalable production, banks need to master every layer of the stack, not just the ones that demo well. The other four layers are not named in the post, so this course does not name them. What follows is this course's own explanation of what mastering every layer means: the rest of the stack must cover connecting agents to core banking systems, observing what agents do, controlling what an agent can touch, and keeping a human in the loop. A pilot that skips those jobs is a demo, not a production system.</p>
+<div class="pf-card"><h4>Worked example</h4><p>A bank pilots a triage agent like the one in Unit 3. The model is strong and the orchestration works, so the demo impresses everyone. But the pilot has no unified data feed, so the agent reads stale payment data. It has no governance checks, so nobody has tested it against SR 11-7 or EU AI Act expectations. It has no log of what it did, so a wrong triage cannot be explained. And any agent action goes straight through with no human check. The pilot cannot go live, and the team must now build the layers the demo skipped: the data fabric, the governance checks, the observation, the access controls, and the human review step. The framework would have shown those gaps on day one, before the demo, because it asks about every layer, not just the model.</p></div>
+<h4>Hands-on exercise</h4>
+<ol><li>Map your triage agent to the four named layers: Orchestration, Model, Data Foundation, and Governance, Risk and Compliance. Write one line for each.</li><li>List the jobs the rest of the stack must cover for your agent: connecting to core banking systems, observing what the agent does, controlling what it can touch, and keeping a human in the loop.</li><li>Write one governance check your agent should pass before production, for example a trace review or a rule grounding check.</li><li>Write down what production ready means for your agent, in one sentence that mentions more than the model.</li></ol>
+<div class="pf-quiz" data-quiz="u2l4q1" data-unit="2" data-answer="b">
+<p><strong>Quiz 2.4.1.</strong> Who described the 8-layer agentic banking AI framework?</p>
+<label><input type="radio" name="u2l4q1" value="a"> The course team</label><br>
+<label><input type="radio" name="u2l4q1" value="b"> Arosti Nahas</label><br>
+<label><input type="radio" name="u2l4q1" value="c"> A scheme operator</label><br>
+<label><input type="radio" name="u2l4q1" value="d"> A regulator</label><br>
+<button type="button" class="pf-btn-secondary pf-quiz-check">Check answer</button>
+<p class="pf-quiz-feedback" hidden></p>
+<p class="pf-quiz-explain" hidden><strong>Why:</strong> The framework is credited to Arosti Nahas, from a LinkedIn post published 27 Nov 2026.</p>
+</div>
+<div class="pf-quiz" data-quiz="u2l4q2" data-unit="2" data-answer="a">
+<p><strong>Quiz 2.4.2.</strong> What does the shift to agentic banking AI need beyond foundation models?</p>
+<label><input type="radio" name="u2l4q2" value="a"> A robust enterprise-grade architecture</label><br>
+<label><input type="radio" name="u2l4q2" value="b"> A larger demo</label><br>
+<label><input type="radio" name="u2l4q2" value="c"> More prompts</label><br>
+<label><input type="radio" name="u2l4q2" value="d"> A faster laptop</label><br>
+<button type="button" class="pf-btn-secondary pf-quiz-check">Check answer</button>
+<p class="pf-quiz-feedback" hidden></p>
+<p class="pf-quiz-explain" hidden><strong>Why:</strong> The framework says the shift needs more than foundation models: it demands a robust enterprise-grade architecture.</p>
+</div>
+<div class="pf-quiz" data-quiz="u2l4q3" data-unit="2" data-answer="c">
+<p><strong>Quiz 2.4.3.</strong> Which layer is built on real-time unified data fabrics?</p>
+<label><input type="radio" name="u2l4q3" value="a"> Orchestration</label><br>
+<label><input type="radio" name="u2l4q3" value="b"> Model</label><br>
+<label><input type="radio" name="u2l4q3" value="c"> Data Foundation</label><br>
+<label><input type="radio" name="u2l4q3" value="d"> Governance, Risk and Compliance</label><br>
+<button type="button" class="pf-btn-secondary pf-quiz-check">Check answer</button>
+<p class="pf-quiz-feedback" hidden></p>
+<p class="pf-quiz-explain" hidden><strong>Why:</strong> The Data Foundation layer is built on real-time unified data fabrics.</p>
+</div>
+<div class="pf-quiz" data-quiz="u2l4q4" data-unit="2" data-answer="d">
+<p><strong>Quiz 2.4.4.</strong> Which checks does the Governance, Risk and Compliance layer incorporate?</p>
+<label><input type="radio" name="u2l4q4" value="a"> Spell checks</label><br>
+<label><input type="radio" name="u2l4q4" value="b"> Speed checks</label><br>
+<label><input type="radio" name="u2l4q4" value="c"> Price checks</label><br>
+<label><input type="radio" name="u2l4q4" value="d"> SR 11-7 and EU AI Act checks</label><br>
+<button type="button" class="pf-btn-secondary pf-quiz-check">Check answer</button>
+<p class="pf-quiz-feedback" hidden></p>
+<p class="pf-quiz-explain" hidden><strong>Why:</strong> The Governance, Risk and Compliance layer incorporates SR 11-7 and EU AI Act checks.</p>
+</div>
+<p><a class="pf-btn-secondary" href="short-ai-agents-in-payments-unit-1.html">&larr; Unit 1: Agent Fundamentals</a></p>
+<p><a class="pf-btn-secondary" href="short-ai-agents-in-payments-unit-3.html">Unit 3: Use Cases &rarr;</a></p>
+<p><a href="short-ai-agents-in-payments">Back to the course overview</a></p>
+</main>
+<footer class="pf-footer"><p>Payments Training Hub. Practical Payments Training for Banking Professionals. Content is for education; check current scheme rules before relying on it.</p><div class="pf-footer-cols"><div class="pf-footer-col"><h3>Explore</h3><ul><li><a href="../">Home</a></li><li><a href="../courses">Courses</a></li><li><a href="../course-map">Learning Paths</a></li><li><a href="../pricing">Pricing</a></li></ul></div><div class="pf-footer-col"><h3>Practice</h3><ul><li><a href="../situations">Payment Cases</a></li><li><a href="../tests">Assessments</a></li><li><a href="../simulators">Simulators</a></li><li><a href="../labs-simulators">Labs</a></li><li><a href="../interview-prep">Interview Prep</a></li></ul></div><div class="pf-footer-col"><h3>Resources</h3><ul><li><a href="../explorer">ISO 20022 Explorer</a></li><li><a href="../reference">Reference Library</a></li><li><a href="../domains">Domains</a></li><li><a href="../insights">Insights and Scenarios</a></li><li><a href="../tools/xml-sandbox">XML and MT Sandbox</a></li></ul></div><div class="pf-footer-col"><h3>Company</h3><ul><li><a href="../about">About</a></li><li><a href="../teams">For Teams</a></li><li><a href="../contact">Contact</a></li><li><a href="../privacy">Privacy</a></li><li><a href="../terms">Terms</a></li><li><a href="../refund">Refunds</a></li><li><a href="../support">Help and Support</a></li></ul></div></div></footer>
+<script defer src="../assets/site.js"></script>
+<script defer src="../assets/bundles.js"></script>
+<script defer src="../assets/auth.js"></script>
+<script defer src="../assets/learner-sync.js"></script>
+<script defer src="../assets/site-search.js"></script>
+<script defer src="../assets/pf-drawer.js"></script>
+<script defer src="../assets/codehl.js"></script>
+<script defer src="../assets/nav.js"></script>
+<script defer src="../assets/pf-enhance.js"></script>
+<script>
+(function(){
+var KEY='pf.short.short-ai-agents-in-payments';
+function load(){try{return JSON.parse(localStorage.getItem(KEY)||'{}');}catch(e){return{};}}
+function save(s){try{localStorage.setItem(KEY,JSON.stringify(s));}catch(e){}}
+document.querySelectorAll('.pf-quiz').forEach(function(q){
+var btn=q.querySelector('.pf-quiz-check');
+btn.addEventListener('click',function(){
+var sel=q.querySelector('input:checked');
+var fb=q.querySelector('.pf-quiz-feedback');
+var ex=q.querySelector('.pf-quiz-explain');
+fb.hidden=false; ex.hidden=false;
+if(!sel){fb.textContent='Choose an answer first.';return;}
+var ok=sel.value===q.getAttribute('data-answer');
+fb.textContent=ok?'Correct.':'Not quite. The correct answer is '+q.getAttribute('data-answer').toUpperCase()+'.';
+var s=load(); s['quiz.'+q.getAttribute('data-quiz')]=ok?'pass':'fail'; save(s);
+var all=Array.prototype.slice.call(document.querySelectorAll('.pf-quiz'));
+var s2=load();
+if(all.every(function(x){return s2['quiz.'+x.getAttribute('data-quiz')]==='pass';})){s2['unit.'+q.getAttribute('data-unit')]='done'; save(s2);}
+});
+});
+})();
+</script>
+<script src="../assets/py-runner.js"></script>
+</body>
+</html>

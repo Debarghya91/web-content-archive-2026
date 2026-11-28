@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>try{var _d=localStorage.getItem('pf.appearance.darkMode');if(_d===null&&window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches){_d='true';}if(_d==='true'){document.documentElement.classList.add('pf-dark');}}catch(e){}</script>
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B30'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FBBF24' font-family='Arial' font-weight='bold'%3EPT%3C/text%3E%3C/svg%3E">
+<title>Unit 3: Use Cases - AI Agents in Payments | Payments Training Hub</title>
+<meta name="description" content="Unit 3 of AI Agents in Payments: agentic RAG over scheme rules, a reconciliation agent, and an exception triage agent, each with runnable code. Free short course from Payments Training Hub.">
+<link rel="canonical" href="https://www.paymentstraininghub.com/courses/short-ai-agents-in-payments-unit-3">
+<meta property="og:url" content="https://www.paymentstraininghub.com/courses/short-ai-agents-in-payments-unit-3">
+<meta property="og:title" content="Unit 3: Use Cases - AI Agents in Payments | Payments Training Hub">
+<meta property="og:description" content="Unit 3 of AI Agents in Payments: agentic RAG over scheme rules, a reconciliation agent, and an exception triage agent, each with runnable code. Free short course from Payments Training Hub.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Payments Training Hub">
+<meta property="og:image" content="https://www.paymentstraininghub.com/assets/hero/hero-poster.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Unit 3: Use Cases - AI Agents in Payments | Payments Training Hub">
+<meta name="twitter:description" content="Unit 3 of AI Agents in Payments: agentic RAG over scheme rules, a reconciliation agent, and an exception triage agent, each with runnable code. Free short course from Payments Training Hub.">
+<meta name="twitter:image" content="https://www.paymentstraininghub.com/assets/hero/hero-poster.jpg">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Organization", "name": "Payments Training Hub", "url": "https://www.paymentstraininghub.com"}, {"@type": "WebSite", "name": "Payments Training Hub", "url": "https://www.paymentstraininghub.com", "description": "Payments Training Hub: professional payments training, 881 narrated lessons across 100 chapters covering ISO 20022, SWIFT, SEPA, cross-border payments, cards and settlement.", "inLanguage": "en"}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.paymentstraininghub.com/"}, {"@type": "ListItem", "position": 2, "name": "Courses", "item": "https://www.paymentstraininghub.com/courses"}, {"@type": "ListItem", "position": 3, "name": "AI Agents in Payments", "item": "https://www.paymentstraininghub.com/courses/short-ai-agents-in-payments"}, {"@type": "ListItem", "position": 4, "name": "Unit 3", "item": "https://www.paymentstraininghub.com/courses/short-ai-agents-in-payments-unit-3"}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Course", "name": "Unit 3: Use Cases - AI Agents in Payments", "description": "Unit 3 of AI Agents in Payments: agentic RAG over scheme rules, a reconciliation agent, and an exception triage agent, each with runnable code. Free short course from Payments Training Hub.", "url": "https://www.paymentstraininghub.com/courses/short-ai-agents-in-payments-unit-3", "inLanguage": "en", "provider": {"@type": "Organization", "name": "Payments Training Hub", "url": "https://www.paymentstraininghub.com"}}</script>
+<link rel="stylesheet" href="../assets/pf-theme.css">
+</head>
+<body class="pf-has-drawer">
+<div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div><nav class="pf-drawer" id="pfDrawer" aria-label="Main menu" tabindex="-1"><div class="pf-drawer-brand"><div class="pf-drawer-brand-text"><div class="pf-drawer-brand-title">Payments Training Hub</div><div class="pf-drawer-brand-sub">Practical Payments Training for Banking Professionals</div></div></div><span id="authBox" class="pf-drawer-profile"><span class="pf-drawer-profile-icon"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="8" r="4"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/></svg></span><span class="pf-drawer-profile-text"><span id="authState">Not signed in</span></span> <a id="authSignInLink" class="pf-drawer-profile-btn" href="../signin">Sign in</a> <a id="authDashLink" class="pf-drawer-profile-btn" href="../dashboard" style="display:none">Dashboard</a> <button class="pf-drawer-profile-btn" id="authSignOutBtn" onclick="paAuthSignOut()" style="display:none">Sign out</button></span><div class="pf-drawer-list"><a class="pf-drawer-row" data-drawer="home" href="../"><span class="pf-drawer-icon"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 11.5 12 3l9 8.5"/><path d="M5.5 10.5V20h13v-9.5"/><path d="M9.5 20v-5.5h5V20"/></svg></span><span class="pf-drawer-row-text"><span class="pf-drawer-title">Home</span><span class="pf-drawer-sub">Your personalised home for continuing to learn</span></span><span class="pf-drawer-chev"><svg class="pf-ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 5 7 7-7 7"/></svg></span></a><a class="pf-drawer-row" data-drawer="search" href="../search"><span class="pf-drawer-icon"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="7"/><path d="m20.5 20.5-4.8-4.8"/></svg></span><span class="pf-drawer-row-text"><span class="pf-drawer-title">Search</span><span class="pf-drawer-sub">Search lessons, guides, cases and questions</span></span><span class="pf-drawer-chev"><svg class="pf-ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 5 7 7-7 7"/></svg></span></a><a class="pf-drawer-row" data-drawer="pricing" href="../pricing"><span class="pf-drawer-icon"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20.59 13.41 11 3H4v7l9.59 9.59a2 2 0 0 0 2.82 0l4.18-4.18a2 2 0 0 0 0-2.82z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg></span><span class="pf-drawer-row-text"><span class="pf-drawer-title">Pricing</span><span class="pf-drawer-sub">Course prices, access and renewal</span></span><span class="pf-drawer-chev"><svg class="pf-ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 5 7 7-7 7"/></svg></span></a><div class="pf-drawer-sep" role="presentation"></div><div class="pf-drawer-cat">Courses</div><a class="pf-drawer-row pf-drawer-active" data-drawer="learn" href="../courses" aria-current="page"><span class="pf-drawer-icon"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 6.5C10 4.8 7.2 4.5 4 5v14c3.2-.5 6-.2 8 1.5 2-1.7 4.8-2 8-1.5V5c-3.2-.5-6-.2-8 1.5z"/><path d="M12 6.5v14"/></svg></span><span class="pf-drawer-row-text"><span class="pf-drawer-title">Learn</span><span class="pf-drawer-sub">Learning paths, courses and all chapters</span></span><span class="pf-drawer-chev"><svg class="pf-ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 5 7 7-7 7"/></svg></span></a><a class="pf-drawer-row" data-drawer="learningPaths" href="../course-map"><span class="pf-drawer-icon"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2z"/><path d="M9 4v14"/><path d="M15 6v14"/></svg></span><span class="pf-drawer-row-text"><span class="pf-drawer-title">Learning Paths</span><span class="pf-drawer-sub">Role-based learning journeys</span></span><span class="pf-drawer-chev"><svg class="pf-ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 5 7 7-7 7"/></svg></span></a><a class="pf-drawer-row" data-drawer="baStudio" href="../ba-studio"><span class="pf-drawer-icon"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 20h4.5L20 8.5a2.1 2.1 0 0 0-3-3L5.5 17z"/><path d="M14.5 7.5l3 3"/></svg></span><span class="pf-drawer-row-text"><span class="pf-drawer-title">BA/PO Studio</span><span class="pf-drawer-sub">Draft BA and PO deliverables</span></span><span class="pf-drawer-chev"><svg class="pf-ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 5 7 7-7 7"/></svg></span></a><div class="pf-drawer-sep" role="presentation"></div><div class="pf-drawer-cat">Practice & Labs</div><a class="pf-drawer-row" data-drawer="paymentCases" href="../situations"><span class="pf-drawer-icon"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="7.5" width="18" height="12" rx="2"/><path d="M9 7.5V6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v1.5"/><path d="M3 12.5h18"/></svg></span><span class="pf-drawer-row-text"><span class="pf-drawer-title">Payment Cases</span><span class="pf-drawer-sub">Real-world payment situations to practise</span></span><span class="pf-drawer-chev"><svg class="pf-ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 5 7 7-7 7"/></svg></span></a><a class="pf-drawer-row" data-drawer="practice" href="../practice"><span class="pf-drawer-icon"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M10 3h4"/><path d="M10 3v5.2L4.8 17.5A2 2 0 0 0 6.6 20.5h10.8a2 2 0 0 0 1.8-3L14 8.2V3"/><path d="M7.5 14h9"/></svg></span><span class="pf-drawer-row-text"><span class="pf-drawer-title">Practice</span><span class="pf-drawer-sub">Test yourself on real payment scenarios</span></span><span class="pf-drawer-chev"><svg class="pf-ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 5 7 7-7 7"/></svg></span></a><a class="pf-drawer-row" data-drawer="weeklyFreeCase" href="../weekly-case"><span class="pf-drawer-icon"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3.5" y="5" width="17" height="16" rx="2"/><path d="M3.5 10h17"/><path d="M8 3v4M16 3v4"/><circle cx="12" cy="15" r="2.2"/><path d="M12 13.8V15l1 1"/></svg></span><span class="pf-drawer-row-text"><span class="pf-drawer-title">Free Case of the Week</span><span class="pf-drawer-sub">One real payment case, free every week</span></span><span class="pf-drawer-chev"><svg class="pf-ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 5 7 7-7 7"/></svg></span></a><a class="pf-drawer-row" data-drawer="communityChallenge" href="../practice#weekly-challenge"><span class="pf-drawer-icon"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M8 4h8v5a4 4 0 0 1-8 0V4z"/><path d="M8 5H5a3 3 0 0 0 3 4M16 5h3a3 3 0 0 1-3 4"/><path d="M12 13v4"/><path d="M8 20h8"/><path d="M9.5 17h5"/></svg></span><span class="pf-drawer-row-text"><span class="pf-drawer-title">Weekly Challenge</span><span class="pf-drawer-sub">One case a week, scored on investigation quality</span></span><span class="pf-drawer-chev"><svg class="pf-ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 5 7 7-7 7"/></svg></span></a><a class="pf-drawer-row" data-drawer="simulator" href="../simulators"><span class="pf-drawer-icon"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20 12a8 8 0 1 1-2.3-5.6"/><path d="M20 3.5V8h-4.5"/></svg></span><span class="pf-drawer-row-text"><span class="pf-drawer-title">Payment Simulator</span><span class="pf-drawer-sub">Follow a payment through its lifecycle</span></span><span class="pf-drawer-chev"><svg class="pf-ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 5 7 7-7 7"/></svg></span></a><a class="pf-drawer-row" data-drawer="exceptionLab" href="../investigation-lab"><span class="pf-drawer-icon"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 3.5 22 20H2z"/><path d="M12 10v4"/><path d="M12 17h.01"/></svg></span><span class="pf-drawer-row-text"><span class="pf-drawer-title">Exception Lab</span><span class="pf-drawer-sub">Investigate payment exceptions</span></span><span class="pf-drawer-chev"><svg class="pf-ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 5 7 7-7 7"/></svg></span></a><div class="pf-drawer-sep" role="presentation"></div><div class="pf-drawer-cat">Assessments</div><a class="pf-drawer-row" data-drawer="testSeries" href="../tests#series-ba"><span class="pf-drawer-icon"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4.5V3h6v1.5"/><path d="m9 13 2 2 4-4"/></svg></span><span class="pf-drawer-row-text"><span class="pf-drawer-title">Test Series</span><span class="pf-drawer-sub">105 timed tests for BA, Payments BA and Expert</span></span><span class="pf-drawer-chev"><svg class="pf-ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 5 7 7-7 7"/></svg></span></a><a class="pf-drawer-row" data-drawer="interviewPrep" href="../interview-prep"><span class="pf-drawer-icon"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 5h16v11H8l-4 4V5z"/><path d="M9 9.5h6"/><path d="M9 12.5h4"/></svg></span><span class="pf-drawer-row-text"><span class="pf-drawer-title">Interview Prep</span><span class="pf-drawer-sub">Payments interview questions and preparation</span></span><span class="pf-drawer-chev"><svg class="pf-ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 5 7 7-7 7"/></svg></span></a><div class="pf-drawer-sep" role="presentation"></div><div class="pf-drawer-cat">Knowledge Centre</div><a class="pf-drawer-row" data-drawer="isoExplorer" href="../explorer"><span class="pf-drawer-icon"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/><circle cx="10.5" cy="13" r="2.5"/><path d="m12.5 15 2 2"/></svg></span><span class="pf-drawer-row-text"><span class="pf-drawer-title">ISO 20022 Explorer</span><span class="pf-drawer-sub">Look up ISO 20022 messages and fields</span></span><span class="pf-drawer-chev"><svg class="pf-ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 5 7 7-7 7"/></svg></span></a><a class="pf-drawer-row" data-drawer="reference" href="../reference"><span class="pf-drawer-icon"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 4h3v16H5z"/><path d="M10.5 4h3v16h-3z"/><path d="M16 4h3v16h-3z"/></svg></span><span class="pf-drawer-row-text"><span class="pf-drawer-title">Reference Library</span><span class="pf-drawer-sub">Message references, guides and scheme documentation</span></span><span class="pf-drawer-chev"><svg class="pf-ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 5 7 7-7 7"/></svg></span></a><div class="pf-drawer-sep" role="presentation"></div><div class="pf-drawer-cat">My Account</div><a class="pf-drawer-row" data-drawer="myProgress" href="../dashboard"><span class="pf-drawer-icon"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 20V4"/><path d="M4 20h16"/><path d="M8 16v-5M12 16V8M16 16v-3"/></svg></span><span class="pf-drawer-row-text"><span class="pf-drawer-title">My Progress</span><span class="pf-drawer-sub">Your learning analytics, streak and quiz scores</span></span><span class="pf-drawer-chev"><svg class="pf-ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 5 7 7-7 7"/></svg></span></a><a class="pf-drawer-row" data-drawer="profile" href="../dashboard#profile"><span class="pf-drawer-icon"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="8" r="4"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/></svg></span><span class="pf-drawer-row-text"><span class="pf-drawer-title">Profile</span><span class="pf-drawer-sub">Your name, privacy and account settings</span></span><span class="pf-drawer-chev"><svg class="pf-ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 5 7 7-7 7"/></svg></span></a><a class="pf-drawer-row" data-drawer="myPurchases" href="../my-purchases"><span class="pf-drawer-icon"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 8h14l-1 12H6z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/></svg></span><span class="pf-drawer-row-text"><span class="pf-drawer-title">My Purchases</span><span class="pf-drawer-sub">Your bundles and Payment Situations, payment and access status</span></span><span class="pf-drawer-chev"><svg class="pf-ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 5 7 7-7 7"/></svg></span></a><a class="pf-drawer-row" data-drawer="helpAndSupport" href="../support"><span class="pf-drawer-icon"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="8.5"/><path d="M9.6 9.4a2.5 2.5 0 1 1 3.5 2.3c-.8.35-1.1.9-1.1 1.8"/><path d="M12 16.8h.01"/></svg></span><span class="pf-drawer-row-text"><span class="pf-drawer-title">Help and Support</span><span class="pf-drawer-sub">Customer support, your queries and FAQs</span></span><span class="pf-drawer-chev"><svg class="pf-ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 5 7 7-7 7"/></svg></span></a><a class="pf-drawer-row" data-drawer="about" href="../about"><span class="pf-drawer-icon"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="8.5"/><path d="M12 11v5"/><path d="M12 8h.01"/></svg></span><span class="pf-drawer-row-text"><span class="pf-drawer-title">About</span><span class="pf-drawer-sub">About Payments Training Hub, the operator and the curriculum</span></span><span class="pf-drawer-chev"><svg class="pf-ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 5 7 7-7 7"/></svg></span></a></div><div class="pf-drawer-keep"><span class="pf-drawer-keep-icon"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 3.5 13.8 9l5.7 1.8-5.7 1.8L12 18l-1.8-5.4L4.5 10.8 10.2 9z"/><path d="M18.5 15.5l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8z"/></svg></span><span class="pf-drawer-keep-text"><span class="pf-drawer-keep-title">Keep learning</span><span class="pf-drawer-keep-sub">Continue with your courses and keep your streak going.</span></span><a class="pf-drawer-keep-btn" href="../courses">Continue</a></div><div class="pf-drawer-foot"><div class="pf-drawer-foot-title">Payments Training Hub</div><div class="pf-drawer-foot-sub">Practical Payments Training for Banking Professionals.</div></div></nav><button type="button" class="pf-drawer-scrim" id="pfDrawerScrim" aria-label="Close menu"></button><header class="pf-topbar-app"><button type="button" class="pf-topbar-btn" data-pf-drawer-open="1" aria-label="Open menu" aria-expanded="false" aria-controls="pfDrawer"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button><a class="pf-topbar-word" href="../">Payments Training Hub</a><button type="button" class="pf-topbar-avatar" data-pf-drawer-open="1" aria-label="Open menu" aria-expanded="false" aria-controls="pfDrawer"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="8" r="4"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/></svg></button></header><nav class="pf-tabbar" aria-label="Main sections"><a class="pf-tabbar-item" data-tab="home" href="../"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 11.5 12 3l9 8.5"/><path d="M5.5 10.5V20h13v-9.5"/><path d="M9.5 20v-5.5h5V20"/></svg><span>Home</span></a><a class="pf-tabbar-item is-active" data-tab="learn" href="../courses"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 6.5C10 4.8 7.2 4.5 4 5v14c3.2-.5 6-.2 8 1.5 2-1.7 4.8-2 8-1.5V5c-3.2-.5-6-.2-8 1.5z"/><path d="M12 6.5v14"/></svg><span>Learn</span></a><a class="pf-tabbar-item" data-tab="search" href="../search"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="7"/><path d="m20.5 20.5-4.8-4.8"/></svg><span>Search</span></a><a class="pf-tabbar-item" data-tab="cases" href="../situations"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="7.5" width="18" height="12" rx="2"/><path d="M9 7.5V6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v1.5"/><path d="M3 12.5h18"/></svg><span>Payment Cases</span></a><a class="pf-tabbar-item" data-tab="progress" href="../dashboard"><svg class="pf-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 20V4"/><path d="M4 20h16"/><path d="M8 16v-5M12 16V8M16 16v-3"/></svg><span>My Progress</span></a></nav>
+<main>
+<nav class="crumbs"><a href="../">Home</a> / <a href="../courses">Courses</a> / <a href="short-ai-agents-in-payments">AI Agents in Payments</a> / Unit 3</nav>
+<div class="pf-card"><h1>Unit 3: Use Cases</h1>
+<p class="bundle-tag">Agentic RAG over scheme rules, a reconciliation agent, and an exception triage agent.</p>
+<p>3 lessons. About 3 to 4 hours.</p></div>
+<h3>Lesson 3.1: Agentic RAG over scheme rules</h3>
+<p>Agentic RAG means the agent decides when to search your documents and what to search for, instead of following a fixed search step. The flow is: the agent reads the task, thinks about what fact it needs, calls a search tool, reads the retrieved passages, and only then answers. The retrieved passages are the evidence. The agent must quote them or name them, and must say when the retrieved text does not answer the question. In payments, the documents are scheme rule extracts and internal procedure notes. The index holds short, focused passages with clear headings, so the search returns the right passage instead of a long mixed page. The agent never answers a rule question from memory when the index is available. If the search returns nothing useful, the agent says so and asks a human, rather than guessing. The rule for every answer is the same: no retrieved passage, no rule claim. When a rule is uncertain or may have changed, write "check the current scheme rulebook" instead of stating a specific rule.</p>
+<h4>Run it</h4>
+<pre><code>from smolagents import CodeAgent, LiteLLMModel, tool
+
+RULES = {
+    "missing field": "A payment held for a missing field waits for the sender to supply the field. Do not release it early.",
+    "duplicate payment": "A suspected duplicate payment must be checked against the original reference before any refund.",
+}
+
+@tool
+def search_scheme_rules(query: str) -> str:
+    """Search the scheme rule extracts for a short query.
+    Args:
+        query: a short search phrase, for example missing field.
+    """
+    return RULES.get(query, "No matching rule passage found.")
+
+model = LiteLLMModel(
+    model_id="ollama_chat/qwen2.5:7b",
+    api_base="http://127.0.0.1:11434",
+    num_ctx=8192,
+)
+agent = CodeAgent(tools=[search_scheme_rules], model=model, max_steps=5)
+answer = agent.run(
+    "What should we do when a payment is held for a missing field?"
+)
+print(answer)</code></pre>
+<p>Install first with pip install "smolagents[litellm]" and start Ollama with ollama pull qwen2.5:7b. The model is swappable: change the model_id and api_base to point at any provider you choose. If an import name differs in your installed version, check that version's docs; the pattern stays the same.</p>
+<p>What you should see:</p>
+<pre>A payment held for a missing field waits for the sender to supply the field. Do not release it early. Check the current scheme rulebook for the latest wording.</pre>
+<p>Your wording may differ slightly. The answer must repeat the retrieved rule and must not add a rule the search did not return.</p>
+<h4>End-to-end trace: exception triage for payment PAY-1042</h4>
+<table>
+<tr><th>Step</th><th>Think</th><th>Act</th><th>Observe</th></tr>
+<tr><td>1</td><td>First find why the payment is held.</td><td>get_payment_status("PAY-1042")</td><td>Held, reason: missing field.</td></tr>
+<tr><td>2</td><td>The reason needs the rule for missing fields, not memory.</td><td>search_scheme_rules("missing field")</td><td>Rule passage: wait for the sender to supply the field.</td></tr>
+<tr><td>3</td><td>Status plus rule is enough to answer.</td><td>Write the final answer with the rule quoted.</td><td>Answer ready for the user.</td></tr>
+</table>
+<p>Final answer: Payment PAY-1042 is held because a field is missing. The rule says it waits for the sender to supply the field, so ask the sender for it and do not release the payment early. Check the current scheme rulebook for the latest wording.</p>
+<div class="pf-card"><h4>Worked example</h4><p>A user asks what to do about a payment held for a missing field. The agent searches the rule index for "missing field" and retrieves one passage: the payment waits for the sender to supply the field, and it must not be released early. The agent answers with that passage quoted and adds that the reader should check the current scheme rulebook for the latest wording. It does not add a timeline, because the passage gives none. If the search had returned nothing, the agent would have said it found no rule passage and asked a human, instead of inventing a rule. The retrieved text is the whole basis of the answer.</p></div>
+<h4>Hands-on exercise</h4>
+<ol><li>Build a small rule index with three short passages: missing field, duplicate payment, and one more from your running example.</li><li>Ask the agent a question each passage answers, and check the answer quotes the passage.</li><li>Ask the agent a question no passage answers, and check it says so instead of guessing.</li><li>Add one passage that contradicts an old habit, and confirm the agent follows the passage, not the habit.</li></ol>
+<div class="pf-quiz" data-quiz="u3l1q1" data-unit="3" data-answer="a">
+<p><strong>Quiz 3.1.1.</strong> What makes RAG agentic rather than fixed?</p>
+<label><input type="radio" name="u3l1q1" value="a"> The agent decides when to search and what to search for</label><br>
+<label><input type="radio" name="u3l1q1" value="b"> The search always runs first</label><br>
+<label><input type="radio" name="u3l1q1" value="c"> The model answers from memory</label><br>
+<label><input type="radio" name="u3l1q1" value="d"> The index is larger</label><br>
+<button type="button" class="pf-btn-secondary pf-quiz-check">Check answer</button>
+<p class="pf-quiz-feedback" hidden></p>
+<p class="pf-quiz-explain" hidden><strong>Why:</strong> In agentic RAG the agent decides when to search and what to search for, instead of following a fixed search step.</p>
+</div>
+<div class="pf-quiz" data-quiz="u3l1q2" data-unit="3" data-answer="b">
+<p><strong>Quiz 3.1.2.</strong> What must the agent do when the search returns nothing useful?</p>
+<label><input type="radio" name="u3l1q2" value="a"> Guess the most likely rule</label><br>
+<label><input type="radio" name="u3l1q2" value="b"> Say so and ask a human</label><br>
+<label><input type="radio" name="u3l1q2" value="c"> Repeat the search forever</label><br>
+<label><input type="radio" name="u3l1q2" value="d"> Answer from memory</label><br>
+<button type="button" class="pf-btn-secondary pf-quiz-check">Check answer</button>
+<p class="pf-quiz-feedback" hidden></p>
+<p class="pf-quiz-explain" hidden><strong>Why:</strong> With no useful passage the agent must say so and ask a human, never guess a rule.</p>
+</div>
+<div class="pf-quiz" data-quiz="u3l1q3" data-unit="3" data-answer="a">
+<p><strong>Quiz 3.1.3.</strong> What is the rule for every rule answer?</p>
+<label><input type="radio" name="u3l1q3" value="a"> No retrieved passage, no rule claim</label><br>
+<label><input type="radio" name="u3l1q3" value="b"> Quote the whole rulebook</label><br>
+<label><input type="radio" name="u3l1q3" value="c"> Add a timeline</label><br>
+<label><input type="radio" name="u3l1q3" value="d"> Answer in one word</label><br>
+<button type="button" class="pf-btn-secondary pf-quiz-check">Check answer</button>
+<p class="pf-quiz-feedback" hidden></p>
+<p class="pf-quiz-explain" hidden><strong>Why:</strong> No retrieved passage means no rule claim. The answer must rest on retrieved text.</p>
+</div>
+<div class="pf-quiz" data-quiz="u3l1q4" data-unit="3" data-answer="b">
+<p><strong>Quiz 3.1.4.</strong> What should the agent do when a rule is uncertain or may have changed?</p>
+<label><input type="radio" name="u3l1q4" value="a"> State the rule anyway</label><br>
+<label><input type="radio" name="u3l1q4" value="b"> Write check the current scheme rulebook instead of stating a specific rule</label><br>
+<label><input type="radio" name="u3l1q4" value="c"> Skip the question</label><br>
+<label><input type="radio" name="u3l1q4" value="d"> Ask the customer to decide</label><br>
+<button type="button" class="pf-btn-secondary pf-quiz-check">Check answer</button>
+<p class="pf-quiz-feedback" hidden></p>
+<p class="pf-quiz-explain" hidden><strong>Why:</strong> When a rule is uncertain, say to check the current scheme rulebook instead of stating a specific rule.</p>
+</div>
+<h3>Lesson 3.2: A reconciliation agent</h3>
+<p>Reconciliation is matching two lists and finding the breaks: entries on one side with no match on the other, or entries that match on reference but differ on amount or status. An agent does this well because the job is a loop over clear checks with a clear output: a list of breaks, each with the evidence. The agent needs two tools, one for each side, for example a ledger lookup and a bank statement lookup. It fetches both lists for the same day, matches them by reference, and reports each break with the two sides shown. It must never silently drop an entry it cannot match. An unmatched entry is a break, not a detail to skip. The agent also needs a rule for what it may fix itself and what it must escalate. A safe rule: the agent reports breaks and suggests causes, and a human decides any correction or customer message. The value is speed and completeness: the agent checks every entry, including the ones a tired reviewer might skip, and the break list is the audit trail.</p>
+<h4>Run it</h4>
+<pre><code>from smolagents import CodeAgent, LiteLLMModel, tool
+
+LEDGER = {"PAY-1042": "held", "PAY-1043": "complete", "PAY-1045": "complete"}
+STATEMENT = {"PAY-1042": "held", "PAY-1043": "complete"}
+
+@tool
+def get_ledger(day: str) -> str:
+    """Get the ledger entries for one day.
+    Args:
+        day: the day to check, for example 2026-11-27.
+    """
+    return str(LEDGER)
+
+@tool
+def get_statement(day: str) -> str:
+    """Get the bank statement entries for one day.
+    Args:
+        day: the day to check, for example 2026-11-27.
+    """
+    return str(STATEMENT)
+
+model = LiteLLMModel(
+    model_id="ollama_chat/qwen2.5:7b",
+    api_base="http://127.0.0.1:11434",
+    num_ctx=8192,
+)
+agent = CodeAgent(tools=[get_ledger, get_statement], model=model, max_steps=6)
+answer = agent.run(
+    "Reconcile 2026-11-27. List every break with the evidence."
+)
+print(answer)</code></pre>
+<p>Install first with pip install "smolagents[litellm]" and start Ollama with ollama pull qwen2.5:7b. The model is swappable: change the model_id and api_base to point at any provider you choose.</p>
+<p>What you should see:</p>
+<pre>One break: ledger shows PAY-1045 as complete, but the statement has no PAY-1045. All other entries match.</pre>
+<p>Your wording may differ slightly. The answer must name the break with both sides shown, and must not claim all entries match.</p>
+<h4>End-to-end trace: exception triage for the reconciliation break PAY-1045</h4>
+<table>
+<tr><th>Step</th><th>Think</th><th>Act</th><th>Observe</th></tr>
+<tr><td>1</td><td>Get both sides for the same day before comparing.</td><td>get_ledger("2026-11-27")</td><td>Three entries: PAY-1042, PAY-1043, PAY-1045.</td></tr>
+<tr><td>2</td><td>Now the other side.</td><td>get_statement("2026-11-27")</td><td>Two entries: PAY-1042, PAY-1043. No PAY-1045.</td></tr>
+<tr><td>3</td><td>Match by reference. PAY-1045 has no match, so it is a break.</td><td>Write the break list with the evidence.</td><td>Break list ready, with one break to escalate.</td></tr>
+</table>
+<p>Final answer: One break on 2026-11-27. The ledger shows PAY-1045 as complete, but the statement has no PAY-1045. All other entries match. Escalate PAY-1045 for a human to check before any correction.</p>
+<div class="pf-card"><h4>Worked example</h4><p>A reconciliation run for one day finds three ledger entries and two statement entries. Two match on reference and status. The third, PAY-1045, is in the ledger as complete but missing from the statement. The agent reports exactly that, with both sides shown, and flags it for a human to check. It does not mark PAY-1045 as an error in the ledger, because the statement may simply be cut off earlier in the day, and it does not invent a reason. The break list is short, complete, and checkable: anyone can re-run the two lookups and see the same break.</p></div>
+<h4>Hands-on exercise</h4>
+<ol><li>Build two small tables for one day, a ledger and a statement, with one break between them.</li><li>Give the agent a ledger tool and a statement tool, and ask it to list every break.</li><li>Check the agent lists the break with both sides shown and drops nothing.</li><li>Add a second break, an amount difference on a matched reference, and check the agent reports it too.</li><li>Write the escalation rule for your agent: what it may report, and what only a human may correct.</li></ol>
+<div class="pf-quiz" data-quiz="u3l2q1" data-unit="3" data-answer="a">
+<p><strong>Quiz 3.2.1.</strong> What is a reconciliation break?</p>
+<label><input type="radio" name="u3l2q1" value="a"> An entry on one side with no match, or a match that differs on amount or status</label><br>
+<label><input type="radio" name="u3l2q1" value="b"> A broken tool</label><br>
+<label><input type="radio" name="u3l2q1" value="c"> A missing API key</label><br>
+<label><input type="radio" name="u3l2q1" value="d"> A slow model</label><br>
+<button type="button" class="pf-btn-secondary pf-quiz-check">Check answer</button>
+<p class="pf-quiz-feedback" hidden></p>
+<p class="pf-quiz-explain" hidden><strong>Why:</strong> A break is an unmatched entry, or a matched entry that differs on amount or status.</p>
+</div>
+<div class="pf-quiz" data-quiz="u3l2q2" data-unit="3" data-answer="b">
+<p><strong>Quiz 3.2.2.</strong> What must the agent never do with an entry it cannot match?</p>
+<label><input type="radio" name="u3l2q2" value="a"> Report it as a break</label><br>
+<label><input type="radio" name="u3l2q2" value="b"> Silently drop it</label><br>
+<label><input type="radio" name="u3l2q2" value="c"> Show both sides</label><br>
+<label><input type="radio" name="u3l2q2" value="d"> Escalate it</label><br>
+<button type="button" class="pf-btn-secondary pf-quiz-check">Check answer</button>
+<p class="pf-quiz-feedback" hidden></p>
+<p class="pf-quiz-explain" hidden><strong>Why:</strong> An unmatched entry is a break, not a detail to skip. It must never be silently dropped.</p>
+</div>
+<div class="pf-quiz" data-quiz="u3l2q3" data-unit="3" data-answer="b">
+<p><strong>Quiz 3.2.3.</strong> What is the safe rule for corrections?</p>
+<label><input type="radio" name="u3l2q3" value="a"> The agent fixes breaks itself</label><br>
+<label><input type="radio" name="u3l2q3" value="b"> The agent reports breaks and suggests causes, and a human decides any correction</label><br>
+<label><input type="radio" name="u3l2q3" value="c"> The agent messages the customer</label><br>
+<label><input type="radio" name="u3l2q3" value="d"> The agent deletes the break</label><br>
+<button type="button" class="pf-btn-secondary pf-quiz-check">Check answer</button>
+<p class="pf-quiz-feedback" hidden></p>
+<p class="pf-quiz-explain" hidden><strong>Why:</strong> The agent reports and suggests; a human decides any correction or customer message.</p>
+</div>
+<div class="pf-quiz" data-quiz="u3l2q4" data-unit="3" data-answer="b">
+<p><strong>Quiz 3.2.4.</strong> Why does the agent fetch both sides before comparing?</p>
+<label><input type="radio" name="u3l2q4" value="a"> To use more steps</label><br>
+<label><input type="radio" name="u3l2q4" value="b"> So the comparison rests on the same day from both sources</label><br>
+<label><input type="radio" name="u3l2q4" value="c"> To slow the run down</label><br>
+<label><input type="radio" name="u3l2q4" value="d"> To test the tools</label><br>
+<button type="button" class="pf-btn-secondary pf-quiz-check">Check answer</button>
+<p class="pf-quiz-feedback" hidden></p>
+<p class="pf-quiz-explain" hidden><strong>Why:</strong> Both lists must cover the same day, or the comparison is meaningless.</p>
+</div>
+<h3>Lesson 3.3: An exception triage agent</h3>
+<p>Exception triage is the first decision on a failed or held payment: what happened, how urgent is it, who should handle it, and what happens next. An agent triages by following a fixed order: check the status, find the reason, check the rule, then decide the route. The route is one of three: resolve with a standard reply, escalate to a specialist, or ask the sender for missing information. The agent must show its evidence at each step, so a human can check the triage without re-doing it. It must never invent a reason, a rule, or a timeline. It must also know its limits: an exception it has never seen, or a reason the tools cannot explain, goes to a human with the evidence gathered so far. A good triage agent is boring in the best way: same order, same evidence, same three routes, every time. The speed comes from doing the lookups at once and writing the summary in a fixed format, not from skipping steps.</p>
+<h4>Run it</h4>
+<pre><code>from smolagents import CodeAgent, LiteLLMModel, tool
+
+STATUS = {"PAY-1042": "held, reason: missing field"}
+RULES = {
+    "missing field": "A payment held for a missing field waits for the sender to supply the field.",
+}
+
+@tool
+def get_payment_status(reference: str) -> str:
+    """Look up the status of a payment by its reference.
+    Args:
+        reference: the payment reference, for example PAY-1042.
+    """
+    return STATUS.get(reference, "reference not found")
+
+@tool
+def search_scheme_rules(query: str) -> str:
+    """Search the scheme rule extracts for a short query.
+    Args:
+        query: a short search phrase, for example missing field.
+    """
+    return RULES.get(query, "No matching rule passage found.")
+
+model = LiteLLMModel(
+    model_id="ollama_chat/qwen2.5:7b",
+    api_base="http://127.0.0.1:11434",
+    num_ctx=8192,
+)
+agent = CodeAgent(
+    tools=[get_payment_status, search_scheme_rules], model=model, max_steps=6
+)
+answer = agent.run(
+    "Triage exception PAY-1042. Say what happened, what rule applies, "
+    "and what to do next."
+)
+print(answer)</code></pre>
+<p>Install first with pip install "smolagents[litellm]" and start Ollama with ollama pull qwen2.5:7b. The model is swappable: change the model_id and api_base to point at any provider you choose.</p>
+<p>What you should see:</p>
+<pre>What happened: payment PAY-1042 is held because a field is missing. Rule: a payment held for a missing field waits for the sender to supply the field. Next step: ask the sender for the missing field. Check the current scheme rulebook for the latest wording.</pre>
+<p>Your wording may differ slightly. The answer must cover all three parts, what happened, the rule, and the next step, and must not invent a timeline.</p>
+<h4>Try it in your browser (no account needed)</h4>
+<p>Run this demo in the lesson page. It uses only the Python standard library, no network, and no API keys. It prints each Thought, each Action with its tool call, each Observation, and the final answer.</p>
+<pre class="pf-runnable-python">STATUS = {"PAY-1042": "held, reason: missing field"}
+RULES = {"missing field": "A payment held for a missing field waits for the sender to supply the field."}
+
+def lookup_payment_status(reference):
+    return STATUS.get(reference, "reference not found")
+
+def get_scheme_rule(query):
+    return RULES.get(query, "No matching rule passage found.")
+
+print("Thought: Check the status first.")
+print("Action: lookup_payment_status('PAY-1042')")
+status = lookup_payment_status("PAY-1042")
+print("Observation: " + status)
+print("Thought: Find the rule for this reason.")
+print("Action: get_scheme_rule('missing field')")
+rule = get_scheme_rule("missing field")
+print("Observation: " + rule)
+print("Thought: Status plus rule gives the route: ask the sender.")
+print("Action: write_summary(status, rule)")
+summary = "What happened: payment PAY-1042 is " + status + ". Rule: " + rule + " Next step: ask the sender for the missing field."
+print("Observation: Summary ready.")
+print("Final answer: " + summary)</pre>
+<p>A hosted version of this demo will be linked here once it is published.</p>
+<h4>End-to-end trace: exception triage for payment PAY-1042</h4>
+<table>
+<tr><th>Step</th><th>Think</th><th>Act</th><th>Observe</th></tr>
+<tr><td>1</td><td>Check the status first.</td><td>get_payment_status("PAY-1042")</td><td>Held, reason: missing field.</td></tr>
+<tr><td>2</td><td>Find the rule for this reason.</td><td>search_scheme_rules("missing field")</td><td>Rule passage: wait for the sender to supply the field.</td></tr>
+<tr><td>3</td><td>Status plus rule gives the route: ask the sender.</td><td>Write the triage summary in three parts.</td><td>Summary ready: held, rule quoted, next step named.</td></tr>
+</table>
+<p>Final answer: Payment PAY-1042 is held because a field is missing. The rule says it waits for the sender to supply the field. Next step: ask the sender for the missing field. Check the current scheme rulebook for the latest wording.</p>
+<div class="pf-card"><h4>Worked example</h4><p>An exception arrives for PAY-1042. The triage agent checks the status first: held, reason missing field. It then searches the rules for "missing field" and retrieves the passage that the payment waits for the sender to supply the field. It routes the case to "ask the sender" and writes a three-part summary: what happened, the rule, and the next step. A human reviewer can check each part against the tool results in under a minute. If the status tool had returned an unknown reason, the agent would have routed the case to a specialist with the evidence so far, instead of guessing a route.</p></div>
+<h4>Hands-on exercise</h4>
+<ol><li>Give your triage agent the status tool and the rule search tool from this lesson.</li><li>Triage PAY-1042 and check the summary has all three parts: what happened, the rule, and the next step.</li><li>Triage a reference that is not in the table, and check it routes to a human with the evidence so far.</li><li>Add a second exception type to your tables, for example a duplicate payment, and triage it too.</li><li>Time your triage and note which step takes longest: the lookups, or the writing.</li></ol>
+<div class="pf-quiz" data-quiz="u3l3q1" data-unit="3" data-answer="b">
+<p><strong>Quiz 3.3.1.</strong> What order does triage follow?</p>
+<label><input type="radio" name="u3l3q1" value="a"> Check the rule, then the status, then decide</label><br>
+<label><input type="radio" name="u3l3q1" value="b"> Check the status, find the reason, check the rule, then decide the route</label><br>
+<label><input type="radio" name="u3l3q1" value="c"> Decide the route first, then check</label><br>
+<label><input type="radio" name="u3l3q1" value="d"> Ask the sender first</label><br>
+<button type="button" class="pf-btn-secondary pf-quiz-check">Check answer</button>
+<p class="pf-quiz-feedback" hidden></p>
+<p class="pf-quiz-explain" hidden><strong>Why:</strong> Triage follows a fixed order: status, reason, rule, then route.</p>
+</div>
+<div class="pf-quiz" data-quiz="u3l3q2" data-unit="3" data-answer="a">
+<p><strong>Quiz 3.3.2.</strong> What are the three triage routes?</p>
+<label><input type="radio" name="u3l3q2" value="a"> Resolve with a standard reply, escalate to a specialist, or ask the sender for missing information</label><br>
+<label><input type="radio" name="u3l3q2" value="b"> Delete, ignore, or close</label><br>
+<label><input type="radio" name="u3l3q2" value="c"> Refund, recall, or reject</label><br>
+<label><input type="radio" name="u3l3q2" value="d"> Call, email, or wait</label><br>
+<button type="button" class="pf-btn-secondary pf-quiz-check">Check answer</button>
+<p class="pf-quiz-feedback" hidden></p>
+<p class="pf-quiz-explain" hidden><strong>Why:</strong> The three routes are resolve with a standard reply, escalate to a specialist, or ask the sender for missing information.</p>
+</div>
+<div class="pf-quiz" data-quiz="u3l3q3" data-unit="3" data-answer="b">
+<p><strong>Quiz 3.3.3.</strong> What must the triage summary show?</p>
+<label><input type="radio" name="u3l3q3" value="a"> Only the final decision</label><br>
+<label><input type="radio" name="u3l3q3" value="b"> Its evidence at each step, so a human can check it without re-doing it</label><br>
+<label><input type="radio" name="u3l3q3" value="c"> Only the rule</label><br>
+<label><input type="radio" name="u3l3q3" value="d"> Only the status</label><br>
+<button type="button" class="pf-btn-secondary pf-quiz-check">Check answer</button>
+<p class="pf-quiz-feedback" hidden></p>
+<p class="pf-quiz-explain" hidden><strong>Why:</strong> The summary must show its evidence at each step so a human can check it fast.</p>
+</div>
+<div class="pf-quiz" data-quiz="u3l3q4" data-unit="3" data-answer="b">
+<p><strong>Quiz 3.3.4.</strong> What should the agent do with an exception it has never seen?</p>
+<label><input type="radio" name="u3l3q4" value="a"> Guess the nearest known route</label><br>
+<label><input type="radio" name="u3l3q4" value="b"> Send it to a human with the evidence gathered so far</label><br>
+<label><input type="radio" name="u3l3q4" value="c"> Close it as resolved</label><br>
+<label><input type="radio" name="u3l3q4" value="d"> Repeat the status check</label><br>
+<button type="button" class="pf-btn-secondary pf-quiz-check">Check answer</button>
+<p class="pf-quiz-feedback" hidden></p>
+<p class="pf-quiz-explain" hidden><strong>Why:</strong> An unfamiliar exception goes to a human with the evidence gathered so far, never a guessed route.</p>
+</div>
+<p><a class="pf-btn-secondary" href="short-ai-agents-in-payments-unit-2.html">&larr; Unit 2: Frameworks</a></p>
+<p><a class="pf-btn-secondary" href="short-ai-agents-in-payments-unit-4.html">Unit 4: Final Project &rarr;</a></p>
+<p><a href="short-ai-agents-in-payments">Back to the course overview</a></p>
+</main>
+<footer class="pf-footer"><p>Payments Training Hub. Practical Payments Training for Banking Professionals. Content is for education; check current scheme rules before relying on it.</p><div class="pf-footer-cols"><div class="pf-footer-col"><h3>Explore</h3><ul><li><a href="../">Home</a></li><li><a href="../courses">Courses</a></li><li><a href="../course-map">Learning Paths</a></li><li><a href="../pricing">Pricing</a></li></ul></div><div class="pf-footer-col"><h3>Practice</h3><ul><li><a href="../situations">Payment Cases</a></li><li><a href="../tests">Assessments</a></li><li><a href="../simulators">Simulators</a></li><li><a href="../labs-simulators">Labs</a></li><li><a href="../interview-prep">Interview Prep</a></li></ul></div><div class="pf-footer-col"><h3>Resources</h3><ul><li><a href="../explorer">ISO 20022 Explorer</a></li><li><a href="../reference">Reference Library</a></li><li><a href="../domains">Domains</a></li><li><a href="../insights">Insights and Scenarios</a></li><li><a href="../tools/xml-sandbox">XML and MT Sandbox</a></li></ul></div><div class="pf-footer-col"><h3>Company</h3><ul><li><a href="../about">About</a></li><li><a href="../teams">For Teams</a></li><li><a href="../contact">Contact</a></li><li><a href="../privacy">Privacy</a></li><li><a href="../terms">Terms</a></li><li><a href="../refund">Refunds</a></li><li><a href="../support">Help and Support</a></li></ul></div></div></footer>
+<script defer src="../assets/site.js"></script>
+<script defer src="../assets/bundles.js"></script>
+<script defer src="../assets/auth.js"></script>
+<script defer src="../assets/learner-sync.js"></script>
+<script defer src="../assets/site-search.js"></script>
+<script defer src="../assets/pf-drawer.js"></script>
+<script defer src="../assets/codehl.js"></script>
+<script defer src="../assets/nav.js"></script>
+<script defer src="../assets/pf-enhance.js"></script>
+<script>
+(function(){
+var KEY='pf.short.short-ai-agents-in-payments';
+function load(){try{return JSON.parse(localStorage.getItem(KEY)||'{}');}catch(e){return{};}}
+function save(s){try{localStorage.setItem(KEY,JSON.stringify(s));}catch(e){}}
+document.querySelectorAll('.pf-quiz').forEach(function(q){
+var btn=q.querySelector('.pf-quiz-check');
+btn.addEventListener('click',function(){
+var sel=q.querySelector('input:checked');
+var fb=q.querySelector('.pf-quiz-feedback');
+var ex=q.querySelector('.pf-quiz-explain');
+fb.hidden=false; ex.hidden=false;
+if(!sel){fb.textContent='Choose an answer first.';return;}
+var ok=sel.value===q.getAttribute('data-answer');
+fb.textContent=ok?'Correct.':'Not quite. The correct answer is '+q.getAttribute('data-answer').toUpperCase()+'.';
+var s=load(); s['quiz.'+q.getAttribute('data-quiz')]=ok?'pass':'fail'; save(s);
+var all=Array.prototype.slice.call(document.querySelectorAll('.pf-quiz'));
+var s2=load();
+if(all.every(function(x){return s2['quiz.'+x.getAttribute('data-quiz')]==='pass';})){s2['unit.'+q.getAttribute('data-unit')]='done'; save(s2);}
+});
+});
+})();
+</script>
+<script src="../assets/py-runner.js"></script>
+</body>
+</html>
