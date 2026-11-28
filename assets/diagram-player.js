@@ -99,7 +99,6 @@
   function setPlayLabel(box) {
     var btn = box.querySelector('[data-dg="play"]');
     if (!btn) return;
-    if (box._dgFinished) { btn.textContent = 'Replay'; return; }
     btn.textContent = box._dgPlaying ? 'Pause' : 'Play';
   }
 
