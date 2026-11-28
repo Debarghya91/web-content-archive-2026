@@ -95,6 +95,72 @@
 <h3>Tracing the payment</h3>
 <p>Trace the payment message by message. Start with the pain.001: check the debtor, the creditor, the amount USD 25,000, the currency, the requested execution date and the end to end reference LON-SIN-25000-01. Then open the pacs.008 and check the same fields match, and write down its UETR. Then open the pacs.002 and find the transaction status block for that UETR: is it ACCP or RJCT, and does it carry a reason code. Finally open the pacs.004 and read the return reason code and the returned amount. Put the four messages in a timeline with the time each one was created. The timeline is the investigation: it shows what happened, in what order, and which message proves each step. If two messages disagree, trust the message that was created later for the current state, but keep the earlier message as evidence of what was first instructed.</p>
 <div class="pf-card">
+<div class="pf-diagram" data-diagram>
+  <div class="pf-diagram-panel">
+    <p class="pf-diagram-eyebrow">Tracing the payment</p>
+    <div class="pf-diagram-body">
+      <svg class="pf-diagram-svg" viewBox="0 0 720 340" role="img" aria-label="tracing the payment timeline diagram">
+        <defs>
+          <marker id="dg-arrow-teal-d20" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#29DCD0"></path></marker>
+          <marker id="dg-arrow-blue-d20" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#36B2FF"></path></marker>
+          <marker id="dg-arrow-orange-d20" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#FFA642"></path></marker>
+        </defs>
+        <path class="pf-dconn" data-step="1" data-accent="teal" d="M2 122 L8 122" marker-end="url(#dg-arrow-teal-d20)"></path>
+        <path class="pf-dconn" data-step="2" data-accent="blue" d="M172 122 L188 122" marker-end="url(#dg-arrow-blue-d20)"></path>
+        <path class="pf-dconn" data-step="3" data-accent="orange" d="M352 122 L368 122" marker-end="url(#dg-arrow-orange-d20)"></path>
+        <path class="pf-dconn" data-step="4" data-accent="teal" d="M532 122 L548 122" marker-end="url(#dg-arrow-teal-d20)"></path>
+        <circle class="pf-dpulse" data-pulse-for="1" data-accent="teal" r="6" cx="2" cy="122"></circle>
+        <circle class="pf-dpulse" data-pulse-for="2" data-accent="blue" r="6" cx="172" cy="122"></circle>
+        <circle class="pf-dpulse" data-pulse-for="3" data-accent="orange" r="6" cx="352" cy="122"></circle>
+        <circle class="pf-dpulse" data-pulse-for="4" data-accent="teal" r="6" cx="532" cy="122"></circle>
+        <g class="pf-dnode" data-step="1" data-accent="teal">
+          <rect x="10" y="90" width="160" height="64" rx="12"></rect>
+          <text x="90" y="116" text-anchor="middle" class="pf-dnode-title">PAIN.001</text>
+          <text x="90" y="134" text-anchor="middle" class="pf-dnode-sub">USD 25,000, INV-8841</text>
+        </g>
+        <g class="pf-dnode" data-step="2" data-accent="blue">
+          <rect x="190" y="90" width="160" height="64" rx="12"></rect>
+          <text x="270" y="116" text-anchor="middle" class="pf-dnode-title">PACS.008</text>
+          <text x="270" y="134" text-anchor="middle" class="pf-dnode-sub">fields match, UETR noted</text>
+        </g>
+        <g class="pf-dnode" data-step="3" data-accent="orange">
+          <rect x="370" y="90" width="160" height="64" rx="12"></rect>
+          <text x="450" y="116" text-anchor="middle" class="pf-dnode-title">PACS.002</text>
+          <text x="450" y="134" text-anchor="middle" class="pf-dnode-sub">RJCT, incorrect account</text>
+        </g>
+        <g class="pf-dnode" data-step="4" data-accent="teal">
+          <rect x="550" y="90" width="160" height="64" rx="12"></rect>
+          <text x="630" y="116" text-anchor="middle" class="pf-dnode-title">PACS.004</text>
+          <text x="630" y="134" text-anchor="middle" class="pf-dnode-sub">money comes back</text>
+        </g>
+        <path d="M40 230 L680 230" fill="none" stroke="#36B2FF" stroke-width="2"></path>
+        <path d="M90 222 L90 238" stroke="#29DCD0" stroke-width="2"></path>
+        <path d="M270 222 L270 238" stroke="#29DCD0" stroke-width="2"></path>
+        <path d="M450 222 L450 238" stroke="#29DCD0" stroke-width="2"></path>
+        <path d="M630 222 L630 238" stroke="#29DCD0" stroke-width="2"></path>
+        <text x="90" y="262" text-anchor="middle" class="pf-dnode-sub">instructed</text>
+        <text x="270" y="262" text-anchor="middle" class="pf-dnode-sub">sent onward</text>
+        <text x="450" y="262" text-anchor="middle" class="pf-dnode-sub">rejected</text>
+        <text x="630" y="262" text-anchor="middle" class="pf-dnode-sub">returned</text>
+      </svg>
+      <ol class="pf-diagram-steps">
+        <li data-step="1" data-accent="teal"><strong>pain.001.</strong> Check the debtor, the creditor, the amount USD 25,000, the currency and the end to end reference LON-SIN-25000-01.</li>
+        <li data-step="2" data-accent="blue"><strong>pacs.008.</strong> Check the same fields match, and write down its UETR.</li>
+        <li data-step="3" data-accent="orange"><strong>pacs.002.</strong> Find the transaction status block for that UETR: RJCT, with a reason code for an incorrect account number.</li>
+        <li data-step="4" data-accent="teal"><strong>pacs.004.</strong> Read the return reason code and the returned amount. The money is back with the sending bank.</li>
+      </ol>
+    </div>
+    <p class="pf-diagram-takeaway">The timeline is the investigation: it shows what happened, in what order, and which message proves each step.</p>
+    <div class="pf-diagram-controls">
+      <button type="button" data-dg="prev">Previous</button>
+      <button type="button" data-dg="play">Pause</button>
+      <button type="button" data-dg="next">Next</button>
+      <button type="button" data-dg="replay">Replay</button>
+      <span class="pf-diagram-count">Step 1 of 4</span>
+    </div>
+    <div class="pf-diagram-foot"><span>paymentstraininghub.com</span></div>
+  </div>
+</div>
 <p><strong>Worked example.</strong> The analyst lays the four messages out in order. The pain.001 and the pacs.008 match: USD 25,000, invoice INV-8841, the same end to end reference, and the same UETR on the pacs.008. The pacs.002 shows RJCT for that UETR, with a reason code for an incorrect account number. The pacs.004 shows the money coming back to the sending bank with the same reason code. The timeline proves the payment was instructed correctly, rejected for a wrong account number, and returned. The supplier was never credited, and the money is back with the sending bank.</p>
 </div>
 <p><strong>Try it yourself.</strong></p>
@@ -237,5 +303,6 @@ if(all.every(function(x){return s2['quiz.'+x.getAttribute('data-quiz')]==='pass'
 });
 })();
 </script>
+<script src="../assets/diagram-player.js"></script>
 </body>
 </html>

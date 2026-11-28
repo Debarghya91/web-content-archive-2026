@@ -40,6 +40,71 @@
 <h3>From instruction to interbank message</h3>
 <p>A payment begins when a customer instructs its bank, usually with a pain.001. The bank receives the instruction and runs its own checks: is the account valid and funded, does the instruction carry the fields the bank needs, and does anything in it need a closer look. If the checks pass, the bank accepts the instruction and builds the interbank message, a pacs.008, which carries the payment to the next bank in the chain. Each bank in the chain does the same in turn: receive, check, accept, and send onward. The last bank in the chain is the beneficiary bank, which credits the beneficiary account. The customer never sees the pacs.008, and the beneficiary never sees the pain.001. Each message belongs to one leg of the journey, and the payment only moves as fast as the slowest check on the way.</p>
 <div class="pf-card">
+<div class="pf-diagram" data-diagram>
+  <div class="pf-diagram-panel">
+    <p class="pf-diagram-eyebrow">From instruction to interbank message</p>
+    <div class="pf-diagram-body">
+      <svg class="pf-diagram-svg" viewBox="0 0 720 340" role="img" aria-label="pacs.008 end to end diagram">
+        <defs>
+          <marker id="dg-arrow-teal-d4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#29DCD0"></path></marker>
+          <marker id="dg-arrow-blue-d4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#36B2FF"></path></marker>
+          <marker id="dg-arrow-orange-d4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#FFA642"></path></marker>
+        </defs>
+        <path class="pf-dconn" data-step="1" data-accent="teal" d="M2 72 L8 72" marker-end="url(#dg-arrow-teal-d4)"></path>
+        <path class="pf-dconn" data-step="2" data-accent="blue" d="M212 72 L258 72" marker-end="url(#dg-arrow-blue-d4)"></path>
+        <path class="pf-dconn" data-step="3" data-accent="orange" d="M462 72 L508 72" marker-end="url(#dg-arrow-orange-d4)"></path>
+        <path class="pf-dconn" data-step="4" data-accent="teal" d="M610 104 L610 150 L220 150 L220 196" marker-end="url(#dg-arrow-teal-d4)"></path>
+        <path class="pf-dconn" data-step="5" data-accent="blue" d="M332 232 L388 232" marker-end="url(#dg-arrow-blue-d4)"></path>
+        <circle class="pf-dpulse" data-pulse-for="1" data-accent="teal" r="6" cx="2" cy="72"></circle>
+        <circle class="pf-dpulse" data-pulse-for="2" data-accent="blue" r="6" cx="212" cy="72"></circle>
+        <circle class="pf-dpulse" data-pulse-for="3" data-accent="orange" r="6" cx="462" cy="72"></circle>
+        <circle class="pf-dpulse" data-pulse-for="4" data-accent="teal" r="6" cx="610" cy="104"></circle>
+        <circle class="pf-dpulse" data-pulse-for="5" data-accent="blue" r="6" cx="332" cy="232"></circle>
+        <g class="pf-dnode" data-step="1" data-accent="teal">
+          <rect x="10" y="40" width="200" height="64" rx="12"></rect>
+          <text x="110" y="66" text-anchor="middle" class="pf-dnode-title">CUSTOMER</text>
+          <text x="110" y="84" text-anchor="middle" class="pf-dnode-sub">instructs with pain.001</text>
+        </g>
+        <g class="pf-dnode" data-step="2" data-accent="blue">
+          <rect x="260" y="40" width="200" height="64" rx="12"></rect>
+          <text x="360" y="66" text-anchor="middle" class="pf-dnode-title">SENDING BANK</text>
+          <text x="360" y="84" text-anchor="middle" class="pf-dnode-sub">checks the instruction</text>
+        </g>
+        <g class="pf-dnode" data-step="3" data-accent="orange">
+          <rect x="510" y="40" width="200" height="64" rx="12"></rect>
+          <text x="610" y="66" text-anchor="middle" class="pf-dnode-title">PACS.008</text>
+          <text x="610" y="84" text-anchor="middle" class="pf-dnode-sub">bank to bank</text>
+        </g>
+        <g class="pf-dnode" data-step="4" data-accent="teal">
+          <rect x="110" y="200" width="220" height="64" rx="12"></rect>
+          <text x="220" y="226" text-anchor="middle" class="pf-dnode-title">BANKS IN CHAIN</text>
+          <text x="220" y="244" text-anchor="middle" class="pf-dnode-sub">receive, check, send on</text>
+        </g>
+        <g class="pf-dnode" data-step="5" data-accent="blue">
+          <rect x="390" y="200" width="220" height="64" rx="12"></rect>
+          <text x="500" y="226" text-anchor="middle" class="pf-dnode-title">BENEFICIARY BANK</text>
+          <text x="500" y="244" text-anchor="middle" class="pf-dnode-sub">credits the account</text>
+        </g>
+      </svg>
+      <ol class="pf-diagram-steps">
+        <li data-step="1" data-accent="teal"><strong>Customer instructs.</strong> A London company instructs its bank with pain.001 to pay a Singapore supplier USD 25,000, invoice INV-8841.</li>
+        <li data-step="2" data-accent="blue"><strong>Bank checks.</strong> Is the account valid and funded, are the fields present, and does anything need a closer look?</li>
+        <li data-step="3" data-accent="orange"><strong>Bank accepts and builds pacs.008.</strong> The interbank message carries the payment to the next bank in the chain.</li>
+        <li data-step="4" data-accent="teal"><strong>Each bank in the chain.</strong> Receive, check, accept, and send onward, one bank at a time.</li>
+        <li data-step="5" data-accent="blue"><strong>Beneficiary bank credits.</strong> The last bank in the chain credits the beneficiary account.</li>
+      </ol>
+    </div>
+    <p class="pf-diagram-takeaway">The customer never sees pacs.008, and the beneficiary never sees pain.001.</p>
+    <div class="pf-diagram-controls">
+      <button type="button" data-dg="prev">Previous</button>
+      <button type="button" data-dg="play">Pause</button>
+      <button type="button" data-dg="next">Next</button>
+      <button type="button" data-dg="replay">Replay</button>
+      <span class="pf-diagram-count">Step 1 of 5</span>
+    </div>
+    <div class="pf-diagram-foot"><span>paymentstraininghub.com</span></div>
+  </div>
+</div>
 <p><strong>Worked example.</strong> A London company pays a Singapore supplier USD 25,000 for invoice INV-8841. The company sends a pain.001 to its London bank. The bank checks the account and the instruction, accepts it, and sends a pacs.008 onward. The payment travels through the correspondent chain, each bank checking and forwarding it, until the Singapore bank credits the supplier. The supplier sees the invoice reference on its statement and matches the receipt without a phone call.</p>
 </div>
 <p><strong>Try it yourself.</strong></p>
@@ -112,6 +177,71 @@
 <h3>Correlating with UETR and references</h3>
 <p>A payment produces several messages, and an investigation means proving which messages belong to the same payment. Three references do that work. The UETR, the unique end to end transaction reference, is created once and carried on every message about the payment, so it is the strongest link. The end to end reference is chosen by the customer, usually an invoice number, and travels with the payment so the beneficiary can match it. The instruction identifier is assigned by the instructing party for its own instruction, and the message identifier identifies one single message. When messages arrive, match them in this order: UETR first, then the end to end reference, then the instruction identifier. If the UETR matches but the amount does not, stop and investigate, because something has changed on the way. If two messages share an end to end reference but have different UETRs, they are two different payments about the same invoice, not one payment.</p>
 <div class="pf-card">
+<div class="pf-diagram" data-diagram>
+  <div class="pf-diagram-panel">
+    <p class="pf-diagram-eyebrow">Correlating with UETR and references</p>
+    <div class="pf-diagram-body">
+      <svg class="pf-diagram-svg" viewBox="0 0 720 340" role="img" aria-label="correlating messages with UETR and references diagram">
+        <defs>
+          <marker id="dg-arrow-teal-d17" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#29DCD0"></path></marker>
+          <marker id="dg-arrow-blue-d17" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#36B2FF"></path></marker>
+          <marker id="dg-arrow-orange-d17" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#FFA642"></path></marker>
+        </defs>
+        <path class="pf-dconn" data-step="1" data-accent="teal" d="M2 72 L8 72" marker-end="url(#dg-arrow-teal-d17)"></path>
+        <path class="pf-dconn" data-step="2" data-accent="blue" d="M212 72 L258 72" marker-end="url(#dg-arrow-blue-d17)"></path>
+        <path class="pf-dconn" data-step="3" data-accent="orange" d="M462 72 L508 72" marker-end="url(#dg-arrow-orange-d17)"></path>
+        <path class="pf-dconn" data-step="4" data-accent="teal" d="M610 104 L610 150 L220 150 L220 196" marker-end="url(#dg-arrow-teal-d17)"></path>
+        <path class="pf-dconn" data-step="5" data-accent="blue" d="M332 232 L388 232" marker-end="url(#dg-arrow-blue-d17)"></path>
+        <circle class="pf-dpulse" data-pulse-for="1" data-accent="teal" r="6" cx="2" cy="72"></circle>
+        <circle class="pf-dpulse" data-pulse-for="2" data-accent="blue" r="6" cx="212" cy="72"></circle>
+        <circle class="pf-dpulse" data-pulse-for="3" data-accent="orange" r="6" cx="462" cy="72"></circle>
+        <circle class="pf-dpulse" data-pulse-for="4" data-accent="teal" r="6" cx="610" cy="104"></circle>
+        <circle class="pf-dpulse" data-pulse-for="5" data-accent="blue" r="6" cx="332" cy="232"></circle>
+        <g class="pf-dnode" data-step="1" data-accent="teal">
+          <rect x="10" y="40" width="200" height="64" rx="12"></rect>
+          <text x="110" y="66" text-anchor="middle" class="pf-dnode-title">UETR</text>
+          <text x="110" y="84" text-anchor="middle" class="pf-dnode-sub">strongest link</text>
+        </g>
+        <g class="pf-dnode" data-step="2" data-accent="blue">
+          <rect x="260" y="40" width="200" height="64" rx="12"></rect>
+          <text x="360" y="66" text-anchor="middle" class="pf-dnode-title">END TO END REF</text>
+          <text x="360" y="84" text-anchor="middle" class="pf-dnode-sub">customer invoice</text>
+        </g>
+        <g class="pf-dnode" data-step="3" data-accent="orange">
+          <rect x="510" y="40" width="200" height="64" rx="12"></rect>
+          <text x="610" y="66" text-anchor="middle" class="pf-dnode-title">INSTRUCTION ID</text>
+          <text x="610" y="84" text-anchor="middle" class="pf-dnode-sub">instructing party</text>
+        </g>
+        <g class="pf-dnode" data-step="4" data-accent="teal">
+          <rect x="110" y="200" width="220" height="64" rx="12"></rect>
+          <text x="220" y="226" text-anchor="middle" class="pf-dnode-title">MATCH IN ORDER</text>
+          <text x="220" y="244" text-anchor="middle" class="pf-dnode-sub">UETR, then reference</text>
+        </g>
+        <g class="pf-dnode" data-step="5" data-accent="blue">
+          <rect x="390" y="200" width="220" height="64" rx="12"></rect>
+          <text x="500" y="226" text-anchor="middle" class="pf-dnode-title">AMOUNT DIFFERS</text>
+          <text x="500" y="244" text-anchor="middle" class="pf-dnode-sub">stop and investigate</text>
+        </g>
+      </svg>
+      <ol class="pf-diagram-steps">
+        <li data-step="1" data-accent="teal"><strong>UETR.</strong> Created once and carried on every message about the payment, so it is the strongest link.</li>
+        <li data-step="2" data-accent="blue"><strong>End to end reference.</strong> Chosen by the customer, usually an invoice number, it travels with the payment so the beneficiary can match it.</li>
+        <li data-step="3" data-accent="orange"><strong>Instruction identifier.</strong> Assigned by the instructing party for its own instruction. The message identifier identifies one single message.</li>
+        <li data-step="4" data-accent="teal"><strong>Match in order.</strong> UETR first, then the end to end reference, then the instruction identifier.</li>
+        <li data-step="5" data-accent="blue"><strong>Amount differs.</strong> If the UETR matches but the amount does not, stop and investigate, because something has changed on the way.</li>
+      </ol>
+    </div>
+    <p class="pf-diagram-takeaway">Match UETR first, then the end to end reference, then the instruction identifier.</p>
+    <div class="pf-diagram-controls">
+      <button type="button" data-dg="prev">Previous</button>
+      <button type="button" data-dg="play">Pause</button>
+      <button type="button" data-dg="next">Next</button>
+      <button type="button" data-dg="replay">Replay</button>
+      <span class="pf-diagram-count">Step 1 of 5</span>
+    </div>
+    <div class="pf-diagram-foot"><span>paymentstraininghub.com</span></div>
+  </div>
+</div>
 <p><strong>Worked example.</strong> An analyst has three files about a payment of EUR 6,200: a pain.001, a pacs.008 and a pacs.002. All three carry the same UETR. The pain.001 and the pacs.008 both show the end to end reference INV-5520 and the amount EUR 6,200. The pacs.002 shows status ACCP for the same UETR. The analyst can now tell the customer the payment was accepted, and can prove it with three messages that all point to the same payment.</p>
 </div>
 <p><strong>Try it yourself.</strong></p>
@@ -167,6 +297,82 @@
 <h3>Value dates and cut-offs in general terms</h3>
 <p>Every payment has a value date, the date on which the funds become available to the beneficiary. It also has an execution date, the date the sending bank is asked to act. The two are not always the same: a payment instructed today can carry a value date in the future. Banks also have cut-off times, the latest time they accept instructions for same-day processing on a given rail. An instruction that arrives after the cut-off is processed on the next business day, and its value date moves with it. Business days matter too: a payment instructed late on a Friday may not be processed until Monday, and public holidays in any country on the route can delay it further. Never guess a cut-off time or a value date rule for a specific rail. The rule depends on the scheme, the rail and the banks involved, so check the current scheme rulebook for the payment in front of you.</p>
 <div class="pf-card">
+<div class="pf-diagram" data-diagram>
+  <div class="pf-diagram-panel">
+    <p class="pf-diagram-eyebrow">Value dates and cut-offs</p>
+    <div class="pf-diagram-body">
+      <svg class="pf-diagram-svg" viewBox="0 0 720 340" role="img" aria-label="value dates and cut-offs timeline diagram">
+        <defs>
+          <marker id="dg-arrow-teal-d18" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#29DCD0"></path></marker>
+          <marker id="dg-arrow-blue-d18" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#36B2FF"></path></marker>
+          <marker id="dg-arrow-orange-d18" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#FFA642"></path></marker>
+        </defs>
+        <path class="pf-dconn" data-step="1" data-accent="teal" d="M2 122 L6 122" marker-end="url(#dg-arrow-teal-d18)"></path>
+        <path class="pf-dconn" data-step="2" data-accent="blue" d="M142 122 L148 122" marker-end="url(#dg-arrow-blue-d18)"></path>
+        <path class="pf-dconn" data-step="3" data-accent="orange" d="M284 122 L290 122" marker-end="url(#dg-arrow-orange-d18)"></path>
+        <path class="pf-dconn" data-step="4" data-accent="teal" d="M426 122 L432 122" marker-end="url(#dg-arrow-teal-d18)"></path>
+        <path class="pf-dconn" data-step="5" data-accent="blue" d="M568 122 L574 122" marker-end="url(#dg-arrow-blue-d18)"></path>
+        <circle class="pf-dpulse" data-pulse-for="1" data-accent="teal" r="6" cx="2" cy="122"></circle>
+        <circle class="pf-dpulse" data-pulse-for="2" data-accent="blue" r="6" cx="142" cy="122"></circle>
+        <circle class="pf-dpulse" data-pulse-for="3" data-accent="orange" r="6" cx="284" cy="122"></circle>
+        <circle class="pf-dpulse" data-pulse-for="4" data-accent="teal" r="6" cx="426" cy="122"></circle>
+        <circle class="pf-dpulse" data-pulse-for="5" data-accent="blue" r="6" cx="568" cy="122"></circle>
+        <g class="pf-dnode" data-step="1" data-accent="teal">
+          <rect x="8" y="90" width="132" height="64" rx="12"></rect>
+          <text x="74" y="116" text-anchor="middle" class="pf-dnode-title">INSTRUCTED</text>
+          <text x="74" y="134" text-anchor="middle" class="pf-dnode-sub">execution date asked</text>
+        </g>
+        <g class="pf-dnode" data-step="2" data-accent="blue">
+          <rect x="150" y="90" width="132" height="64" rx="12"></rect>
+          <text x="216" y="116" text-anchor="middle" class="pf-dnode-title">CUT-OFF</text>
+          <text x="216" y="134" text-anchor="middle" class="pf-dnode-sub">same-day deadline</text>
+        </g>
+        <g class="pf-dnode" data-step="3" data-accent="orange">
+          <rect x="292" y="90" width="132" height="64" rx="12"></rect>
+          <text x="358" y="116" text-anchor="middle" class="pf-dnode-title">AFTER CUT-OFF</text>
+          <text x="358" y="134" text-anchor="middle" class="pf-dnode-sub">next business day</text>
+        </g>
+        <g class="pf-dnode" data-step="4" data-accent="teal">
+          <rect x="434" y="90" width="132" height="64" rx="12"></rect>
+          <text x="500" y="116" text-anchor="middle" class="pf-dnode-title">VALUE DATE</text>
+          <text x="500" y="134" text-anchor="middle" class="pf-dnode-sub">funds available</text>
+        </g>
+        <g class="pf-dnode" data-step="5" data-accent="blue">
+          <rect x="576" y="90" width="132" height="64" rx="12"></rect>
+          <text x="642" y="116" text-anchor="middle" class="pf-dnode-title">HOLIDAY DELAY</text>
+          <text x="642" y="134" text-anchor="middle" class="pf-dnode-sub">weekend or holiday</text>
+        </g>
+        <path d="M40 230 L680 230" fill="none" stroke="#36B2FF" stroke-width="2"></path>
+        <path d="M74 222 L74 238" stroke="#29DCD0" stroke-width="2"></path>
+        <path d="M216 222 L216 238" stroke="#29DCD0" stroke-width="2"></path>
+        <path d="M358 222 L358 238" stroke="#29DCD0" stroke-width="2"></path>
+        <path d="M500 222 L500 238" stroke="#29DCD0" stroke-width="2"></path>
+        <path d="M642 222 L642 238" stroke="#29DCD0" stroke-width="2"></path>
+        <text x="74" y="262" text-anchor="middle" class="pf-dnode-sub">instructed</text>
+        <text x="216" y="262" text-anchor="middle" class="pf-dnode-sub">cut-off</text>
+        <text x="358" y="262" text-anchor="middle" class="pf-dnode-sub">next business day</text>
+        <text x="500" y="262" text-anchor="middle" class="pf-dnode-sub">value date</text>
+        <text x="642" y="262" text-anchor="middle" class="pf-dnode-sub">delay</text>
+      </svg>
+      <ol class="pf-diagram-steps">
+        <li data-step="1" data-accent="teal"><strong>Instructed.</strong> The execution date is the date the sending bank is asked to act.</li>
+        <li data-step="2" data-accent="blue"><strong>Cut-off.</strong> The cut-off time is the latest time a bank accepts instructions for same-day processing on a rail.</li>
+        <li data-step="3" data-accent="orange"><strong>After the cut-off.</strong> The instruction is processed on the next business day, and its value date moves with it.</li>
+        <li data-step="4" data-accent="teal"><strong>Value date.</strong> The value date is the date on which the funds become available to the beneficiary.</li>
+        <li data-step="5" data-accent="blue"><strong>Weekend or holiday.</strong> A payment instructed late on a Friday may not be processed until Monday, and public holidays on the route can delay it further.</li>
+      </ol>
+    </div>
+    <p class="pf-diagram-takeaway">Never guess a cut-off time or a value date rule for a specific rail. Check the current scheme rulebook.</p>
+    <div class="pf-diagram-controls">
+      <button type="button" data-dg="prev">Previous</button>
+      <button type="button" data-dg="play">Pause</button>
+      <button type="button" data-dg="next">Next</button>
+      <button type="button" data-dg="replay">Replay</button>
+      <span class="pf-diagram-count">Step 1 of 5</span>
+    </div>
+    <div class="pf-diagram-foot"><span>paymentstraininghub.com</span></div>
+  </div>
+</div>
 <p><strong>Worked example.</strong> A company instructs a payment on a Friday afternoon, after its bank's cut-off for that rail. The bank accepts the instruction but processes it on the next business day, Monday, and the value date becomes Monday. The customer expected the money to arrive on Friday and calls to ask where it is. The analyst checks the instruction time against the cut-off, sees it arrived after the cut-off, and explains that the payment is on track for Monday value. No message failed. The calendar did the work.</p>
 </div>
 <p><strong>Try it yourself.</strong></p>
@@ -254,5 +460,6 @@ if(all.every(function(x){return s2['quiz.'+x.getAttribute('data-quiz')]==='pass'
 });
 })();
 </script>
+<script src="../assets/diagram-player.js"></script>
 </body>
 </html>

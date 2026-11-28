@@ -2253,3 +2253,57 @@ html.pf-dark .pf-style-preview-list span.pf-on{background:#3B82F6;}
 
 /* Live tool embed (free short courses): same-origin iframe for the site tools. */
 .pf-tool-frame{display:block;width:100%;height:700px;border:1px solid var(--pf-line-2);border-radius:var(--pf-radius);background:var(--pf-surface);margin:12px 0}
+
+/* ============================ Animated diagrams (free short courses) ============================
+   Visual system from the user's LLMs in Banking and Payments deck (28 Nov 2026):
+   dark navy panel, teal top band, teal/blue/orange accents, white bold takeaway.
+   The panel stays dark navy in both light and dark mode. The player
+   (assets/diagram-player.js) toggles .is-active / .is-dim on nodes,
+   connectors, pulses and step items. */
+:root{--dg-bg:#041230;--dg-panel:#081F43;--dg-panel-2:#041F4D;--dg-teal:#29DCD0;--dg-blue:#36B2FF;--dg-orange:#FFA642;--dg-ink:#F1F8FF;--dg-muted:#A9B8CC;--dg-footline:#1E3A5F}
+.pf-diagram{margin:20px 0}
+.pf-diagram-panel{background:var(--dg-bg);border-radius:var(--pf-radius);padding:18px 20px 12px;overflow:hidden;border-top:4px solid var(--dg-teal)}
+.pf-diagram-eyebrow{color:var(--dg-teal);font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin:0 0 14px}
+.pf-diagram-body{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:20px;align-items:start}
+@media(max-width:760px){.pf-diagram-body{grid-template-columns:1fr}}
+.pf-diagram-svg{width:100%;height:auto;display:block}
+.pf-diagram-svg text{font-family:inherit}
+.pf-dnode rect{fill:var(--dg-panel);stroke-width:1.5;transition:opacity .45s ease,stroke-width .3s ease}
+.pf-dnode[data-accent="teal"] rect{stroke:var(--dg-teal)}
+.pf-dnode[data-accent="blue"] rect{stroke:var(--dg-blue)}
+.pf-dnode[data-accent="orange"] rect{stroke:var(--dg-orange)}
+.pf-dnode-title{fill:var(--dg-ink);font-size:15px;font-weight:700}
+.pf-dnode-sub{fill:var(--dg-muted);font-size:11px}
+.pf-dnode.is-dim{opacity:.45}
+.pf-dnode.is-active rect{stroke-width:2.5}
+.pf-dnode[data-accent="teal"].is-active rect{filter:drop-shadow(0 0 8px rgba(41,220,208,.55))}
+.pf-dnode[data-accent="blue"].is-active rect{filter:drop-shadow(0 0 8px rgba(54,178,255,.55))}
+.pf-dnode[data-accent="orange"].is-active rect{filter:drop-shadow(0 0 8px rgba(255,166,66,.55))}
+.pf-dconn{fill:none;stroke-width:2;stroke-dasharray:6 6;transition:opacity .45s ease}
+.pf-dconn[data-accent="teal"]{stroke:var(--dg-teal)}
+.pf-dconn[data-accent="blue"]{stroke:var(--dg-blue)}
+.pf-dconn[data-accent="orange"]{stroke:var(--dg-orange)}
+.pf-dconn.is-dim{opacity:.3}
+.pf-dconn.is-active{stroke-width:3}
+.pf-dpulse{opacity:0}
+.pf-dpulse[data-accent="teal"]{fill:var(--dg-teal)}
+.pf-dpulse[data-accent="blue"]{fill:var(--dg-blue)}
+.pf-dpulse[data-accent="orange"]{fill:var(--dg-orange)}
+.pf-dpulse.is-active{opacity:1}
+.pf-dpulse[data-accent="teal"].is-active{filter:drop-shadow(0 0 6px rgba(41,220,208,.8))}
+.pf-dpulse[data-accent="blue"].is-active{filter:drop-shadow(0 0 6px rgba(54,178,255,.8))}
+.pf-dpulse[data-accent="orange"].is-active{filter:drop-shadow(0 0 6px rgba(255,166,66,.8))}
+.pf-diagram-steps{list-style:none;margin:0;padding:0;display:grid;gap:10px;align-content:start}
+.pf-diagram-steps li{background:var(--dg-panel);border:1px solid var(--dg-footline);border-left:3px solid transparent;border-radius:10px;padding:10px 12px;color:var(--dg-muted);font-size:12.8px;line-height:1.5;cursor:pointer;transition:opacity .45s ease,border-color .3s ease}
+.pf-diagram-steps li strong{color:var(--dg-ink)}
+.pf-diagram-steps li[data-accent="teal"].is-active{border-left-color:var(--dg-teal)}
+.pf-diagram-steps li[data-accent="blue"].is-active{border-left-color:var(--dg-blue)}
+.pf-diagram-steps li[data-accent="orange"].is-active{border-left-color:var(--dg-orange)}
+.pf-diagram-steps li.is-active{color:var(--dg-ink)}
+.pf-diagram-steps li.is-dim{opacity:.5}
+.pf-diagram-takeaway{color:var(--dg-ink);font-weight:700;text-align:center;margin:16px 0 8px;font-size:13.5px;line-height:1.5}
+.pf-diagram-controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:12px 0 4px}
+.pf-diagram-controls button{background:transparent;border:1px solid var(--dg-teal);color:var(--dg-teal);border-radius:10px;padding:8px 14px;font-size:12.8px;font-weight:600;cursor:pointer;font-family:inherit}
+.pf-diagram-controls button:hover{background:rgba(41,220,208,.12)}
+.pf-diagram-count{color:var(--dg-muted);font-size:12.8px;margin-left:auto}
+.pf-diagram-foot{border-top:1px solid var(--dg-footline);margin-top:10px;padding-top:8px;color:var(--dg-teal);font-size:11px}

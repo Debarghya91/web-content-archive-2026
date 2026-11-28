@@ -71,6 +71,72 @@ print(answer)</code></pre>
 <tr><td>3</td><td>Status plus rule is enough to answer.</td><td>Write the final answer with the rule quoted.</td><td>Answer ready for the user.</td></tr>
 </table>
 <p>Final answer: Payment PAY-1042 is held because a field is missing. The rule says it waits for the sender to supply the field, so ask the sender for it and do not release the payment early. Check the current scheme rulebook for the latest wording.</p>
+<div class="pf-diagram" data-diagram>
+  <div class="pf-diagram-panel">
+    <p class="pf-diagram-eyebrow">Agentic RAG over scheme rules</p>
+    <div class="pf-diagram-body">
+      <svg class="pf-diagram-svg" viewBox="0 0 720 340" role="img" aria-label="Agentic RAG diagram: read the question, search, read passages, answer, or ask a human when no passage is found">
+        <defs>
+          <marker id="dg-arrow-teal-d9" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#29DCD0"></path></marker>
+          <marker id="dg-arrow-blue-d9" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#36B2FF"></path></marker>
+          <marker id="dg-arrow-orange-d9" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#FFA642"></path></marker>
+        </defs>
+        <text x="90" y="52" text-anchor="middle" class="pf-dnode-sub">QUESTION IN</text>
+        <path class="pf-dconn" data-step="1" data-accent="teal" d="M90 58 L90 77" fill="none" marker-end="url(#dg-arrow-teal-d9)"></path>
+        <path class="pf-dconn" data-step="2" data-accent="blue" d="M165 108 L192 108" fill="none" marker-end="url(#dg-arrow-blue-d9)"></path>
+        <path class="pf-dconn" data-step="3" data-accent="orange" d="M345 108 L372 108" fill="none" marker-end="url(#dg-arrow-orange-d9)"></path>
+        <path class="pf-dconn" data-step="4" data-accent="teal" d="M525 108 L552 108" fill="none" marker-end="url(#dg-arrow-teal-d9)"></path>
+        <path class="pf-dconn" data-step="5" data-accent="blue" d="M270 136 L270 237" fill="none" marker-end="url(#dg-arrow-blue-d9)"></path>
+        <g class="pf-dnode" data-step="1" data-accent="teal">
+          <rect x="15" y="80" width="150" height="56" rx="12"></rect>
+          <text x="90" y="106" text-anchor="middle" class="pf-dnode-title">READ THE QUESTION</text>
+          <text x="90" y="124" text-anchor="middle" class="pf-dnode-sub">what fact is needed</text>
+        </g>
+        <g class="pf-dnode" data-step="2" data-accent="blue">
+          <rect x="195" y="80" width="150" height="56" rx="12"></rect>
+          <text x="270" y="106" text-anchor="middle" class="pf-dnode-title">SEARCH THE INDEX</text>
+          <text x="270" y="124" text-anchor="middle" class="pf-dnode-sub">scheme rule passages</text>
+        </g>
+        <g class="pf-dnode" data-step="3" data-accent="orange">
+          <rect x="375" y="80" width="150" height="56" rx="12"></rect>
+          <text x="450" y="106" text-anchor="middle" class="pf-dnode-title">READ THE PASSAGES</text>
+          <text x="450" y="124" text-anchor="middle" class="pf-dnode-sub">the evidence only</text>
+        </g>
+        <g class="pf-dnode" data-step="4" data-accent="teal">
+          <rect x="555" y="80" width="150" height="56" rx="12"></rect>
+          <text x="630" y="106" text-anchor="middle" class="pf-dnode-title">ANSWER</text>
+          <text x="630" y="124" text-anchor="middle" class="pf-dnode-sub">quote the rule</text>
+        </g>
+        <g class="pf-dnode" data-step="5" data-accent="blue">
+          <rect x="195" y="240" width="150" height="56" rx="12"></rect>
+          <text x="270" y="266" text-anchor="middle" class="pf-dnode-title">NO PASSAGE FOUND</text>
+          <text x="270" y="284" text-anchor="middle" class="pf-dnode-sub">ask a human instead</text>
+        </g>
+        <circle class="pf-dpulse" data-pulse-for="1" data-accent="teal" r="6" cx="90" cy="58"></circle>
+        <circle class="pf-dpulse" data-pulse-for="2" data-accent="blue" r="6" cx="165" cy="108"></circle>
+        <circle class="pf-dpulse" data-pulse-for="3" data-accent="orange" r="6" cx="345" cy="108"></circle>
+        <circle class="pf-dpulse" data-pulse-for="4" data-accent="teal" r="6" cx="525" cy="108"></circle>
+        <circle class="pf-dpulse" data-pulse-for="5" data-accent="blue" r="6" cx="270" cy="136"></circle>
+      </svg>
+      <ol class="pf-diagram-steps">
+        <li data-step="1" data-accent="teal"><strong>Read the question.</strong> The agent thinks about what fact it needs.</li>
+        <li data-step="2" data-accent="blue"><strong>Search the index.</strong> It calls a search tool for the scheme rule passages.</li>
+        <li data-step="3" data-accent="orange"><strong>Read the passages.</strong> The retrieved passages are the evidence for the answer.</li>
+        <li data-step="4" data-accent="teal"><strong>Answer from passages.</strong> It quotes the passage and says to check the current scheme rulebook for the latest wording.</li>
+        <li data-step="5" data-accent="blue"><strong>No passage: ask a human.</strong> If the search returns nothing useful, the agent says so and asks a human, rather than guessing.</li>
+      </ol>
+    </div>
+    <p class="pf-diagram-takeaway">No retrieved passage, no rule claim.</p>
+    <div class="pf-diagram-controls">
+      <button type="button" data-dg="prev">Previous</button>
+      <button type="button" data-dg="play">Pause</button>
+      <button type="button" data-dg="next">Next</button>
+      <button type="button" data-dg="replay">Replay</button>
+      <span class="pf-diagram-count">Step 1 of 5</span>
+    </div>
+    <div class="pf-diagram-foot"><span>paymentstraininghub.com</span></div>
+  </div>
+</div>
 <div class="pf-card"><h4>Worked example</h4><p>A user asks what to do about a payment held for a missing field. The agent searches the rule index for "missing field" and retrieves one passage: the payment waits for the sender to supply the field, and it must not be released early. The agent answers with that passage quoted and adds that the reader should check the current scheme rulebook for the latest wording. It does not add a timeline, because the passage gives none. If the search had returned nothing, the agent would have said it found no rule passage and asked a human, instead of inventing a rule. The retrieved text is the whole basis of the answer.</p></div>
 <h4>Hands-on exercise</h4>
 <ol><li>Build a small rule index with three short passages: missing field, duplicate payment, and one more from your running example.</li><li>Ask the agent a question each passage answers, and check the answer quotes the passage.</li><li>Ask the agent a question no passage answers, and check it says so instead of guessing.</li><li>Add one passage that contradicts an old habit, and confirm the agent follows the passage, not the habit.</li></ol>
@@ -160,6 +226,64 @@ print(answer)</code></pre>
 <tr><td>3</td><td>Match by reference. PAY-1045 has no match, so it is a break.</td><td>Write the break list with the evidence.</td><td>Break list ready, with one break to escalate.</td></tr>
 </table>
 <p>Final answer: One break on 2026-11-27. The ledger shows PAY-1045 as complete, but the statement has no PAY-1045. All other entries match. Escalate PAY-1045 for a human to check before any correction.</p>
+<div class="pf-diagram" data-diagram>
+  <div class="pf-diagram-panel">
+    <p class="pf-diagram-eyebrow">A reconciliation agent</p>
+    <div class="pf-diagram-body">
+      <svg class="pf-diagram-svg" viewBox="0 0 720 340" role="img" aria-label="Reconciliation diagram: fetch the ledger and the statement, match by reference, report the break for PAY-1045">
+        <defs>
+          <marker id="dg-arrow-teal-d10" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#29DCD0"></path></marker>
+          <marker id="dg-arrow-blue-d10" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#36B2FF"></path></marker>
+          <marker id="dg-arrow-orange-d10" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#FFA642"></path></marker>
+        </defs>
+        <text x="90" y="52" text-anchor="middle" class="pf-dnode-sub">DAY: 2026-11-27</text>
+        <path class="pf-dconn" data-step="1" data-accent="teal" d="M90 58 L90 139" fill="none" marker-end="url(#dg-arrow-teal-d10)"></path>
+        <g class="pf-dnode" data-step="1" data-accent="teal">
+          <rect x="15" y="142" width="150" height="56" rx="12"></rect>
+          <text x="90" y="168" text-anchor="middle" class="pf-dnode-title">GET THE LEDGER</text>
+          <text x="90" y="186" text-anchor="middle" class="pf-dnode-sub">3 entries, one day</text>
+        </g>
+        <path class="pf-dconn" data-step="2" data-accent="blue" d="M165 170 L192 170" fill="none" marker-end="url(#dg-arrow-blue-d10)"></path>
+        <g class="pf-dnode" data-step="2" data-accent="blue">
+          <rect x="195" y="142" width="150" height="56" rx="12"></rect>
+          <text x="270" y="168" text-anchor="middle" class="pf-dnode-title">GET THE STATEMENT</text>
+          <text x="270" y="186" text-anchor="middle" class="pf-dnode-sub">2 entries, no PAY-1045</text>
+        </g>
+        <path class="pf-dconn" data-step="3" data-accent="orange" d="M345 170 L372 170" fill="none" marker-end="url(#dg-arrow-orange-d10)"></path>
+        <g class="pf-dnode" data-step="3" data-accent="orange">
+          <rect x="375" y="142" width="150" height="56" rx="12"></rect>
+          <text x="450" y="168" text-anchor="middle" class="pf-dnode-title">MATCH ENTRIES</text>
+          <text x="450" y="186" text-anchor="middle" class="pf-dnode-sub">PAY-1045 has no match</text>
+        </g>
+        <path class="pf-dconn" data-step="4" data-accent="teal" d="M525 170 L552 170" fill="none" marker-end="url(#dg-arrow-teal-d10)"></path>
+        <g class="pf-dnode" data-step="4" data-accent="teal">
+          <rect x="555" y="142" width="150" height="56" rx="12"></rect>
+          <text x="630" y="168" text-anchor="middle" class="pf-dnode-title">REPORT THE BREAK</text>
+          <text x="630" y="186" text-anchor="middle" class="pf-dnode-sub">escalate, human decides</text>
+        </g>
+        <circle class="pf-dpulse" data-pulse-for="1" data-accent="teal" r="6" cx="90" cy="58"></circle>
+        <circle class="pf-dpulse" data-pulse-for="2" data-accent="blue" r="6" cx="165" cy="170"></circle>
+        <circle class="pf-dpulse" data-pulse-for="3" data-accent="orange" r="6" cx="345" cy="170"></circle>
+        <circle class="pf-dpulse" data-pulse-for="4" data-accent="teal" r="6" cx="525" cy="170"></circle>
+      </svg>
+      <ol class="pf-diagram-steps">
+        <li data-step="1" data-accent="teal"><strong>Get the ledger.</strong> Three entries for the day: PAY-1042, PAY-1043, PAY-1045.</li>
+        <li data-step="2" data-accent="blue"><strong>Get the statement.</strong> Two entries: PAY-1042 and PAY-1043. No PAY-1045.</li>
+        <li data-step="3" data-accent="orange"><strong>Match by reference.</strong> PAY-1045 has no match, so it is a break.</li>
+        <li data-step="4" data-accent="teal"><strong>Report the break.</strong> List it with both sides shown and escalate it for a human to check before any correction.</li>
+      </ol>
+    </div>
+    <p class="pf-diagram-takeaway">An unmatched entry is a break, not a detail to skip.</p>
+    <div class="pf-diagram-controls">
+      <button type="button" data-dg="prev">Previous</button>
+      <button type="button" data-dg="play">Pause</button>
+      <button type="button" data-dg="next">Next</button>
+      <button type="button" data-dg="replay">Replay</button>
+      <span class="pf-diagram-count">Step 1 of 4</span>
+    </div>
+    <div class="pf-diagram-foot"><span>paymentstraininghub.com</span></div>
+  </div>
+</div>
 <div class="pf-card"><h4>Worked example</h4><p>A reconciliation run for one day finds three ledger entries and two statement entries. Two match on reference and status. The third, PAY-1045, is in the ledger as complete but missing from the statement. The agent reports exactly that, with both sides shown, and flags it for a human to check. It does not mark PAY-1045 as an error in the ledger, because the statement may simply be cut off earlier in the day, and it does not invent a reason. The break list is short, complete, and checkable: anyone can re-run the two lookups and see the same break.</p></div>
 <h4>Hands-on exercise</h4>
 <ol><li>Build two small tables for one day, a ledger and a statement, with one break between them.</li><li>Give the agent a ledger tool and a statement tool, and ask it to list every break.</li><li>Check the agent lists the break with both sides shown and drops nothing.</li><li>Add a second break, an amount difference on a matched reference, and check the agent reports it too.</li><li>Write the escalation rule for your agent: what it may report, and what only a human may correct.</li></ol>
@@ -279,6 +403,64 @@ print("Final answer: " + summary)</pre>
 <tr><td>3</td><td>Status plus rule gives the route: ask the sender.</td><td>Write the triage summary in three parts.</td><td>Summary ready: held, rule quoted, next step named.</td></tr>
 </table>
 <p>Final answer: Payment PAY-1042 is held because a field is missing. The rule says it waits for the sender to supply the field. Next step: ask the sender for the missing field. Check the current scheme rulebook for the latest wording.</p>
+<div class="pf-diagram" data-diagram>
+  <div class="pf-diagram-panel">
+    <p class="pf-diagram-eyebrow">An exception triage agent</p>
+    <div class="pf-diagram-body">
+      <svg class="pf-diagram-svg" viewBox="0 0 720 340" role="img" aria-label="Triage diagram: check the status, check the rule, decide the route, write the summary for PAY-1042">
+        <defs>
+          <marker id="dg-arrow-teal-d11" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#29DCD0"></path></marker>
+          <marker id="dg-arrow-blue-d11" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#36B2FF"></path></marker>
+          <marker id="dg-arrow-orange-d11" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#FFA642"></path></marker>
+        </defs>
+        <text x="90" y="52" text-anchor="middle" class="pf-dnode-sub">EXCEPTION: PAY-1042</text>
+        <path class="pf-dconn" data-step="1" data-accent="teal" d="M90 58 L90 139" fill="none" marker-end="url(#dg-arrow-teal-d11)"></path>
+        <g class="pf-dnode" data-step="1" data-accent="teal">
+          <rect x="15" y="142" width="150" height="56" rx="12"></rect>
+          <text x="90" y="168" text-anchor="middle" class="pf-dnode-title">CHECK THE STATUS</text>
+          <text x="90" y="186" text-anchor="middle" class="pf-dnode-sub">held, missing field</text>
+        </g>
+        <path class="pf-dconn" data-step="2" data-accent="blue" d="M165 170 L192 170" fill="none" marker-end="url(#dg-arrow-blue-d11)"></path>
+        <g class="pf-dnode" data-step="2" data-accent="blue">
+          <rect x="195" y="142" width="150" height="56" rx="12"></rect>
+          <text x="270" y="168" text-anchor="middle" class="pf-dnode-title">CHECK THE RULE</text>
+          <text x="270" y="186" text-anchor="middle" class="pf-dnode-sub">waits for the sender</text>
+        </g>
+        <path class="pf-dconn" data-step="3" data-accent="orange" d="M345 170 L372 170" fill="none" marker-end="url(#dg-arrow-orange-d11)"></path>
+        <g class="pf-dnode" data-step="3" data-accent="orange">
+          <rect x="375" y="142" width="150" height="56" rx="12"></rect>
+          <text x="450" y="168" text-anchor="middle" class="pf-dnode-title">DECIDE THE ROUTE</text>
+          <text x="450" y="186" text-anchor="middle" class="pf-dnode-sub">ask the sender</text>
+        </g>
+        <path class="pf-dconn" data-step="4" data-accent="teal" d="M525 170 L552 170" fill="none" marker-end="url(#dg-arrow-teal-d11)"></path>
+        <g class="pf-dnode" data-step="4" data-accent="teal">
+          <rect x="555" y="142" width="150" height="56" rx="12"></rect>
+          <text x="630" y="168" text-anchor="middle" class="pf-dnode-title">WRITE THE SUMMARY</text>
+          <text x="630" y="186" text-anchor="middle" class="pf-dnode-sub">what, rule, next step</text>
+        </g>
+        <circle class="pf-dpulse" data-pulse-for="1" data-accent="teal" r="6" cx="90" cy="58"></circle>
+        <circle class="pf-dpulse" data-pulse-for="2" data-accent="blue" r="6" cx="165" cy="170"></circle>
+        <circle class="pf-dpulse" data-pulse-for="3" data-accent="orange" r="6" cx="345" cy="170"></circle>
+        <circle class="pf-dpulse" data-pulse-for="4" data-accent="teal" r="6" cx="525" cy="170"></circle>
+      </svg>
+      <ol class="pf-diagram-steps">
+        <li data-step="1" data-accent="teal"><strong>Check the status.</strong> PAY-1042 is held, reason: missing field.</li>
+        <li data-step="2" data-accent="blue"><strong>Check the rule.</strong> A payment held for a missing field waits for the sender to supply the field.</li>
+        <li data-step="3" data-accent="orange"><strong>Decide the route.</strong> Status plus rule gives the route: ask the sender.</li>
+        <li data-step="4" data-accent="teal"><strong>Write the summary.</strong> Three parts: what happened, the rule, and the next step, with the evidence at each step.</li>
+      </ol>
+    </div>
+    <p class="pf-diagram-takeaway">Same order, same evidence, same three routes, every time.</p>
+    <div class="pf-diagram-controls">
+      <button type="button" data-dg="prev">Previous</button>
+      <button type="button" data-dg="play">Pause</button>
+      <button type="button" data-dg="next">Next</button>
+      <button type="button" data-dg="replay">Replay</button>
+      <span class="pf-diagram-count">Step 1 of 4</span>
+    </div>
+    <div class="pf-diagram-foot"><span>paymentstraininghub.com</span></div>
+  </div>
+</div>
 <div class="pf-card"><h4>Worked example</h4><p>An exception arrives for PAY-1042. The triage agent checks the status first: held, reason missing field. It then searches the rules for "missing field" and retrieves the passage that the payment waits for the sender to supply the field. It routes the case to "ask the sender" and writes a three-part summary: what happened, the rule, and the next step. A human reviewer can check each part against the tool results in under a minute. If the status tool had returned an unknown reason, the agent would have routed the case to a specialist with the evidence so far, instead of guessing a route.</p></div>
 <h4>Hands-on exercise</h4>
 <ol><li>Give your triage agent the status tool and the rule search tool from this lesson.</li><li>Triage PAY-1042 and check the summary has all three parts: what happened, the rule, and the next step.</li><li>Triage a reference that is not in the table, and check it routes to a human with the evidence so far.</li><li>Add a second exception type to your tables, for example a duplicate payment, and triage it too.</li><li>Time your triage and note which step takes longest: the lookups, or the writing.</li></ol>
@@ -360,5 +542,6 @@ if(all.every(function(x){return s2['quiz.'+x.getAttribute('data-quiz')]==='pass'
 })();
 </script>
 <script src="../assets/py-runner.js"></script>
+<script src="../assets/diagram-player.js"></script>
 </body>
 </html>

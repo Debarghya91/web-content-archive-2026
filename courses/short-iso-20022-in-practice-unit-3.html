@@ -40,6 +40,79 @@
 <h3>Returns with pacs.004</h3>
 <p>A return starts when a bank cannot complete a payment as instructed. The beneficiary bank, or a bank in the middle of the chain, sends a pacs.004 back along the route the payment came by. The return carries the original instruction identifier and the UETR so every bank can match it to the original payment, plus a return reason code that says why the money came back. The most useful reason codes describe the account: the account number is wrong, the account is closed, or the account cannot be credited. When a return arrives, do three things in order. First, match it to the original payment by UETR. Second, read the reason code and write it down in plain words. Third, compare the returned amount with the original amount, and if they differ, find out why before you speak to the customer. A return is not a mystery. The reason code is the answer, and the UETR is the proof.</p>
 <div class="pf-card">
+<div class="pf-diagram" data-diagram>
+  <div class="pf-diagram-panel">
+    <p class="pf-diagram-eyebrow">Returns, cancellations, RJCT</p>
+    <div class="pf-diagram-body">
+      <svg class="pf-diagram-svg" viewBox="0 0 720 420" role="img" aria-label="returns cancellations and RJCT exceptions diagram">
+        <defs>
+          <marker id="dg-arrow-teal-d19" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#29DCD0"></path></marker>
+          <marker id="dg-arrow-blue-d19" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#36B2FF"></path></marker>
+          <marker id="dg-arrow-orange-d19" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#FFA642"></path></marker>
+        </defs>
+        <path class="pf-dconn" data-step="1" data-accent="teal" d="M10 72 L58 72" marker-end="url(#dg-arrow-teal-d19)"></path>
+        <path class="pf-dconn" data-step="2" data-accent="blue" d="M282 72 L438 72" marker-end="url(#dg-arrow-blue-d19)"></path>
+        <path class="pf-dconn" data-step="3" data-accent="orange" d="M550 104 L550 150 L110 150 L110 186" marker-end="url(#dg-arrow-orange-d19)"></path>
+        <path class="pf-dconn" data-step="4" data-accent="teal" d="M550 104 L550 150 L360 150 L360 186" marker-end="url(#dg-arrow-teal-d19)"></path>
+        <path class="pf-dconn" data-step="5" data-accent="blue" d="M550 104 L550 150 L610 150 L610 186" marker-end="url(#dg-arrow-blue-d19)"></path>
+        <path class="pf-dconn" data-step="6" data-accent="orange" d="M610 254 L610 290 L360 290 L360 316" marker-end="url(#dg-arrow-orange-d19)"></path>
+        <circle class="pf-dpulse" data-pulse-for="1" data-accent="teal" r="6" cx="10" cy="72"></circle>
+        <circle class="pf-dpulse" data-pulse-for="2" data-accent="blue" r="6" cx="282" cy="72"></circle>
+        <circle class="pf-dpulse" data-pulse-for="3" data-accent="orange" r="6" cx="550" cy="104"></circle>
+        <circle class="pf-dpulse" data-pulse-for="4" data-accent="teal" r="6" cx="550" cy="104"></circle>
+        <circle class="pf-dpulse" data-pulse-for="5" data-accent="blue" r="6" cx="550" cy="104"></circle>
+        <circle class="pf-dpulse" data-pulse-for="6" data-accent="orange" r="6" cx="610" cy="254"></circle>
+        <g class="pf-dnode" data-step="1" data-accent="teal">
+          <rect x="60" y="40" width="220" height="64" rx="12"></rect>
+          <text x="170" y="66" text-anchor="middle" class="pf-dnode-title">PAYMENT SENT</text>
+          <text x="170" y="84" text-anchor="middle" class="pf-dnode-sub">pacs.008 moves it</text>
+        </g>
+        <g class="pf-dnode" data-step="2" data-accent="blue">
+          <rect x="440" y="40" width="220" height="64" rx="12"></rect>
+          <text x="550" y="66" text-anchor="middle" class="pf-dnode-title">RJCT</text>
+          <text x="550" y="84" text-anchor="middle" class="pf-dnode-sub">pacs.002, read reason code</text>
+        </g>
+        <g class="pf-dnode" data-step="3" data-accent="orange">
+          <rect x="10" y="190" width="200" height="64" rx="12"></rect>
+          <text x="110" y="216" text-anchor="middle" class="pf-dnode-title">PACS.004 RETURN</text>
+          <text x="110" y="234" text-anchor="middle" class="pf-dnode-sub">money comes back</text>
+        </g>
+        <g class="pf-dnode" data-step="4" data-accent="teal">
+          <rect x="260" y="190" width="200" height="64" rx="12"></rect>
+          <text x="360" y="216" text-anchor="middle" class="pf-dnode-title">CAMT.056 CANCEL</text>
+          <text x="360" y="234" text-anchor="middle" class="pf-dnode-sub">ask to stop it</text>
+        </g>
+        <g class="pf-dnode" data-step="5" data-accent="blue">
+          <rect x="510" y="190" width="200" height="64" rx="12"></rect>
+          <text x="610" y="216" text-anchor="middle" class="pf-dnode-title">WHO BEARS THE LOSS</text>
+          <text x="610" y="234" text-anchor="middle" class="pf-dnode-sub">facts and scheme rules</text>
+        </g>
+        <g class="pf-dnode" data-step="6" data-accent="orange">
+          <rect x="260" y="320" width="200" height="64" rx="12"></rect>
+          <text x="360" y="346" text-anchor="middle" class="pf-dnode-title">CORRECT AND RESEND</text>
+          <text x="360" y="364" text-anchor="middle" class="pf-dnode-sub">only when fixed</text>
+        </g>
+      </svg>
+      <ol class="pf-diagram-steps">
+        <li data-step="1" data-accent="teal"><strong>Payment sent.</strong> The pacs.008 moves the payment onward.</li>
+        <li data-step="2" data-accent="blue"><strong>RJCT.</strong> The pacs.002 reports a rejection. Read the reason code first: it names the problem.</li>
+        <li data-step="3" data-accent="orange"><strong>Return branch.</strong> A pacs.004 sends money back after it has moved. Match it by UETR, read the reason code, compare the amounts.</li>
+        <li data-step="4" data-accent="teal"><strong>Cancellation branch.</strong> A camt.056 asks to stop the payment. Only the reply proves the outcome, and a credited payment cannot be cancelled.</li>
+        <li data-step="5" data-accent="blue"><strong>Who bears the loss.</strong> If the beneficiary was already credited and part of the money is spent, it depends on the facts and the scheme rules. Record the facts, check the rulebook, and escalate.</li>
+        <li data-step="6" data-accent="orange"><strong>Correct and resend.</strong> A wrong field can be corrected and the payment sent again. A failed check must not be resent until the underlying issue is resolved.</li>
+      </ol>
+    </div>
+    <p class="pf-diagram-takeaway">A rejection stops the payment before it moves onward, while a return sends money back after it has moved.</p>
+    <div class="pf-diagram-controls">
+      <button type="button" data-dg="prev">Previous</button>
+      <button type="button" data-dg="play">Pause</button>
+      <button type="button" data-dg="next">Next</button>
+      <button type="button" data-dg="replay">Replay</button>
+      <span class="pf-diagram-count">Step 1 of 6</span>
+    </div>
+    <div class="pf-diagram-foot"><span>paymentstraininghub.com</span></div>
+  </div>
+</div>
 <p><strong>Worked example.</strong> A payment of EUR 4,100 is sent to a supplier, but the account number in the instruction has two digits transposed. The beneficiary bank cannot find the account, so it sends a pacs.004 with the reason code for an incorrect account number and the original UETR. The sending bank matches the return, credits its customer, and the customer corrects the account number and sends the payment again. The whole investigation took one reason code and one matched UETR.</p>
 </div>
 <p><strong>Try it yourself.</strong></p>
@@ -254,5 +327,6 @@ if(all.every(function(x){return s2['quiz.'+x.getAttribute('data-quiz')]==='pass'
 });
 })();
 </script>
+<script src="../assets/diagram-player.js"></script>
 </body>
 </html>
